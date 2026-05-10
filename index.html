@@ -73,6 +73,31 @@
       color: var(--muted);
     }
 
+    button[aria-pressed="true"].toggle-btn {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    [data-theme="dark"] button[aria-pressed="true"].toggle-btn { color: #07111f; }
+
+    [data-hints="off"] [data-hint] { display: none !important; }
+
+    button[data-shortcut]::after { display: none; }
+    [data-shortcuts="on"] button[data-shortcut]::after {
+      content: attr(data-shortcut);
+      display: inline-block;
+      margin-left: .38rem;
+      padding: .04rem .25rem;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--muted);
+      background: var(--surface-2);
+      font-size: .68rem;
+      line-height: 1.15;
+      vertical-align: middle;
+    }
+
     button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
       outline: 0;
       box-shadow: var(--focus);
@@ -149,6 +174,9 @@
       align-items: stretch;
     }
 
+    [data-legend="closed"][data-notes="closed"] .main { grid-template-columns: 1fr; }
+    [data-legend="open"][data-notes="open"] .main { grid-template-columns: minmax(0, 1fr) minmax(690px, 860px); }
+
     .panel {
       background: var(--surface);
       border: 1px solid var(--line);
@@ -164,6 +192,14 @@
       gap: 1rem;
       padding: .95rem 1rem;
       border-bottom: 1px solid var(--line);
+    }
+
+    .map-head-actions {
+      display: flex;
+      gap: .45rem;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
     .map-head h2, .side-panel h2, dialog h2, .doc h3 {
@@ -217,6 +253,21 @@
       stroke-width: 2;
     }
 
+    .side-panel-wrap {
+      display: grid;
+      grid-template-columns: minmax(360px, 420px);
+      gap: 1rem;
+      align-items: start;
+    }
+
+    [data-legend="open"][data-notes="open"] .side-panel-wrap {
+      grid-template-columns: repeat(2, minmax(320px, 1fr));
+    }
+
+    [data-legend="closed"][data-notes="closed"] .side-panel-wrap { display: none; }
+    [data-legend="closed"] #legendPanel,
+    [data-notes="closed"] #notesPanel { display: none; }
+
     .side-panel {
       display: grid;
       gap: 1rem;
@@ -227,7 +278,7 @@
 
     .summary-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 1fr);
       gap: .65rem;
     }
 
@@ -238,10 +289,27 @@
       padding: .75rem;
     }
 
+    .metric.compact-stat {
+      display: inline-grid;
+      gap: .42rem;
+      align-items: start;
+      justify-items: start;
+    }
+
     .metric b {
       display: block;
       font-size: 1.35rem;
       line-height: 1.05;
+    }
+
+    .percent-pill {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: .18rem .5rem;
+      background: var(--surface);
+      color: var(--accent-2);
+      font-weight: 800;
+      font-size: .85rem;
     }
 
     .legend-list, .note-list, .wishlist-list {
@@ -279,6 +347,16 @@
       padding: .12rem;
       line-height: 1;
       font-size: .86rem;
+    }
+
+    [data-button-style="text"] .legend-actions {
+      grid-template-columns: repeat(2, minmax(58px, auto));
+    }
+
+    [data-button-style="text"] .icon-btn {
+      min-width: 58px;
+      padding: .18rem .42rem;
+      font-size: .8rem;
     }
 
     .swatch, .dot {
@@ -568,9 +646,16 @@
 
     .hidden { display: none !important; }
 
+    @media (max-width: 1320px) {
+      [data-legend="open"][data-notes="open"] .main { grid-template-columns: 1fr; }
+      [data-legend="open"][data-notes="open"] .side-panel-wrap { grid-template-columns: 1fr 1fr; }
+    }
+
     @media (max-width: 980px) {
       .main { grid-template-columns: 1fr; }
-      .side-panel { order: -1; }
+      [data-legend="open"][data-notes="open"] .main { grid-template-columns: 1fr; }
+      .side-panel-wrap { grid-template-columns: 1fr; }
+      [data-legend="open"][data-notes="open"] .side-panel-wrap { grid-template-columns: 1fr 1fr; }
       .filters { grid-template-columns: 1fr 1fr; }
     }
 
@@ -583,9 +668,12 @@
       .toolbar { justify-content: flex-start; width: 100%; }
       .toolbar button { flex: 1 1 auto; }
       .map-head { align-items: flex-start; flex-direction: column; }
+      .map-head-actions { width: 100%; justify-content: flex-start; }
+      .map-head-actions button { flex: 1 1 auto; }
       svg { min-width: 560px; }
       .form-grid, .summary-grid, .filters { grid-template-columns: 1fr; }
       .theme-row { grid-template-columns: 1fr; }
+      [data-legend="open"][data-notes="open"] .side-panel-wrap { grid-template-columns: 1fr; }
       .legend-item { grid-template-columns: auto minmax(0, 1fr) auto; }
       .legend-actions { grid-column: 3; grid-row: 1 / span 2; }
       .count-pill { grid-column: 2; justify-self: start; }
@@ -601,9 +689,7 @@
         <button id="renameBtn" class="ghost" type="button">Rename</button>
       </div>
       <nav class="toolbar" aria-label="App actions">
-        <button id="markedStatesBtn" type="button">Notes</button>
-        <button id="exportBtn" type="button">Import/Export</button>
-        <button id="settingsBtn" type="button">Settings</button>
+        <button id="settingsBtn" type="button" data-shortcut="⇧⌃⌥,">Settings</button>
       </nav>
     </header>
 
@@ -612,7 +698,11 @@
         <div class="map-head">
           <div>
             <h2 id="mapHeading">State Map</h2>
-            <small id="tapHint">Tap a state to cycle its visit level.</small>
+            <small id="tapHint" data-hint>Tap a state to cycle its visit level.</small>
+          </div>
+          <div class="map-head-actions">
+            <button id="legendToggleBtn" class="toggle-btn" type="button" aria-pressed="true" data-shortcut="⇧⌃⌥L">Legend</button>
+            <button id="notesToggleBtn" class="toggle-btn" type="button" aria-pressed="false" data-shortcut="⇧⌃⌥N">Notes</button>
           </div>
         </div>
         <div class="map-wrap">
@@ -887,23 +977,39 @@
         </div>
       </section>
 
-      <aside class="panel side-panel" aria-label="Visit summary and editable legend">
-        <section class="summary-grid" aria-label="Map summary" aria-live="polite">
-          <div class="metric"><small>States marked</small><b id="visitedCount">0</b></div>
-          <div class="metric"><small>Remaining</small><b id="remainingCount">50</b></div>
-          <div class="metric"><small>Completion</small><b id="completionPercent">0%</b></div>
-        </section>
-        <section>
-          <div class="row" style="justify-content: space-between; margin-bottom: .65rem;">
-            <h2>Legend</h2>
-            <div class="actions">
-              <button id="smartColorsBtn" type="button">Auto Colors</button>
-              <button id="addLevelBtn" type="button">Add Level</button>
+      <aside id="sidePanel" class="side-panel-wrap" aria-label="Visit tools">
+        <section id="legendPanel" class="panel side-panel" aria-label="Visit summary and editable legend">
+          <section class="summary-grid" aria-label="Map summary" aria-live="polite">
+            <div class="metric compact-stat">
+              <div>
+                <small>Total</small>
+                <b id="visitedCount">0</b>
+              </div>
+              <span id="completionPercent" class="percent-pill">0%</span>
             </div>
+          </section>
+          <section>
+            <div class="row" style="justify-content: space-between; margin-bottom: .65rem;">
+              <h2>Legend</h2>
+              <div class="actions">
+                <button id="smartColorsBtn" type="button" data-shortcut="⇧⌃⌥C">Auto Colors</button>
+                <button id="addLevelBtn" type="button" data-shortcut="⇧⌃⌥A">Add Level</button>
+              </div>
+            </div>
+            <small data-hint>Top level wins the map color when a state has multiple levels. Removing levels will move affected states down to the next lowest level.</small>
+            <div id="legendList" class="legend-list"></div>
+            <div id="builtinLevels" class="chips" style="margin-top: .75rem;"></div>
+          </section>
+        </section>
+        <section id="notesPanel" class="panel side-panel" aria-label="Notes">
+          <div class="row" style="justify-content: space-between;">
+            <div>
+              <h2 id="notesPanelTitle">Notes</h2>
+              <small id="notesPanelSubtitle" data-hint>Marked states and visit notes.</small>
+            </div>
+            <button id="notesPanelBackBtn" type="button">All</button>
           </div>
-          <small>Top level is the highest and wins the map color when a state has multiple levels.</small>
-          <div id="legendList" class="legend-list"></div>
-          <div id="builtinLevels" class="chips" style="margin-top: .75rem;"></div>
+          <div id="notesPanelContent" class="note-list"></div>
         </section>
       </aside>
     </main>
@@ -920,7 +1026,7 @@
     <div class="drawer-body">
       <section id="markedStatesSection" class="hidden">
         <div class="row" style="justify-content: space-between; margin-bottom: .65rem;">
-          <h2>Marked States</h2>
+          <h2>Notes</h2>
         </div>
         <div id="markedStatesList" class="note-list"></div>
       </section>
@@ -966,7 +1072,7 @@
       <label>Add visit level
         <select id="selectLevel"></select>
       </label>
-      <small>Choosing a level adds it to this state. Choosing Unvisited clears all applied levels.</small>
+      <small data-hint>Choosing a level adds it to this state. Choosing Unvisited clears all applied levels.</small>
       <div class="form-grid">
         <label>Visit date
           <input id="selectDate" type="date">
@@ -1049,7 +1155,7 @@
       <button type="button" data-close="paletteDialog">Close</button>
     </header>
     <div class="dialog-body">
-      <p class="muted">Apply a full progressive theme across your current levels. Colors start at the highest legend level and continue downward.</p>
+      <p class="muted" data-hint>Apply a full progressive theme across your current levels. Colors start at the top legend level and continue downward.</p>
       <div id="paletteThemes" class="theme-swatches"></div>
     </div>
   </dialog>
@@ -1064,26 +1170,6 @@
       <div class="actions">
         <button id="confirmActionBtn" class="danger" type="button">Confirm</button>
         <button type="button" data-close="confirmDialog">Cancel</button>
-      </div>
-    </div>
-  </dialog>
-
-  <dialog id="dataDialog">
-    <header>
-      <h2>Import and Export</h2>
-      <button type="button" data-close="dataDialog">Close</button>
-    </header>
-    <div class="dialog-body">
-      <div class="import-box">
-        <h3>Move data between devices</h3>
-        <p class="muted">Data is saved in this browser only. Export a JSON backup to move or restore your map elsewhere.</p>
-        <div class="actions">
-          <button id="exportJsonBtn" class="primary" type="button">Export JSON</button>
-          <button id="exportMarkdownBtn" type="button">Export Notes Text</button>
-        </div>
-        <label>Import JSON backup
-          <input id="importFile" type="file" accept="application/json,.json">
-        </label>
       </div>
     </div>
   </dialog>
@@ -1114,6 +1200,21 @@
           </div>
         </section>
         <section>
+          <h3>Interface</h3>
+          <div class="segmented" aria-label="Button style">
+            <button id="symbolButtonsBtn" type="button" aria-pressed="true">Symbols</button>
+            <button id="textButtonsBtn" type="button" aria-pressed="false">Text</button>
+          </div>
+          <div class="segmented" aria-label="UI hints" style="margin-top: .55rem;">
+            <button id="hintsOnBtn" type="button" aria-pressed="true">UI Hints On</button>
+            <button id="hintsOffBtn" type="button" aria-pressed="false">UI Hints Off</button>
+          </div>
+          <div class="segmented" aria-label="Shift-Control Option Mode" style="margin-top: .55rem;">
+            <button id="powerModeOffBtn" type="button" aria-pressed="true">Power Hints Off</button>
+            <button id="powerModeOnBtn" type="button" aria-pressed="false">Shift-Control Option Mode</button>
+          </div>
+        </section>
+        <section>
           <h3>Map Interaction</h3>
           <div class="segmented" aria-label="Tap behavior">
             <button id="cycleModeBtn" type="button" aria-pressed="true">Tap to Cycle</button>
@@ -1121,9 +1222,23 @@
           </div>
         </section>
         <section>
-          <h3>Data</h3>
+          <h3>Import and Export</h3>
+          <div class="import-box">
+            <p class="muted" data-hint>Data is saved in this browser only. Export a JSON backup to move or restore your map elsewhere.</p>
+            <div class="actions">
+              <button id="exportJsonBtn" class="primary" type="button">Export JSON Backup</button>
+              <button id="exportMarkdownBtn" type="button">Complete Markdown</button>
+              <button id="exportRichTextBtn" type="button">Simple Rich Text</button>
+            </div>
+            <label>Import JSON backup
+              <input id="importFile" type="file" accept="application/json,.json">
+            </label>
+          </div>
+        </section>
+        <section>
+          <h3>Data Reset</h3>
           <div class="actions">
-            <button id="resetAppBtn" class="danger" type="button">Reset App Data</button>
+            <button id="resetAppBtn" class="danger" type="button" data-shortcut="⇧⌃⌥⌫">Reset App Data</button>
           </div>
         </section>
       </section>
@@ -1134,10 +1249,11 @@
           <ol>
             <li>Tap a state to mark it. In cycle mode, repeated taps rotate through your active levels and back to unvisited.</li>
             <li>Switch to select mode in Settings if you prefer adding a level and a quick dated note in one step.</li>
-            <li>Open a state drawer by selecting a state. Use it to toggle multiple applied levels and manage dated visit notes.</li>
+            <li>Select a state to open details. With Notes active, details appear beside the legend; otherwise they slide in from the side.</li>
             <li>Use the Legend to edit level names, definitions, and colors. Add optional built-in levels or your own custom levels.</li>
-            <li>Use Import/Export to back up data or move it to another device.</li>
+            <li>Use Import and Export in Settings to back up data or move it to another device.</li>
           </ol>
+          <p><b>Default levels:</b> Visited, Want to Visit, and Not Interested. Not Interested is the polished opt-out level and is excluded from total completion.</p>
         </section>
       </section>
 
@@ -1225,9 +1341,9 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "1.3.1";
+    const APP_VERSION = "1.4.0";
     const STORAGE_KEY = "usStateVisitMap.v1";
-    const WISHLIST_SEED_VERSION = "1.1.0";
+    const WISHLIST_SEED_VERSION = "1.4.0";
     const STATES = [
       ["AK","Alaska",0,5],["WA","Washington",1,0],["OR","Oregon",1,1],["CA","California",1,2],["ID","Idaho",2,1],
       ["NV","Nevada",2,2],["AZ","Arizona",2,3],["HI","Hawaii",1,6],["MT","Montana",3,0],["WY","Wyoming",3,2],
@@ -1242,12 +1358,17 @@
     ];
     const STATE_NAMES = Object.fromEntries(STATES.map(([abbr, name]) => [abbr, name]));
     const BUILT_INS = [
-      { id: "pass-through", name: "Pass Through", definition: "Drive, Layover, Possible Meal", color: "#f59e0b" },
-      { id: "day-visit", name: "Day Visit", definition: "Any activity for the day other than a meal", color: "#10b981" },
-      { id: "visited", name: "Visited", definition: "Stayed overnight", color: "#2563eb" }
+      { id: "visited", name: "Visited", definition: "Stayed overnight", color: "#16a34a", countsTowardStats: true },
+      { id: "day-visit", name: "Day Visit", definition: "Any activity for the day other than a meal", color: "#facc15", countsTowardStats: true },
+      { id: "pass-through", name: "Pass Through", definition: "Drive, Layover, Possible Meal", color: "#f97316", countsTowardStats: true },
+      { id: "want-to-visit", name: "Want to Visit", definition: "Interested or planning someday", color: "#7c3aed", countsTowardStats: true },
+      { id: "not-interested", name: "Not Interested", definition: "Opted out for this map; not counted in totals", color: "#6b7280", countsTowardStats: false }
     ];
+    const DEFAULT_LEVEL_IDS = ["visited", "want-to-visit", "not-interested"];
+    const OPTIONAL_LEVEL_IDS = ["pass-through", "day-visit"];
     const THEMES = {
       Classic: ["#16a34a", "#facc15", "#f97316", "#dc2626", "#7c3aed"],
+      Sunset: ["#15803d", "#f59e0b", "#fb7185", "#dc2626", "#6d28d9"],
       Pastel: ["#86efac", "#fde68a", "#fdba74", "#fca5a5", "#c4b5fd"],
       Earth: ["#166534", "#84cc16", "#a16207", "#b45309", "#6d28d9"],
       Ocean: ["#0d9488", "#38bdf8", "#2563eb", "#075985", "#581c87"],
@@ -1269,9 +1390,27 @@
         effort: "Medium",
         targetVersion: "1.2.0",
         category: "Sharing"
+      },
+      {
+        title: "Add US Territories to the Map",
+        description: "Include US territories with the default territory level set to Not Interested or the equivalent lowest opt-out level.",
+        priority: "Medium",
+        effort: "Large",
+        targetVersion: "1.5.0",
+        category: "Maps"
       }
     ];
     const CHANGELOG = [
+      {
+        version: "1.4.0",
+        date: "2026-05-10",
+        title: "Interface, notes, and export refinement",
+        notes: [
+          "Added button style, UI hints, and Shift-Control Option Mode settings.",
+          "Updated default levels to Visited, Want to Visit, and Not Interested, with Not Interested excluded from completion totals.",
+          "Moved Notes and Legend toggles into the map header and moved import/export into Settings."
+        ]
+      },
       {
         version: "1.3.1",
         date: "2026-05-10",
@@ -1297,7 +1436,7 @@
         title: "Legend ordering and palette polish",
         notes: [
           "State selection now opens the drawer in both tap modes.",
-          "Legend levels can be reordered, with the top level treated as the highest map color.",
+          "Legend levels can be reordered, with the top level determining the map color.",
           "Color selection is clearer and generated themes now follow progressive high-to-low palettes."
         ]
       },
@@ -1330,6 +1469,9 @@
     const clone = obj => JSON.parse(JSON.stringify(obj));
     let selectedState = null;
     let drawerMode = "state";
+    let legendPanelOpen = true;
+    let notesPanelOpen = false;
+    let notesPanelState = null;
     let pendingConfirm = null;
     let state = loadState();
 
@@ -1337,8 +1479,8 @@
       return {
         appVersion: APP_VERSION,
         mapName: "Your State Map",
-        settings: { theme: "light", tapBehavior: "cycle" },
-        levels: [clone(BUILT_INS[2])],
+        settings: { theme: "light", tapBehavior: "cycle", buttonStyle: "symbols", uiHints: true, powerMode: false },
+        levels: DEFAULT_LEVEL_IDS.map(id => clone(BUILT_INS.find(level => level.id === id))),
         states: {},
         notes: {},
         wishlist: seedWishlist(),
@@ -1369,12 +1511,19 @@
       next.settings = { ...base.settings, ...(input.settings || {}) };
       if (!["light", "dark"].includes(next.settings.theme)) next.settings.theme = "light";
       if (!["cycle", "select"].includes(next.settings.tapBehavior)) next.settings.tapBehavior = "cycle";
+      if (!["symbols", "text"].includes(next.settings.buttonStyle)) next.settings.buttonStyle = "symbols";
+      next.settings.uiHints = next.settings.uiHints !== false;
+      next.settings.powerMode = next.settings.powerMode === true;
       next.levels = Array.isArray(input.levels) && input.levels.length ? input.levels.slice(0, 5) : base.levels;
+      if (isLegacySingleVisited(input, next.levels)) next.levels = base.levels;
       next.levels = next.levels.map((level, index) => ({
         id: String(level.id || uid()),
         name: String(level.name || `Level ${index + 1}`).slice(0, 32),
         definition: String(level.definition || "Custom visit level").slice(0, 220),
-        color: /^#[0-9a-f]{6}$/i.test(level.color || "") ? level.color : THEMES.Classic[index] || "#2563eb"
+        color: /^#[0-9a-f]{6}$/i.test(level.color || "") ? level.color : THEMES.Classic[index] || "#2563eb",
+        countsTowardStats: typeof level.countsTowardStats === "boolean"
+          ? level.countsTowardStats
+          : (BUILT_INS.find(item => item.id === level.id)?.countsTowardStats ?? !isOptOutLevel(level))
       }));
       const validLevelIds = new Set(next.levels.map(l => l.id));
       next.states = {};
@@ -1412,6 +1561,27 @@
       next.seededWishlistVersion = WISHLIST_SEED_VERSION;
       next.mapName = String(next.mapName || base.mapName).slice(0, 80);
       return next;
+    }
+
+    function isLegacySingleVisited(input, levels) {
+      return versionBefore(input.appVersion || "0.0.0", "1.4.0")
+        && levels.length === 1
+        && String(levels[0]?.id || "") === "visited"
+        && String(levels[0]?.name || "") === "Visited";
+    }
+
+    function versionBefore(value, target) {
+      const a = String(value).split(".").map(part => Number.parseInt(part, 10) || 0);
+      const b = String(target).split(".").map(part => Number.parseInt(part, 10) || 0);
+      for (let i = 0; i < 3; i += 1) {
+        if ((a[i] || 0) !== (b[i] || 0)) return (a[i] || 0) < (b[i] || 0);
+      }
+      return false;
+    }
+
+    function isOptOutLevel(level) {
+      const text = `${level.id || ""} ${level.name || ""}`.toLowerCase();
+      return text.includes("not-interested") || text.includes("not interested") || text.includes("don't want") || text.includes("dont want");
     }
 
     function normalizeStateLevelIds(raw, validLevelIds) {
@@ -1481,6 +1651,28 @@
       URL.revokeObjectURL(url);
     }
 
+    function prefersSymbols() {
+      return state.settings.buttonStyle === "symbols";
+    }
+
+    function labelFor(symbol, text) {
+      return prefersSymbols() ? symbol : text;
+    }
+
+    function setButtonLabel(selector, symbol, text, aria = text) {
+      const button = typeof selector === "string" ? $(selector) : selector;
+      if (!button) return;
+      button.textContent = labelFor(symbol, text);
+      button.setAttribute("aria-label", aria);
+      const shortcut = button.dataset.shortcut;
+      button.title = state.settings.powerMode && shortcut ? `${text} ${shortcut}` : text;
+    }
+
+    function actionButtonHtml({ symbol, text, className = "icon-btn", attrs = "", aria = text, shortcut = "" }) {
+      const shortcutAttr = shortcut ? ` data-shortcut="${shortcut}"` : "";
+      return `<button class="${className}" type="button" title="${escapeHtml(text)}" aria-label="${escapeHtml(aria)}"${shortcutAttr} ${attrs}>${escapeHtml(labelFor(symbol, text))}</button>`;
+    }
+
     function showMessage(title, message) {
       requestConfirm({
         title,
@@ -1539,7 +1731,7 @@
     }
 
     function cycleState(abbr) {
-      const ids = state.levels.map(level => level.id).reverse();
+      const ids = state.levels.map(level => level.id);
       const current = dominantLevel(abbr)?.id || "";
       const index = ids.indexOf(current);
       if (!current) setStateLevelIds(abbr, [ids[0]]);
@@ -1548,16 +1740,37 @@
       save();
     }
 
+    function syncButtonLabels() {
+      setButtonLabel("#renameBtn", "✎", "Rename");
+      setButtonLabel("#settingsBtn", "⚙︎", "Settings");
+      setButtonLabel("#legendToggleBtn", "☷", "Legend");
+      setButtonLabel("#notesToggleBtn", "✐", "Notes");
+      setButtonLabel("#smartColorsBtn", "◐", "Auto Colors");
+      const atMax = state.levels.length >= 5;
+      setButtonLabel("#addLevelBtn", atMax ? "5/5" : "+", atMax ? "MAX LEVELS" : "Add Level");
+      setButtonLabel("#notesPanelBackBtn", "‹", "All Notes");
+      setButtonLabel("#deleteLevelBtn", "⌫", "Delete Level");
+      $("#legendToggleBtn").setAttribute("aria-pressed", String(legendPanelOpen));
+      $("#notesToggleBtn").setAttribute("aria-pressed", String(notesPanelOpen));
+    }
+
     function render() {
       document.documentElement.dataset.theme = state.settings.theme;
+      document.documentElement.dataset.hints = state.settings.uiHints ? "on" : "off";
+      document.documentElement.dataset.shortcuts = state.settings.powerMode ? "on" : "off";
+      document.documentElement.dataset.buttonStyle = state.settings.buttonStyle;
+      document.documentElement.dataset.legend = legendPanelOpen ? "open" : "closed";
+      document.documentElement.dataset.notes = notesPanelOpen ? "open" : "closed";
       $("#mapTitle").textContent = state.mapName;
       $("#tapHint").textContent = state.settings.tapBehavior === "cycle"
         ? "Tap a state to cycle its visit level."
         : "Tap a state to choose a level and add a note.";
+      syncButtonLabels();
       renderMap();
       renderStats();
       renderLegend();
       renderBuiltinLevels();
+      renderNotesPanel();
       renderSettingsControls();
       if (drawerMode === "state" && selectedState) renderDrawer();
       if (drawerMode === "list") renderMarkedStatesDrawer();
@@ -1584,11 +1797,18 @@
       return counts;
     }
 
+    function stateCountsTowardStats(abbr) {
+      return getStateLevelIds(abbr).some(id => levelById(id)?.countsTowardStats !== false);
+    }
+
+    function countedStateTotal() {
+      return STATES.filter(([abbr]) => stateCountsTowardStats(abbr)).length;
+    }
+
     function renderStats() {
-      const marked = Object.keys(state.states).length;
-      $("#visitedCount").textContent = marked;
-      $("#remainingCount").textContent = 50 - marked;
-      $("#completionPercent").textContent = `${Math.round((marked / 50) * 100)}%`;
+      const counted = countedStateTotal();
+      $("#visitedCount").textContent = counted;
+      $("#completionPercent").textContent = `${Math.round((counted / 50) * 100)}%`;
     }
 
     function renderLegend() {
@@ -1598,16 +1818,16 @@
           <span class="swatch" style="background:${level.color}"></span>
           <span class="level-copy">
             <span class="level-name">${escapeHtml(level.name)}</span><br>
-            <small>${index === 0 ? "Highest level. " : ""}${escapeHtml(level.definition)}</small>
+            <small>${escapeHtml(level.definition)}</small>
           </span>
           <span class="count-pill">${counts[level.id] || 0}</span>
           <span class="legend-actions">
             <span class="order-buttons" aria-label="Move ${escapeHtml(level.name)}">
-              <button class="icon-btn" type="button" title="Move up" aria-label="Move ${escapeHtml(level.name)} up" data-move-level="${level.id}" data-direction="-1" ${index === 0 ? "disabled" : ""}>🔼</button>
-              <button class="icon-btn" type="button" title="Move down" aria-label="Move ${escapeHtml(level.name)} down" data-move-level="${level.id}" data-direction="1" ${index === state.levels.length - 1 ? "disabled" : ""}>🔽</button>
+              ${actionButtonHtml({ symbol: "↑", text: "Up", aria: `Move ${level.name} up`, attrs: `data-move-level="${level.id}" data-direction="-1" ${index === 0 ? "disabled" : ""}` })}
+              ${actionButtonHtml({ symbol: "↓", text: "Down", aria: `Move ${level.name} down`, attrs: `data-move-level="${level.id}" data-direction="1" ${index === state.levels.length - 1 ? "disabled" : ""}` })}
             </span>
-            <button class="icon-btn" type="button" title="Edit level" aria-label="Edit ${escapeHtml(level.name)}" data-level-edit="${level.id}">✏️</button>
-            <button class="icon-btn danger" type="button" title="Delete level" aria-label="Delete ${escapeHtml(level.name)}" data-level-delete="${level.id}">🗑️</button>
+            ${actionButtonHtml({ symbol: "✎", text: "Edit", aria: `Edit ${level.name}`, attrs: `data-level-edit="${level.id}"` })}
+            ${actionButtonHtml({ symbol: "⌫", text: "Delete", className: "icon-btn danger", aria: `Delete ${level.name}`, attrs: `data-level-delete="${level.id}"` })}
           </span>
         </div>
       `).join("");
@@ -1616,7 +1836,7 @@
       $$("[data-level-delete]").forEach(button => button.addEventListener("click", () => deleteLevel(button.dataset.levelDelete)));
       const atMax = state.levels.length >= 5;
       $("#addLevelBtn").disabled = atMax;
-      $("#addLevelBtn").textContent = atMax ? "MAX LEVELS" : "Add Level";
+      setButtonLabel("#addLevelBtn", atMax ? "5/5" : "+", atMax ? "MAX LEVELS" : "Add Level");
     }
 
     function moveLevel(levelId, direction) {
@@ -1632,9 +1852,9 @@
     function renderBuiltinLevels() {
       const container = $("#builtinLevels");
       const active = new Set(state.levels.map(level => level.id));
-      const missing = BUILT_INS.filter(level => !active.has(level.id));
+      const missing = BUILT_INS.filter(level => OPTIONAL_LEVEL_IDS.includes(level.id) && !active.has(level.id));
       if (!missing.length || state.levels.length >= 5) {
-        container.innerHTML = state.levels.length >= 5 ? `<small>Maximum of 5 levels reached.</small>` : "";
+        container.innerHTML = state.levels.length >= 5 ? `<small data-hint>Maximum of 5 levels reached.</small>` : "";
         return;
       }
       container.innerHTML = missing.map(level => `<button class="chip" type="button" data-add-builtin="${level.id}">Add ${escapeHtml(level.name)}</button>`).join("");
@@ -1650,7 +1870,7 @@
     }
 
     function insertLevelSmart(level) {
-      const preferred = ["visited", "day-visit", "pass-through"];
+      const preferred = ["visited", "day-visit", "pass-through", "want-to-visit", "not-interested"];
       const rank = preferred.indexOf(level.id);
       if (rank === -1) {
         state.levels.unshift(level);
@@ -1672,6 +1892,11 @@
 
     function openStateDrawer(abbr) {
       selectedState = abbr;
+      if (notesPanelOpen) {
+        notesPanelState = abbr;
+        renderNotesPanel();
+        return;
+      }
       drawerMode = "state";
       renderDrawer();
       const drawer = $("#stateDrawer");
@@ -1708,8 +1933,8 @@
           </div>
           <div>${escapeHtml(note.text || "No summary")}</div>
           <div class="actions">
-            <button type="button" data-edit-note="${note.id}">Edit</button>
-            <button class="danger" type="button" data-delete-note="${note.id}">Delete</button>
+            ${actionButtonHtml({ symbol: "✎", text: "Edit", className: "", attrs: `data-edit-note="${note.id}"` })}
+            ${actionButtonHtml({ symbol: "⌫", text: "Delete", className: "danger", attrs: `data-delete-note="${note.id}"` })}
           </div>
         </article>
       `).join("") : `<div class="empty">No visit notes yet.</div>`;
@@ -1732,7 +1957,7 @@
     }
 
     function renderMarkedStatesDrawer() {
-      $("#drawerTitle").textContent = "Marked States";
+      $("#drawerTitle").textContent = "Notes";
       $("#drawerSubtitle").textContent = "Select a state to view details or add notes.";
       $("#markedStatesSection").classList.remove("hidden");
       $("#levelsSection").classList.add("hidden");
@@ -1749,6 +1974,113 @@
         `;
       }).join("") : `<div class="empty">No marked states yet.</div>`;
       $$("[data-open-marked]").forEach(button => button.addEventListener("click", () => openStateDrawer(button.dataset.openMarked)));
+    }
+
+    function toggleLegendPanel() {
+      legendPanelOpen = !legendPanelOpen;
+      render();
+    }
+
+    function toggleNotesPanel() {
+      notesPanelOpen = !notesPanelOpen;
+      if (notesPanelOpen) {
+        closeDrawer();
+        notesPanelState = selectedState;
+      }
+      render();
+    }
+
+    function renderNotesPanel() {
+      if (!$("#notesPanel")) return;
+      $("#notesPanelBackBtn").classList.toggle("hidden", !notesPanelState);
+      if (notesPanelState && STATE_NAMES[notesPanelState]) {
+        selectedState = notesPanelState;
+        const names = stateLevelNames(notesPanelState);
+        const activeIds = new Set(getStateLevelIds(notesPanelState));
+        const notes = (state.notes[notesPanelState] || []).slice().sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+        $("#notesPanelTitle").textContent = STATE_NAMES[notesPanelState];
+        $("#notesPanelSubtitle").removeAttribute("data-hint");
+        $("#notesPanelSubtitle").textContent = names.length ? names.join(", ") : "Unvisited";
+        $("#notesPanelContent").innerHTML = `
+          <section>
+            <div class="row" style="justify-content: space-between; margin-bottom: .65rem;">
+              <h3>Applied Levels</h3>
+              <button id="notesPanelClearBtn" class="danger" type="button" data-shortcut="⇧⌃⌥⌫">${escapeHtml(labelFor("⌫", "Clear"))}</button>
+            </div>
+            <div class="level-checks">
+              ${state.levels.map(level => `
+                <label class="check-row">
+                  <input class="notes-panel-level-check" type="checkbox" value="${level.id}" ${activeIds.has(level.id) ? "checked" : ""}>
+                  <span class="dot" style="background:${level.color}"></span>
+                  <span>${escapeHtml(level.name)}</span>
+                </label>
+              `).join("")}
+            </div>
+          </section>
+          <section>
+            <div class="row" style="justify-content: space-between; margin-bottom: .65rem;">
+              <h3>Visit Notes</h3>
+              <button id="notesPanelAddNoteBtn" type="button" data-shortcut="⇧⌃⌥+">${escapeHtml(labelFor("+", "Add Note"))}</button>
+            </div>
+            <div class="note-list">
+              ${notes.length ? notes.map(note => `
+                <article class="note-card">
+                  <div class="row" style="justify-content: space-between;">
+                    <time datetime="${escapeHtml(note.date)}">${escapeHtml(note.date || "No date")}</time>
+                    <span class="tag">${escapeHtml(levelById(note.levelId)?.name || "No level")}</span>
+                  </div>
+                  <div>${escapeHtml(note.text || "No summary")}</div>
+                  <div class="actions">
+                    ${actionButtonHtml({ symbol: "✎", text: "Edit", className: "", attrs: `data-edit-note="${note.id}"` })}
+                    ${actionButtonHtml({ symbol: "⌫", text: "Delete", className: "danger", attrs: `data-delete-note="${note.id}"` })}
+                  </div>
+                </article>
+              `).join("") : `<div class="empty">No visit notes yet.</div>`}
+            </div>
+          </section>
+        `;
+        $$(".notes-panel-level-check").forEach(input => {
+          input.addEventListener("change", () => toggleStateLevel(notesPanelState, input.value, input.checked));
+        });
+        $("#notesPanelClearBtn").addEventListener("click", () => {
+          selectedState = notesPanelState;
+          clearSelectedStateLevels();
+        });
+        $("#notesPanelAddNoteBtn").addEventListener("click", () => {
+          selectedState = notesPanelState;
+          openNoteDialog();
+        });
+        $$("[data-edit-note]", $("#notesPanelContent")).forEach(button => button.addEventListener("click", () => {
+          selectedState = notesPanelState;
+          openNoteDialog(button.dataset.editNote);
+        }));
+        $$("[data-delete-note]", $("#notesPanelContent")).forEach(button => button.addEventListener("click", () => {
+          selectedState = notesPanelState;
+          deleteNote(button.dataset.deleteNote);
+        }));
+        return;
+      }
+
+      $("#notesPanelTitle").textContent = "Notes";
+      $("#notesPanelSubtitle").setAttribute("data-hint", "");
+      $("#notesPanelSubtitle").textContent = "Marked states and visit notes.";
+      const marked = markedStateAbbrs();
+      $("#notesPanelContent").innerHTML = marked.length ? marked.map(abbr => {
+        const names = stateLevelNames(abbr);
+        const noteCount = (state.notes[abbr] || []).length;
+        return `
+          <button class="state-list-card" type="button" data-open-notes-state="${abbr}">
+            <span><b>${escapeHtml(STATE_NAMES[abbr])}</b><br><small>${names.length ? escapeHtml(names.join(", ")) : "Notes only"}</small></span>
+            <span class="tag">${noteCount} note${noteCount === 1 ? "" : "s"}</span>
+          </button>
+        `;
+      }).join("") : `<div class="empty">No marked states yet.</div>`;
+      $$("[data-open-notes-state]").forEach(button => button.addEventListener("click", () => {
+        selectedState = button.dataset.openNotesState;
+        notesPanelState = selectedState;
+        renderMap();
+        renderNotesPanel();
+      }));
     }
 
     function closeDrawer() {
@@ -1922,11 +2254,13 @@
 
     function saveLevelFromForm() {
       const id = $("#levelId").value;
+      const existing = id ? levelById(id) : null;
       const level = {
         id: id || uid(),
         name: $("#levelName").value.trim(),
         definition: $("#levelDefinition").value.trim(),
-        color: $("#levelColor").value
+        color: $("#levelColor").value,
+        countsTowardStats: existing ? existing.countsTowardStats !== false : !isOptOutLevel({ name: $("#levelName").value })
       };
       if (!level.name || !level.definition) return;
       if (id) {
@@ -1980,6 +2314,12 @@
       $("#versionLabel").textContent = APP_VERSION;
       $("#lightModeBtn").setAttribute("aria-pressed", state.settings.theme === "light");
       $("#darkModeBtn").setAttribute("aria-pressed", state.settings.theme === "dark");
+      $("#symbolButtonsBtn").setAttribute("aria-pressed", state.settings.buttonStyle === "symbols");
+      $("#textButtonsBtn").setAttribute("aria-pressed", state.settings.buttonStyle === "text");
+      $("#hintsOnBtn").setAttribute("aria-pressed", state.settings.uiHints);
+      $("#hintsOffBtn").setAttribute("aria-pressed", !state.settings.uiHints);
+      $("#powerModeOnBtn").setAttribute("aria-pressed", state.settings.powerMode);
+      $("#powerModeOffBtn").setAttribute("aria-pressed", !state.settings.powerMode);
       $("#cycleModeBtn").setAttribute("aria-pressed", state.settings.tapBehavior === "cycle");
       $("#selectModeBtn").setAttribute("aria-pressed", state.settings.tapBehavior === "select");
     }
@@ -2045,9 +2385,11 @@
 
     function exportMarkdown() {
       const counts = levelCounts();
-      const lines = [`# ${state.mapName}`, "", `Generated by US State Visit Map ${APP_VERSION}`, "", "## Summary by Level"];
+      const counted = countedStateTotal();
+      const lines = [`# ${state.mapName}`, "", `Generated by US State Visit Map ${APP_VERSION}`, "", "## Overall Stats"];
+      lines.push(`- Total counted states: ${counted} of 50`, `- Completion: ${Math.round((counted / 50) * 100)}%`, "", "## Summary by Level");
       state.levels.forEach(level => lines.push(`- ${level.name}: ${counts[level.id] || 0} states`));
-      lines.push(`- Unvisited: ${50 - Object.keys(state.states).length} states`, `- Completion: ${Math.round((Object.keys(state.states).length / 50) * 100)}%`, "", "## State-by-State");
+      lines.push(`- Unvisited: ${50 - Object.keys(state.states).length} states`, "", "## State-by-State");
       STATES.slice().sort((a, b) => a[1].localeCompare(b[1])).forEach(([abbr, name]) => {
         const names = stateLevelNames(abbr);
         const mapLevel = dominantLevel(abbr);
@@ -2059,11 +2401,65 @@
       });
       lines.push("## Custom Levels and Definitions");
       state.levels.forEach(level => lines.push(`- ${level.name}: ${level.definition} (${level.color})`));
-      downloadFile(`${slug(state.mapName)}-notes.md`, "text/markdown", lines.join("\n"));
+      downloadFile(`${slug(state.mapName)}-complete.md`, "text/markdown", lines.join("\n"));
+    }
+
+    function exportRichText() {
+      const counted = countedStateTotal();
+      const pct = Math.round((counted / 50) * 100);
+      const notesFor = abbr => (state.notes[abbr] || [])
+        .slice()
+        .sort((a, b) => (a.date || "").localeCompare(b.date || ""))
+        .map(note => `${note.date || "No date"} [${levelById(note.levelId)?.name || "No level"}]: ${note.text || "No summary"}`)
+        .join("; ") || "None";
+      const chronological = STATES.flatMap(([abbr, name]) => (state.notes[abbr] || []).map(note => ({ ...note, abbr, name })))
+        .sort((a, b) => (a.date || "").localeCompare(b.date || "") || a.name.localeCompare(b.name));
+      const lines = [
+        state.mapName,
+        "",
+        "Overall Stats",
+        `Total counted states: ${counted} of 50`,
+        `Completion: ${pct}%`,
+        "",
+        "Alphabetical",
+        "State | Level | Visit Notes"
+      ];
+      STATES.slice().sort((a, b) => a[1].localeCompare(b[1])).forEach(([abbr, name]) => {
+        lines.push(`${name} | ${stateLevelNames(abbr).join(", ") || "Unvisited"} | ${notesFor(abbr)}`);
+      });
+      lines.push("", "Chronological", "Date | State | Level | Notes");
+      if (chronological.length) chronological.forEach(note => {
+        lines.push(`${note.date || "No date"} | ${note.name} | ${levelById(note.levelId)?.name || "No level"} | ${note.text || "No summary"}`);
+      });
+      else lines.push("No dated notes yet.");
+      const body = lines.map(line => rtfEscape(line)).join("\\line ");
+      const rtf = `{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0 -apple-system;}}\\f0\\fs24 ${body}}`;
+      downloadFile(`${slug(state.mapName)}-simple.rtf`, "application/rtf", rtf);
+    }
+
+    function rtfEscape(value) {
+      return String(value).replace(/[\\{}]/g, "\\$&").replace(/\n/g, "\\line ");
     }
 
     function slug(value) {
       return String(value).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "state-map";
+    }
+
+    function handlePowerShortcut(event) {
+      if (!state.settings.powerMode || !event.shiftKey || !event.ctrlKey || !event.altKey) return;
+      if (/^(input|textarea|select)$/i.test(event.target.tagName)) return;
+      const key = event.key.toLowerCase();
+      const actions = {
+        l: toggleLegendPanel,
+        n: toggleNotesPanel,
+        ",": () => $("#settingsBtn").click(),
+        r: () => $("#renameBtn").click(),
+        c: () => $("#smartColorsBtn").click(),
+        a: () => $("#addLevelBtn").disabled || $("#addLevelBtn").click()
+      };
+      if (!actions[key]) return;
+      event.preventDefault();
+      actions[key]();
     }
 
     function bindEvents() {
@@ -2083,7 +2479,6 @@
         renderWishlist();
         $("#settingsDialog").showModal();
       });
-      $("#exportBtn").addEventListener("click", () => $("#dataDialog").showModal());
       $$("[data-close]").forEach(button => button.addEventListener("click", () => $(`#${button.dataset.close}`).close()));
       $("#confirmActionBtn").addEventListener("click", () => {
         const action = pendingConfirm;
@@ -2092,7 +2487,12 @@
         if (action) action();
       });
       $("#confirmDialog").addEventListener("close", () => pendingConfirm = null);
-      $("#markedStatesBtn").addEventListener("click", openMarkedStatesDrawer);
+      $("#legendToggleBtn").addEventListener("click", toggleLegendPanel);
+      $("#notesToggleBtn").addEventListener("click", toggleNotesPanel);
+      $("#notesPanelBackBtn").addEventListener("click", () => {
+        notesPanelState = null;
+        renderNotesPanel();
+      });
       $("#closeDrawerBtn").addEventListener("click", closeDrawer);
       $("#clearStateLevelsBtn").addEventListener("click", clearSelectedStateLevels);
       $("#addNoteBtn").addEventListener("click", () => openNoteDialog());
@@ -2134,6 +2534,12 @@
       $("#deleteLevelBtn").addEventListener("click", removeCurrentLevel);
       $("#lightModeBtn").addEventListener("click", () => updateSetting("theme", "light"));
       $("#darkModeBtn").addEventListener("click", () => updateSetting("theme", "dark"));
+      $("#symbolButtonsBtn").addEventListener("click", () => updateSetting("buttonStyle", "symbols"));
+      $("#textButtonsBtn").addEventListener("click", () => updateSetting("buttonStyle", "text"));
+      $("#hintsOnBtn").addEventListener("click", () => updateSetting("uiHints", true));
+      $("#hintsOffBtn").addEventListener("click", () => updateSetting("uiHints", false));
+      $("#powerModeOnBtn").addEventListener("click", () => updateSetting("powerMode", true));
+      $("#powerModeOffBtn").addEventListener("click", () => updateSetting("powerMode", false));
       $("#cycleModeBtn").addEventListener("click", () => updateSetting("tapBehavior", "cycle"));
       $("#selectModeBtn").addEventListener("click", () => updateSetting("tapBehavior", "select"));
       $("#resetAppBtn").addEventListener("click", () => {
@@ -2156,6 +2562,7 @@
         downloadFile(`${slug(state.mapName)}.json`, "application/json", JSON.stringify(state, null, 2));
       });
       $("#exportMarkdownBtn").addEventListener("click", exportMarkdown);
+      $("#exportRichTextBtn").addEventListener("click", exportRichText);
       $("#importFile").addEventListener("change", importJson);
       $("#wishlistForm").addEventListener("submit", event => {
         event.preventDefault();
@@ -2198,6 +2605,7 @@
           }
         });
       });
+      document.addEventListener("keydown", handlePowerShortcut);
     }
 
     function updateSetting(key, value) {
@@ -2230,7 +2638,7 @@
               save();
               closeDrawer();
               render();
-              $("#dataDialog").close();
+              if ($("#settingsDialog").open) $("#settingsDialog").close();
             }
           });
         } catch {
