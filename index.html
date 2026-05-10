@@ -65,6 +65,14 @@
     }
 
     button:hover { border-color: var(--accent); }
+    button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+      border-color: var(--line);
+      background: var(--surface-2);
+      color: var(--muted);
+    }
+
     button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
       outline: 0;
       box-shadow: var(--focus);
@@ -136,9 +144,9 @@
       margin: 0 auto;
       padding: clamp(.9rem, 2vw, 1.5rem);
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 320px;
+      grid-template-columns: minmax(0, 1fr) minmax(360px, 420px);
       gap: 1rem;
-      align-items: start;
+      align-items: stretch;
     }
 
     .panel {
@@ -156,6 +164,13 @@
       gap: 1rem;
       padding: .95rem 1rem;
       border-bottom: 1px solid var(--line);
+    }
+
+    .map-meta {
+      display: grid;
+      gap: .55rem;
+      justify-items: end;
+      min-width: min(520px, 58%);
     }
 
     .map-head h2, .side-panel h2, dialog h2, .doc h3 {
@@ -222,12 +237,19 @@
       display: grid;
       gap: 1rem;
       padding: 1rem;
+      align-self: stretch;
+      align-content: start;
     }
 
     .summary-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: .65rem;
+    }
+
+    .map-summary {
+      width: 100%;
+      min-width: min(520px, 100%);
     }
 
     .metric {
@@ -250,8 +272,8 @@
 
     .legend-item {
       display: grid;
-      grid-template-columns: auto minmax(0, 1fr) auto auto;
-      gap: .55rem;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: .75rem;
       align-items: center;
       width: 100%;
       text-align: left;
@@ -263,18 +285,16 @@
 
     .legend-actions, .order-buttons {
       display: flex;
-      gap: .35rem;
+      gap: .28rem;
       align-items: center;
     }
 
-    .order-buttons {
-      flex-direction: column;
-    }
-
-    .order-buttons button {
-      min-height: 28px;
-      min-width: 54px;
-      padding: .12rem .36rem;
+    .icon-btn {
+      min-height: 34px;
+      min-width: 34px;
+      padding: .24rem;
+      line-height: 1;
+      font-size: 1rem;
     }
 
     .swatch, .dot {
@@ -287,18 +307,9 @@
     }
 
     .dot { width: 14px; height: 14px; }
-    .level-name { font-weight: 750; overflow-wrap: anywhere; }
-    .count-pill {
-      border: 1px solid var(--line);
-      background: var(--surface-2);
-      border-radius: 999px;
-      min-width: 2.2rem;
-      text-align: center;
-      padding: .12rem .45rem;
-      font-size: .78rem;
-      color: var(--muted);
-    }
-
+    .level-name { font-weight: 750; overflow-wrap: normal; }
+    .level-copy { min-width: 0; line-height: 1.25; }
+    .level-copy small { display: block; line-height: 1.3; margin-top: .12rem; }
     .empty {
       border: 1px dashed var(--line);
       border-radius: var(--radius);
@@ -391,13 +402,20 @@
       align-content: start;
     }
 
-    .note-card, .wishlist-card {
+    .note-card, .wishlist-card, .state-list-card {
       border: 1px solid var(--line);
       border-radius: var(--radius);
       padding: .8rem;
       background: var(--surface);
       display: grid;
       gap: .5rem;
+    }
+
+    .state-list-card {
+      width: 100%;
+      text-align: left;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
     }
 
     .note-card time, .tag {
@@ -417,6 +435,19 @@
     }
 
     dialog::backdrop { background: rgba(10, 15, 25, .56); }
+    #selectDialog[open] {
+      position: fixed;
+      inset: auto;
+      margin: 0;
+      width: min(360px, calc(100vw - 1rem));
+      max-height: min(520px, calc(100vh - 1rem));
+      z-index: 60;
+    }
+
+    #selectDialog .dialog-body {
+      max-height: min(430px, calc(100vh - 6rem));
+    }
+
     .dialog-body {
       padding: 1rem;
       overflow: auto;
@@ -557,6 +588,7 @@
       .toolbar { justify-content: flex-start; width: 100%; }
       .toolbar button { flex: 1 1 auto; }
       .map-head { align-items: flex-start; flex-direction: column; }
+      .map-meta { justify-items: stretch; min-width: 100%; }
       svg { min-width: 560px; }
       .form-grid, .summary-grid, .filters { grid-template-columns: 1fr; }
       .theme-row { grid-template-columns: 1fr; }
@@ -575,6 +607,7 @@
         <button id="renameBtn" class="ghost" type="button">Rename</button>
       </div>
       <nav class="toolbar" aria-label="App actions">
+        <button id="markedStatesBtn" type="button">Marked States</button>
         <button id="exportBtn" type="button">Import/Export</button>
         <button id="settingsBtn" type="button">Settings</button>
       </nav>
@@ -587,7 +620,14 @@
             <h2 id="mapHeading">State Map</h2>
             <small id="tapHint">Tap a state to cycle its visit level.</small>
           </div>
-          <div class="statline" id="topStats" aria-live="polite"></div>
+          <div class="map-meta" aria-live="polite">
+            <section class="summary-grid map-summary" aria-label="Map summary">
+              <div class="metric"><small>States marked</small><b id="visitedCount">0</b></div>
+              <div class="metric"><small>Remaining</small><b id="remainingCount">50</b></div>
+              <div class="metric"><small>Completion</small><b id="completionPercent">0%</b></div>
+            </section>
+            <div class="statline" id="topStats"></div>
+          </div>
         </div>
         <div class="map-wrap">
           <svg id="stateMap" viewBox="0 0 959 593" role="img" aria-labelledby="svgTitle svgDesc">
@@ -862,11 +902,6 @@
       </section>
 
       <aside class="panel side-panel" aria-label="Visit summary and editable legend">
-        <section class="summary-grid" aria-label="Map summary">
-          <div class="metric"><small>States marked</small><b id="visitedCount">0</b></div>
-          <div class="metric"><small>Remaining</small><b id="remainingCount">50</b></div>
-          <div class="metric"><small>Completion</small><b id="completionPercent">0%</b></div>
-        </section>
         <section>
           <div class="row" style="justify-content: space-between; margin-bottom: .65rem;">
             <h2>Legend</h2>
@@ -892,14 +927,20 @@
       <button id="closeDrawerBtn" type="button">Close</button>
     </header>
     <div class="drawer-body">
-      <section>
+      <section id="markedStatesSection" class="hidden">
+        <div class="row" style="justify-content: space-between; margin-bottom: .65rem;">
+          <h2>Marked States</h2>
+        </div>
+        <div id="markedStatesList" class="note-list"></div>
+      </section>
+      <section id="levelsSection">
         <div class="row" style="justify-content: space-between; margin-bottom: .65rem;">
           <h2>Applied Levels</h2>
           <button id="clearStateLevelsBtn" class="danger" type="button">Clear</button>
         </div>
         <div id="drawerLevelChecks" class="level-checks"></div>
       </section>
-      <section>
+      <section id="notesSection">
         <div class="row" style="justify-content: space-between; margin-bottom: .65rem;">
           <h2>Visit Notes</h2>
           <button id="addNoteBtn" type="button">Add Note</button>
@@ -1005,7 +1046,7 @@
       </section>
       <div class="actions">
         <button class="primary" type="submit">Save Level</button>
-        <button id="deleteLevelBtn" class="danger" type="button">Remove Level</button>
+        <button id="deleteLevelBtn" class="danger icon-btn" type="button" title="Delete level" aria-label="Delete level">🗑️</button>
         <button type="button" data-close="levelDialog">Cancel</button>
       </div>
     </form>
@@ -1019,6 +1060,20 @@
     <div class="dialog-body">
       <p class="muted">Apply a full progressive theme across your current levels. Colors start at the highest legend level and continue downward.</p>
       <div id="paletteThemes" class="theme-swatches"></div>
+    </div>
+  </dialog>
+
+  <dialog id="confirmDialog">
+    <header>
+      <h2 id="confirmTitle">Confirm Action</h2>
+      <button type="button" data-close="confirmDialog">Close</button>
+    </header>
+    <div class="dialog-body">
+      <p id="confirmMessage" class="muted"></p>
+      <div class="actions">
+        <button id="confirmActionBtn" class="danger" type="button">Confirm</button>
+        <button type="button" data-close="confirmDialog">Cancel</button>
+      </div>
     </div>
   </dialog>
 
@@ -1179,7 +1234,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "1.2.0";
+    const APP_VERSION = "1.3.1";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const WISHLIST_SEED_VERSION = "1.1.0";
     const STATES = [
@@ -1227,6 +1282,25 @@
     ];
     const CHANGELOG = [
       {
+        version: "1.3.1",
+        date: "2026-05-10",
+        title: "Reliable removal actions",
+        notes: [
+          "Replaced browser-native prompts with in-app confirmations for clear, delete, reset, import overwrite, and wishlist removal actions.",
+          "Fixed destructive controls so they work reliably from the drawer, legend, settings, and documents screens."
+        ]
+      },
+      {
+        version: "1.3.0",
+        date: "2026-05-10",
+        title: "Drawer, legend, and map popup refinements",
+        notes: [
+          "Moved summary stats into the map header and made the legend panel match the map height.",
+          "Placed the tap-to-select popup over the map near the selected state.",
+          "Added a marked-states drawer list and compact emoji controls for legend editing."
+        ]
+      },
+      {
         version: "1.2.0",
         date: "2026-05-10",
         title: "Legend ordering and palette polish",
@@ -1264,6 +1338,8 @@
     const today = () => new Date().toISOString().slice(0, 10);
     const clone = obj => JSON.parse(JSON.stringify(obj));
     let selectedState = null;
+    let drawerMode = "state";
+    let pendingConfirm = null;
     let state = loadState();
 
     function defaultState() {
@@ -1414,6 +1490,33 @@
       URL.revokeObjectURL(url);
     }
 
+    function showMessage(title, message) {
+      requestConfirm({
+        title,
+        message,
+        actionLabel: "OK",
+        danger: false,
+        onConfirm: () => {}
+      });
+    }
+
+    function closeOpenDialogs(exceptId = "") {
+      $$("dialog").forEach(dialog => {
+        if (dialog.id !== exceptId && dialog.open) dialog.close();
+      });
+    }
+
+    function requestConfirm({ title, message, actionLabel = "Delete", danger = true, onConfirm }) {
+      pendingConfirm = onConfirm;
+      $("#confirmTitle").textContent = title;
+      $("#confirmMessage").textContent = message;
+      $("#confirmActionBtn").textContent = actionLabel;
+      $("#confirmActionBtn").classList.toggle("danger", danger);
+      closeOpenDialogs("confirmDialog");
+      if ($("#confirmDialog").open) $("#confirmDialog").close();
+      $("#confirmDialog").showModal();
+    }
+
     function initMap() {
       STATES.forEach(([abbr, name]) => {
         const path = $(`.map-states .${abbr.toLowerCase()}`);
@@ -1423,21 +1526,24 @@
         path.dataset.name = name;
         path.setAttribute("tabindex", "0");
         path.setAttribute("role", "button");
-        path.addEventListener("click", () => handleStateTap(abbr));
+        path.addEventListener("click", event => handleStateTap(abbr, event));
         path.addEventListener("keydown", event => {
           if (event.key === "Enter" || event.key === " ") {
             event.preventDefault();
-            handleStateTap(abbr);
+            handleStateTap(abbr, event);
           }
         });
       });
     }
 
-    function handleStateTap(abbr) {
+    function handleStateTap(abbr, event) {
       selectedState = abbr;
-      if (state.settings.tapBehavior === "cycle") cycleState(abbr);
+      if (state.settings.tapBehavior === "cycle") {
+        if ($("#selectDialog").open) $("#selectDialog").close();
+        cycleState(abbr);
+      }
       openStateDrawer(abbr);
-      if (state.settings.tapBehavior === "select") openSelectDialog(abbr);
+      if (state.settings.tapBehavior === "select") openSelectDialog(abbr, event);
       render();
     }
 
@@ -1462,7 +1568,8 @@
       renderLegend();
       renderBuiltinLevels();
       renderSettingsControls();
-      if (selectedState) renderDrawer();
+      if (drawerMode === "state" && selectedState) renderDrawer();
+      if (drawerMode === "list") renderMarkedStatesDrawer();
     }
 
     function renderMap() {
@@ -1498,27 +1605,29 @@
     }
 
     function renderLegend() {
-      const counts = levelCounts();
       $("#legendList").innerHTML = state.levels.map((level, index) => `
         <div class="legend-item">
           <span class="swatch" style="background:${level.color}"></span>
-          <span>
+          <span class="level-copy">
             <span class="level-name">${escapeHtml(level.name)}</span><br>
             <small>${index === 0 ? "Highest level. " : ""}${escapeHtml(level.definition)}</small>
           </span>
-          <span class="count-pill">${counts[level.id] || 0}</span>
           <span class="legend-actions">
             <span class="order-buttons" aria-label="Move ${escapeHtml(level.name)}">
-              <button type="button" title="Move up" data-move-level="${level.id}" data-direction="-1" ${index === 0 ? "disabled" : ""}>Up</button>
-              <button type="button" title="Move down" data-move-level="${level.id}" data-direction="1" ${index === state.levels.length - 1 ? "disabled" : ""}>Down</button>
+              <button class="icon-btn" type="button" title="Move up" aria-label="Move ${escapeHtml(level.name)} up" data-move-level="${level.id}" data-direction="-1" ${index === 0 ? "disabled" : ""}>🔼</button>
+              <button class="icon-btn" type="button" title="Move down" aria-label="Move ${escapeHtml(level.name)} down" data-move-level="${level.id}" data-direction="1" ${index === state.levels.length - 1 ? "disabled" : ""}>🔽</button>
             </span>
-            <button type="button" data-level-edit="${level.id}">Edit</button>
+            <button class="icon-btn" type="button" title="Edit level" aria-label="Edit ${escapeHtml(level.name)}" data-level-edit="${level.id}">✏️</button>
+            <button class="icon-btn danger" type="button" title="Delete level" aria-label="Delete ${escapeHtml(level.name)}" data-level-delete="${level.id}">🗑️</button>
           </span>
         </div>
       `).join("");
       $$("[data-level-edit]").forEach(button => button.addEventListener("click", () => openLevelDialog(button.dataset.levelEdit)));
       $$("[data-move-level]").forEach(button => button.addEventListener("click", () => moveLevel(button.dataset.moveLevel, Number(button.dataset.direction))));
-      $("#addLevelBtn").disabled = state.levels.length >= 5;
+      $$("[data-level-delete]").forEach(button => button.addEventListener("click", () => deleteLevel(button.dataset.levelDelete)));
+      const atMax = state.levels.length >= 5;
+      $("#addLevelBtn").disabled = atMax;
+      $("#addLevelBtn").textContent = atMax ? "MAX LEVELS" : "Add Level";
     }
 
     function moveLevel(levelId, direction) {
@@ -1574,14 +1683,19 @@
 
     function openStateDrawer(abbr) {
       selectedState = abbr;
+      drawerMode = "state";
       renderDrawer();
       const drawer = $("#stateDrawer");
+      drawer.dataset.abbr = abbr;
       drawer.classList.add("open");
       drawer.setAttribute("aria-hidden", "false");
     }
 
     function renderDrawer() {
       if (!selectedState) return;
+      $("#markedStatesSection").classList.add("hidden");
+      $("#levelsSection").classList.remove("hidden");
+      $("#notesSection").classList.remove("hidden");
       const names = stateLevelNames(selectedState);
       $("#drawerTitle").textContent = STATE_NAMES[selectedState];
       $("#drawerSubtitle").textContent = names.length ? names.join(", ") : "Unvisited";
@@ -1614,12 +1728,46 @@
       $$("[data-delete-note]").forEach(button => button.addEventListener("click", () => deleteNote(button.dataset.deleteNote)));
     }
 
+    function openMarkedStatesDrawer() {
+      if ($("#selectDialog").open) $("#selectDialog").close();
+      drawerMode = "list";
+      renderMarkedStatesDrawer();
+      const drawer = $("#stateDrawer");
+      drawer.classList.add("open");
+      drawer.setAttribute("aria-hidden", "false");
+    }
+
+    function markedStateAbbrs() {
+      const marked = new Set([...Object.keys(state.states), ...Object.keys(state.notes).filter(abbr => (state.notes[abbr] || []).length)]);
+      return STATES.map(([abbr]) => abbr).filter(abbr => marked.has(abbr));
+    }
+
+    function renderMarkedStatesDrawer() {
+      $("#drawerTitle").textContent = "Marked States";
+      $("#drawerSubtitle").textContent = "Select a state to view details or add notes.";
+      $("#markedStatesSection").classList.remove("hidden");
+      $("#levelsSection").classList.add("hidden");
+      $("#notesSection").classList.add("hidden");
+      const marked = markedStateAbbrs();
+      $("#markedStatesList").innerHTML = marked.length ? marked.map(abbr => {
+        const names = stateLevelNames(abbr);
+        const noteCount = (state.notes[abbr] || []).length;
+        return `
+          <button class="state-list-card" type="button" data-open-marked="${abbr}">
+            <span><b>${escapeHtml(STATE_NAMES[abbr])}</b><br><small>${names.length ? escapeHtml(names.join(", ")) : "Notes only"}</small></span>
+            <span class="tag">${noteCount} note${noteCount === 1 ? "" : "s"}</span>
+          </button>
+        `;
+      }).join("") : `<div class="empty">No marked states yet.</div>`;
+      $$("[data-open-marked]").forEach(button => button.addEventListener("click", () => openStateDrawer(button.dataset.openMarked)));
+    }
+
     function closeDrawer() {
       $("#stateDrawer").classList.remove("open");
       $("#stateDrawer").setAttribute("aria-hidden", "true");
     }
 
-    function openSelectDialog(abbr) {
+    function openSelectDialog(abbr, event) {
       selectedState = abbr;
       $("#selectTitle").textContent = `Update ${STATE_NAMES[abbr]}`;
       const activeIds = new Set(getStateLevelIds(abbr));
@@ -1630,6 +1778,30 @@
       $("#selectSummary").value = "";
       if ($("#selectDialog").open) $("#selectDialog").close();
       $("#selectDialog").show();
+      positionSelectDialog(abbr, event);
+    }
+
+    function positionSelectDialog(abbr, event) {
+      const dialog = $("#selectDialog");
+      const mapRect = $(".map-panel").getBoundingClientRect();
+      const target = event?.clientX !== undefined
+        ? { x: event.clientX, y: event.clientY }
+        : (() => {
+            const path = $(`.map-states .${abbr.toLowerCase()}`);
+            const rect = path?.getBoundingClientRect() || mapRect;
+            return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+          })();
+      const rect = dialog.getBoundingClientRect();
+      const width = rect.width || 360;
+      const height = rect.height || 300;
+      const minX = Math.max(8, mapRect.left + 8);
+      const maxX = Math.min(window.innerWidth - width - 8, mapRect.right - width - 8);
+      const minY = Math.max(8, mapRect.top + 8);
+      const maxY = Math.min(window.innerHeight - height - 8, mapRect.bottom - height - 8);
+      const left = Math.min(Math.max(target.x + 12, minX), Math.max(minX, maxX));
+      const top = Math.min(Math.max(target.y + 12, minY), Math.max(minY, maxY));
+      dialog.style.left = `${left}px`;
+      dialog.style.top = `${top}px`;
     }
 
     function openNoteDialog(noteId = "") {
@@ -1661,10 +1833,37 @@
     }
 
     function deleteNote(noteId) {
-      if (!selectedState || !confirm("Delete this note?")) return;
-      state.notes[selectedState] = (state.notes[selectedState] || []).filter(note => note.id !== noteId);
-      save();
-      renderDrawer();
+      if (!selectedState) return;
+      requestConfirm({
+        title: "Delete Note?",
+        message: "This note will be permanently removed from the selected state.",
+        actionLabel: "Delete Note",
+        onConfirm: () => {
+          state.notes[selectedState] = (state.notes[selectedState] || []).filter(note => note.id !== noteId);
+          save();
+          renderDrawer();
+          render();
+        }
+      });
+    }
+
+    function clearSelectedStateLevels() {
+      const abbr = selectedState || $("#stateDrawer").dataset.abbr;
+      if (!abbr || !STATE_NAMES[abbr]) return;
+      requestConfirm({
+        title: `Clear ${STATE_NAMES[abbr]}?`,
+        message: "All applied visit levels for this state will be removed. Existing notes will stay, but their level label will be cleared.",
+        actionLabel: "Clear State",
+        onConfirm: () => {
+          setStateLevelIds(abbr, []);
+          (state.notes[abbr] || []).forEach(note => note.levelId = "");
+          selectedState = abbr;
+          drawerMode = "state";
+          save();
+          render();
+          renderDrawer();
+        }
+      });
     }
 
     function openLevelDialog(levelId = "") {
@@ -1745,7 +1944,7 @@
         const index = state.levels.findIndex(item => item.id === id);
         if (index >= 0) state.levels[index] = level;
       } else {
-        if (state.levels.length >= 5) return alert("You can use up to 5 levels.");
+        if (state.levels.length >= 5) return showMessage("Maximum Levels", "You can use up to 5 levels.");
         insertLevelSmart(level);
       }
       save();
@@ -1753,22 +1952,39 @@
     }
 
     function removeCurrentLevel() {
-      const id = $("#levelId").value;
-      const level = levelById(id);
-      if (!level || state.levels.length <= 1) return alert("Keep at least one active level.");
-      if (!confirm(`Remove "${level.name}"? It will be removed from states and notes using it.`)) return;
-      state.levels = state.levels.filter(item => item.id !== id);
-      Object.keys(state.states).forEach(abbr => {
-        setStateLevelIds(abbr, getStateLevelIds(abbr).filter(levelId => levelId !== id));
+      deleteLevel($("#levelId").value, true);
+    }
+
+    function deleteLevel(id, closeDialog = false) {
+      const index = state.levels.findIndex(item => item.id === id);
+      const level = state.levels[index];
+      if (!level || state.levels.length <= 1) return showMessage("Keep One Level", "Keep at least one active level.");
+      const nextDown = state.levels[index + 1]?.id || "";
+      const message = nextDown
+        ? `Delete "${level.name}"? States and notes using it will move to "${levelById(nextDown).name}".`
+        : `Delete "${level.name}"? States using it will become unvisited if they have no other level.`;
+      requestConfirm({
+        title: `Delete ${level.name}?`,
+        message,
+        actionLabel: "Delete Level",
+        onConfirm: () => {
+          Object.keys(state.states).forEach(abbr => {
+            const ids = getStateLevelIds(abbr);
+            if (!ids.includes(id)) return;
+            const replacement = ids.map(levelId => levelId === id ? nextDown : levelId).filter(Boolean);
+            setStateLevelIds(abbr, replacement);
+          });
+          Object.values(state.notes).forEach(notes => {
+            notes.forEach(note => {
+              if (note.levelId === id) note.levelId = nextDown;
+            });
+          });
+          state.levels.splice(index, 1);
+          save();
+          if (closeDialog && $("#levelDialog").open) $("#levelDialog").close();
+          render();
+        }
       });
-      Object.values(state.notes).forEach(notes => {
-        notes.forEach(note => {
-          if (note.levelId === id) note.levelId = "";
-        });
-      });
-      save();
-      $("#levelDialog").close();
-      render();
     }
 
     function renderSettingsControls() {
@@ -1825,10 +2041,16 @@
         </article>
       `).join("") : `<div class="empty">No wishlist ideas match the current filters.</div>`;
       $$("[data-delete-wish]").forEach(button => button.addEventListener("click", () => {
-        if (!confirm("Delete this wishlist idea?")) return;
-        state.wishlist = state.wishlist.filter(wish => wish.id !== button.dataset.deleteWish);
-        save();
-        renderWishlist();
+        requestConfirm({
+          title: "Delete Wishlist Idea?",
+          message: "This wishlist idea will be permanently removed.",
+          actionLabel: "Delete Idea",
+          onConfirm: () => {
+            state.wishlist = state.wishlist.filter(wish => wish.id !== button.dataset.deleteWish);
+            save();
+            renderWishlist();
+          }
+        });
       }));
     }
 
@@ -1874,13 +2096,16 @@
       });
       $("#exportBtn").addEventListener("click", () => $("#dataDialog").showModal());
       $$("[data-close]").forEach(button => button.addEventListener("click", () => $(`#${button.dataset.close}`).close()));
-      $("#closeDrawerBtn").addEventListener("click", closeDrawer);
-      $("#clearStateLevelsBtn").addEventListener("click", () => {
-        if (!selectedState || !confirm(`Clear all levels for ${STATE_NAMES[selectedState]}?`)) return;
-        setStateLevelIds(selectedState, []);
-        save();
-        render();
+      $("#confirmActionBtn").addEventListener("click", () => {
+        const action = pendingConfirm;
+        pendingConfirm = null;
+        $("#confirmDialog").close();
+        if (action) action();
       });
+      $("#confirmDialog").addEventListener("close", () => pendingConfirm = null);
+      $("#markedStatesBtn").addEventListener("click", openMarkedStatesDrawer);
+      $("#closeDrawerBtn").addEventListener("click", closeDrawer);
+      $("#clearStateLevelsBtn").addEventListener("click", clearSelectedStateLevels);
       $("#addNoteBtn").addEventListener("click", () => openNoteDialog());
       $("#noteForm").addEventListener("submit", event => {
         event.preventDefault();
@@ -1923,13 +2148,19 @@
       $("#cycleModeBtn").addEventListener("click", () => updateSetting("tapBehavior", "cycle"));
       $("#selectModeBtn").addEventListener("click", () => updateSetting("tapBehavior", "select"));
       $("#resetAppBtn").addEventListener("click", () => {
-        if (!confirm("Reset all map data, notes, levels, and wishlist ideas?")) return;
-        state = defaultState();
-        selectedState = null;
-        save();
-        closeDrawer();
-        render();
-        renderWishlist();
+        requestConfirm({
+          title: "Reset App Data?",
+          message: "This will reset all map data, notes, custom levels, and wishlist ideas in this browser.",
+          actionLabel: "Reset Data",
+          onConfirm: () => {
+            state = defaultState();
+            selectedState = null;
+            save();
+            closeDrawer();
+            render();
+            renderWishlist();
+          }
+        });
       });
       $$(".tabs [role='tab']").forEach(tab => tab.addEventListener("click", () => switchTab(tab.dataset.tab)));
       $("#exportJsonBtn").addEventListener("click", () => {
@@ -1967,10 +2198,16 @@
         renderWishlist();
       });
       $("#clearWishlistBtn").addEventListener("click", () => {
-        if (!confirm("Clear all wishlist ideas?")) return;
-        state.wishlist = [];
-        save();
-        renderWishlist();
+        requestConfirm({
+          title: "Clear Wishlist?",
+          message: "All wishlist ideas will be permanently removed.",
+          actionLabel: "Clear Wishlist",
+          onConfirm: () => {
+            state.wishlist = [];
+            save();
+            renderWishlist();
+          }
+        });
       });
     }
 
@@ -1994,15 +2231,21 @@
       reader.onload = () => {
         try {
           const imported = normalizeState(JSON.parse(reader.result));
-          if (!confirm("Import this backup and replace current app data?")) return;
-          state = imported;
-          selectedState = null;
-          save();
-          closeDrawer();
-          render();
-          $("#dataDialog").close();
+          requestConfirm({
+            title: "Import Backup?",
+            message: "This will replace the current app data in this browser with the selected backup.",
+            actionLabel: "Import Backup",
+            onConfirm: () => {
+              state = imported;
+              selectedState = null;
+              save();
+              closeDrawer();
+              render();
+              $("#dataDialog").close();
+            }
+          });
         } catch {
-          alert("That file does not look like a valid US State Visit Map JSON backup.");
+          showMessage("Import Failed", "That file does not look like a valid US State Visit Map JSON backup.");
         } finally {
           event.target.value = "";
         }
