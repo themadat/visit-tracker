@@ -1,0 +1,1442 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>US State Visit Map</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7f9;
+      --surface: #ffffff;
+      --surface-2: #eef1f5;
+      --text: #17202a;
+      --muted: #657080;
+      --line: #d9dee7;
+      --accent: #1d6fd6;
+      --accent-2: #0f4f9f;
+      --danger: #b42318;
+      --success: #157347;
+      --state-empty: #d7dce3;
+      --shadow: 0 18px 50px rgba(16, 24, 40, .14);
+      --radius: 8px;
+      --focus: 0 0 0 3px rgba(29, 111, 214, .28);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    [data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #101318;
+      --surface: #181d24;
+      --surface-2: #242b35;
+      --text: #edf1f7;
+      --muted: #a5afbd;
+      --line: #343d4a;
+      --accent: #6aa8ff;
+      --accent-2: #9cc5ff;
+      --danger: #ff8a7a;
+      --success: #72d69a;
+      --state-empty: #3b4553;
+      --shadow: 0 22px 60px rgba(0, 0, 0, .38);
+      --focus: 0 0 0 3px rgba(106, 168, 255, .32);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    button, input, select, textarea {
+      font: inherit;
+      color: inherit;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      min-height: 40px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      padding: .58rem .78rem;
+    }
+
+    button:hover { border-color: var(--accent); }
+    button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
+      outline: 0;
+      box-shadow: var(--focus);
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: .62rem .7rem;
+    }
+
+    textarea { min-height: 92px; resize: vertical; }
+    label { display: grid; gap: .34rem; font-weight: 650; font-size: .88rem; }
+    small, .muted { color: var(--muted); }
+    .app { min-height: 100vh; display: grid; grid-template-rows: auto 1fr; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: .85rem clamp(.9rem, 2vw, 1.5rem);
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(14px);
+    }
+
+    .title-wrap {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: .65rem;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.2rem, 2.2vw, 1.8rem);
+      line-height: 1.1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .primary {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    [data-theme="dark"] .primary { color: #07111f; }
+    .danger { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 42%, var(--line)); }
+    .ghost { background: transparent; }
+
+    .main {
+      width: min(1480px, 100%);
+      margin: 0 auto;
+      padding: clamp(.9rem, 2vw, 1.5rem);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 1px 2px rgba(16, 24, 40, .04);
+    }
+
+    .map-panel { overflow: hidden; }
+    .map-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: .95rem 1rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .map-head h2, .side-panel h2, dialog h2, .doc h3 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .statline {
+      display: flex;
+      gap: .45rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      color: var(--muted);
+      font-size: .88rem;
+    }
+
+    .map-wrap {
+      padding: clamp(.7rem, 2vw, 1.2rem);
+      overflow-x: auto;
+    }
+
+    svg {
+      display: block;
+      width: 100%;
+      min-width: 680px;
+      height: auto;
+    }
+
+    .state-tile rect {
+      fill: var(--state-fill, var(--state-empty));
+      stroke: var(--surface);
+      stroke-width: 3;
+      transition: transform .16s ease, filter .16s ease, fill .16s ease;
+    }
+
+    .state-tile text {
+      pointer-events: none;
+      fill: #111827;
+      font-size: 14px;
+      font-weight: 800;
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+
+    [data-theme="dark"] .state-tile text { fill: #f8fafc; }
+    .state-tile { cursor: pointer; }
+    .state-tile:hover rect, .state-tile:focus-visible rect {
+      filter: brightness(1.06) saturate(1.06);
+      transform: translateY(-1px);
+    }
+
+    .state-tile.is-selected rect {
+      stroke: var(--text);
+      stroke-width: 4;
+    }
+
+    .side-panel {
+      display: grid;
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .65rem;
+    }
+
+    .metric {
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: .75rem;
+    }
+
+    .metric b {
+      display: block;
+      font-size: 1.35rem;
+      line-height: 1.05;
+    }
+
+    .legend-list, .note-list, .wishlist-list {
+      display: grid;
+      gap: .55rem;
+    }
+
+    .legend-item {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: .55rem;
+      align-items: center;
+      width: 100%;
+      text-align: left;
+      padding: .65rem;
+    }
+
+    .swatch, .dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,.18);
+      display: inline-block;
+      flex: 0 0 auto;
+    }
+
+    .dot { width: 14px; height: 14px; }
+    .level-name { font-weight: 750; overflow-wrap: anywhere; }
+    .count-pill {
+      border: 1px solid var(--line);
+      background: var(--surface-2);
+      border-radius: 999px;
+      min-width: 2.2rem;
+      text-align: center;
+      padding: .12rem .45rem;
+      font-size: .78rem;
+      color: var(--muted);
+    }
+
+    .empty {
+      border: 1px dashed var(--line);
+      border-radius: var(--radius);
+      padding: .9rem;
+      color: var(--muted);
+      background: color-mix(in srgb, var(--surface-2) 55%, transparent);
+    }
+
+    .chips, .segmented, .row, .actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+
+    .segmented {
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      padding: .22rem;
+      border-radius: var(--radius);
+    }
+
+    .segmented button {
+      border: 0;
+      background: transparent;
+      min-height: 34px;
+    }
+
+    .segmented button[aria-pressed="true"] {
+      background: var(--surface);
+      color: var(--accent-2);
+      box-shadow: 0 1px 2px rgba(16, 24, 40, .12);
+    }
+
+    .chip {
+      min-height: 34px;
+      border-radius: 999px;
+      padding: .35rem .7rem;
+      font-size: .86rem;
+    }
+
+    .drawer {
+      position: fixed;
+      inset: 0 0 0 auto;
+      width: min(420px, 100vw);
+      z-index: 40;
+      background: var(--surface);
+      border-left: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      transform: translateX(104%);
+      transition: transform .22s ease;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .drawer.open { transform: translateX(0); }
+    .drawer header, dialog header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .drawer-body {
+      padding: 1rem;
+      overflow: auto;
+      display: grid;
+      gap: 1rem;
+      align-content: start;
+    }
+
+    .note-card, .wishlist-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: .8rem;
+      background: var(--surface);
+      display: grid;
+      gap: .5rem;
+    }
+
+    .note-card time, .tag {
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    dialog {
+      width: min(720px, calc(100vw - 1.6rem));
+      max-height: min(860px, calc(100vh - 1.6rem));
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: var(--shadow);
+    }
+
+    dialog::backdrop { background: rgba(10, 15, 25, .56); }
+    .dialog-body {
+      padding: 1rem;
+      overflow: auto;
+      max-height: calc(100vh - 7rem);
+      display: grid;
+      gap: 1rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .75rem;
+    }
+
+    .form-grid .span { grid-column: 1 / -1; }
+    .swatch-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(36px, 1fr));
+      gap: .45rem;
+    }
+
+    .swatch-btn {
+      min-height: 38px;
+      padding: 0;
+      border-radius: var(--radius);
+      background: var(--swatch-color);
+      border-color: rgba(0,0,0,.18);
+    }
+
+    .theme-swatches {
+      display: grid;
+      gap: .6rem;
+    }
+
+    .theme-row {
+      display: grid;
+      grid-template-columns: 110px minmax(0, 1fr);
+      align-items: center;
+      gap: .65rem;
+    }
+
+    .tabs {
+      display: flex;
+      gap: .35rem;
+      overflow-x: auto;
+      padding-bottom: .25rem;
+    }
+
+    .tabs button[aria-selected="true"] {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    [data-theme="dark"] .tabs button[aria-selected="true"] { color: #07111f; }
+    .doc {
+      display: none;
+      gap: 1rem;
+    }
+
+    .doc.active { display: grid; }
+    .doc section {
+      border-top: 1px solid var(--line);
+      padding-top: 1rem;
+    }
+
+    .doc ul, .doc ol {
+      margin-top: .45rem;
+      padding-left: 1.35rem;
+    }
+
+    .import-box {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: .9rem;
+      display: grid;
+      gap: .75rem;
+      background: var(--surface-2);
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: 1fr repeat(3, minmax(120px, .5fr));
+      gap: .55rem;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 980px) {
+      .main { grid-template-columns: 1fr; }
+      .side-panel { order: -1; }
+      .filters { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 620px) {
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .toolbar { justify-content: flex-start; width: 100%; }
+      .toolbar button { flex: 1 1 auto; }
+      .map-head { align-items: flex-start; flex-direction: column; }
+      svg { min-width: 560px; }
+      .form-grid, .summary-grid, .filters { grid-template-columns: 1fr; }
+      .theme-row { grid-template-columns: 1fr; }
+      .drawer { width: 100vw; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="title-wrap">
+        <h1 id="mapTitle">Your State Map</h1>
+        <button id="renameBtn" class="ghost" type="button">Rename</button>
+      </div>
+      <nav class="toolbar" aria-label="App actions">
+        <button id="exportBtn" type="button">Import/Export</button>
+        <button id="settingsBtn" type="button">Settings</button>
+      </nav>
+    </header>
+
+    <main class="main">
+      <section class="panel map-panel" aria-labelledby="mapHeading">
+        <div class="map-head">
+          <div>
+            <h2 id="mapHeading">State Map</h2>
+            <small id="tapHint">Tap a state to cycle its visit level.</small>
+          </div>
+          <div class="statline" id="topStats" aria-live="polite"></div>
+        </div>
+        <div class="map-wrap">
+          <svg id="stateMap" viewBox="0 0 788 420" role="img" aria-labelledby="svgTitle svgDesc">
+            <title id="svgTitle">Clickable US state visit map</title>
+            <desc id="svgDesc">Compact tile map of all 50 United States, including Alaska and Hawaii.</desc>
+          </svg>
+        </div>
+      </section>
+
+      <aside class="panel side-panel" aria-label="Visit summary and editable legend">
+        <section class="summary-grid" aria-label="Map summary">
+          <div class="metric"><small>States marked</small><b id="visitedCount">0</b></div>
+          <div class="metric"><small>Remaining</small><b id="remainingCount">50</b></div>
+        </section>
+        <section>
+          <div class="row" style="justify-content: space-between; margin-bottom: .65rem;">
+            <h2>Legend</h2>
+            <button id="addLevelBtn" type="button">Add Level</button>
+          </div>
+          <div id="legendList" class="legend-list"></div>
+          <div id="builtinLevels" class="chips" style="margin-top: .75rem;"></div>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <aside id="stateDrawer" class="drawer" aria-labelledby="drawerTitle" aria-hidden="true">
+    <header>
+      <div>
+        <h2 id="drawerTitle">State</h2>
+        <small id="drawerSubtitle">Unvisited</small>
+      </div>
+      <button id="closeDrawerBtn" type="button">Close</button>
+    </header>
+    <div class="drawer-body">
+      <label>Current visitation level
+        <select id="drawerLevelSelect"></select>
+      </label>
+      <section>
+        <div class="row" style="justify-content: space-between; margin-bottom: .65rem;">
+          <h2>Visit Notes</h2>
+          <button id="addNoteBtn" type="button">Add Note</button>
+        </div>
+        <div id="notesList" class="note-list"></div>
+      </section>
+    </div>
+  </aside>
+
+  <dialog id="renameDialog">
+    <header>
+      <h2>Rename Map</h2>
+      <button class="dialog-close" type="button" data-close="renameDialog">Close</button>
+    </header>
+    <form id="renameForm" class="dialog-body" method="dialog">
+      <label>Map name
+        <input id="mapNameInput" maxlength="80" required>
+      </label>
+      <div class="actions">
+        <button class="primary" type="submit">Save Name</button>
+        <button type="button" data-close="renameDialog">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="selectDialog">
+    <header>
+      <h2 id="selectTitle">Update State</h2>
+      <button type="button" data-close="selectDialog">Close</button>
+    </header>
+    <form id="selectForm" class="dialog-body" method="dialog">
+      <label>Visitation level
+        <select id="selectLevel"></select>
+      </label>
+      <div class="form-grid">
+        <label>Visit date
+          <input id="selectDate" type="date">
+        </label>
+        <label>Summary
+          <input id="selectSummary" maxlength="140" placeholder="Optional short note">
+        </label>
+      </div>
+      <div class="actions">
+        <button class="primary" type="submit">Save State</button>
+        <button type="button" data-close="selectDialog">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="noteDialog">
+    <header>
+      <h2 id="noteDialogTitle">Add Note</h2>
+      <button type="button" data-close="noteDialog">Close</button>
+    </header>
+    <form id="noteForm" class="dialog-body" method="dialog">
+      <input id="noteId" type="hidden">
+      <label>Date
+        <input id="noteDate" type="date" required>
+      </label>
+      <label>Summary or note
+        <textarea id="noteText" maxlength="700" placeholder="Markdown-friendly plain text"></textarea>
+      </label>
+      <div class="actions">
+        <button class="primary" type="submit">Save Note</button>
+        <button type="button" data-close="noteDialog">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="levelDialog">
+    <header>
+      <h2 id="levelDialogTitle">Edit Level</h2>
+      <button type="button" data-close="levelDialog">Close</button>
+    </header>
+    <form id="levelForm" class="dialog-body" method="dialog">
+      <input id="levelId" type="hidden">
+      <div class="form-grid">
+        <label>Name
+          <input id="levelName" maxlength="32" required>
+        </label>
+        <label>Color
+          <input id="levelColor" type="color" required>
+        </label>
+        <label class="span">Definition
+          <textarea id="levelDefinition" maxlength="220" required></textarea>
+        </label>
+      </div>
+      <section>
+        <h3>Existing Swatches</h3>
+        <div id="existingSwatches" class="swatch-grid" style="margin-top: .5rem;"></div>
+      </section>
+      <section>
+        <h3>Generated Theme Swatches</h3>
+        <div id="themeSwatches" class="theme-swatches" style="margin-top: .6rem;"></div>
+      </section>
+      <div class="actions">
+        <button class="primary" type="submit">Save Level</button>
+        <button id="deleteLevelBtn" class="danger" type="button">Remove Level</button>
+        <button type="button" data-close="levelDialog">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="dataDialog">
+    <header>
+      <h2>Import and Export</h2>
+      <button type="button" data-close="dataDialog">Close</button>
+    </header>
+    <div class="dialog-body">
+      <div class="import-box">
+        <h3>Move data between devices</h3>
+        <p class="muted">Data is saved in this browser only. Export a JSON backup to move or restore your map elsewhere.</p>
+        <div class="actions">
+          <button id="exportJsonBtn" class="primary" type="button">Export JSON</button>
+          <button id="exportMarkdownBtn" type="button">Export Notes Text</button>
+        </div>
+        <label>Import JSON backup
+          <input id="importFile" type="file" accept="application/json,.json">
+        </label>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="settingsDialog">
+    <header>
+      <div>
+        <h2>US State Visit Map</h2>
+        <small>Version <span id="versionLabel"></span></small>
+      </div>
+      <button type="button" data-close="settingsDialog">Close</button>
+    </header>
+    <div class="dialog-body">
+      <div class="tabs" role="tablist" aria-label="Settings and documents">
+        <button type="button" role="tab" data-tab="settings" aria-selected="true">Settings</button>
+        <button type="button" role="tab" data-tab="help">Help Manual</button>
+        <button type="button" role="tab" data-tab="faq">FAQ</button>
+        <button type="button" role="tab" data-tab="changelog">Changelog</button>
+        <button type="button" role="tab" data-tab="wishlist">Wishlist</button>
+      </div>
+
+      <section id="tab-settings" class="doc active" role="tabpanel">
+        <section>
+          <h3>Appearance</h3>
+          <div class="segmented" aria-label="Theme">
+            <button id="lightModeBtn" type="button" aria-pressed="true">Light Mode</button>
+            <button id="darkModeBtn" type="button" aria-pressed="false">Dark Mode</button>
+          </div>
+        </section>
+        <section>
+          <h3>Map Interaction</h3>
+          <div class="segmented" aria-label="Tap behavior">
+            <button id="cycleModeBtn" type="button" aria-pressed="true">Tap to Cycle</button>
+            <button id="selectModeBtn" type="button" aria-pressed="false">Tap to Select</button>
+          </div>
+        </section>
+        <section>
+          <h3>Data</h3>
+          <div class="actions">
+            <button id="resetAppBtn" class="danger" type="button">Reset App Data</button>
+          </div>
+        </section>
+      </section>
+
+      <section id="tab-help" class="doc" role="tabpanel">
+        <section>
+          <h3>Help Manual</h3>
+          <ol>
+            <li>Tap a state to mark it. In cycle mode, repeated taps rotate through your active levels and back to unvisited.</li>
+            <li>Switch to select mode in Settings if you prefer choosing a level and adding a quick dated note in one step.</li>
+            <li>Open a state drawer by selecting a state. Use it to change the level and manage dated visit notes.</li>
+            <li>Use the Legend to edit level names, definitions, and colors. Add optional built-in levels or your own custom levels.</li>
+            <li>Use Import/Export to back up data or move it to another device.</li>
+          </ol>
+        </section>
+      </section>
+
+      <section id="tab-faq" class="doc" role="tabpanel">
+        <section>
+          <h3>FAQ</h3>
+          <p><b>Where is my data saved?</b><br>In your browser localStorage on this device.</p>
+          <p><b>Can someone else use the same app link?</b><br>Yes. Their browser keeps a separate local copy of their data.</p>
+          <p><b>Does it work offline?</b><br>Yes. After the file is saved or loaded, the app does not need a backend or external service.</p>
+          <p><b>Can I move data to another device?</b><br>Export a JSON backup, then import it in the app on the other device.</p>
+        </section>
+      </section>
+
+      <section id="tab-changelog" class="doc" role="tabpanel">
+        <section>
+          <h3>Changelog</h3>
+          <div id="changelogList"></div>
+        </section>
+      </section>
+
+      <section id="tab-wishlist" class="doc" role="tabpanel">
+        <section>
+          <h3>Wishlist</h3>
+          <form id="wishlistForm" class="form-grid" method="dialog">
+            <label>Title
+              <input id="wishTitle" required maxlength="80">
+            </label>
+            <label>Category
+              <input id="wishCategory" maxlength="40" placeholder="Maps, Reports, Sharing">
+            </label>
+            <label>Priority
+              <select id="wishPriority">
+                <option>High</option>
+                <option selected>Medium</option>
+                <option>Low</option>
+              </select>
+            </label>
+            <label>Level of effort
+              <select id="wishEffort">
+                <option>Small</option>
+                <option selected>Medium</option>
+                <option>Large</option>
+              </select>
+            </label>
+            <label>Target version
+              <input id="wishTarget" maxlength="16" placeholder="1.1.0">
+            </label>
+            <label class="span">Description
+              <textarea id="wishDescription" maxlength="500"></textarea>
+            </label>
+            <div class="actions span">
+              <button class="primary" type="submit">Add Idea</button>
+            </div>
+          </form>
+        </section>
+        <section>
+          <h3>Filter and Sort</h3>
+          <div class="filters">
+            <input id="wishSearch" placeholder="Search ideas" aria-label="Search wishlist">
+            <select id="wishPriorityFilter" aria-label="Filter by priority">
+              <option value="">All priorities</option>
+              <option>High</option>
+              <option>Medium</option>
+              <option>Low</option>
+            </select>
+            <select id="wishCategoryFilter" aria-label="Filter by category">
+              <option value="">All categories</option>
+            </select>
+            <select id="wishSort" aria-label="Sort wishlist">
+              <option value="createdDesc">Newest</option>
+              <option value="createdAsc">Oldest</option>
+              <option value="priority">Priority</option>
+              <option value="title">Title</option>
+            </select>
+          </div>
+          <div class="actions" style="margin-top: .65rem;">
+            <button id="resetWishFiltersBtn" type="button">Reset Filters</button>
+            <button id="clearWishlistBtn" class="danger" type="button">Clear Wishlist</button>
+          </div>
+          <div id="wishlistList" class="wishlist-list" style="margin-top: .75rem;"></div>
+        </section>
+      </section>
+    </div>
+  </dialog>
+
+  <script>
+    const APP_VERSION = "1.0.0";
+    const STORAGE_KEY = "usStateVisitMap.v1";
+    const STATES = [
+      ["AK","Alaska",0,5],["WA","Washington",1,0],["OR","Oregon",1,1],["CA","California",1,2],["ID","Idaho",2,1],
+      ["NV","Nevada",2,2],["AZ","Arizona",2,3],["HI","Hawaii",1,6],["MT","Montana",3,0],["WY","Wyoming",3,2],
+      ["UT","Utah",3,3],["NM","New Mexico",3,4],["CO","Colorado",4,3],["ND","North Dakota",4,0],["SD","South Dakota",4,1],
+      ["NE","Nebraska",4,2],["KS","Kansas",5,3],["OK","Oklahoma",5,4],["TX","Texas",5,5],["MN","Minnesota",5,0],
+      ["IA","Iowa",5,1],["MO","Missouri",6,2],["AR","Arkansas",6,3],["LA","Louisiana",6,4],["WI","Wisconsin",6,0],
+      ["IL","Illinois",6,1],["MS","Mississippi",7,4],["MI","Michigan",7,0],["IN","Indiana",7,1],["KY","Kentucky",7,2],
+      ["TN","Tennessee",7,3],["AL","Alabama",8,4],["OH","Ohio",8,1],["WV","West Virginia",8,2],["GA","Georgia",9,4],
+      ["FL","Florida",10,5],["VA","Virginia",9,2],["NC","North Carolina",9,3],["SC","South Carolina",10,4],["PA","Pennsylvania",9,1],
+      ["NY","New York",9,0],["MD","Maryland",10,2],["DE","Delaware",11,3],["NJ","New Jersey",10,1],["CT","Connecticut",11,1],
+      ["RI","Rhode Island",12,2],["MA","Massachusetts",12,1],["VT","Vermont",11,0],["NH","New Hampshire",12,0],["ME","Maine",13,0]
+    ];
+    const STATE_NAMES = Object.fromEntries(STATES.map(([abbr, name]) => [abbr, name]));
+    const BUILT_INS = [
+      { id: "pass-through", name: "Pass Through", definition: "Drive, Layover, Possible Meal", color: "#f59e0b" },
+      { id: "day-visit", name: "Day Visit", definition: "Any activity for the day other than a meal", color: "#10b981" },
+      { id: "visited", name: "Visited", definition: "Stayed overnight", color: "#2563eb" }
+    ];
+    const THEMES = {
+      Classic: ["#2563eb", "#16a34a", "#f59e0b", "#dc2626", "#7c3aed"],
+      Pastel: ["#93c5fd", "#86efac", "#fde68a", "#fca5a5", "#c4b5fd"],
+      Earth: ["#5f6f52", "#a16207", "#b45309", "#78716c", "#166534"],
+      Ocean: ["#075985", "#0891b2", "#0d9488", "#38bdf8", "#1d4ed8"],
+      "High Contrast": ["#111827", "#ef4444", "#22c55e", "#facc15", "#3b82f6"]
+    };
+    const CHANGELOG = [
+      {
+        version: "1.0.0",
+        date: "2026-05-10",
+        title: "Initial release",
+        notes: [
+          "Interactive 50-state visit map with Alaska and Hawaii.",
+          "Custom visitation levels, colors, dated notes, settings, documents, wishlist, and import/export.",
+          "Offline single-file app with localStorage persistence."
+        ]
+      }
+    ];
+
+    const $ = (sel, root = document) => root.querySelector(sel);
+    const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+    const uid = () => "id-" + Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
+    const today = () => new Date().toISOString().slice(0, 10);
+    const clone = obj => JSON.parse(JSON.stringify(obj));
+    let selectedState = null;
+    let state = loadState();
+
+    function defaultState() {
+      return {
+        appVersion: APP_VERSION,
+        mapName: "Your State Map",
+        settings: { theme: "light", tapBehavior: "cycle" },
+        levels: [clone(BUILT_INS[2])],
+        states: {},
+        notes: {},
+        wishlist: []
+      };
+    }
+
+    function loadState() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        return normalizeState(saved || defaultState());
+      } catch {
+        return defaultState();
+      }
+    }
+
+    function normalizeState(input) {
+      const base = defaultState();
+      const next = { ...base, ...input };
+      next.settings = { ...base.settings, ...(input.settings || {}) };
+      next.levels = Array.isArray(input.levels) && input.levels.length ? input.levels.slice(0, 5) : base.levels;
+      next.levels = next.levels.map((level, index) => ({
+        id: String(level.id || uid()),
+        name: String(level.name || `Level ${index + 1}`).slice(0, 32),
+        definition: String(level.definition || "Custom visit level").slice(0, 220),
+        color: /^#[0-9a-f]{6}$/i.test(level.color || "") ? level.color : THEMES.Classic[index] || "#2563eb"
+      }));
+      const validLevelIds = new Set(next.levels.map(l => l.id));
+      next.states = Object.fromEntries(Object.entries(input.states || {}).filter(([abbr, levelId]) => STATE_NAMES[abbr] && validLevelIds.has(levelId)));
+      next.notes = {};
+      Object.entries(input.notes || {}).forEach(([abbr, notes]) => {
+        if (!STATE_NAMES[abbr] || !Array.isArray(notes)) return;
+        next.notes[abbr] = notes.map(note => ({
+          id: String(note.id || uid()),
+          date: String(note.date || today()).slice(0, 10),
+          text: String(note.text || note.summary || "").slice(0, 700)
+        })).filter(note => note.text || note.date);
+      });
+      next.wishlist = Array.isArray(input.wishlist) ? input.wishlist.map(wish => ({
+        id: String(wish.id || uid()),
+        title: String(wish.title || "").slice(0, 80),
+        description: String(wish.description || "").slice(0, 500),
+        priority: ["High","Medium","Low"].includes(wish.priority) ? wish.priority : "Medium",
+        effort: ["Small","Medium","Large"].includes(wish.effort) ? wish.effort : "Medium",
+        targetVersion: String(wish.targetVersion || "").slice(0, 16),
+        category: String(wish.category || "").slice(0, 40),
+        createdAt: String(wish.createdAt || new Date().toISOString())
+      })).filter(wish => wish.title) : [];
+      next.mapName = String(next.mapName || base.mapName).slice(0, 80);
+      return next;
+    }
+
+    function save() {
+      state.appVersion = APP_VERSION;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function levelById(id) {
+      return state.levels.find(level => level.id === id) || null;
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
+    }
+
+    function downloadFile(filename, type, content) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.append(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function initMap() {
+      const svg = $("#stateMap");
+      const tileW = 50, tileH = 42, gap = 6, pad = 10;
+      STATES.forEach(([abbr, name, col, row]) => {
+        const x = pad + col * (tileW + gap), y = pad + row * (tileH + gap);
+        const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        g.classList.add("state-tile");
+        g.dataset.abbr = abbr;
+        g.dataset.name = name;
+        g.setAttribute("tabindex", "0");
+        g.setAttribute("role", "button");
+        const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        rect.setAttribute("x", x);
+        rect.setAttribute("y", y);
+        rect.setAttribute("width", tileW);
+        rect.setAttribute("height", tileH);
+        rect.setAttribute("rx", "8");
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("x", x + tileW / 2);
+        text.setAttribute("y", y + tileH / 2 + 1);
+        text.textContent = abbr;
+        g.append(rect, text);
+        g.addEventListener("click", () => handleStateTap(abbr));
+        g.addEventListener("keydown", event => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            handleStateTap(abbr);
+          }
+        });
+        svg.append(g);
+      });
+    }
+
+    function handleStateTap(abbr) {
+      selectedState = abbr;
+      if (state.settings.tapBehavior === "cycle") {
+        cycleState(abbr);
+        openStateDrawer(abbr);
+      } else {
+        openSelectDialog(abbr);
+      }
+      render();
+    }
+
+    function cycleState(abbr) {
+      const ids = state.levels.map(level => level.id);
+      const current = state.states[abbr] || "";
+      const index = ids.indexOf(current);
+      if (!current) state.states[abbr] = ids[0];
+      else if (index === ids.length - 1) delete state.states[abbr];
+      else state.states[abbr] = ids[index + 1] || ids[0];
+      save();
+    }
+
+    function setStateLevel(abbr, levelId) {
+      if (!levelId) delete state.states[abbr];
+      else state.states[abbr] = levelId;
+      save();
+      render();
+    }
+
+    function render() {
+      document.documentElement.dataset.theme = state.settings.theme;
+      $("#mapTitle").textContent = state.mapName;
+      $("#tapHint").textContent = state.settings.tapBehavior === "cycle"
+        ? "Tap a state to cycle its visit level."
+        : "Tap a state to choose a level and add a note.";
+      renderMap();
+      renderStats();
+      renderLegend();
+      renderBuiltinLevels();
+      renderSettingsControls();
+      if (selectedState) renderDrawer();
+    }
+
+    function renderMap() {
+      $$(".state-tile").forEach(tile => {
+        const abbr = tile.dataset.abbr;
+        const level = levelById(state.states[abbr]);
+        tile.style.setProperty("--state-fill", level ? level.color : "var(--state-empty)");
+        tile.classList.toggle("is-selected", selectedState === abbr);
+        tile.setAttribute("aria-label", `${tile.dataset.name}: ${level ? level.name : "Unvisited"}`);
+      });
+    }
+
+    function levelCounts() {
+      const counts = Object.fromEntries(state.levels.map(level => [level.id, 0]));
+      Object.values(state.states).forEach(levelId => {
+        if (counts[levelId] !== undefined) counts[levelId] += 1;
+      });
+      return counts;
+    }
+
+    function renderStats() {
+      const marked = Object.keys(state.states).length;
+      $("#visitedCount").textContent = marked;
+      $("#remainingCount").textContent = 50 - marked;
+      const counts = levelCounts();
+      $("#topStats").innerHTML = state.levels.map(level => {
+        return `<span><span class="dot" style="background:${level.color}"></span> ${escapeHtml(level.name)}: ${counts[level.id] || 0}</span>`;
+      }).join("");
+    }
+
+    function renderLegend() {
+      const counts = levelCounts();
+      $("#legendList").innerHTML = state.levels.map(level => `
+        <button class="legend-item" type="button" data-level-edit="${level.id}">
+          <span class="swatch" style="background:${level.color}"></span>
+          <span>
+            <span class="level-name">${escapeHtml(level.name)}</span><br>
+            <small>${escapeHtml(level.definition)}</small>
+          </span>
+          <span class="count-pill">${counts[level.id] || 0}</span>
+        </button>
+      `).join("");
+      $$("[data-level-edit]").forEach(button => button.addEventListener("click", () => openLevelDialog(button.dataset.levelEdit)));
+      $("#addLevelBtn").disabled = state.levels.length >= 5;
+    }
+
+    function renderBuiltinLevels() {
+      const container = $("#builtinLevels");
+      const active = new Set(state.levels.map(level => level.id));
+      const missing = BUILT_INS.filter(level => !active.has(level.id));
+      if (!missing.length || state.levels.length >= 5) {
+        container.innerHTML = state.levels.length >= 5 ? `<small>Maximum of 5 levels reached.</small>` : "";
+        return;
+      }
+      container.innerHTML = missing.map(level => `<button class="chip" type="button" data-add-builtin="${level.id}">Add ${escapeHtml(level.name)}</button>`).join("");
+      $$("[data-add-builtin]").forEach(button => {
+        button.addEventListener("click", () => {
+          if (state.levels.length >= 5) return;
+          const level = BUILT_INS.find(item => item.id === button.dataset.addBuiltin);
+          state.levels.push(clone(level));
+          save();
+          render();
+        });
+      });
+    }
+
+    function openStateDrawer(abbr) {
+      selectedState = abbr;
+      renderDrawer();
+      const drawer = $("#stateDrawer");
+      drawer.classList.add("open");
+      drawer.setAttribute("aria-hidden", "false");
+    }
+
+    function renderDrawer() {
+      if (!selectedState) return;
+      const level = levelById(state.states[selectedState]);
+      $("#drawerTitle").textContent = STATE_NAMES[selectedState];
+      $("#drawerSubtitle").textContent = level ? level.name : "Unvisited";
+      $("#drawerLevelSelect").innerHTML = `<option value="">Unvisited</option>` + state.levels.map(item =>
+        `<option value="${item.id}" ${state.states[selectedState] === item.id ? "selected" : ""}>${escapeHtml(item.name)}</option>`
+      ).join("");
+      const notes = (state.notes[selectedState] || []).slice().sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+      $("#notesList").innerHTML = notes.length ? notes.map(note => `
+        <article class="note-card">
+          <time datetime="${escapeHtml(note.date)}">${escapeHtml(note.date || "No date")}</time>
+          <div>${escapeHtml(note.text || "No summary")}</div>
+          <div class="actions">
+            <button type="button" data-edit-note="${note.id}">Edit</button>
+            <button class="danger" type="button" data-delete-note="${note.id}">Delete</button>
+          </div>
+        </article>
+      `).join("") : `<div class="empty">No visit notes yet.</div>`;
+      $$("[data-edit-note]").forEach(button => button.addEventListener("click", () => openNoteDialog(button.dataset.editNote)));
+      $$("[data-delete-note]").forEach(button => button.addEventListener("click", () => deleteNote(button.dataset.deleteNote)));
+    }
+
+    function closeDrawer() {
+      $("#stateDrawer").classList.remove("open");
+      $("#stateDrawer").setAttribute("aria-hidden", "true");
+    }
+
+    function openSelectDialog(abbr) {
+      selectedState = abbr;
+      $("#selectTitle").textContent = `Update ${STATE_NAMES[abbr]}`;
+      $("#selectLevel").innerHTML = `<option value="">Unvisited</option>` + state.levels.map(level =>
+        `<option value="${level.id}" ${state.states[abbr] === level.id ? "selected" : ""}>${escapeHtml(level.name)}</option>`
+      ).join("");
+      $("#selectDate").value = "";
+      $("#selectSummary").value = "";
+      $("#selectDialog").showModal();
+    }
+
+    function openNoteDialog(noteId = "") {
+      if (!selectedState) return;
+      const note = (state.notes[selectedState] || []).find(item => item.id === noteId);
+      $("#noteDialogTitle").textContent = note ? "Edit Note" : `Add Note for ${STATE_NAMES[selectedState]}`;
+      $("#noteId").value = note ? note.id : "";
+      $("#noteDate").value = note ? note.date : today();
+      $("#noteText").value = note ? note.text : "";
+      $("#noteDialog").showModal();
+    }
+
+    function saveNoteFromForm() {
+      const id = $("#noteId").value;
+      const note = { id: id || uid(), date: $("#noteDate").value || today(), text: $("#noteText").value.trim() };
+      state.notes[selectedState] ||= [];
+      const index = state.notes[selectedState].findIndex(item => item.id === id);
+      if (index >= 0) state.notes[selectedState][index] = note;
+      else state.notes[selectedState].push(note);
+      save();
+      renderDrawer();
+    }
+
+    function deleteNote(noteId) {
+      if (!selectedState || !confirm("Delete this note?")) return;
+      state.notes[selectedState] = (state.notes[selectedState] || []).filter(note => note.id !== noteId);
+      save();
+      renderDrawer();
+    }
+
+    function openLevelDialog(levelId = "") {
+      const level = levelById(levelId);
+      $("#levelDialogTitle").textContent = level ? "Edit Level" : "Add Level";
+      $("#levelId").value = level ? level.id : "";
+      $("#levelName").value = level ? level.name : "";
+      $("#levelDefinition").value = level ? level.definition : "";
+      $("#levelColor").value = level ? level.color : THEMES.Classic[state.levels.length % 5];
+      $("#deleteLevelBtn").classList.toggle("hidden", !level);
+      renderSwatches();
+      $("#levelDialog").showModal();
+    }
+
+    function renderSwatches() {
+      $("#existingSwatches").innerHTML = state.levels.map(level =>
+        `<button class="swatch-btn" type="button" title="${escapeHtml(level.name)}" data-color="${level.color}" style="--swatch-color:${level.color}"></button>`
+      ).join("");
+      $("#themeSwatches").innerHTML = Object.entries(THEMES).map(([name, colors]) => `
+        <div class="theme-row">
+          <b>${escapeHtml(name)}</b>
+          <div class="swatch-grid">
+            ${colors.map(color => `<button class="swatch-btn" type="button" title="${name} ${color}" data-color="${color}" style="--swatch-color:${color}"></button>`).join("")}
+          </div>
+        </div>
+      `).join("");
+      $$("[data-color]").forEach(button => button.addEventListener("click", () => $("#levelColor").value = button.dataset.color));
+    }
+
+    function saveLevelFromForm() {
+      const id = $("#levelId").value;
+      const level = {
+        id: id || uid(),
+        name: $("#levelName").value.trim(),
+        definition: $("#levelDefinition").value.trim(),
+        color: $("#levelColor").value
+      };
+      if (!level.name || !level.definition) return;
+      if (id) {
+        const index = state.levels.findIndex(item => item.id === id);
+        if (index >= 0) state.levels[index] = level;
+      } else {
+        if (state.levels.length >= 5) return alert("You can use up to 5 levels.");
+        state.levels.push(level);
+      }
+      save();
+      render();
+    }
+
+    function removeCurrentLevel() {
+      const id = $("#levelId").value;
+      const level = levelById(id);
+      if (!level || state.levels.length <= 1) return alert("Keep at least one active level.");
+      if (!confirm(`Remove "${level.name}"? States using this level will become unvisited.`)) return;
+      state.levels = state.levels.filter(item => item.id !== id);
+      Object.keys(state.states).forEach(abbr => {
+        if (state.states[abbr] === id) delete state.states[abbr];
+      });
+      save();
+      $("#levelDialog").close();
+      render();
+    }
+
+    function renderSettingsControls() {
+      $("#versionLabel").textContent = APP_VERSION;
+      $("#lightModeBtn").setAttribute("aria-pressed", state.settings.theme === "light");
+      $("#darkModeBtn").setAttribute("aria-pressed", state.settings.theme === "dark");
+      $("#cycleModeBtn").setAttribute("aria-pressed", state.settings.tapBehavior === "cycle");
+      $("#selectModeBtn").setAttribute("aria-pressed", state.settings.tapBehavior === "select");
+    }
+
+    function renderChangelog() {
+      $("#changelogList").innerHTML = CHANGELOG.map(entry => `
+        <article class="note-card">
+          <b>${escapeHtml(entry.version)} - ${escapeHtml(entry.title)}</b>
+          <small>${escapeHtml(entry.date)}</small>
+          <ul>${entry.notes.map(note => `<li>${escapeHtml(note)}</li>`).join("")}</ul>
+        </article>
+      `).join("");
+    }
+
+    function renderWishlist() {
+      const search = $("#wishSearch").value.trim().toLowerCase();
+      const priority = $("#wishPriorityFilter").value;
+      const category = $("#wishCategoryFilter").value;
+      const categories = [...new Set(state.wishlist.map(w => w.category).filter(Boolean))].sort();
+      $("#wishCategoryFilter").innerHTML = `<option value="">All categories</option>` + categories.map(cat =>
+        `<option ${category === cat ? "selected" : ""}>${escapeHtml(cat)}</option>`
+      ).join("");
+      let items = state.wishlist.filter(wish => {
+        const blob = `${wish.title} ${wish.description} ${wish.category}`.toLowerCase();
+        return (!search || blob.includes(search)) && (!priority || wish.priority === priority) && (!category || wish.category === category);
+      });
+      const rank = { High: 0, Medium: 1, Low: 2 };
+      const sort = $("#wishSort").value;
+      items.sort((a, b) => {
+        if (sort === "createdAsc") return a.createdAt.localeCompare(b.createdAt);
+        if (sort === "priority") return rank[a.priority] - rank[b.priority] || a.title.localeCompare(b.title);
+        if (sort === "title") return a.title.localeCompare(b.title);
+        return b.createdAt.localeCompare(a.createdAt);
+      });
+      $("#wishlistList").innerHTML = items.length ? items.map(wish => `
+        <article class="wishlist-card">
+          <div class="row" style="justify-content: space-between;">
+            <b>${escapeHtml(wish.title)}</b>
+            <button class="danger" type="button" data-delete-wish="${wish.id}">Delete</button>
+          </div>
+          <div>${escapeHtml(wish.description || "No description")}</div>
+          <div class="chips">
+            <span class="tag">Priority: ${escapeHtml(wish.priority)}</span>
+            <span class="tag">Effort: ${escapeHtml(wish.effort)}</span>
+            <span class="tag">Target: ${escapeHtml(wish.targetVersion || "Unassigned")}</span>
+            <span class="tag">Category: ${escapeHtml(wish.category || "General")}</span>
+          </div>
+        </article>
+      `).join("") : `<div class="empty">No wishlist ideas match the current filters.</div>`;
+      $$("[data-delete-wish]").forEach(button => button.addEventListener("click", () => {
+        if (!confirm("Delete this wishlist idea?")) return;
+        state.wishlist = state.wishlist.filter(wish => wish.id !== button.dataset.deleteWish);
+        save();
+        renderWishlist();
+      }));
+    }
+
+    function exportMarkdown() {
+      const counts = levelCounts();
+      const lines = [`# ${state.mapName}`, "", `Generated by US State Visit Map ${APP_VERSION}`, "", "## Summary by Level"];
+      state.levels.forEach(level => lines.push(`- ${level.name}: ${counts[level.id] || 0} states`));
+      lines.push(`- Unvisited: ${50 - Object.keys(state.states).length} states`, "", "## State-by-State");
+      STATES.slice().sort((a, b) => a[1].localeCompare(b[1])).forEach(([abbr, name]) => {
+        const level = levelById(state.states[abbr]);
+        lines.push(`### ${name} (${abbr})`, `- Level: ${level ? level.name : "Unvisited"}`);
+        const notes = (state.notes[abbr] || []).slice().sort((a, b) => (a.date || "").localeCompare(b.date || ""));
+        if (notes.length) notes.forEach(note => lines.push(`- ${note.date || "No date"}: ${note.text || "No summary"}`));
+        else lines.push("- Notes: None");
+        lines.push("");
+      });
+      lines.push("## Custom Levels and Definitions");
+      state.levels.forEach(level => lines.push(`- ${level.name}: ${level.definition} (${level.color})`));
+      downloadFile(`${slug(state.mapName)}-notes.md`, "text/markdown", lines.join("\n"));
+    }
+
+    function slug(value) {
+      return String(value).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "state-map";
+    }
+
+    function bindEvents() {
+      $("#renameBtn").addEventListener("click", () => {
+        $("#mapNameInput").value = state.mapName;
+        $("#renameDialog").showModal();
+      });
+      $("#renameForm").addEventListener("submit", event => {
+        event.preventDefault();
+        state.mapName = $("#mapNameInput").value.trim() || "Your State Map";
+        save();
+        $("#renameDialog").close();
+        render();
+      });
+      $("#settingsBtn").addEventListener("click", () => {
+        renderChangelog();
+        renderWishlist();
+        $("#settingsDialog").showModal();
+      });
+      $("#exportBtn").addEventListener("click", () => $("#dataDialog").showModal());
+      $$("[data-close]").forEach(button => button.addEventListener("click", () => $(`#${button.dataset.close}`).close()));
+      $("#closeDrawerBtn").addEventListener("click", closeDrawer);
+      $("#drawerLevelSelect").addEventListener("change", event => setStateLevel(selectedState, event.target.value));
+      $("#addNoteBtn").addEventListener("click", () => openNoteDialog());
+      $("#noteForm").addEventListener("submit", event => {
+        event.preventDefault();
+        saveNoteFromForm();
+        $("#noteDialog").close();
+      });
+      $("#selectForm").addEventListener("submit", event => {
+        event.preventDefault();
+        setStateLevel(selectedState, $("#selectLevel").value);
+        const text = $("#selectSummary").value.trim();
+        const date = $("#selectDate").value;
+        if (text || date) {
+          state.notes[selectedState] ||= [];
+          state.notes[selectedState].push({ id: uid(), date: date || today(), text });
+          save();
+        }
+        $("#selectDialog").close();
+        openStateDrawer(selectedState);
+        render();
+      });
+      $("#addLevelBtn").addEventListener("click", () => openLevelDialog());
+      $("#levelForm").addEventListener("submit", event => {
+        event.preventDefault();
+        saveLevelFromForm();
+        $("#levelDialog").close();
+      });
+      $("#deleteLevelBtn").addEventListener("click", removeCurrentLevel);
+      $("#lightModeBtn").addEventListener("click", () => updateSetting("theme", "light"));
+      $("#darkModeBtn").addEventListener("click", () => updateSetting("theme", "dark"));
+      $("#cycleModeBtn").addEventListener("click", () => updateSetting("tapBehavior", "cycle"));
+      $("#selectModeBtn").addEventListener("click", () => updateSetting("tapBehavior", "select"));
+      $("#resetAppBtn").addEventListener("click", () => {
+        if (!confirm("Reset all map data, notes, levels, and wishlist ideas?")) return;
+        state = defaultState();
+        selectedState = null;
+        save();
+        closeDrawer();
+        render();
+        renderWishlist();
+      });
+      $$(".tabs [role='tab']").forEach(tab => tab.addEventListener("click", () => switchTab(tab.dataset.tab)));
+      $("#exportJsonBtn").addEventListener("click", () => {
+        downloadFile(`${slug(state.mapName)}.json`, "application/json", JSON.stringify(state, null, 2));
+      });
+      $("#exportMarkdownBtn").addEventListener("click", exportMarkdown);
+      $("#importFile").addEventListener("change", importJson);
+      $("#wishlistForm").addEventListener("submit", event => {
+        event.preventDefault();
+        state.wishlist.push({
+          id: uid(),
+          title: $("#wishTitle").value.trim(),
+          description: $("#wishDescription").value.trim(),
+          priority: $("#wishPriority").value,
+          effort: $("#wishEffort").value,
+          targetVersion: $("#wishTarget").value.trim(),
+          category: $("#wishCategory").value.trim(),
+          createdAt: new Date().toISOString()
+        });
+        $("#wishlistForm").reset();
+        $("#wishPriority").value = "Medium";
+        $("#wishEffort").value = "Medium";
+        save();
+        renderWishlist();
+      });
+      ["wishSearch", "wishPriorityFilter", "wishCategoryFilter", "wishSort"].forEach(id => {
+        $(`#${id}`).addEventListener("input", renderWishlist);
+        $(`#${id}`).addEventListener("change", renderWishlist);
+      });
+      $("#resetWishFiltersBtn").addEventListener("click", () => {
+        $("#wishSearch").value = "";
+        $("#wishPriorityFilter").value = "";
+        $("#wishCategoryFilter").value = "";
+        $("#wishSort").value = "createdDesc";
+        renderWishlist();
+      });
+      $("#clearWishlistBtn").addEventListener("click", () => {
+        if (!confirm("Clear all wishlist ideas?")) return;
+        state.wishlist = [];
+        save();
+        renderWishlist();
+      });
+    }
+
+    function updateSetting(key, value) {
+      state.settings[key] = value;
+      save();
+      render();
+    }
+
+    function switchTab(tabName) {
+      $$(".tabs [role='tab']").forEach(tab => tab.setAttribute("aria-selected", tab.dataset.tab === tabName));
+      $$(".doc").forEach(panel => panel.classList.toggle("active", panel.id === `tab-${tabName}`));
+      if (tabName === "changelog") renderChangelog();
+      if (tabName === "wishlist") renderWishlist();
+    }
+
+    function importJson(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const imported = normalizeState(JSON.parse(reader.result));
+          if (!confirm("Import this backup and replace current app data?")) return;
+          state = imported;
+          selectedState = null;
+          save();
+          closeDrawer();
+          render();
+          $("#dataDialog").close();
+        } catch {
+          alert("That file does not look like a valid US State Visit Map JSON backup.");
+        } finally {
+          event.target.value = "";
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function init() {
+      initMap();
+      bindEvents();
+      render();
+    }
+
+    init();
+  </script>
+</body>
+</html>
