@@ -166,25 +166,9 @@
       border-bottom: 1px solid var(--line);
     }
 
-    .map-meta {
-      display: grid;
-      gap: .55rem;
-      justify-items: end;
-      min-width: min(520px, 58%);
-    }
-
     .map-head h2, .side-panel h2, dialog h2, .doc h3 {
       margin: 0;
       font-size: 1rem;
-    }
-
-    .statline {
-      display: flex;
-      gap: .45rem;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-      color: var(--muted);
-      font-size: .88rem;
     }
 
     .map-wrap {
@@ -247,11 +231,6 @@
       gap: .65rem;
     }
 
-    .map-summary {
-      width: 100%;
-      min-width: min(520px, 100%);
-    }
-
     .metric {
       background: var(--surface-2);
       border: 1px solid var(--line);
@@ -272,8 +251,8 @@
 
     .legend-item {
       display: grid;
-      grid-template-columns: auto minmax(0, 1fr) auto;
-      gap: .75rem;
+      grid-template-columns: auto minmax(0, 1fr) auto auto;
+      gap: .65rem;
       align-items: center;
       width: 100%;
       text-align: left;
@@ -283,18 +262,23 @@
       background: var(--surface);
     }
 
-    .legend-actions, .order-buttons {
-      display: flex;
-      gap: .28rem;
+    .legend-actions {
+      display: grid;
+      grid-template-columns: repeat(2, 28px);
+      gap: .22rem;
       align-items: center;
     }
 
+    .order-buttons {
+      display: contents;
+    }
+
     .icon-btn {
-      min-height: 34px;
-      min-width: 34px;
-      padding: .24rem;
+      min-height: 28px;
+      min-width: 28px;
+      padding: .12rem;
       line-height: 1;
-      font-size: 1rem;
+      font-size: .86rem;
     }
 
     .swatch, .dot {
@@ -310,6 +294,17 @@
     .level-name { font-weight: 750; overflow-wrap: normal; }
     .level-copy { min-width: 0; line-height: 1.25; }
     .level-copy small { display: block; line-height: 1.3; margin-top: .12rem; }
+    .count-pill {
+      border: 1px solid var(--line);
+      background: var(--surface-2);
+      border-radius: 999px;
+      min-width: 2.2rem;
+      text-align: center;
+      padding: .12rem .45rem;
+      font-size: .78rem;
+      color: var(--muted);
+    }
+
     .empty {
       border: 1px dashed var(--line);
       border-radius: var(--radius);
@@ -588,13 +583,12 @@
       .toolbar { justify-content: flex-start; width: 100%; }
       .toolbar button { flex: 1 1 auto; }
       .map-head { align-items: flex-start; flex-direction: column; }
-      .map-meta { justify-items: stretch; min-width: 100%; }
       svg { min-width: 560px; }
       .form-grid, .summary-grid, .filters { grid-template-columns: 1fr; }
       .theme-row { grid-template-columns: 1fr; }
-      .legend-item { grid-template-columns: auto minmax(0, 1fr); }
-      .legend-actions { grid-column: 1 / -1; justify-content: space-between; }
-      .order-buttons { flex-direction: row; }
+      .legend-item { grid-template-columns: auto minmax(0, 1fr) auto; }
+      .legend-actions { grid-column: 3; grid-row: 1 / span 2; }
+      .count-pill { grid-column: 2; justify-self: start; }
       .drawer { width: 100vw; }
     }
   </style>
@@ -607,7 +601,7 @@
         <button id="renameBtn" class="ghost" type="button">Rename</button>
       </div>
       <nav class="toolbar" aria-label="App actions">
-        <button id="markedStatesBtn" type="button">Marked States</button>
+        <button id="markedStatesBtn" type="button">Notes</button>
         <button id="exportBtn" type="button">Import/Export</button>
         <button id="settingsBtn" type="button">Settings</button>
       </nav>
@@ -619,14 +613,6 @@
           <div>
             <h2 id="mapHeading">State Map</h2>
             <small id="tapHint">Tap a state to cycle its visit level.</small>
-          </div>
-          <div class="map-meta" aria-live="polite">
-            <section class="summary-grid map-summary" aria-label="Map summary">
-              <div class="metric"><small>States marked</small><b id="visitedCount">0</b></div>
-              <div class="metric"><small>Remaining</small><b id="remainingCount">50</b></div>
-              <div class="metric"><small>Completion</small><b id="completionPercent">0%</b></div>
-            </section>
-            <div class="statline" id="topStats"></div>
           </div>
         </div>
         <div class="map-wrap">
@@ -902,6 +888,11 @@
       </section>
 
       <aside class="panel side-panel" aria-label="Visit summary and editable legend">
+        <section class="summary-grid" aria-label="Map summary" aria-live="polite">
+          <div class="metric"><small>States marked</small><b id="visitedCount">0</b></div>
+          <div class="metric"><small>Remaining</small><b id="remainingCount">50</b></div>
+          <div class="metric"><small>Completion</small><b id="completionPercent">0%</b></div>
+        </section>
         <section>
           <div class="row" style="justify-content: space-between; margin-bottom: .65rem;">
             <h2>Legend</h2>
@@ -1598,13 +1589,10 @@
       $("#visitedCount").textContent = marked;
       $("#remainingCount").textContent = 50 - marked;
       $("#completionPercent").textContent = `${Math.round((marked / 50) * 100)}%`;
-      const counts = levelCounts();
-      $("#topStats").innerHTML = state.levels.map(level => {
-        return `<span><span class="dot" style="background:${level.color}"></span> ${escapeHtml(level.name)}: ${counts[level.id] || 0}</span>`;
-      }).join("");
     }
 
     function renderLegend() {
+      const counts = levelCounts();
       $("#legendList").innerHTML = state.levels.map((level, index) => `
         <div class="legend-item">
           <span class="swatch" style="background:${level.color}"></span>
@@ -1612,6 +1600,7 @@
             <span class="level-name">${escapeHtml(level.name)}</span><br>
             <small>${index === 0 ? "Highest level. " : ""}${escapeHtml(level.definition)}</small>
           </span>
+          <span class="count-pill">${counts[level.id] || 0}</span>
           <span class="legend-actions">
             <span class="order-buttons" aria-label="Move ${escapeHtml(level.name)}">
               <button class="icon-btn" type="button" title="Move up" aria-label="Move ${escapeHtml(level.name)} up" data-move-level="${level.id}" data-direction="-1" ${index === 0 ? "disabled" : ""}>🔼</button>
