@@ -467,6 +467,66 @@
       line-height: 1.25;
     }
 
+    .partial-date-picker {
+      display: grid;
+      gap: .55rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: .65rem;
+      background: var(--surface-2);
+    }
+
+    .date-builder {
+      display: grid;
+      grid-template-columns: minmax(88px, .72fr) minmax(0, 1.28fr) minmax(76px, .56fr);
+      gap: .5rem;
+      align-items: end;
+    }
+
+    .date-year-row {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr) 28px;
+      gap: .25rem;
+    }
+
+    .date-year-row button,
+    .month-chip {
+      min-height: 30px;
+      padding: .24rem .34rem;
+      font-size: .8rem;
+    }
+
+    .month-chip-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: .28rem;
+    }
+
+    .month-chip[aria-pressed="true"] {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    [data-theme="dark"] .month-chip[aria-pressed="true"] { color: #07111f; }
+
+    .date-picker-actions {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      flex-wrap: wrap;
+    }
+
+    .date-preview-pill {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--accent-2);
+      padding: .18rem .48rem;
+      font-size: .8rem;
+      font-weight: 800;
+    }
+
     .chip {
       min-height: 34px;
       border-radius: 999px;
@@ -801,7 +861,8 @@
       .map-head-actions { width: 100%; justify-content: flex-start; }
       .map-head-actions button { flex: 1 1 auto; }
       svg { min-width: 560px; }
-      .form-grid, .summary-grid, .filters, .level-form-grid, .level-color-row, .notes-controls { grid-template-columns: 1fr; }
+      .form-grid, .summary-grid, .filters, .level-form-grid, .level-color-row, .notes-controls, .date-builder { grid-template-columns: 1fr; }
+      .month-chip-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
       .theme-row { grid-template-columns: 1fr; }
       .legend-item { grid-template-columns: auto minmax(0, 1fr) auto; }
       .legend-filter { grid-column: 1 / 3; grid-template-columns: auto minmax(0, 1fr); }
@@ -1231,9 +1292,36 @@
       <label>Visit level
         <select id="noteLevel"></select>
       </label>
-      <label>Date
-        <input id="noteDate" type="text" placeholder="YYYY, YYYY-MM, or YYYY-MM-DD" required>
-      </label>
+      <section class="partial-date-picker" aria-labelledby="noteDateHeading">
+        <div class="row" style="justify-content: space-between;">
+          <h3 id="noteDateHeading">Date</h3>
+          <span id="noteDatePreview" class="date-preview-pill">No date</span>
+        </div>
+        <input id="noteDate" type="hidden">
+        <div class="date-builder">
+          <label>Year
+            <span class="date-year-row">
+              <button type="button" data-note-year-delta="-1" aria-label="Previous year">−</button>
+              <input id="noteYear" type="text" inputmode="numeric" maxlength="4" placeholder="YYYY" autocomplete="off" required>
+              <button type="button" data-note-year-delta="1" aria-label="Next year">+</button>
+            </span>
+          </label>
+          <label>Month
+            <select id="noteMonth">
+              <option value="">Unknown month</option>
+            </select>
+          </label>
+          <label>Day
+            <input id="noteDay" type="text" inputmode="numeric" maxlength="2" placeholder="Optional" disabled>
+          </label>
+        </div>
+        <div id="noteMonthChips" class="month-chip-grid" aria-label="Quick month choices"></div>
+        <div class="date-picker-actions">
+          <button id="noteTodayBtn" type="button">Today</button>
+          <button id="noteYearOnlyBtn" type="button">Year Only</button>
+          <small data-hint>Start with a year. Add month and day only if you know them.</small>
+        </div>
+      </section>
       <label>Summary or note
         <textarea id="noteText" maxlength="700" placeholder="Markdown-friendly plain text"></textarea>
       </label>
@@ -1426,37 +1514,7 @@
       <section id="tab-wishlist" class="doc" role="tabpanel">
         <section>
           <h3>Wishlist</h3>
-          <form id="wishlistForm" class="form-grid" method="dialog">
-            <label>Title
-              <input id="wishTitle" required maxlength="80">
-            </label>
-            <label>Category
-              <input id="wishCategory" maxlength="40" placeholder="Maps, Reports, Sharing">
-            </label>
-            <label>Priority
-              <select id="wishPriority">
-                <option>High</option>
-                <option selected>Medium</option>
-                <option>Low</option>
-              </select>
-            </label>
-            <label>Level of effort
-              <select id="wishEffort">
-                <option>Small</option>
-                <option selected>Medium</option>
-                <option>Large</option>
-              </select>
-            </label>
-            <label>Target version
-              <input id="wishTarget" maxlength="16" placeholder="1.1.0">
-            </label>
-            <label class="span">Description
-              <textarea id="wishDescription" maxlength="500"></textarea>
-            </label>
-            <div class="actions span">
-              <button class="primary" type="submit">Add Idea</button>
-            </div>
-          </form>
+          <p class="muted" data-hint>Wishlist ideas are managed by developer prompts so app users cannot add or remove items here.</p>
         </section>
         <section>
           <h3>Filter and Sort</h3>
@@ -1480,7 +1538,6 @@
           </div>
           <div class="actions" style="margin-top: .65rem;">
             <button id="resetWishFiltersBtn" type="button">Reset Filters</button>
-            <button id="clearWishlistBtn" class="danger" type="button">Clear Wishlist</button>
           </div>
           <div id="wishlistList" class="wishlist-list" style="margin-top: .75rem;"></div>
         </section>
@@ -1490,9 +1547,9 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "1.4.6";
+    const APP_VERSION = "1.4.7";
     const STORAGE_KEY = "usStateVisitMap.v1";
-    const WISHLIST_SEED_VERSION = "1.4.6";
+    const WISHLIST_SEED_VERSION = "1.4.7";
     const STATES = [
       ["AK","Alaska",0,5],["WA","Washington",1,0],["OR","Oregon",1,1],["CA","California",1,2],["ID","Idaho",2,1],
       ["NV","Nevada",2,2],["AZ","Arizona",2,3],["HI","Hawaii",1,6],["MT","Montana",3,0],["WY","Wyoming",3,2],
@@ -1511,13 +1568,13 @@
       { id: "day-visit", name: "Day Visit", definition: "Day Activity", color: "#facc15", countsTowardStats: true },
       { id: "pass-through", name: "Pass Through", definition: "Drive or Layover", color: "#f97316", countsTowardStats: true },
       { id: "want-to-visit", name: "Want to Visit", definition: "Interested or Planning", color: "#7c3aed", countsTowardStats: true },
-      { id: "not-interested", name: "Not Interested", definition: "Excluded from Stats", color: "#6b7280", countsTowardStats: false }
+      { id: "not-interested", name: "Not Interested", definition: "Excluded from Stats", color: "#111111", countsTowardStats: false }
     ];
     const DEFAULT_LEVEL_IDS = ["visited", "not-interested"];
-    const OPTIONAL_LEVEL_IDS = ["want-to-visit", "pass-through", "day-visit"];
+    const OPTIONAL_LEVEL_IDS = ["visited", "want-to-visit", "pass-through", "day-visit", "not-interested"];
     const THEMES = {
-      Classic: ["#16a34a", "#facc15", "#f97316", "#7c3aed", "#6b7280"],
-      Neon: ["#0bff00", "#fff100", "#ffac00", "#f000ff", "#111111"],
+      Classic: ["#16a34a", "#facc15", "#f97316", "#7c3aed", "#111111"],
+      Neon: ["#0bff00", "#fff100", "#ffac00", "#f000ff", "#000000"],
       Pastel: ["#86efac", "#fde68a", "#fdba74", "#c4b5fd", "#BBBBBB"],
       Sunset: ["#eeaf61", "#fb9062", "#ee5d6c", "#ce4993", "#6a0d83"],
       Earth: ["#36563e", "#5a8b5d", "#81b14f", "#907350", "#351b04"],
@@ -1577,9 +1634,66 @@
         effort: "Small",
         targetVersion: "1.4.7",
         category: "UI"
+      },
+      {
+        title: "Clean Up Add Level UI",
+        ticketId: "WISH-007",
+        description: "Make the add level flow cleaner, calmer, and easier to scan.",
+        priority: "Medium",
+        effort: "Medium",
+        targetVersion: "1.4.8",
+        category: "UI"
+      },
+      {
+        title: "Fix Wonky Double Scrolling in Settings",
+        ticketId: "WISH-008",
+        description: "Resolve nested or competing scroll behavior in the Settings dialog.",
+        priority: "High",
+        effort: "Small",
+        targetVersion: "1.4.8",
+        category: "Bug Fix"
+      },
+      {
+        title: "Add Home and Saved Locations",
+        ticketId: "WISH-009",
+        description: "Let users save home and favorite locations for faster trip planning context.",
+        priority: "Medium",
+        effort: "Medium",
+        targetVersion: "1.5.0",
+        category: "Planning"
+      },
+      {
+        title: "Add Drive Radius",
+        ticketId: "WISH-010",
+        description: "Show a drive-radius planning aid from home or saved locations.",
+        priority: "Medium",
+        effort: "Medium",
+        targetVersion: "1.5.0",
+        category: "Planning"
+      },
+      {
+        title: "Optimize for iPhone",
+        ticketId: "WISH-011",
+        description: "Tune layout, touch targets, scrolling, and dialogs for iPhone-sized screens.",
+        priority: "High",
+        effort: "Medium",
+        targetVersion: "1.4.8",
+        category: "Mobile"
       }
     ];
     const CHANGELOG = [
+      {
+        version: "1.4.7",
+        date: "2026-05-11",
+        title: "Organization and note entry polish",
+        notes: [
+          "Tweaked colors for better organization and black for Not Interested.",
+          "Added all recommended levels to built-in suggestions.",
+          "Tweaked suggestions to use + or Add based on the symbol setting.",
+          "Removed in-app wishlist add/remove controls so wishlist changes stay developer-managed.",
+          "Added a faster partial-date picker for notes."
+        ]
+      },
       {
         version: "1.4.6",
         date: "2026-05-10",
@@ -1736,7 +1850,7 @@
     function seedWishlist() {
       return WISHLIST_SEEDS.map((wish, index) => ({
         id: `seed-${index + 1}`,
-        createdAt: `2026-05-10T00:00:0${index}.000Z`,
+        createdAt: `2026-05-11T00:00:${String(index).padStart(2, "0")}.000Z`,
         ...wish
       }));
     }
@@ -1815,6 +1929,53 @@
       if (order === "ymd") return `${year}-${month}-${day}`;
       if (order === "dmy") return `${day}.${month}.${year}`;
       return `${month}/${day}/${year}`;
+    }
+
+    function datePartsFromValue(value) {
+      const normalized = normalizeStoredDate(value, state?.settings?.dateOrder || "mdy") || today();
+      const match = normalized.match(/^(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?$/);
+      return match ? { year: match[1], month: match[2] || "", day: match[3] || "" } : { year: today().slice(0, 4), month: "", day: "" };
+    }
+
+    function populateNoteDatePicker() {
+      $("#noteMonth").innerHTML = `<option value="">Unknown month</option>` + MONTH_NAMES.map((name, index) =>
+        `<option value="${pad2(index + 1)}">${name}</option>`
+      ).join("");
+      $("#noteMonthChips").innerHTML = MONTH_NAMES.map((name, index) =>
+        `<button class="month-chip" type="button" data-note-month="${pad2(index + 1)}" aria-pressed="false">${name.slice(0, 3)}</button>`
+      ).join("");
+    }
+
+    function syncNoteDateBuilder() {
+      const yearInput = $("#noteYear");
+      const monthInput = $("#noteMonth");
+      const dayInput = $("#noteDay");
+      const cleanYear = yearInput.value.replace(/\D/g, "").slice(0, 4);
+      if (yearInput.value !== cleanYear) yearInput.value = cleanYear;
+      const month = monthInput.value;
+      dayInput.disabled = !month;
+      if (!month) dayInput.value = "";
+      const maxDay = month && cleanYear.length === 4 ? new Date(Number(cleanYear), Number(month), 0).getDate() : 31;
+      dayInput.max = String(maxDay);
+      const cleanDay = String(dayInput.value || "").replace(/\D/g, "").slice(0, 2);
+      if (String(dayInput.value || "") !== cleanDay) dayInput.value = cleanDay;
+      if (cleanDay && Number(cleanDay) > maxDay) dayInput.value = String(maxDay);
+      const day = month ? String(dayInput.value || "") : "";
+      const normalized = cleanYear.length === 4
+        ? (month ? normalizeDateParts(cleanYear, month, day || "") : cleanYear)
+        : "";
+      $("#noteDate").value = normalized;
+      $("#noteDatePreview").textContent = normalized ? formatDateDisplay(normalized) : "Enter year";
+      $$("[data-note-month]").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.noteMonth === month)));
+      return normalized;
+    }
+
+    function setNoteDateBuilder(value = today()) {
+      const parts = datePartsFromValue(value);
+      $("#noteYear").value = parts.year;
+      $("#noteMonth").value = parts.month;
+      $("#noteDay").value = parts.day;
+      syncNoteDateBuilder();
     }
 
     function formatTicketId(number) {
@@ -1907,7 +2068,16 @@
       })).filter(wish => wish.title) : [];
       if (input.seededWishlistVersion !== WISHLIST_SEED_VERSION) {
         const titles = new Set(next.wishlist.map(wish => wish.title.toLowerCase()));
-        const migrationSeeds = new Set(["National Park Overlay Layer", "Bug Fix: Slight Scroll Issue", "UI Tweak for Text Buttons"]);
+        const migrationSeeds = new Set([
+          "National Park Overlay Layer",
+          "Bug Fix: Slight Scroll Issue",
+          "UI Tweak for Text Buttons",
+          "Clean Up Add Level UI",
+          "Fix Wonky Double Scrolling in Settings",
+          "Add Home and Saved Locations",
+          "Add Drive Radius",
+          "Optimize for iPhone"
+        ]);
         seedWishlist().forEach(wish => {
           if (input.seededWishlistVersion && !migrationSeeds.has(wish.title)) return;
           if (!titles.has(wish.title.toLowerCase())) next.wishlist.push(wish);
@@ -2262,7 +2432,7 @@
         container.innerHTML = state.levels.length >= 5 ? `<small data-hint>Maximum of 5 levels reached.</small>` : "";
         return;
       }
-      container.innerHTML = missing.map(level => `<button class="chip" type="button" data-add-builtin="${level.id}">Add ${escapeHtml(level.name)}</button>`).join("");
+      container.innerHTML = missing.map(level => `<button class="chip" type="button" data-add-builtin="${level.id}">${prefersSymbols() ? "+" : "Add"} ${escapeHtml(level.name)}</button>`).join("");
       $$("[data-add-builtin]").forEach(button => {
         button.addEventListener("click", () => {
           if (state.levels.length >= 5) return;
@@ -2625,20 +2795,22 @@
       $("#noteLevel").innerHTML = state.levels.map(level =>
         `<option value="${level.id}" ${fallbackLevel === level.id ? "selected" : ""}>${escapeHtml(level.name)}</option>`
       ).join("");
-      $("#noteDate").value = note ? note.date : today();
+      setNoteDateBuilder(note ? note.date : today().slice(0, 4));
       $("#noteText").value = note ? note.text : "";
       $("#noteDialog").showModal();
+      $("#noteYear").focus();
+      $("#noteYear").select();
     }
 
     function saveNoteFromForm() {
       const id = $("#noteId").value;
       const levelId = $("#noteLevel").value;
-      const rawDate = $("#noteDate").value.trim();
+      const rawDate = syncNoteDateBuilder();
       const parsedDate = parseFlexibleDate(rawDate, state.settings.dateOrder);
       if (!parsedDate) {
-        $("#noteDate").setCustomValidity("Use YYYY, YYYY-MM, YYYY-MM-DD, or a readable month format like June 2026.");
-        $("#noteDate").reportValidity();
-        $("#noteDate").setCustomValidity("");
+        $("#noteYear").setCustomValidity("Enter a four-digit year. Month and day can stay blank.");
+        $("#noteYear").reportValidity();
+        $("#noteYear").setCustomValidity("");
         return false;
       }
       const note = { id: id || uid(), date: parsedDate, levelId, text: $("#noteText").value.trim() };
@@ -2865,7 +3037,6 @@
         <article class="wishlist-card">
           <div class="row" style="justify-content: space-between;">
             <span class="row" style="gap: .4rem;"><span class="tag">${escapeHtml(wish.ticketId)}</span><b>${escapeHtml(wish.title)}</b></span>
-            <button class="danger" type="button" data-delete-wish="${wish.id}">Delete</button>
           </div>
           <div>${escapeHtml(wish.description || "No description")}</div>
           <div class="chips">
@@ -2876,18 +3047,6 @@
           </div>
         </article>
       `).join("") : `<div class="empty">No wishlist ideas match the current filters.</div>`;
-      $$("[data-delete-wish]").forEach(button => button.addEventListener("click", () => {
-        requestConfirm({
-          title: "Delete Wishlist Idea?",
-          message: "This wishlist idea will be permanently removed.",
-          actionLabel: "Delete Idea",
-          onConfirm: () => {
-            state.wishlist = state.wishlist.filter(wish => wish.id !== button.dataset.deleteWish);
-            save();
-            renderWishlist();
-          }
-        });
-      }));
     }
 
     function exportMarkdown() {
@@ -3105,6 +3264,29 @@
       $("#closeDrawerBtn").addEventListener("click", closeDrawer);
       $("#clearStateLevelsBtn").addEventListener("click", clearSelectedStateLevels);
       $("#addNoteBtn").addEventListener("click", () => openNoteDialog());
+      populateNoteDatePicker();
+      $("#noteYear").addEventListener("input", syncNoteDateBuilder);
+      $("#noteMonth").addEventListener("change", syncNoteDateBuilder);
+      $("#noteDay").addEventListener("input", syncNoteDateBuilder);
+      $$("[data-note-month]").forEach(button => {
+        button.addEventListener("click", () => {
+          $("#noteMonth").value = $("#noteMonth").value === button.dataset.noteMonth ? "" : button.dataset.noteMonth;
+          syncNoteDateBuilder();
+        });
+      });
+      $$("[data-note-year-delta]").forEach(button => {
+        button.addEventListener("click", () => {
+          const current = Number($("#noteYear").value) || Number(today().slice(0, 4));
+          $("#noteYear").value = String(current + Number(button.dataset.noteYearDelta));
+          syncNoteDateBuilder();
+        });
+      });
+      $("#noteTodayBtn").addEventListener("click", () => setNoteDateBuilder(today()));
+      $("#noteYearOnlyBtn").addEventListener("click", () => {
+        $("#noteMonth").value = "";
+        $("#noteDay").value = "";
+        syncNoteDateBuilder();
+      });
       $("#noteForm").addEventListener("submit", event => {
         event.preventDefault();
         if (saveNoteFromForm()) $("#noteDialog").close();
@@ -3182,25 +3364,6 @@
       $("#exportMarkdownBtn").addEventListener("click", exportMarkdown);
       $("#exportRichTextBtn").addEventListener("click", exportRichText);
       $("#importFile").addEventListener("change", importJson);
-      $("#wishlistForm").addEventListener("submit", event => {
-        event.preventDefault();
-        state.wishlist.push({
-          id: uid(),
-          ticketId: nextWishlistTicketId(),
-          title: $("#wishTitle").value.trim(),
-          description: $("#wishDescription").value.trim(),
-          priority: $("#wishPriority").value,
-          effort: $("#wishEffort").value,
-          targetVersion: $("#wishTarget").value.trim(),
-          category: $("#wishCategory").value.trim(),
-          createdAt: new Date().toISOString()
-        });
-        $("#wishlistForm").reset();
-        $("#wishPriority").value = "Medium";
-        $("#wishEffort").value = "Medium";
-        save();
-        renderWishlist();
-      });
       ["wishSearch", "wishPriorityFilter", "wishCategoryFilter", "wishSort"].forEach(id => {
         $(`#${id}`).addEventListener("input", renderWishlist);
         $(`#${id}`).addEventListener("change", renderWishlist);
@@ -3211,18 +3374,6 @@
         $("#wishCategoryFilter").value = "";
         $("#wishSort").value = "createdDesc";
         renderWishlist();
-      });
-      $("#clearWishlistBtn").addEventListener("click", () => {
-        requestConfirm({
-          title: "Clear Wishlist?",
-          message: "All wishlist ideas will be permanently removed.",
-          actionLabel: "Clear Wishlist",
-          onConfirm: () => {
-            state.wishlist = [];
-            save();
-            renderWishlist();
-          }
-        });
       });
       document.addEventListener("keydown", handlePowerShortcut);
       document.addEventListener("keyup", updatePowerOverlay);
