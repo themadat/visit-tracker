@@ -192,7 +192,12 @@
       box-shadow: 0 1px 2px rgba(16, 24, 40, .04);
     }
 
-    .map-panel { overflow: hidden; }
+    .map-panel {
+      overflow: hidden;
+      position: sticky;
+      top: calc(4.25rem + .75rem);
+      align-self: start;
+    }
     .map-head {
       display: flex;
       align-items: center;
@@ -243,11 +248,6 @@
       filter: brightness(1.06) saturate(1.06);
     }
 
-    .state-tile.is-selected {
-      stroke: var(--text);
-      stroke-width: 2.4;
-    }
-
     .map-borders {
       pointer-events: none;
       stroke: color-mix(in srgb, var(--surface) 88%, var(--text));
@@ -267,6 +267,10 @@
       gap: .65rem;
       align-items: start;
       align-content: start;
+      max-height: calc(100vh - 5.5rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding-right: .12rem;
     }
 
     [data-legend="closed"][data-notes="closed"] .side-panel-wrap { display: none; }
@@ -310,11 +314,11 @@
     .percent-pill {
       border: 1px solid var(--line);
       border-radius: 999px;
-      padding: .18rem .5rem;
+      padding: .08rem .35rem;
       background: var(--surface);
       color: var(--accent-2);
       font-weight: 800;
-      font-size: .85rem;
+      font-size: .72rem;
     }
 
     .legend-list, .note-list, .wishlist-list {
@@ -325,11 +329,11 @@
     .legend-item {
       display: grid;
       grid-template-columns: auto minmax(0, 1fr) auto auto;
-      gap: .45rem;
+      gap: .38rem;
       align-items: center;
       width: 100%;
       text-align: left;
-      padding: .48rem;
+      padding: .36rem .42rem;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: var(--surface);
@@ -337,8 +341,8 @@
 
     .legend-actions {
       display: grid;
-      grid-template-columns: repeat(2, 28px);
-      gap: .22rem;
+      grid-template-columns: repeat(4, 24px);
+      gap: .16rem;
       align-items: center;
     }
 
@@ -347,21 +351,21 @@
     }
 
     .icon-btn {
-      min-height: 28px;
-      min-width: 28px;
-      padding: .12rem;
+      min-height: 24px;
+      min-width: 24px;
+      padding: .06rem;
       line-height: 1;
-      font-size: .86rem;
+      font-size: .8rem;
     }
 
     [data-button-style="text"] .legend-actions {
-      grid-template-columns: repeat(2, minmax(58px, auto));
+      grid-template-columns: repeat(4, minmax(44px, auto));
     }
 
     [data-button-style="text"] .icon-btn {
-      min-width: 58px;
-      padding: .18rem .42rem;
-      font-size: .8rem;
+      min-width: 44px;
+      padding: .12rem .3rem;
+      font-size: .74rem;
     }
 
     .swatch, .dot {
@@ -376,11 +380,12 @@
     .dot { width: 14px; height: 14px; }
     .level-name { font-weight: 750; overflow-wrap: normal; }
     .level-copy { min-width: 0; line-height: 1.25; }
-    .level-copy small { display: block; line-height: 1.3; margin-top: .12rem; }
+    .level-copy small { display: block; line-height: 1.2; margin-top: .04rem; }
     .level-stats {
-      display: inline-grid;
-      gap: .24rem;
-      justify-items: start;
+      display: flex;
+      align-items: center;
+      gap: .18rem;
+      white-space: nowrap;
     }
     .count-pill {
       border: 1px solid var(--line);
@@ -388,8 +393,8 @@
       border-radius: 999px;
       min-width: 2.2rem;
       text-align: center;
-      padding: .12rem .45rem;
-      font-size: .78rem;
+      padding: .08rem .35rem;
+      font-size: .72rem;
       color: var(--muted);
     }
 
@@ -731,7 +736,16 @@
 
     @media (max-width: 980px) {
       .main { grid-template-columns: 1fr; }
+      .map-panel {
+        position: static;
+        top: auto;
+      }
       .side-panel-wrap { grid-template-columns: 1fr; }
+      .side-panel-wrap {
+        max-height: none;
+        overflow-y: visible;
+        padding-right: 0;
+      }
       .filters { grid-template-columns: 1fr 1fr; }
     }
 
@@ -750,7 +764,7 @@
       .form-grid, .summary-grid, .filters, .level-form-grid, .level-color-row, .notes-controls { grid-template-columns: 1fr; }
       .theme-row { grid-template-columns: 1fr; }
       .legend-item { grid-template-columns: auto minmax(0, 1fr) auto; }
-      .level-stats { grid-column: 2; }
+      .level-stats { grid-column: 2; grid-row: 2; }
       .legend-actions { grid-column: 3; grid-row: 1 / span 3; }
       .compact-note-row { grid-template-columns: 1fr; }
       .compact-note-row.header { display: none; }
@@ -1260,41 +1274,41 @@
         <h2>US State Visit Map</h2>
         <small>Version <span id="versionLabel"></span></small>
       </div>
-      <button type="button" data-close="settingsDialog">Close</button>
+      <button type="button" data-close="settingsDialog" data-shortcut="Q">Close</button>
     </header>
     <div class="dialog-body">
       <div class="tabs" role="tablist" aria-label="Settings and documents">
-        <button type="button" role="tab" data-tab="settings" aria-selected="true">Settings</button>
-        <button type="button" role="tab" data-tab="help">Help Manual</button>
-        <button type="button" role="tab" data-tab="faq">FAQ</button>
-        <button type="button" role="tab" data-tab="changelog">Changelog</button>
-        <button type="button" role="tab" data-tab="wishlist">Wishlist</button>
+        <button type="button" role="tab" data-tab="settings" aria-selected="true" data-shortcut="S">Settings</button>
+        <button type="button" role="tab" data-tab="help" data-shortcut="H">Help Manual</button>
+        <button type="button" role="tab" data-tab="faq" data-shortcut="F">FAQ</button>
+        <button type="button" role="tab" data-tab="changelog" data-shortcut="G">Changelog</button>
+        <button type="button" role="tab" data-tab="wishlist" data-shortcut="W">Wishlist</button>
       </div>
 
       <section id="tab-settings" class="doc active" role="tabpanel">
         <section>
           <h3>Appearance</h3>
           <div class="segmented" aria-label="Theme">
-            <button id="lightModeBtn" type="button" aria-pressed="true">Light Mode</button>
-            <button id="darkModeBtn" type="button" aria-pressed="false">Dark Mode</button>
+            <button id="lightModeBtn" type="button" aria-pressed="true" data-shortcut="L">Light Mode</button>
+            <button id="darkModeBtn" type="button" aria-pressed="false" data-shortcut="D">Dark Mode</button>
           </div>
         </section>
         <section>
           <h3>Interface</h3>
           <div class="segmented" aria-label="Button style">
-            <button id="symbolButtonsBtn" type="button" aria-pressed="true">Symbols</button>
-            <button id="textButtonsBtn" type="button" aria-pressed="false">Text</button>
+            <button id="symbolButtonsBtn" type="button" aria-pressed="true" data-shortcut="Y">Symbols</button>
+            <button id="textButtonsBtn" type="button" aria-pressed="false" data-shortcut="T">Text</button>
           </div>
           <div class="segmented" aria-label="UI hints" style="margin-top: .55rem;">
-            <button id="hintsOnBtn" type="button" aria-pressed="true">UI Hints On</button>
-            <button id="hintsOffBtn" type="button" aria-pressed="false">UI Hints Off</button>
+            <button id="hintsOnBtn" type="button" aria-pressed="true" data-shortcut="U">UI Hints On</button>
+            <button id="hintsOffBtn" type="button" aria-pressed="false" data-shortcut="O">UI Hints Off</button>
           </div>
         </section>
         <section>
           <h3>Map Interaction</h3>
           <div class="segmented" aria-label="Tap behavior">
-            <button id="cycleModeBtn" type="button" aria-pressed="true">Tap to Cycle</button>
-            <button id="selectModeBtn" type="button" aria-pressed="false">Tap to Select</button>
+            <button id="cycleModeBtn" type="button" aria-pressed="true" data-shortcut="C">Tap to Cycle</button>
+            <button id="selectModeBtn" type="button" aria-pressed="false" data-shortcut="P">Tap to Select</button>
           </div>
         </section>
         <section>
@@ -1302,9 +1316,9 @@
           <div class="import-box">
             <p class="muted" data-hint>Data is saved in this browser only. Export a JSON backup to move or restore your map elsewhere.</p>
             <div class="actions">
-              <button id="exportJsonBtn" class="primary" type="button">Export JSON Backup</button>
-              <button id="exportMarkdownBtn" type="button">Complete Markdown</button>
-              <button id="exportRichTextBtn" type="button">Simple Rich Text</button>
+              <button id="exportJsonBtn" class="primary" type="button" data-shortcut="J">Export JSON Backup</button>
+              <button id="exportMarkdownBtn" type="button" data-shortcut="M">Complete Markdown</button>
+              <button id="exportRichTextBtn" type="button" data-shortcut="E">Simple Rich Text</button>
             </div>
             <label>Import JSON backup
               <input id="importFile" type="file" accept="application/json,.json">
@@ -1417,7 +1431,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "1.4.2";
+    const APP_VERSION = "1.4.3";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const WISHLIST_SEED_VERSION = "1.4.1";
     const STATES = [
@@ -1453,6 +1467,7 @@
     const WISHLIST_SEEDS = [
       {
         title: "Switch to Globe Country Map",
+        ticketId: "WISH-001",
         description: "Add a global switch that lets the map change from US states to a world globe for marking visited countries.",
         priority: "High",
         effort: "Large",
@@ -1461,6 +1476,7 @@
       },
       {
         title: "More Share and Fun Options",
+        ticketId: "WISH-002",
         description: "Add more ways to share maps, celebrate progress, and create playful exports.",
         priority: "Medium",
         effort: "Medium",
@@ -1469,6 +1485,7 @@
       },
       {
         title: "Add US Territories to the Map",
+        ticketId: "WISH-003",
         description: "Include US territories with the default territory level set to Not Interested or the equivalent lowest opt-out level.",
         priority: "Medium",
         effort: "Large",
@@ -1477,6 +1494,7 @@
       },
       {
         title: "National Park Overlay Layer",
+        ticketId: "WISH-004",
         description: "Add an optional overlay for national parks so trips can show park visits alongside state progress.",
         priority: "Medium",
         effort: "Large",
@@ -1485,6 +1503,16 @@
       }
     ];
     const CHANGELOG = [
+      {
+        version: "1.4.3",
+        date: "2026-05-10",
+        title: "Shortcut and rail polish",
+        notes: [
+          "Added ticket IDs to wishlist items for easier reference.",
+          "Added Settings shortcut badges and fixed Option-modified letter shortcuts.",
+          "Made the Legend/Notes rail scroll independently while the map stays visible."
+        ]
+      },
       {
         version: "1.4.2",
         date: "2026-05-10",
@@ -1603,6 +1631,36 @@
       }));
     }
 
+    function formatTicketId(number) {
+      return `WISH-${String(number).padStart(3, "0")}`;
+    }
+
+    function normalizeTicketId(value) {
+      const text = String(value || "").trim().toUpperCase();
+      return /^WISH-\d{3,}$/.test(text) ? text : "";
+    }
+
+    function assignWishlistTickets(items) {
+      const used = new Set();
+      let nextNumber = 1;
+      return items.map(wish => {
+        let ticketId = normalizeTicketId(wish.ticketId);
+        while (!ticketId || used.has(ticketId)) {
+          ticketId = formatTicketId(nextNumber);
+          nextNumber += 1;
+        }
+        used.add(ticketId);
+        const parsed = Number.parseInt(ticketId.replace("WISH-", ""), 10);
+        if (Number.isFinite(parsed) && parsed >= nextNumber) nextNumber = parsed + 1;
+        return { ...wish, ticketId };
+      });
+    }
+
+    function nextWishlistTicketId() {
+      const assigned = assignWishlistTickets([...state.wishlist, { title: "temp" }]);
+      return assigned[assigned.length - 1].ticketId;
+    }
+
     function loadState() {
       try {
         const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
@@ -1650,6 +1708,7 @@
       });
       next.wishlist = Array.isArray(input.wishlist) ? input.wishlist.map(wish => ({
         id: String(wish.id || uid()),
+        ticketId: String(wish.ticketId || ""),
         title: String(wish.title || "").slice(0, 80),
         description: String(wish.description || "").slice(0, 500),
         priority: ["High","Medium","Low"].includes(wish.priority) ? wish.priority : "Medium",
@@ -1665,6 +1724,7 @@
           if (!titles.has(wish.title.toLowerCase())) next.wishlist.push(wish);
         });
       }
+      next.wishlist = assignWishlistTickets(next.wishlist);
       next.seededWishlistVersion = WISHLIST_SEED_VERSION;
       next.mapName = String(next.mapName || base.mapName).slice(0, 80);
       return next;
@@ -1844,6 +1904,18 @@
       setButtonLabel("#notesViewExpandedBtn", "▤", "Expanded View");
       setButtonLabel("#notesViewCompactBtn", "☰", "Compact View");
       setButtonLabel("#deleteLevelBtn", "⌫", "Delete Level");
+      setButtonLabel("#lightModeBtn", "☀︎", "Light Mode");
+      setButtonLabel("#darkModeBtn", "◐", "Dark Mode");
+      setButtonLabel("#symbolButtonsBtn", "⌘", "Symbols");
+      setButtonLabel("#textButtonsBtn", "T", "Text");
+      setButtonLabel("#hintsOnBtn", "?", "UI Hints On");
+      setButtonLabel("#hintsOffBtn", "×", "UI Hints Off");
+      setButtonLabel("#cycleModeBtn", "⟳", "Tap to Cycle");
+      setButtonLabel("#selectModeBtn", "⌖", "Tap to Select");
+      setButtonLabel("#exportJsonBtn", "J", "Export JSON Backup");
+      setButtonLabel("#exportMarkdownBtn", "M", "Complete Markdown");
+      setButtonLabel("#exportRichTextBtn", "E", "Simple Rich Text");
+      setButtonLabel("#resetAppBtn", "⌫", "Reset App Data");
       $("#legendToggleBtn").setAttribute("aria-pressed", String(legendPanelOpen));
       $("#notesToggleBtn").setAttribute("aria-pressed", String(notesPanelOpen));
     }
@@ -1874,7 +1946,6 @@
         const level = dominantLevel(abbr);
         const names = stateLevelNames(abbr);
         tile.style.setProperty("--state-fill", level ? level.color : "var(--state-empty)");
-        tile.classList.toggle("is-selected", selectedState === abbr);
         tile.setAttribute("aria-label", `${tile.dataset.name}: ${names.length ? names.join(", ") : "Unvisited"}`);
       });
     }
@@ -2509,7 +2580,7 @@
         `<option ${category === cat ? "selected" : ""}>${escapeHtml(cat)}</option>`
       ).join("");
       let items = state.wishlist.filter(wish => {
-        const blob = `${wish.title} ${wish.description} ${wish.category}`.toLowerCase();
+        const blob = `${wish.ticketId} ${wish.title} ${wish.description} ${wish.category}`.toLowerCase();
         return (!search || blob.includes(search)) && (!priority || wish.priority === priority) && (!category || wish.category === category);
       });
       const rank = { High: 0, Medium: 1, Low: 2 };
@@ -2523,7 +2594,7 @@
       $("#wishlistList").innerHTML = items.length ? items.map(wish => `
         <article class="wishlist-card">
           <div class="row" style="justify-content: space-between;">
-            <b>${escapeHtml(wish.title)}</b>
+            <span class="row" style="gap: .4rem;"><span class="tag">${escapeHtml(wish.ticketId)}</span><b>${escapeHtml(wish.title)}</b></span>
             <button class="danger" type="button" data-delete-wish="${wish.id}">Delete</button>
           </div>
           <div>${escapeHtml(wish.description || "No description")}</div>
@@ -2627,7 +2698,33 @@
       if (!powerOverlayActive) return;
       if (["shift", "control", "alt", "option", "meta"].includes(event.key.toLowerCase())) return;
       if (/^(input|textarea|select)$/i.test(event.target.tagName)) return;
-      const key = event.key.toLowerCase();
+      const key = event.code?.startsWith("Key") ? event.code.slice(3).toLowerCase() : event.key.toLowerCase();
+      if ($("#settingsDialog").open) {
+        const settingsActions = {
+          q: () => $("#settingsDialog").close(),
+          s: () => switchTab("settings"),
+          h: () => switchTab("help"),
+          f: () => switchTab("faq"),
+          g: () => switchTab("changelog"),
+          w: () => switchTab("wishlist"),
+          l: () => updateSetting("theme", "light"),
+          d: () => updateSetting("theme", "dark"),
+          y: () => updateSetting("buttonStyle", "symbols"),
+          t: () => updateSetting("buttonStyle", "text"),
+          u: () => updateSetting("uiHints", true),
+          o: () => updateSetting("uiHints", false),
+          c: () => updateSetting("tapBehavior", "cycle"),
+          p: () => updateSetting("tapBehavior", "select"),
+          j: () => $("#exportJsonBtn").click(),
+          m: () => $("#exportMarkdownBtn").click(),
+          e: () => $("#exportRichTextBtn").click(),
+          x: () => $("#resetAppBtn").click()
+        };
+        if (!settingsActions[key]) return;
+        event.preventDefault();
+        settingsActions[key]();
+        return;
+      }
       const actions = {
         l: toggleLegendPanel,
         n: toggleNotesPanel,
@@ -2770,6 +2867,7 @@
         event.preventDefault();
         state.wishlist.push({
           id: uid(),
+          ticketId: nextWishlistTicketId(),
           title: $("#wishTitle").value.trim(),
           description: $("#wishDescription").value.trim(),
           priority: $("#wishPriority").value,
