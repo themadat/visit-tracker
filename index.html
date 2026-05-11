@@ -374,10 +374,12 @@
       gap: .65rem;
       align-items: start;
       align-content: start;
-      max-height: calc(100vh - 5.5rem);
+      max-height: calc(100vh - 5.5rem - .85rem - env(safe-area-inset-bottom, 0px));
       overflow-y: auto;
       overscroll-behavior: contain;
       padding-right: .12rem;
+      padding-bottom: calc(.85rem + env(safe-area-inset-bottom, 0px));
+      scroll-padding-bottom: calc(.85rem + env(safe-area-inset-bottom, 0px));
     }
 
     [data-legend="closed"][data-notes="closed"] .side-panel-wrap {
@@ -1053,6 +1055,7 @@
         max-height: none;
         overflow-y: visible;
         padding-right: 0;
+        padding-bottom: calc(.85rem + env(safe-area-inset-bottom, 0px));
       }
 
       .filters {
@@ -2036,7 +2039,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "1.5.7";
+    const APP_VERSION = "1.5.8";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const WISHLIST_SEED_VERSION = "1.5.2";
     const STATES = [
@@ -2085,7 +2088,7 @@
       {
         title: "Switch to Globe Country Map",
         ticketId: "WISH-001",
-        description: "Add a global switch that lets the map change from US states to a world globe for marking visited countries. Consider projections: Waterman (Robinson, Winkel-Tripel)",
+        description: "Add a global switch that lets the map change from US states to a world globe for marking visited countries. Consider projections: Waterman (Robinson, Winkel-Tripel). Support countries that no longer exist. https://commons.wikimedia.org/wiki/File:BlankMap-World.svg",
         priority: "High",
         effort: "Large",
         targetVersion: "2.0.0",
@@ -2183,6 +2186,15 @@
       }
     ];
     const CHANGELOG = [
+      {
+        version: "1.5.8",
+        date: "2026-05-11",
+        title: "Map tap refinement",
+        notes: [
+          "Cycle-mode map taps now select already-marked states before cycling on repeat taps.",
+          "Added bottom safe-area breathing room to the Legend and Notes rail."
+        ]
+      },
       {
         version: "1.5.7",
         date: "2026-05-11",
@@ -2839,9 +2851,15 @@
 
     function handleStateTap(abbr, event) {
       if (event?.type === "click") event.currentTarget?.blur?.();
+      const wasActiveInNotes = notesPanelOpen && notesPanelState === abbr;
+      const alreadyMarked = getStateLevelIds(abbr).length > 0;
       selectStateInNotes(abbr);
       if (state.settings.tapBehavior === "cycle") {
         if ($("#selectDialog").open) $("#selectDialog").close();
+        if (alreadyMarked && !wasActiveInNotes) {
+          render();
+          return;
+        }
         cycleState(abbr);
       }
       if (state.settings.tapBehavior === "select") openSelectDialog(abbr, event);
