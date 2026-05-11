@@ -178,13 +178,12 @@
       margin: 0 auto;
       padding: clamp(.75rem, 1.6vw, 1.25rem);
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(360px, 420px);
+      grid-template-columns: minmax(0, 2fr) minmax(320px, 1fr);
       gap: .85rem;
       align-items: stretch;
     }
 
     [data-legend="closed"][data-notes="closed"] .main { grid-template-columns: 1fr; }
-    [data-legend="open"][data-notes="open"] .main { grid-template-columns: minmax(0, 1fr) minmax(690px, 860px); }
 
     .panel {
       background: var(--surface);
@@ -264,13 +263,10 @@
 
     .side-panel-wrap {
       display: grid;
-      grid-template-columns: minmax(360px, 420px);
-      gap: .85rem;
+      grid-template-columns: minmax(0, 1fr);
+      gap: .65rem;
       align-items: start;
-    }
-
-    [data-legend="open"][data-notes="open"] .side-panel-wrap {
-      grid-template-columns: repeat(2, minmax(320px, 1fr));
+      align-content: start;
     }
 
     [data-legend="closed"][data-notes="closed"] .side-panel-wrap { display: none; }
@@ -279,8 +275,8 @@
 
     .side-panel {
       display: grid;
-      gap: .8rem;
-      padding: .85rem;
+      gap: .62rem;
+      padding: .7rem;
       align-self: stretch;
       align-content: start;
     }
@@ -323,17 +319,17 @@
 
     .legend-list, .note-list, .wishlist-list {
       display: grid;
-      gap: .5rem;
+      gap: .4rem;
     }
 
     .legend-item {
       display: grid;
-      grid-template-columns: auto minmax(0, 1fr) auto;
-      gap: .6rem;
+      grid-template-columns: auto minmax(0, 1fr) auto auto;
+      gap: .45rem;
       align-items: center;
       width: 100%;
       text-align: left;
-      padding: .58rem;
+      padding: .48rem;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: var(--surface);
@@ -384,7 +380,7 @@
     .level-stats {
       display: inline-grid;
       gap: .24rem;
-      margin-top: .34rem;
+      justify-items: start;
     }
     .count-pill {
       border: 1px solid var(--line);
@@ -450,7 +446,7 @@
       gap: .55rem;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      padding: .55rem .65rem;
+      padding: .45rem .55rem;
       background: var(--surface);
       font-weight: 650;
     }
@@ -471,6 +467,7 @@
       grid-template-rows: auto 1fr;
     }
 
+    #stateDrawer { display: none; }
     .drawer.open { transform: translateX(0); }
     .drawer header, dialog header {
       display: flex;
@@ -492,10 +489,10 @@
     .note-card, .wishlist-card, .state-list-card {
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      padding: .8rem;
+      padding: .62rem;
       background: var(--surface);
       display: grid;
-      gap: .5rem;
+      gap: .38rem;
     }
 
     .state-list-card {
@@ -623,7 +620,7 @@
     .notes-controls {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: .55rem;
+      gap: .42rem;
     }
 
     .notes-controls .segmented {
@@ -633,6 +630,8 @@
     .notes-controls button {
       flex: 1 1 0;
       white-space: nowrap;
+      min-height: 30px;
+      padding: .34rem .45rem;
     }
 
     .compact-notes {
@@ -645,11 +644,18 @@
       grid-template-columns: minmax(120px, .9fr) minmax(100px, .65fr) minmax(110px, .8fr) minmax(160px, 1.35fr);
       gap: .5rem;
       align-items: start;
-      padding: .55rem .6rem;
+      justify-items: start;
+      text-align: left;
+      padding: .46rem .55rem;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: var(--surface);
       font-size: .88rem;
+    }
+
+    .compact-note-row > * {
+      justify-self: start;
+      text-align: left;
     }
 
     .compact-note-row.header {
@@ -723,16 +729,9 @@
 
     .hidden { display: none !important; }
 
-    @media (max-width: 1320px) {
-      [data-legend="open"][data-notes="open"] .main { grid-template-columns: 1fr; }
-      [data-legend="open"][data-notes="open"] .side-panel-wrap { grid-template-columns: 1fr 1fr; }
-    }
-
     @media (max-width: 980px) {
       .main { grid-template-columns: 1fr; }
-      [data-legend="open"][data-notes="open"] .main { grid-template-columns: 1fr; }
       .side-panel-wrap { grid-template-columns: 1fr; }
-      [data-legend="open"][data-notes="open"] .side-panel-wrap { grid-template-columns: 1fr 1fr; }
       .filters { grid-template-columns: 1fr 1fr; }
     }
 
@@ -750,9 +749,9 @@
       svg { min-width: 560px; }
       .form-grid, .summary-grid, .filters, .level-form-grid, .level-color-row, .notes-controls { grid-template-columns: 1fr; }
       .theme-row { grid-template-columns: 1fr; }
-      [data-legend="open"][data-notes="open"] .side-panel-wrap { grid-template-columns: 1fr; }
       .legend-item { grid-template-columns: auto minmax(0, 1fr) auto; }
-      .legend-actions { grid-column: 3; grid-row: 1 / span 2; }
+      .level-stats { grid-column: 2; }
+      .legend-actions { grid-column: 3; grid-row: 1 / span 3; }
       .compact-note-row { grid-template-columns: 1fr; }
       .compact-note-row.header { display: none; }
       .drawer { width: 100vw; }
@@ -1058,7 +1057,7 @@
       <aside id="sidePanel" class="side-panel-wrap" aria-label="Visit tools">
         <section id="legendPanel" class="panel side-panel" aria-label="Visit summary and editable legend">
           <section>
-            <div class="row" style="justify-content: space-between; margin-bottom: .65rem;">
+            <div class="row" style="justify-content: space-between; margin-bottom: .45rem;">
               <h2>Legend</h2>
               <div class="actions">
                 <button id="smartColorsBtn" type="button" data-shortcut="C">Auto Colors</button>
@@ -1104,20 +1103,20 @@
     </header>
     <div class="drawer-body">
       <section id="markedStatesSection" class="hidden">
-        <div class="row" style="justify-content: space-between; margin-bottom: .65rem;">
+        <div class="row" style="justify-content: space-between; margin-bottom: .45rem;">
           <h2>Notes</h2>
         </div>
         <div id="markedStatesList" class="note-list"></div>
       </section>
       <section id="levelsSection">
-        <div class="row" style="justify-content: space-between; margin-bottom: .65rem;">
+        <div class="row" style="justify-content: space-between; margin-bottom: .45rem;">
           <h2>Applied Levels</h2>
           <button id="clearStateLevelsBtn" class="danger" type="button">Clear</button>
         </div>
         <div id="drawerLevelChecks" class="level-checks"></div>
       </section>
       <section id="notesSection">
-        <div class="row" style="justify-content: space-between; margin-bottom: .65rem;">
+        <div class="row" style="justify-content: space-between; margin-bottom: .45rem;">
           <h2>Visit Notes</h2>
           <button id="addNoteBtn" type="button">Add Note</button>
         </div>
@@ -1418,7 +1417,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "1.4.1";
+    const APP_VERSION = "1.4.2";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const WISHLIST_SEED_VERSION = "1.4.1";
     const STATES = [
@@ -1486,6 +1485,16 @@
       }
     ];
     const CHANGELOG = [
+      {
+        version: "1.4.2",
+        date: "2026-05-10",
+        title: "Stacked notes layout",
+        notes: [
+          "Changed the desktop layout to a 66/33 map and stacked Legend/Notes rail.",
+          "State clicks now select the state in Notes instead of opening the slide-over drawer.",
+          "Made notes controls and legend rows more compact."
+        ]
+      },
       {
         version: "1.4.1",
         date: "2026-05-10",
@@ -1565,7 +1574,7 @@
     let selectedState = null;
     let drawerMode = "state";
     let legendPanelOpen = true;
-    let notesPanelOpen = false;
+    let notesPanelOpen = true;
     let notesPanelState = null;
     let notesSortMode = "alpha";
     let notesViewMode = "expanded";
@@ -1802,12 +1811,11 @@
     }
 
     function handleStateTap(abbr, event) {
-      selectedState = abbr;
+      selectStateInNotes(abbr);
       if (state.settings.tapBehavior === "cycle") {
         if ($("#selectDialog").open) $("#selectDialog").close();
         cycleState(abbr);
       }
-      openStateDrawer(abbr);
       if (state.settings.tapBehavior === "select") openSelectDialog(abbr, event);
       render();
     }
@@ -1831,6 +1839,10 @@
       const atMax = state.levels.length >= 5;
       setButtonLabel("#addLevelBtn", atMax ? "5/5" : "+", atMax ? "MAX LEVELS" : "Add Level");
       setButtonLabel("#notesPanelBackBtn", "‹", "All Notes");
+      setButtonLabel("#notesSortAlphaBtn", "A-Z", "Alphabetical");
+      setButtonLabel("#notesSortChronoBtn", "◷", "Chronological");
+      setButtonLabel("#notesViewExpandedBtn", "▤", "Expanded View");
+      setButtonLabel("#notesViewCompactBtn", "☰", "Compact View");
       setButtonLabel("#deleteLevelBtn", "⌫", "Delete Level");
       $("#legendToggleBtn").setAttribute("aria-pressed", String(legendPanelOpen));
       $("#notesToggleBtn").setAttribute("aria-pressed", String(notesPanelOpen));
@@ -1853,8 +1865,7 @@
       renderBuiltinLevels();
       renderNotesPanel();
       renderSettingsControls();
-      if (drawerMode === "state" && selectedState) renderDrawer();
-      if (drawerMode === "list") renderMarkedStatesDrawer();
+      if ($("#stateDrawer").classList.contains("open")) closeDrawer();
     }
 
     function renderMap() {
@@ -1894,10 +1905,10 @@
           <span class="level-copy">
             <span class="level-name">${escapeHtml(level.name)}</span><br>
             <small>${escapeHtml(level.definition)}</small>
-            <span class="level-stats" aria-label="${escapeHtml(level.name)} stats">
-              <span class="count-pill">${counts[level.id] || 0}</span>
-              <span class="percent-pill">${Math.round(((counts[level.id] || 0) / 50) * 100)}%</span>
-            </span>
+          </span>
+          <span class="level-stats" aria-label="${escapeHtml(level.name)} stats">
+            <span class="count-pill">${counts[level.id] || 0}</span>
+            <span class="percent-pill">${Math.round(((counts[level.id] || 0) / 50) * 100)}%</span>
           </span>
           <span class="legend-actions">
             <span class="order-buttons" aria-label="Move ${escapeHtml(level.name)}">
@@ -1968,19 +1979,16 @@
       }
     }
 
-    function openStateDrawer(abbr) {
+    function selectStateInNotes(abbr) {
       selectedState = abbr;
-      if (notesPanelOpen) {
-        notesPanelState = abbr;
-        renderNotesPanel();
-        return;
-      }
-      drawerMode = "state";
-      renderDrawer();
-      const drawer = $("#stateDrawer");
-      drawer.dataset.abbr = abbr;
-      drawer.classList.add("open");
-      drawer.setAttribute("aria-hidden", "false");
+      notesPanelOpen = true;
+      notesPanelState = abbr;
+      closeDrawer();
+    }
+
+    function openStateDrawer(abbr) {
+      selectStateInNotes(abbr);
+      render();
     }
 
     function renderDrawer() {
@@ -2022,11 +2030,10 @@
 
     function openMarkedStatesDrawer() {
       if ($("#selectDialog").open) $("#selectDialog").close();
-      drawerMode = "list";
-      renderMarkedStatesDrawer();
-      const drawer = $("#stateDrawer");
-      drawer.classList.add("open");
-      drawer.setAttribute("aria-hidden", "false");
+      notesPanelOpen = true;
+      notesPanelState = null;
+      closeDrawer();
+      render();
     }
 
     function markedStateAbbrs() {
@@ -2158,6 +2165,7 @@
       if (!$("#notesPanel")) return;
       renderNotesPanelControls();
       $("#notesPanelBackBtn").classList.toggle("hidden", !notesPanelState);
+      $(".notes-controls").classList.toggle("hidden", Boolean(notesPanelState));
       $("#notesPanelContent").className = notesViewMode === "compact" ? "compact-notes" : "note-list";
       if (notesPanelState && STATE_NAMES[notesPanelState]) {
         selectedState = notesPanelState;
@@ -2170,7 +2178,7 @@
         $("#notesPanelContent").className = "note-list";
         $("#notesPanelContent").innerHTML = `
           <section>
-            <div class="row" style="justify-content: space-between; margin-bottom: .65rem;">
+            <div class="row" style="justify-content: space-between; margin-bottom: .45rem;">
               <h3>Applied Levels</h3>
               <button id="notesPanelClearBtn" class="danger" type="button" data-shortcut="X">${escapeHtml(labelFor("⌫", "Clear"))}</button>
             </div>
@@ -2185,7 +2193,7 @@
             </div>
           </section>
           <section>
-            <div class="row" style="justify-content: space-between; margin-bottom: .65rem;">
+            <div class="row" style="justify-content: space-between; margin-bottom: .45rem;">
               <h3>Visit Notes</h3>
               <button id="notesPanelAddNoteBtn" type="button" data-shortcut="A">${escapeHtml(labelFor("+", "Add Note"))}</button>
             </div>
@@ -2311,7 +2319,6 @@
       else state.notes[selectedState].push(note);
       addStateLevel(selectedState, levelId);
       save();
-      renderDrawer();
       render();
     }
 
@@ -2324,7 +2331,6 @@
         onConfirm: () => {
           state.notes[selectedState] = (state.notes[selectedState] || []).filter(note => note.id !== noteId);
           save();
-          renderDrawer();
           render();
         }
       });
@@ -2341,10 +2347,10 @@
           setStateLevelIds(abbr, []);
           (state.notes[abbr] || []).forEach(note => note.levelId = "");
           selectedState = abbr;
-          drawerMode = "state";
+          notesPanelState = abbr;
+          notesPanelOpen = true;
           save();
           render();
-          renderDrawer();
         }
       });
     }
@@ -2712,7 +2718,7 @@
         }
         save();
         $("#selectDialog").close();
-        openStateDrawer(selectedState);
+        selectStateInNotes(selectedState);
         render();
       });
       $("#addLevelBtn").addEventListener("click", () => openLevelDialog());
