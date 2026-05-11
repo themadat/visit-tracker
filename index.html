@@ -752,13 +752,48 @@
       box-shadow: 0 1px 2px rgba(16, 24, 40, .12);
     }
 
-    .date-examples {
-      display: grid;
-      gap: .25rem;
-      margin-top: .55rem;
+    .settings-section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+      flex-wrap: wrap;
+    }
+
+    .date-current-example {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--surface-2);
+      color: var(--accent-2);
+      padding: .18rem .52rem;
+      font-size: .78rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .date-option-label {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: .08rem;
+      line-height: 1.05;
+      pointer-events: none;
+    }
+
+    .date-option-title {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .24rem;
+    }
+
+    .date-toggle-example {
       color: var(--muted);
-      font-size: .82rem;
-      line-height: 1.25;
+      font-size: .68rem;
+      font-weight: 750;
+      line-height: 1.1;
+      white-space: nowrap;
     }
 
     .partial-date-picker {
@@ -2224,7 +2259,10 @@
           </div>
         </section>
         <section>
-          <h3>Date Format</h3>
+          <div class="settings-section-head">
+            <h3>Date Format</h3>
+            <span id="dateCurrentExample" class="date-current-example" aria-label="Current date format example"></span>
+          </div>
           <div class="segmented" aria-label="Date order">
             <button id="dateMdyBtn" type="button" aria-pressed="true" data-shortcut="1">MDY</button>
             <button id="dateDmyBtn" type="button" aria-pressed="false" data-shortcut="2">DMY</button>
@@ -2233,12 +2271,6 @@
           <div class="segmented" aria-label="Date style" style="margin-top: .55rem;">
             <button id="dateNumericBtn" type="button" aria-pressed="false" data-shortcut="N">Numerical</button>
             <button id="dateAlphaBtn" type="button" aria-pressed="true" data-shortcut="A">Alphabetical</button>
-          </div>
-          <div class="date-examples" aria-label="Date format examples">
-            <span><b>Current:</b> <span id="dateCurrentExample"></span></span>
-            <span><b>MDY:</b> <span id="dateMdyExample"></span></span>
-            <span><b>DMY:</b> <span id="dateDmyExample"></span></span>
-            <span><b>YMD:</b> <span id="dateYmdExample"></span></span>
           </div>
         </section>
         <section>
@@ -3205,6 +3237,20 @@
       button.title = powerOverlayActive && shortcut ? `${text} (${shortcut})` : text;
     }
 
+    function setDateButtonLabel(selector, symbol, text, example, aria = text) {
+      const button = typeof selector === "string" ? $(selector) : selector;
+      if (!button) return;
+      button.innerHTML = `
+        <span class="date-option-label">
+          <span class="date-option-title"><span class="btn-symbol" aria-hidden="true">${escapeHtml(symbol)}</span><span class="btn-text">${escapeHtml(text)}</span></span>
+          <span class="date-toggle-example">${escapeHtml(example)}</span>
+        </span>
+      `;
+      button.setAttribute("aria-label", `${aria}: ${example}`);
+      const shortcut = button.dataset.shortcut;
+      button.title = powerOverlayActive && shortcut ? `${text}: ${example} (${shortcut})` : `${text}: ${example}`;
+    }
+
     function actionButtonHtml({ symbol, text, className = "icon-btn", attrs = "", aria = text, shortcut = "" }) {
       const shortcutAttr = shortcut ? ` data-shortcut="${shortcut}"` : "";
       return `<button class="${className}" type="button" title="${escapeHtml(text)}" aria-label="${escapeHtml(aria)}"${shortcutAttr} ${attrs}>${buttonMarkup(symbol, text)}</button>`;
@@ -3318,11 +3364,6 @@
       setButtonLabelBoth("#hintsOffBtn", "×", "UI Hints Off");
       setButtonLabelBoth("#cycleModeBtn", "⟳", "Tap to Cycle");
       setButtonLabelBoth("#selectModeBtn", "⌖", "Tap to Select");
-      setButtonLabelBoth("#dateMdyBtn", "M", "MDY");
-      setButtonLabelBoth("#dateDmyBtn", "D", "DMY");
-      setButtonLabelBoth("#dateYmdBtn", "Y", "YMD");
-      setButtonLabelBoth("#dateNumericBtn", "№", "Numerical");
-      setButtonLabelBoth("#dateAlphaBtn", "A", "Alphabetical");
       setButtonLabelBoth("#exportJsonBtn", "J", "Export JSON Backup");
       setButtonLabelBoth("#exportMarkdownBtn", "M", "Complete Markdown");
       setButtonLabelBoth("#exportRichTextBtn", "E", "Simple Rich Text");
@@ -4149,9 +4190,11 @@
       $("#dateAlphaBtn").setAttribute("aria-pressed", state.settings.dateStyle === "alpha");
       const sample = "2026-06-01";
       $("#dateCurrentExample").textContent = formatDateDisplay(sample);
-      $("#dateMdyExample").textContent = `${formatDateDisplay(sample, "mdy", "numeric")} / ${formatDateDisplay(sample, "mdy", "alpha")}`;
-      $("#dateDmyExample").textContent = `${formatDateDisplay(sample, "dmy", "numeric")} / ${formatDateDisplay(sample, "dmy", "alpha")}`;
-      $("#dateYmdExample").textContent = `${formatDateDisplay(sample, "ymd", "numeric")} / ${formatDateDisplay(sample, "ymd", "alpha")}`;
+      setDateButtonLabel("#dateMdyBtn", "M", "MDY", formatDateDisplay(sample, "mdy", state.settings.dateStyle));
+      setDateButtonLabel("#dateDmyBtn", "D", "DMY", formatDateDisplay(sample, "dmy", state.settings.dateStyle));
+      setDateButtonLabel("#dateYmdBtn", "Y", "YMD", formatDateDisplay(sample, "ymd", state.settings.dateStyle));
+      setDateButtonLabel("#dateNumericBtn", "№", "Numerical", formatDateDisplay(sample, state.settings.dateOrder, "numeric"));
+      setDateButtonLabel("#dateAlphaBtn", "A", "Alphabetical", formatDateDisplay(sample, state.settings.dateOrder, "alpha"));
     }
 
     function renderChangelog() {
