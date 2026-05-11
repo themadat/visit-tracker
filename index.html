@@ -307,18 +307,29 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
+      gap: .65rem;
       padding: .95rem 1rem;
       border-bottom: 1px solid var(--line);
     }
 
+    .map-head-title {
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
     .map-head-actions {
       display: flex;
-      gap: .45rem;
+      gap: .32rem;
       align-items: center;
-      flex-wrap: wrap;
+      flex: 0 0 auto;
+      flex-wrap: nowrap;
       justify-content: flex-end;
       min-width: 0;
+    }
+
+    .map-head-actions>button {
+      display: grid;
+      place-items: center;
     }
 
     .map-label-toggle {
@@ -339,6 +350,8 @@
 
     .map-label-toggle button {
       min-height: 30px;
+      min-width: 30px;
+      aspect-ratio: 1;
       padding: .24rem .42rem;
       font-size: .8rem;
     }
@@ -350,8 +363,11 @@
 
     [data-button-style="symbols"] .map-head-actions button {
       flex: 0 0 auto;
+      width: 38px;
+      min-width: 38px;
       min-height: 38px;
-      padding: .42rem .65rem;
+      aspect-ratio: 1;
+      padding: 0;
       font-size: .96rem;
       line-height: 1;
     }
@@ -367,8 +383,10 @@
     }
 
     [data-button-style="symbols"] .map-label-toggle button {
+      width: 32px;
+      min-width: 32px;
       min-height: 32px;
-      padding: .24rem .36rem;
+      padding: 0;
       font-size: .82rem;
     }
 
@@ -1314,28 +1332,34 @@
 
       .map-head {
         align-items: flex-start;
-        flex-direction: column;
+        flex-direction: row;
+        gap: .45rem;
+        padding: .7rem .75rem;
       }
 
       .map-head-actions {
-        width: 100%;
-        justify-content: flex-start;
-      }
-
-      .map-head-actions button {
-        flex: 1 1 auto;
-      }
-
-      [data-button-style="symbols"] .map-head-actions {
-        width: 100%;
+        width: auto;
+        justify-content: flex-end;
+        flex: 0 0 auto;
         flex-wrap: nowrap;
         gap: .24rem;
       }
 
+      .map-head-actions button {
+        flex: 0 0 auto;
+      }
+
+      [data-button-style="symbols"] .map-head-actions {
+        width: auto;
+        flex-wrap: nowrap;
+      }
+
       [data-button-style="symbols"] .map-head-actions button {
         flex: 0 0 auto;
+        width: 34px;
+        min-width: 34px;
         min-height: 34px;
-        padding: .3rem .48rem;
+        padding: 0;
         font-size: .88rem;
       }
 
@@ -1351,8 +1375,10 @@
       }
 
       [data-button-style="symbols"] .map-label-toggle button {
+        width: 30px;
+        min-width: 30px;
         min-height: 30px;
-        padding: .2rem .28rem;
+        padding: 0;
         font-size: .72rem;
       }
 
@@ -1497,7 +1523,7 @@
     <main class="main">
       <section class="panel map-panel" aria-labelledby="mapHeading">
         <div class="map-head">
-          <div>
+          <div class="map-head-title">
             <h2 id="mapHeading">State Map</h2>
             <small id="tapHint" data-hint>Tap a state to cycle its visit level.</small>
           </div>
