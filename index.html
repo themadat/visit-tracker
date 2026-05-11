@@ -95,23 +95,27 @@
       pointer-events: none;
     }
 
-    [data-button-style="text"] button .btn-label {
+    [data-button-style="both"] button .btn-label {
+      font-size: .9em;
+    }
+
+    [data-button-style="both"] button .btn-text {
       font-size: .86em;
     }
 
-    [data-button-style="text"] .tabs button .btn-label,
-    [data-button-style="text"] .actions button:not(.icon-btn) .btn-label,
-    [data-button-style="text"] .theme-row>button .btn-label,
-    [data-button-style="text"] .chip .btn-label {
+    [data-button-style="both"] .tabs button .btn-label,
+    [data-button-style="both"] .actions button:not(.icon-btn) .btn-label,
+    [data-button-style="both"] .theme-row>button .btn-label,
+    [data-button-style="both"] .chip .btn-label {
       flex-direction: column;
       gap: .08rem;
     }
 
-    [data-button-style="text"] .segmented button .btn-label,
-    [data-button-style="text"] .map-head-actions button .btn-label,
-    [data-button-style="text"] .notes-controls button .btn-label,
-    [data-button-style="text"] .legend-actions button .btn-label,
-    [data-button-style="text"] .icon-btn .btn-label {
+    [data-button-style="both"] .segmented button .btn-label,
+    [data-button-style="both"] .map-head-actions button .btn-label,
+    [data-button-style="both"] .notes-controls button .btn-label,
+    [data-button-style="both"] .legend-actions button .btn-label,
+    [data-button-style="both"] .icon-btn .btn-label {
       flex-direction: row;
       gap: .25rem;
     }
@@ -564,9 +568,20 @@
 
     .legend-item.is-nonstat,
     .chip.is-nonstat {
-      border-style: dotted;
+      border-width: 2px;
+      border-style: dashed;
       border-color: color-mix(in srgb, var(--muted) 65%, var(--line));
       background: color-mix(in srgb, var(--surface-2) 86%, var(--text) 14%);
+    }
+
+    [data-theme="dark"] .legend-item.is-nonstat,
+    [data-theme="dark"] .chip.is-nonstat {
+      background: color-mix(in srgb, var(--surface) 68%, #000 32%);
+    }
+
+    .legend-item.is-nonstat.is-filtered {
+      border: 1px solid var(--accent);
+      background: color-mix(in srgb, var(--surface) 88%, var(--accent) 12%);
     }
 
     .legend-filter {
@@ -691,10 +706,13 @@
     }
 
     .no-stat-pill {
+      display: inline-grid;
+      place-items: center;
       min-width: 2.2rem;
       color: var(--muted);
       border-style: dotted;
       background: color-mix(in srgb, var(--surface-2) 78%, var(--text) 12%);
+      line-height: 1;
     }
 
     .empty {
@@ -2177,8 +2195,9 @@
         <section>
           <h3>Interface</h3>
           <div class="segmented" aria-label="Interface style">
-            <button id="symbolButtonsBtn" type="button" aria-pressed="true" data-shortcut="Y">Icons</button>
-            <button id="textButtonsBtn" type="button" aria-pressed="false" data-shortcut="T">Text</button>
+            <button id="symbolButtonsBtn" type="button" aria-pressed="true" data-shortcut="I">Icon Only</button>
+            <button id="textButtonsBtn" type="button" aria-pressed="false" data-shortcut="T">Text Only</button>
+            <button id="iconTextButtonsBtn" type="button" aria-pressed="false" data-shortcut="B">Icon and Text</button>
           </div>
           <div class="segmented" aria-label="UI hints" style="margin-top: .55rem;">
             <button id="hintsOnBtn" type="button" aria-pressed="true" data-shortcut="U">UI Hints On</button>
@@ -2982,7 +3001,7 @@
       next.settings = { ...base.settings, ...(input.settings || {}) };
       if (!["light", "dark"].includes(next.settings.theme)) next.settings.theme = "light";
       if (!["cycle", "select"].includes(next.settings.tapBehavior)) next.settings.tapBehavior = "cycle";
-      if (!["symbols", "text"].includes(next.settings.buttonStyle)) next.settings.buttonStyle = "symbols";
+      if (!["symbols", "text", "both"].includes(next.settings.buttonStyle)) next.settings.buttonStyle = "symbols";
       if (!["mdy", "dmy", "ymd"].includes(next.settings.dateOrder)) next.settings.dateOrder = "mdy";
       if (!["numeric", "alpha"].includes(next.settings.dateStyle)) next.settings.dateStyle = "alpha";
       if (!["none", "abbr", "name"].includes(next.settings.mapLabels)) next.settings.mapLabels = "none";
@@ -3136,6 +3155,10 @@
       return state.settings.buttonStyle === "symbols";
     }
 
+    function prefersTextOnly() {
+      return state.settings.buttonStyle === "text";
+    }
+
     function labelFor(symbol, text) {
       return prefersSymbols() ? symbol : text;
     }
@@ -3143,8 +3166,12 @@
     function buttonMarkup(symbol, text, forceBoth = false) {
       const safeSymbol = escapeHtml(symbol);
       const safeText = escapeHtml(text);
+      if (forceBoth || state.settings.buttonStyle === "both") {
+        return `<span class="btn-label"><span class="btn-symbol" aria-hidden="true">${safeSymbol}</span><span class="btn-text">${safeText}</span></span>`;
+      }
       if (!forceBoth && prefersSymbols()) return safeSymbol;
-      return `<span class="btn-label"><span class="btn-symbol" aria-hidden="true">${safeSymbol}</span><span class="btn-text">${safeText}</span></span>`;
+      if (prefersTextOnly()) return safeText;
+      return safeText;
     }
 
     function setButtonLabel(selector, symbol, text, aria = text) {
@@ -3159,7 +3186,7 @@
     function setButtonLabelBoth(selector, symbol, text, aria = text) {
       const button = typeof selector === "string" ? $(selector) : selector;
       if (!button) return;
-      button.innerHTML = buttonMarkup(symbol, text, true);
+      button.innerHTML = buttonMarkup(symbol, text);
       button.setAttribute("aria-label", aria);
       const shortcut = button.dataset.shortcut;
       button.title = powerOverlayActive && shortcut ? `${text} (${shortcut})` : text;
@@ -3273,8 +3300,9 @@
       setButtonLabel("#deleteLevelBtn", "⌫", "Delete Level");
       setButtonLabelBoth("#lightModeBtn", "☀︎", "Light Mode");
       setButtonLabelBoth("#darkModeBtn", "◐", "Dark Mode");
-      setButtonLabelBoth("#symbolButtonsBtn", "⌘", "Icons");
-      setButtonLabelBoth("#textButtonsBtn", "T", "Text");
+      setButtonLabelBoth("#symbolButtonsBtn", "◉", "Icon Only");
+      setButtonLabelBoth("#textButtonsBtn", "T", "Text Only");
+      setButtonLabelBoth("#iconTextButtonsBtn", "▣", "Icon and Text");
       setButtonLabelBoth("#hintsOnBtn", "?", "UI Hints On");
       setButtonLabelBoth("#hintsOffBtn", "×", "UI Hints Off");
       setButtonLabelBoth("#cycleModeBtn", "⟳", "Tap to Cycle");
@@ -4069,6 +4097,7 @@
       $("#darkModeBtn").setAttribute("aria-pressed", state.settings.theme === "dark");
       $("#symbolButtonsBtn").setAttribute("aria-pressed", state.settings.buttonStyle === "symbols");
       $("#textButtonsBtn").setAttribute("aria-pressed", state.settings.buttonStyle === "text");
+      $("#iconTextButtonsBtn").setAttribute("aria-pressed", state.settings.buttonStyle === "both");
       $("#hintsOnBtn").setAttribute("aria-pressed", state.settings.uiHints);
       $("#hintsOffBtn").setAttribute("aria-pressed", !state.settings.uiHints);
       $("#cycleModeBtn").setAttribute("aria-pressed", state.settings.tapBehavior === "cycle");
@@ -4274,8 +4303,10 @@
           w: () => switchTab("wishlist"),
           l: () => updateSetting("theme", "light"),
           d: () => updateSetting("theme", "dark"),
+          i: () => updateSetting("buttonStyle", "symbols"),
           y: () => updateSetting("buttonStyle", "symbols"),
           t: () => updateSetting("buttonStyle", "text"),
+          b: () => updateSetting("buttonStyle", "both"),
           u: () => updateSetting("uiHints", true),
           o: () => updateSetting("uiHints", false),
           c: () => updateSetting("tapBehavior", "cycle"),
@@ -4454,6 +4485,7 @@
       $("#darkModeBtn").addEventListener("click", () => updateSetting("theme", "dark"));
       $("#symbolButtonsBtn").addEventListener("click", () => updateSetting("buttonStyle", "symbols"));
       $("#textButtonsBtn").addEventListener("click", () => updateSetting("buttonStyle", "text"));
+      $("#iconTextButtonsBtn").addEventListener("click", () => updateSetting("buttonStyle", "both"));
       $("#hintsOnBtn").addEventListener("click", () => updateSetting("uiHints", true));
       $("#hintsOffBtn").addEventListener("click", () => updateSetting("uiHints", false));
       $("#cycleModeBtn").addEventListener("click", () => updateSetting("tapBehavior", "cycle"));
