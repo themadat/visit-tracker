@@ -873,7 +873,18 @@
     .notes-controls {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: .42rem;
+      gap: .32rem;
+    }
+
+    .notes-search {
+      grid-column: 1 / -1;
+    }
+
+    .notes-search input {
+      width: 100%;
+      min-height: 30px;
+      padding: .32rem .48rem;
+      font-size: .86rem;
     }
 
     .notes-controls .segmented {
@@ -889,23 +900,32 @@
 
     .compact-notes {
       display: grid;
-      gap: .4rem;
+      gap: .06rem;
     }
 
     .compact-note-row {
       display: grid;
-      grid-template-columns: minmax(64px, .75fr) minmax(56px, .55fr) minmax(72px, .65fr) minmax(0, 1.45fr);
-      gap: .34rem;
-      align-items: start;
+      gap: .16rem;
+      align-items: center;
       justify-items: start;
       text-align: left;
       width: 100%;
+      min-height: 0;
       min-width: 0;
-      padding: .46rem .55rem;
+      padding: .05rem .2rem;
       border: 1px solid var(--line);
-      border-radius: var(--radius);
+      border-radius: 4px;
       background: var(--surface);
-      font-size: .88rem;
+      font-size: .73rem;
+      line-height: 1;
+    }
+
+    .compact-notes-states .compact-note-row {
+      grid-template-columns: minmax(4.3rem, .78fr) minmax(3.5rem, .58fr) minmax(4.2rem, .62fr) minmax(0, 1.5fr);
+    }
+
+    .compact-notes-notes .compact-note-row {
+      grid-template-columns: minmax(4rem, .68fr) minmax(3.4rem, .55fr) minmax(0, 1.5fr) max-content;
     }
 
     .compact-note-row>* {
@@ -913,13 +933,32 @@
       text-align: left;
       min-width: 0;
       max-width: 100%;
-      overflow-wrap: anywhere;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow-wrap: normal;
+    }
+
+    .compact-note-text {
+      min-width: 0;
+    }
+
+    .compact-note-row .actions {
+      flex-wrap: nowrap;
+      gap: .1rem;
+    }
+
+    .compact-note-row .icon-btn {
+      min-width: 18px;
+      min-height: 18px;
+      padding: 0;
+      font-size: .66rem;
     }
 
     .compact-note-row.header {
       background: var(--surface-2);
       color: var(--muted);
-      font-size: .76rem;
+      font-size: .64rem;
       font-weight: 800;
       text-transform: uppercase;
     }
@@ -1064,6 +1103,10 @@
         grid-template-columns: 1fr;
       }
 
+      .notes-search {
+        grid-column: auto;
+      }
+
       .month-chip-grid {
         grid-template-columns: repeat(4, minmax(0, 1fr));
       }
@@ -1091,8 +1134,12 @@
         grid-row: 1 / span 3;
       }
 
-      .compact-note-row {
-        grid-template-columns: 1fr;
+      .compact-notes-states .compact-note-row {
+        grid-template-columns: minmax(4rem, .8fr) minmax(3.2rem, .58fr) minmax(3.8rem, .62fr) minmax(0, 1.25fr);
+      }
+
+      .compact-notes-notes .compact-note-row {
+        grid-template-columns: minmax(3.8rem, .65fr) minmax(3.2rem, .55fr) minmax(0, 1.25fr) max-content;
       }
 
       .compact-note-row.header {
@@ -1619,6 +1666,9 @@
             <button id="notesPanelBackBtn" type="button" data-shortcut="B">All</button>
           </div>
           <div class="notes-controls" aria-label="Notes display controls">
+            <div class="notes-search">
+              <input id="notesStateSearch" type="search" placeholder="Search state" aria-label="Search notes by state">
+            </div>
             <div class="segmented" aria-label="Notes sort order">
               <button id="notesSortAlphaBtn" type="button" aria-pressed="false" data-shortcut="A">Alphabetical</button>
               <button id="notesSortChronoBtn" type="button" aria-pressed="true" data-shortcut="T">Chronological</button>
@@ -1986,7 +2036,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "1.5.5";
+    const APP_VERSION = "1.5.7";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const WISHLIST_SEED_VERSION = "1.5.2";
     const STATES = [
@@ -2133,6 +2183,23 @@
       }
     ];
     const CHANGELOG = [
+      {
+        version: "1.5.7",
+        date: "2026-05-11",
+        title: "Compact notes density",
+        notes: [
+          "Restored tighter compact-note columns and reduced row height further."
+        ]
+      },
+      {
+        version: "1.5.6",
+        date: "2026-05-11",
+        title: "Dense notes search",
+        notes: [
+          "Added state search to the Notes panel.",
+          "Tightened compact notes rows for single-line scanning."
+        ]
+      },
       {
         version: "1.5.5",
         date: "2026-05-11",
@@ -2334,6 +2401,7 @@
     let notesPanelState = null;
     let notesSortMode = "chrono";
     let notesViewMode = "compact";
+    let notesSearchQuery = "";
     let noteLevelFilters = new Set();
     let powerOverlayActive = false;
     let pendingConfirm = null;
@@ -2991,6 +3059,12 @@
         || (state.notes[abbr] || []).some(noteMatchesLevelFilter);
     }
 
+    function stateMatchesNotesSearch(abbr) {
+      const query = notesSearchQuery.trim().toLowerCase();
+      if (!query) return true;
+      return `${abbr} ${STATE_NAMES[abbr]}`.replace(/\s+/g, " ").toLowerCase().includes(query);
+    }
+
     function filteredNotesFor(abbr) {
       return sortedNotesFor(abbr).filter(noteMatchesLevelFilter);
     }
@@ -3153,7 +3227,9 @@
     }
 
     function sortedMarkedStateAbbrs() {
-      const marked = markedStateAbbrs();
+      const marked = notesSearchQuery.trim()
+        ? STATES.map(([abbr]) => abbr).filter(abbr => stateMatchesNotesSearch(abbr) && stateMatchesLevelFilter(abbr))
+        : markedStateAbbrs();
       return marked.sort((a, b) => {
         if (notesSortMode === "chrono") {
           const dateSort = sortDateForState(a).localeCompare(sortDateForState(b));
@@ -3177,10 +3253,11 @@
       $("#notesSortChronoBtn").setAttribute("aria-pressed", notesSortMode === "chrono");
       $("#notesViewExpandedBtn").setAttribute("aria-pressed", notesViewMode === "expanded");
       $("#notesViewCompactBtn").setAttribute("aria-pressed", notesViewMode === "compact");
+      $("#notesStateSearch").value = notesSearchQuery;
     }
 
     function compactStateRow(abbr) {
-      const names = (filteredStateLevelNames(abbr).join(", ") || (noteLevelFilters.size ? "Notes only" : stateLevelNames(abbr).join(", "))) || "Notes only";
+      const names = (filteredStateLevelNames(abbr).join(", ") || (noteLevelFilters.size ? "Notes only" : stateLevelNames(abbr).join(", "))) || "Unvisited";
       const notes = filteredNotesFor(abbr);
       const dates = notes.map(note => formatDateDisplay(note.date)).join("; ") || "None";
       const text = notes.map(note => note.text || "No summary").join("; ") || "No notes";
@@ -3189,7 +3266,7 @@
           <span><b>${escapeHtml(STATE_NAMES[abbr])}</b></span>
           <span>${escapeHtml(names)}</span>
           <span>${escapeHtml(dates)}</span>
-          <span>${escapeHtml(text)}</span>
+          <span class="compact-note-text">${escapeHtml(text)}</span>
         </button>
       `;
     }
@@ -3198,13 +3275,13 @@
       if (!notes.length) return `<div class="empty">No visit notes yet.</div>`;
       if (notesViewMode === "compact") {
         return `
-          <div class="compact-notes">
+          <div class="compact-notes compact-notes-notes">
             <div class="compact-note-row header"><span>Date</span><span>Level</span><span>Notes</span><span>Actions</span></div>
             ${notes.map(note => `
               <article class="compact-note-row">
                 <time datetime="${escapeHtml(note.date)}">${escapeHtml(formatDateDisplay(note.date))}</time>
                 <span>${escapeHtml(levelById(note.levelId)?.name || "No level")}</span>
-                <span>${escapeHtml(note.text || "No summary")}</span>
+                <span class="compact-note-text">${escapeHtml(note.text || "No summary")}</span>
                 <span class="actions">
                   ${actionButtonHtml({ symbol: "✎", text: "Edit", className: "icon-btn", attrs: `data-edit-note="${note.id}"` })}
                   ${actionButtonHtml({ symbol: "⌫", text: "Delete", className: "icon-btn danger", attrs: `data-delete-note="${note.id}"` })}
@@ -3238,7 +3315,7 @@
       renderNotesPanelControls();
       $("#notesPanelBackBtn").classList.toggle("hidden", !notesPanelState);
       $(".notes-controls").classList.toggle("hidden", Boolean(notesPanelState));
-      $("#notesPanelContent").className = notesViewMode === "compact" ? "compact-notes" : "note-list";
+      $("#notesPanelContent").className = notesViewMode === "compact" ? "compact-notes compact-notes-states" : "note-list";
       if (notesPanelState && STATE_NAMES[notesPanelState]) {
         selectedState = notesPanelState;
         const names = stateLevelNames(notesPanelState);
@@ -3304,7 +3381,10 @@
         : "Marked states and visit notes. Select legend levels to filter this view.";
       const marked = sortedMarkedStateAbbrs();
       if (!marked.length) {
-        $("#notesPanelContent").innerHTML = `<div class="empty">${noteLevelFilters.size ? "No states match the selected legend filters." : "No marked states yet."}</div>`;
+        const emptyText = notesSearchQuery.trim()
+          ? "No states match that search."
+          : noteLevelFilters.size ? "No states match the selected legend filters." : "No marked states yet.";
+        $("#notesPanelContent").innerHTML = `<div class="empty">${emptyText}</div>`;
       } else if (notesViewMode === "compact") {
         $("#notesPanelContent").innerHTML = `
           <div class="compact-note-row header"><span>State</span><span>Level</span><span>Dates</span><span>Notes</span></div>
@@ -3316,7 +3396,7 @@
           const noteCount = filteredNotesFor(abbr).length;
           return `
             <button class="state-list-card" type="button" data-open-notes-state="${abbr}">
-              <span><b>${escapeHtml(STATE_NAMES[abbr])}</b><br><small>${names.length ? escapeHtml(names.join(", ")) : "Notes only"}</small></span>
+              <span><b>${escapeHtml(STATE_NAMES[abbr])}</b><br><small>${names.length ? escapeHtml(names.join(", ")) : "Unvisited"}</small></span>
               <span class="tag">${noteCount} note${noteCount === 1 ? "" : "s"}</span>
             </button>
           `;
@@ -3837,6 +3917,10 @@
       $("#notesToggleBtn").addEventListener("click", toggleNotesPanel);
       $("#notesPanelBackBtn").addEventListener("click", () => {
         notesPanelState = null;
+        renderNotesPanel();
+      });
+      $("#notesStateSearch").addEventListener("input", event => {
+        notesSearchQuery = event.target.value;
         renderNotesPanel();
       });
       $("#notesSortAlphaBtn").addEventListener("click", () => {
