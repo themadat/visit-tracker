@@ -309,19 +309,24 @@
 
     .map-fab {
       position: absolute;
-      right: .85rem;
-      bottom: .85rem;
+      right: max(.7rem, env(safe-area-inset-right, 0px));
+      bottom: max(.7rem, env(safe-area-inset-bottom, 0px));
       z-index: 5;
       display: inline-grid;
       place-items: center;
-      min-width: 46px;
-      min-height: 46px;
-      padding: 0 .78rem;
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      min-height: 48px;
+      padding: 0;
       border-radius: 999px;
       border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
       background: color-mix(in srgb, var(--surface) 86%, var(--accent) 14%);
       box-shadow: 0 12px 30px rgba(16, 24, 40, .18);
+      font-size: 1.05rem;
       font-weight: 850;
+      line-height: 1;
+      touch-action: manipulation;
     }
 
     .map-fab[aria-pressed="true"] {
@@ -1682,8 +1687,9 @@
             <path class="map-separator" d="m 215,493 v 55 l 36,45 m -251,-168 h 147 l 68,68 h 85 l 54,54 v 46 m 206,0 v -78 h 122 v 78 m -47,-78 v 78 m -75,-37 h 122 m -84,0 v 37" />
 
           </svg>
-          <button id="mapFitBtn" class="map-fab" type="button" aria-pressed="false" data-shortcut="F">Fit Map</button>
         </div>
+        <button id="mapFitBtn" class="map-fab" type="button" aria-pressed="false" aria-label="Fit map on screen"
+          data-shortcut="F">⛶</button>
       </section>
 
       <aside id="sidePanel" class="side-panel-wrap" aria-label="Visit tools">
@@ -2235,7 +2241,8 @@
         title: "Mobile map mode",
         notes: [
           "Added a floating Map Mode toggle for a fit-to-screen map view.",
-          "Fit mode removes horizontal map scrolling for easier screenshots and sharing."
+          "Fit mode removes horizontal map scrolling for easier screenshots and sharing.",
+          "Kept the Map Mode FAB fixed over the lower-right map area in both modes."
         ]
       },
       {
@@ -2942,7 +2949,7 @@
       setButtonLabel("#settingsBtn", "⚙︎", "Settings");
       setButtonLabel("#legendToggleBtn", "☷", "Legend");
       setButtonLabel("#notesToggleBtn", "✐", "Notes");
-      setButtonLabel("#mapFitBtn", mapFitMode ? "↔" : "⛶", mapFitMode ? "Scroll Map" : "Fit Map");
+      $("#mapFitBtn").textContent = mapFitMode ? "↔" : "⛶";
       setButtonLabel("#smartColorsBtn", "◐", "Auto Colors");
       const atMax = state.levels.length >= 5;
       setButtonLabel("#addLevelBtn", atMax ? "5/5" : "+", atMax ? "MAX LEVELS" : "Add Level");
@@ -2977,6 +2984,7 @@
       $("#legendToggleBtn").setAttribute("aria-pressed", String(legendPanelOpen));
       $("#notesToggleBtn").setAttribute("aria-pressed", String(notesPanelOpen));
       $("#mapFitBtn").setAttribute("aria-pressed", String(mapFitMode));
+      $("#mapFitBtn").setAttribute("aria-label", mapFitMode ? "Return to scrollable map" : "Fit map on screen");
       $("#mapFitBtn").title = mapFitMode ? "Return to scrollable map" : "Fit map on screen";
     }
 
