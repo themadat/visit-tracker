@@ -284,11 +284,15 @@
       align-items: center;
       flex-wrap: wrap;
       justify-content: flex-end;
+      min-width: 0;
     }
 
     .map-label-toggle {
+      flex: 0 1 auto;
+      flex-wrap: nowrap;
       gap: .12rem;
       padding: .16rem;
+      min-width: 0;
     }
 
     .map-label-toggle span {
@@ -303,6 +307,35 @@
       min-height: 30px;
       padding: .24rem .42rem;
       font-size: .8rem;
+    }
+
+    [data-button-style="symbols"] .map-head-actions {
+      flex-wrap: nowrap;
+      gap: .28rem;
+    }
+
+    [data-button-style="symbols"] .map-head-actions button {
+      flex: 0 0 auto;
+      min-height: 34px;
+      padding: .32rem .5rem;
+      font-size: .86rem;
+      line-height: 1;
+    }
+
+    [data-button-style="symbols"] .map-label-toggle {
+      gap: .06rem;
+      padding: .1rem;
+    }
+
+    [data-button-style="symbols"] .map-label-toggle span {
+      padding: 0 .2rem;
+      font-size: .68rem;
+    }
+
+    [data-button-style="symbols"] .map-label-toggle button {
+      min-height: 28px;
+      padding: .18rem .28rem;
+      font-size: .7rem;
     }
 
     .map-head h2,
@@ -1139,6 +1172,36 @@
         flex: 1 1 auto;
       }
 
+      [data-button-style="symbols"] .map-head-actions {
+        width: 100%;
+        flex-wrap: nowrap;
+        gap: .18rem;
+      }
+
+      [data-button-style="symbols"] .map-head-actions button {
+        flex: 0 0 auto;
+        min-height: 30px;
+        padding: .22rem .34rem;
+        font-size: .72rem;
+      }
+
+      [data-button-style="symbols"] .map-label-toggle {
+        flex: 0 1 auto;
+        gap: .04rem;
+        padding: .08rem;
+      }
+
+      [data-button-style="symbols"] .map-label-toggle span {
+        padding: 0 .12rem;
+        font-size: .6rem;
+      }
+
+      [data-button-style="symbols"] .map-label-toggle button {
+        min-height: 26px;
+        padding: .14rem .2rem;
+        font-size: .62rem;
+      }
+
       svg {
         min-width: 560px;
       }
@@ -1287,7 +1350,7 @@
           </div>
           <div class="map-head-actions">
             <div class="segmented map-label-toggle" aria-label="Map labels">
-              <span>Labels</span>
+              <span id="labelsToggleLabel">Labels</span>
               <button id="labelsNoneBtn" type="button" aria-pressed="true" data-shortcut="0">None</button>
               <button id="labelsAbbrBtn" type="button" aria-pressed="false" data-shortcut="1">Abbr</button>
               <button id="labelsNameBtn" type="button" aria-pressed="false" data-shortcut="2">Name</button>
@@ -3068,6 +3131,10 @@
       setButtonLabel("#settingsBtn", "⚙︎", "Settings");
       setButtonLabel("#legendToggleBtn", "☷", "Legend");
       setButtonLabel("#notesToggleBtn", "✐", "Notes");
+      $("#labelsToggleLabel").textContent = prefersSymbols() ? "Lbl" : "Labels";
+      setButtonLabel("#labelsNoneBtn", "∅", "None", "No map labels");
+      setButtonLabel("#labelsAbbrBtn", "A", "Abbr", "Show state abbreviations");
+      setButtonLabel("#labelsNameBtn", "Aa", "Name", "Show state names");
       const fitTitle = mapFitMode ? "Return to scrollable map" : "Fit map on screen";
       setButtonLabel("#mapFitBtn", mapFitMode ? "↔" : "⛶", mapFitMode ? "Scroll Map" : "Fit Map", fitTitle);
       setButtonLabel("#smartColorsBtn", "◐", "Auto Colors");
