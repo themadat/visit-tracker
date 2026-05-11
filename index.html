@@ -917,15 +917,22 @@
       display: grid;
       grid-template-columns: auto minmax(0, 1fr);
       align-items: center;
-      gap: .55rem;
+      align-self: stretch;
+      gap: .48rem;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      padding: .55rem .65rem;
+      padding: .5rem .58rem;
       background: var(--surface-2);
+      min-width: 0;
+      line-height: 1.15;
     }
 
     .level-count-toggle input {
       width: auto;
+    }
+
+    .level-count-toggle span {
+      min-width: 0;
     }
 
     .level-checks {
@@ -1068,7 +1075,7 @@
 
     .level-editor-grid {
       display: grid;
-      grid-template-columns: minmax(150px, .85fr) minmax(230px, 1.25fr) minmax(170px, .8fr);
+      grid-template-columns: minmax(130px, .75fr) minmax(200px, 1.15fr) minmax(145px, .72fr) minmax(130px, .66fr);
       gap: .7rem;
       align-items: end;
     }
@@ -2248,11 +2255,9 @@
           <span><b>Color</b><br><small id="levelColorText">Click to set #2563EB</small></span>
           <input id="levelColor" type="color" required>
         </label>
-      </div>
-      <div class="level-meta-row">
         <label class="level-count-toggle">
           <input id="levelCountsTowardStats" type="checkbox">
-          <span><b>Count toward stats</b><br><small data-hint>Turn this off for opt-out or planning-only levels.</small></span>
+          <span><b>Exclude from Stats</b><br><small data-hint>Use for opt-out or planning-only levels.</small></span>
         </label>
       </div>
       <section>
@@ -3578,7 +3583,7 @@
               <small>${escapeHtml(level.definition)}</small>
             </span>
             <span class="level-stats" aria-label="${escapeHtml(level.name)} stats">
-              ${level.countsTowardStats === false ? `<span class="percent-pill no-stat-pill" title="Does not count toward stats">⊘</span>` : `<span class="percent-pill">${Math.round(((counts[level.id] || 0) / totalRegions) * 100)}%</span>`}
+              ${level.countsTowardStats === false ? `<span class="percent-pill no-stat-pill" title="Excluded from stats">⊘</span>` : `<span class="percent-pill">${Math.round(((counts[level.id] || 0) / totalRegions) * 100)}%</span>`}
               <span class="count-pill">${counts[level.id] || 0}</span>
             </span>
           </button>
@@ -4105,7 +4110,7 @@
       $("#levelName").value = level ? level.name : "";
       $("#levelDefinition").value = level ? level.definition : "";
       $("#levelColor").value = level ? level.color : THEMES.Classic[state.levels.length % 5];
-      $("#levelCountsTowardStats").checked = level ? level.countsTowardStats !== false : true;
+      $("#levelCountsTowardStats").checked = level ? level.countsTowardStats === false : false;
       $("#deleteLevelBtn").classList.toggle("hidden", !level);
       renderSwatches();
       updateLevelColorUI();
@@ -4190,7 +4195,7 @@
         name,
         definition,
         color: $("#levelColor").value,
-        countsTowardStats: $("#levelCountsTowardStats").checked
+        countsTowardStats: !$("#levelCountsTowardStats").checked
       };
       if (id) {
         const index = state.levels.findIndex(item => item.id === id);
