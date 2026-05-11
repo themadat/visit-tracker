@@ -918,10 +918,10 @@
       grid-template-columns: auto minmax(0, 1fr);
       align-items: center;
       align-self: stretch;
-      gap: .38rem;
+      gap: .42rem;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      padding: .44rem .48rem;
+      padding: .48rem .52rem;
       background: var(--surface-2);
       min-width: 0;
       line-height: 1.15;
@@ -1081,7 +1081,7 @@
 
     .level-editor-grid {
       display: grid;
-      grid-template-columns: minmax(128px, .72fr) minmax(190px, 1fr) minmax(205px, .95fr) minmax(82px, .36fr);
+      grid-template-columns: minmax(128px, .72fr) minmax(190px, 1fr) minmax(178px, .82fr) minmax(108px, .5fr);
       gap: .7rem;
       align-items: end;
     }
@@ -2484,7 +2484,7 @@
   <script>
     const APP_VERSION = "1.7.0";
     const STORAGE_KEY = "usStateVisitMap.v1";
-    const WISHLIST_SEED_VERSION = "1.7.0";
+    const WISHLIST_SEED_VERSION = "1.7.1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
       ["NV", "Nevada", 2, 2], ["AZ", "Arizona", 2, 3], ["HI", "Hawaii", 1, 6], ["MT", "Montana", 3, 0], ["WY", "Wyoming", 3, 2],
@@ -2649,6 +2649,15 @@
         title: "Notes Rail Safe Area Scroll Polish",
         ticketId: "WISH-015",
         description: "When scrolling to the bottom of Notes, align the bottom with the device safe area without extra padding, and avoid overall vertical page scrolling except in single-column view.",
+        priority: "Medium",
+        effort: "Small",
+        targetVersion: "1.7.1",
+        category: "UI"
+      },
+      {
+        title: "Better Icons in Settings",
+        ticketId: "WISH-016",
+        description: "Replace and standardize Settings dialog icons with clearer, more consistent iconography for tabs, toggles, and action buttons.",
         priority: "Medium",
         effort: "Small",
         targetVersion: "1.7.1",
@@ -3222,7 +3231,8 @@
           "Move Map Labels to Better Areas",
           "Polish Level Editor Interactions",
           "Make Settings Prettier",
-          "Notes Rail Safe Area Scroll Polish"
+          "Notes Rail Safe Area Scroll Polish",
+          "Better Icons in Settings"
         ]);
         seedWishlist().forEach(wish => {
           if (input.seededWishlistVersion && !migrationSeeds.has(wish.title)) return;
