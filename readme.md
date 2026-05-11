@@ -57,7 +57,7 @@ When changing the data shape:
 1. Add new defaults in `defaultState`.
 2. Merge or repair old saved data in `normalizeState`.
 3. Do not overwrite existing user-created arrays or settings unless the user explicitly resets.
-4. Bump `APP_VERSION` and add a `CHANGELOG` entry.
+4. During active release work, bump the fourth `APP_VERSION` number for every prompt-driven change, for example `1.8.0.1` to `1.8.0.2`, and add a matching `CHANGELOG` entry.
 5. If adding built-in wishlist items, bump `WISHLIST_SEED_VERSION` and add migration-safe logic that only appends missing seed entries.
 
 ## Development Guidelines
@@ -102,8 +102,7 @@ git diff --check
 
 For each user-facing change:
 
-- Update `APP_VERSION`.
-- Add a `CHANGELOG` entry with concise notes.
+- Bump the fourth `APP_VERSION` build number and add a `CHANGELOG` entry with concise notes.
+- When cutting a release, condense the per-build notes into the release entry.
 - Preserve the localStorage schema where possible.
 - Mention any known manual QA gaps in the handoff.
-

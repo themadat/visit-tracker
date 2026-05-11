@@ -2481,7 +2481,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "1.7.0";
+    const APP_VERSION = "1.8.0.1";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const WISHLIST_SEED_VERSION = "1.7.1";
     const STATES = [
@@ -2664,6 +2664,25 @@
       }
     ];
     const CHANGELOG = [
+      {
+        version: "1.8.0.1",
+        date: "2026-05-11",
+        title: "Build tracking",
+        notes: [
+          "Started using the fourth version number as the active 1.8.0 build counter.",
+          "Documented that each prompt-driven change should bump the build number and add a changelog note until release condensation."
+        ]
+      },
+      {
+        version: "1.8.0",
+        date: "2026-05-11",
+        title: "Settings and editor polish",
+        notes: [
+          "Opened the 1.8.0 release line for settings icon and control refinements.",
+          "Refined the level editor layout for color selection and Exclude from Stats controls.",
+          "Added WISH-016 for better Settings iconography."
+        ]
+      },
       {
         version: "1.7.0",
         date: "2026-05-11",
