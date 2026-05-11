@@ -86,6 +86,36 @@
       color: var(--muted);
     }
 
+    .btn-label {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .3rem;
+      line-height: 1.05;
+      pointer-events: none;
+    }
+
+    [data-button-style="text"] button .btn-label {
+      font-size: .86em;
+    }
+
+    [data-button-style="text"] .tabs button .btn-label,
+    [data-button-style="text"] .actions button:not(.icon-btn) .btn-label,
+    [data-button-style="text"] .theme-row>button .btn-label,
+    [data-button-style="text"] .chip .btn-label {
+      flex-direction: column;
+      gap: .08rem;
+    }
+
+    [data-button-style="text"] .segmented button .btn-label,
+    [data-button-style="text"] .map-head-actions button .btn-label,
+    [data-button-style="text"] .notes-controls button .btn-label,
+    [data-button-style="text"] .legend-actions button .btn-label,
+    [data-button-style="text"] .icon-btn .btn-label {
+      flex-direction: row;
+      gap: .25rem;
+    }
+
     button[aria-pressed="true"].toggle-btn {
       background: var(--accent);
       border-color: var(--accent);
@@ -499,6 +529,13 @@
       font-size: .72rem;
     }
 
+    .legend-total-pills {
+      display: inline-flex;
+      align-items: center;
+      gap: .18rem;
+      white-space: nowrap;
+    }
+
     .legend-list,
     .note-list,
     .wishlist-list {
@@ -517,11 +554,19 @@
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: var(--surface);
+      position: relative;
     }
 
     .legend-item.is-filtered {
       border-color: var(--accent);
       background: color-mix(in srgb, var(--surface) 88%, var(--accent) 12%);
+    }
+
+    .legend-item.is-nonstat,
+    .chip.is-nonstat {
+      border-style: dotted;
+      border-color: color-mix(in srgb, var(--muted) 65%, var(--line));
+      background: color-mix(in srgb, var(--surface-2) 86%, var(--text) 14%);
     }
 
     .legend-filter {
@@ -599,11 +644,32 @@
     .level-copy {
       min-width: 0;
       line-height: 1.1;
+      position: relative;
     }
 
     .level-copy br,
     .level-copy small {
       display: none;
+    }
+
+    .legend-item:hover .level-copy small,
+    .legend-item:focus-within .level-copy small {
+      position: absolute;
+      z-index: 12;
+      top: calc(100% + .35rem);
+      left: 0;
+      display: block;
+      width: max-content;
+      max-width: min(24rem, 72vw);
+      padding: .38rem .5rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      color: var(--text);
+      line-height: 1.25;
+      white-space: normal;
+      pointer-events: none;
     }
 
     .level-stats {
@@ -622,6 +688,13 @@
       padding: .08rem .35rem;
       font-size: .72rem;
       color: var(--muted);
+    }
+
+    .no-stat-pill {
+      min-width: 2.2rem;
+      color: var(--muted);
+      border-style: dotted;
+      background: color-mix(in srgb, var(--surface-2) 78%, var(--text) 12%);
     }
 
     .empty {
@@ -737,6 +810,21 @@
       border-radius: 999px;
       padding: .35rem .7rem;
       font-size: .86rem;
+    }
+
+    .level-count-toggle {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      gap: .55rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: .55rem .65rem;
+      background: var(--surface-2);
+    }
+
+    .level-count-toggle input {
+      width: auto;
     }
 
     .level-checks {
@@ -1824,6 +1912,7 @@
             <div class="row" style="justify-content: space-between; margin-bottom: .45rem;">
               <h2>Legend</h2>
               <div class="actions">
+                <span id="legendTotals" class="legend-total-pills" aria-label="Overall completion"></span>
                 <button id="smartColorsBtn" type="button" data-shortcut="C">Auto Colors</button>
                 <button id="addLevelBtn" type="button" data-shortcut="A">Add Level</button>
               </div>
@@ -1991,7 +2080,7 @@
   <dialog id="levelDialog">
     <header>
       <h2 id="levelDialogTitle">Edit Level</h2>
-      <button type="button" data-close="levelDialog">Close</button>
+      <button id="levelDialogCloseBtn" type="button" data-close="levelDialog" data-shortcut="Q">Close</button>
     </header>
     <form id="levelForm" class="dialog-body" method="dialog">
       <input id="levelId" type="hidden">
@@ -2013,11 +2102,15 @@
           <span><b>Selected color</b><br><small id="levelColorText">#2563eb</small></span>
         </div>
       </div>
+      <label class="level-count-toggle">
+        <input id="levelCountsTowardStats" type="checkbox">
+        <span><b>Count toward stats</b><br><small data-hint>Turn this off for opt-out or planning-only levels.</small></span>
+      </label>
       <div class="actions level-actions">
-        <button class="primary" type="submit">Save Level</button>
+        <button id="saveLevelBtn" class="primary" type="submit" data-shortcut="S">Save Level</button>
         <button id="deleteLevelBtn" class="danger icon-btn" type="button" title="Delete level"
-          aria-label="Delete level">🗑️</button>
-        <button type="button" data-close="levelDialog">Cancel</button>
+          aria-label="Delete level" data-shortcut="D">🗑️</button>
+        <button id="cancelLevelBtn" type="button" data-close="levelDialog" data-shortcut="X">Cancel</button>
       </div>
       <section>
         <h3>Existing Swatches</h3>
@@ -2033,7 +2126,7 @@
   <dialog id="paletteDialog">
     <header>
       <h2>Smart Color Swatches</h2>
-      <button type="button" data-close="paletteDialog" data-shortcut="Q">Close</button>
+      <button id="paletteCloseBtn" type="button" data-close="paletteDialog" data-shortcut="Q">Close</button>
     </header>
     <div class="dialog-body">
       <p class="muted" data-hint>Apply a full progressive theme across your current levels. Colors start at the top
@@ -2083,7 +2176,7 @@
         </section>
         <section>
           <h3>Interface</h3>
-          <div class="segmented" aria-label="Button style">
+          <div class="segmented" aria-label="Interface style">
             <button id="symbolButtonsBtn" type="button" aria-pressed="true" data-shortcut="Y">Icons</button>
             <button id="textButtonsBtn" type="button" aria-pressed="false" data-shortcut="T">Text</button>
           </div>
@@ -2215,9 +2308,9 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "1.6.4";
+    const APP_VERSION = "1.7.0";
     const STORAGE_KEY = "usStateVisitMap.v1";
-    const WISHLIST_SEED_VERSION = "1.6.4";
+    const WISHLIST_SEED_VERSION = "1.7.0";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
       ["NV", "Nevada", 2, 2], ["AZ", "Arizona", 2, 3], ["HI", "Hawaii", 1, 6], ["MT", "Montana", 3, 0], ["WY", "Wyoming", 3, 2],
@@ -2377,9 +2470,28 @@
         effort: "Medium",
         targetVersion: "1.6.5",
         category: "UI"
+      },
+      {
+        title: "Notes Rail Safe Area Scroll Polish",
+        ticketId: "WISH-015",
+        description: "When scrolling to the bottom of Notes, align the bottom with the device safe area without extra padding, and avoid overall vertical page scrolling except in single-column view.",
+        priority: "Medium",
+        effort: "Small",
+        targetVersion: "1.7.1",
+        category: "UI"
       }
     ];
     const CHANGELOG = [
+      {
+        version: "1.7.0",
+        date: "2026-05-11",
+        title: "Legend layer controls",
+        notes: [
+          "Added per-level control for whether a level counts toward stats.",
+          "Added visual treatment for non-counting levels and quick-add options.",
+          "Moved total completion into the Legend header and added icons to level and palette dialogs."
+        ]
+      },
       {
         version: "1.6.4",
         date: "2026-05-11",
@@ -2934,7 +3046,8 @@
           "Optimize for iPhone",
           "Move Map Labels to Better Areas",
           "Polish Level Editor Interactions",
-          "Make Settings Prettier"
+          "Make Settings Prettier",
+          "Notes Rail Safe Area Scroll Polish"
         ]);
         seedWishlist().forEach(wish => {
           if (input.seededWishlistVersion && !migrationSeeds.has(wish.title)) return;
@@ -3027,10 +3140,17 @@
       return prefersSymbols() ? symbol : text;
     }
 
+    function buttonMarkup(symbol, text, forceBoth = false) {
+      const safeSymbol = escapeHtml(symbol);
+      const safeText = escapeHtml(text);
+      if (!forceBoth && prefersSymbols()) return safeSymbol;
+      return `<span class="btn-label"><span class="btn-symbol" aria-hidden="true">${safeSymbol}</span><span class="btn-text">${safeText}</span></span>`;
+    }
+
     function setButtonLabel(selector, symbol, text, aria = text) {
       const button = typeof selector === "string" ? $(selector) : selector;
       if (!button) return;
-      button.textContent = labelFor(symbol, text);
+      button.innerHTML = buttonMarkup(symbol, text);
       button.setAttribute("aria-label", aria);
       const shortcut = button.dataset.shortcut;
       button.title = powerOverlayActive && shortcut ? `${text} (${shortcut})` : text;
@@ -3039,7 +3159,7 @@
     function setButtonLabelBoth(selector, symbol, text, aria = text) {
       const button = typeof selector === "string" ? $(selector) : selector;
       if (!button) return;
-      button.textContent = `${symbol} ${text}`;
+      button.innerHTML = buttonMarkup(symbol, text, true);
       button.setAttribute("aria-label", aria);
       const shortcut = button.dataset.shortcut;
       button.title = powerOverlayActive && shortcut ? `${text} (${shortcut})` : text;
@@ -3047,7 +3167,7 @@
 
     function actionButtonHtml({ symbol, text, className = "icon-btn", attrs = "", aria = text, shortcut = "" }) {
       const shortcutAttr = shortcut ? ` data-shortcut="${shortcut}"` : "";
-      return `<button class="${className}" type="button" title="${escapeHtml(text)}" aria-label="${escapeHtml(aria)}"${shortcutAttr} ${attrs}>${escapeHtml(labelFor(symbol, text))}</button>`;
+      return `<button class="${className}" type="button" title="${escapeHtml(text)}" aria-label="${escapeHtml(aria)}"${shortcutAttr} ${attrs}>${buttonMarkup(symbol, text)}</button>`;
     }
 
     function showMessage(title, message) {
@@ -3146,6 +3266,10 @@
       setButtonLabel("#noteDialogCloseBtn", "×", "Close");
       setButtonLabel("#saveNoteBtn", "✓", "Save Note");
       setButtonLabel("#cancelNoteBtn", "↩", "Cancel");
+      setButtonLabel("#levelDialogCloseBtn", "×", "Close");
+      setButtonLabel("#saveLevelBtn", "✓", "Save Level");
+      setButtonLabel("#cancelLevelBtn", "↩", "Cancel");
+      setButtonLabel("#paletteCloseBtn", "×", "Close");
       setButtonLabel("#deleteLevelBtn", "⌫", "Delete Level");
       setButtonLabelBoth("#lightModeBtn", "☀︎", "Light Mode");
       setButtonLabelBoth("#darkModeBtn", "◐", "Dark Mode");
@@ -3283,16 +3407,20 @@
       noteLevelFilters = new Set([...noteLevelFilters].filter(id => levelById(id)));
       const counts = levelCounts();
       const totalRegions = STATES.length;
+      const counted = countedStateTotal();
+      const completionTotal = completionRegionTotal();
+      const completionPct = Math.round((counted / completionTotal) * 100);
+      $("#legendTotals").innerHTML = `<span class="percent-pill">${completionPct}%</span><span class="count-pill">${counted}/${completionTotal}</span>`;
       $("#legendList").innerHTML = state.levels.map((level, index) => `
-        <div class="legend-item ${noteLevelFilters.has(level.id) ? "is-filtered" : ""}">
-          <button class="legend-filter" type="button" aria-pressed="${noteLevelFilters.has(level.id)}" data-filter-level="${level.id}">
+        <div class="legend-item ${noteLevelFilters.has(level.id) ? "is-filtered" : ""} ${level.countsTowardStats === false ? "is-nonstat" : ""}">
+          <button class="legend-filter" type="button" aria-pressed="${noteLevelFilters.has(level.id)}" data-filter-level="${level.id}" title="${escapeHtml(level.definition)}">
             <span class="swatch" style="background:${level.color}"></span>
             <span class="level-copy">
               <span class="level-name">${escapeHtml(level.name)}</span><br>
               <small>${escapeHtml(level.definition)}</small>
             </span>
             <span class="level-stats" aria-label="${escapeHtml(level.name)} stats">
-              ${level.countsTowardStats === false ? "" : `<span class="percent-pill">${Math.round(((counts[level.id] || 0) / totalRegions) * 100)}%</span>`}
+              ${level.countsTowardStats === false ? `<span class="percent-pill no-stat-pill" title="Does not count toward stats">⊘</span>` : `<span class="percent-pill">${Math.round(((counts[level.id] || 0) / totalRegions) * 100)}%</span>`}
               <span class="count-pill">${counts[level.id] || 0}</span>
             </span>
           </button>
@@ -3370,7 +3498,11 @@
         container.innerHTML = state.levels.length >= 5 ? `<small data-hint>Maximum of 5 levels reached.</small>` : "";
         return;
       }
-      container.innerHTML = missing.map(level => `<button class="chip" type="button" data-add-builtin="${level.id}">${prefersSymbols() ? "+" : "Add"} ${escapeHtml(level.name)}</button>`).join("");
+      container.innerHTML = missing.map(level => `
+        <button class="chip ${level.countsTowardStats === false ? "is-nonstat" : ""}" type="button" data-add-builtin="${level.id}" title="${escapeHtml(level.definition)}">
+          ${prefersSymbols() ? `${level.countsTowardStats === false ? "⊘" : "+"} ${escapeHtml(level.name)}` : buttonMarkup(level.countsTowardStats === false ? "⊘" : "+", `Add ${level.name}`)}
+        </button>
+      `).join("");
       $$("[data-add-builtin]").forEach(button => {
         button.addEventListener("click", () => {
           if (state.levels.length >= 5) return;
@@ -3613,7 +3745,7 @@
           <section>
             <div class="row" style="justify-content: space-between; margin-bottom: .45rem;">
               <h3>Applied Levels</h3>
-              <button id="notesPanelClearBtn" class="danger" type="button" data-shortcut="X">${escapeHtml(labelFor("⌫", "Clear"))}</button>
+              <button id="notesPanelClearBtn" class="danger" type="button" data-shortcut="X">${buttonMarkup("⌫", "Clear")}</button>
             </div>
             <div class="level-checks">
               ${state.levels.map(level => `
@@ -3628,7 +3760,7 @@
           <section>
             <div class="row" style="justify-content: space-between; margin-bottom: .45rem;">
               <h3>Visit Notes</h3>
-              <button id="notesPanelAddNoteBtn" type="button" data-shortcut="A">${escapeHtml(labelFor("+", "Add Note"))}</button>
+              <button id="notesPanelAddNoteBtn" type="button" data-shortcut="A">${buttonMarkup("+", "Add Note")}</button>
             </div>
             ${renderSelectedNoteList(notes)}
           </section>
@@ -3813,6 +3945,7 @@
       $("#levelName").value = level ? level.name : "";
       $("#levelDefinition").value = level ? level.definition : "";
       $("#levelColor").value = level ? level.color : THEMES.Classic[state.levels.length % 5];
+      $("#levelCountsTowardStats").checked = level ? level.countsTowardStats !== false : true;
       $("#deleteLevelBtn").classList.toggle("hidden", !level);
       renderSwatches();
       updateLevelColorUI();
@@ -3852,7 +3985,7 @@
           <div class="swatch-grid">
             ${colors.map(color => `<span class="swatch-btn" style="--swatch-color:${color}" aria-hidden="true"></span>`).join("")}
           </div>
-          <button type="button" data-apply-theme="${escapeHtml(name)}" data-shortcut="${index + 1}">Apply</button>
+          <button type="button" data-apply-theme="${escapeHtml(name)}" data-shortcut="${index + 1}">${buttonMarkup("✓", "Apply")}</button>
         </div>
       `).join("");
       $$("[data-apply-theme]").forEach(button => {
@@ -3879,7 +4012,7 @@
         name: $("#levelName").value.trim(),
         definition: $("#levelDefinition").value.trim(),
         color: $("#levelColor").value,
-        countsTowardStats: existing ? existing.countsTowardStats !== false : !isOptOutLevel({ name: $("#levelName").value })
+        countsTowardStats: $("#levelCountsTowardStats").checked
       };
       if (!level.name || !level.definition) return;
       if (id) {
@@ -4115,6 +4248,20 @@
         if (!noteActions[key]) return;
         event.preventDefault();
         noteActions[key]();
+        return;
+      }
+      if ($("#levelDialog").open) {
+        const levelActions = {
+          q: () => $("#levelDialog").close(),
+          x: () => $("#levelDialog").close(),
+          s: () => $("#levelForm").requestSubmit(),
+          d: () => {
+            if (!$("#deleteLevelBtn").classList.contains("hidden")) $("#deleteLevelBtn").click();
+          }
+        };
+        if (!levelActions[key]) return;
+        event.preventDefault();
+        levelActions[key]();
         return;
       }
       if ($("#settingsDialog").open) {
