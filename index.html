@@ -2271,10 +2271,10 @@
       <input id="levelId" type="hidden">
       <div class="level-editor-grid">
         <label>Name
-          <input id="levelName" maxlength="32" required>
+          <input id="levelName" maxlength="32" placeholder="Display Label" required>
         </label>
         <label>Definition
-          <input id="levelDefinition" maxlength="220" placeholder="Short markdown-friendly definition" required>
+          <input id="levelDefinition" maxlength="220" placeholder="Hover Hint" required>
         </label>
         <label class="color-picker-card" aria-label="Color">
           <span id="levelColorPreview" class="color-preview-box" style="--preview-color:#2563eb"></span>
@@ -4148,6 +4148,7 @@
       $("#levelDefinition").value = level ? level.definition : "";
       $("#levelColor").value = level ? level.color : THEMES.Classic[state.levels.length % 5];
       $("#levelCountsTowardStats").checked = level ? level.countsTowardStats === false : false;
+      setButtonLabel("#deleteLevelBtn", "⌫", "Delete Level");
       $("#deleteLevelBtn").classList.toggle("hidden", !level);
       renderSwatches();
       updateLevelColorUI();
