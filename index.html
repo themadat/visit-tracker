@@ -248,6 +248,11 @@
       filter: brightness(1.06) saturate(1.06);
     }
 
+    .state-tile:focus, .state-tile:focus-visible {
+      outline: 0;
+      box-shadow: none;
+    }
+
     .map-borders {
       pointer-events: none;
       stroke: color-mix(in srgb, var(--surface) 88%, var(--text));
@@ -1089,16 +1094,16 @@
               <h2 id="notesPanelTitle">Notes</h2>
               <small id="notesPanelSubtitle" data-hint>Marked states and visit notes.</small>
             </div>
-            <button id="notesPanelBackBtn" type="button">All</button>
+            <button id="notesPanelBackBtn" type="button" data-shortcut="B">All</button>
           </div>
           <div class="notes-controls" aria-label="Notes display controls">
             <div class="segmented" aria-label="Notes sort order">
-              <button id="notesSortAlphaBtn" type="button" aria-pressed="true">Alphabetical</button>
-              <button id="notesSortChronoBtn" type="button" aria-pressed="false">Chronological</button>
+              <button id="notesSortAlphaBtn" type="button" aria-pressed="true" data-shortcut="A">Alphabetical</button>
+              <button id="notesSortChronoBtn" type="button" aria-pressed="false" data-shortcut="T">Chronological</button>
             </div>
             <div class="segmented" aria-label="Notes view">
-              <button id="notesViewExpandedBtn" type="button" aria-pressed="true">Expanded View</button>
-              <button id="notesViewCompactBtn" type="button" aria-pressed="false">Compact View</button>
+              <button id="notesViewExpandedBtn" type="button" aria-pressed="true" data-shortcut="E">Expanded View</button>
+              <button id="notesViewCompactBtn" type="button" aria-pressed="false" data-shortcut="K">Compact View</button>
             </div>
           </div>
           <div id="notesPanelContent" class="note-list"></div>
@@ -1142,15 +1147,15 @@
   <dialog id="renameDialog">
     <header>
       <h2>Rename Map</h2>
-      <button class="dialog-close" type="button" data-close="renameDialog">Close</button>
+      <button class="dialog-close" type="button" data-close="renameDialog" data-shortcut="Q">Close</button>
     </header>
     <form id="renameForm" class="dialog-body" method="dialog">
       <label>Map name
         <input id="mapNameInput" maxlength="80" required>
       </label>
       <div class="actions">
-        <button class="primary" type="submit">Save Name</button>
-        <button type="button" data-close="renameDialog">Cancel</button>
+        <button class="primary" type="submit" data-shortcut="S">Save Name</button>
+        <button type="button" data-close="renameDialog" data-shortcut="Q">Cancel</button>
       </div>
     </form>
   </dialog>
@@ -1246,7 +1251,7 @@
   <dialog id="paletteDialog">
     <header>
       <h2>Smart Color Swatches</h2>
-      <button type="button" data-close="paletteDialog">Close</button>
+      <button type="button" data-close="paletteDialog" data-shortcut="Q">Close</button>
     </header>
     <div class="dialog-body">
       <p class="muted" data-hint>Apply a full progressive theme across your current levels. Colors start at the top legend level and continue downward.</p>
@@ -1431,7 +1436,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "1.4.3";
+    const APP_VERSION = "1.4.4";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const WISHLIST_SEED_VERSION = "1.4.1";
     const STATES = [
@@ -1503,6 +1508,16 @@
       }
     ];
     const CHANGELOG = [
+      {
+        version: "1.4.4",
+        date: "2026-05-10",
+        title: "Modal shortcut coverage",
+        notes: [
+          "Added shortcut badges and actions for rename, smart colors, state note back, and notes view controls.",
+          "Settings controls now show symbol and text labels regardless of button style.",
+          "Removed the residual SVG focus outline after selecting states."
+        ]
+      },
       {
         version: "1.4.3",
         date: "2026-05-10",
@@ -1819,6 +1834,15 @@
       button.title = powerOverlayActive && shortcut ? `${text} (${shortcut})` : text;
     }
 
+    function setButtonLabelBoth(selector, symbol, text, aria = text) {
+      const button = typeof selector === "string" ? $(selector) : selector;
+      if (!button) return;
+      button.textContent = `${symbol} ${text}`;
+      button.setAttribute("aria-label", aria);
+      const shortcut = button.dataset.shortcut;
+      button.title = powerOverlayActive && shortcut ? `${text} (${shortcut})` : text;
+    }
+
     function actionButtonHtml({ symbol, text, className = "icon-btn", attrs = "", aria = text, shortcut = "" }) {
       const shortcutAttr = shortcut ? ` data-shortcut="${shortcut}"` : "";
       return `<button class="${className}" type="button" title="${escapeHtml(text)}" aria-label="${escapeHtml(aria)}"${shortcutAttr} ${attrs}>${escapeHtml(labelFor(symbol, text))}</button>`;
@@ -1860,6 +1884,7 @@
         path.dataset.name = name;
         path.setAttribute("tabindex", "0");
         path.setAttribute("role", "button");
+        path.addEventListener("mousedown", event => event.preventDefault());
         path.addEventListener("click", event => handleStateTap(abbr, event));
         path.addEventListener("keydown", event => {
           if (event.key === "Enter" || event.key === " ") {
@@ -1871,6 +1896,7 @@
     }
 
     function handleStateTap(abbr, event) {
+      if (event?.type === "click") event.currentTarget?.blur?.();
       selectStateInNotes(abbr);
       if (state.settings.tapBehavior === "cycle") {
         if ($("#selectDialog").open) $("#selectDialog").close();
@@ -1904,18 +1930,23 @@
       setButtonLabel("#notesViewExpandedBtn", "▤", "Expanded View");
       setButtonLabel("#notesViewCompactBtn", "☰", "Compact View");
       setButtonLabel("#deleteLevelBtn", "⌫", "Delete Level");
-      setButtonLabel("#lightModeBtn", "☀︎", "Light Mode");
-      setButtonLabel("#darkModeBtn", "◐", "Dark Mode");
-      setButtonLabel("#symbolButtonsBtn", "⌘", "Symbols");
-      setButtonLabel("#textButtonsBtn", "T", "Text");
-      setButtonLabel("#hintsOnBtn", "?", "UI Hints On");
-      setButtonLabel("#hintsOffBtn", "×", "UI Hints Off");
-      setButtonLabel("#cycleModeBtn", "⟳", "Tap to Cycle");
-      setButtonLabel("#selectModeBtn", "⌖", "Tap to Select");
-      setButtonLabel("#exportJsonBtn", "J", "Export JSON Backup");
-      setButtonLabel("#exportMarkdownBtn", "M", "Complete Markdown");
-      setButtonLabel("#exportRichTextBtn", "E", "Simple Rich Text");
-      setButtonLabel("#resetAppBtn", "⌫", "Reset App Data");
+      setButtonLabelBoth("#lightModeBtn", "☀︎", "Light Mode");
+      setButtonLabelBoth("#darkModeBtn", "◐", "Dark Mode");
+      setButtonLabelBoth("#symbolButtonsBtn", "⌘", "Symbols");
+      setButtonLabelBoth("#textButtonsBtn", "T", "Text");
+      setButtonLabelBoth("#hintsOnBtn", "?", "UI Hints On");
+      setButtonLabelBoth("#hintsOffBtn", "×", "UI Hints Off");
+      setButtonLabelBoth("#cycleModeBtn", "⟳", "Tap to Cycle");
+      setButtonLabelBoth("#selectModeBtn", "⌖", "Tap to Select");
+      setButtonLabelBoth("#exportJsonBtn", "J", "Export JSON Backup");
+      setButtonLabelBoth("#exportMarkdownBtn", "M", "Complete Markdown");
+      setButtonLabelBoth("#exportRichTextBtn", "E", "Simple Rich Text");
+      setButtonLabelBoth("#resetAppBtn", "⌫", "Reset App Data");
+      setButtonLabelBoth("[data-tab='settings']", "⚙︎", "Settings");
+      setButtonLabelBoth("[data-tab='help']", "?", "Help Manual");
+      setButtonLabelBoth("[data-tab='faq']", "!", "FAQ");
+      setButtonLabelBoth("[data-tab='changelog']", "◇", "Changelog");
+      setButtonLabelBoth("[data-tab='wishlist']", "☆", "Wishlist");
       $("#legendToggleBtn").setAttribute("aria-pressed", String(legendPanelOpen));
       $("#notesToggleBtn").setAttribute("aria-pressed", String(notesPanelOpen));
     }
@@ -2466,13 +2497,13 @@
     }
 
     function renderPaletteDialog() {
-      $("#paletteThemes").innerHTML = Object.entries(THEMES).map(([name, colors]) => `
+      $("#paletteThemes").innerHTML = Object.entries(THEMES).map(([name, colors], index) => `
         <div class="theme-row">
           <b>${escapeHtml(name)}</b>
           <div class="swatch-grid">
             ${colors.map(color => `<span class="swatch-btn" style="--swatch-color:${color}" aria-hidden="true"></span>`).join("")}
           </div>
-          <button type="button" data-apply-theme="${escapeHtml(name)}">Apply</button>
+          <button type="button" data-apply-theme="${escapeHtml(name)}" data-shortcut="${index + 1}">Apply</button>
         </div>
       `).join("");
       $$("[data-apply-theme]").forEach(button => {
@@ -2693,12 +2724,39 @@
       setPowerOverlay(Boolean(event.shiftKey && event.ctrlKey && event.altKey));
     }
 
+    function shortcutKey(event) {
+      if (event.code?.startsWith("Key")) return event.code.slice(3).toLowerCase();
+      if (event.code?.startsWith("Digit")) return event.code.slice(5);
+      return event.key.toLowerCase();
+    }
+
     function handlePowerShortcut(event) {
       updatePowerOverlay(event);
       if (!powerOverlayActive) return;
       if (["shift", "control", "alt", "option", "meta"].includes(event.key.toLowerCase())) return;
-      if (/^(input|textarea|select)$/i.test(event.target.tagName)) return;
-      const key = event.code?.startsWith("Key") ? event.code.slice(3).toLowerCase() : event.key.toLowerCase();
+      const key = shortcutKey(event);
+      if ($("#renameDialog").open) {
+        const renameActions = {
+          q: () => $("#renameDialog").close(),
+          s: () => $("#renameForm").requestSubmit()
+        };
+        if (!renameActions[key]) return;
+        event.preventDefault();
+        renameActions[key]();
+        return;
+      }
+      if ($("#paletteDialog").open) {
+        if (key === "q") {
+          event.preventDefault();
+          $("#paletteDialog").close();
+          return;
+        }
+        const paletteButton = $(`#paletteThemes [data-shortcut="${key}"]`);
+        if (!paletteButton) return;
+        event.preventDefault();
+        paletteButton.click();
+        return;
+      }
       if ($("#settingsDialog").open) {
         const settingsActions = {
           q: () => $("#settingsDialog").close(),
@@ -2725,6 +2783,7 @@
         settingsActions[key]();
         return;
       }
+      if (/^(input|textarea|select)$/i.test(event.target.tagName)) return;
       const actions = {
         l: toggleLegendPanel,
         n: toggleNotesPanel,
@@ -2733,9 +2792,14 @@
         c: () => $("#smartColorsBtn").click(),
         a: () => {
           const addNote = $("#notesPanelAddNoteBtn");
-          if (notesPanelOpen && notesPanelState && addNote) addNote.click();
+          if (notesPanelOpen && !notesPanelState) $("#notesSortAlphaBtn").click();
+          else if (notesPanelOpen && notesPanelState && addNote) addNote.click();
           else if (!$("#addLevelBtn").disabled) $("#addLevelBtn").click();
         },
+        b: () => notesPanelState && $("#notesPanelBackBtn").click(),
+        t: () => notesPanelOpen && !notesPanelState && $("#notesSortChronoBtn").click(),
+        e: () => notesPanelOpen && !notesPanelState && $("#notesViewExpandedBtn").click(),
+        k: () => notesPanelOpen && !notesPanelState && $("#notesViewCompactBtn").click(),
         x: () => {
           const clearState = $("#notesPanelClearBtn");
           if (notesPanelOpen && notesPanelState && clearState) clearState.click();
