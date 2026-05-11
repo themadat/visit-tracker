@@ -3674,8 +3674,8 @@
     function compactStateRow(abbr) {
       const names = (filteredStateLevelNames(abbr).join(", ") || (noteLevelFilters.size ? "Notes only" : stateLevelNames(abbr).join(", "))) || "Unvisited";
       const notes = filteredNotesFor(abbr);
-      const dates = notes.map(note => formatDateDisplay(note.date)).join("; ") || "None";
-      const text = notes.map(note => note.text || "No summary").join("; ") || "No notes";
+      const dates = notes.map(note => formatDateDisplay(note.date)).join(" | ") || "None";
+      const text = notes.map(note => note.text || "No summary").join(" | ") || "No notes";
       return `
         <button class="compact-note-row" type="button" data-open-notes-state="${abbr}">
           <span><b>${escapeHtml(STATE_NAMES[abbr])}</b></span>
