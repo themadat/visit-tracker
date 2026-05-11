@@ -898,6 +898,13 @@
       border-bottom: 1px solid var(--line);
     }
 
+    .dialog-head-actions {
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+      flex: 0 0 auto;
+    }
+
     .drawer-body {
       padding: 1rem;
       overflow: auto;
@@ -976,27 +983,19 @@
       grid-column: 1 / -1;
     }
 
-    .level-form-grid {
+    .level-editor-grid {
       display: grid;
-      grid-template-columns: minmax(170px, .8fr) minmax(260px, 1.2fr);
-      gap: .7rem;
-      align-items: start;
-    }
-
-    .level-form-grid textarea {
-      min-height: 68px;
-    }
-
-    .level-color-row {
-      display: grid;
-      grid-template-columns: minmax(130px, .55fr) minmax(220px, 1fr);
+      grid-template-columns: minmax(150px, .85fr) minmax(230px, 1.25fr) minmax(170px, .8fr);
       gap: .7rem;
       align-items: end;
     }
 
-    .level-actions {
-      justify-content: flex-start;
-      padding-bottom: .2rem;
+    .level-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .6rem;
+      flex-wrap: wrap;
     }
 
     .swatch-grid {
@@ -1021,20 +1020,36 @@
       box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 18%, transparent);
     }
 
-    .color-preview {
+    .color-picker-card {
+      position: relative;
       display: grid;
-      grid-template-columns: 64px minmax(0, 1fr);
-      gap: .7rem;
+      grid-template-columns: 52px minmax(0, 1fr);
+      gap: .6rem;
       align-items: center;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      padding: .65rem;
+      padding: .5rem;
       background: var(--surface-2);
+      cursor: pointer;
+      min-height: 44px;
+    }
+
+    .color-picker-card:hover {
+      border-color: var(--accent);
+    }
+
+    .color-picker-card input {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
     }
 
     .color-preview-box {
-      width: 64px;
-      height: 48px;
+      width: 52px;
+      height: 36px;
       border-radius: var(--radius);
       border: 2px solid var(--surface);
       background: var(--preview-color);
@@ -1313,8 +1328,7 @@
       .form-grid,
       .summary-grid,
       .filters,
-      .level-form-grid,
-      .level-color-row,
+      .level-editor-grid,
       .date-builder {
         grid-template-columns: 1fr;
       }
@@ -2097,38 +2111,36 @@
 
   <dialog id="levelDialog">
     <header>
-      <h2 id="levelDialogTitle">Edit Level</h2>
-      <button id="levelDialogCloseBtn" type="button" data-close="levelDialog" data-shortcut="Q">Close</button>
+      <div>
+        <h2 id="levelDialogTitle">Edit Level</h2>
+        <small id="levelSaveStatus" data-hint>Changes save automatically.</small>
+      </div>
+      <div class="dialog-head-actions">
+        <button id="deleteLevelBtn" class="danger icon-btn" type="button" title="Delete level"
+          aria-label="Delete level" data-shortcut="D">🗑️</button>
+        <button id="levelDialogCloseBtn" type="button" data-close="levelDialog" data-shortcut="Q">Close</button>
+      </div>
     </header>
     <form id="levelForm" class="dialog-body" method="dialog">
       <input id="levelId" type="hidden">
-      <div class="level-form-grid">
+      <div class="level-editor-grid">
         <label>Name
           <input id="levelName" maxlength="32" required>
         </label>
         <label>Definition
-          <textarea id="levelDefinition" maxlength="220" placeholder="Compact markdown-friendly definition"
-            required></textarea>
+          <input id="levelDefinition" maxlength="220" placeholder="Short markdown-friendly definition" required>
         </label>
-      </div>
-      <div class="level-color-row">
-        <label>Color
+        <label class="color-picker-card" aria-label="Color">
+          <span id="levelColorPreview" class="color-preview-box" style="--preview-color:#2563eb"></span>
+          <span><b>Color</b><br><small id="levelColorText">Click to set #2563EB</small></span>
           <input id="levelColor" type="color" required>
         </label>
-        <div class="color-preview" aria-live="polite">
-          <span id="levelColorPreview" class="color-preview-box" style="--preview-color:#2563eb"></span>
-          <span><b>Selected color</b><br><small id="levelColorText">#2563eb</small></span>
-        </div>
       </div>
-      <label class="level-count-toggle">
-        <input id="levelCountsTowardStats" type="checkbox">
-        <span><b>Count toward stats</b><br><small data-hint>Turn this off for opt-out or planning-only levels.</small></span>
-      </label>
-      <div class="actions level-actions">
-        <button id="saveLevelBtn" class="primary" type="submit" data-shortcut="S">Save Level</button>
-        <button id="deleteLevelBtn" class="danger icon-btn" type="button" title="Delete level"
-          aria-label="Delete level" data-shortcut="D">🗑️</button>
-        <button id="cancelLevelBtn" type="button" data-close="levelDialog" data-shortcut="X">Cancel</button>
+      <div class="level-meta-row">
+        <label class="level-count-toggle">
+          <input id="levelCountsTowardStats" type="checkbox">
+          <span><b>Count toward stats</b><br><small data-hint>Turn this off for opt-out or planning-only levels.</small></span>
+        </label>
       </div>
       <section>
         <h3>Existing Swatches</h3>
@@ -2793,6 +2805,7 @@
     let mapFitMode = false;
     let noteLevelFilters = new Set();
     let powerOverlayActive = false;
+    let levelAutoSaveTimer = null;
     let pendingConfirm = null;
     let state = loadState();
 
@@ -3186,7 +3199,7 @@
     function setButtonLabelBoth(selector, symbol, text, aria = text) {
       const button = typeof selector === "string" ? $(selector) : selector;
       if (!button) return;
-      button.innerHTML = buttonMarkup(symbol, text);
+      button.innerHTML = buttonMarkup(symbol, text, true);
       button.setAttribute("aria-label", aria);
       const shortcut = button.dataset.shortcut;
       button.title = powerOverlayActive && shortcut ? `${text} (${shortcut})` : text;
@@ -3294,8 +3307,6 @@
       setButtonLabel("#saveNoteBtn", "✓", "Save Note");
       setButtonLabel("#cancelNoteBtn", "↩", "Cancel");
       setButtonLabel("#levelDialogCloseBtn", "×", "Close");
-      setButtonLabel("#saveLevelBtn", "✓", "Save Level");
-      setButtonLabel("#cancelLevelBtn", "↩", "Cancel");
       setButtonLabel("#paletteCloseBtn", "×", "Close");
       setButtonLabel("#deleteLevelBtn", "⌫", "Delete Level");
       setButtonLabelBoth("#lightModeBtn", "☀︎", "Light Mode");
@@ -3968,7 +3979,9 @@
 
     function openLevelDialog(levelId = "") {
       const level = levelById(levelId);
+      clearTimeout(levelAutoSaveTimer);
       $("#levelDialogTitle").textContent = level ? "Edit Level" : "Add Level";
+      updateLevelSaveStatus(level ? "Changes save automatically." : "Add a name and definition to create this level.");
       $("#levelId").value = level ? level.id : "";
       $("#levelName").value = level ? level.name : "";
       $("#levelDefinition").value = level ? level.definition : "";
@@ -3978,6 +3991,17 @@
       renderSwatches();
       updateLevelColorUI();
       $("#levelDialog").showModal();
+    }
+
+    function updateLevelSaveStatus(message) {
+      const status = $("#levelSaveStatus");
+      if (status) status.textContent = message;
+    }
+
+    function scheduleLevelAutoSave() {
+      clearTimeout(levelAutoSaveTimer);
+      updateLevelSaveStatus("Saving changes automatically...");
+      levelAutoSaveTimer = setTimeout(() => saveLevelFromForm({ auto: true }), 180);
     }
 
     function renderSwatches() {
@@ -3997,13 +4021,14 @@
         $("#levelColor").value = button.dataset.color;
         updateLevelColorUI();
         renderSwatches();
+        scheduleLevelAutoSave();
       }));
     }
 
     function updateLevelColorUI() {
       const color = $("#levelColor").value || "#2563eb";
       $("#levelColorPreview").style.setProperty("--preview-color", color);
-      $("#levelColorText").textContent = color.toUpperCase();
+      $("#levelColorText").textContent = `Click to set ${color.toUpperCase()}`;
     }
 
     function renderPaletteDialog() {
@@ -4032,26 +4057,41 @@
       render();
     }
 
-    function saveLevelFromForm() {
+    function saveLevelFromForm({ auto = false } = {}) {
       const id = $("#levelId").value;
       const existing = id ? levelById(id) : null;
+      const name = $("#levelName").value.trim();
+      const definition = $("#levelDefinition").value.trim();
+      if (!name || !definition) {
+        updateLevelSaveStatus(id ? "Add a name and definition to keep saving." : "Add a name and definition to create this level.");
+        return false;
+      }
       const level = {
         id: id || uid(),
-        name: $("#levelName").value.trim(),
-        definition: $("#levelDefinition").value.trim(),
+        name,
+        definition,
         color: $("#levelColor").value,
         countsTowardStats: $("#levelCountsTowardStats").checked
       };
-      if (!level.name || !level.definition) return;
       if (id) {
         const index = state.levels.findIndex(item => item.id === id);
         if (index >= 0) state.levels[index] = level;
       } else {
-        if (state.levels.length >= 5) return showMessage("Maximum Levels", "You can use up to 5 levels.");
+        if (state.levels.length >= 5) {
+          if (!auto) showMessage("Maximum Levels", "You can use up to 5 levels.");
+          return false;
+        }
         insertLevelSmart(level);
+        $("#levelId").value = level.id;
+        $("#deleteLevelBtn").classList.remove("hidden");
+        $("#levelDialogTitle").textContent = "Edit Level";
       }
       save();
       render();
+      renderSwatches();
+      updateLevelColorUI();
+      updateLevelSaveStatus("Saved automatically.");
+      return true;
     }
 
     function removeCurrentLevel() {
@@ -4474,11 +4514,15 @@
       $("#levelColor").addEventListener("input", () => {
         updateLevelColorUI();
         renderSwatches();
+        scheduleLevelAutoSave();
       });
+      ["levelName", "levelDefinition"].forEach(id => {
+        $(`#${id}`).addEventListener("input", scheduleLevelAutoSave);
+      });
+      $("#levelCountsTowardStats").addEventListener("change", scheduleLevelAutoSave);
       $("#levelForm").addEventListener("submit", event => {
         event.preventDefault();
         saveLevelFromForm();
-        $("#levelDialog").close();
       });
       $("#deleteLevelBtn").addEventListener("click", removeCurrentLevel);
       $("#lightModeBtn").addEventListener("click", () => updateSetting("theme", "light"));
