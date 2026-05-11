@@ -302,8 +302,50 @@
     }
 
     .map-wrap {
+      position: relative;
       padding: clamp(.7rem, 2vw, 1.2rem);
       overflow-x: auto;
+    }
+
+    .map-fab {
+      position: absolute;
+      right: .85rem;
+      bottom: .85rem;
+      z-index: 5;
+      display: inline-grid;
+      place-items: center;
+      min-width: 46px;
+      min-height: 46px;
+      padding: 0 .78rem;
+      border-radius: 999px;
+      border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+      background: color-mix(in srgb, var(--surface) 86%, var(--accent) 14%);
+      box-shadow: 0 12px 30px rgba(16, 24, 40, .18);
+      font-weight: 850;
+    }
+
+    .map-fab[aria-pressed="true"] {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    [data-theme="dark"] .map-fab[aria-pressed="true"] {
+      color: #07111f;
+    }
+
+    [data-map-mode="fit"] .map-wrap {
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      padding: clamp(.35rem, 1.4vw, .85rem);
+    }
+
+    [data-map-mode="fit"] #stateMap {
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+      max-height: calc(100svh - 10.5rem - env(safe-area-inset-bottom, 0px));
     }
 
     svg {
@@ -1640,6 +1682,7 @@
             <path class="map-separator" d="m 215,493 v 55 l 36,45 m -251,-168 h 147 l 68,68 h 85 l 54,54 v 46 m 206,0 v -78 h 122 v 78 m -47,-78 v 78 m -75,-37 h 122 m -84,0 v 37" />
 
           </svg>
+          <button id="mapFitBtn" class="map-fab" type="button" aria-pressed="false" data-shortcut="F">Fit Map</button>
         </div>
       </section>
 
@@ -2039,7 +2082,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "1.5.9";
+    const APP_VERSION = "1.6.0";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const WISHLIST_SEED_VERSION = "1.5.2";
     const STATES = [
@@ -2186,6 +2229,15 @@
       }
     ];
     const CHANGELOG = [
+      {
+        version: "1.6.0",
+        date: "2026-05-11",
+        title: "Mobile map mode",
+        notes: [
+          "Added a floating Map Mode toggle for a fit-to-screen map view.",
+          "Fit mode removes horizontal map scrolling for easier screenshots and sharing."
+        ]
+      },
       {
         version: "1.5.9",
         date: "2026-05-11",
@@ -2422,6 +2474,7 @@
     let notesSortMode = "chrono";
     let notesViewMode = "compact";
     let notesSearchQuery = "";
+    let mapFitMode = false;
     let noteLevelFilters = new Set();
     let powerOverlayActive = false;
     let pendingConfirm = null;
@@ -2889,6 +2942,7 @@
       setButtonLabel("#settingsBtn", "⚙︎", "Settings");
       setButtonLabel("#legendToggleBtn", "☷", "Legend");
       setButtonLabel("#notesToggleBtn", "✐", "Notes");
+      setButtonLabel("#mapFitBtn", mapFitMode ? "↔" : "⛶", mapFitMode ? "Scroll Map" : "Fit Map");
       setButtonLabel("#smartColorsBtn", "◐", "Auto Colors");
       const atMax = state.levels.length >= 5;
       setButtonLabel("#addLevelBtn", atMax ? "5/5" : "+", atMax ? "MAX LEVELS" : "Add Level");
@@ -2922,6 +2976,8 @@
       setButtonLabelBoth("[data-tab='wishlist']", "☆", "Wishlist");
       $("#legendToggleBtn").setAttribute("aria-pressed", String(legendPanelOpen));
       $("#notesToggleBtn").setAttribute("aria-pressed", String(notesPanelOpen));
+      $("#mapFitBtn").setAttribute("aria-pressed", String(mapFitMode));
+      $("#mapFitBtn").title = mapFitMode ? "Return to scrollable map" : "Fit map on screen";
     }
 
     function render() {
@@ -2931,6 +2987,7 @@
       document.documentElement.dataset.buttonStyle = state.settings.buttonStyle;
       document.documentElement.dataset.legend = legendPanelOpen ? "open" : "closed";
       document.documentElement.dataset.notes = notesPanelOpen ? "open" : "closed";
+      document.documentElement.dataset.mapMode = mapFitMode ? "fit" : "scroll";
       $("#mapTitle").textContent = state.mapName;
       $("#tapHint").textContent = state.settings.tapBehavior === "cycle"
         ? "Tap a state to cycle its visit level."
@@ -3244,6 +3301,11 @@
         closeDrawer();
         notesPanelState = selectedState;
       }
+      render();
+    }
+
+    function toggleMapFitMode() {
+      mapFitMode = !mapFitMode;
       render();
     }
 
@@ -3884,6 +3946,7 @@
       const actions = {
         l: toggleLegendPanel,
         n: toggleNotesPanel,
+        f: toggleMapFitMode,
         s: () => $("#settingsBtn").click(),
         r: () => $("#renameBtn").click(),
         c: () => $("#smartColorsBtn").click(),
@@ -3941,6 +4004,7 @@
       $("#labelsNameBtn").addEventListener("click", () => updateSetting("mapLabels", "name"));
       $("#legendToggleBtn").addEventListener("click", toggleLegendPanel);
       $("#notesToggleBtn").addEventListener("click", toggleNotesPanel);
+      $("#mapFitBtn").addEventListener("click", toggleMapFitMode);
       $("#notesPanelBackBtn").addEventListener("click", () => {
         notesPanelState = null;
         renderNotesPanel();
