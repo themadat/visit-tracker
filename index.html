@@ -1910,7 +1910,8 @@
   <dialog id="noteDialog">
     <header>
       <h2 id="noteDialogTitle">Add Note</h2>
-      <button type="button" data-close="noteDialog">Close</button>
+      <button id="noteDialogCloseBtn" class="dialog-close" type="button" data-close="noteDialog"
+        data-shortcut="Q">Close</button>
     </header>
     <form id="noteForm" class="dialog-body" method="dialog">
       <input id="noteId" type="hidden">
@@ -1952,8 +1953,8 @@
         <textarea id="noteText" maxlength="700" placeholder="Markdown-friendly plain text"></textarea>
       </label>
       <div class="actions">
-        <button class="primary" type="submit">Save Note</button>
-        <button type="button" data-close="noteDialog">Cancel</button>
+        <button id="saveNoteBtn" class="primary" type="submit" data-shortcut="S">Save Note</button>
+        <button id="cancelNoteBtn" type="button" data-close="noteDialog" data-shortcut="X">Cancel</button>
       </div>
     </form>
   </dialog>
@@ -3090,6 +3091,9 @@
       setButtonLabel("#notesSortChronoBtn", "◷", "Chronological");
       setButtonLabel("#notesViewExpandedBtn", "☰", "Expanded View");
       setButtonLabel("#notesViewCompactBtn", "▤", "Compact View");
+      setButtonLabel("#noteDialogCloseBtn", "×", "Close");
+      setButtonLabel("#saveNoteBtn", "✓", "Save Note");
+      setButtonLabel("#cancelNoteBtn", "↩", "Cancel");
       setButtonLabel("#deleteLevelBtn", "⌫", "Delete Level");
       setButtonLabelBoth("#lightModeBtn", "☀︎", "Light Mode");
       setButtonLabelBoth("#darkModeBtn", "◐", "Dark Mode");
@@ -4015,7 +4019,7 @@
     }
 
     function updatePowerOverlay(event) {
-      setPowerOverlay(Boolean(event.shiftKey && event.ctrlKey && event.altKey));
+      setPowerOverlay(Boolean(event.shiftKey && event.altKey && (event.ctrlKey || event.metaKey)));
     }
 
     function shortcutKey(event) {
@@ -4049,6 +4053,17 @@
         if (!paletteButton) return;
         event.preventDefault();
         paletteButton.click();
+        return;
+      }
+      if ($("#noteDialog").open) {
+        const noteActions = {
+          q: () => $("#noteDialog").close(),
+          x: () => $("#noteDialog").close(),
+          s: () => $("#noteForm").requestSubmit()
+        };
+        if (!noteActions[key]) return;
+        event.preventDefault();
+        noteActions[key]();
         return;
       }
       if ($("#settingsDialog").open) {
