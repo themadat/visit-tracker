@@ -554,8 +554,38 @@
     .legend-total-pills {
       display: inline-flex;
       align-items: center;
+      justify-content: flex-end;
       gap: .18rem;
       white-space: nowrap;
+    }
+
+    .legend-title-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: .38rem;
+      align-items: center;
+      margin-bottom: .45rem;
+    }
+
+    .legend-title-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: .32rem;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .legend-title-actions {
+      display: flex;
+      align-items: center;
+      gap: .32rem;
+      flex-wrap: nowrap;
+      justify-content: flex-end;
+      min-width: calc(96px + .48rem);
+    }
+
+    [data-button-style="text"] .legend-title-actions {
+      min-width: calc(176px + .48rem);
     }
 
     .legend-list,
@@ -1331,7 +1361,7 @@
       }
 
       .map-head {
-        align-items: flex-start;
+        align-items: center;
         flex-direction: row;
         gap: .45rem;
         padding: .7rem .75rem;
@@ -1419,6 +1449,20 @@
         gap: .28rem;
       }
 
+      .legend-title-row {
+        gap: .2rem;
+        margin-bottom: .28rem;
+      }
+
+      .legend-title-main {
+        gap: .2rem;
+      }
+
+      .legend-title-actions {
+        gap: .18rem;
+        min-width: calc(80px + .3rem);
+      }
+
       .legend-list {
         gap: .18rem;
       }
@@ -1465,7 +1509,9 @@
       }
 
       .legend-item .count-pill,
-      .legend-item .percent-pill {
+      .legend-item .percent-pill,
+      .legend-total-pills .count-pill,
+      .legend-total-pills .percent-pill {
         min-width: 1.6rem;
         padding: .03rem .22rem;
         font-size: .64rem;
@@ -1481,6 +1527,10 @@
 
       [data-button-style="text"] .legend-actions {
         grid-template-columns: repeat(2, minmax(34px, auto));
+      }
+
+      [data-button-style="text"] .legend-title-actions {
+        min-width: calc(68px + .1rem);
       }
 
       [data-button-style="text"] .legend-item .icon-btn {
@@ -2002,10 +2052,12 @@
       <aside id="sidePanel" class="side-panel-wrap" aria-label="Visit tools">
         <section id="legendPanel" class="panel side-panel" aria-label="Visit summary and editable legend">
           <section>
-            <div class="row" style="justify-content: space-between; margin-bottom: .45rem;">
-              <h2>Legend</h2>
-              <div class="actions">
+            <div class="legend-title-row">
+              <div class="legend-title-main">
+                <h2>Legend</h2>
                 <span id="legendTotals" class="legend-total-pills" aria-label="Overall completion"></span>
+              </div>
+              <div class="legend-title-actions">
                 <button id="smartColorsBtn" type="button" data-shortcut="C">Auto Colors</button>
                 <button id="addLevelBtn" type="button" data-shortcut="A">Add Level</button>
               </div>
