@@ -333,7 +333,7 @@
 
     .legend-item {
       display: grid;
-      grid-template-columns: auto minmax(0, 1fr) auto auto;
+      grid-template-columns: minmax(0, 1fr) auto;
       gap: .38rem;
       align-items: center;
       width: 100%;
@@ -343,6 +343,27 @@
       border-radius: var(--radius);
       background: var(--surface);
     }
+
+    .legend-item.is-filtered {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--surface) 88%, var(--accent) 12%);
+    }
+
+    .legend-filter {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: .38rem;
+      align-items: center;
+      width: 100%;
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      text-align: left;
+    }
+
+    .legend-filter:hover { border: 0; }
 
     .legend-actions {
       display: grid;
@@ -651,11 +672,13 @@
 
     .compact-note-row {
       display: grid;
-      grid-template-columns: minmax(120px, .9fr) minmax(100px, .65fr) minmax(110px, .8fr) minmax(160px, 1.35fr);
-      gap: .5rem;
+      grid-template-columns: minmax(64px, .75fr) minmax(56px, .55fr) minmax(72px, .65fr) minmax(0, 1.45fr);
+      gap: .34rem;
       align-items: start;
       justify-items: start;
       text-align: left;
+      width: 100%;
+      min-width: 0;
       padding: .46rem .55rem;
       border: 1px solid var(--line);
       border-radius: var(--radius);
@@ -666,6 +689,9 @@
     .compact-note-row > * {
       justify-self: start;
       text-align: left;
+      min-width: 0;
+      max-width: 100%;
+      overflow-wrap: anywhere;
     }
 
     .compact-note-row.header {
@@ -769,6 +795,7 @@
       .form-grid, .summary-grid, .filters, .level-form-grid, .level-color-row, .notes-controls { grid-template-columns: 1fr; }
       .theme-row { grid-template-columns: 1fr; }
       .legend-item { grid-template-columns: auto minmax(0, 1fr) auto; }
+      .legend-filter { grid-column: 1 / 3; grid-template-columns: auto minmax(0, 1fr); }
       .level-stats { grid-column: 2; grid-row: 2; }
       .legend-actions { grid-column: 3; grid-row: 1 / span 3; }
       .compact-note-row { grid-template-columns: 1fr; }
@@ -1092,7 +1119,7 @@
           <div class="row" style="justify-content: space-between;">
             <div>
               <h2 id="notesPanelTitle">Notes</h2>
-              <small id="notesPanelSubtitle" data-hint>Marked states and visit notes.</small>
+              <small id="notesPanelSubtitle" data-hint>Marked states and visit notes. Select legend levels to filter this view.</small>
             </div>
             <button id="notesPanelBackBtn" type="button" data-shortcut="B">All</button>
           </div>
@@ -1172,7 +1199,7 @@
       <small data-hint>Choosing a level adds it to this state. Choosing Unvisited clears all applied levels.</small>
       <div class="form-grid">
         <label>Visit date
-          <input id="selectDate" type="date">
+          <input id="selectDate" type="text" placeholder="YYYY, YYYY-MM, or YYYY-MM-DD">
         </label>
         <label>Summary
           <input id="selectSummary" maxlength="140" placeholder="Optional short note">
@@ -1196,7 +1223,7 @@
         <select id="noteLevel"></select>
       </label>
       <label>Date
-        <input id="noteDate" type="date" required>
+        <input id="noteDate" type="text" placeholder="YYYY, YYYY-MM, or YYYY-MM-DD" required>
       </label>
       <label>Summary or note
         <textarea id="noteText" maxlength="700" placeholder="Markdown-friendly plain text"></textarea>
@@ -1314,6 +1341,18 @@
           <div class="segmented" aria-label="Tap behavior">
             <button id="cycleModeBtn" type="button" aria-pressed="true" data-shortcut="C">Tap to Cycle</button>
             <button id="selectModeBtn" type="button" aria-pressed="false" data-shortcut="P">Tap to Select</button>
+          </div>
+        </section>
+        <section>
+          <h3>Date Format</h3>
+          <div class="segmented" aria-label="Date order">
+            <button id="dateMdyBtn" type="button" aria-pressed="true" data-shortcut="1">MDY</button>
+            <button id="dateDmyBtn" type="button" aria-pressed="false" data-shortcut="2">DMY</button>
+            <button id="dateYmdBtn" type="button" aria-pressed="false" data-shortcut="3">YMD</button>
+          </div>
+          <div class="segmented" aria-label="Date style" style="margin-top: .55rem;">
+            <button id="dateNumericBtn" type="button" aria-pressed="true" data-shortcut="N">Numerical</button>
+            <button id="dateAlphaBtn" type="button" aria-pressed="false" data-shortcut="A">Alphabetical</button>
           </div>
         </section>
         <section>
@@ -1436,7 +1475,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "1.4.4";
+    const APP_VERSION = "1.4.5";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const WISHLIST_SEED_VERSION = "1.4.1";
     const STATES = [
@@ -1508,6 +1547,16 @@
       }
     ];
     const CHANGELOG = [
+      {
+        version: "1.4.5",
+        date: "2026-05-10",
+        title: "Date formats and note filters",
+        notes: [
+          "Added year-only and month-year note dates with configurable date display formats.",
+          "Legend levels now filter the Notes view when selected.",
+          "Tightened compact notes columns so dense note exports stay inside the panel."
+        ]
+      },
       {
         version: "1.4.4",
         date: "2026-05-10",
@@ -1614,6 +1663,8 @@
     const uid = () => "id-" + Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
     const today = () => new Date().toISOString().slice(0, 10);
     const clone = obj => JSON.parse(JSON.stringify(obj));
+    const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    const MONTH_LOOKUP = Object.fromEntries(MONTH_NAMES.flatMap((name, index) => [[name.toLowerCase(), index + 1], [name.slice(0, 3).toLowerCase(), index + 1]]));
     let selectedState = null;
     let drawerMode = "state";
     let legendPanelOpen = true;
@@ -1621,6 +1672,7 @@
     let notesPanelState = null;
     let notesSortMode = "alpha";
     let notesViewMode = "expanded";
+    let noteLevelFilters = new Set();
     let powerOverlayActive = false;
     let pendingConfirm = null;
     let state = loadState();
@@ -1629,7 +1681,7 @@
       return {
         appVersion: APP_VERSION,
         mapName: "Your State Map",
-        settings: { theme: "light", tapBehavior: "cycle", buttonStyle: "symbols", uiHints: true },
+        settings: { theme: "light", tapBehavior: "cycle", buttonStyle: "symbols", uiHints: true, dateOrder: "mdy", dateStyle: "numeric" },
         levels: DEFAULT_LEVEL_IDS.map(id => clone(BUILT_INS.find(level => level.id === id))),
         states: {},
         notes: {},
@@ -1644,6 +1696,83 @@
         createdAt: `2026-05-10T00:00:0${index}.000Z`,
         ...wish
       }));
+    }
+
+    function pad2(value) {
+      return String(value).padStart(2, "0");
+    }
+
+    function monthNameToNumber(value) {
+      return MONTH_LOOKUP[String(value || "").trim().replace(/\.$/, "").toLowerCase()] || 0;
+    }
+
+    function normalizeDateParts(yearValue, monthValue = "", dayValue = "") {
+      const yearText = String(yearValue || "").trim();
+      if (!/^\d{4}$/.test(yearText)) return "";
+      if (monthValue === "" || monthValue === undefined) return yearText;
+      const month = Number(monthValue);
+      if (!Number.isInteger(month) || month < 1 || month > 12) return "";
+      if (dayValue === "" || dayValue === undefined) return `${yearText}-${pad2(month)}`;
+      const day = Number(dayValue);
+      const maxDay = new Date(Number(yearText), month, 0).getDate();
+      if (!Number.isInteger(day) || day < 1 || day > maxDay) return "";
+      return `${yearText}-${pad2(month)}-${pad2(day)}`;
+    }
+
+    function parseFlexibleDate(value, order = "mdy") {
+      const text = String(value || "").trim();
+      if (!text) return "";
+      const clean = text.replace(/,/g, " ").replace(/\s+/g, " ").trim();
+      let match = clean.match(/^(\d{4})$/);
+      if (match) return match[1];
+      match = clean.match(/^(\d{4})[-/.](\d{1,2})(?:[-/.](\d{1,2}))?$/);
+      if (match) return normalizeDateParts(match[1], match[2], match[3]);
+      match = clean.match(/^(\d{1,2})[-/.](\d{4})$/);
+      if (match) return normalizeDateParts(match[2], match[1]);
+      match = clean.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})$/);
+      if (match) {
+        const isDmy = order === "dmy";
+        return normalizeDateParts(match[3], isDmy ? match[2] : match[1], isDmy ? match[1] : match[2]);
+      }
+      const parts = clean.split(" ");
+      const monthIndex = parts.findIndex(part => monthNameToNumber(part));
+      if (monthIndex < 0) return "";
+      const month = monthNameToNumber(parts[monthIndex]);
+      const years = parts.map((part, index) => (/^\d{4}$/.test(part) ? index : -1)).filter(index => index >= 0);
+      if (!years.length) return "";
+      const yearIndex = years[0];
+      const dayPart = parts.find((part, index) => index !== monthIndex && index !== yearIndex && /^\d{1,2}$/.test(part));
+      return normalizeDateParts(parts[yearIndex], month, dayPart || "");
+    }
+
+    function normalizeStoredDate(value, order = "mdy") {
+      const text = String(value || "").trim();
+      if (!text) return "";
+      return parseFlexibleDate(text, order) || text.slice(0, 10);
+    }
+
+    function formatDateDisplay(value) {
+      const text = String(value || "").trim();
+      if (!text) return "No date";
+      const match = text.match(/^(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?$/);
+      if (!match) return text;
+      const [, year, month, day] = match;
+      if (!month) return year;
+      const monthName = MONTH_NAMES[Number(month) - 1];
+      const order = state.settings.dateOrder;
+      const alpha = state.settings.dateStyle === "alpha";
+      if (!day) {
+        if (alpha) return order === "ymd" ? `${year} ${monthName}` : `${monthName} ${year}`;
+        return order === "ymd" ? `${year}-${month}` : order === "dmy" ? `${month}.${year}` : `${month}/${year}`;
+      }
+      if (alpha) {
+        if (order === "ymd") return `${year} ${monthName} ${day}`;
+        if (order === "dmy") return `${day} ${monthName} ${year}`;
+        return `${monthName} ${day}, ${year}`;
+      }
+      if (order === "ymd") return `${year}-${month}-${day}`;
+      if (order === "dmy") return `${day}.${month}.${year}`;
+      return `${month}/${day}/${year}`;
     }
 
     function formatTicketId(number) {
@@ -1692,6 +1821,8 @@
       if (!["light", "dark"].includes(next.settings.theme)) next.settings.theme = "light";
       if (!["cycle", "select"].includes(next.settings.tapBehavior)) next.settings.tapBehavior = "cycle";
       if (!["symbols", "text"].includes(next.settings.buttonStyle)) next.settings.buttonStyle = "symbols";
+      if (!["mdy", "dmy", "ymd"].includes(next.settings.dateOrder)) next.settings.dateOrder = "mdy";
+      if (!["numeric", "alpha"].includes(next.settings.dateStyle)) next.settings.dateStyle = "numeric";
       next.settings.uiHints = next.settings.uiHints !== false;
       delete next.settings.powerMode;
       next.levels = Array.isArray(input.levels) && input.levels.length ? input.levels.slice(0, 5) : base.levels;
@@ -1716,7 +1847,7 @@
         if (!STATE_NAMES[abbr] || !Array.isArray(notes)) return;
         next.notes[abbr] = notes.map(note => ({
           id: String(note.id || uid()),
-          date: String(note.date || today()).slice(0, 10),
+          date: normalizeStoredDate(note.date, next.settings.dateOrder) || today(),
           levelId: validLevelIds.has(note.levelId) ? note.levelId : (next.states[abbr]?.[0] || ""),
           text: String(note.text || note.summary || "").slice(0, 700)
         })).filter(note => note.text || note.date);
@@ -1938,6 +2069,11 @@
       setButtonLabelBoth("#hintsOffBtn", "×", "UI Hints Off");
       setButtonLabelBoth("#cycleModeBtn", "⟳", "Tap to Cycle");
       setButtonLabelBoth("#selectModeBtn", "⌖", "Tap to Select");
+      setButtonLabelBoth("#dateMdyBtn", "M", "MDY");
+      setButtonLabelBoth("#dateDmyBtn", "D", "DMY");
+      setButtonLabelBoth("#dateYmdBtn", "Y", "YMD");
+      setButtonLabelBoth("#dateNumericBtn", "№", "Numerical");
+      setButtonLabelBoth("#dateAlphaBtn", "A", "Alphabetical");
       setButtonLabelBoth("#exportJsonBtn", "J", "Export JSON Backup");
       setButtonLabelBoth("#exportMarkdownBtn", "M", "Complete Markdown");
       setButtonLabelBoth("#exportRichTextBtn", "E", "Simple Rich Text");
@@ -2000,18 +2136,21 @@
     }
 
     function renderLegend() {
+      noteLevelFilters = new Set([...noteLevelFilters].filter(id => levelById(id)));
       const counts = levelCounts();
       $("#legendList").innerHTML = state.levels.map((level, index) => `
-        <div class="legend-item">
-          <span class="swatch" style="background:${level.color}"></span>
-          <span class="level-copy">
-            <span class="level-name">${escapeHtml(level.name)}</span><br>
-            <small>${escapeHtml(level.definition)}</small>
-          </span>
-          <span class="level-stats" aria-label="${escapeHtml(level.name)} stats">
-            <span class="count-pill">${counts[level.id] || 0}</span>
-            <span class="percent-pill">${Math.round(((counts[level.id] || 0) / 50) * 100)}%</span>
-          </span>
+        <div class="legend-item ${noteLevelFilters.has(level.id) ? "is-filtered" : ""}">
+          <button class="legend-filter" type="button" aria-pressed="${noteLevelFilters.has(level.id)}" data-filter-level="${level.id}">
+            <span class="swatch" style="background:${level.color}"></span>
+            <span class="level-copy">
+              <span class="level-name">${escapeHtml(level.name)}</span><br>
+              <small>${escapeHtml(level.definition)}</small>
+            </span>
+            <span class="level-stats" aria-label="${escapeHtml(level.name)} stats">
+              <span class="count-pill">${counts[level.id] || 0}</span>
+              <span class="percent-pill">${Math.round(((counts[level.id] || 0) / 50) * 100)}%</span>
+            </span>
+          </button>
           <span class="legend-actions">
             <span class="order-buttons" aria-label="Move ${escapeHtml(level.name)}">
               ${actionButtonHtml({ symbol: "↑", text: "Up", aria: `Move ${level.name} up`, attrs: `data-move-level="${level.id}" data-direction="-1" ${index === 0 ? "disabled" : ""}` })}
@@ -2022,12 +2161,44 @@
           </span>
         </div>
       `).join("");
+      $$("[data-filter-level]").forEach(button => button.addEventListener("click", () => toggleNoteLevelFilter(button.dataset.filterLevel)));
       $$("[data-level-edit]").forEach(button => button.addEventListener("click", () => openLevelDialog(button.dataset.levelEdit)));
       $$("[data-move-level]").forEach(button => button.addEventListener("click", () => moveLevel(button.dataset.moveLevel, Number(button.dataset.direction))));
       $$("[data-level-delete]").forEach(button => button.addEventListener("click", () => deleteLevel(button.dataset.levelDelete)));
       const atMax = state.levels.length >= 5;
       $("#addLevelBtn").disabled = atMax;
       setButtonLabel("#addLevelBtn", atMax ? "5/5" : "+", atMax ? "MAX LEVELS" : "Add Level");
+    }
+
+    function toggleNoteLevelFilter(levelId) {
+      if (!levelById(levelId)) return;
+      if (noteLevelFilters.has(levelId)) noteLevelFilters.delete(levelId);
+      else noteLevelFilters.add(levelId);
+      renderLegend();
+      renderNotesPanel();
+    }
+
+    function noteMatchesLevelFilter(note) {
+      return !noteLevelFilters.size || noteLevelFilters.has(note.levelId);
+    }
+
+    function activeFilterNames() {
+      return [...noteLevelFilters].map(id => levelById(id)?.name).filter(Boolean);
+    }
+
+    function stateMatchesLevelFilter(abbr) {
+      if (!noteLevelFilters.size) return true;
+      return getStateLevelIds(abbr).some(id => noteLevelFilters.has(id))
+        || (state.notes[abbr] || []).some(noteMatchesLevelFilter);
+    }
+
+    function filteredNotesFor(abbr) {
+      return sortedNotesFor(abbr).filter(noteMatchesLevelFilter);
+    }
+
+    function filteredStateLevelNames(abbr) {
+      const ids = getStateLevelIds(abbr).filter(id => !noteLevelFilters.size || noteLevelFilters.has(id));
+      return ids.map(id => levelById(id)?.name).filter(Boolean);
     }
 
     function moveLevel(levelId, direction) {
@@ -2116,7 +2287,7 @@
       $("#notesList").innerHTML = notes.length ? notes.map(note => `
         <article class="note-card">
           <div class="row" style="justify-content: space-between;">
-            <time datetime="${escapeHtml(note.date)}">${escapeHtml(note.date || "No date")}</time>
+            <time datetime="${escapeHtml(note.date)}">${escapeHtml(formatDateDisplay(note.date))}</time>
             <span class="tag">${escapeHtml(levelById(note.levelId)?.name || "No level")}</span>
           </div>
           <div>${escapeHtml(note.text || "No summary")}</div>
@@ -2140,7 +2311,7 @@
 
     function markedStateAbbrs() {
       const marked = new Set([...Object.keys(state.states), ...Object.keys(state.notes).filter(abbr => (state.notes[abbr] || []).length)]);
-      return STATES.map(([abbr]) => abbr).filter(abbr => marked.has(abbr));
+      return STATES.map(([abbr]) => abbr).filter(abbr => marked.has(abbr) && stateMatchesLevelFilter(abbr));
     }
 
     function renderMarkedStatesDrawer() {
@@ -2151,8 +2322,8 @@
       $("#notesSection").classList.add("hidden");
       const marked = markedStateAbbrs();
       $("#markedStatesList").innerHTML = marked.length ? marked.map(abbr => {
-        const names = stateLevelNames(abbr);
-        const noteCount = (state.notes[abbr] || []).length;
+        const names = filteredStateLevelNames(abbr);
+        const noteCount = filteredNotesFor(abbr).length;
         return `
           <button class="state-list-card" type="button" data-open-marked="${abbr}">
             <span><b>${escapeHtml(STATE_NAMES[abbr])}</b><br><small>${names.length ? escapeHtml(names.join(", ")) : "Notes only"}</small></span>
@@ -2178,7 +2349,7 @@
     }
 
     function sortDateForState(abbr) {
-      const dates = (state.notes[abbr] || []).map(note => note.date).filter(Boolean).sort();
+      const dates = filteredNotesFor(abbr).map(note => note.date).filter(Boolean).sort();
       return dates[0] || "9999-99-99";
     }
 
@@ -2210,9 +2381,9 @@
     }
 
     function compactStateRow(abbr) {
-      const names = stateLevelNames(abbr).join(", ") || "Notes only";
-      const notes = sortedNotesFor(abbr);
-      const dates = notes.map(note => note.date || "No date").join("; ") || "None";
+      const names = (filteredStateLevelNames(abbr).join(", ") || (noteLevelFilters.size ? "Notes only" : stateLevelNames(abbr).join(", "))) || "Notes only";
+      const notes = filteredNotesFor(abbr);
+      const dates = notes.map(note => formatDateDisplay(note.date)).join("; ") || "None";
       const text = notes.map(note => note.text || "No summary").join("; ") || "No notes";
       return `
         <button class="compact-note-row" type="button" data-open-notes-state="${abbr}">
@@ -2232,7 +2403,7 @@
             <div class="compact-note-row header"><span>Date</span><span>Level</span><span>Notes</span><span>Actions</span></div>
             ${notes.map(note => `
               <article class="compact-note-row">
-                <time datetime="${escapeHtml(note.date)}">${escapeHtml(note.date || "No date")}</time>
+                <time datetime="${escapeHtml(note.date)}">${escapeHtml(formatDateDisplay(note.date))}</time>
                 <span>${escapeHtml(levelById(note.levelId)?.name || "No level")}</span>
                 <span>${escapeHtml(note.text || "No summary")}</span>
                 <span class="actions">
@@ -2249,7 +2420,7 @@
           ${notes.map(note => `
             <article class="note-card">
               <div class="row" style="justify-content: space-between;">
-                <time datetime="${escapeHtml(note.date)}">${escapeHtml(note.date || "No date")}</time>
+                <time datetime="${escapeHtml(note.date)}">${escapeHtml(formatDateDisplay(note.date))}</time>
                 <span class="tag">${escapeHtml(levelById(note.levelId)?.name || "No level")}</span>
               </div>
               <div>${escapeHtml(note.text || "No summary")}</div>
@@ -2273,10 +2444,11 @@
         selectedState = notesPanelState;
         const names = stateLevelNames(notesPanelState);
         const activeIds = new Set(getStateLevelIds(notesPanelState));
-        const notes = sortedNotesFor(notesPanelState);
+        const notes = filteredNotesFor(notesPanelState);
+        const filterNames = activeFilterNames();
         $("#notesPanelTitle").textContent = STATE_NAMES[notesPanelState];
         $("#notesPanelSubtitle").removeAttribute("data-hint");
-        $("#notesPanelSubtitle").textContent = names.length ? names.join(", ") : "Unvisited";
+        $("#notesPanelSubtitle").textContent = `${names.length ? names.join(", ") : "Unvisited"}${filterNames.length ? ` · Filtered by ${filterNames.join(", ")}` : ""}`;
         $("#notesPanelContent").className = "note-list";
         $("#notesPanelContent").innerHTML = `
           <section>
@@ -2325,11 +2497,15 @@
       }
 
       $("#notesPanelTitle").textContent = "Notes";
-      $("#notesPanelSubtitle").setAttribute("data-hint", "");
-      $("#notesPanelSubtitle").textContent = "Marked states and visit notes.";
+      const filterNames = activeFilterNames();
+      if (filterNames.length) $("#notesPanelSubtitle").removeAttribute("data-hint");
+      else $("#notesPanelSubtitle").setAttribute("data-hint", "");
+      $("#notesPanelSubtitle").textContent = filterNames.length
+        ? `Filtered by ${filterNames.join(", ")}. Select legend levels to adjust.`
+        : "Marked states and visit notes. Select legend levels to filter this view.";
       const marked = sortedMarkedStateAbbrs();
       if (!marked.length) {
-        $("#notesPanelContent").innerHTML = `<div class="empty">No marked states yet.</div>`;
+        $("#notesPanelContent").innerHTML = `<div class="empty">${noteLevelFilters.size ? "No states match the selected legend filters." : "No marked states yet."}</div>`;
       } else if (notesViewMode === "compact") {
         $("#notesPanelContent").innerHTML = `
           <div class="compact-note-row header"><span>State</span><span>Level</span><span>Dates</span><span>Notes</span></div>
@@ -2337,8 +2513,8 @@
         `;
       } else {
         $("#notesPanelContent").innerHTML = marked.map(abbr => {
-          const names = stateLevelNames(abbr);
-          const noteCount = (state.notes[abbr] || []).length;
+          const names = filteredStateLevelNames(abbr);
+          const noteCount = filteredNotesFor(abbr).length;
           return `
             <button class="state-list-card" type="button" data-open-notes-state="${abbr}">
               <span><b>${escapeHtml(STATE_NAMES[abbr])}</b><br><small>${names.length ? escapeHtml(names.join(", ")) : "Notes only"}</small></span>
@@ -2414,7 +2590,15 @@
     function saveNoteFromForm() {
       const id = $("#noteId").value;
       const levelId = $("#noteLevel").value;
-      const note = { id: id || uid(), date: $("#noteDate").value || today(), levelId, text: $("#noteText").value.trim() };
+      const rawDate = $("#noteDate").value.trim();
+      const parsedDate = parseFlexibleDate(rawDate, state.settings.dateOrder);
+      if (!parsedDate) {
+        $("#noteDate").setCustomValidity("Use YYYY, YYYY-MM, YYYY-MM-DD, or a readable month format like June 2026.");
+        $("#noteDate").reportValidity();
+        $("#noteDate").setCustomValidity("");
+        return false;
+      }
+      const note = { id: id || uid(), date: parsedDate, levelId, text: $("#noteText").value.trim() };
       state.notes[selectedState] ||= [];
       const index = state.notes[selectedState].findIndex(item => item.id === id);
       if (index >= 0) state.notes[selectedState][index] = note;
@@ -2422,6 +2606,7 @@
       addStateLevel(selectedState, levelId);
       save();
       render();
+      return true;
     }
 
     function deleteNote(noteId) {
@@ -2573,6 +2758,7 @@
             });
           });
           state.levels.splice(index, 1);
+          noteLevelFilters.delete(id);
           save();
           if (closeDialog && $("#levelDialog").open) $("#levelDialog").close();
           render();
@@ -2590,6 +2776,11 @@
       $("#hintsOffBtn").setAttribute("aria-pressed", !state.settings.uiHints);
       $("#cycleModeBtn").setAttribute("aria-pressed", state.settings.tapBehavior === "cycle");
       $("#selectModeBtn").setAttribute("aria-pressed", state.settings.tapBehavior === "select");
+      $("#dateMdyBtn").setAttribute("aria-pressed", state.settings.dateOrder === "mdy");
+      $("#dateDmyBtn").setAttribute("aria-pressed", state.settings.dateOrder === "dmy");
+      $("#dateYmdBtn").setAttribute("aria-pressed", state.settings.dateOrder === "ymd");
+      $("#dateNumericBtn").setAttribute("aria-pressed", state.settings.dateStyle === "numeric");
+      $("#dateAlphaBtn").setAttribute("aria-pressed", state.settings.dateStyle === "alpha");
     }
 
     function renderChangelog() {
@@ -2663,7 +2854,7 @@
         const mapLevel = dominantLevel(abbr);
         lines.push(`### ${name} (${abbr})`, `- Levels: ${names.length ? names.join(", ") : "Unvisited"}`, `- Map color level: ${mapLevel ? mapLevel.name : "Unvisited"}`);
         const notes = (state.notes[abbr] || []).slice().sort((a, b) => (a.date || "").localeCompare(b.date || ""));
-        if (notes.length) notes.forEach(note => lines.push(`- ${note.date || "No date"} [${levelById(note.levelId)?.name || "No level"}]: ${note.text || "No summary"}`));
+        if (notes.length) notes.forEach(note => lines.push(`- ${formatDateDisplay(note.date)} [${levelById(note.levelId)?.name || "No level"}]: ${note.text || "No summary"}`));
         else lines.push("- Notes: None");
         lines.push("");
       });
@@ -2678,7 +2869,7 @@
       const notesFor = abbr => (state.notes[abbr] || [])
         .slice()
         .sort((a, b) => (a.date || "").localeCompare(b.date || ""))
-        .map(note => `${note.date || "No date"} [${levelById(note.levelId)?.name || "No level"}]: ${note.text || "No summary"}`)
+        .map(note => `${formatDateDisplay(note.date)} [${levelById(note.levelId)?.name || "No level"}]: ${note.text || "No summary"}`)
         .join("; ") || "None";
       const chronological = STATES.flatMap(([abbr, name]) => (state.notes[abbr] || []).map(note => ({ ...note, abbr, name })))
         .sort((a, b) => (a.date || "").localeCompare(b.date || "") || a.name.localeCompare(b.name));
@@ -2697,7 +2888,7 @@
       });
       lines.push("", "Chronological", "Date | State | Level | Notes");
       if (chronological.length) chronological.forEach(note => {
-        lines.push(`${note.date || "No date"} | ${note.name} | ${levelById(note.levelId)?.name || "No level"} | ${note.text || "No summary"}`);
+        lines.push(`${formatDateDisplay(note.date)} | ${note.name} | ${levelById(note.levelId)?.name || "No level"} | ${note.text || "No summary"}`);
       });
       else lines.push("No dated notes yet.");
       const body = lines.map(line => rtfEscape(line)).join("\\line ");
@@ -2773,6 +2964,11 @@
           o: () => updateSetting("uiHints", false),
           c: () => updateSetting("tapBehavior", "cycle"),
           p: () => updateSetting("tapBehavior", "select"),
+          1: () => updateSetting("dateOrder", "mdy"),
+          2: () => updateSetting("dateOrder", "dmy"),
+          3: () => updateSetting("dateOrder", "ymd"),
+          n: () => updateSetting("dateStyle", "numeric"),
+          a: () => updateSetting("dateStyle", "alpha"),
           j: () => $("#exportJsonBtn").click(),
           m: () => $("#exportMarkdownBtn").click(),
           e: () => $("#exportRichTextBtn").click(),
@@ -2863,8 +3059,7 @@
       $("#addNoteBtn").addEventListener("click", () => openNoteDialog());
       $("#noteForm").addEventListener("submit", event => {
         event.preventDefault();
-        saveNoteFromForm();
-        $("#noteDialog").close();
+        if (saveNoteFromForm()) $("#noteDialog").close();
       });
       $("#selectForm").addEventListener("submit", event => {
         event.preventDefault();
@@ -2872,10 +3067,17 @@
         if (levelId) addStateLevel(selectedState, levelId);
         else setStateLevelIds(selectedState, []);
         const text = $("#selectSummary").value.trim();
-        const date = $("#selectDate").value;
-        if (text || date) {
+        const rawDate = $("#selectDate").value.trim();
+        const parsedDate = rawDate ? parseFlexibleDate(rawDate, state.settings.dateOrder) : "";
+        if (rawDate && !parsedDate) {
+          $("#selectDate").setCustomValidity("Use YYYY, YYYY-MM, YYYY-MM-DD, or a readable month format like June 2026.");
+          $("#selectDate").reportValidity();
+          $("#selectDate").setCustomValidity("");
+          return;
+        }
+        if (text || parsedDate) {
           state.notes[selectedState] ||= [];
-          state.notes[selectedState].push({ id: uid(), date: date || today(), levelId, text });
+          state.notes[selectedState].push({ id: uid(), date: parsedDate || today(), levelId, text });
         }
         save();
         $("#selectDialog").close();
@@ -2905,6 +3107,11 @@
       $("#hintsOffBtn").addEventListener("click", () => updateSetting("uiHints", false));
       $("#cycleModeBtn").addEventListener("click", () => updateSetting("tapBehavior", "cycle"));
       $("#selectModeBtn").addEventListener("click", () => updateSetting("tapBehavior", "select"));
+      $("#dateMdyBtn").addEventListener("click", () => updateSetting("dateOrder", "mdy"));
+      $("#dateDmyBtn").addEventListener("click", () => updateSetting("dateOrder", "dmy"));
+      $("#dateYmdBtn").addEventListener("click", () => updateSetting("dateOrder", "ymd"));
+      $("#dateNumericBtn").addEventListener("click", () => updateSetting("dateStyle", "numeric"));
+      $("#dateAlphaBtn").addEventListener("click", () => updateSetting("dateStyle", "alpha"));
       $("#resetAppBtn").addEventListener("click", () => {
         requestConfirm({
           title: "Reset App Data?",
