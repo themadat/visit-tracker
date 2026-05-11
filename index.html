@@ -83,19 +83,28 @@
 
     [data-hints="off"] [data-hint] { display: none !important; }
 
+    button[data-shortcut] { position: relative; }
     button[data-shortcut]::after { display: none; }
     [data-shortcuts="on"] button[data-shortcut]::after {
       content: attr(data-shortcut);
-      display: inline-block;
-      margin-left: .38rem;
-      padding: .04rem .25rem;
+      position: absolute;
+      top: -.42rem;
+      right: -.34rem;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      min-width: 1.05rem;
+      height: 1.05rem;
+      padding: 0 .22rem;
       border: 1px solid var(--line);
-      border-radius: 6px;
-      color: var(--muted);
-      background: var(--surface-2);
-      font-size: .68rem;
-      line-height: 1.15;
-      vertical-align: middle;
+      border-radius: 999px;
+      color: var(--text);
+      background: color-mix(in srgb, var(--surface) 92%, var(--accent) 8%);
+      box-shadow: 0 4px 12px rgba(16, 24, 40, .14);
+      font-size: .62rem;
+      font-weight: 850;
+      line-height: 1;
+      pointer-events: none;
     }
 
     button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
@@ -165,12 +174,12 @@
     .ghost { background: transparent; }
 
     .main {
-      width: min(1480px, 100%);
+      width: 100%;
       margin: 0 auto;
-      padding: clamp(.9rem, 2vw, 1.5rem);
+      padding: clamp(.75rem, 1.6vw, 1.25rem);
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(360px, 420px);
-      gap: 1rem;
+      gap: .85rem;
       align-items: stretch;
     }
 
@@ -256,7 +265,7 @@
     .side-panel-wrap {
       display: grid;
       grid-template-columns: minmax(360px, 420px);
-      gap: 1rem;
+      gap: .85rem;
       align-items: start;
     }
 
@@ -270,8 +279,8 @@
 
     .side-panel {
       display: grid;
-      gap: 1rem;
-      padding: 1rem;
+      gap: .8rem;
+      padding: .85rem;
       align-self: stretch;
       align-content: start;
     }
@@ -314,17 +323,17 @@
 
     .legend-list, .note-list, .wishlist-list {
       display: grid;
-      gap: .55rem;
+      gap: .5rem;
     }
 
     .legend-item {
       display: grid;
-      grid-template-columns: auto minmax(0, 1fr) auto auto;
-      gap: .65rem;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: .6rem;
       align-items: center;
       width: 100%;
       text-align: left;
-      padding: .65rem;
+      padding: .58rem;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: var(--surface);
@@ -372,6 +381,11 @@
     .level-name { font-weight: 750; overflow-wrap: normal; }
     .level-copy { min-width: 0; line-height: 1.25; }
     .level-copy small { display: block; line-height: 1.3; margin-top: .12rem; }
+    .level-stats {
+      display: inline-grid;
+      gap: .24rem;
+      margin-top: .34rem;
+    }
     .count-pill {
       border: 1px solid var(--line);
       background: var(--surface-2);
@@ -536,6 +550,29 @@
     }
 
     .form-grid .span { grid-column: 1 / -1; }
+    .level-form-grid {
+      display: grid;
+      grid-template-columns: minmax(170px, .8fr) minmax(260px, 1.2fr);
+      gap: .7rem;
+      align-items: start;
+    }
+
+    .level-form-grid textarea {
+      min-height: 68px;
+    }
+
+    .level-color-row {
+      display: grid;
+      grid-template-columns: minmax(130px, .55fr) minmax(220px, 1fr);
+      gap: .7rem;
+      align-items: end;
+    }
+
+    .level-actions {
+      justify-content: flex-start;
+      padding-bottom: .2rem;
+    }
+
     .swatch-grid {
       display: grid;
       grid-template-columns: repeat(5, minmax(36px, 1fr));
@@ -581,6 +618,46 @@
     .theme-swatches {
       display: grid;
       gap: .6rem;
+    }
+
+    .notes-controls {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .55rem;
+    }
+
+    .notes-controls .segmented {
+      justify-content: stretch;
+    }
+
+    .notes-controls button {
+      flex: 1 1 0;
+      white-space: nowrap;
+    }
+
+    .compact-notes {
+      display: grid;
+      gap: .4rem;
+    }
+
+    .compact-note-row {
+      display: grid;
+      grid-template-columns: minmax(120px, .9fr) minmax(100px, .65fr) minmax(110px, .8fr) minmax(160px, 1.35fr);
+      gap: .5rem;
+      align-items: start;
+      padding: .55rem .6rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      font-size: .88rem;
+    }
+
+    .compact-note-row.header {
+      background: var(--surface-2);
+      color: var(--muted);
+      font-size: .76rem;
+      font-weight: 800;
+      text-transform: uppercase;
     }
 
     .theme-row {
@@ -671,12 +748,13 @@
       .map-head-actions { width: 100%; justify-content: flex-start; }
       .map-head-actions button { flex: 1 1 auto; }
       svg { min-width: 560px; }
-      .form-grid, .summary-grid, .filters { grid-template-columns: 1fr; }
+      .form-grid, .summary-grid, .filters, .level-form-grid, .level-color-row, .notes-controls { grid-template-columns: 1fr; }
       .theme-row { grid-template-columns: 1fr; }
       [data-legend="open"][data-notes="open"] .side-panel-wrap { grid-template-columns: 1fr; }
       .legend-item { grid-template-columns: auto minmax(0, 1fr) auto; }
       .legend-actions { grid-column: 3; grid-row: 1 / span 2; }
-      .count-pill { grid-column: 2; justify-self: start; }
+      .compact-note-row { grid-template-columns: 1fr; }
+      .compact-note-row.header { display: none; }
       .drawer { width: 100vw; }
     }
   </style>
@@ -686,10 +764,10 @@
     <header class="topbar">
       <div class="title-wrap">
         <h1 id="mapTitle">Your State Map</h1>
-        <button id="renameBtn" class="ghost" type="button">Rename</button>
+        <button id="renameBtn" class="ghost" type="button" data-shortcut="R">Rename</button>
       </div>
       <nav class="toolbar" aria-label="App actions">
-        <button id="settingsBtn" type="button" data-shortcut="⇧⌃⌥,">Settings</button>
+        <button id="settingsBtn" type="button" data-shortcut="S">Settings</button>
       </nav>
     </header>
 
@@ -701,8 +779,8 @@
             <small id="tapHint" data-hint>Tap a state to cycle its visit level.</small>
           </div>
           <div class="map-head-actions">
-            <button id="legendToggleBtn" class="toggle-btn" type="button" aria-pressed="true" data-shortcut="⇧⌃⌥L">Legend</button>
-            <button id="notesToggleBtn" class="toggle-btn" type="button" aria-pressed="false" data-shortcut="⇧⌃⌥N">Notes</button>
+            <button id="legendToggleBtn" class="toggle-btn" type="button" aria-pressed="true" data-shortcut="L">Legend</button>
+            <button id="notesToggleBtn" class="toggle-btn" type="button" aria-pressed="false" data-shortcut="N">Notes</button>
           </div>
         </div>
         <div class="map-wrap">
@@ -979,21 +1057,12 @@
 
       <aside id="sidePanel" class="side-panel-wrap" aria-label="Visit tools">
         <section id="legendPanel" class="panel side-panel" aria-label="Visit summary and editable legend">
-          <section class="summary-grid" aria-label="Map summary" aria-live="polite">
-            <div class="metric compact-stat">
-              <div>
-                <small>Total</small>
-                <b id="visitedCount">0</b>
-              </div>
-              <span id="completionPercent" class="percent-pill">0%</span>
-            </div>
-          </section>
           <section>
             <div class="row" style="justify-content: space-between; margin-bottom: .65rem;">
               <h2>Legend</h2>
               <div class="actions">
-                <button id="smartColorsBtn" type="button" data-shortcut="⇧⌃⌥C">Auto Colors</button>
-                <button id="addLevelBtn" type="button" data-shortcut="⇧⌃⌥A">Add Level</button>
+                <button id="smartColorsBtn" type="button" data-shortcut="C">Auto Colors</button>
+                <button id="addLevelBtn" type="button" data-shortcut="A">Add Level</button>
               </div>
             </div>
             <small data-hint>Top level wins the map color when a state has multiple levels. Removing levels will move affected states down to the next lowest level.</small>
@@ -1008,6 +1077,16 @@
               <small id="notesPanelSubtitle" data-hint>Marked states and visit notes.</small>
             </div>
             <button id="notesPanelBackBtn" type="button">All</button>
+          </div>
+          <div class="notes-controls" aria-label="Notes display controls">
+            <div class="segmented" aria-label="Notes sort order">
+              <button id="notesSortAlphaBtn" type="button" aria-pressed="true">Alphabetical</button>
+              <button id="notesSortChronoBtn" type="button" aria-pressed="false">Chronological</button>
+            </div>
+            <div class="segmented" aria-label="Notes view">
+              <button id="notesViewExpandedBtn" type="button" aria-pressed="true">Expanded View</button>
+              <button id="notesViewCompactBtn" type="button" aria-pressed="false">Compact View</button>
+            </div>
           </div>
           <div id="notesPanelContent" class="note-list"></div>
         </section>
@@ -1118,20 +1197,27 @@
     </header>
     <form id="levelForm" class="dialog-body" method="dialog">
       <input id="levelId" type="hidden">
-      <div class="form-grid">
+      <div class="level-form-grid">
         <label>Name
           <input id="levelName" maxlength="32" required>
         </label>
+        <label>Definition
+          <textarea id="levelDefinition" maxlength="220" placeholder="Compact markdown-friendly definition" required></textarea>
+        </label>
+      </div>
+      <div class="level-color-row">
         <label>Color
           <input id="levelColor" type="color" required>
         </label>
-        <div class="color-preview span" aria-live="polite">
+        <div class="color-preview" aria-live="polite">
           <span id="levelColorPreview" class="color-preview-box" style="--preview-color:#2563eb"></span>
           <span><b>Selected color</b><br><small id="levelColorText">#2563eb</small></span>
         </div>
-        <label class="span">Definition
-          <textarea id="levelDefinition" maxlength="220" required></textarea>
-        </label>
+      </div>
+      <div class="actions level-actions">
+        <button class="primary" type="submit">Save Level</button>
+        <button id="deleteLevelBtn" class="danger icon-btn" type="button" title="Delete level" aria-label="Delete level">🗑️</button>
+        <button type="button" data-close="levelDialog">Cancel</button>
       </div>
       <section>
         <h3>Existing Swatches</h3>
@@ -1141,11 +1227,6 @@
         <h3>Generated Theme Swatches</h3>
         <div id="themeSwatches" class="theme-swatches" style="margin-top: .6rem;"></div>
       </section>
-      <div class="actions">
-        <button class="primary" type="submit">Save Level</button>
-        <button id="deleteLevelBtn" class="danger icon-btn" type="button" title="Delete level" aria-label="Delete level">🗑️</button>
-        <button type="button" data-close="levelDialog">Cancel</button>
-      </div>
     </form>
   </dialog>
 
@@ -1209,10 +1290,6 @@
             <button id="hintsOnBtn" type="button" aria-pressed="true">UI Hints On</button>
             <button id="hintsOffBtn" type="button" aria-pressed="false">UI Hints Off</button>
           </div>
-          <div class="segmented" aria-label="Shift-Control Option Mode" style="margin-top: .55rem;">
-            <button id="powerModeOffBtn" type="button" aria-pressed="true">Power Hints Off</button>
-            <button id="powerModeOnBtn" type="button" aria-pressed="false">Shift-Control Option Mode</button>
-          </div>
         </section>
         <section>
           <h3>Map Interaction</h3>
@@ -1238,7 +1315,7 @@
         <section>
           <h3>Data Reset</h3>
           <div class="actions">
-            <button id="resetAppBtn" class="danger" type="button" data-shortcut="⇧⌃⌥⌫">Reset App Data</button>
+            <button id="resetAppBtn" class="danger" type="button" data-shortcut="X">Reset App Data</button>
           </div>
         </section>
       </section>
@@ -1341,9 +1418,9 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "1.4.0";
+    const APP_VERSION = "1.4.1";
     const STORAGE_KEY = "usStateVisitMap.v1";
-    const WISHLIST_SEED_VERSION = "1.4.0";
+    const WISHLIST_SEED_VERSION = "1.4.1";
     const STATES = [
       ["AK","Alaska",0,5],["WA","Washington",1,0],["OR","Oregon",1,1],["CA","California",1,2],["ID","Idaho",2,1],
       ["NV","Nevada",2,2],["AZ","Arizona",2,3],["HI","Hawaii",1,6],["MT","Montana",3,0],["WY","Wyoming",3,2],
@@ -1358,21 +1435,21 @@
     ];
     const STATE_NAMES = Object.fromEntries(STATES.map(([abbr, name]) => [abbr, name]));
     const BUILT_INS = [
-      { id: "visited", name: "Visited", definition: "Stayed overnight", color: "#16a34a", countsTowardStats: true },
-      { id: "day-visit", name: "Day Visit", definition: "Any activity for the day other than a meal", color: "#facc15", countsTowardStats: true },
-      { id: "pass-through", name: "Pass Through", definition: "Drive, Layover, Possible Meal", color: "#f97316", countsTowardStats: true },
-      { id: "want-to-visit", name: "Want to Visit", definition: "Interested or planning someday", color: "#7c3aed", countsTowardStats: true },
-      { id: "not-interested", name: "Not Interested", definition: "Opted out for this map; not counted in totals", color: "#6b7280", countsTowardStats: false }
+      { id: "visited", name: "Visited", definition: "Overnight Stay", color: "#16a34a", countsTowardStats: true },
+      { id: "day-visit", name: "Day Visit", definition: "Day Activity", color: "#facc15", countsTowardStats: true },
+      { id: "pass-through", name: "Pass Through", definition: "Drive or Layover", color: "#f97316", countsTowardStats: true },
+      { id: "want-to-visit", name: "Want to Visit", definition: "Interested or Planning", color: "#7c3aed", countsTowardStats: true },
+      { id: "not-interested", name: "Not Interested", definition: "Excluded from Stats", color: "#6b7280", countsTowardStats: false }
     ];
     const DEFAULT_LEVEL_IDS = ["visited", "want-to-visit", "not-interested"];
     const OPTIONAL_LEVEL_IDS = ["pass-through", "day-visit"];
     const THEMES = {
-      Classic: ["#16a34a", "#facc15", "#f97316", "#dc2626", "#7c3aed"],
-      Sunset: ["#15803d", "#f59e0b", "#fb7185", "#dc2626", "#6d28d9"],
-      Pastel: ["#86efac", "#fde68a", "#fdba74", "#fca5a5", "#c4b5fd"],
-      Earth: ["#166534", "#84cc16", "#a16207", "#b45309", "#6d28d9"],
-      Ocean: ["#0d9488", "#38bdf8", "#2563eb", "#075985", "#581c87"],
-      "High Contrast": ["#22c55e", "#facc15", "#fb923c", "#ef4444", "#111827"]
+      Classic: ["#16a34a", "#facc15", "#f97316", "#7c3aed", "#6b7280"],
+      Sunset: ["#eeaf61", "#fb9062", "#ee5d6c", "#ce4993", "#6a0d83"],
+      Neon: ["#0bff00", "#fff100", "#ffac00", "#f000ff", "#111111"],
+      Pastel: ["#86efac", "#fde68a", "#fdba74", "#c4b5fd", "#BBBBBB"],
+      Earth: ["#36563e", "#5a8b5d", "#81b14f", "#907350", "#351b04"],
+      Ocean: ["#064273", "#1da2d8", "#7fcdff", "#def3f6", "#001a33"],
     };
     const WISHLIST_SEEDS = [
       {
@@ -1398,9 +1475,27 @@
         effort: "Large",
         targetVersion: "1.5.0",
         category: "Maps"
+      },
+      {
+        title: "National Park Overlay Layer",
+        description: "Add an optional overlay for national parks so trips can show park visits alongside state progress.",
+        priority: "Medium",
+        effort: "Large",
+        targetVersion: "1.6.0",
+        category: "Maps"
       }
     ];
     const CHANGELOG = [
+      {
+        version: "1.4.1",
+        date: "2026-05-10",
+        title: "Refinement pass",
+        notes: [
+          "Replaced the permanent shortcut hint setting with a temporary Shift-Control-Option overlay.",
+          "Moved completion pills into each legend level and removed the standalone stats box.",
+          "Added notes sorting, compact notes view, and a tighter level editor layout."
+        ]
+      },
       {
         version: "1.4.0",
         date: "2026-05-10",
@@ -1472,6 +1567,9 @@
     let legendPanelOpen = true;
     let notesPanelOpen = false;
     let notesPanelState = null;
+    let notesSortMode = "alpha";
+    let notesViewMode = "expanded";
+    let powerOverlayActive = false;
     let pendingConfirm = null;
     let state = loadState();
 
@@ -1479,7 +1577,7 @@
       return {
         appVersion: APP_VERSION,
         mapName: "Your State Map",
-        settings: { theme: "light", tapBehavior: "cycle", buttonStyle: "symbols", uiHints: true, powerMode: false },
+        settings: { theme: "light", tapBehavior: "cycle", buttonStyle: "symbols", uiHints: true },
         levels: DEFAULT_LEVEL_IDS.map(id => clone(BUILT_INS.find(level => level.id === id))),
         states: {},
         notes: {},
@@ -1513,9 +1611,8 @@
       if (!["cycle", "select"].includes(next.settings.tapBehavior)) next.settings.tapBehavior = "cycle";
       if (!["symbols", "text"].includes(next.settings.buttonStyle)) next.settings.buttonStyle = "symbols";
       next.settings.uiHints = next.settings.uiHints !== false;
-      next.settings.powerMode = next.settings.powerMode === true;
+      delete next.settings.powerMode;
       next.levels = Array.isArray(input.levels) && input.levels.length ? input.levels.slice(0, 5) : base.levels;
-      if (isLegacySingleVisited(input, next.levels)) next.levels = base.levels;
       next.levels = next.levels.map((level, index) => ({
         id: String(level.id || uid()),
         name: String(level.name || `Level ${index + 1}`).slice(0, 32),
@@ -1555,28 +1652,13 @@
       if (input.seededWishlistVersion !== WISHLIST_SEED_VERSION) {
         const titles = new Set(next.wishlist.map(wish => wish.title.toLowerCase()));
         seedWishlist().forEach(wish => {
+          if (input.seededWishlistVersion && wish.title !== "National Park Overlay Layer") return;
           if (!titles.has(wish.title.toLowerCase())) next.wishlist.push(wish);
         });
       }
       next.seededWishlistVersion = WISHLIST_SEED_VERSION;
       next.mapName = String(next.mapName || base.mapName).slice(0, 80);
       return next;
-    }
-
-    function isLegacySingleVisited(input, levels) {
-      return versionBefore(input.appVersion || "0.0.0", "1.4.0")
-        && levels.length === 1
-        && String(levels[0]?.id || "") === "visited"
-        && String(levels[0]?.name || "") === "Visited";
-    }
-
-    function versionBefore(value, target) {
-      const a = String(value).split(".").map(part => Number.parseInt(part, 10) || 0);
-      const b = String(target).split(".").map(part => Number.parseInt(part, 10) || 0);
-      for (let i = 0; i < 3; i += 1) {
-        if ((a[i] || 0) !== (b[i] || 0)) return (a[i] || 0) < (b[i] || 0);
-      }
-      return false;
     }
 
     function isOptOutLevel(level) {
@@ -1665,7 +1747,7 @@
       button.textContent = labelFor(symbol, text);
       button.setAttribute("aria-label", aria);
       const shortcut = button.dataset.shortcut;
-      button.title = state.settings.powerMode && shortcut ? `${text} ${shortcut}` : text;
+      button.title = powerOverlayActive && shortcut ? `${text} (${shortcut})` : text;
     }
 
     function actionButtonHtml({ symbol, text, className = "icon-btn", attrs = "", aria = text, shortcut = "" }) {
@@ -1757,7 +1839,7 @@
     function render() {
       document.documentElement.dataset.theme = state.settings.theme;
       document.documentElement.dataset.hints = state.settings.uiHints ? "on" : "off";
-      document.documentElement.dataset.shortcuts = state.settings.powerMode ? "on" : "off";
+      document.documentElement.dataset.shortcuts = powerOverlayActive ? "on" : "off";
       document.documentElement.dataset.buttonStyle = state.settings.buttonStyle;
       document.documentElement.dataset.legend = legendPanelOpen ? "open" : "closed";
       document.documentElement.dataset.notes = notesPanelOpen ? "open" : "closed";
@@ -1767,7 +1849,6 @@
         : "Tap a state to choose a level and add a note.";
       syncButtonLabels();
       renderMap();
-      renderStats();
       renderLegend();
       renderBuiltinLevels();
       renderNotesPanel();
@@ -1805,12 +1886,6 @@
       return STATES.filter(([abbr]) => stateCountsTowardStats(abbr)).length;
     }
 
-    function renderStats() {
-      const counted = countedStateTotal();
-      $("#visitedCount").textContent = counted;
-      $("#completionPercent").textContent = `${Math.round((counted / 50) * 100)}%`;
-    }
-
     function renderLegend() {
       const counts = levelCounts();
       $("#legendList").innerHTML = state.levels.map((level, index) => `
@@ -1819,8 +1894,11 @@
           <span class="level-copy">
             <span class="level-name">${escapeHtml(level.name)}</span><br>
             <small>${escapeHtml(level.definition)}</small>
+            <span class="level-stats" aria-label="${escapeHtml(level.name)} stats">
+              <span class="count-pill">${counts[level.id] || 0}</span>
+              <span class="percent-pill">${Math.round(((counts[level.id] || 0) / 50) * 100)}%</span>
+            </span>
           </span>
-          <span class="count-pill">${counts[level.id] || 0}</span>
           <span class="legend-actions">
             <span class="order-buttons" aria-label="Move ${escapeHtml(level.name)}">
               ${actionButtonHtml({ symbol: "↑", text: "Up", aria: `Move ${level.name} up`, attrs: `data-move-level="${level.id}" data-direction="-1" ${index === 0 ? "disabled" : ""}` })}
@@ -1990,22 +2068,111 @@
       render();
     }
 
+    function sortDateForState(abbr) {
+      const dates = (state.notes[abbr] || []).map(note => note.date).filter(Boolean).sort();
+      return dates[0] || "9999-99-99";
+    }
+
+    function sortedMarkedStateAbbrs() {
+      const marked = markedStateAbbrs();
+      return marked.sort((a, b) => {
+        if (notesSortMode === "chrono") {
+          const dateSort = sortDateForState(a).localeCompare(sortDateForState(b));
+          if (dateSort) return dateSort;
+        }
+        return STATE_NAMES[a].localeCompare(STATE_NAMES[b]);
+      });
+    }
+
+    function sortedNotesFor(abbr) {
+      return (state.notes[abbr] || []).slice().sort((a, b) => {
+        if (notesSortMode === "alpha") {
+          return (a.text || "").localeCompare(b.text || "") || (a.date || "").localeCompare(b.date || "");
+        }
+        return (a.date || "9999-99-99").localeCompare(b.date || "9999-99-99") || (a.text || "").localeCompare(b.text || "");
+      });
+    }
+
+    function renderNotesPanelControls() {
+      $("#notesSortAlphaBtn").setAttribute("aria-pressed", notesSortMode === "alpha");
+      $("#notesSortChronoBtn").setAttribute("aria-pressed", notesSortMode === "chrono");
+      $("#notesViewExpandedBtn").setAttribute("aria-pressed", notesViewMode === "expanded");
+      $("#notesViewCompactBtn").setAttribute("aria-pressed", notesViewMode === "compact");
+    }
+
+    function compactStateRow(abbr) {
+      const names = stateLevelNames(abbr).join(", ") || "Notes only";
+      const notes = sortedNotesFor(abbr);
+      const dates = notes.map(note => note.date || "No date").join("; ") || "None";
+      const text = notes.map(note => note.text || "No summary").join("; ") || "No notes";
+      return `
+        <button class="compact-note-row" type="button" data-open-notes-state="${abbr}">
+          <span><b>${escapeHtml(STATE_NAMES[abbr])}</b></span>
+          <span>${escapeHtml(names)}</span>
+          <span>${escapeHtml(dates)}</span>
+          <span>${escapeHtml(text)}</span>
+        </button>
+      `;
+    }
+
+    function renderSelectedNoteList(notes) {
+      if (!notes.length) return `<div class="empty">No visit notes yet.</div>`;
+      if (notesViewMode === "compact") {
+        return `
+          <div class="compact-notes">
+            <div class="compact-note-row header"><span>Date</span><span>Level</span><span>Notes</span><span>Actions</span></div>
+            ${notes.map(note => `
+              <article class="compact-note-row">
+                <time datetime="${escapeHtml(note.date)}">${escapeHtml(note.date || "No date")}</time>
+                <span>${escapeHtml(levelById(note.levelId)?.name || "No level")}</span>
+                <span>${escapeHtml(note.text || "No summary")}</span>
+                <span class="actions">
+                  ${actionButtonHtml({ symbol: "✎", text: "Edit", className: "icon-btn", attrs: `data-edit-note="${note.id}"` })}
+                  ${actionButtonHtml({ symbol: "⌫", text: "Delete", className: "icon-btn danger", attrs: `data-delete-note="${note.id}"` })}
+                </span>
+              </article>
+            `).join("")}
+          </div>
+        `;
+      }
+      return `
+        <div class="note-list">
+          ${notes.map(note => `
+            <article class="note-card">
+              <div class="row" style="justify-content: space-between;">
+                <time datetime="${escapeHtml(note.date)}">${escapeHtml(note.date || "No date")}</time>
+                <span class="tag">${escapeHtml(levelById(note.levelId)?.name || "No level")}</span>
+              </div>
+              <div>${escapeHtml(note.text || "No summary")}</div>
+              <div class="actions">
+                ${actionButtonHtml({ symbol: "✎", text: "Edit", className: "", attrs: `data-edit-note="${note.id}"` })}
+                ${actionButtonHtml({ symbol: "⌫", text: "Delete", className: "danger", attrs: `data-delete-note="${note.id}"` })}
+              </div>
+            </article>
+          `).join("")}
+        </div>
+      `;
+    }
+
     function renderNotesPanel() {
       if (!$("#notesPanel")) return;
+      renderNotesPanelControls();
       $("#notesPanelBackBtn").classList.toggle("hidden", !notesPanelState);
+      $("#notesPanelContent").className = notesViewMode === "compact" ? "compact-notes" : "note-list";
       if (notesPanelState && STATE_NAMES[notesPanelState]) {
         selectedState = notesPanelState;
         const names = stateLevelNames(notesPanelState);
         const activeIds = new Set(getStateLevelIds(notesPanelState));
-        const notes = (state.notes[notesPanelState] || []).slice().sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+        const notes = sortedNotesFor(notesPanelState);
         $("#notesPanelTitle").textContent = STATE_NAMES[notesPanelState];
         $("#notesPanelSubtitle").removeAttribute("data-hint");
         $("#notesPanelSubtitle").textContent = names.length ? names.join(", ") : "Unvisited";
+        $("#notesPanelContent").className = "note-list";
         $("#notesPanelContent").innerHTML = `
           <section>
             <div class="row" style="justify-content: space-between; margin-bottom: .65rem;">
               <h3>Applied Levels</h3>
-              <button id="notesPanelClearBtn" class="danger" type="button" data-shortcut="⇧⌃⌥⌫">${escapeHtml(labelFor("⌫", "Clear"))}</button>
+              <button id="notesPanelClearBtn" class="danger" type="button" data-shortcut="X">${escapeHtml(labelFor("⌫", "Clear"))}</button>
             </div>
             <div class="level-checks">
               ${state.levels.map(level => `
@@ -2020,23 +2187,9 @@
           <section>
             <div class="row" style="justify-content: space-between; margin-bottom: .65rem;">
               <h3>Visit Notes</h3>
-              <button id="notesPanelAddNoteBtn" type="button" data-shortcut="⇧⌃⌥+">${escapeHtml(labelFor("+", "Add Note"))}</button>
+              <button id="notesPanelAddNoteBtn" type="button" data-shortcut="A">${escapeHtml(labelFor("+", "Add Note"))}</button>
             </div>
-            <div class="note-list">
-              ${notes.length ? notes.map(note => `
-                <article class="note-card">
-                  <div class="row" style="justify-content: space-between;">
-                    <time datetime="${escapeHtml(note.date)}">${escapeHtml(note.date || "No date")}</time>
-                    <span class="tag">${escapeHtml(levelById(note.levelId)?.name || "No level")}</span>
-                  </div>
-                  <div>${escapeHtml(note.text || "No summary")}</div>
-                  <div class="actions">
-                    ${actionButtonHtml({ symbol: "✎", text: "Edit", className: "", attrs: `data-edit-note="${note.id}"` })}
-                    ${actionButtonHtml({ symbol: "⌫", text: "Delete", className: "danger", attrs: `data-delete-note="${note.id}"` })}
-                  </div>
-                </article>
-              `).join("") : `<div class="empty">No visit notes yet.</div>`}
-            </div>
+            ${renderSelectedNoteList(notes)}
           </section>
         `;
         $$(".notes-panel-level-check").forEach(input => {
@@ -2064,17 +2217,26 @@
       $("#notesPanelTitle").textContent = "Notes";
       $("#notesPanelSubtitle").setAttribute("data-hint", "");
       $("#notesPanelSubtitle").textContent = "Marked states and visit notes.";
-      const marked = markedStateAbbrs();
-      $("#notesPanelContent").innerHTML = marked.length ? marked.map(abbr => {
-        const names = stateLevelNames(abbr);
-        const noteCount = (state.notes[abbr] || []).length;
-        return `
-          <button class="state-list-card" type="button" data-open-notes-state="${abbr}">
-            <span><b>${escapeHtml(STATE_NAMES[abbr])}</b><br><small>${names.length ? escapeHtml(names.join(", ")) : "Notes only"}</small></span>
-            <span class="tag">${noteCount} note${noteCount === 1 ? "" : "s"}</span>
-          </button>
+      const marked = sortedMarkedStateAbbrs();
+      if (!marked.length) {
+        $("#notesPanelContent").innerHTML = `<div class="empty">No marked states yet.</div>`;
+      } else if (notesViewMode === "compact") {
+        $("#notesPanelContent").innerHTML = `
+          <div class="compact-note-row header"><span>State</span><span>Level</span><span>Dates</span><span>Notes</span></div>
+          ${marked.map(compactStateRow).join("")}
         `;
-      }).join("") : `<div class="empty">No marked states yet.</div>`;
+      } else {
+        $("#notesPanelContent").innerHTML = marked.map(abbr => {
+          const names = stateLevelNames(abbr);
+          const noteCount = (state.notes[abbr] || []).length;
+          return `
+            <button class="state-list-card" type="button" data-open-notes-state="${abbr}">
+              <span><b>${escapeHtml(STATE_NAMES[abbr])}</b><br><small>${names.length ? escapeHtml(names.join(", ")) : "Notes only"}</small></span>
+              <span class="tag">${noteCount} note${noteCount === 1 ? "" : "s"}</span>
+            </button>
+          `;
+        }).join("");
+      }
       $$("[data-open-notes-state]").forEach(button => button.addEventListener("click", () => {
         selectedState = button.dataset.openNotesState;
         notesPanelState = selectedState;
@@ -2318,8 +2480,6 @@
       $("#textButtonsBtn").setAttribute("aria-pressed", state.settings.buttonStyle === "text");
       $("#hintsOnBtn").setAttribute("aria-pressed", state.settings.uiHints);
       $("#hintsOffBtn").setAttribute("aria-pressed", !state.settings.uiHints);
-      $("#powerModeOnBtn").setAttribute("aria-pressed", state.settings.powerMode);
-      $("#powerModeOffBtn").setAttribute("aria-pressed", !state.settings.powerMode);
       $("#cycleModeBtn").setAttribute("aria-pressed", state.settings.tapBehavior === "cycle");
       $("#selectModeBtn").setAttribute("aria-pressed", state.settings.tapBehavior === "select");
     }
@@ -2445,17 +2605,39 @@
       return String(value).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "state-map";
     }
 
+    function setPowerOverlay(active) {
+      if (powerOverlayActive === active) return;
+      powerOverlayActive = active;
+      document.documentElement.dataset.shortcuts = active ? "on" : "off";
+      syncButtonLabels();
+    }
+
+    function updatePowerOverlay(event) {
+      setPowerOverlay(Boolean(event.shiftKey && event.ctrlKey && event.altKey));
+    }
+
     function handlePowerShortcut(event) {
-      if (!state.settings.powerMode || !event.shiftKey || !event.ctrlKey || !event.altKey) return;
+      updatePowerOverlay(event);
+      if (!powerOverlayActive) return;
+      if (["shift", "control", "alt", "option", "meta"].includes(event.key.toLowerCase())) return;
       if (/^(input|textarea|select)$/i.test(event.target.tagName)) return;
       const key = event.key.toLowerCase();
       const actions = {
         l: toggleLegendPanel,
         n: toggleNotesPanel,
-        ",": () => $("#settingsBtn").click(),
+        s: () => $("#settingsBtn").click(),
         r: () => $("#renameBtn").click(),
         c: () => $("#smartColorsBtn").click(),
-        a: () => $("#addLevelBtn").disabled || $("#addLevelBtn").click()
+        a: () => {
+          const addNote = $("#notesPanelAddNoteBtn");
+          if (notesPanelOpen && notesPanelState && addNote) addNote.click();
+          else if (!$("#addLevelBtn").disabled) $("#addLevelBtn").click();
+        },
+        x: () => {
+          const clearState = $("#notesPanelClearBtn");
+          if (notesPanelOpen && notesPanelState && clearState) clearState.click();
+          else if ($("#settingsDialog").open) $("#resetAppBtn").click();
+        }
       };
       if (!actions[key]) return;
       event.preventDefault();
@@ -2491,6 +2673,22 @@
       $("#notesToggleBtn").addEventListener("click", toggleNotesPanel);
       $("#notesPanelBackBtn").addEventListener("click", () => {
         notesPanelState = null;
+        renderNotesPanel();
+      });
+      $("#notesSortAlphaBtn").addEventListener("click", () => {
+        notesSortMode = "alpha";
+        renderNotesPanel();
+      });
+      $("#notesSortChronoBtn").addEventListener("click", () => {
+        notesSortMode = "chrono";
+        renderNotesPanel();
+      });
+      $("#notesViewExpandedBtn").addEventListener("click", () => {
+        notesViewMode = "expanded";
+        renderNotesPanel();
+      });
+      $("#notesViewCompactBtn").addEventListener("click", () => {
+        notesViewMode = "compact";
         renderNotesPanel();
       });
       $("#closeDrawerBtn").addEventListener("click", closeDrawer);
@@ -2538,8 +2736,6 @@
       $("#textButtonsBtn").addEventListener("click", () => updateSetting("buttonStyle", "text"));
       $("#hintsOnBtn").addEventListener("click", () => updateSetting("uiHints", true));
       $("#hintsOffBtn").addEventListener("click", () => updateSetting("uiHints", false));
-      $("#powerModeOnBtn").addEventListener("click", () => updateSetting("powerMode", true));
-      $("#powerModeOffBtn").addEventListener("click", () => updateSetting("powerMode", false));
       $("#cycleModeBtn").addEventListener("click", () => updateSetting("tapBehavior", "cycle"));
       $("#selectModeBtn").addEventListener("click", () => updateSetting("tapBehavior", "select"));
       $("#resetAppBtn").addEventListener("click", () => {
@@ -2606,6 +2802,8 @@
         });
       });
       document.addEventListener("keydown", handlePowerShortcut);
+      document.addEventListener("keyup", updatePowerOverlay);
+      window.addEventListener("blur", () => setPowerOverlay(false));
     }
 
     function updateSetting(key, value) {
