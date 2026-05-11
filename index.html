@@ -458,6 +458,15 @@
       box-shadow: 0 1px 2px rgba(16, 24, 40, .12);
     }
 
+    .date-examples {
+      display: grid;
+      gap: .25rem;
+      margin-top: .55rem;
+      color: var(--muted);
+      font-size: .82rem;
+      line-height: 1.25;
+    }
+
     .chip {
       min-height: 34px;
       border-radius: 999px;
@@ -1125,12 +1134,12 @@
           </div>
           <div class="notes-controls" aria-label="Notes display controls">
             <div class="segmented" aria-label="Notes sort order">
-              <button id="notesSortAlphaBtn" type="button" aria-pressed="true" data-shortcut="A">Alphabetical</button>
-              <button id="notesSortChronoBtn" type="button" aria-pressed="false" data-shortcut="T">Chronological</button>
+              <button id="notesSortAlphaBtn" type="button" aria-pressed="false" data-shortcut="A">Alphabetical</button>
+              <button id="notesSortChronoBtn" type="button" aria-pressed="true" data-shortcut="T">Chronological</button>
             </div>
             <div class="segmented" aria-label="Notes view">
-              <button id="notesViewExpandedBtn" type="button" aria-pressed="true" data-shortcut="E">Expanded View</button>
-              <button id="notesViewCompactBtn" type="button" aria-pressed="false" data-shortcut="K">Compact View</button>
+              <button id="notesViewExpandedBtn" type="button" aria-pressed="false" data-shortcut="E">Expanded View</button>
+              <button id="notesViewCompactBtn" type="button" aria-pressed="true" data-shortcut="K">Compact View</button>
             </div>
           </div>
           <div id="notesPanelContent" class="note-list"></div>
@@ -1351,8 +1360,14 @@
             <button id="dateYmdBtn" type="button" aria-pressed="false" data-shortcut="3">YMD</button>
           </div>
           <div class="segmented" aria-label="Date style" style="margin-top: .55rem;">
-            <button id="dateNumericBtn" type="button" aria-pressed="true" data-shortcut="N">Numerical</button>
-            <button id="dateAlphaBtn" type="button" aria-pressed="false" data-shortcut="A">Alphabetical</button>
+            <button id="dateNumericBtn" type="button" aria-pressed="false" data-shortcut="N">Numerical</button>
+            <button id="dateAlphaBtn" type="button" aria-pressed="true" data-shortcut="A">Alphabetical</button>
+          </div>
+          <div class="date-examples" aria-label="Date format examples">
+            <span><b>Current:</b> <span id="dateCurrentExample"></span></span>
+            <span><b>MDY:</b> <span id="dateMdyExample"></span></span>
+            <span><b>DMY:</b> <span id="dateDmyExample"></span></span>
+            <span><b>YMD:</b> <span id="dateYmdExample"></span></span>
           </div>
         </section>
         <section>
@@ -1387,7 +1402,7 @@
             <li>Use the Legend to edit level names, definitions, and colors. Add optional built-in levels or your own custom levels.</li>
             <li>Use Import and Export in Settings to back up data or move it to another device.</li>
           </ol>
-          <p><b>Default levels:</b> Visited, Want to Visit, and Not Interested. Not Interested is the polished opt-out level and is excluded from total completion.</p>
+          <p><b>Default levels:</b> Visited and Not Interested. Not Interested is the polished opt-out level and is excluded from total completion.</p>
         </section>
       </section>
 
@@ -1475,9 +1490,9 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "1.4.5";
+    const APP_VERSION = "1.4.6";
     const STORAGE_KEY = "usStateVisitMap.v1";
-    const WISHLIST_SEED_VERSION = "1.4.1";
+    const WISHLIST_SEED_VERSION = "1.4.6";
     const STATES = [
       ["AK","Alaska",0,5],["WA","Washington",1,0],["OR","Oregon",1,1],["CA","California",1,2],["ID","Idaho",2,1],
       ["NV","Nevada",2,2],["AZ","Arizona",2,3],["HI","Hawaii",1,6],["MT","Montana",3,0],["WY","Wyoming",3,2],
@@ -1498,8 +1513,8 @@
       { id: "want-to-visit", name: "Want to Visit", definition: "Interested or Planning", color: "#7c3aed", countsTowardStats: true },
       { id: "not-interested", name: "Not Interested", definition: "Excluded from Stats", color: "#6b7280", countsTowardStats: false }
     ];
-    const DEFAULT_LEVEL_IDS = ["visited", "want-to-visit", "not-interested"];
-    const OPTIONAL_LEVEL_IDS = ["pass-through", "day-visit"];
+    const DEFAULT_LEVEL_IDS = ["visited", "not-interested"];
+    const OPTIONAL_LEVEL_IDS = ["want-to-visit", "pass-through", "day-visit"];
     const THEMES = {
       Classic: ["#16a34a", "#facc15", "#f97316", "#7c3aed", "#6b7280"],
       Sunset: ["#eeaf61", "#fb9062", "#ee5d6c", "#ce4993", "#6a0d83"],
@@ -1544,9 +1559,37 @@
         effort: "Large",
         targetVersion: "1.6.0",
         category: "Maps"
+      },
+      {
+        title: "Bug Fix: Slight Scroll Issue",
+        ticketId: "WISH-005",
+        description: "Investigate and smooth out the remaining minor scroll behavior in the map and notes layout.",
+        priority: "Medium",
+        effort: "Small",
+        targetVersion: "1.4.7",
+        category: "Bug Fix"
+      },
+      {
+        title: "UI Tweak for Text Buttons",
+        ticketId: "WISH-006",
+        description: "Polish spacing, sizing, and alignment when the Button Style setting is set to Text.",
+        priority: "Medium",
+        effort: "Small",
+        targetVersion: "1.4.7",
+        category: "UI"
       }
     ];
     const CHANGELOG = [
+      {
+        version: "1.4.6",
+        date: "2026-05-10",
+        title: "Default and settings polish",
+        notes: [
+          "Changed fresh-map defaults to Visited and Not Interested levels only.",
+          "Defaulted Notes to chronological compact view and alphabetical date display.",
+          "Added date format examples and two new wishlist tickets."
+        ]
+      },
       {
         version: "1.4.5",
         date: "2026-05-10",
@@ -1670,8 +1713,8 @@
     let legendPanelOpen = true;
     let notesPanelOpen = true;
     let notesPanelState = null;
-    let notesSortMode = "alpha";
-    let notesViewMode = "expanded";
+    let notesSortMode = "chrono";
+    let notesViewMode = "compact";
     let noteLevelFilters = new Set();
     let powerOverlayActive = false;
     let pendingConfirm = null;
@@ -1681,7 +1724,7 @@
       return {
         appVersion: APP_VERSION,
         mapName: "Your State Map",
-        settings: { theme: "light", tapBehavior: "cycle", buttonStyle: "symbols", uiHints: true, dateOrder: "mdy", dateStyle: "numeric" },
+        settings: { theme: "light", tapBehavior: "cycle", buttonStyle: "symbols", uiHints: true, dateOrder: "mdy", dateStyle: "alpha" },
         levels: DEFAULT_LEVEL_IDS.map(id => clone(BUILT_INS.find(level => level.id === id))),
         states: {},
         notes: {},
@@ -1751,7 +1794,7 @@
       return parseFlexibleDate(text, order) || text.slice(0, 10);
     }
 
-    function formatDateDisplay(value) {
+    function formatDateDisplay(value, order = state.settings.dateOrder, style = state.settings.dateStyle) {
       const text = String(value || "").trim();
       if (!text) return "No date";
       const match = text.match(/^(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?$/);
@@ -1759,8 +1802,7 @@
       const [, year, month, day] = match;
       if (!month) return year;
       const monthName = MONTH_NAMES[Number(month) - 1];
-      const order = state.settings.dateOrder;
-      const alpha = state.settings.dateStyle === "alpha";
+      const alpha = style === "alpha";
       if (!day) {
         if (alpha) return order === "ymd" ? `${year} ${monthName}` : `${monthName} ${year}`;
         return order === "ymd" ? `${year}-${month}` : order === "dmy" ? `${month}.${year}` : `${month}/${year}`;
@@ -1822,7 +1864,7 @@
       if (!["cycle", "select"].includes(next.settings.tapBehavior)) next.settings.tapBehavior = "cycle";
       if (!["symbols", "text"].includes(next.settings.buttonStyle)) next.settings.buttonStyle = "symbols";
       if (!["mdy", "dmy", "ymd"].includes(next.settings.dateOrder)) next.settings.dateOrder = "mdy";
-      if (!["numeric", "alpha"].includes(next.settings.dateStyle)) next.settings.dateStyle = "numeric";
+      if (!["numeric", "alpha"].includes(next.settings.dateStyle)) next.settings.dateStyle = "alpha";
       next.settings.uiHints = next.settings.uiHints !== false;
       delete next.settings.powerMode;
       next.levels = Array.isArray(input.levels) && input.levels.length ? input.levels.slice(0, 5) : base.levels;
@@ -1865,8 +1907,9 @@
       })).filter(wish => wish.title) : [];
       if (input.seededWishlistVersion !== WISHLIST_SEED_VERSION) {
         const titles = new Set(next.wishlist.map(wish => wish.title.toLowerCase()));
+        const migrationSeeds = new Set(["National Park Overlay Layer", "Bug Fix: Slight Scroll Issue", "UI Tweak for Text Buttons"]);
         seedWishlist().forEach(wish => {
-          if (input.seededWishlistVersion && wish.title !== "National Park Overlay Layer") return;
+          if (input.seededWishlistVersion && !migrationSeeds.has(wish.title)) return;
           if (!titles.has(wish.title.toLowerCase())) next.wishlist.push(wish);
         });
       }
@@ -2058,8 +2101,8 @@
       setButtonLabel("#notesPanelBackBtn", "‹", "All Notes");
       setButtonLabel("#notesSortAlphaBtn", "A-Z", "Alphabetical");
       setButtonLabel("#notesSortChronoBtn", "◷", "Chronological");
-      setButtonLabel("#notesViewExpandedBtn", "▤", "Expanded View");
-      setButtonLabel("#notesViewCompactBtn", "☰", "Compact View");
+      setButtonLabel("#notesViewExpandedBtn", "☰", "Expanded View");
+      setButtonLabel("#notesViewCompactBtn", "▤", "Compact View");
       setButtonLabel("#deleteLevelBtn", "⌫", "Delete Level");
       setButtonLabelBoth("#lightModeBtn", "☀︎", "Light Mode");
       setButtonLabelBoth("#darkModeBtn", "◐", "Dark Mode");
@@ -2781,6 +2824,11 @@
       $("#dateYmdBtn").setAttribute("aria-pressed", state.settings.dateOrder === "ymd");
       $("#dateNumericBtn").setAttribute("aria-pressed", state.settings.dateStyle === "numeric");
       $("#dateAlphaBtn").setAttribute("aria-pressed", state.settings.dateStyle === "alpha");
+      const sample = "2026-06-01";
+      $("#dateCurrentExample").textContent = formatDateDisplay(sample);
+      $("#dateMdyExample").textContent = `${formatDateDisplay(sample, "mdy", "numeric")} / ${formatDateDisplay(sample, "mdy", "alpha")}`;
+      $("#dateDmyExample").textContent = `${formatDateDisplay(sample, "dmy", "numeric")} / ${formatDateDisplay(sample, "dmy", "alpha")}`;
+      $("#dateYmdExample").textContent = `${formatDateDisplay(sample, "ymd", "numeric")} / ${formatDateDisplay(sample, "ymd", "alpha")}`;
     }
 
     function renderChangelog() {
