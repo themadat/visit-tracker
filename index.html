@@ -1178,8 +1178,8 @@
           <div class="map-head-actions">
             <div class="segmented map-label-toggle" aria-label="Map labels">
               <span>Labels</span>
-              <button id="labelsNoneBtn" type="button" aria-pressed="false" data-shortcut="0">None</button>
-              <button id="labelsAbbrBtn" type="button" aria-pressed="true" data-shortcut="1">Abbr</button>
+              <button id="labelsNoneBtn" type="button" aria-pressed="true" data-shortcut="0">None</button>
+              <button id="labelsAbbrBtn" type="button" aria-pressed="false" data-shortcut="1">Abbr</button>
               <button id="labelsNameBtn" type="button" aria-pressed="false" data-shortcut="2">Name</button>
             </div>
             <button id="legendToggleBtn" class="toggle-btn" type="button" aria-pressed="true"
@@ -2039,7 +2039,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "1.5.8";
+    const APP_VERSION = "1.5.9";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const WISHLIST_SEED_VERSION = "1.5.2";
     const STATES = [
@@ -2186,6 +2186,14 @@
       }
     ];
     const CHANGELOG = [
+      {
+        version: "1.5.9",
+        date: "2026-05-11",
+        title: "Default label mode",
+        notes: [
+          "Changed the default map label display to None."
+        ]
+      },
       {
         version: "1.5.8",
         date: "2026-05-11",
@@ -2424,7 +2432,7 @@
       return {
         appVersion: APP_VERSION,
         mapName: "Your State Map",
-        settings: { theme: "light", tapBehavior: "cycle", buttonStyle: "symbols", uiHints: true, dateOrder: "mdy", dateStyle: "alpha", mapLabels: "abbr" },
+        settings: { theme: "light", tapBehavior: "cycle", buttonStyle: "symbols", uiHints: true, dateOrder: "mdy", dateStyle: "alpha", mapLabels: "none" },
         levels,
         states: defaultTerritoryStates(levels),
         notes: {},
@@ -2627,7 +2635,7 @@
       if (!["symbols", "text"].includes(next.settings.buttonStyle)) next.settings.buttonStyle = "symbols";
       if (!["mdy", "dmy", "ymd"].includes(next.settings.dateOrder)) next.settings.dateOrder = "mdy";
       if (!["numeric", "alpha"].includes(next.settings.dateStyle)) next.settings.dateStyle = "alpha";
-      if (!["none", "abbr", "name"].includes(next.settings.mapLabels)) next.settings.mapLabels = "abbr";
+      if (!["none", "abbr", "name"].includes(next.settings.mapLabels)) next.settings.mapLabels = "none";
       next.settings.uiHints = next.settings.uiHints !== false;
       delete next.settings.powerMode;
       next.levels = Array.isArray(input.levels) && input.levels.length ? input.levels.slice(0, 5) : base.levels;
@@ -2951,7 +2959,7 @@
       const labels = $("#mapLabels");
       if (!labels) return;
       labels.innerHTML = "";
-      const mode = state.settings.mapLabels || "abbr";
+      const mode = state.settings.mapLabels || "none";
       $("#labelsNoneBtn").setAttribute("aria-pressed", mode === "none");
       $("#labelsAbbrBtn").setAttribute("aria-pressed", mode === "abbr");
       $("#labelsNameBtn").setAttribute("aria-pressed", mode === "name");
