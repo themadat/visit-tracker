@@ -351,10 +351,18 @@
       min-width: 0;
     }
 
-    .map-label-toggle span {
+    .map-label-toggle>span {
+      display: grid;
+      place-items: center;
       align-self: center;
-      padding: 0 .35rem;
-      color: var(--muted);
+      width: 45px;
+      min-width: 45px;
+      min-height: 30px;
+      padding: 0 .28rem;
+      border: 1px solid color-mix(in srgb, var(--line) 72%, var(--accent) 28%);
+      border-radius: calc(var(--radius) - 2px);
+      background: color-mix(in srgb, var(--surface) 68%, var(--accent) 14%);
+      color: var(--accent-2);
       font-size: .78rem;
       font-weight: 800;
     }
@@ -388,8 +396,11 @@
       padding: .14rem;
     }
 
-    [data-button-style="symbols"] .map-label-toggle span {
-      padding: 0 .24rem;
+    [data-button-style="symbols"] .map-label-toggle>span {
+      width: 48px;
+      min-width: 48px;
+      min-height: 32px;
+      padding: 0;
       font-size: .78rem;
     }
 
@@ -1465,8 +1476,11 @@
         padding: .1rem;
       }
 
-      [data-button-style="symbols"] .map-label-toggle span {
-        padding: 0 .16rem;
+      [data-button-style="symbols"] .map-label-toggle>span {
+        width: 45px;
+        min-width: 45px;
+        min-height: 30px;
+        padding: 0;
         font-size: .68rem;
       }
 
@@ -2541,7 +2555,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "1.8.0.11";
+    const APP_VERSION = "1.8.0.12";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const WISHLIST_SEED_VERSION = "1.8.0.10";
     const STATES = [
@@ -2785,6 +2799,15 @@
       }
     ];
     const CHANGELOG = [
+      {
+        version: "1.8.0.12",
+        date: "2026-05-12",
+        title: "Map label toggle polish",
+        notes: [
+          "Made the Labels tag chip 1.5x the width of the adjacent map label toggle buttons.",
+          "Added a distinct shaded background and border so the tag chip reads as the label for the control."
+        ]
+      },
       {
         version: "1.8.0.11",
         date: "2026-05-12",
