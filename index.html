@@ -811,23 +811,53 @@
       box-shadow: 0 1px 2px rgba(16, 24, 40, .12);
     }
 
-    .settings-section-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: .75rem;
-      flex-wrap: wrap;
+    .settings-page {
+      gap: 1.05rem;
     }
 
-    .date-current-example {
+    #tab-settings .settings-category {
+      display: grid;
+      gap: .86rem;
       border: 1px solid var(--line);
-      border-radius: 999px;
-      background: var(--surface-2);
-      color: var(--accent-2);
-      padding: .18rem .52rem;
-      font-size: .78rem;
-      font-weight: 800;
-      white-space: nowrap;
+      border-radius: var(--radius);
+      padding: 1.05rem;
+      background: color-mix(in srgb, var(--surface) 86%, var(--surface-2) 14%);
+    }
+
+    #tab-settings .settings-category h3 {
+      font-size: .96rem;
+      letter-spacing: 0;
+    }
+
+    .setting-row {
+      display: grid;
+      grid-template-columns: minmax(9rem, 11.5rem) minmax(0, 1fr);
+      align-items: center;
+      gap: .9rem;
+    }
+
+    .setting-label {
+      color: var(--text);
+      font-size: .9rem;
+      font-weight: 820;
+      line-height: 1.2;
+    }
+
+    .setting-row .segmented {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(0, 1fr);
+      width: 100%;
+      min-width: 0;
+      align-items: stretch;
+    }
+
+    .setting-row .segmented button {
+      display: grid;
+      place-items: center;
+      width: 100%;
+      min-width: 0;
+      text-align: center;
     }
 
     .date-option-label {
@@ -1458,6 +1488,15 @@
       .level-editor-grid,
       .date-builder {
         grid-template-columns: 1fr;
+      }
+
+      .setting-row {
+        grid-template-columns: 1fr;
+        gap: .42rem;
+      }
+
+      #tab-settings .settings-category {
+        padding: .88rem;
       }
 
       .exclude-stat-title {
@@ -2350,49 +2389,61 @@
         <button type="button" role="tab" data-tab="wishlist" data-shortcut="W">Wishlist</button>
       </div>
 
-      <section id="tab-settings" class="doc active" role="tabpanel">
-        <section>
+      <section id="tab-settings" class="doc active settings-page" role="tabpanel">
+        <section class="settings-category">
           <h3>Appearance</h3>
-          <div class="segmented" aria-label="Theme">
-            <button id="lightModeBtn" type="button" aria-pressed="true" data-shortcut="L">Light Mode</button>
-            <button id="darkModeBtn" type="button" aria-pressed="false" data-shortcut="D">Dark Mode</button>
+          <div class="setting-row">
+            <div class="setting-label">Theme</div>
+            <div class="segmented" aria-label="Theme">
+              <button id="lightModeBtn" type="button" aria-pressed="true" data-shortcut="L">Light</button>
+              <button id="darkModeBtn" type="button" aria-pressed="false" data-shortcut="D">Dark</button>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-label">Button Style</div>
+            <div class="segmented" aria-label="Button style">
+              <button id="symbolButtonsBtn" type="button" aria-pressed="true" data-shortcut="I">Icons</button>
+              <button id="textButtonsBtn" type="button" aria-pressed="false" data-shortcut="T">Text</button>
+              <button id="iconTextButtonsBtn" type="button" aria-pressed="false" data-shortcut="B">Icons + Text</button>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-label">Hints</div>
+            <div class="segmented" aria-label="Hints">
+              <button id="hintsOnBtn" type="button" aria-pressed="true" data-shortcut="U">On</button>
+              <button id="hintsOffBtn" type="button" aria-pressed="false" data-shortcut="O">Off</button>
+            </div>
           </div>
         </section>
-        <section>
-          <h3>Interface</h3>
-          <div class="segmented" aria-label="Interface style">
-            <button id="symbolButtonsBtn" type="button" aria-pressed="true" data-shortcut="I">Icon Only</button>
-            <button id="textButtonsBtn" type="button" aria-pressed="false" data-shortcut="T">Text Only</button>
-            <button id="iconTextButtonsBtn" type="button" aria-pressed="false" data-shortcut="B">Icon and Text</button>
-          </div>
-          <div class="segmented" aria-label="UI hints" style="margin-top: .55rem;">
-            <button id="hintsOnBtn" type="button" aria-pressed="true" data-shortcut="U">UI Hints On</button>
-            <button id="hintsOffBtn" type="button" aria-pressed="false" data-shortcut="O">UI Hints Off</button>
-          </div>
-        </section>
-        <section>
+        <section class="settings-category">
           <h3>Map Interaction</h3>
-          <div class="segmented" aria-label="Tap behavior">
-            <button id="cycleModeBtn" type="button" aria-pressed="true" data-shortcut="C">Tap to Cycle</button>
-            <button id="selectModeBtn" type="button" aria-pressed="false" data-shortcut="P">Tap to Select</button>
+          <div class="setting-row">
+            <div class="setting-label">Tap to</div>
+            <div class="segmented" aria-label="Tap to">
+              <button id="cycleModeBtn" type="button" aria-pressed="true" data-shortcut="C">Cycle</button>
+              <button id="selectModeBtn" type="button" aria-pressed="false" data-shortcut="P">Select</button>
+            </div>
           </div>
         </section>
-        <section>
-          <div class="settings-section-head">
-            <h3>Date Format</h3>
-            <span id="dateCurrentExample" class="date-current-example" aria-label="Current date format example"></span>
+        <section class="settings-category">
+          <h3>Date Formats</h3>
+          <div class="setting-row">
+            <div class="setting-label">Order</div>
+            <div class="segmented" aria-label="Date order">
+              <button id="dateMdyBtn" type="button" aria-pressed="true" data-shortcut="1">MDY</button>
+              <button id="dateDmyBtn" type="button" aria-pressed="false" data-shortcut="2">DMY</button>
+              <button id="dateYmdBtn" type="button" aria-pressed="false" data-shortcut="3">YMD</button>
+            </div>
           </div>
-          <div class="segmented" aria-label="Date order">
-            <button id="dateMdyBtn" type="button" aria-pressed="true" data-shortcut="1">MDY</button>
-            <button id="dateDmyBtn" type="button" aria-pressed="false" data-shortcut="2">DMY</button>
-            <button id="dateYmdBtn" type="button" aria-pressed="false" data-shortcut="3">YMD</button>
-          </div>
-          <div class="segmented" aria-label="Date style" style="margin-top: .55rem;">
-            <button id="dateNumericBtn" type="button" aria-pressed="false" data-shortcut="N">Numerical</button>
-            <button id="dateAlphaBtn" type="button" aria-pressed="true" data-shortcut="A">Alphabetical</button>
+          <div class="setting-row">
+            <div class="setting-label">Display</div>
+            <div class="segmented" aria-label="Date display">
+              <button id="dateNumericBtn" type="button" aria-pressed="false" data-shortcut="N">Numbers</button>
+              <button id="dateAlphaBtn" type="button" aria-pressed="true" data-shortcut="A">Month Name</button>
+            </div>
           </div>
         </section>
-        <section>
+        <section class="settings-category">
           <h3>Import and Export</h3>
           <div class="import-box">
             <p class="muted" data-hint>Data is saved in this browser only. Export a JSON backup to move or restore your
@@ -2407,7 +2458,7 @@
             </label>
           </div>
         </section>
-        <section>
+        <section class="settings-category">
           <h3>Data Reset</h3>
           <div class="actions">
             <button id="resetAppBtn" class="danger" type="button" data-shortcut="X">Reset App Data</button>
@@ -2490,7 +2541,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "1.8.0.10";
+    const APP_VERSION = "1.8.0.11";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const WISHLIST_SEED_VERSION = "1.8.0.10";
     const STATES = [
@@ -2734,6 +2785,16 @@
       }
     ];
     const CHANGELOG = [
+      {
+        version: "1.8.0.11",
+        date: "2026-05-12",
+        title: "Settings layout polish",
+        notes: [
+          "Removed the current date format pill from Settings.",
+          "Reworked Settings into aligned category rows with left-side labels and stretched toggle controls.",
+          "Combined Appearance and Interface into one Appearance section with Theme, Button Style, and Hints rows."
+        ]
+      },
       {
         version: "1.8.0.10",
         date: "2026-05-12",
@@ -3665,15 +3726,15 @@
       setButtonLabel("#levelDialogCloseBtn", ICON_GLOBAL_CLOSE__XMARK, "Close");
       setButtonLabel("#paletteCloseBtn", ICON_GLOBAL_CLOSE__XMARK, "Close");
       syncConfirmButtons();
-      setButtonLabelBoth("#lightModeBtn", ICON_SETTINGS_THEME__SUN_MAX_FILL, "Light Mode");
-      setButtonLabelBoth("#darkModeBtn", ICON_SETTINGS_THEME__MOON_FILL, "Dark Mode");
-      setButtonLabelBoth("#symbolButtonsBtn", ICON_SETTINGS_BUTTON_ICON__SQUARE, "Icon Only");
-      setButtonLabelBoth("#textButtonsBtn", ICON_SETTINGS_BUTTON_TEXT__CHARACTER_SQUARE, "Text Only");
-      setButtonLabelBoth("#iconTextButtonsBtn", ICON_SETTINGS_BUTTON_ICONTEXT__CHARACTER_SQUARE, "Icon and Text");
-      setButtonLabelBoth("#hintsOnBtn", ICON_SETTINGS_HINT_ON__LIGHTBULB_MAX_FILL, "UI Hints On");
-      setButtonLabelBoth("#hintsOffBtn", ICON_SETTINGS_HINT_OFF__LIGHTBULB, "UI Hints Off");
-      setButtonLabelBoth("#cycleModeBtn", ICON_SETTINGS_MAP_CYCLE__ARROW_TRIANGLEHEAD_2_CLOCKWISE, "Tap to Cycle");
-      setButtonLabelBoth("#selectModeBtn", ICON_SETTINGS_MAP_SELECT__SCOPE, "Tap to Select");
+      setButtonLabelBoth("#lightModeBtn", ICON_SETTINGS_THEME__SUN_MAX_FILL, "Light");
+      setButtonLabelBoth("#darkModeBtn", ICON_SETTINGS_THEME__MOON_FILL, "Dark");
+      setButtonLabelBoth("#symbolButtonsBtn", ICON_SETTINGS_BUTTON_ICON__SQUARE, "Icons");
+      setButtonLabelBoth("#textButtonsBtn", ICON_SETTINGS_BUTTON_TEXT__CHARACTER_SQUARE, "Text");
+      setButtonLabelBoth("#iconTextButtonsBtn", ICON_SETTINGS_BUTTON_ICONTEXT__CHARACTER_SQUARE, "Icons + Text");
+      setButtonLabelBoth("#hintsOnBtn", ICON_SETTINGS_HINT_ON__LIGHTBULB_MAX_FILL, "On", "Hints on");
+      setButtonLabelBoth("#hintsOffBtn", ICON_SETTINGS_HINT_OFF__LIGHTBULB, "Off", "Hints off");
+      setButtonLabelBoth("#cycleModeBtn", ICON_SETTINGS_MAP_CYCLE__ARROW_TRIANGLEHEAD_2_CLOCKWISE, "Cycle", "Tap to cycle");
+      setButtonLabelBoth("#selectModeBtn", ICON_SETTINGS_MAP_SELECT__SCOPE, "Select", "Tap to select");
       setButtonLabelBoth("#exportJsonBtn", ICON_SETTINGS_EXPORT_JSON__CURLYBRACES_SQUARE_FILL, "Export JSON Backup");
       setButtonLabelBoth("#exportMarkdownBtn", ICON_SETTINGS_EXPORT_MARKDOWN__RICHTEXT_PAGE_FILL, "Complete Markdown");
       setButtonLabelBoth("#exportRichTextBtn", ICON_SETTINGS_EXPORT_TEXT__TEXT_PAGE_FILL, "Simple Rich Text");
@@ -4494,12 +4555,11 @@
       $("#dateNumericBtn").setAttribute("aria-pressed", state.settings.dateStyle === "numeric");
       $("#dateAlphaBtn").setAttribute("aria-pressed", state.settings.dateStyle === "alpha");
       const sample = "2026-06-01";
-      $("#dateCurrentExample").textContent = formatDateDisplay(sample);
       setDateButtonLabel("#dateMdyBtn", "", "MDY", formatDateDisplay(sample, "mdy", state.settings.dateStyle));
       setDateButtonLabel("#dateDmyBtn", "", "DMY", formatDateDisplay(sample, "dmy", state.settings.dateStyle));
       setDateButtonLabel("#dateYmdBtn", "", "YMD", formatDateDisplay(sample, "ymd", state.settings.dateStyle));
-      setDateButtonLabel("#dateNumericBtn", ICON_SETTINGS_DATE_NUMERICAL__NUMBERS, "Numerical", formatDateDisplay(sample, state.settings.dateOrder, "numeric"));
-      setDateButtonLabel("#dateAlphaBtn", ICON_SETTINGS_DATE_ALPHABETICAL__TEXTFORMAT_CHARACTERS, "Alphabetical", formatDateDisplay(sample, state.settings.dateOrder, "alpha"));
+      setDateButtonLabel("#dateNumericBtn", ICON_SETTINGS_DATE_NUMERICAL__NUMBERS, "Numbers", formatDateDisplay(sample, state.settings.dateOrder, "numeric"));
+      setDateButtonLabel("#dateAlphaBtn", ICON_SETTINGS_DATE_ALPHABETICAL__TEXTFORMAT_CHARACTERS, "Month Name", formatDateDisplay(sample, state.settings.dateOrder, "alpha"));
     }
 
     function renderChangelog() {
