@@ -136,8 +136,6 @@ For every completed change:
 --
 1.10
 
-Settings has gotten a little too airy. TIghten it down and use different H sizes for parent categories and sub-categories
-
 Have the import/export section follow some of these rules. Button of equal size stretch to space. Less wasted vertical space towards the top
 
 Lets combine and update Help and FAQ into a single page called Help Center. Add a search bar that would surface and highlight potential help points or faq answers. First have Documentation, then FAQs, then Send Feedback Section. Send feedback should be a cheeky reference to if you know you know

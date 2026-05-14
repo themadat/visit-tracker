@@ -8,7 +8,7 @@ US State Visit Map is a single-file, offline HTML/CSS/JS app for tracking visits
 
 Current anchors:
 
-- `APP_VERSION`: `1.9.0`
+- `APP_VERSION`: `1.10.0.1`
 - storage key: `usStateVisitMap.v1`
 - wishlist seed version: `1.9.0.2`
 
@@ -88,7 +88,7 @@ UX taste: compact, practical, map-first, light personality in docs/release copy.
 - Desktop main view is viewport-locked above 980px: app/body do not vertically scroll, the map column is height-limited, and Notes panel content scrolls internally to align with the map bottom without stretching note rows/cards.
 - Mobile/tablet keeps the single-column page scroll below 981px.
 - Hints should become individually dismissible; global hints toggle overrides all.
-- Settings should be tighter with clearer hierarchy.
+- Settings uses compact category sections; parent headings should stay visually stronger than row-level setting labels.
 - Import/export buttons equal-sized and space-efficient.
 - Help + FAQ should become Help Center with search.
 - Changelog + roadmap should become What's New.
