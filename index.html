@@ -862,35 +862,38 @@
     }
 
     .settings-page {
-      gap: 1.05rem;
+      gap: .72rem;
     }
 
     #tab-settings .settings-category {
       display: grid;
-      gap: .86rem;
+      gap: .58rem;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      padding: 1.05rem;
+      padding: .72rem .78rem;
       background: color-mix(in srgb, var(--surface) 86%, var(--surface-2) 14%);
     }
 
     #tab-settings .settings-category h3 {
-      font-size: .96rem;
+      font-size: .92rem;
+      line-height: 1.08;
+      font-weight: 850;
       letter-spacing: 0;
     }
 
     .setting-row {
       display: grid;
-      grid-template-columns: minmax(9rem, 11.5rem) minmax(0, 1fr);
+      grid-template-columns: minmax(7.5rem, 9.5rem) minmax(0, 1fr);
       align-items: center;
-      gap: .9rem;
+      gap: .58rem;
+      min-height: 32px;
     }
 
     .setting-label {
-      color: var(--text);
-      font-size: .9rem;
-      font-weight: 820;
-      line-height: 1.2;
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: 780;
+      line-height: 1.05;
     }
 
     .setting-row .segmented {
@@ -900,6 +903,8 @@
       width: 100%;
       min-width: 0;
       align-items: stretch;
+      gap: .16rem;
+      padding: .16rem;
     }
 
     .setting-row .segmented button {
@@ -907,6 +912,8 @@
       place-items: center;
       width: 100%;
       min-width: 0;
+      min-height: 30px;
+      padding: .32rem .44rem;
       text-align: center;
     }
 
@@ -1467,6 +1474,29 @@
       background: var(--surface-2);
     }
 
+    #tab-settings .import-box {
+      padding: .72rem;
+      gap: .58rem;
+    }
+
+    #tab-settings .import-box p {
+      margin: 0;
+      line-height: 1.34;
+    }
+
+    #tab-settings .import-box label {
+      gap: .26rem;
+    }
+
+    #tab-settings .actions {
+      gap: .38rem;
+    }
+
+    #tab-settings .actions button {
+      min-height: 34px;
+      padding: .46rem .64rem;
+    }
+
     .filters {
       display: grid;
       grid-template-columns: 1fr repeat(3, minmax(120px, .5fr));
@@ -1690,11 +1720,12 @@
 
       .setting-row {
         grid-template-columns: 1fr;
-        gap: .42rem;
+        gap: .28rem;
       }
 
       #tab-settings .settings-category {
-        padding: .88rem;
+        gap: .54rem;
+        padding: .68rem;
       }
 
       .exclude-stat-title {
@@ -2738,7 +2769,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "1.9.0";
+    const APP_VERSION = "1.10.0.1";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const WISHLIST_SEED_VERSION = "1.9.0.2";
     const STATES = [
@@ -3055,6 +3086,23 @@
       }
     ];
     const CHANGELOG = [
+      {
+        version: "1.10.0",
+        date: "2026-05-14",
+        title: "Settings Drawer Tuck-In",
+        summary: "Tightened Settings spacing and typography so controls scan faster without changing behavior.",
+        highlights: [
+          "Settings sections are denser and less airy.",
+          "Parent category titles now stand apart from row-level labels.",
+          "Settings controls keep the same behavior in a more compact layout."
+        ],
+        updates: [
+          "Reduced Settings section gaps, card padding, and mobile spacing for a tighter panel.",
+          "Adjusted parent category headings to use stronger sizing and weight than row-level labels.",
+          "Trimmed Settings segmented-control spacing, padding, and row height so option groups use less vertical space.",
+          "Tightened Import and Export copy, actions, and file input spacing to match the denser Settings rhythm."
+        ]
+      },
       {
         version: "1.9.0",
         date: "2026-05-14",
