@@ -8,21 +8,23 @@ US State Visit Map is a single-file, offline HTML/CSS/JS app for tracking visits
 
 Current anchors:
 
-- `APP_VERSION`: `1.9.0.1`
+- `APP_VERSION`: `1.9.0`
 - storage key: `usStateVisitMap.v1`
-- wishlist seed version: `1.8.0.15`
+- wishlist seed version: `1.9.0.2`
 
 ## Critical Constraints
 
 - Manual edits are authoritative. Treat uncommitted changes and unexpected diffs as intentional user work.
 - Do not overwrite, revert, rename, reformat, normalize, or "clean up" existing edits unless the current request explicitly asks for it.
 - If a requested change overlaps user-edited code, make the smallest compatible patch and preserve surrounding edits.
+- When manual or unexpected edits are detected, determine what changed and include their tracked app/docs effects in `CHANGELOG` alongside the current update.
 - If ownership of a change is unclear, leave it untouched or ask before modifying.
 - Run `git status --short` before editing.
 - Edit `index.html` surgically; do not reformat the whole file.
 - Keep the app single-file/offline unless explicitly asked otherwise.
 - New persisted field: update `defaultState()` and `normalizeState()`.
 - Every completed change: bump fourth `APP_VERSION` number and update `CHANGELOG`.
+- When finalizing a release, set `APP_VERSION` to the released semantic version and collapse same-line patch/build notes into that release entry.
 - Update `README.md` and `context/LLM_HANDOFF.md` when a change affects repo rules, architecture, workflow, or handoff context.
 - Changelog wording must be public-safe: describe features and changes, not internal tickets, prompts, or workflow mechanics.
 - Roadmap items use P0-P3 priority, small/medium/large/x-large effort, exact-or-bucket target, scoped description, token cost %, and a terse LLM prompt.
@@ -83,19 +85,16 @@ UX taste: compact, practical, map-first, light personality in docs/release copy.
 
 ## User Preference Memory
 
-- Main view should avoid overall vertical scroll.
-- Notes rail scrolls independently and aligns to map bottom.
+- Desktop main view is viewport-locked above 980px: app/body do not vertically scroll, the map column is height-limited, and Notes panel content scrolls internally to align with the map bottom without stretching note rows/cards.
+- Mobile/tablet keeps the single-column page scroll below 981px.
 - Hints should become individually dismissible; global hints toggle overrides all.
-- Label tag should look like a category title, not a selected blue control.
-- Map Fit should change symbol/affordance without selected-color highlight.
 - Settings should be tighter with clearer hierarchy.
 - Import/export buttons equal-sized and space-efficient.
-- Polish A-Z icon alignment.
 - Help + FAQ should become Help Center with search.
 - Changelog + roadmap should become What's New.
 - Public release notes describe features, not internal tickets/prompts/wishlist mechanics.
 - Collapse build-level changelog entries into major.minor release entries.
-- Changelog format: `Major.Minor.Patch :: YYYY-mm-dd :: cheeky theme name`, then a bold one-line summary, then feature bullets.
+- Changelog format: `Major.Minor.Patch :: YYYY-mm-dd :: cheeky theme name`, then a bold one-line summary, then short `highlights` and denser `updates`.
 
 ## Verify
 
@@ -106,3 +105,4 @@ python3 -m http.server 8018
 ```
 
 Open `http://127.0.0.1:8018/index.html` for smoke testing.
+Use port `8018` by default for local smoke checks so startup and cleanup stay predictable. If it is occupied, use the next nearby port, say which one, and stop the server before the final response.

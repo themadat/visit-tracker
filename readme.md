@@ -16,6 +16,8 @@ Or serve it locally for browser testing:
 python3 -m http.server 8018
 ```
 
+Use port `8018` by convention so smoke-test startup and cleanup stay predictable. If that port is occupied, use the next nearby port, note it, and stop the server when checks are done.
+
 Then visit:
 
 ```text
@@ -103,6 +105,8 @@ git diff --check
 3. Browser smoke test:
 
 - Load the app through a local server.
+- Use port `8018` by default; if occupied, use the next nearby port and stop the server after checks.
+- On desktop, confirm the main page does not vertically scroll and the Notes panel content scrolls internally to the map bottom without stretching note rows/cards.
 - Confirm the map renders and every visible state is clickable.
 - Mark a state, open Notes, add/edit/delete a note.
 - Try year-only, month/year, and full-date note entries.
@@ -117,8 +121,11 @@ git diff --check
 For every completed change:
 
 - Bump the fourth `APP_VERSION` build number.
-- Update `CHANGELOG` using the collapsed release-note format: `Major.Minor.Patch :: YYYY-mm-dd :: Cheeky theme name`, then a bold one-line summary, then bullets.
+- When finalizing a release, set `APP_VERSION` to the released semantic version and collapse same-line patch/build notes into that release entry.
+- Update `CHANGELOG` using the collapsed release-note format: `Major.Minor.Patch :: YYYY-mm-dd :: Cheeky theme name`, then a bold one-line summary, then `highlights` and `updates`.
+- Keep `highlights` short and abbreviated; use `updates` for the fuller, denser change list.
 - Keep changelog wording public-safe: describe features and changes, not internal tickets, prompts, or workflow mechanics.
+- When manual or unexpected edits are present, identify their app/docs effect and include it in `CHANGELOG` alongside the current update.
 - Keep the current major/minor release entry updated unless intentionally opening a new release line.
 - Preserve the localStorage schema where possible.
 - Mention any known manual QA gaps in the handoff.
@@ -126,20 +133,8 @@ For every completed change:
 
 ## Future Prompts
 
-Wishlist: tweak the A-Z icon alignment, it just looks off
-Wishlist: SF Symbol Converting Tool
-
-by the way the change log doesn't always need to just be 3 bullets. I would like it to have a "highlights" section which is a bit more abbreviated, and then a more dense full flushed out update list
-
-____
-
-Have each UI hint be individually dismissible with a light grey ICON_GLOBAL_DISMISS__X_CIRCLE_FILL. Changing the UI toggle overrides individual dismisses and either turn them all off or back on
-
-For the main view I don't ever want any overall vertical scroll. Adjust map height based on width to account for this. If this means the map width shrinks, give that space to the legend/notes column. When there is enough content in the notes modal to require scrolling have the list perfectly scroll to match the map container bottom with no differences
-
-I want the Label Tag to Stand out differently. blue accents make it look like it is selected. I want it to to look like it a category title with toggle options (like in settings)
-
-When toggling map fit don't highlight its color. change symbol, but keep same color since this is always active.
+--
+1.10
 
 Settings has gotten a little too airy. TIghten it down and use different H sizes for parent categories and sub-categories
 
@@ -148,3 +143,8 @@ Have the import/export section follow some of these rules. Button of equal size 
 Lets combine and update Help and FAQ into a single page called Help Center. Add a search bar that would surface and highlight potential help points or faq answers. First have Documentation, then FAQs, then Send Feedback Section. Send feedback should be a cheeky reference to if you know you know
 
 Combine Changelog and Wishlist into one page called "What's New". In there have two sub-sections Release Notes and Roadmap
+
+--
+1.11
+
+Have each UI hint be individually dismissible with a light grey ICON_GLOBAL_DISMISS__X_CIRCLE_FILL. Changing the UI toggle overrides individual dismisses and either turn them all off or back on

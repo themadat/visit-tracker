@@ -11,6 +11,7 @@
       --bg: #f6f7f9;
       --surface: #ffffff;
       --surface-2: #eef1f5;
+      --surface-3: #bbbbbb;
       --text: #17202a;
       --muted: #657080;
       --line: #d9dee7;
@@ -30,6 +31,7 @@
       --bg: #101318;
       --surface: #181d24;
       --surface-2: #242b35;
+      --surface-3: #2f4f7b;
       --text: #edf1f7;
       --muted: #a5afbd;
       --line: #343d4a;
@@ -54,7 +56,7 @@
       margin: 0;
       background: var(--bg);
       color: var(--text);
-      min-height: 100vh;
+      min-height: 100svh;
     }
 
     button,
@@ -141,6 +143,20 @@
       color: #07111f;
     }
 
+    #mapFitBtn[aria-pressed="true"].toggle-btn {
+      background: var(--surface);
+      border-color: var(--line);
+      color: inherit;
+    }
+
+    #mapFitBtn[aria-pressed="true"].toggle-btn:hover {
+      border-color: var(--accent);
+    }
+
+    [data-theme="dark"] #mapFitBtn[aria-pressed="true"].toggle-btn {
+      color: inherit;
+    }
+
     [data-hints="off"] [data-hint] {
       display: none !important;
     }
@@ -212,9 +228,9 @@
     }
 
     .app {
-      min-height: 100vh;
+      min-height: 100svh;
       display: grid;
-      grid-template-rows: auto 1fr;
+      grid-template-rows: auto minmax(0, 1fr);
     }
 
     .topbar {
@@ -291,9 +307,10 @@
       margin: 0 auto;
       padding: clamp(.75rem, 1.6vw, 1.25rem);
       display: grid;
-      grid-template-columns: minmax(0, 2fr) minmax(320px, 1fr);
+      grid-template-columns: minmax(0, var(--map-column-width, 2fr)) minmax(320px, 1fr);
       gap: .85rem;
       align-items: stretch;
+      min-height: 0;
     }
 
     [data-legend="closed"][data-notes="closed"] .main {
@@ -312,6 +329,7 @@
       position: sticky;
       top: calc(4.25rem + .75rem);
       align-self: start;
+      min-height: 0;
     }
 
     .map-head {
@@ -347,32 +365,47 @@
       flex: 0 1 auto;
       flex-wrap: nowrap;
       gap: .12rem;
-      padding: .16rem;
+      padding: 0 .16rem 0 0;
       min-width: 0;
+      overflow: hidden;
     }
 
     .map-label-toggle>span {
       display: grid;
       place-items: center;
-      align-self: center;
-      width: 45px;
-      min-width: 45px;
+      align-self: stretch;
+      width: 50px;
+      min-width: 50px;
       min-height: 30px;
-      padding: 0 .28rem;
-      border: 1px solid color-mix(in srgb, var(--line) 72%, var(--accent) 28%);
-      border-radius: calc(var(--radius) - 2px);
-      background: color-mix(in srgb, var(--surface) 68%, var(--accent) 14%);
-      color: var(--accent-2);
+      padding: 0 .34rem;
+      border: 0;
+      border-radius: calc(var(--radius) - 1px) 0 0 calc(var(--radius) - 1px);
+      background: color-mix(in srgb, var(--surface-3) 75%, var(--line) 45%);
+      color: var(--text);
       font-size: .78rem;
-      font-weight: 800;
+      font-weight: 820;
+      box-shadow: inset -1px 0 0 color-mix(in srgb, var(--line) 62%, transparent);
+    }
+
+    .map-label-toggle>span .sf-symbol {
+      width: 1.575em;
+      height: 1.575em;
+      color: color-mix(in srgb, var(--text) 72%, var(--muted) 28%);
     }
 
     .map-label-toggle button {
+      border: 1px solid transparent;
       min-height: 30px;
       min-width: 30px;
       aspect-ratio: 1;
+      margin-block: .16rem;
       padding: .24rem .42rem;
       font-size: .8rem;
+    }
+
+    .map-label-toggle button[aria-pressed="false"]:hover {
+      border-color: color-mix(in srgb, var(--line) 74%, var(--text) 14%);
+      background: color-mix(in srgb, var(--surface) 54%, var(--surface-2) 46%);
     }
 
     [data-button-style="symbols"] .map-head-actions {
@@ -392,19 +425,20 @@
     }
 
     [data-button-style="symbols"] .map-label-toggle {
-      gap: .08rem;
-      padding: .14rem;
+      gap: .25rem;
+      padding: 0 .14rem 0 0;
     }
 
     [data-button-style="symbols"] .map-label-toggle>span {
-      width: 48px;
-      min-width: 48px;
+      width: 50px;
+      min-width: 50px;
       min-height: 32px;
       padding: 0;
       font-size: .78rem;
     }
 
     [data-button-style="symbols"] .map-label-toggle button {
+      margin-block: .14rem;
       width: 32px;
       min-width: 32px;
       min-height: 32px;
@@ -423,11 +457,13 @@
     .map-viewport {
       position: relative;
       overflow: hidden;
+      min-height: 0;
     }
 
     .map-wrap {
       padding: clamp(.7rem, 2vw, 1.2rem);
       overflow-x: auto;
+      min-height: 0;
     }
 
     [data-map-mode="fit"] .map-wrap {
@@ -615,6 +651,9 @@
     .wishlist-list {
       display: grid;
       gap: .4rem;
+      align-content: start;
+      align-items: start;
+      grid-auto-rows: max-content;
     }
 
     .legend-item {
@@ -1076,6 +1115,22 @@
       margin: 0;
     }
 
+    .release-section {
+      display: grid;
+      gap: .18rem;
+    }
+
+    .release-section b {
+      color: var(--muted);
+      font-size: .78rem;
+      text-transform: uppercase;
+    }
+
+    .release-section ul {
+      margin: .05rem 0 0 1.1rem;
+      padding: 0;
+    }
+
     .roadmap-field {
       display: grid;
       gap: .18rem;
@@ -1281,6 +1336,9 @@
     .compact-notes {
       display: grid;
       gap: .06rem;
+      align-content: start;
+      align-items: start;
+      grid-auto-rows: max-content;
     }
 
     .compact-note-row {
@@ -1296,8 +1354,9 @@
       border: 1px solid var(--line);
       border-radius: 4px;
       background: var(--surface);
-      font-size: .73rem;
+      font-size: .75rem;
       line-height: 1;
+      height: 16px;
     }
 
     .compact-notes-states .compact-note-row {
@@ -1317,6 +1376,9 @@
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow-wrap: normal;
+      height: 100%;
+      display: flex;
+      align-items: center;
     }
 
     .compact-note-text {
@@ -1415,6 +1477,101 @@
       display: none !important;
     }
 
+    @media (min-width: 981px) {
+
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+      }
+
+      .app {
+        height: 100svh;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .main {
+        height: 100%;
+        overflow: hidden;
+      }
+
+      .map-panel {
+        position: static;
+        top: auto;
+        align-self: stretch;
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr);
+        height: 100%;
+      }
+
+      .map-viewport,
+      .map-wrap {
+        height: 100%;
+      }
+
+      .map-wrap {
+        display: grid;
+        align-items: start;
+        justify-items: center;
+        overflow-x: auto;
+        overflow-y: hidden;
+      }
+
+      [data-map-mode="fit"] .map-wrap {
+        place-items: center;
+        overflow: hidden;
+      }
+
+      #stateMap,
+      [data-map-mode="fit"] #stateMap {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        max-height: 100%;
+      }
+
+      .side-panel-wrap {
+        grid-template-rows: auto minmax(0, 1fr);
+        align-items: stretch;
+        align-content: stretch;
+        height: 100%;
+        max-height: none;
+        overflow: hidden;
+        padding-bottom: 0;
+        scroll-padding-bottom: 0;
+      }
+
+      [data-legend="closed"] .side-panel-wrap,
+      [data-notes="closed"] .side-panel-wrap {
+        grid-template-rows: minmax(0, 1fr);
+      }
+
+      .side-panel {
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      #legendPanel {
+        overflow-y: auto;
+        overscroll-behavior: contain;
+      }
+
+      #notesPanel {
+        align-content: stretch;
+        grid-template-rows: auto auto minmax(0, 1fr);
+        height: 100%;
+      }
+
+      #notesPanelContent {
+        min-height: 0;
+        align-self: stretch;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding-right: .08rem;
+      }
+    }
+
     @media (max-width: 980px) {
       .main {
         grid-template-columns: 1fr;
@@ -1499,18 +1656,19 @@
       [data-button-style="symbols"] .map-label-toggle {
         flex: 0 1 auto;
         gap: .06rem;
-        padding: .1rem;
+        padding: 0 .1rem 0 0;
       }
 
       [data-button-style="symbols"] .map-label-toggle>span {
-        width: 45px;
-        min-width: 45px;
+        width: 48px;
+        min-width: 48px;
         min-height: 30px;
         padding: 0;
         font-size: .68rem;
       }
 
       [data-button-style="symbols"] .map-label-toggle button {
+        margin-block: .1rem;
         width: 30px;
         min-width: 30px;
         min-height: 30px;
@@ -1702,7 +1860,7 @@
           </div>
           <div class="map-head-actions">
             <div class="segmented map-label-toggle" aria-label="Map labels">
-              <span id="labelsToggleLabel">Labels</span>
+              <span id="labelsToggleLabel" title="Map Label Type">Labels</span>
               <button id="labelsNoneBtn" type="button" aria-pressed="true" data-shortcut="0">None</button>
               <button id="labelsAbbrBtn" type="button" aria-pressed="false" data-shortcut="1">Abbr</button>
               <button id="labelsNameBtn" type="button" aria-pressed="false" data-shortcut="2">Name</button>
@@ -2580,9 +2738,9 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "1.9.0.1";
+    const APP_VERSION = "1.9.0";
     const STORAGE_KEY = "usStateVisitMap.v1";
-    const WISHLIST_SEED_VERSION = "1.8.0.15";
+    const WISHLIST_SEED_VERSION = "1.9.0.2";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
       ["NV", "Nevada", 2, 2], ["AZ", "Arizona", 2, 3], ["HI", "Hawaii", 1, 6], ["MT", "Montana", 3, 0], ["WY", "Wyoming", 3, 2],
@@ -2870,6 +3028,30 @@
         tokenCostPct: 10,
         prompt: "Align icon constant names with source filenames. Update references only; avoid visual changes.",
         category: "Developer"
+      },
+      {
+        title: "Polish A-Z Sort Icon Alignment",
+        ticketId: "WISH-018",
+        description: "Make the A-Z sort icon sit visually centered and balanced with adjacent controls. Scope includes the Notes sort control, button-style modes, compact widths, and checking the icon against nearby SF-style symbols.",
+        priority: "P2",
+        effort: "small",
+        targetKind: "patch",
+        targetVersion: "",
+        tokenCostPct: 6,
+        prompt: "Tune A-Z sort icon alignment in Notes. Verify symbol/text/both button styles and compact/mobile widths.",
+        category: "UI"
+      },
+      {
+        title: "Add an SF Symbol Conversion Tool",
+        ticketId: "WISH-019",
+        description: "Add a local developer workflow for converting source SF Symbol SVG files into app-ready inline constants. Scope includes naming normalization, hidden-rect cleanup, output previews or diffs, and guardrails that avoid changing icon artwork unless requested.",
+        priority: "P2",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 28,
+        prompt: "Add local SF Symbol SVG converter for inline constants. Normalize names, strip hidden opacity attrs only, preview diffs, avoid artwork edits.",
+        category: "Developer"
       }
     ];
     const CHANGELOG = [
@@ -2877,11 +3059,36 @@
         version: "1.9.0",
         date: "2026-05-14",
         title: "Roadmap Pit Crew",
-        summary: "Made release history and roadmap planning easier to scan and hand off.",
-        notes: [
-          "Clarified release upkeep so documentation and release notes stay aligned with each change.",
-          "Reworked Roadmap cards with clearer priority, effort, target, scope, cost, and implementation guidance.",
-          "Split late-cycle polish into a separate 1.9 release line for clearer release history."
+        summary: "Made roadmap planning, release notes, map controls, and notes scrolling easier to scan without losing detail.",
+        highlights: [
+          "Roadmap grew with icon-alignment and SF Symbol conversion work.",
+          "Release notes now separate quick highlights from full updates.",
+          "Map controls now use clearer neutral affordances and grouping.",
+          "Main-view scrolling and notes sizing are stable on desktop."
+        ],
+        updates: [
+          "Added roadmap planning for polishing the A-Z sort icon alignment across button-style modes and compact widths.",
+          "Added roadmap planning for a local SF Symbol conversion workflow with naming normalization, hidden-rect cleanup, previews or diffs, and artwork-change guardrails.",
+          "Changed changelog rendering to show a Highlights section and a Full Update List section for each release.",
+          "Locked the desktop main view to the viewport so the page itself no longer vertically scrolls.",
+          "Sized the map column from available height and returned unused width to the Legend and Notes rail.",
+          "Made Notes panel content scroll internally so its bottom aligns with the map container.",
+          "Applied fixed height to condensed note rows to prevent vertical stretching.",
+          "Updated Notes panel content so it fills the rail as the scroll container without stretching its children.",
+          "Locked compact and expanded note rows to max-content grid tracks so they keep their natural item sizes.",
+          "Preserved the manual condensed-row sizing refinements while tightening the scroll behavior.",
+          "Kept the Map Fit control visually neutral while it swaps between fit and scroll symbols.",
+          "Restyled the Labels tag as a subtly shaded edge-to-edge category title so it no longer looks selected or selectable.",
+          "Made the Labels category icon more prominent in symbol-only controls.",
+          "Added a subtle hover border and shade to inactive label options.",
+          "Added a hover tooltip that identifies the Labels category as Map Label Type.",
+          "Added hover tooltips for toggling the Legend and Notes panels.",
+          "Kept the refined label-control shading and spacing while tightening the main layout.",
+          "Standardized local smoke testing on port 8018 and cleanup after checks.",
+          "Improved release-note upkeep so preserved refinements are captured alongside active updates.",
+          "Kept release entries on the collapsed major/minor format while allowing fuller release detail.",
+          "Split late-cycle polish into a separate 1.9 release line for clearer release history.",
+          "Aligned the local roadmap and release-note guidance with the new structure."
         ]
       },
       {
@@ -2889,7 +3096,11 @@
         date: "2026-05-14",
         title: "Icon Tailor Shop",
         summary: "Polished Settings, dialogs, labels, SF-style iconography, and display order.",
-        notes: [
+        highlights: [
+          "Settings and dialog actions feel tighter.",
+          "Iconography and date display controls got cleaned up."
+        ],
+        updates: [
           "Standardized icons across Settings, Notes, Legend, sorting, editing, moving, deleting, and labels.",
           "Moved note saving into the dialog header and simplified dialog actions.",
           "Reworked Settings into tighter aligned category rows.",
@@ -2902,10 +3113,15 @@
         date: "2026-05-11",
         title: "Counting What Counts",
         summary: "Added explicit stat behavior and visual treatment for legend levels.",
-        notes: [
+        highlights: [
+          "Legend levels can opt out of completion totals.",
+          "Stats now make counted and uncounted progress clearer."
+        ],
+        updates: [
           "Added per-level control for whether a level counts toward stats.",
           "Added non-counting level styling and quick-add options.",
-          "Moved total completion into the Legend header."
+          "Moved total completion into the Legend header.",
+          "Kept opt-out levels visible on the map while excluding them from completion math."
         ]
       },
       {
@@ -2913,10 +3129,15 @@
         date: "2026-05-11",
         title: "Pocket Map Mode",
         summary: "Improved mobile map viewing and small-screen density.",
-        notes: [
+        highlights: [
+          "Mobile map viewing got easier.",
+          "Small-screen legend layout got tighter."
+        ],
+        updates: [
           "Added fit-to-screen map mode.",
           "Refined map fit controls and mobile header behavior.",
-          "Tightened mobile legend layout and stat placement."
+          "Tightened mobile legend layout and stat placement.",
+          "Kept map controls accessible while reducing wasted mobile space."
         ]
       },
       {
@@ -2924,10 +3145,16 @@
         date: "2026-05-11",
         title: "Labels, Lands, And Little Islands",
         summary: "Expanded the map and made labels and notes easier to scan.",
-        notes: [
+        highlights: [
+          "DC and US territories joined the map.",
+          "Labels and notes became easier to scan."
+        ],
+        updates: [
           "Added Washington, DC and US territories.",
           "Added map label modes for none, abbreviation, and name.",
-          "Improved territory placement, label wrapping, map taps, note search, and compact note density."
+          "Improved territory placement and label wrapping.",
+          "Refined map tap behavior for already-marked regions.",
+          "Added note search and tightened compact note density."
         ]
       },
       {
@@ -2935,10 +3162,17 @@
         date: "2026-05-11",
         title: "Control Room Renovation",
         summary: "Reworked the main interface around notes, shortcuts, exports, and flexible dates.",
-        notes: [
+        highlights: [
+          "Controls moved closer to the map.",
+          "Notes and dates became more flexible."
+        ],
+        updates: [
           "Added button styles, UI hints, shortcut overlay, and broader keyboard coverage.",
           "Moved Legend and Notes controls into the map header and import/export into Settings.",
-          "Added note sorting, compact notes, level filters, partial dates, and configurable date display."
+          "Added note sorting, compact notes, and level filters.",
+          "Added year-only, month-year, and full-date note entry.",
+          "Added configurable date display and clearer date format examples.",
+          "Moved destructive browser prompts into app-owned confirmation dialogs."
         ]
       },
       {
@@ -2946,10 +3180,16 @@
         date: "2026-05-10",
         title: "Drawer Drama, Resolved",
         summary: "Polished state selection, stats, and destructive actions.",
-        notes: [
+        highlights: [
+          "State selection became more direct.",
+          "Destructive actions became safer and clearer."
+        ],
+        updates: [
           "Moved summary stats into the map header and made the legend panel match the map height.",
           "Added map-positioned selection and marked-state navigation.",
-          "Replaced native browser dialogs with reliable in-app confirmations."
+          "Replaced native browser dialogs with reliable in-app confirmations.",
+          "Added compact controls for editing legend rows.",
+          "Improved the drawer flow for moving between marked states."
         ]
       },
       {
@@ -2957,10 +3197,16 @@
         date: "2026-05-10",
         title: "Legend Has It",
         summary: "Made visit levels easier to order, color, and understand.",
-        notes: [
+        highlights: [
+          "Legend order now controls map color priority.",
+          "Color picking became clearer."
+        ],
+        updates: [
           "Legend levels can be reordered, with the top level determining the map color.",
           "Improved color selection and generated palettes.",
-          "Made state selection consistent across tap modes."
+          "Made state selection consistent across tap modes.",
+          "Improved generated themes so palettes progress more predictably from high to low.",
+          "Kept level editing compact enough for repeated use."
         ]
       },
       {
@@ -2968,10 +3214,16 @@
         date: "2026-05-10",
         title: "Real Map Energy",
         summary: "Upgraded the tracker from a grid into a richer map experience.",
-        notes: [
+        highlights: [
+          "The grid became a real state-outline map.",
+          "Visit tracking gained multi-level detail."
+        ],
+        updates: [
           "Replaced the tile grid with a real state-outline map.",
           "Added multiple applied levels and level-linked notes per state.",
-          "Added completion stats and smart color palettes."
+          "Added completion stats and smart color palettes.",
+          "Added map-aware state selection and richer state-level data storage.",
+          "Kept the app local-only while expanding the interaction model."
         ]
       },
       {
@@ -2979,10 +3231,16 @@
         date: "2026-05-10",
         title: "First Pin On The Map",
         summary: "Launched the offline state visit tracker.",
-        notes: [
+        highlights: [
+          "Launched the core offline tracker.",
+          "Added the first import/export and note workflows."
+        ],
+        updates: [
           "Added interactive visit tracking for the 50 states.",
           "Added custom levels, colors, dated notes, settings, and import/export.",
-          "Kept the app as a single-file local-only experience."
+          "Kept the app as a single-file local-only experience.",
+          "Stored user data in browser localStorage.",
+          "Included enough controls to rename maps, adjust levels, and preserve backups."
         ]
       }
     ];
@@ -2994,6 +3252,8 @@
     const clone = obj => JSON.parse(JSON.stringify(obj));
     const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const MONTH_LOOKUP = Object.fromEntries(MONTH_NAMES.flatMap((name, index) => [[name.toLowerCase(), index + 1], [name.slice(0, 3).toLowerCase(), index + 1]]));
+    const MAP_ASPECT_RATIO = 959 / 593;
+    const DESKTOP_LAYOUT_QUERY = window.matchMedia("(min-width: 981px)");
     let selectedState = null;
     let drawerMode = "state";
     let legendPanelOpen = true;
@@ -3006,6 +3266,7 @@
     let noteLevelFilters = new Set();
     let powerOverlayActive = false;
     let levelAutoSaveTimer = null;
+    let layoutSyncFrame = 0;
     let pendingConfirm = null;
     let state = loadState();
 
@@ -3433,13 +3694,13 @@
       return safeText;
     }
 
-    function setButtonLabel(selector, symbol, text, aria = text) {
+    function setButtonLabel(selector, symbol, text, aria = text, title = text) {
       const button = typeof selector === "string" ? $(selector) : selector;
       if (!button) return;
       button.innerHTML = buttonMarkup(symbol, text);
       button.setAttribute("aria-label", aria);
       const shortcut = button.dataset.shortcut;
-      button.title = powerOverlayActive && shortcut ? `${text} (${shortcut})` : text;
+      button.title = powerOverlayActive && shortcut ? `${title} (${shortcut})` : title;
     }
 
     function setButtonLabelBoth(selector, symbol, text, aria = text) {
@@ -3571,8 +3832,8 @@
     function syncButtonLabels() {
       setButtonLabel("#renameBtn", ICON_GLOABL_ACTION_EDIT__PENCIL, "Rename");
       setButtonLabel("#settingsBtn", ICON_GLOBAL_SETTINGS__GEARSHAPE_FILL, "Settings");
-      setButtonLabel("#legendToggleBtn", ICON_MAP_MODAL_LEGEND_CHECKLIST_UNCHECKED, "Legend");
-      setButtonLabel("#notesToggleBtn", ICON_MAP_MODAL_NOTES_LIST_BULLET_CLIPBOARD_FILL, "Notes");
+      setButtonLabel("#legendToggleBtn", ICON_MAP_MODAL_LEGEND_CHECKLIST_UNCHECKED, "Legend", "Toggle Legend Panel", "Toggle Legend Panel");
+      setButtonLabel("#notesToggleBtn", ICON_MAP_MODAL_NOTES_LIST_BULLET_CLIPBOARD_FILL, "Notes", "Toggle Notes Panel", "Toggle Notes Panel");
       $("#labelsToggleLabel").innerHTML = prefersSymbols() ? ICON_MAP_LABELS_TAG_FILL : "Labels";
       setButtonLabel("#labelsNoneBtn", ICON_MAP_LABELS_NONE_CIRCLE_SLASH, "None", "No map labels");
       setButtonLabel("#labelsAbbrBtn", ICON_MAP_LABELS_ABBR_CHARACTER, "Abbr", "Show state abbreviations");
@@ -3616,6 +3877,44 @@
       $("#mapFitBtn").title = powerOverlayActive ? `${fitTitle} (F)` : fitTitle;
     }
 
+    function cssPx(value) {
+      return Number.parseFloat(value) || 0;
+    }
+
+    function syncMainLayout() {
+      const main = $(".main");
+      if (!main) return;
+      if (!DESKTOP_LAYOUT_QUERY.matches) {
+        main.style.removeProperty("--map-column-width");
+        return;
+      }
+      const mapWrap = $(".map-wrap");
+      const mapHead = $(".map-head");
+      if (!mapWrap || !mapHead) return;
+      const mainStyle = getComputedStyle(main);
+      const wrapStyle = getComputedStyle(mapWrap);
+      const mainWidth = main.clientWidth - cssPx(mainStyle.paddingLeft) - cssPx(mainStyle.paddingRight);
+      const mainHeight = main.clientHeight - cssPx(mainStyle.paddingTop) - cssPx(mainStyle.paddingBottom);
+      const columnGap = cssPx(mainStyle.columnGap || mainStyle.gap);
+      const wrapX = cssPx(wrapStyle.paddingLeft) + cssPx(wrapStyle.paddingRight);
+      const wrapY = cssPx(wrapStyle.paddingTop) + cssPx(wrapStyle.paddingBottom);
+      const mapBodyHeight = Math.max(220, mainHeight - mapHead.getBoundingClientRect().height - wrapY - 2);
+      const heightBoundColumn = Math.ceil(mapBodyHeight * MAP_ASPECT_RATIO + wrapX + 2);
+      const sideOpen = legendPanelOpen || notesPanelOpen;
+      const sideMin = sideOpen ? 320 : 0;
+      const maxMapColumn = Math.max(320, sideOpen ? mainWidth - columnGap - sideMin : mainWidth);
+      const mapColumn = Math.max(320, Math.min(maxMapColumn, heightBoundColumn));
+      main.style.setProperty("--map-column-width", `${Math.floor(mapColumn)}px`);
+    }
+
+    function scheduleMainLayoutSync() {
+      if (layoutSyncFrame) cancelAnimationFrame(layoutSyncFrame);
+      layoutSyncFrame = requestAnimationFrame(() => {
+        layoutSyncFrame = 0;
+        syncMainLayout();
+      });
+    }
+
     function render() {
       document.documentElement.dataset.theme = state.settings.theme;
       document.documentElement.dataset.hints = state.settings.uiHints ? "on" : "off";
@@ -3635,6 +3934,7 @@
       renderNotesPanel();
       renderSettingsControls();
       if ($("#stateDrawer").classList.contains("open")) closeDrawer();
+      scheduleMainLayoutSync();
     }
 
     function renderMap() {
@@ -4102,6 +4402,7 @@
           selectedState = notesPanelState;
           deleteNote(button.dataset.deleteNote);
         }));
+        scheduleMainLayoutSync();
         return;
       }
 
@@ -4141,6 +4442,7 @@
         renderMap();
         renderNotesPanel();
       }));
+      scheduleMainLayoutSync();
     }
 
     function closeDrawer() {
@@ -4428,12 +4730,24 @@
       setDateButtonLabel("#dateNumericBtn", ICON_SETTINGS_DATE_NUMERICAL__NUMBERS, "Numerical", formatDateDisplay(sample, state.settings.dateOrder, "numeric"));
     }
 
+    function renderReleaseSection(title, items) {
+      const list = Array.isArray(items) ? items.filter(Boolean) : [];
+      if (!list.length) return "";
+      return `
+        <div class="release-section">
+          <b>${escapeHtml(title)}</b>
+          <ul>${list.map(note => `<li>${escapeHtml(note)}</li>`).join("")}</ul>
+        </div>
+      `;
+    }
+
     function renderChangelog() {
       $("#changelogList").innerHTML = CHANGELOG.map(entry => `
         <article class="note-card">
           <b>${escapeHtml(entry.version)} :: ${escapeHtml(entry.date)} :: ${escapeHtml(entry.title)}</b>
           <p><b>${escapeHtml(entry.summary)}</b></p>
-          <ul>${entry.notes.map(note => `<li>${escapeHtml(note)}</li>`).join("")}</ul>
+          ${renderReleaseSection("Highlights", entry.highlights)}
+          ${renderReleaseSection("Full Update List", entry.updates || entry.notes)}
         </article>
       `).join("");
     }
@@ -4859,6 +5173,9 @@
       document.addEventListener("keydown", handlePowerShortcut);
       document.addEventListener("keyup", updatePowerOverlay);
       window.addEventListener("blur", () => setPowerOverlay(false));
+      window.addEventListener("resize", scheduleMainLayoutSync);
+      if (DESKTOP_LAYOUT_QUERY.addEventListener) DESKTOP_LAYOUT_QUERY.addEventListener("change", scheduleMainLayoutSync);
+      else DESKTOP_LAYOUT_QUERY.addListener(scheduleMainLayoutSync);
     }
 
     function updateSetting(key, value) {
