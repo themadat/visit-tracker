@@ -146,3 +146,14 @@ Combine Changelog and Wishlist into one page called "What's New". In there have 
 1.11
 
 Have each UI hint be individually dismissible with a light grey ICON_GLOBAL_DISMISS__X_CIRCLE_FILL. Changing the UI toggle overrides individual dismisses and either turn them all off or back on
+
+--
+1.12
+
+Delete button look weird on notes
+
+have seperate notes for who, what, where, when, how, why. Really just Where Specifically, What For, Who With (when is date)
+
+Better exports
+
+types of visits: first; favorite; core memory
