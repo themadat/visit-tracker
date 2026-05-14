@@ -408,6 +408,11 @@
       background: color-mix(in srgb, var(--surface) 54%, var(--surface-2) 46%);
     }
 
+    #labelsNameBtn .sf-symbol {
+      width: 1.55em;
+      overflow: visible;
+    }
+
     [data-button-style="symbols"] .map-head-actions {
       flex-wrap: nowrap;
       gap: .36rem;
@@ -917,6 +922,14 @@
       text-align: center;
     }
 
+    .setting-row .segmented button .btn-label {
+      line-height: 1.16;
+    }
+
+    .setting-row .segmented button .sf-symbol {
+      overflow: visible;
+    }
+
     .date-option-label {
       display: inline-flex;
       flex-direction: column;
@@ -1188,6 +1201,20 @@
       background: rgba(10, 15, 25, .56);
     }
 
+    #settingsDialog[open] {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      height: min(860px, calc(100vh - 1.6rem));
+      overflow: hidden;
+    }
+
+    #settingsDialog .dialog-body {
+      min-height: 0;
+      max-height: none;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+
     #selectDialog[open] {
       position: fixed;
       inset: auto;
@@ -1340,6 +1367,12 @@
       padding: .34rem .45rem;
     }
 
+    #notesSortAlphaBtn .sf-symbol {
+      width: 1.35em;
+      height: 1.12em;
+      overflow: visible;
+    }
+
     .compact-notes {
       display: grid;
       gap: .06rem;
@@ -1430,7 +1463,9 @@
 
     .tabs {
       display: flex;
+      align-items: stretch;
       gap: .35rem;
+      min-height: 40px;
       overflow-x: auto;
       padding-bottom: .25rem;
     }
@@ -2769,9 +2804,9 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "1.10.0.1";
+    const APP_VERSION = "1.10.0.5";
     const STORAGE_KEY = "usStateVisitMap.v1";
-    const WISHLIST_SEED_VERSION = "1.9.0.2";
+    const WISHLIST_SEED_VERSION = "1.10.0.1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
       ["NV", "Nevada", 2, 2], ["AZ", "Arizona", 2, 3], ["HI", "Hawaii", 1, 6], ["MT", "Montana", 3, 0], ["WY", "Wyoming", 3, 2],
@@ -2941,18 +2976,6 @@
         category: "UI"
       },
       {
-        title: "Fix Settings Double Scrolling",
-        ticketId: "WISH-008",
-        description: "Remove nested or competing scroll regions in Settings. Scope includes dialog body sizing, tab panel overflow, keyboard/focus behavior, and mobile viewport constraints.",
-        priority: "P0",
-        effort: "small",
-        targetKind: "patch",
-        targetVersion: "",
-        tokenCostPct: 12,
-        prompt: "Fix Settings double-scroll. Keep one intended scroll container and verify desktop/mobile dialog bounds.",
-        category: "Bug Fix"
-      },
-      {
         title: "Add Home and Saved Locations",
         ticketId: "WISH-009",
         description: "Let users store home and favorite locations for planning context. Scope includes local-only saved places, labels, edit/delete actions, import/export persistence, and no geocoding dependency unless explicitly added later.",
@@ -3100,6 +3123,13 @@
           "Reduced Settings section gaps, card padding, and mobile spacing for a tighter panel.",
           "Adjusted parent category headings to use stronger sizing and weight than row-level labels.",
           "Trimmed Settings segmented-control spacing, padding, and row height so option groups use less vertical space.",
+          "Gave Settings icons a little more vertical drawing room so SF symbols do not clip inside compact buttons.",
+          "Widened the map-label Name icon canvas so the Aa symbol reads at the right size without a tight right edge.",
+          "Adjusted the Notes A-Z icon canvas so the sort control looks less cramped.",
+          "Removed competing scroll containers from Settings so the dialog body owns scrolling cleanly.",
+          "Reserved stable height for the Settings tab strip so tab controls do not collapse into the panel content.",
+          "Reset Settings dialog scroll on open and tab changes so the tab row starts visible.",
+          "Retired the completed Settings double-scroll roadmap item from seeded roadmap data.",
           "Tightened Import and Export copy, actions, and file input spacing to match the denser Settings rhythm."
         ]
       },
@@ -3484,7 +3514,7 @@
 
     function isCompletedWishlistItem(wish) {
       const title = String(wish?.title || "").trim().toLowerCase();
-      return normalizeTicketId(wish?.ticketId) === "WISH-003" || title === "add us territories to the map";
+      return ["WISH-003", "WISH-008"].includes(normalizeTicketId(wish?.ticketId)) || title === "add us territories to the map";
     }
 
     function assignWishlistTickets(items) {
@@ -5061,6 +5091,7 @@
         renderChangelog();
         renderWishlist();
         $("#settingsDialog").showModal();
+        queueSettingsDialogScrollReset();
       });
       $$("[data-close]").forEach(button => button.addEventListener("click", () => $(`#${button.dataset.close}`).close()));
       $("#confirmActionBtn").addEventListener("click", () => {
@@ -5232,11 +5263,24 @@
       render();
     }
 
+    function resetSettingsDialogScroll() {
+      const dialog = $("#settingsDialog");
+      const body = $("#settingsDialog .dialog-body");
+      if (dialog) dialog.scrollTop = 0;
+      if (body) body.scrollTop = 0;
+    }
+
+    function queueSettingsDialogScrollReset() {
+      resetSettingsDialogScroll();
+      requestAnimationFrame(resetSettingsDialogScroll);
+    }
+
     function switchTab(tabName) {
       $$(".tabs [role='tab']").forEach(tab => tab.setAttribute("aria-selected", tab.dataset.tab === tabName));
       $$(".doc").forEach(panel => panel.classList.toggle("active", panel.id === `tab-${tabName}`));
       if (tabName === "changelog") renderChangelog();
       if (tabName === "wishlist") renderWishlist();
+      queueSettingsDialogScrollReset();
     }
 
     function importJson(event) {
