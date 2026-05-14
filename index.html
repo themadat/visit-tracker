@@ -1072,6 +1072,32 @@
       gap: .38rem;
     }
 
+    .wishlist-card p {
+      margin: 0;
+    }
+
+    .roadmap-field {
+      display: grid;
+      gap: .18rem;
+      font-size: .9rem;
+    }
+
+    .roadmap-field b {
+      color: var(--muted);
+      font-size: .78rem;
+      text-transform: uppercase;
+    }
+
+    .roadmap-prompt {
+      border: 1px solid var(--line);
+      border-radius: calc(var(--radius) - 2px);
+      padding: .42rem;
+      background: var(--surface-2);
+      color: var(--text);
+      font: .82rem/1.35 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      overflow-wrap: anywhere;
+    }
+
     .state-list-card {
       width: 100%;
       text-align: left;
@@ -2400,7 +2426,7 @@
         <button type="button" role="tab" data-tab="help" data-shortcut="H">Help Manual</button>
         <button type="button" role="tab" data-tab="faq" data-shortcut="F">FAQ</button>
         <button type="button" role="tab" data-tab="changelog" data-shortcut="G">Changelog</button>
-        <button type="button" role="tab" data-tab="wishlist" data-shortcut="W">Wishlist</button>
+        <button type="button" role="tab" data-tab="wishlist" data-shortcut="R">Roadmap</button>
       </div>
 
       <section id="tab-settings" class="doc active settings-page" role="tabpanel">
@@ -2452,8 +2478,8 @@
           <div class="setting-row">
             <div class="setting-label">Display</div>
             <div class="segmented" aria-label="Date display">
-              <button id="dateNumericBtn" type="button" aria-pressed="false" data-shortcut="N">Numbers</button>
               <button id="dateAlphaBtn" type="button" aria-pressed="true" data-shortcut="A">Month Name</button>
+              <button id="dateNumericBtn" type="button" aria-pressed="false" data-shortcut="N">Numbers</button>
             </div>
           </div>
         </section>
@@ -2519,24 +2545,24 @@
 
       <section id="tab-wishlist" class="doc" role="tabpanel">
         <section>
-          <h3>Wishlist</h3>
-          <p class="muted" data-hint>Wishlist ideas are managed by developer prompts so app users cannot add or remove
-            items here.</p>
+          <h3>Roadmap</h3>
+          <p class="muted" data-hint>Roadmap ideas are curated here so planned work stays scoped and easy to scan.</p>
         </section>
         <section>
           <h3>Filter and Sort</h3>
           <div class="filters">
-            <input id="wishSearch" placeholder="Search ideas" aria-label="Search wishlist">
+            <input id="wishSearch" placeholder="Search roadmap" aria-label="Search roadmap">
             <select id="wishPriorityFilter" aria-label="Filter by priority">
               <option value="">All priorities</option>
-              <option>High</option>
-              <option>Medium</option>
-              <option>Low</option>
+              <option>P0</option>
+              <option>P1</option>
+              <option>P2</option>
+              <option>P3</option>
             </select>
             <select id="wishCategoryFilter" aria-label="Filter by category">
               <option value="">All categories</option>
             </select>
-            <select id="wishSort" aria-label="Sort wishlist">
+            <select id="wishSort" aria-label="Sort roadmap">
               <option value="createdDesc">Newest</option>
               <option value="createdAsc">Oldest</option>
               <option value="priority">Priority</option>
@@ -2554,9 +2580,9 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "1.8.0.12";
+    const APP_VERSION = "1.9.0.1";
     const STORAGE_KEY = "usStateVisitMap.v1";
-    const WISHLIST_SEED_VERSION = "1.8.0.10";
+    const WISHLIST_SEED_VERSION = "1.8.0.15";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
       ["NV", "Nevada", 2, 2], ["AZ", "Arizona", 2, 3], ["HI", "Hawaii", 1, 6], ["MT", "Montana", 3, 0], ["WY", "Wyoming", 3, 2],
@@ -2600,12 +2626,6 @@
       Ocean: ["#064273", "#1da2d8", "#7fcdff", "#def3f6", "#001a33"],
     };
 
-    const ICON_GLOBAL_MENU__LINE_3_HORIZONTAL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 26.5137 14.5605"><g><rect height="14.5605" opacity="0" width="26.5137" x="0" y="0"/><path d="M1.29395 14.5605L24.8535 14.5605C25.5762 14.5605 26.1523 13.9502 26.1523 13.2324C26.1523 12.5049 25.5811 11.9141 24.8535 11.9141L1.29395 11.9141C0.571289 11.9141 0 12.5195 0 13.2324C0 13.9404 0.576172 14.5605 1.29395 14.5605Z" /><path d="M1.29395 8.61328L24.8535 8.61328C25.5762 8.61328 26.1523 8.00293 26.1523 7.29004C26.1523 6.55762 25.5811 5.9668 24.8535 5.9668L1.29395 5.9668C0.571289 5.9668 0 6.57227 0 7.29004C0 7.99316 0.576172 8.61328 1.29395 8.61328Z" /><path d="M1.29395 2.66602L24.8535 2.66602C25.5762 2.66602 26.1523 2.05566 26.1523 1.34766C26.1523 0.620117 25.5811 0.0244141 24.8535 0.0244141L1.29395 0.0244141C0.571289 0.0244141 0 0.629883 0 1.34766C0 2.0459 0.576172 2.66602 1.29395 2.66602Z" /></g></svg>`;
-    const ICON_GLOBAL_BACK__CHEVRON_BACKWARD = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 15.5957 21.3184"><g><rect height="21.3184" opacity="0" width="15.5957" x="0" y="0"/><path d="M0 10.6543C0 10.9277 0.107422 11.1621 0.3125 11.3672L10.3516 21.0254C10.5371 21.2012 10.7715 21.3086 11.0449 21.3086C11.5918 21.3086 12.0215 20.8887 12.0215 20.332C12.0215 20.0586 11.9141 19.8242 11.7383 19.6484L2.38281 10.6543L11.7383 1.65039C11.9141 1.47461 12.0215 1.23047 12.0215 0.966797C12.0215 0.410156 11.5918 0 11.0449 0C10.7715 0 10.5371 0.0976562 10.3516 0.283203L0.3125 9.94141C0.107422 10.1367 0 10.3711 0 10.6543Z" /></g></svg>`;
-    const ICON_GLOBAL_CLOSE__XMARK = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 20.1197 19.7779"><g><rect height="19.7779" opacity="0" width="20.1197" x="0" y="0"/><path d="M18.1262 0.303967L0.27467 18.1555C-0.0866577 18.5169-0.0964233 19.1321 0.27467 19.5032C0.65553 19.8645 1.261 19.8645 1.63209 19.5032L19.4739 1.65162C19.845 1.2903 19.8547 0.675061 19.4739 0.303967C19.1028-0.0573608 18.4973-0.0671265 18.1262 0.303967ZM19.4739 18.1555L1.63209 0.303967C1.261-0.0573608 0.645764-0.0671265 0.27467 0.303967C-0.0866577 0.684827-0.0866577 1.2903 0.27467 1.65162L18.1262 19.5032C18.4876 19.8645 19.1126 19.8743 19.4739 19.5032C19.845 19.1223 19.845 18.5169 19.4739 18.1555Z" /></g></svg>`;
-    const ICON_GLOBAL_ADD__PLUS = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 20.918 20.5762"><g><rect height="20.5762" opacity="0" width="20.918" x="0" y="0"/><path d="M11.2305 19.5996L11.2305 0.957031C11.2305 0.439453 10.8008 0 10.2734 0C9.75586 0 9.32617 0.439453 9.32617 0.957031L9.32617 19.5996C9.32617 20.1172 9.75586 20.5566 10.2734 20.5566C10.8008 20.5566 11.2305 20.1172 11.2305 19.5996ZM0.957031 11.2305L19.5996 11.2305C20.1172 11.2305 20.5566 10.8008 20.5566 10.2832C20.5566 9.75586 20.1172 9.32617 19.5996 9.32617L0.957031 9.32617C0.439453 9.32617 0 9.75586 0 10.2832C0 10.8008 0.439453 11.2305 0.957031 11.2305Z" /></g></svg>`;
-    const ICON_GLOBAL_SETTINGS__GEARSHAPE_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27.6074 27.2461" aria-hidden="true"><path d="M12.4707 27.2412L14.7803 27.2412C15.6396 27.2412 16.2842 26.7188 16.4795 25.874L17.0898 23.3252C17.4365 23.208 17.7783 23.0664 18.0908 22.9248L20.3125 24.3018C21.0303 24.7461 21.8799 24.6729 22.4707 24.0723L24.0967 22.4561C24.6924 21.8555 24.7656 20.9863 24.3018 20.2686L22.9443 18.0615C23.0859 17.7441 23.2227 17.4219 23.3252 17.0947L25.8984 16.4844C26.7383 16.2891 27.2461 15.6445 27.2461 14.7852L27.2461 12.5146C27.2461 11.665 26.7383 11.0205 25.8984 10.8203L23.3545 10.21C23.2324 9.85352 23.0908 9.52148 22.9639 9.2334L24.3311 6.97754C24.7803 6.24023 24.7168 5.41992 24.1064 4.81445L22.4609 3.18848C21.8555 2.6416 21.084 2.52441 20.3711 2.94434L18.0908 4.35059C17.7881 4.19922 17.4512 4.07227 17.0947 3.94531L16.4795 1.3623C16.2793 0.522461 15.6396 0 14.7803 0L12.4707 0C11.6064 0 10.9717 0.522461 10.7666 1.36719L10.1611 3.92578C9.80957 4.04297 9.45801 4.17969 9.14551 4.34082L6.87988 2.94434C6.15723 2.52441 5.37109 2.6123 4.78516 3.19336L3.13965 4.81445C2.5293 5.41992 2.46582 6.24023 2.91992 6.97754L4.28223 9.2334C4.15527 9.52148 4.01367 9.85352 3.89648 10.21L1.35254 10.8203C0.517578 11.0205 0 11.665 0 12.5146L0 14.7852C0 15.6445 0.517578 16.2891 1.35254 16.4844L3.9209 17.0947C4.02832 17.4219 4.16016 17.7441 4.30176 18.0615L2.94434 20.2686C2.48535 20.9863 2.55859 21.8555 3.1543 22.4561L4.77539 24.0723C5.37109 24.6729 6.2207 24.7461 6.93359 24.3018L9.16016 22.9248C9.47266 23.0664 9.80957 23.208 10.1611 23.3252L10.7666 25.874C10.9668 26.7188 11.6064 27.2412 12.4707 27.2412ZM13.623 17.9932C11.2109 17.9932 9.24805 16.0303 9.24805 13.6182C9.24805 11.2012 11.2109 9.24316 13.623 9.24316C16.04 9.24316 17.998 11.2012 17.998 13.6182C17.998 16.0303 16.04 17.9932 13.623 17.9932Z"/></svg>`;
-    const ICON_GLOBAL_HASHTAG__NUMBER = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 22.8809 24.7168"><g><rect height="24.7168" opacity="0" width="22.8809" x="0" y="0"/><path d="M4.57031 24.7168C5.08789 24.7168 5.45898 24.4434 5.56641 23.9062L10.1465 1.30859C10.1562 1.23047 10.1855 1.09375 10.1855 0.947266C10.1855 0.419922 9.80469 0.117188 9.28711 0.117188C8.69141 0.117188 8.4082 0.439453 8.31055 0.957031L3.73047 23.5352C3.71094 23.6523 3.69141 23.7891 3.69141 23.8965C3.69141 24.4336 4.05273 24.7168 4.57031 24.7168ZM12.7148 24.7168C13.2324 24.7168 13.6035 24.4434 13.7109 23.9062L18.291 1.30859C18.3105 1.23047 18.3398 1.09375 18.3398 0.947266C18.3398 0.419922 17.959 0.117188 17.4414 0.117188C16.8457 0.117188 16.5723 0.439453 16.4746 0.957031L11.8848 23.5352C11.8555 23.6523 11.8457 23.7891 11.8457 23.8965C11.8457 24.4336 12.207 24.7168 12.7148 24.7168ZM2.50977 8.61328L21.5332 8.61328C22.1191 8.61328 22.5195 8.19336 22.5195 7.60742C22.5195 7.12891 22.1973 6.75781 21.709 6.75781L2.68555 6.75781C2.09961 6.75781 1.69922 7.1875 1.69922 7.7832C1.69922 8.27148 2.02148 8.61328 2.50977 8.61328ZM0.810547 17.4609L19.8438 17.4609C20.4297 17.4609 20.8301 17.041 20.8301 16.4551C20.8301 15.9766 20.5078 15.6055 20.0195 15.6055L0.986328 15.6055C0.410156 15.6055 0 16.0352 0 16.6309C0 17.1191 0.322266 17.4609 0.810547 17.4609Z" /></g></svg>`;
     const ICON_GLOBAL_ACTION_ADD__PLUS_APP_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24.0576 23.7305"><g><rect height="23.7305" opacity="0" width="24.0576" x="0" y="0"/><path d="M21.8799 1.81152C23.0664 2.9834 23.6963 4.7168 23.6963 6.92383L23.6963 16.7822C23.6963 18.9893 23.0615 20.7275 21.8799 21.8994C20.7227 23.0615 18.9844 23.7061 16.7725 23.7061L6.92383 23.7061C4.7168 23.7061 2.97852 23.0664 1.81641 21.8994C0.629883 20.7227 0 18.9893 0 16.7822L0 6.92383C0 4.7168 0.634766 2.97852 1.81641 1.81152C2.97363 0.649414 4.7168 0 6.92383 0L16.7725 0C18.9844 0 20.7178 0.634766 21.8799 1.81152ZM10.4932 7.12891L10.4932 10.498L7.12402 10.498C6.35254 10.498 5.79102 11.0645 5.79102 11.8506C5.79102 12.6221 6.35742 13.1836 7.12402 13.1836L10.4932 13.1836L10.4932 16.5625C10.4932 17.3291 11.0596 17.8955 11.8311 17.8955C12.6123 17.8955 13.1836 17.334 13.1836 16.5625L13.1836 13.1836L16.5625 13.1836C17.3291 13.1836 17.8955 12.6221 17.8955 11.8506C17.8955 11.0645 17.3291 10.498 16.5625 10.498L13.1836 10.498L13.1836 7.12891C13.1836 6.35254 12.6123 5.78613 11.8311 5.78613C11.0596 5.78613 10.4932 6.35742 10.4932 7.12891Z" /></g></svg>`;
     const ICON_GLOABL_ACTION_EDIT__PENCIL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 22.3366 21.9615"><g><rect height="21.9615" opacity="0" width="22.3366" x="0" y="0"/><path d="M3.90513 20.6975L18.6854 5.91726L16.0829 3.31472L1.30747 18.0901L0.0379412 21.1907C-0.13784 21.6399 0.33091 22.0891 0.750832 21.928ZM19.9891 4.63796L21.4247 3.21218C22.1278 2.50417 22.162 1.71316 21.5126 1.05398L20.9706 0.507102C20.3211-0.147195 19.5106-0.0837187 18.8075 0.604758L17.367 2.02566Z" /></g></svg>`;
     const ICON_GLOBAL_ACTION_DELETE__DELETE_LEFT_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 28.5742 23.8379"><g><rect height="23.8379" opacity="0" width="28.5742" x="0" y="0"/><path d="M27.5781 4.28223L27.5781 19.7949C27.5781 22.5635 26.0645 23.8379 23.2812 23.8379L12.4854 23.833C10.5518 23.833 9.39941 23.3301 8.15918 21.9336L1.33301 14.5508C0.317383 13.4229 0 12.7197 0 11.9141C0 11.1133 0.3125 10.4248 1.33301 9.28223L8.1543 1.85547C9.38965 0.463867 10.5518 0.0244141 12.4854 0.0244141L23.2812 0.0244141C26.0645 0.0244141 27.5781 1.51367 27.5781 4.28223ZM19.2236 7.02148L16.123 10.1025L13.0469 7.03125C12.7881 6.77734 12.4902 6.64551 12.0996 6.64551C11.3672 6.64551 10.7959 7.20703 10.7959 7.9541C10.7959 8.28613 10.9375 8.61328 11.1914 8.8623L14.2725 11.9531L11.1914 15.0439C10.9375 15.293 10.7959 15.6152 10.7959 15.9521C10.7959 16.6943 11.3672 17.2656 12.0996 17.2656C12.4902 17.2656 12.8076 17.1436 13.0713 16.8799L16.123 13.8135L19.1943 16.8799C19.4434 17.1436 19.7705 17.2656 20.1611 17.2656C20.8936 17.2656 21.4697 16.6943 21.4697 15.9521C21.4697 15.6104 21.3379 15.2832 21.0791 15.0391L17.998 11.9531L21.084 8.85254C21.3525 8.59375 21.4746 8.27637 21.4746 7.93945C21.4746 7.20215 20.9033 6.63574 20.1758 6.63574C19.79 6.63574 19.4873 6.75781 19.2236 7.02148Z" /></g></svg>`;
@@ -2614,6 +2634,13 @@
     const ICON_GLOBAL_ACTION_DOWN__ARROWSHAPE_DOWN_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24.0869 27.5977"><g><rect height="27.5977" opacity="0" width="24.0869" x="0" y="0"/><path d="M17.3242 3.25684C17.3242 1.19629 16.1475 0 14.1064 0L9.5459 0C7.50977 0 6.32812 1.19629 6.32812 3.25684L6.32812 18.2617C6.32812 20.3174 7.50977 21.5137 9.5459 21.5137L14.1064 21.5137C16.1475 21.5137 17.3242 20.3174 17.3242 18.2617ZM1.88965 12.9443C0.81543 12.9443 0 13.75 0 14.8291C0 15.5615 0.292969 16.1328 0.9375 16.8262L10.2734 26.8408C10.7568 27.3486 11.3574 27.5635 11.8604 27.5635C12.3877 27.5635 12.9639 27.3633 13.4521 26.8457L22.7393 16.8262C23.4424 16.0693 23.7256 15.5518 23.7256 14.8438C23.7256 13.75 22.8662 12.9443 21.792 12.9443Z" /></g></svg>`;
     const ICON_GLOBAL_ACTION_APPLY__CHECKMARK = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 21.6797 21.8262"><g><rect height="21.8262" opacity="0" width="21.6797" x="0" y="0"/><path d="M7.90039 21.8262C8.35938 21.8262 8.70117 21.6211 8.95508 21.25L21.0449 2.29492C21.2402 1.99219 21.3184 1.75781 21.3184 1.52344C21.3184 0.927734 20.9277 0.537109 20.332 0.537109C19.9219 0.537109 19.6777 0.683594 19.4336 1.08398L7.85156 19.3848L1.93359 11.8652C1.66992 11.5039 1.41602 11.3477 1.01562 11.3477C0.419922 11.3477 0 11.7578 0 12.3438C0 12.5977 0.0976562 12.8613 0.3125 13.125L6.80664 21.2305C7.12891 21.6406 7.45117 21.8262 7.90039 21.8262Z" /></g></svg>`;
     const ICON_GLOBAL_ACTION_APPLY__CHECKMARK_SQUARE_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 23.3203 22.959"><g><rect height="22.959" width="23.3203" x="0" y="0"/><path d="M22.959 3.76953L22.959 19.1992C22.959 21.6797 21.6797 22.959 19.1504 22.959L3.79883 22.959C1.2793 22.959 0 21.6992 0 19.1992L0 3.76953C0 1.26953 1.2793 0 3.79883 0L19.1504 0C21.6797 0 22.959 1.2793 22.959 3.76953ZM14.4336 5.89844L11.6113 10.0879L11.5527 10.0879L8.69141 5.88867C8.4375 5.53711 8.22266 5.40039 7.8418 5.40039C7.37305 5.40039 6.97266 5.77148 6.97266 6.23047C6.97266 6.47461 7.04102 6.63086 7.2168 6.86523L10.3809 11.3281L7.06055 16.0059C6.91406 16.2207 6.85547 16.3574 6.85547 16.5918C6.85547 17.0312 7.2168 17.3633 7.68555 17.3633C8.04688 17.3633 8.23242 17.2266 8.51562 16.8457L11.416 12.666L11.4648 12.666L14.3457 16.8457C14.6289 17.2266 14.8242 17.3633 15.1855 17.3633C15.6836 17.3633 16.0547 17.0312 16.0547 16.5527C16.0547 16.3184 15.9863 16.1523 15.8398 15.957L12.5586 11.377L15.8691 6.77734C16.0254 6.57227 16.0938 6.38672 16.0938 6.19141C16.0938 5.74219 15.7227 5.40039 15.2441 5.40039C14.8926 5.40039 14.668 5.53711 14.4336 5.89844Z"/></g></svg>`;
+    const ICON_GLOBAL_MENU__LINE_3_HORIZONTAL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 26.5137 14.5605"><g><rect height="14.5605" opacity="0" width="26.5137" x="0" y="0"/><path d="M1.29395 14.5605L24.8535 14.5605C25.5762 14.5605 26.1523 13.9502 26.1523 13.2324C26.1523 12.5049 25.5811 11.9141 24.8535 11.9141L1.29395 11.9141C0.571289 11.9141 0 12.5195 0 13.2324C0 13.9404 0.576172 14.5605 1.29395 14.5605Z" /><path d="M1.29395 8.61328L24.8535 8.61328C25.5762 8.61328 26.1523 8.00293 26.1523 7.29004C26.1523 6.55762 25.5811 5.9668 24.8535 5.9668L1.29395 5.9668C0.571289 5.9668 0 6.57227 0 7.29004C0 7.99316 0.576172 8.61328 1.29395 8.61328Z" /><path d="M1.29395 2.66602L24.8535 2.66602C25.5762 2.66602 26.1523 2.05566 26.1523 1.34766C26.1523 0.620117 25.5811 0.0244141 24.8535 0.0244141L1.29395 0.0244141C0.571289 0.0244141 0 0.629883 0 1.34766C0 2.0459 0.576172 2.66602 1.29395 2.66602Z" /></g></svg>`;
+    const ICON_GLOBAL_BACK__CHEVRON_BACKWARD = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 15.5957 21.3184"><g><rect height="21.3184" opacity="0" width="15.5957" x="0" y="0"/><path d="M0 10.6543C0 10.9277 0.107422 11.1621 0.3125 11.3672L10.3516 21.0254C10.5371 21.2012 10.7715 21.3086 11.0449 21.3086C11.5918 21.3086 12.0215 20.8887 12.0215 20.332C12.0215 20.0586 11.9141 19.8242 11.7383 19.6484L2.38281 10.6543L11.7383 1.65039C11.9141 1.47461 12.0215 1.23047 12.0215 0.966797C12.0215 0.410156 11.5918 0 11.0449 0C10.7715 0 10.5371 0.0976562 10.3516 0.283203L0.3125 9.94141C0.107422 10.1367 0 10.3711 0 10.6543Z" /></g></svg>`;
+    const ICON_GLOBAL_CLOSE__XMARK = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 20.1197 19.7779"><g><rect height="19.7779" opacity="0" width="20.1197" x="0" y="0"/><path d="M18.1262 0.303967L0.27467 18.1555C-0.0866577 18.5169-0.0964233 19.1321 0.27467 19.5032C0.65553 19.8645 1.261 19.8645 1.63209 19.5032L19.4739 1.65162C19.845 1.2903 19.8547 0.675061 19.4739 0.303967C19.1028-0.0573608 18.4973-0.0671265 18.1262 0.303967ZM19.4739 18.1555L1.63209 0.303967C1.261-0.0573608 0.645764-0.0671265 0.27467 0.303967C-0.0866577 0.684827-0.0866577 1.2903 0.27467 1.65162L18.1262 19.5032C18.4876 19.8645 19.1126 19.8743 19.4739 19.5032C19.845 19.1223 19.845 18.5169 19.4739 18.1555Z" /></g></svg>`;
+    const ICON_GLOBAL_ADD__PLUS = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 20.918 20.5762"><g><rect height="20.5762" opacity="0" width="20.918" x="0" y="0"/><path d="M11.2305 19.5996L11.2305 0.957031C11.2305 0.439453 10.8008 0 10.2734 0C9.75586 0 9.32617 0.439453 9.32617 0.957031L9.32617 19.5996C9.32617 20.1172 9.75586 20.5566 10.2734 20.5566C10.8008 20.5566 11.2305 20.1172 11.2305 19.5996ZM0.957031 11.2305L19.5996 11.2305C20.1172 11.2305 20.5566 10.8008 20.5566 10.2832C20.5566 9.75586 20.1172 9.32617 19.5996 9.32617L0.957031 9.32617C0.439453 9.32617 0 9.75586 0 10.2832C0 10.8008 0.439453 11.2305 0.957031 11.2305Z" /></g></svg>`;
+    const ICON_GLOBAL_SETTINGS__GEARSHAPE_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27.6074 27.2461" aria-hidden="true"><path d="M12.4707 27.2412L14.7803 27.2412C15.6396 27.2412 16.2842 26.7188 16.4795 25.874L17.0898 23.3252C17.4365 23.208 17.7783 23.0664 18.0908 22.9248L20.3125 24.3018C21.0303 24.7461 21.8799 24.6729 22.4707 24.0723L24.0967 22.4561C24.6924 21.8555 24.7656 20.9863 24.3018 20.2686L22.9443 18.0615C23.0859 17.7441 23.2227 17.4219 23.3252 17.0947L25.8984 16.4844C26.7383 16.2891 27.2461 15.6445 27.2461 14.7852L27.2461 12.5146C27.2461 11.665 26.7383 11.0205 25.8984 10.8203L23.3545 10.21C23.2324 9.85352 23.0908 9.52148 22.9639 9.2334L24.3311 6.97754C24.7803 6.24023 24.7168 5.41992 24.1064 4.81445L22.4609 3.18848C21.8555 2.6416 21.084 2.52441 20.3711 2.94434L18.0908 4.35059C17.7881 4.19922 17.4512 4.07227 17.0947 3.94531L16.4795 1.3623C16.2793 0.522461 15.6396 0 14.7803 0L12.4707 0C11.6064 0 10.9717 0.522461 10.7666 1.36719L10.1611 3.92578C9.80957 4.04297 9.45801 4.17969 9.14551 4.34082L6.87988 2.94434C6.15723 2.52441 5.37109 2.6123 4.78516 3.19336L3.13965 4.81445C2.5293 5.41992 2.46582 6.24023 2.91992 6.97754L4.28223 9.2334C4.15527 9.52148 4.01367 9.85352 3.89648 10.21L1.35254 10.8203C0.517578 11.0205 0 11.665 0 12.5146L0 14.7852C0 15.6445 0.517578 16.2891 1.35254 16.4844L3.9209 17.0947C4.02832 17.4219 4.16016 17.7441 4.30176 18.0615L2.94434 20.2686C2.48535 20.9863 2.55859 21.8555 3.1543 22.4561L4.77539 24.0723C5.37109 24.6729 6.2207 24.7461 6.93359 24.3018L9.16016 22.9248C9.47266 23.0664 9.80957 23.208 10.1611 23.3252L10.7666 25.874C10.9668 26.7188 11.6064 27.2412 12.4707 27.2412ZM13.623 17.9932C11.2109 17.9932 9.24805 16.0303 9.24805 13.6182C9.24805 11.2012 11.2109 9.24316 13.623 9.24316C16.04 9.24316 17.998 11.2012 17.998 13.6182C17.998 16.0303 16.04 17.9932 13.623 17.9932Z"/></svg>`;
+    const ICON_GLOBAL_HASHTAG__NUMBER = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 22.8809 24.7168"><g><rect height="24.7168" opacity="0" width="22.8809" x="0" y="0"/><path d="M4.57031 24.7168C5.08789 24.7168 5.45898 24.4434 5.56641 23.9062L10.1465 1.30859C10.1562 1.23047 10.1855 1.09375 10.1855 0.947266C10.1855 0.419922 9.80469 0.117188 9.28711 0.117188C8.69141 0.117188 8.4082 0.439453 8.31055 0.957031L3.73047 23.5352C3.71094 23.6523 3.69141 23.7891 3.69141 23.8965C3.69141 24.4336 4.05273 24.7168 4.57031 24.7168ZM12.7148 24.7168C13.2324 24.7168 13.6035 24.4434 13.7109 23.9062L18.291 1.30859C18.3105 1.23047 18.3398 1.09375 18.3398 0.947266C18.3398 0.419922 17.959 0.117188 17.4414 0.117188C16.8457 0.117188 16.5723 0.439453 16.4746 0.957031L11.8848 23.5352C11.8555 23.6523 11.8457 23.7891 11.8457 23.8965C11.8457 24.4336 12.207 24.7168 12.7148 24.7168ZM2.50977 8.61328L21.5332 8.61328C22.1191 8.61328 22.5195 8.19336 22.5195 7.60742C22.5195 7.12891 22.1973 6.75781 21.709 6.75781L2.68555 6.75781C2.09961 6.75781 1.69922 7.1875 1.69922 7.7832C1.69922 8.27148 2.02148 8.61328 2.50977 8.61328ZM0.810547 17.4609L19.8438 17.4609C20.4297 17.4609 20.8301 17.041 20.8301 16.4551C20.8301 15.9766 20.5078 15.6055 20.0195 15.6055L0.986328 15.6055C0.410156 15.6055 0 16.0352 0 16.6309C0 17.1191 0.322266 17.4609 0.810547 17.4609Z" /></g></svg>`;
+    const ICON_GLOBAL_DISMISS__X_CIRCLE_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M25.4395 12.7246C25.4395 19.7266 19.7266 25.4395 12.7148 25.4395C5.71289 25.4395 0 19.7266 0 12.7246C0 5.71289 5.71289 0 12.7148 0C19.7266 0 25.4395 5.71289 25.4395 12.7246ZM15.6641 7.14844L12.8418 11.3379L12.7832 11.3379L9.92188 7.13867C9.67773 6.78711 9.45312 6.65039 9.07227 6.65039C8.60352 6.65039 8.20312 7.02148 8.20312 7.48047C8.20312 7.72461 8.27148 7.88086 8.44727 8.11523L11.6113 12.5781L8.29102 17.2559C8.14453 17.4707 8.08594 17.6074 8.08594 17.8418C8.08594 18.2812 8.44727 18.6133 8.91602 18.6133C9.27734 18.6133 9.46289 18.4766 9.74609 18.0957L12.6465 13.916L12.6953 13.916L15.5762 18.0957C15.8594 18.4766 16.0547 18.6133 16.416 18.6133C16.9141 18.6133 17.2852 18.2812 17.2852 17.8027C17.2852 17.5684 17.2168 17.4023 17.0703 17.207L13.7988 12.627L17.0996 8.02734C17.2559 7.82227 17.3242 7.63672 17.3242 7.44141C17.3242 6.99219 16.9531 6.65039 16.4746 6.65039C16.123 6.65039 15.9082 6.78711 15.6641 7.14844Z" fill="white" fill-opacity="0.85"/></g></svg>`;
 
     const ICON_SETTINGS_SECTION__GEARSHAPE_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27.6074 27.2461" aria-hidden="true"><path d="M12.4707 27.2412L14.7803 27.2412C15.6396 27.2412 16.2842 26.7188 16.4795 25.874L17.0898 23.3252C17.4365 23.208 17.7783 23.0664 18.0908 22.9248L20.3125 24.3018C21.0303 24.7461 21.8799 24.6729 22.4707 24.0723L24.0967 22.4561C24.6924 21.8555 24.7656 20.9863 24.3018 20.2686L22.9443 18.0615C23.0859 17.7441 23.2227 17.4219 23.3252 17.0947L25.8984 16.4844C26.7383 16.2891 27.2461 15.6445 27.2461 14.7852L27.2461 12.5146C27.2461 11.665 26.7383 11.0205 25.8984 10.8203L23.3545 10.21C23.2324 9.85352 23.0908 9.52148 22.9639 9.2334L24.3311 6.97754C24.7803 6.24023 24.7168 5.41992 24.1064 4.81445L22.4609 3.18848C21.8555 2.6416 21.084 2.52441 20.3711 2.94434L18.0908 4.35059C17.7881 4.19922 17.4512 4.07227 17.0947 3.94531L16.4795 1.3623C16.2793 0.522461 15.6396 0 14.7803 0L12.4707 0C11.6064 0 10.9717 0.522461 10.7666 1.36719L10.1611 3.92578C9.80957 4.04297 9.45801 4.17969 9.14551 4.34082L6.87988 2.94434C6.15723 2.52441 5.37109 2.6123 4.78516 3.19336L3.13965 4.81445C2.5293 5.41992 2.46582 6.24023 2.91992 6.97754L4.28223 9.2334C4.15527 9.52148 4.01367 9.85352 3.89648 10.21L1.35254 10.8203C0.517578 11.0205 0 11.665 0 12.5146L0 14.7852C0 15.6445 0.517578 16.2891 1.35254 16.4844L3.9209 17.0947C4.02832 17.4219 4.16016 17.7441 4.30176 18.0615L2.94434 20.2686C2.48535 20.9863 2.55859 21.8555 3.1543 22.4561L4.77539 24.0723C5.37109 24.6729 6.2207 24.7461 6.93359 24.3018L9.16016 22.9248C9.47266 23.0664 9.80957 23.208 10.1611 23.3252L10.7666 25.874C10.9668 26.7188 11.6064 27.2412 12.4707 27.2412ZM13.623 17.9932C11.2109 17.9932 9.24805 16.0303 9.24805 13.6182C9.24805 11.2012 11.2109 9.24316 13.623 9.24316C16.04 9.24316 17.998 11.2012 17.998 13.6182C17.998 16.0303 16.04 17.9932 13.623 17.9932Z"/></svg>`;
     const ICON_SETTINGS_SECTION__QUESTIONMARK_CIRCLE_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M25.4395 12.7246C25.4395 19.7266 19.7266 25.4395 12.7148 25.4395C5.71289 25.4395 0 19.7266 0 12.7246C0 5.71289 5.71289 0 12.7148 0C19.7266 0 25.4395 5.71289 25.4395 12.7246ZM11.1621 17.8906C11.1621 18.5645 11.748 19.1211 12.4414 19.1211C13.125 19.1211 13.7207 18.5742 13.7207 17.8906C13.7207 17.1973 13.1348 16.6504 12.4414 16.6504C11.7383 16.6504 11.1621 17.207 11.1621 17.8906ZM8.94531 8.57422C8.88672 8.76953 8.84766 8.96484 8.84766 9.17969C8.84766 9.67773 9.23828 9.96094 9.61914 9.96094C10.0098 9.96094 10.2637 9.76562 10.4492 9.48242L10.6348 9.20898C10.9961 8.36914 11.7578 7.80273 12.7637 7.80273C14.0332 7.80273 14.8535 8.50586 14.8535 9.53125C14.8535 10.4102 14.3359 10.8691 13.1641 11.6797C12.207 12.3535 11.5723 13.0273 11.5723 14.248C11.5723 14.3262 11.5723 14.4043 11.5723 14.4824C11.5723 15.0684 11.8945 15.3711 12.4609 15.3711C13.0273 15.3711 13.3594 15.0195 13.3594 14.5605C13.3594 14.4922 13.3594 14.4141 13.3594 14.3457C13.3594 13.5938 13.7695 13.1348 14.6973 12.5098C15.9766 11.6602 16.7871 10.9082 16.7871 9.44336C16.7871 7.42188 14.9902 6.26953 12.832 6.26953C10.6641 6.26953 9.25781 7.35352 8.94531 8.57422Z" /></g></svg>`;
@@ -2653,535 +2680,309 @@
 
     const WISHLIST_SEEDS = [
       {
-        title: "Switch to Globe Country Map",
+        title: "Add a World Country Map",
         ticketId: "WISH-001",
-        description: "Add a global switch that lets the map change from US states to a world globe for marking visited countries. Consider projections: Waterman (Robinson, Winkel-Tripel). Support countries that no longer exist. https://commons.wikimedia.org/wiki/File:BlankMap-World.svg",
-        priority: "High",
-        effort: "Large",
-        targetVersion: "2.0.0",
+        description: "Add a country-map mode alongside the US map. Scope includes a world SVG/data source, visit levels, notes, exports/imports, map mode switching, and a strategy for historical countries without breaking existing state data.",
+        priority: "P1",
+        effort: "x-large",
+        targetKind: "major",
+        targetVersion: "",
+        tokenCostPct: 80,
+        prompt: "Add world-country map mode without breaking US state data. Reuse levels/notes/export paths. Include migration and historical-country handling.",
         category: "Maps"
       },
       {
-        title: "More Share and Fun Options",
+        title: "Add Better Sharing and Celebration Exports",
         ticketId: "WISH-002",
-        description: "Add more ways to share maps, celebrate progress, and create playful exports.",
-        priority: "Medium",
-        effort: "Medium",
-        targetVersion: "1.2.0",
+        description: "Add share/export variants that make completed progress easier to show off. Scope includes share-ready image/text outputs, progress milestone copy, and no network-dependent sharing.",
+        priority: "P2",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 24,
+        prompt: "Add local-only share/export variants for map progress. Keep UI compact and reuse current export patterns.",
         category: "Sharing"
       },
       {
         title: "National Park Overlay Layer",
         ticketId: "WISH-004",
-        description: "Add an optional overlay for national parks so trips can show park visits alongside state progress.",
-        priority: "Medium",
-        effort: "Large",
-        targetVersion: "1.6.0",
+        description: "Add an optional national parks layer that can be viewed with state progress. Scope includes park data, visible markers or outlines, visit status, filtering, and exports that remain readable.",
+        priority: "P2",
+        effort: "large",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 46,
+        prompt: "Add optional national parks overlay with visit state, filters, and export support. Keep state map behavior unchanged.",
         category: "Maps"
       },
       {
-        title: "Bug Fix: Slight Scroll Issue",
+        title: "Remove Remaining Page Scroll Drift",
         ticketId: "WISH-005",
-        description: "Investigate and smooth out the remaining minor scroll behavior in the map and notes layout.",
-        priority: "Medium",
-        effort: "Small",
-        targetVersion: "1.4.7",
+        description: "Eliminate stray vertical page scrolling in the main app layout. Scope includes map height math, notes rail bounds, safe-area padding, and mobile single-column exceptions.",
+        priority: "P1",
+        effort: "small",
+        targetKind: "exact",
+        targetVersion: "1.8.1",
+        tokenCostPct: 10,
+        prompt: "Fix main-layout scroll drift. Preserve mobile single-column scroll. Verify map and notes bottoms align.",
         category: "Bug Fix"
       },
       {
-        title: "UI Tweak for Text Buttons",
+        title: "Polish Text Button Layout",
         ticketId: "WISH-006",
-        description: "Polish spacing, sizing, and alignment when the Button Style setting is set to Text.",
-        priority: "Medium",
-        effort: "Small",
-        targetVersion: "1.4.7",
+        description: "Refine Button Style = Text across headers, dialogs, and compact controls. Scope includes spacing, width stability, alignment, wrapping, and parity with icon/both modes.",
+        priority: "P3",
+        effort: "small",
+        targetKind: "patch",
+        targetVersion: "",
+        tokenCostPct: 8,
+        prompt: "Polish text-button mode spacing/alignment. Compare headers, dialogs, and compact controls against symbol/both modes.",
         category: "UI"
       },
       {
-        title: "Clean Up Add Level UI",
+        title: "Simplify Add Level Flow",
         ticketId: "WISH-007",
-        description: "Make the add level flow cleaner, calmer, and easier to scan.",
-        priority: "Medium",
-        effort: "Medium",
-        targetVersion: "1.4.8",
+        description: "Make creating a new legend level faster and calmer. Scope includes clearer defaults, category ordering, compact color selection, validation, and low-friction save behavior.",
+        priority: "P2",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 20,
+        prompt: "Refine add-level dialog for faster creation. Improve defaults, validation, color picking, and save flow.",
         category: "UI"
       },
       {
-        title: "Fix Wonky Double Scrolling in Settings",
+        title: "Fix Settings Double Scrolling",
         ticketId: "WISH-008",
-        description: "Resolve nested or competing scroll behavior in the Settings dialog.",
-        priority: "High",
-        effort: "Small",
-        targetVersion: "1.4.8",
+        description: "Remove nested or competing scroll regions in Settings. Scope includes dialog body sizing, tab panel overflow, keyboard/focus behavior, and mobile viewport constraints.",
+        priority: "P0",
+        effort: "small",
+        targetKind: "patch",
+        targetVersion: "",
+        tokenCostPct: 12,
+        prompt: "Fix Settings double-scroll. Keep one intended scroll container and verify desktop/mobile dialog bounds.",
         category: "Bug Fix"
       },
       {
         title: "Add Home and Saved Locations",
         ticketId: "WISH-009",
-        description: "Let users save home and favorite locations for faster trip planning context.",
-        priority: "Medium",
-        effort: "Medium",
-        targetVersion: "1.5.0",
+        description: "Let users store home and favorite locations for planning context. Scope includes local-only saved places, labels, edit/delete actions, import/export persistence, and no geocoding dependency unless explicitly added later.",
+        priority: "P3",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 28,
+        prompt: "Add local saved places/home data with edit/delete and import/export persistence. No network geocoding.",
         category: "Planning"
       },
       {
         title: "Add Drive Radius",
         ticketId: "WISH-010",
-        description: "Show a drive-radius planning aid from home or saved locations.",
-        priority: "Medium",
-        effort: "Medium",
-        targetVersion: "1.5.0",
+        description: "Show a planning radius from home or saved locations. Scope includes distance input, visual radius overlay where map geometry supports it, saved settings, and clear limitations for non-road distance.",
+        priority: "P3",
+        effort: "large",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 36,
+        prompt: "Add saved-place radius planning. Persist distance/settings and show clear non-road-distance limits.",
         category: "Planning"
       },
       {
-        title: "Optimize for iPhone",
+        title: "Tighten iPhone Layout",
         ticketId: "WISH-011",
-        description: "Tune layout, touch targets, scrolling, and dialogs for iPhone-sized screens.",
-        priority: "High",
-        effort: "Medium",
-        targetVersion: "1.4.8",
+        description: "Tune the app for iPhone-sized screens. Scope includes map sizing, tabs, controls, dialogs, touch targets, safe areas, and avoiding cramped or clipped text.",
+        priority: "P1",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 32,
+        prompt: "Improve iPhone layout: map size, controls, dialogs, safe areas, touch targets, and text fitting.",
         category: "Mobile"
       },
       {
-        title: "Move Map Labels to Better Areas",
+        title: "Improve Map Label Placement",
         ticketId: "WISH-012",
-        description: "Refine map label anchor points so abbreviations and full names sit in clearer areas with fewer overlaps.",
-        priority: "Medium",
-        effort: "Small",
-        targetVersion: "1.5.3",
+        description: "Refine state label anchors so abbreviations and names are easier to read. Scope includes overlap reduction, territory labels, fit mode checks, and preserving label modes.",
+        priority: "P2",
+        effort: "small",
+        targetKind: "patch",
+        targetVersion: "",
+        tokenCostPct: 9,
+        prompt: "Tune map label anchors for readability across label modes, territories, and fit/scroll map views.",
         category: "Maps"
       },
       {
         title: "Polish Level Editor Interactions",
         ticketId: "WISH-013",
-        description: "Make legend level edits auto-save without Save/Cancel buttons, add a clear symbol to close controls, and make the color picker feel obviously clickable for selecting/applying colors.",
-        priority: "Medium",
-        effort: "Medium",
-        targetVersion: "1.6.4",
+        description: "Make level editing feel immediate and obvious. Scope includes auto-save semantics, close affordances, color picker clarity, keyboard/focus behavior, and confirmation only for destructive changes.",
+        priority: "P2",
+        effort: "medium",
+        targetKind: "patch",
+        targetVersion: "",
+        tokenCostPct: 22,
+        prompt: "Polish level editor: autosave edits, clear close action, obvious color picking, and safe destructive confirmations.",
         category: "UI"
       },
       {
-        title: "Make Settings Prettier",
+        title: "Tighten Settings Hierarchy",
         ticketId: "WISH-014",
-        description: "Polish the Settings dialog layout, visual hierarchy, and spacing, especially making the date format examples clearer, calmer, and easier to compare.",
-        priority: "Medium",
-        effort: "Medium",
-        targetVersion: "1.6.5",
+        description: "Make Settings denser and easier to scan. Scope includes parent/subcategory heading scale, aligned rows, date examples, import/export density, and avoiding airy section gaps.",
+        priority: "P1",
+        effort: "medium",
+        targetKind: "patch",
+        targetVersion: "",
+        tokenCostPct: 20,
+        prompt: "Tighten Settings layout hierarchy and spacing. Improve date examples and import/export density.",
         category: "UI"
       },
       {
         title: "Notes Rail Safe Area Scroll Polish",
         ticketId: "WISH-015",
-        description: "When scrolling to the bottom of Notes, align the bottom with the device safe area without extra padding, and avoid overall vertical page scrolling except in single-column view.",
-        priority: "Medium",
-        effort: "Small",
-        targetVersion: "1.7.1",
+        description: "Make the notes rail stop exactly at the map bottom and device safe area. Scope includes independent rail scrolling, compact/expanded notes, modal note lists, and no overall page scroll in desktop layout.",
+        priority: "P1",
+        effort: "small",
+        targetKind: "patch",
+        targetVersion: "",
+        tokenCostPct: 12,
+        prompt: "Align notes rail/modal bottoms with map and safe area. Preserve independent scrolling and desktop no-page-scroll.",
         category: "UI"
       },
       {
-        title: "Better Icons in Settings",
+        title: "Standardize Settings Icons",
         ticketId: "WISH-016",
-        description: "Replace and standardize Settings dialog icons with clearer, more consistent iconography for tabs, toggles, and action buttons.",
-        priority: "Medium",
-        effort: "Small",
-        targetVersion: "1.7.1",
+        description: "Use consistent SF-style symbols throughout Settings. Scope includes tabs, toggles, action buttons, icon/text/both modes, and source SVG names that match their role.",
+        priority: "P2",
+        effort: "small",
+        targetKind: "patch",
+        targetVersion: "",
+        tokenCostPct: 14,
+        prompt: "Standardize Settings icons and labels across button-style modes. Keep source names aligned with roles.",
         category: "UI"
       },
       {
         title: "Match Icon Variable Names to File Names",
         ticketId: "WISH-017",
-        description: "Rename icon constants so each variable cleanly matches the source SF Symbols file name and current icon taxonomy.",
-        priority: "Low",
-        effort: "Small",
-        targetVersion: "1.8.1",
+        description: "Keep icon constants and source file names aligned. Scope includes naming cleanup, typo fixes, references in inline SVG constants, and no visual icon changes unless requested.",
+        priority: "P3",
+        effort: "small",
+        targetKind: "patch",
+        targetVersion: "",
+        tokenCostPct: 10,
+        prompt: "Align icon constant names with source filenames. Update references only; avoid visual changes.",
         category: "Developer"
       }
     ];
     const CHANGELOG = [
       {
-        version: "1.8.0.12",
-        date: "2026-05-12",
-        title: "Map label toggle polish",
+        version: "1.9.0",
+        date: "2026-05-14",
+        title: "Roadmap Pit Crew",
+        summary: "Made release history and roadmap planning easier to scan and hand off.",
         notes: [
-          "Made the Labels tag chip 1.5x the width of the adjacent map label toggle buttons.",
-          "Added a distinct shaded background and border so the tag chip reads as the label for the control."
-        ]
-      },
-      {
-        version: "1.8.0.11",
-        date: "2026-05-12",
-        title: "Settings layout polish",
-        notes: [
-          "Removed the current date format pill from Settings.",
-          "Reworked Settings into aligned category rows with left-side labels and stretched toggle controls.",
-          "Combined Appearance and Interface into one Appearance section with Theme, Button Style, and Hints rows."
-        ]
-      },
-      {
-        version: "1.8.0.10",
-        date: "2026-05-12",
-        title: "Dialog and icon refinements",
-        notes: [
-          "Preserved the manual SF-style icon updates, including tag.fill labels plus up, down, delete, edit, settings, chronological, expanded, and condensed icons.",
-          "Moved note saving into the note dialog header, removed note cancel and edit-level delete buttons, and added shortcut-aware icon/text confirmation buttons.",
-          "Updated date display controls to use the textformat.characters and numbers icons while keeping date order controls text-only.",
-          "Added a developer wishlist item to match icon variable names to their source file names."
-        ]
-      },
-      {
-        version: "1.8.0.9",
-        date: "2026-05-11",
-        title: "Legend down arrow icon",
-        notes: [
-          "Added arrowshape.down.fill as the legend move-down action icon."
-        ]
-      },
-      {
-        version: "1.8.0.8",
-        date: "2026-05-11",
-        title: "Legend icon",
-        notes: [
-          "Added checklist.unchecked as the Legend toggle icon."
-        ]
-      },
-      {
-        version: "1.8.0.7",
-        date: "2026-05-11",
-        title: "Chronological icon confirmation",
-        notes: [
-          "Confirmed the Chronological sort control uses the provided clock arrow SVG with theme-aware fill."
-        ]
-      },
-      {
-        version: "1.8.0.6",
-        date: "2026-05-11",
-        title: "Settings icon",
-        notes: [
-          "Added the provided gear SVG as the Settings button and Settings tab icon."
-        ]
-      },
-      {
-        version: "1.8.0.5",
-        date: "2026-05-11",
-        title: "Chronological notes icon",
-        notes: [
-          "Added the provided clock arrow SVG as the Chronological sort icon."
-        ]
-      },
-      {
-        version: "1.8.0.4",
-        date: "2026-05-11",
-        title: "Inline icon sizing fix",
-        notes: [
-          "Fixed SF Symbol SVG icons inheriting the map SVG minimum width."
-        ]
-      },
-      {
-        version: "1.8.0.3",
-        date: "2026-05-11",
-        title: "Expanded notes icon",
-        notes: [
-          "Added the provided rectangle.stack SVG as the Expanded view icon."
-        ]
-      },
-      {
-        version: "1.8.0.2",
-        date: "2026-05-11",
-        title: "Condensed notes icon",
-        notes: [
-          "Renamed the Notes Compact view control to Condensed.",
-          "Added the provided line.3.horizontal SVG as the Condensed view icon."
-        ]
-      },
-      {
-        version: "1.8.0.1",
-        date: "2026-05-11",
-        title: "Build tracking",
-        notes: [
-          "Started using the fourth version number as the active 1.8.0 build counter.",
-          "Documented that each prompt-driven change should bump the build number and add a changelog note until release condensation."
+          "Clarified release upkeep so documentation and release notes stay aligned with each change.",
+          "Reworked Roadmap cards with clearer priority, effort, target, scope, cost, and implementation guidance.",
+          "Split late-cycle polish into a separate 1.9 release line for clearer release history."
         ]
       },
       {
         version: "1.8.0",
-        date: "2026-05-11",
-        title: "Settings and editor polish",
+        date: "2026-05-14",
+        title: "Icon Tailor Shop",
+        summary: "Polished Settings, dialogs, labels, SF-style iconography, and display order.",
         notes: [
-          "Opened the 1.8.0 release line for settings icon and control refinements.",
-          "Refined the level editor layout for color selection and Exclude from Stats controls.",
-          "Added WISH-016 for better Settings iconography."
+          "Standardized icons across Settings, Notes, Legend, sorting, editing, moving, deleting, and labels.",
+          "Moved note saving into the dialog header and simplified dialog actions.",
+          "Reworked Settings into tighter aligned category rows.",
+          "Made the map Labels control read more like a category title.",
+          "Moved Alphabetical before Numerical in Settings date display controls."
         ]
       },
       {
         version: "1.7.0",
         date: "2026-05-11",
-        title: "Legend layer controls",
+        title: "Counting What Counts",
+        summary: "Added explicit stat behavior and visual treatment for legend levels.",
         notes: [
           "Added per-level control for whether a level counts toward stats.",
-          "Added visual treatment for non-counting levels and quick-add options.",
-          "Moved total completion into the Legend header and added icons to level and palette dialogs."
-        ]
-      },
-      {
-        version: "1.6.4",
-        date: "2026-05-11",
-        title: "Wishlist update",
-        notes: [
-          "Added WISH-014 for improving Settings polish and date format examples."
-        ]
-      },
-      {
-        version: "1.6.3",
-        date: "2026-05-11",
-        title: "Wishlist update",
-        notes: [
-          "Added WISH-013 for level editor auto-save, close symbols, and clearer color picker interaction."
-        ]
-      },
-      {
-        version: "1.6.2",
-        date: "2026-05-11",
-        title: "Mobile legend density",
-        notes: [
-          "Made the small-screen legend more compact.",
-          "Moved legend stat pills directly left of the action buttons on mobile."
-        ]
-      },
-      {
-        version: "1.6.1",
-        date: "2026-05-11",
-        title: "Mobile header polish",
-        notes: [
-          "Kept the Settings button square on all screen sizes."
+          "Added non-counting level styling and quick-add options.",
+          "Moved total completion into the Legend header."
         ]
       },
       {
         version: "1.6.0",
         date: "2026-05-11",
-        title: "Mobile map mode",
+        title: "Pocket Map Mode",
+        summary: "Improved mobile map viewing and small-screen density.",
         notes: [
-          "Added a floating Map Mode toggle for a fit-to-screen map view.",
-          "Fit mode removes horizontal map scrolling for easier screenshots and sharing.",
-          "Kept the Map Mode FAB fixed over the lower-right map area in both modes."
-        ]
-      },
-      {
-        version: "1.5.9",
-        date: "2026-05-11",
-        title: "Default label mode",
-        notes: [
-          "Changed the default map label display to None."
-        ]
-      },
-      {
-        version: "1.5.8",
-        date: "2026-05-11",
-        title: "Map tap refinement",
-        notes: [
-          "Cycle-mode map taps now select already-marked states before cycling on repeat taps.",
-          "Added bottom safe-area breathing room to the Legend and Notes rail."
-        ]
-      },
-      {
-        version: "1.5.7",
-        date: "2026-05-11",
-        title: "Compact notes density",
-        notes: [
-          "Restored tighter compact-note columns and reduced row height further."
-        ]
-      },
-      {
-        version: "1.5.6",
-        date: "2026-05-11",
-        title: "Dense notes search",
-        notes: [
-          "Added state search to the Notes panel.",
-          "Tightened compact notes rows for single-line scanning."
-        ]
-      },
-      {
-        version: "1.5.5",
-        date: "2026-05-11",
-        title: "Label wrapping control",
-        notes: [
-          "Full-name map labels keep spaces by default.",
-          "Labels can opt into stacked words, and Island names now stack automatically."
-        ]
-      },
-      {
-        version: "1.5.4",
-        date: "2026-05-11",
-        title: "Legend and label polish",
-        notes: [
-          "Map name labels now support space, escaped newline, and newline line breaks.",
-          "Legend stats show percentage before count, with opt-out levels showing count only."
-        ]
-      },
-      {
-        version: "1.5.3",
-        date: "2026-05-11",
-        title: "Multi-line map labels",
-        notes: [
-          "Stacked multi-word full-name map labels onto separate lines."
-        ]
-      },
-      {
-        version: "1.5.2",
-        date: "2026-05-11",
-        title: "Wishlist update",
-        notes: [
-          "Added WISH-012 for improving map label placement."
-        ]
-      },
-      {
-        version: "1.5.1",
-        date: "2026-05-11",
-        title: "Map labels and territory cleanup",
-        notes: [
-          "Added a header toggle for map labels: None, Abbr, and Name.",
-          "Moved and refined the US territory inset placement.",
-          "Removed completed WISH-003 from the developer wishlist."
+          "Added fit-to-screen map mode.",
+          "Refined map fit controls and mobile header behavior.",
+          "Tightened mobile legend layout and stat placement."
         ]
       },
       {
         version: "1.5.0",
         date: "2026-05-11",
-        title: "DC and territories",
+        title: "Labels, Lands, And Little Islands",
+        summary: "Expanded the map and made labels and notes easier to scan.",
         notes: [
-          "Implemented WISH-003 by adding US territories to the map.",
-          "Added Washington, DC as a clickable map region.",
-          "Territories default to Not Interested for new and migrated maps."
-        ]
-      },
-      {
-        version: "1.4.7",
-        date: "2026-05-11",
-        title: "Organization and note entry polish",
-        notes: [
-          "Tweaked colors for better organization and black for Not Interested.",
-          "Added all recommended levels to built-in suggestions.",
-          "Tweaked suggestions to use + or Add based on the symbol setting.",
-          "Removed in-app wishlist add/remove controls so wishlist changes stay developer-managed.",
-          "Added a faster partial-date picker for notes."
-        ]
-      },
-      {
-        version: "1.4.6",
-        date: "2026-05-10",
-        title: "Default and settings polish",
-        notes: [
-          "Changed fresh-map defaults to Visited and Not Interested levels only.",
-          "Defaulted Notes to chronological compact view and alphabetical date display.",
-          "Added date format examples and two new wishlist tickets."
-        ]
-      },
-      {
-        version: "1.4.5",
-        date: "2026-05-10",
-        title: "Date formats and note filters",
-        notes: [
-          "Added year-only and month-year note dates with configurable date display formats.",
-          "Legend levels now filter the Notes view when selected.",
-          "Tightened compact notes columns so dense note exports stay inside the panel."
-        ]
-      },
-      {
-        version: "1.4.4",
-        date: "2026-05-10",
-        title: "Modal shortcut coverage",
-        notes: [
-          "Added shortcut badges and actions for rename, smart colors, state note back, and notes view controls.",
-          "Settings controls now show symbol and text labels regardless of button style.",
-          "Removed the residual SVG focus outline after selecting states."
-        ]
-      },
-      {
-        version: "1.4.3",
-        date: "2026-05-10",
-        title: "Shortcut and rail polish",
-        notes: [
-          "Added ticket IDs to wishlist items for easier reference.",
-          "Added Settings shortcut badges and fixed Option-modified letter shortcuts.",
-          "Made the Legend/Notes rail scroll independently while the map stays visible."
-        ]
-      },
-      {
-        version: "1.4.2",
-        date: "2026-05-10",
-        title: "Stacked notes layout",
-        notes: [
-          "Changed the desktop layout to a 66/33 map and stacked Legend/Notes rail.",
-          "State clicks now select the state in Notes instead of opening the slide-over drawer.",
-          "Made notes controls and legend rows more compact."
-        ]
-      },
-      {
-        version: "1.4.1",
-        date: "2026-05-10",
-        title: "Refinement pass",
-        notes: [
-          "Replaced the permanent shortcut hint setting with a temporary Shift-Control-Option overlay.",
-          "Moved completion pills into each legend level and removed the standalone stats box.",
-          "Added notes sorting, compact notes view, and a tighter level editor layout."
+          "Added Washington, DC and US territories.",
+          "Added map label modes for none, abbreviation, and name.",
+          "Improved territory placement, label wrapping, map taps, note search, and compact note density."
         ]
       },
       {
         version: "1.4.0",
-        date: "2026-05-10",
-        title: "Interface, notes, and export refinement",
+        date: "2026-05-11",
+        title: "Control Room Renovation",
+        summary: "Reworked the main interface around notes, shortcuts, exports, and flexible dates.",
         notes: [
-          "Added button style, UI hints, and Shift-Control Option Mode settings.",
-          "Updated default levels to Visited, Want to Visit, and Not Interested, with Not Interested excluded from completion totals.",
-          "Moved Notes and Legend toggles into the map header and moved import/export into Settings."
-        ]
-      },
-      {
-        version: "1.3.1",
-        date: "2026-05-10",
-        title: "Reliable removal actions",
-        notes: [
-          "Replaced browser-native prompts with in-app confirmations for clear, delete, reset, import overwrite, and wishlist removal actions.",
-          "Fixed destructive controls so they work reliably from the drawer, legend, settings, and documents screens."
+          "Added button styles, UI hints, shortcut overlay, and broader keyboard coverage.",
+          "Moved Legend and Notes controls into the map header and import/export into Settings.",
+          "Added note sorting, compact notes, level filters, partial dates, and configurable date display."
         ]
       },
       {
         version: "1.3.0",
         date: "2026-05-10",
-        title: "Drawer, legend, and map popup refinements",
+        title: "Drawer Drama, Resolved",
+        summary: "Polished state selection, stats, and destructive actions.",
         notes: [
           "Moved summary stats into the map header and made the legend panel match the map height.",
-          "Placed the tap-to-select popup over the map near the selected state.",
-          "Added a marked-states drawer list and compact emoji controls for legend editing."
+          "Added map-positioned selection and marked-state navigation.",
+          "Replaced native browser dialogs with reliable in-app confirmations."
         ]
       },
       {
         version: "1.2.0",
         date: "2026-05-10",
-        title: "Legend ordering and palette polish",
+        title: "Legend Has It",
+        summary: "Made visit levels easier to order, color, and understand.",
         notes: [
-          "State selection now opens the drawer in both tap modes.",
           "Legend levels can be reordered, with the top level determining the map color.",
-          "Color selection is clearer and generated themes now follow progressive high-to-low palettes."
+          "Improved color selection and generated palettes.",
+          "Made state selection consistent across tap modes."
         ]
       },
       {
         version: "1.1.0",
         date: "2026-05-10",
-        title: "Map and multi-level upgrade",
+        title: "Real Map Energy",
+        summary: "Upgraded the tracker from a grid into a richer map experience.",
         notes: [
           "Replaced the tile grid with a real state-outline map.",
           "Added multiple applied levels and level-linked notes per state.",
-          "Added completion percentage, smart palette application, maker credit, and starter wishlist ideas."
+          "Added completion stats and smart color palettes."
         ]
       },
       {
         version: "1.0.0",
         date: "2026-05-10",
-        title: "Initial release",
+        title: "First Pin On The Map",
+        summary: "Launched the offline state visit tracker.",
         notes: [
-          "Interactive 50-state visit map with Alaska and Hawaii.",
-          "Custom visitation levels, colors, dated notes, settings, documents, wishlist, and import/export.",
-          "Offline single-file app with localStorage persistence."
+          "Added interactive visit tracking for the 50 states.",
+          "Added custom levels, colors, dated notes, settings, and import/export.",
+          "Kept the app as a single-file local-only experience."
         ]
       }
     ];
@@ -3398,6 +3199,43 @@
       return assigned[assigned.length - 1].ticketId;
     }
 
+    function normalizeWishlistPriority(value) {
+      const text = String(value || "").trim().toUpperCase();
+      if (["P0", "P1", "P2", "P3"].includes(text)) return text;
+      return { HIGH: "P1", MEDIUM: "P2", LOW: "P3" }[text] || "P2";
+    }
+
+    function normalizeWishlistEffort(value) {
+      const text = String(value || "").trim().toLowerCase().replace(/\s+/g, "-");
+      const normalized = { xlarge: "x-large", "extra-large": "x-large" }[text] || text;
+      return ["small", "medium", "large", "x-large"].includes(normalized) ? normalized : "medium";
+    }
+
+    function normalizeWishlistTargetKind(wish) {
+      const rawKind = String(wish?.targetKind || wish?.targetType || "").trim().toLowerCase();
+      if (["exact", "major", "minor", "patch"].includes(rawKind)) return rawKind;
+      const rawTarget = String(wish?.targetVersion || "").trim().toLowerCase();
+      return ["major", "minor", "patch"].includes(rawTarget) ? rawTarget : "exact";
+    }
+
+    function normalizeWishlistCost(value, effort) {
+      const parsed = Number.parseInt(String(value ?? "").replace(/[^\d]/g, ""), 10);
+      if (Number.isFinite(parsed)) return Math.max(1, Math.min(parsed, 100));
+      return { small: 10, medium: 24, large: 42, "x-large": 75 }[effort] || 24;
+    }
+
+    function normalizeWishlistPrompt(value, title, description) {
+      const text = String(value || "").trim();
+      if (text) return text.slice(0, 380);
+      return `Implement ${title}. Scope: ${description}`.slice(0, 380);
+    }
+
+    function wishlistTargetLabel(wish) {
+      return wish.targetKind === "exact"
+        ? `Exact: ${wish.targetVersion || "Unassigned"}`
+        : `Bucket: ${wish.targetKind}`;
+    }
+
     function loadState() {
       try {
         const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
@@ -3453,38 +3291,44 @@
           text: String(note.text || note.summary || "").slice(0, 700)
         })).filter(note => note.text || note.date);
       });
-      next.wishlist = Array.isArray(input.wishlist) ? input.wishlist.map(wish => ({
-        id: String(wish.id || uid()),
-        ticketId: String(wish.ticketId || ""),
-        title: String(wish.title || "").slice(0, 80),
-        description: String(wish.description || "").slice(0, 500),
-        priority: ["High", "Medium", "Low"].includes(wish.priority) ? wish.priority : "Medium",
-        effort: ["Small", "Medium", "Large"].includes(wish.effort) ? wish.effort : "Medium",
-        targetVersion: String(wish.targetVersion || "").slice(0, 16),
-        category: String(wish.category || "").slice(0, 40),
-        createdAt: String(wish.createdAt || new Date().toISOString())
-      })).filter(wish => wish.title && !isCompletedWishlistItem(wish)) : [];
+      next.wishlist = Array.isArray(input.wishlist) ? input.wishlist.map(wish => {
+        const title = String(wish.title || "").slice(0, 96);
+        const description = String(wish.description || "").slice(0, 700);
+        const effort = normalizeWishlistEffort(wish.effort);
+        const targetKind = normalizeWishlistTargetKind(wish);
+        return {
+          id: String(wish.id || uid()),
+          ticketId: String(wish.ticketId || ""),
+          title,
+          description,
+          priority: normalizeWishlistPriority(wish.priority),
+          effort,
+          targetKind,
+          targetVersion: targetKind === "exact" ? String(wish.targetVersion || "").slice(0, 16) : "",
+          category: String(wish.category || "").slice(0, 40),
+          tokenCostPct: normalizeWishlistCost(wish.tokenCostPct ?? wish.cost, effort),
+          prompt: normalizeWishlistPrompt(wish.prompt || wish.implementationPrompt, title, description),
+          createdAt: String(wish.createdAt || new Date().toISOString())
+        };
+      }).filter(wish => wish.title && !isCompletedWishlistItem(wish)) : [];
       if (input.seededWishlistVersion !== WISHLIST_SEED_VERSION) {
         const titles = new Set(next.wishlist.map(wish => wish.title.toLowerCase()));
-        const migrationSeeds = new Set([
-          "National Park Overlay Layer",
-          "Bug Fix: Slight Scroll Issue",
-          "UI Tweak for Text Buttons",
-          "Clean Up Add Level UI",
-          "Fix Wonky Double Scrolling in Settings",
-          "Add Home and Saved Locations",
-          "Add Drive Radius",
-          "Optimize for iPhone",
-          "Move Map Labels to Better Areas",
-          "Polish Level Editor Interactions",
-          "Make Settings Prettier",
-          "Notes Rail Safe Area Scroll Polish",
-          "Better Icons in Settings",
-          "Match Icon Variable Names to File Names"
-        ]);
+        const indexByTicket = new Map(next.wishlist.map((wish, index) => [normalizeTicketId(wish.ticketId), index]).filter(([ticketId]) => ticketId));
         seedWishlist().forEach(wish => {
-          if (input.seededWishlistVersion && !migrationSeeds.has(wish.title)) return;
-          if (!titles.has(wish.title.toLowerCase())) next.wishlist.push(wish);
+          const ticketId = normalizeTicketId(wish.ticketId);
+          const existingIndex = indexByTicket.get(ticketId);
+          if (existingIndex !== undefined) {
+            const existing = next.wishlist[existingIndex];
+            if (String(existing.id || "").startsWith("seed-")) {
+              next.wishlist[existingIndex] = { ...wish, id: existing.id, createdAt: existing.createdAt || wish.createdAt };
+              titles.add(wish.title.toLowerCase());
+            }
+            return;
+          }
+          if (!titles.has(wish.title.toLowerCase())) {
+            next.wishlist.push(wish);
+            titles.add(wish.title.toLowerCase());
+          }
         });
       }
       next.wishlist = assignWishlistTickets(next.wishlist);
@@ -3765,7 +3609,7 @@
       setButtonLabelBoth("[data-tab='help']", ICON_SETTINGS_SECTION__QUESTIONMARK_CIRCLE_FILL, "Help Manual");
       setButtonLabelBoth("[data-tab='faq']", "!", "FAQ");
       setButtonLabelBoth("[data-tab='changelog']", ICON_SETTINGS_SECTION__SPARKLE_TEXT_CLIPBOARD_FILL, "Changelog");
-      setButtonLabelBoth("[data-tab='wishlist']", "☆", "Wishlist");
+      setButtonLabelBoth("[data-tab='wishlist']", "☆", "Roadmap");
       $("#legendToggleBtn").setAttribute("aria-pressed", String(legendPanelOpen));
       $("#notesToggleBtn").setAttribute("aria-pressed", String(notesPanelOpen));
       $("#mapFitBtn").setAttribute("aria-pressed", String(mapFitMode));
@@ -4580,15 +4424,15 @@
       setDateButtonLabel("#dateMdyBtn", "", "MDY", formatDateDisplay(sample, "mdy", state.settings.dateStyle));
       setDateButtonLabel("#dateDmyBtn", "", "DMY", formatDateDisplay(sample, "dmy", state.settings.dateStyle));
       setDateButtonLabel("#dateYmdBtn", "", "YMD", formatDateDisplay(sample, "ymd", state.settings.dateStyle));
-      setDateButtonLabel("#dateNumericBtn", ICON_SETTINGS_DATE_NUMERICAL__NUMBERS, "Numberical", formatDateDisplay(sample, state.settings.dateOrder, "numeric"));
       setDateButtonLabel("#dateAlphaBtn", ICON_SETTINGS_DATE_ALPHABETICAL__TEXTFORMAT_CHARACTERS, "Alphabetical", formatDateDisplay(sample, state.settings.dateOrder, "alpha"));
+      setDateButtonLabel("#dateNumericBtn", ICON_SETTINGS_DATE_NUMERICAL__NUMBERS, "Numerical", formatDateDisplay(sample, state.settings.dateOrder, "numeric"));
     }
 
     function renderChangelog() {
       $("#changelogList").innerHTML = CHANGELOG.map(entry => `
         <article class="note-card">
-          <b>${escapeHtml(entry.version)} - ${escapeHtml(entry.title)}</b>
-          <small>${escapeHtml(entry.date)}</small>
+          <b>${escapeHtml(entry.version)} :: ${escapeHtml(entry.date)} :: ${escapeHtml(entry.title)}</b>
+          <p><b>${escapeHtml(entry.summary)}</b></p>
           <ul>${entry.notes.map(note => `<li>${escapeHtml(note)}</li>`).join("")}</ul>
         </article>
       `).join("");
@@ -4603,10 +4447,10 @@
         `<option ${category === cat ? "selected" : ""}>${escapeHtml(cat)}</option>`
       ).join("");
       let items = state.wishlist.filter(wish => {
-        const blob = `${wish.ticketId} ${wish.title} ${wish.description} ${wish.category}`.toLowerCase();
+        const blob = `${wish.ticketId} ${wish.title} ${wish.description} ${wish.category} ${wish.priority} ${wish.effort} ${wish.targetKind} ${wish.targetVersion} ${wish.prompt}`.toLowerCase();
         return (!search || blob.includes(search)) && (!priority || wish.priority === priority) && (!category || wish.category === category);
       });
-      const rank = { High: 0, Medium: 1, Low: 2 };
+      const rank = { P0: 0, P1: 1, P2: 2, P3: 3 };
       const sort = $("#wishSort").value;
       items.sort((a, b) => {
         if (sort === "createdAsc") return a.createdAt.localeCompare(b.createdAt);
@@ -4619,15 +4463,17 @@
           <div class="row" style="justify-content: space-between;">
             <span class="row" style="gap: .4rem;"><span class="tag">${escapeHtml(wish.ticketId)}</span><b>${escapeHtml(wish.title)}</b></span>
           </div>
-          <div>${escapeHtml(wish.description || "No description")}</div>
+          <p>${escapeHtml(wish.description || "No description")}</p>
           <div class="chips">
             <span class="tag">Priority: ${escapeHtml(wish.priority)}</span>
             <span class="tag">Effort: ${escapeHtml(wish.effort)}</span>
-            <span class="tag">Target: ${escapeHtml(wish.targetVersion || "Unassigned")}</span>
+            <span class="tag">Target: ${escapeHtml(wishlistTargetLabel(wish))}</span>
             <span class="tag">Category: ${escapeHtml(wish.category || "General")}</span>
           </div>
+          <div class="roadmap-field"><b>Cost</b><span>${escapeHtml(String(wish.tokenCostPct || 0))}% implementation tokens</span></div>
+          <div class="roadmap-field"><b>Prompt</b><div class="roadmap-prompt">${escapeHtml(wish.prompt || "")}</div></div>
         </article>
-      `).join("") : `<div class="empty">No wishlist ideas match the current filters.</div>`;
+      `).join("") : `<div class="empty">No roadmap ideas match the current filters.</div>`;
     }
 
     function exportMarkdown() {
@@ -4980,7 +4826,7 @@
       $("#resetAppBtn").addEventListener("click", () => {
         requestConfirm({
           title: "Reset App Data?",
-          message: "This will reset all map data, notes, custom levels, and wishlist ideas in this browser.",
+          message: "This will reset all map data, notes, custom levels, and roadmap ideas in this browser.",
           actionLabel: "Reset Data",
           onConfirm: () => {
             state = defaultState();

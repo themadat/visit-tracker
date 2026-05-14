@@ -27,6 +27,7 @@ http://127.0.0.1:8018/index.html
 ```text
 index.html   Complete app: markup, styles, inline SVG map, app state, and UI logic.
 readme.md    Developer notes.
+context/     LLM handoff context for future development sessions.
 ```
 
 ## App Architecture
@@ -57,8 +58,20 @@ When changing the data shape:
 1. Add new defaults in `defaultState`.
 2. Merge or repair old saved data in `normalizeState`.
 3. Do not overwrite existing user-created arrays or settings unless the user explicitly resets.
-4. During active release work, bump the fourth `APP_VERSION` number for every prompt-driven change, for example `1.8.0.1` to `1.8.0.2`, and add a matching `CHANGELOG` entry.
-5. If adding built-in wishlist items, bump `WISHLIST_SEED_VERSION` and add migration-safe logic that only appends missing seed entries.
+4. For every completed change, bump the fourth `APP_VERSION` number and update `CHANGELOG` using the release-note format below.
+5. If changing built-in roadmap items, bump `WISHLIST_SEED_VERSION`; append missing seeds and refresh existing `seed-*` entries by ticket ID without overwriting user-created entries.
+
+## Roadmap Format
+
+Roadmap items live in `WISHLIST_SEEDS` and render in the Roadmap tab.
+
+- Target is either `targetKind: "exact"` with `targetVersion`, or a release bucket: `major`, `minor`, or `patch`.
+- Priority values are `P0`, `P1`, `P2`, `P3`; effort values are `small`, `medium`, `large`, `x-large`.
+- Title should be a human-readable summary.
+- Description should state behavior and scope, without wandering.
+- Cost is `tokenCostPct`, an estimated implementation-token share.
+- Prompt is a compact implementation prompt for an LLM. Minimum useful tokens wins.
+- When adding roadmap items, ask concise clarifying questions with default answers the user can accept unchanged.
 
 ## Development Guidelines
 
@@ -69,6 +82,7 @@ When changing the data shape:
 - Use CSS variables for theme-aware colors.
 - Keep destructive actions behind confirmations.
 - Keep all features offline and local-only.
+- Update this README and `context/LLM_HANDOFF.md` when a change affects development rules, repo context, or future handoff instructions.
 
 ## Manual QA Checklist
 
@@ -100,9 +114,37 @@ git diff --check
 
 ## Release Notes
 
-For each user-facing change:
+For every completed change:
 
-- Bump the fourth `APP_VERSION` build number and add a `CHANGELOG` entry with concise notes.
-- When cutting a release, condense the per-build notes into the release entry.
+- Bump the fourth `APP_VERSION` build number.
+- Update `CHANGELOG` using the collapsed release-note format: `Major.Minor.Patch :: YYYY-mm-dd :: Cheeky theme name`, then a bold one-line summary, then bullets.
+- Keep changelog wording public-safe: describe features and changes, not internal tickets, prompts, or workflow mechanics.
+- Keep the current major/minor release entry updated unless intentionally opening a new release line.
 - Preserve the localStorage schema where possible.
 - Mention any known manual QA gaps in the handoff.
+
+
+## Future Prompts
+
+Wishlist: tweak the A-Z icon alignment, it just looks off
+Wishlist: SF Symbol Converting Tool
+
+by the way the change log doesn't always need to just be 3 bullets. I would like it to have a "highlights" section which is a bit more abbreviated, and then a more dense full flushed out update list
+
+____
+
+Have each UI hint be individually dismissible with a light grey ICON_GLOBAL_DISMISS__X_CIRCLE_FILL. Changing the UI toggle overrides individual dismisses and either turn them all off or back on
+
+For the main view I don't ever want any overall vertical scroll. Adjust map height based on width to account for this. If this means the map width shrinks, give that space to the legend/notes column. When there is enough content in the notes modal to require scrolling have the list perfectly scroll to match the map container bottom with no differences
+
+I want the Label Tag to Stand out differently. blue accents make it look like it is selected. I want it to to look like it a category title with toggle options (like in settings)
+
+When toggling map fit don't highlight its color. change symbol, but keep same color since this is always active.
+
+Settings has gotten a little too airy. TIghten it down and use different H sizes for parent categories and sub-categories
+
+Have the import/export section follow some of these rules. Button of equal size stretch to space. Less wasted vertical space towards the top
+
+Lets combine and update Help and FAQ into a single page called Help Center. Add a search bar that would surface and highlight potential help points or faq answers. First have Documentation, then FAQs, then Send Feedback Section. Send feedback should be a cheeky reference to if you know you know
+
+Combine Changelog and Wishlist into one page called "What's New". In there have two sub-sections Release Notes and Roadmap

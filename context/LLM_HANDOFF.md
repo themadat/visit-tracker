@@ -1,0 +1,108 @@
+# LLM Handoff
+
+Load this before editing the repo.
+
+## Repo In 10 Seconds
+
+US State Visit Map is a single-file, offline HTML/CSS/JS app for tracking visits to US states, DC, and territories. Main code is `index.html`. Source SVG icons live in `ICON/`. User data is browser localStorage. No build step, backend, dependencies, or network calls.
+
+Current anchors:
+
+- `APP_VERSION`: `1.9.0.1`
+- storage key: `usStateVisitMap.v1`
+- wishlist seed version: `1.8.0.15`
+
+## Critical Constraints
+
+- Manual edits are authoritative. Treat uncommitted changes and unexpected diffs as intentional user work.
+- Do not overwrite, revert, rename, reformat, normalize, or "clean up" existing edits unless the current request explicitly asks for it.
+- If a requested change overlaps user-edited code, make the smallest compatible patch and preserve surrounding edits.
+- If ownership of a change is unclear, leave it untouched or ask before modifying.
+- Run `git status --short` before editing.
+- Edit `index.html` surgically; do not reformat the whole file.
+- Keep the app single-file/offline unless explicitly asked otherwise.
+- New persisted field: update `defaultState()` and `normalizeState()`.
+- Every completed change: bump fourth `APP_VERSION` number and update `CHANGELOG`.
+- Update `README.md` and `context/LLM_HANDOFF.md` when a change affects repo rules, architecture, workflow, or handoff context.
+- Changelog wording must be public-safe: describe features and changes, not internal tickets, prompts, or workflow mechanics.
+- Roadmap items use P0-P3 priority, small/medium/large/x-large effort, exact-or-bucket target, scoped description, token cost %, and a terse LLM prompt.
+- When adding roadmap items, ask concise clarifying questions with default answers the user can approve unchanged.
+- Roadmap seed migrations may refresh existing `seed-*` items by ticket ID, but must not overwrite user-created roadmap entries.
+- Destructive UI actions go through `requestConfirm(...)`.
+
+## Fast Search
+
+```sh
+# orientation
+rg -n "APP_VERSION|STORAGE_KEY|WISHLIST_SEED_VERSION|CHANGELOG|WISHLIST_SEEDS" index.html
+
+# persistence
+rg -n "function defaultState|function loadState|function normalizeState|function save" index.html
+
+# map
+rg -n "function initMap|function handleStateTap|function renderMap|function renderMapLabels|toggleMapFitMode" index.html
+
+# legend / notes / settings
+rg -n "function renderLegend|function renderNotesPanel|function renderSettingsControls|function bindEvents|function handlePowerShortcut" index.html
+```
+
+## Runtime Shape
+
+```text
+state = loadState()
+init()
+  initMap()
+  bindEvents()
+  render()
+```
+
+Change state, call `save()` when persistence is needed, then `render()` or the narrow render function used nearby.
+
+## State Contract
+
+```js
+{
+  appVersion, mapName,
+  settings: { theme, tapBehavior, buttonStyle, uiHints, dateOrder, dateStyle, mapLabels },
+  levels: [{ id, name, definition, color, countsTowardStats }],
+  states: { CA: ["visited"] },
+  notes: { CA: [{ id, date, levelId, text }] },
+  wishlist: [{ id, ticketId, title, description, priority, effort, targetKind, targetVersion, category, tokenCostPct, prompt, createdAt }],
+  seededWishlistVersion,
+  territoryDefaultsSeeded
+}
+```
+
+Invariants: level order controls map color; `levels` max is 5; state level IDs must exist; dates normalize to `YYYY`, `YYYY-MM`, or `YYYY-MM-DD`; opt-out levels do not count toward completion; territories seed once.
+
+## Product Surface
+
+Clickable SVG map; map labels none/abbr/name; editable legend levels/colors/stats; notes search/filter/sort/compact/expanded; settings for theme/buttons/hints/tap/date/import/export; JSON/Markdown/RTF export; JSON import; shortcut overlay via Shift + Option + Control/Command.
+
+UX taste: compact, practical, map-first, light personality in docs/release copy. Avoid airy marketing-style UI.
+
+## User Preference Memory
+
+- Main view should avoid overall vertical scroll.
+- Notes rail scrolls independently and aligns to map bottom.
+- Hints should become individually dismissible; global hints toggle overrides all.
+- Label tag should look like a category title, not a selected blue control.
+- Map Fit should change symbol/affordance without selected-color highlight.
+- Settings should be tighter with clearer hierarchy.
+- Import/export buttons equal-sized and space-efficient.
+- Polish A-Z icon alignment.
+- Help + FAQ should become Help Center with search.
+- Changelog + roadmap should become What's New.
+- Public release notes describe features, not internal tickets/prompts/wishlist mechanics.
+- Collapse build-level changelog entries into major.minor release entries.
+- Changelog format: `Major.Minor.Patch :: YYYY-mm-dd :: cheeky theme name`, then a bold one-line summary, then feature bullets.
+
+## Verify
+
+```sh
+node -e "const fs=require('fs'); const h=fs.readFileSync('index.html','utf8'); const js=h.match(/<script>([\s\S]*)<\/script>/)[1]; new Function(js); console.log('script parses');"
+git diff --check
+python3 -m http.server 8018
+```
+
+Open `http://127.0.0.1:8018/index.html` for smoke testing.
