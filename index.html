@@ -1203,9 +1203,49 @@
 
     #settingsDialog[open] {
       display: grid;
-      grid-template-rows: auto minmax(0, 1fr);
+      grid-template-rows: auto minmax(0, 1fr) auto;
       height: min(860px, calc(100vh - 1.6rem));
       overflow: hidden;
+    }
+
+    #settingsDialog header {
+      padding: .38rem .75rem;
+      gap: .5rem;
+    }
+
+    #settingsDialog header .tabs {
+      padding-bottom: 0;
+      min-height: unset;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .dialog-bottom-bar {
+      display: flex;
+      align-items: center;
+      gap: .55rem;
+      padding: .5rem 1rem;
+      border-top: 1px solid var(--line);
+      font-size: .8rem;
+      color: var(--muted);
+    }
+
+    .dialog-bottom-bar b {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .dialog-bottom-bar .spacer { flex: 1; }
+
+    .version-pill {
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: .12rem .5rem;
+      font-size: .72rem;
+      font-weight: 650;
+      letter-spacing: .01em;
+      color: var(--text);
     }
 
     #settingsDialog .dialog-body {
@@ -1500,27 +1540,40 @@
       padding-left: 1.35rem;
     }
 
-    .import-box {
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: .9rem;
-      display: grid;
-      gap: .75rem;
-      background: var(--surface-2);
-    }
-
-    #tab-settings .import-box {
-      padding: .72rem;
-      gap: .58rem;
-    }
-
-    #tab-settings .import-box p {
+    #tab-settings .settings-category > p {
       margin: 0;
       line-height: 1.34;
     }
 
-    #tab-settings .import-box label {
-      gap: .26rem;
+    .help-search-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    #helpSearch {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .help-section-hidden {
+      display: none !important;
+    }
+
+    .no-match {
+      display: none !important;
+    }
+
+    #tab-help mark {
+      background: color-mix(in srgb, var(--accent) 22%, transparent);
+      color: inherit;
+      border-radius: 2px;
+      padding: 0 1px;
+    }
+
+    .help-feedback {
+      font-style: italic;
+      opacity: .8;
     }
 
     #tab-settings .actions {
@@ -1530,6 +1583,12 @@
     #tab-settings .actions button {
       min-height: 34px;
       padding: .46rem .64rem;
+      flex: 1;
+    }
+
+    .btn-ext {
+      font-size: .75em;
+      opacity: .58;
     }
 
     .filters {
@@ -1537,6 +1596,62 @@
       grid-template-columns: 1fr repeat(3, minmax(120px, .5fr));
       gap: .55rem;
     }
+
+    .whatsnew-section {
+      border-top: 1px solid var(--line);
+    }
+
+    .whatsnew-section > summary {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      background: var(--surface);
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: .45rem;
+      padding: .6rem 0;
+      font-size: .92rem;
+      font-weight: 850;
+    }
+
+    .whatsnew-section > summary::-webkit-details-marker { display: none; }
+
+    .whatsnew-section > summary::before {
+      content: "▸";
+      font-size: .72em;
+      opacity: .5;
+      flex-shrink: 0;
+      transition: transform .15s;
+    }
+
+    .whatsnew-section[open] > summary::before {
+      transform: rotate(90deg);
+    }
+
+    .roadmap-sticky-controls {
+      position: sticky;
+      top: 2.3rem;
+      z-index: 2;
+      background: var(--surface);
+      padding-bottom: .5rem;
+      display: grid;
+      gap: .38rem;
+    }
+
+    .roadmap-filters {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: .38rem;
+    }
+
+    .roadmap-sort-row {
+      display: flex;
+      gap: .38rem;
+    }
+
+    .roadmap-sort-row select { flex: 1; }
 
     .hidden {
       display: none !important;
@@ -2638,20 +2753,14 @@
 
   <dialog id="settingsDialog">
     <header>
-      <div>
-        <h2>US State Visit Map</h2>
-        <small>Version <span id="versionLabel"></span></small>
+      <div class="tabs" role="tablist" aria-label="Settings sections">
+        <button type="button" role="tab" data-tab="settings" aria-selected="true" data-shortcut="S">Settings</button>
+        <button type="button" role="tab" data-tab="help" data-shortcut="H">Help Center</button>
+        <button type="button" role="tab" data-tab="whatsnew" data-shortcut="G">What's New</button>
       </div>
-      <button type="button" data-close="settingsDialog" data-shortcut="Q">Close</button>
+      <button id="settingsCloseBtn" type="button" data-close="settingsDialog" data-shortcut="Q">Close</button>
     </header>
     <div class="dialog-body">
-      <div class="tabs" role="tablist" aria-label="Settings and documents">
-        <button type="button" role="tab" data-tab="settings" aria-selected="true" data-shortcut="S">Settings</button>
-        <button type="button" role="tab" data-tab="help" data-shortcut="H">Help Manual</button>
-        <button type="button" role="tab" data-tab="faq" data-shortcut="F">FAQ</button>
-        <button type="button" role="tab" data-tab="changelog" data-shortcut="G">Changelog</button>
-        <button type="button" role="tab" data-tab="wishlist" data-shortcut="R">Roadmap</button>
-      </div>
 
       <section id="tab-settings" class="doc active settings-page" role="tabpanel">
         <section class="settings-category">
@@ -2709,17 +2818,22 @@
         </section>
         <section class="settings-category">
           <h3>Import and Export</h3>
-          <div class="import-box">
-            <p class="muted" data-hint>Data is saved in this local browser only.<br>- Export JSON to move or restore your map elsewhere.<br>- Export Markdown for a HTML formatted file.<br>- Export Rich Text for basic notes keeping</p>
-            <div class="actions">
-              <button id="exportJsonBtn" class="primary" type="button" data-shortcut="J">Export JSON Backup</button>
-              <button id="exportMarkdownBtn" type="button" data-shortcut="M">Complete Markdown</button>
-              <button id="exportRichTextBtn" type="button" data-shortcut="E">Simple Rich Text</button>
-            </div>
-            <label>Import JSON backup
-              <input id="importFile" type="file" accept="application/json,.json">
-            </label>
+          <p class="muted">
+            Data is saved in this local browser only.<br/>
+            Use the Import/Export features to move your data between Devices and Browsers.<br>
+            - JSON (.json): full data backup; re-importable to other Devices/Browsers.<br>
+            - Markdown (.md): structured text; use for pretty rendering or HTML based applications.<br>
+            - Rich Text (.rtf): formatted text; for word processors with basic formatting.<br>
+            - Plain Text (.txt): simple text; used anywhere, useful for basic notes.</p>
+          <div class="actions">
+            <button id="exportJsonBtn" class="primary" type="button" data-shortcut="J">JSON</button>
+            <button id="exportMarkdownBtn" type="button" data-shortcut="M">Markdown</button>
+            <button id="exportRichTextBtn" type="button" data-shortcut="E">Rich Text</button>
+            <button id="exportPlainTextBtn" type="button" data-shortcut="T">Simple Text</button>
           </div>
+          <label>Import JSON backup
+            <input id="importFile" type="file" accept="application/json,.json">
+          </label>
         </section>
         <section class="settings-category">
           <h3>Data Reset</h3>
@@ -2730,81 +2844,97 @@
       </section>
 
       <section id="tab-help" class="doc" role="tabpanel">
-        <section>
-          <h3>Help Manual</h3>
+        <div class="help-search-wrap">
+          <input id="helpSearch" type="search" placeholder="Search help…" aria-label="Search Help Center">
+        </div>
+        <section class="help-section">
+          <h3>Documentation</h3>
           <ol>
-            <li>Tap a state to mark it. In cycle mode, repeated taps rotate through your active levels and back to
-              unvisited.</li>
+            <li>Tap a state to mark it. In cycle mode, repeated taps rotate through your active levels and back to unvisited.</li>
             <li>Switch to select mode in Settings if you prefer adding a level and a quick dated note in one step.</li>
-            <li>Select a state to open details. With Notes active, details appear beside the legend; otherwise they
-              slide in from the side.</li>
-            <li>Use the Legend to edit level names, definitions, and colors. Add optional built-in levels or your own
-              custom levels.</li>
+            <li>Select a state to open details. With Notes active, details appear beside the legend; otherwise they slide in from the side.</li>
+            <li>Use the Legend to edit level names, definitions, and colors. Add optional built-in levels or your own custom levels.</li>
             <li>Use Import and Export in Settings to back up data or move it to another device.</li>
           </ol>
-          <p><b>Default levels:</b> Visited and Not Interested. Not Interested is the polished opt-out level and is
-            excluded from total completion.</p>
+          <p><b>Default levels:</b> Visited and Not Interested. Not Interested is the opt-out level and is excluded from total completion.</p>
+          <p><b>Export formats:</b> JSON (.json) is a full backup, re-importable into this app. Markdown (.md) renders in Obsidian, Notion, or any Markdown viewer. Rich Text (.rtf) opens in Word or Pages. Simple Text (.txt) pastes anywhere.</p>
         </section>
-      </section>
-
-      <section id="tab-faq" class="doc" role="tabpanel">
-        <section>
+        <section class="help-section">
           <h3>FAQ</h3>
-          <p><b>Where is my data saved?</b><br>In your browser localStorage on this device.</p>
-          <p><b>Can someone else use the same app link?</b><br>Yes. Their browser keeps a separate local copy of their
-            data.</p>
-          <p><b>Does it work offline?</b><br>Yes. After the file is saved or loaded, the app does not need a backend or
-            external service.</p>
-          <p><b>Can I move data to another device?</b><br>Export a JSON backup, then import it in the app on the other
-            device.</p>
+          <p><b>Where is my data saved?</b><br>In your browser localStorage on this device only. Nothing leaves your machine.</p>
+          <p><b>Can someone else use the same app link?</b><br>Yes. Each browser keeps its own separate local copy of the data.</p>
+          <p><b>Does it work offline?</b><br>Yes. Once the file is open, no network connection is needed — there's no backend or external service.</p>
+          <p><b>Can I move data to another device?</b><br>Export a JSON backup in Settings, then import it in the app on the other device.</p>
+          <p><b>Can I undo a reset?</b><br>No. Export a JSON backup first if you want a safety net.</p>
+          <p><b>What's the difference between cycle and select mode?</b><br>Cycle taps rotate through your active levels automatically. Select mode opens a picker so you can choose a level and add a note in one step.</p>
+          <p><b>Can I have more than five levels?</b><br>No. Five is the cap — enough for any reasonable visit taxonomy without turning the legend into a spreadsheet.</p>
+        </section>
+        <section class="help-section">
+          <h3>Send Feedback</h3>
+          <p class="help-feedback">No form. No inbox. No bot standing by with canned responses. This app lives in a single file — there's no server to receive anything.</p>
+          <p class="help-feedback">If something's broken, you probably already know where the code lives. And if you don't — well, that's kind of the point. IYKYK. <a href="https://github.com/themadat/visit-tracker/issues" target="_blank" rel="noopener">↗</a></p>
         </section>
       </section>
 
-      <section id="tab-changelog" class="doc" role="tabpanel">
-        <section>
-          <h3>Changelog</h3>
+      <section id="tab-whatsnew" class="doc" role="tabpanel">
+        <details class="whatsnew-section" open>
+          <summary>Release Notes</summary>
           <div id="changelogList"></div>
-        </section>
-      </section>
-
-      <section id="tab-wishlist" class="doc" role="tabpanel">
-        <section>
-          <h3>Roadmap</h3>
-          <p class="muted" data-hint>Roadmap ideas are curated here so planned work stays scoped and easy to scan.</p>
-        </section>
-        <section>
-          <h3>Filter and Sort</h3>
-          <div class="filters">
+        </details>
+        <details class="whatsnew-section" open>
+          <summary>Roadmap</summary>
+          <div class="roadmap-sticky-controls">
             <input id="wishSearch" placeholder="Search roadmap" aria-label="Search roadmap">
-            <select id="wishPriorityFilter" aria-label="Filter by priority">
-              <option value="">All priorities</option>
-              <option>P0</option>
-              <option>P1</option>
-              <option>P2</option>
-              <option>P3</option>
-            </select>
-            <select id="wishCategoryFilter" aria-label="Filter by category">
-              <option value="">All categories</option>
-            </select>
-            <select id="wishSort" aria-label="Sort roadmap">
-              <option value="createdDesc">Newest</option>
-              <option value="createdAsc">Oldest</option>
-              <option value="priority">Priority</option>
-              <option value="title">Title</option>
-            </select>
+            <div class="roadmap-filters">
+              <select id="wishCategoryFilter" aria-label="Filter by category">
+                <option value="">All categories</option>
+              </select>
+              <select id="wishPriorityFilter" aria-label="Filter by priority">
+                <option value="">All priorities</option>
+                <option>P0</option>
+                <option>P1</option>
+                <option>P2</option>
+                <option>P3</option>
+              </select>
+              <select id="wishTargetFilter" aria-label="Filter by target">
+                <option value="">All targets</option>
+                <option>exact</option>
+                <option>major</option>
+                <option>minor</option>
+                <option>patch</option>
+              </select>
+              <select id="wishEffortFilter" aria-label="Filter by effort">
+                <option value="">All effort</option>
+                <option>small</option>
+                <option>medium</option>
+                <option>large</option>
+                <option>x-large</option>
+              </select>
+            </div>
+            <div class="roadmap-sort-row">
+              <select id="wishSort" aria-label="Sort roadmap">
+                <option value="createdDesc">Newest</option>
+                <option value="createdAsc">Oldest</option>
+                <option value="priority">Priority</option>
+                <option value="title">Title</option>
+              </select>
+              <button id="resetWishFiltersBtn" type="button">Reset Filters</button>
+            </div>
           </div>
-          <div class="actions" style="margin-top: .65rem;">
-            <button id="resetWishFiltersBtn" type="button">Reset Filters</button>
-          </div>
-          <div id="wishlistList" class="wishlist-list" style="margin-top: .75rem;"></div>
-        </section>
+          <div id="wishlistList" class="wishlist-list"></div>
+        </details>
       </section>
-      <p class="made-by">Made with ☕️ and 🥃 by Adam Lauer</p>
     </div>
+    <footer class="dialog-bottom-bar">
+      <b>Visit Tracker</b>
+      <span class="version-pill" id="versionLabel"></span>
+      <span class="spacer"></span>
+      <span>Made with ☕️ and 🥃 by Adam Lauer</span>
+    </footer>
   </dialog>
 
   <script>
-    const APP_VERSION = "1.10.0.5";
+    const APP_VERSION = "1.10.0";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const WISHLIST_SEED_VERSION = "1.10.0.1";
     const STATES = [
@@ -2880,9 +3010,10 @@
     const ICON_SETTINGS_MAP_SELECT__SCOPE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 30.6445 30.3027"><g><rect height="30.3027" opacity="0" width="30.6445" x="0" y="0"/><path d="M14.375 25.2052L14.375 26.9433C8.47302 26.5736 3.73495 21.844 3.3511 15.9375L5.08921 15.9375C5.46892 20.894 9.42256 24.8395 14.375 25.2052ZM15.9277 26.9429L15.9277 25.2047C20.8842 24.835 24.834 20.8912 25.2135 15.9375L26.9516 15.9375C26.568 21.8411 21.834 26.569 15.9277 26.9429ZM26.9541 14.3848L25.2159 14.3848C24.8591 9.41667 20.9 5.44934 15.9277 5.07846L15.9277 3.34034C21.8498 3.7152 26.5934 8.46721 26.9541 14.3848ZM14.375 5.07803C9.40683 5.44486 5.44381 9.41386 5.08681 14.3848L3.34868 14.3848C3.70951 8.46433 8.45718 3.71058 14.375 3.3399Z" /><path d="M15.1465 10.0391C15.5859 10.0391 15.9277 9.6875 15.9277 9.25781L15.9277 0.800781C15.9277 0.361328 15.5859 0.0195312 15.1465 0.0195312C14.707 0.0195312 14.375 0.361328 14.375 0.800781L14.375 9.25781C14.375 9.6875 14.707 10.0391 15.1465 10.0391ZM0.78125 15.9375L9.23828 15.9375C9.67773 15.9375 10.0293 15.5957 10.0293 15.166C10.0293 14.7168 9.67773 14.3848 9.23828 14.3848L0.78125 14.3848C0.351562 14.3848 0 14.7168 0 15.166C0 15.5957 0.351562 15.9375 0.78125 15.9375ZM15.1465 30.3027C15.5859 30.3027 15.9277 29.9512 15.9277 29.5215L15.9277 21.0645C15.9277 20.625 15.5859 20.2832 15.1465 20.2832C14.707 20.2832 14.375 20.625 14.375 21.0645L14.375 29.5215C14.375 29.9512 14.707 30.3027 15.1465 30.3027ZM21.0449 15.9375L29.502 15.9375C29.9414 15.9375 30.2832 15.5957 30.2832 15.166C30.2832 14.7168 29.9414 14.3848 29.502 14.3848L21.0449 14.3848C20.6152 14.3848 20.2637 14.7168 20.2637 15.166C20.2637 15.5957 20.6152 15.9375 21.0449 15.9375Z" /></g></svg>`;
     const ICON_SETTINGS_DATE_ALPHABETICAL__TEXTFORMAT_CHARACTERS = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 42.2363 18.6035"><g><rect height="18.6035" opacity="0" width="42.2363" x="0" y="0"/><path d="M36.5527 18.6035C38.9844 18.6035 41.0645 17.2461 41.7676 15.293C41.8457 15.0977 41.875 14.8926 41.875 14.7266C41.875 14.2773 41.543 13.9453 41.084 13.9453C40.6738 13.9453 40.4688 14.1211 40.2344 14.5801C39.5996 16.1523 38.3398 17.0215 36.5625 17.0215C33.9844 17.0215 32.334 15.0195 32.334 11.7676C32.334 8.52539 34.0039 6.49414 36.5527 6.49414C38.2617 6.49414 39.5605 7.34375 40.1953 8.95508C40.4199 9.39453 40.6445 9.56055 41.0352 9.56055C41.5039 9.56055 41.8359 9.25781 41.8359 8.79883C41.8359 8.65234 41.7969 8.4668 41.7578 8.32031C41.123 6.33789 39.0137 4.91211 36.5137 4.91211C32.8516 4.91211 30.4785 7.62695 30.4785 11.7871C30.4785 15.9473 32.8809 18.6035 36.5527 18.6035Z" /><path d="M17.8516 18.584C18.3594 18.584 18.7402 18.2422 18.7402 17.666L18.7402 15.4492L18.7695 15.4492C19.4629 17.373 21.2012 18.6035 23.3594 18.6035C26.7188 18.6035 28.9746 15.8691 28.9746 11.7578C28.9746 7.63672 26.709 4.91211 23.3789 4.91211C21.25 4.91211 19.5117 6.14258 18.8086 8.04688L18.7793 8.04688L18.7793 1.17188C18.7793 0.585938 18.418 0.205078 17.8711 0.205078C17.3438 0.205078 16.9727 0.585938 16.9727 1.17188L16.9727 17.666C16.9727 18.252 17.3242 18.584 17.8516 18.584ZM22.9883 17.0215C20.5273 17.0215 18.7988 14.9219 18.7988 11.7676C18.7988 8.61328 20.5371 6.50391 22.9883 6.50391C25.5078 6.50391 27.1094 8.55469 27.1094 11.7578C27.1094 14.9805 25.498 17.0215 22.9883 17.0215Z" /><path d="M0.878906 18.584C1.2793 18.584 1.66992 18.3496 1.86523 17.793L3.67188 12.9102L11.416 12.9102L13.2227 17.793C13.4277 18.3594 13.7988 18.584 14.1992 18.584C14.668 18.584 15.1074 18.252 15.1074 17.7246C15.1074 17.5488 15.0684 17.3828 14.9902 17.1582L8.84766 0.996094C8.62305 0.371094 8.21289 0.0488281 7.54883 0.0488281C6.89453 0.0488281 6.48438 0.361328 6.25977 0.986328L0.117188 17.168C0.0390625 17.3926 0 17.5586 0 17.7344C0 18.2715 0.419922 18.584 0.878906 18.584ZM4.16992 11.3672L7.4707 2.39258L7.59766 2.39258L10.9082 11.3672Z" /></g></svg>`;
     const ICON_SETTINGS_DATE_NUMERICAL__NUMBERS = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 38.5449 18.6621"><g><rect height="18.6621" opacity="0" width="38.5449" x="0" y="0"/><path d="M31.6602 18.6523C35.4492 18.6523 38.1836 16.416 38.1836 13.3496C38.1836 10.8398 36.377 9.16992 33.4961 8.98438L33.4961 8.93555C35.9082 8.52539 37.4023 6.9043 37.4023 4.66797C37.4023 1.96289 34.9609 0 31.582 0C28.9844 0 26.875 1.19141 26.0449 3.14453C25.8398 3.57422 25.7422 3.98438 25.7422 4.41406C25.7422 4.93164 26.084 5.27344 26.5723 5.27344C27.0898 5.27344 27.2949 5.03906 27.4512 4.52148C27.9492 2.76367 29.4727 1.67969 31.5234 1.67969C33.8867 1.67969 35.4785 2.98828 35.4785 4.90234C35.4785 6.89453 33.8184 8.24219 31.3965 8.24219L29.9023 8.24219C29.3945 8.24219 29.0625 8.55469 29.0625 9.04297C29.0625 9.52148 29.3945 9.84375 29.9023 9.84375L31.4258 9.84375C34.4043 9.84375 36.1816 11.123 36.1816 13.3398C36.1816 15.4395 34.3066 16.9238 31.6797 16.9238C29.3652 16.9238 27.6367 15.8301 27.1191 14.0332C26.9629 13.5449 26.6992 13.3203 26.2402 13.3203C25.6934 13.3203 25.3223 13.6719 25.3223 14.2383C25.3223 14.6387 25.4297 15.0195 25.625 15.4004C26.6016 17.4805 28.8379 18.6523 31.6602 18.6523Z" /><path d="M12.168 18.418L22.5879 18.418C23.1348 18.418 23.4766 18.0762 23.4766 17.5586C23.4766 17.041 23.1348 16.6992 22.5879 16.6992L13.9355 16.6992L13.9355 16.6406L18.8672 11.4648C21.7871 8.41797 22.7832 7.00195 22.7832 5.07812C22.7832 2.19727 20.2734 0 16.9141 0C14.2969 0 12.0508 1.40625 11.2793 3.57422C11.1133 4.02344 11.0352 4.43359 11.0352 4.76562C11.0352 5.3125 11.3477 5.66406 11.8848 5.66406C12.3828 5.66406 12.6074 5.42969 12.7637 4.89258C12.8516 4.49219 12.9688 4.11133 13.1738 3.76953C13.8379 2.53906 15.166 1.69922 16.9141 1.69922C19.0918 1.69922 20.8301 3.25195 20.8301 5.17578C20.8301 6.67969 20.1172 7.66602 17.5879 10.3223L11.8164 16.4062C11.377 16.8652 11.2207 17.1289 11.2207 17.5195C11.2207 18.0762 11.6016 18.418 12.168 18.418Z" /><path d="M6.24023 18.6035C6.83594 18.6035 7.2168 18.2324 7.2168 17.6367L7.2168 1.14258C7.2168 0.458984 6.78711 0.078125 6.12305 0.078125C5.64453 0.078125 5.37109 0.214844 4.92188 0.507812L0.556641 3.29102C0.146484 3.56445 0 3.81836 0 4.16992C0 4.61914 0.322266 4.94141 0.800781 4.94141C1.08398 4.94141 1.23047 4.85352 1.42578 4.72656L5.25391 2.35352L5.29297 2.35352L5.29297 17.6367C5.29297 18.2324 5.6543 18.6035 6.24023 18.6035Z" /></g></svg>`;
-    const ICON_SETTINGS_EXPORT_JSON__CURLYBRACES_SQUARE_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 23.3203 22.959"><g><rect height="22.959" opacity="0" width="23.3203" x="0" y="0"/><path d="M22.959 3.76953L22.959 19.1992C22.959 21.6797 21.6797 22.959 19.1504 22.959L3.79883 22.959C1.2793 22.959 0 21.6992 0 19.1992L0 3.76953C0 1.26953 1.2793 0 3.79883 0L19.1504 0C21.6797 0 22.959 1.2793 22.959 3.76953ZM6.2793 7.37305L6.2793 9.11133C6.2793 10.0879 6.01562 10.3418 5.30273 10.5371C4.35547 10.7812 4.36523 12.1875 5.30273 12.4414C6.01562 12.6367 6.2793 12.8906 6.2793 13.8672L6.2793 15.6055C6.2793 17.5293 7.26562 18.4863 8.94531 18.4863C9.58984 18.4863 9.9707 18.1641 9.9707 17.7148C9.9707 17.2656 9.62891 16.9727 9.18945 16.9727C8.30078 16.9727 7.91016 16.5625 7.91016 15.4297L7.91016 13.5645C7.91016 12.5454 7.37103 11.77 6.49145 11.4765C7.37103 11.1916 7.91016 10.4247 7.91016 9.41406L7.91016 7.54883C7.91016 6.40625 8.30078 6.00586 9.18945 6.00586C9.62891 6.00586 9.9707 5.71289 9.9707 5.25391C9.9707 4.80469 9.58984 4.48242 8.94531 4.48242C7.26562 4.48242 6.2793 5.43945 6.2793 7.37305ZM12.998 5.25391C12.998 5.71289 13.3301 6.00586 13.7695 6.00586C14.6582 6.00586 15.0586 6.40625 15.0586 7.54883L15.0586 9.41406C15.0586 10.4247 15.5903 11.1916 16.4744 11.4765C15.5903 11.77 15.0586 12.5454 15.0586 13.5645L15.0586 15.4297C15.0586 16.5625 14.6582 16.9727 13.7695 16.9727C13.3301 16.9727 12.998 17.2656 12.998 17.7148C12.998 18.1641 13.3691 18.4863 14.0234 18.4863C15.6934 18.4863 16.6895 17.5293 16.6895 15.6055L16.6895 13.8672C16.6895 12.8906 16.9434 12.627 17.6562 12.4414C18.6035 12.1973 18.6035 10.7715 17.6562 10.5371C16.9531 10.332 16.6895 10.0879 16.6895 9.11133L16.6895 7.37305C16.6895 5.43945 15.6934 4.48242 14.0234 4.48242C13.3691 4.48242 12.998 4.80469 12.998 5.25391Z" /></g></svg>`;
-    const ICON_SETTINGS_EXPORT_MARKDOWN__RICHTEXT_PAGE_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 21.3281 26.9238"><g><rect height="26.9238" opacity="0" width="21.3281" x="0" y="0"/><path d="M4.21875 11.4062C3.84766 11.4062 3.62305 11.1914 3.62305 10.8398C3.62305 10.752 3.65234 10.6152 3.70117 10.4785L5.68359 5.12695C5.83984 4.67773 6.10352 4.46289 6.54297 4.46289C6.99219 4.46289 7.26562 4.67773 7.42188 5.12695L9.4043 10.4785C9.45312 10.625 9.47266 10.752 9.47266 10.8398C9.47266 11.1914 9.26758 11.4062 8.88672 11.4062C8.60352 11.4062 8.4082 11.2402 8.31055 10.8887L7.7832 9.47266L5.3125 9.47266L4.79492 10.8887C4.69727 11.25 4.51172 11.4062 4.21875 11.4062ZM5.58594 8.52539L7.51953 8.52539L6.58203 5.77148L6.51367 5.77148ZM12.0996 6.5918C11.6992 6.5918 11.4062 6.28906 11.4062 5.9082C11.4062 5.52734 11.6992 5.23438 12.0996 5.23438L16.748 5.23438C17.1387 5.23438 17.4316 5.52734 17.4316 5.9082C17.4316 6.28906 17.1387 6.5918 16.748 6.5918ZM12.0996 11.0059C11.6992 11.0059 11.4062 10.7031 11.4062 10.3125C11.4062 9.94141 11.6992 9.64844 12.0996 9.64844L16.748 9.64844C17.1387 9.64844 17.4316 9.94141 17.4316 10.3125C17.4316 10.7031 17.1387 11.0059 16.748 11.0059ZM3.47656 22.1094L3.47656 15.6836C3.47656 14.5801 4.08203 14.0137 5.15625 14.0137L15.8203 14.0137C16.9238 14.0137 17.4902 14.5801 17.4902 15.6836L17.4902 22.0117L16.3281 22.0117L13.6328 18.9551C13.3887 18.6719 13.0371 18.5547 12.7148 18.5547C12.4023 18.5547 12.0898 18.6816 11.7773 18.9453L9.08203 21.3184L8.01758 20.3516C7.76367 20.1172 7.48047 20.0098 7.20703 20.0098C6.95312 20.0098 6.68945 20.1172 6.43555 20.3516L4.63867 22.1094ZM8.11523 18.9355C8.89648 18.9355 9.54102 18.291 9.54102 17.5195C9.54102 16.7383 8.89648 16.1133 8.11523 16.0938C7.33398 16.0742 6.69922 16.7383 6.69922 17.5195C6.69922 18.291 7.33398 18.9355 8.11523 18.9355ZM0 23.125C0 25.6445 1.25977 26.9238 3.75977 26.9238L17.207 26.9238C19.707 26.9238 20.9668 25.6445 20.9668 23.125L20.9668 3.80859C20.9668 1.28906 19.707 0.00976562 17.207 0.00976562L3.75977 0.00976562C1.25977 0.00976562 0 1.28906 0 3.80859Z" /></g></svg>`;
-    const ICON_SETTINGS_EXPORT_TEXT__TEXT_PAGE_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 21.3281 26.9238"><g><rect height="26.9238" opacity="0" width="21.3281" x="0" y="0"/><path d="M20.9668 3.80859L20.9668 23.125C20.9668 25.6445 19.707 26.9238 17.207 26.9238L3.75977 26.9238C1.25977 26.9238 0 25.6445 0 23.125L0 3.80859C0 1.28906 1.25977 0.00976562 3.75977 0.00976562L17.207 0.00976562C19.707 0.00976562 20.9668 1.28906 20.9668 3.80859ZM5.48828 14.4629C5.07812 14.4629 4.77539 14.7754 4.77539 15.166C4.77539 15.5566 5.07812 15.8594 5.48828 15.8594L10.2734 15.8594C10.6836 15.8594 10.9766 15.5566 10.9766 15.166C10.9766 14.7754 10.6836 14.4629 10.2734 14.4629ZM5.48828 9.94141C5.07812 9.94141 4.77539 10.2441 4.77539 10.625C4.77539 11.0254 5.07812 11.3379 5.48828 11.3379L15.4883 11.3379C15.8887 11.3379 16.1914 11.0254 16.1914 10.625C16.1914 10.2441 15.8887 9.94141 15.4883 9.94141ZM5.48828 5.41992C5.07812 5.41992 4.77539 5.72266 4.77539 6.10352C4.77539 6.50391 5.07812 6.81641 5.48828 6.81641L15.4883 6.81641C15.8887 6.81641 16.1914 6.50391 16.1914 6.10352C16.1914 5.72266 15.8887 5.41992 15.4883 5.41992Z" /></g></svg>`;
+    const ICON_SETTINGS_EXPORT_JSON__CURLYBRACES = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 23.3691 26.1035"><g><rect height="26.1035" width="23.3691" opacity="0" x="0" y="0"/><path d="M0 13.0469C0 13.6719 0.361328 14.1406 1.17188 14.2676C2.7832 14.4922 3.47656 15.3027 3.47656 17.4023L3.47656 21.1523C3.47656 24.5312 4.93164 26.1035 8.25195 26.1035C8.41797 26.1035 8.59375 26.0742 8.7207 26.0352C9.07227 25.9082 9.26758 25.6348 9.26758 25.2637C9.26758 24.8438 9.07227 24.6094 8.68164 24.5215C8.57422 24.502 8.4668 24.4824 8.33984 24.4727C6.17188 24.3555 5.33203 23.3984 5.33203 20.957L5.33203 16.5723C5.33203 14.4238 4.14062 13.2422 2.1875 13.0957C2.14844 13.0957 2.14844 13.0371 2.1875 13.0371C4.14062 12.8906 5.33203 11.6992 5.33203 9.55078L5.33203 5.15625C5.33203 2.71484 6.17188 1.77734 8.33984 1.65039C8.50586 1.64062 8.65234 1.62109 8.75977 1.58203C9.0918 1.48438 9.26758 1.25 9.26758 0.859375C9.26758 0.46875 9.0625 0.205078 8.68164 0.0878906C8.52539 0.0390625 8.35938 0.0195312 8.1543 0.0195312C4.92188 0.0195312 3.47656 1.61133 3.47656 4.9707L3.47656 8.73047C3.47656 10.8105 2.7832 11.6211 1.17188 11.8555C0.361328 11.9727 0 12.4316 0 13.0469ZM23.0078 13.0469C23.0078 12.4316 22.6465 11.9727 21.8457 11.8555C20.2246 11.6113 19.5312 10.8105 19.5312 8.73047L19.5312 4.9707C19.5312 1.61133 18.0859 0.0195312 14.8535 0.0195312C14.6484 0.0195312 14.4922 0.0390625 14.3359 0.0878906C13.9355 0.205078 13.7402 0.46875 13.7402 0.859375C13.7402 1.25 13.9355 1.47461 14.2578 1.58203C14.3652 1.62109 14.502 1.64062 14.668 1.65039C16.8262 1.72852 17.6758 2.71484 17.6758 5.15625L17.6758 9.55078C17.6758 11.709 18.877 13.0371 20.8203 13.0371C20.8691 13.0371 20.8691 13.0957 20.8203 13.0957C18.877 13.0957 17.6758 14.4141 17.6758 16.5723L17.6758 20.957C17.6758 23.3984 16.8359 24.3555 14.668 24.4727C14.541 24.4824 14.4434 24.502 14.3359 24.5215C13.9453 24.5898 13.7402 24.8438 13.7402 25.2637C13.7402 25.6543 13.9551 25.9375 14.2969 26.0352C14.4238 26.0742 14.5898 26.1035 14.7559 26.1035C18.0762 26.1035 19.5312 24.5312 19.5312 21.1523L19.5312 17.4023C19.5312 15.3027 20.2246 14.502 21.8457 14.2676C22.6465 14.1406 23.0078 13.6719 23.0078 13.0469Z"/></g></svg>`;
+    const ICON_SETTINGS_EXPORT_MARKDOWN__RICHTEXT_PAGE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 21.3281 26.9238"><g><rect height="26.9238" opacity="0" width="21.3281" x="0" y="0"/><path d="M4.60938 11.7969C4.90234 11.7969 5.08789 11.6504 5.18555 11.2793L5.70312 9.86328L8.17383 9.86328L8.70117 11.2793C8.79883 11.6406 8.99414 11.7969 9.27734 11.7969C9.6582 11.7969 9.87305 11.5918 9.87305 11.2402C9.87305 11.1523 9.84375 11.0156 9.79492 10.8691L7.8125 5.51758C7.65625 5.07812 7.38281 4.85352 6.93359 4.85352C6.50391 4.85352 6.24023 5.07812 6.07422 5.51758L4.0918 10.8691C4.04297 11.0059 4.02344 11.1523 4.02344 11.2402C4.02344 11.5918 4.23828 11.7969 4.60938 11.7969ZM5.97656 8.91602L6.9043 6.16211L6.97266 6.16211L7.91016 8.91602ZM12.0996 6.98242L16.3574 6.98242C16.748 6.98242 17.041 6.67969 17.041 6.29883C17.041 5.92773 16.748 5.63477 16.3574 5.63477L12.0996 5.63477C11.6992 5.63477 11.4062 5.92773 11.4062 6.29883C11.4062 6.67969 11.6992 6.98242 12.0996 6.98242ZM12.0996 11.3965L16.3574 11.3965C16.748 11.3965 17.041 11.0938 17.041 10.7129C17.041 10.3418 16.748 10.0488 16.3574 10.0488L12.0996 10.0488C11.6992 10.0488 11.4062 10.3418 11.4062 10.7129C11.4062 11.0938 11.6992 11.3965 12.0996 11.3965ZM3.86719 22.1094L4.63867 22.1094L6.43555 20.3516C6.68945 20.1172 6.95312 20.0098 7.20703 20.0098C7.48047 20.0098 7.76367 20.1172 8.01758 20.3516L9.08203 21.3184L11.7773 18.9453C12.0898 18.6816 12.4023 18.5547 12.7148 18.5547C13.0371 18.5547 13.3887 18.6719 13.6328 18.9551L16.3281 22.0117L17.0996 22.0117L17.0996 15.6836C17.0996 14.5801 16.5332 14.0137 15.4199 14.0137L5.55664 14.0137C4.47266 14.0137 3.86719 14.5801 3.86719 15.6836ZM8.11523 18.9355C7.33398 18.9355 6.69922 18.291 6.69922 17.5195C6.69922 16.7383 7.33398 16.0742 8.11523 16.0938C8.89648 16.1133 9.54102 16.7383 9.54102 17.5195C9.54102 18.291 8.89648 18.9355 8.11523 18.9355ZM0 23.125C0 25.6445 1.25977 26.9238 3.75977 26.9238L17.207 26.9238C19.707 26.9238 20.9668 25.6445 20.9668 23.125L20.9668 3.80859C20.9668 1.28906 19.707 0.00976562 17.207 0.00976562L3.75977 0.00976562C1.25977 0.00976562 0 1.28906 0 3.80859ZM1.72852 23.0859L1.72852 3.84766C1.72852 2.48047 2.45117 1.73828 3.85742 1.73828L17.1094 1.73828C18.5156 1.73828 19.2383 2.48047 19.2383 3.84766L19.2383 23.0859C19.2383 24.4531 18.5156 25.1953 17.1094 25.1953L3.85742 25.1953C2.45117 25.1953 1.72852 24.4531 1.72852 23.0859Z"/></g></svg>`;
+    const ICON_SETTINGS_EXPORT_RICHTEXT__CHARACTER_TEXT_JUSTIFY = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.4785 27.4316"><g><rect height="27.4316" width="25.4785" opacity="0" x="0" y="0"/><path d="M0.869141 24.4629L24.2383 24.4629C24.7266 24.4629 25.1172 24.0918 25.1172 23.6035C25.1172 23.1055 24.7266 22.7344 24.2383 22.7344L0.869141 22.7344C0.371094 22.7344 0 23.1055 0 23.6035C0 24.0918 0.371094 24.4629 0.869141 24.4629Z"/><path d="M0.869141 17.8711L24.2383 17.8711C24.7266 17.8711 25.1172 17.4902 25.1172 17.002C25.1172 16.5137 24.7266 16.1426 24.2383 16.1426L0.869141 16.1426C0.371094 16.1426 0 16.5137 0 17.002C0 17.4902 0.371094 17.8711 0.869141 17.8711Z"/><path d="M15.6348 11.2793L24.2383 11.2793C24.7266 11.2793 25.1172 10.8984 25.1172 10.4102C25.1172 9.92188 24.7266 9.54102 24.2383 9.54102L15.6348 9.54102C15.1465 9.54102 14.7754 9.92188 14.7754 10.4102C14.7754 10.8984 15.1465 11.2793 15.6348 11.2793Z"/><path d="M15.6348 4.67773L24.2383 4.67773C24.7266 4.67773 25.1172 4.30664 25.1172 3.81836C25.1172 3.33008 24.7266 2.94922 24.2383 2.94922L15.6348 2.94922C15.1465 2.94922 14.7754 3.33008 14.7754 3.81836C14.7754 4.30664 15.1465 4.67773 15.6348 4.67773Z"/><path d="M2.17773 11.8652C2.57812 11.8652 2.8418 11.6797 3.00781 11.1621L4.01367 8.33008L8.61328 8.33008L9.61914 11.1621C9.78516 11.6699 10.0488 11.8652 10.459 11.8652C10.9375 11.8652 11.2598 11.5527 11.2598 11.1133C11.2598 10.9473 11.2207 10.8008 11.1426 10.5566L7.50977 0.839844C7.30469 0.283203 6.89453 0 6.30859 0C5.72266 0 5.32227 0.283203 5.11719 0.839844L1.48438 10.5566C1.40625 10.8008 1.36719 10.9473 1.36719 11.1133C1.36719 11.5625 1.68945 11.8652 2.17773 11.8652ZM4.46289 7.00195L6.25 1.91406L6.37695 1.91406L8.16406 7.00195Z"/></g></svg>`;
+    const ICON_SETTINGS_EXPORT_SIMPLETEXT__TEXT_ALIGNLEFT = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.4785 21.5332"><g><rect height="21.5332" width="25.4785" opacity="0" x="0" y="0"/><path d="M0.869141 21.5137L15.2051 21.5137C15.7031 21.5137 16.084 21.1426 16.084 20.6543C16.084 20.1562 15.7031 19.7852 15.2051 19.7852L0.869141 19.7852C0.371094 19.7852 0 20.1562 0 20.6543C0 21.1426 0.371094 21.5137 0.869141 21.5137Z"/><path d="M0.869141 14.9219L24.2383 14.9219C24.7266 14.9219 25.1172 14.541 25.1172 14.0527C25.1172 13.5645 24.7266 13.1934 24.2383 13.1934L0.869141 13.1934C0.371094 13.1934 0 13.5645 0 14.0527C0 14.541 0.371094 14.9219 0.869141 14.9219Z"/><path d="M0.869141 8.33008L15.2051 8.33008C15.7031 8.33008 16.084 7.94922 16.084 7.46094C16.084 6.97266 15.7031 6.5918 15.2051 6.5918L0.869141 6.5918C0.371094 6.5918 0 6.97266 0 7.46094C0 7.94922 0.371094 8.33008 0.869141 8.33008Z"/><path d="M0.869141 1.72852L24.2383 1.72852C24.7266 1.72852 25.1172 1.35742 25.1172 0.869141C25.1172 0.380859 24.7266 0 24.2383 0L0.869141 0C0.371094 0 0 0.380859 0 0.869141C0 1.35742 0.371094 1.72852 0.869141 1.72852Z"/></g></svg>`;
     const ICON_SETTINGS_CLEAR__CLEAR_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 23.3203 22.959"><g><rect height="22.959" opacity="0" width="23.3203" x="0" y="0"/><path d="M22.959 3.76953L22.959 19.1992C22.959 21.6797 21.6797 22.959 19.1504 22.959L3.79883 22.959C1.2793 22.959 0 21.6992 0 19.1992L0 3.76953C0 1.26953 1.2793 0 3.79883 0L19.1504 0C21.6797 0 22.959 1.2793 22.959 3.76953ZM15.1172 6.62109L11.4844 10.2344L7.87109 6.63086C7.69531 6.45508 7.5 6.36719 7.24609 6.36719C6.74805 6.36719 6.34766 6.74805 6.34766 7.24609C6.34766 7.49023 6.44531 7.70508 6.61133 7.88086L10.2148 11.4844L6.61133 15.0879C6.44531 15.2637 6.34766 15.4883 6.34766 15.7227C6.34766 16.2305 6.74805 16.6309 7.24609 16.6309C7.5 16.6309 7.72461 16.5332 7.90039 16.3574L11.4844 12.7539L15.0781 16.3574C15.2441 16.5332 15.4785 16.6309 15.7324 16.6309C16.2305 16.6309 16.6309 16.2305 16.6309 15.7227C16.6309 15.4785 16.5527 15.2539 16.3672 15.0781L12.7637 11.4844L16.377 7.87109C16.5723 7.67578 16.6406 7.48047 16.6406 7.22656C16.6406 6.73828 16.2402 6.34766 15.752 6.34766C15.5078 6.34766 15.3027 6.42578 15.1172 6.62109Z" /></g></svg>`;
     const ICON_SETTINGS_DELETE__TRASH_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24.5703 30.0293"><g><rect height="30.0293" opacity="0" width="24.5703" x="0" y="0"/><path d="M8.26172 24.1113C7.8418 24.1113 7.56836 23.8477 7.54883 23.4473L7.14844 9.35547C7.13867 8.94531 7.41211 8.69141 7.85156 8.69141C8.24219 8.69141 8.53516 8.93555 8.54492 9.3457L8.96484 23.4375C8.97461 23.8379 8.69141 24.1113 8.26172 24.1113ZM12.1094 24.1113C11.6895 24.1113 11.3867 23.8379 11.3867 23.4375L11.3867 9.35547C11.3867 8.95508 11.6895 8.69141 12.1094 8.69141C12.5293 8.69141 12.832 8.95508 12.832 9.35547L12.832 23.4375C12.832 23.8379 12.5293 24.1113 12.1094 24.1113ZM15.9473 24.1113C15.5176 24.1113 15.2441 23.8379 15.2539 23.4473L15.6641 9.35547C15.6738 8.94531 15.9668 8.69141 16.3672 8.69141C16.7969 8.69141 17.0703 8.95508 17.0605 9.36523L16.6602 23.4473C16.6406 23.8574 16.3672 24.1113 15.9473 24.1113ZM6.66992 5.58594L8.37891 5.58594L8.37891 2.90039C8.37891 2.11914 8.91602 1.61133 9.75586 1.61133L14.4336 1.61133C15.2734 1.61133 15.8105 2.11914 15.8105 2.90039L15.8105 5.58594L17.5195 5.58594L17.5195 2.80273C17.5195 1.06445 16.3965 0 14.5312 0L9.6582 0C7.80273 0 6.66992 1.06445 6.66992 2.80273ZM0.810547 6.43555L23.3984 6.43555C23.8477 6.43555 24.209 6.06445 24.209 5.625C24.209 5.17578 23.8477 4.80469 23.3984 4.80469L0.810547 4.80469C0.380859 4.80469 0 5.18555 0 5.625C0 6.07422 0.380859 6.43555 0.810547 6.43555ZM6.37695 27.8906L17.8516 27.8906C19.5312 27.8906 20.7129 26.748 20.8008 25.0684L21.7285 6.18164L2.49023 6.18164L3.41797 25.0781C3.50586 26.7578 4.66797 27.8906 6.37695 27.8906Z"/></g></svg>`;
 
@@ -3111,13 +3242,24 @@
     const CHANGELOG = [
       {
         version: "1.10.0",
-        date: "2026-05-14",
-        title: "Settings Drawer Tuck-In",
-        summary: "Tightened Settings spacing and typography so controls scan faster without changing behavior.",
+        date: "2026-05-16",
+        title: "Visitor's Center",
+        summary: "The app got a new name, a new layout, four ways out, and a Help Center that actually helps.",
         highlights: [
-          "Settings sections are denser and less airy.",
-          "Parent category titles now stand apart from row-level labels.",
-          "Settings controls keep the same behavior in a more compact layout."
+          "Visit Tracker. That's the name now.",
+          "Settings, Help Center, and What's New are a top navigation bar — always visible, never buried.",
+          "App name and version live in a tidy footer pill at the bottom of the panel.",
+          "Four export formats: JSON for backups, Markdown for docs, Rich Text for word processors, and Simple Text for anywhere else. Equal buttons, clear labels, file extensions included.",
+          "Help and FAQ are now one searchable Help Center — type anything, matches highlight instantly.",
+          "Changelog and Roadmap are now one What's New tab with collapsible sections that float their headers as you scroll."
+        ],
+        updates: [
+          "Import and Export controls compacted: no nested card, buttons stretch to fill the row equally and always show icon and text.",
+          "Roadmap filters expanded with Target and Effort; order is now Category, Priority, Target, Effort in both the filter row and each card.",
+          "'Bucket' removed from roadmap target labels.",
+          "Roadmap search, filters, and sort controls float sticky below the Roadmap header while scrolling.",
+          "Settings close button now has the X icon and label like all other dialogs.",
+          "Send Feedback added to Help Center. IYKYK."
         ],
         updates: [
           "Reduced Settings section gaps, card padding, and mobile spacing for a tighter panel.",
@@ -3571,8 +3713,8 @@
 
     function wishlistTargetLabel(wish) {
       return wish.targetKind === "exact"
-        ? `Exact: ${wish.targetVersion || "Unassigned"}`
-        : `Bucket: ${wish.targetKind}`;
+        ? wish.targetVersion || "Unassigned"
+        : wish.targetKind;
     }
 
     function loadState() {
@@ -3790,6 +3932,21 @@
       button.title = powerOverlayActive && shortcut ? `${text} (${shortcut})` : text;
     }
 
+    function setExportBtnLabel(selector, symbol, label, ext) {
+      const button = typeof selector === "string" ? $(selector) : selector;
+      if (!button) return;
+      const rawSym = String(symbol);
+      const safeSym = rawSym.startsWith("<svg ") ? rawSym : escapeHtml(rawSym);
+      const safeLabel = escapeHtml(label);
+      const safeExt = escapeHtml(ext);
+      const fullLabel = `${label} ${ext}`;
+      const textWithExt = `${safeLabel}<span class="btn-ext"> ${safeExt}</span>`;
+      button.innerHTML = `<span class="btn-label"><span class="btn-symbol" aria-hidden="true">${safeSym}</span><span class="btn-text">${textWithExt}</span></span>`;
+      button.setAttribute("aria-label", fullLabel);
+      const shortcut = button.dataset.shortcut;
+      button.title = powerOverlayActive && shortcut ? `${fullLabel} (${shortcut})` : fullLabel;
+    }
+
     function setDateButtonLabel(selector, symbol, text, example, aria = text) {
       const button = typeof selector === "string" ? $(selector) : selector;
       if (!button) return;
@@ -3930,6 +4087,7 @@
       setButtonLabel("#saveNoteBtn", ICON_GLOBAL_ACTION_APPLY__CHECKMARK, "Save Note");
       setButtonLabel("#levelDialogCloseBtn", ICON_GLOBAL_CLOSE__XMARK, "Close");
       setButtonLabel("#paletteCloseBtn", ICON_GLOBAL_CLOSE__XMARK, "Close");
+      setButtonLabelBoth("#settingsCloseBtn", ICON_GLOBAL_CLOSE__XMARK, "Close");
       syncConfirmButtons();
       setButtonLabelBoth("#lightModeBtn", ICON_SETTINGS_THEME__SUN_MAX_FILL, "Light");
       setButtonLabelBoth("#darkModeBtn", ICON_SETTINGS_THEME__MOON_FILL, "Dark");
@@ -3940,15 +4098,14 @@
       setButtonLabelBoth("#hintsOffBtn", ICON_SETTINGS_HINT_OFF__LIGHTBULB, "Off", "Hints off");
       setButtonLabelBoth("#cycleModeBtn", ICON_SETTINGS_MAP_CYCLE__ARROW_TRIANGLEHEAD_2_CLOCKWISE, "Cycle", "Tap to cycle");
       setButtonLabelBoth("#selectModeBtn", ICON_SETTINGS_MAP_SELECT__SCOPE, "Select", "Tap to select");
-      setButtonLabelBoth("#exportJsonBtn", ICON_SETTINGS_EXPORT_JSON__CURLYBRACES_SQUARE_FILL, "Export JSON Backup");
-      setButtonLabelBoth("#exportMarkdownBtn", ICON_SETTINGS_EXPORT_MARKDOWN__RICHTEXT_PAGE_FILL, "Complete Markdown");
-      setButtonLabelBoth("#exportRichTextBtn", ICON_SETTINGS_EXPORT_TEXT__TEXT_PAGE_FILL, "Simple Rich Text");
+      setExportBtnLabel("#exportJsonBtn", ICON_SETTINGS_EXPORT_JSON__CURLYBRACES, "JSON", ".json");
+      setExportBtnLabel("#exportMarkdownBtn", ICON_SETTINGS_EXPORT_MARKDOWN__RICHTEXT_PAGE, "Markdown", ".md");
+      setExportBtnLabel("#exportRichTextBtn", ICON_SETTINGS_EXPORT_RICHTEXT__CHARACTER_TEXT_JUSTIFY, "Rich Text", ".rtf");
+      setExportBtnLabel("#exportPlainTextBtn", ICON_SETTINGS_EXPORT_SIMPLETEXT__TEXT_ALIGNLEFT, "Simple Text", ".txt");
       setButtonLabelBoth("#resetAppBtn", ICON_SETTINGS_DELETE__TRASH_FILL, "Reset App Data");
       setButtonLabelBoth("[data-tab='settings']", ICON_SETTINGS_SECTION__GEARSHAPE_FILL, "Settings");
-      setButtonLabelBoth("[data-tab='help']", ICON_SETTINGS_SECTION__QUESTIONMARK_CIRCLE_FILL, "Help Manual");
-      setButtonLabelBoth("[data-tab='faq']", "!", "FAQ");
-      setButtonLabelBoth("[data-tab='changelog']", ICON_SETTINGS_SECTION__SPARKLE_TEXT_CLIPBOARD_FILL, "Changelog");
-      setButtonLabelBoth("[data-tab='wishlist']", "☆", "Roadmap");
+      setButtonLabelBoth("[data-tab='help']", ICON_SETTINGS_SECTION__QUESTIONMARK_CIRCLE_FILL, "Help Center");
+      setButtonLabelBoth("[data-tab='whatsnew']", ICON_SETTINGS_SECTION__SPARKLE_TEXT_CLIPBOARD_FILL, "What's New");
       $("#legendToggleBtn").setAttribute("aria-pressed", String(legendPanelOpen));
       $("#notesToggleBtn").setAttribute("aria-pressed", String(notesPanelOpen));
       $("#mapFitBtn").setAttribute("aria-pressed", String(mapFitMode));
@@ -4785,7 +4942,7 @@
     }
 
     function renderSettingsControls() {
-      $("#versionLabel").textContent = APP_VERSION;
+      $("#versionLabel").textContent = `v${APP_VERSION}`;
       $("#lightModeBtn").setAttribute("aria-pressed", state.settings.theme === "light");
       $("#darkModeBtn").setAttribute("aria-pressed", state.settings.theme === "dark");
       $("#symbolButtonsBtn").setAttribute("aria-pressed", state.settings.buttonStyle === "symbols");
@@ -4834,13 +4991,15 @@
       const search = $("#wishSearch").value.trim().toLowerCase();
       const priority = $("#wishPriorityFilter").value;
       const category = $("#wishCategoryFilter").value;
+      const target = $("#wishTargetFilter").value;
+      const effort = $("#wishEffortFilter").value;
       const categories = [...new Set(state.wishlist.map(w => w.category).filter(Boolean))].sort();
       $("#wishCategoryFilter").innerHTML = `<option value="">All categories</option>` + categories.map(cat =>
         `<option ${category === cat ? "selected" : ""}>${escapeHtml(cat)}</option>`
       ).join("");
       let items = state.wishlist.filter(wish => {
         const blob = `${wish.ticketId} ${wish.title} ${wish.description} ${wish.category} ${wish.priority} ${wish.effort} ${wish.targetKind} ${wish.targetVersion} ${wish.prompt}`.toLowerCase();
-        return (!search || blob.includes(search)) && (!priority || wish.priority === priority) && (!category || wish.category === category);
+        return (!search || blob.includes(search)) && (!priority || wish.priority === priority) && (!category || wish.category === category) && (!target || wish.targetKind === target) && (!effort || wish.effort === effort);
       });
       const rank = { P0: 0, P1: 1, P2: 2, P3: 3 };
       const sort = $("#wishSort").value;
@@ -4857,10 +5016,10 @@
           </div>
           <p>${escapeHtml(wish.description || "No description")}</p>
           <div class="chips">
-            <span class="tag">Priority: ${escapeHtml(wish.priority)}</span>
-            <span class="tag">Effort: ${escapeHtml(wish.effort)}</span>
-            <span class="tag">Target: ${escapeHtml(wishlistTargetLabel(wish))}</span>
             <span class="tag">Category: ${escapeHtml(wish.category || "General")}</span>
+            <span class="tag">Priority: ${escapeHtml(wish.priority)}</span>
+            <span class="tag">Target: ${escapeHtml(wishlistTargetLabel(wish))}</span>
+            <span class="tag">Effort: ${escapeHtml(wish.effort)}</span>
           </div>
           <div class="roadmap-field"><b>Cost</b><span>${escapeHtml(String(wish.tokenCostPct || 0))}% implementation tokens</span></div>
           <div class="roadmap-field"><b>Prompt</b><div class="roadmap-prompt">${escapeHtml(wish.prompt || "")}</div></div>
@@ -4922,6 +5081,39 @@
       const body = lines.map(line => rtfEscape(line)).join("\\line ");
       const rtf = `{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0 -apple-system;}}\\f0\\fs24 ${body}}`;
       downloadFile(`${slug(state.mapName)}-simple.rtf`, "application/rtf", rtf);
+    }
+
+    function exportPlainText() {
+      const counted = countedStateTotal();
+      const completionTotal = completionRegionTotal();
+      const pct = Math.round((counted / completionTotal) * 100);
+      const notesFor = abbr => (state.notes[abbr] || [])
+        .slice()
+        .sort((a, b) => (a.date || "").localeCompare(b.date || ""))
+        .map(note => `${formatDateDisplay(note.date)} [${levelById(note.levelId)?.name || "No level"}]: ${note.text || "No summary"}`)
+        .join("; ") || "None";
+      const lines = [
+        state.mapName,
+        `Generated by US State Visit Map ${APP_VERSION}`,
+        "",
+        "Overall Stats",
+        `Total counted regions: ${counted} of ${completionTotal}`,
+        `Completion: ${pct}%`,
+        "",
+        "Regions A-Z"
+      ];
+      STATES.slice().sort((a, b) => a[1].localeCompare(b[1])).forEach(([abbr, name]) => {
+        lines.push(`${name} (${abbr}) — ${stateLevelNames(abbr).join(", ") || "Unvisited"} — ${notesFor(abbr)}`);
+      });
+      const chronological = STATES.flatMap(([abbr, name]) => (state.notes[abbr] || []).map(note => ({ ...note, abbr, name })))
+        .sort((a, b) => (a.date || "").localeCompare(b.date || "") || a.name.localeCompare(b.name));
+      if (chronological.length) {
+        lines.push("", "Notes Chronologically");
+        chronological.forEach(note => {
+          lines.push(`${formatDateDisplay(note.date)} — ${note.name} — ${levelById(note.levelId)?.name || "No level"} — ${note.text || "No summary"}`);
+        });
+      }
+      downloadFile(`${slug(state.mapName)}-simple.txt`, "text/plain", lines.join("\n"));
     }
 
     function rtfEscape(value) {
@@ -5015,9 +5207,7 @@
           q: () => $("#settingsDialog").close(),
           s: () => switchTab("settings"),
           h: () => switchTab("help"),
-          f: () => switchTab("faq"),
-          g: () => switchTab("changelog"),
-          w: () => switchTab("wishlist"),
+          g: () => switchTab("whatsnew"),
           l: () => updateSetting("theme", "light"),
           d: () => updateSetting("theme", "dark"),
           i: () => updateSetting("buttonStyle", "symbols"),
@@ -5036,6 +5226,7 @@
           j: () => $("#exportJsonBtn").click(),
           m: () => $("#exportMarkdownBtn").click(),
           e: () => $("#exportRichTextBtn").click(),
+          t: () => $("#exportPlainTextBtn").click(),
           x: () => $("#resetAppBtn").click()
         };
         if (!settingsActions[key]) return;
@@ -5073,6 +5264,37 @@
       if (!actions[key]) return;
       event.preventDefault();
       actions[key]();
+    }
+
+    function bindHelpSearch() {
+      const input = $("#helpSearch");
+      if (!input) return;
+      const searchItems = $$("#tab-help p, #tab-help li");
+      searchItems.forEach(el => { el.dataset.originalHtml = el.innerHTML; });
+      input.addEventListener("input", () => {
+        const raw = input.value.trim();
+        searchItems.forEach(el => {
+          el.innerHTML = el.dataset.originalHtml;
+          el.classList.remove("no-match");
+        });
+        $$("#tab-help .help-section").forEach(sec => sec.classList.remove("help-section-hidden"));
+        if (!raw) return;
+        const re = new RegExp(`(${raw.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi");
+        $$("#tab-help .help-section").forEach(sec => {
+          const items = $$("p, li", sec);
+          let any = false;
+          items.forEach(el => {
+            if (re.test(el.textContent)) {
+              any = true;
+              el.innerHTML = el.dataset.originalHtml.replace(re, "<mark>$1</mark>");
+            } else {
+              el.classList.add("no-match");
+            }
+            re.lastIndex = 0;
+          });
+          sec.classList.toggle("help-section-hidden", !any);
+        });
+      });
     }
 
     function bindEvents() {
@@ -5237,15 +5459,18 @@
       });
       $("#exportMarkdownBtn").addEventListener("click", exportMarkdown);
       $("#exportRichTextBtn").addEventListener("click", exportRichText);
+      $("#exportPlainTextBtn").addEventListener("click", exportPlainText);
       $("#importFile").addEventListener("change", importJson);
-      ["wishSearch", "wishPriorityFilter", "wishCategoryFilter", "wishSort"].forEach(id => {
+      ["wishSearch", "wishCategoryFilter", "wishPriorityFilter", "wishTargetFilter", "wishEffortFilter", "wishSort"].forEach(id => {
         $(`#${id}`).addEventListener("input", renderWishlist);
         $(`#${id}`).addEventListener("change", renderWishlist);
       });
       $("#resetWishFiltersBtn").addEventListener("click", () => {
         $("#wishSearch").value = "";
-        $("#wishPriorityFilter").value = "";
         $("#wishCategoryFilter").value = "";
+        $("#wishPriorityFilter").value = "";
+        $("#wishTargetFilter").value = "";
+        $("#wishEffortFilter").value = "";
         $("#wishSort").value = "createdDesc";
         renderWishlist();
       });
@@ -5278,8 +5503,7 @@
     function switchTab(tabName) {
       $$(".tabs [role='tab']").forEach(tab => tab.setAttribute("aria-selected", tab.dataset.tab === tabName));
       $$(".doc").forEach(panel => panel.classList.toggle("active", panel.id === `tab-${tabName}`));
-      if (tabName === "changelog") renderChangelog();
-      if (tabName === "wishlist") renderWishlist();
+      if (tabName === "whatsnew") { renderChangelog(); renderWishlist(); }
       queueSettingsDialogScrollReset();
     }
 
@@ -5315,6 +5539,7 @@
     function init() {
       initMap();
       bindEvents();
+      bindHelpSearch();
       render();
     }
 
