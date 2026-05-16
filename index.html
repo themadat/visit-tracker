@@ -133,6 +133,18 @@
       gap: .25rem;
     }
 
+    [data-button-style="both"] #settingsDialog button .btn-label,
+    [data-button-style="both"] #settingsDialog .tabs button .btn-label,
+    [data-button-style="both"] #settingsDialog .actions button:not(.icon-btn) .btn-label {
+      flex-direction: row;
+      gap: .3rem;
+      font-size: inherit;
+    }
+
+    [data-button-style="both"] #settingsDialog button .btn-text {
+      font-size: inherit;
+    }
+
     button[aria-pressed="true"].toggle-btn {
       background: var(--accent);
       border-color: var(--accent);
@@ -371,6 +383,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap;
       gap: .65rem;
       padding: .95rem 1rem;
       border-bottom: 1px solid var(--line);
@@ -383,16 +396,18 @@
 
     .map-head-hints {
       display: flex;
-      flex-wrap: wrap;
-      gap: .12rem .55rem;
-      margin-top: .14rem;
+      justify-content: flex-end;
+      flex: 1 1 100%;
+      margin-top: -.35rem;
       line-height: 1.22;
     }
 
     .map-head-hints small {
       display: inline-flex;
       align-items: center;
+      justify-content: flex-end;
       font-size: .72rem;
+      text-align: right;
     }
 
     .map-head-actions {
@@ -402,6 +417,7 @@
       flex: 0 0 auto;
       flex-wrap: nowrap;
       justify-content: flex-end;
+      margin-left: auto;
       min-width: 0;
     }
 
@@ -699,11 +715,11 @@
       gap: .32rem;
       flex-wrap: nowrap;
       justify-content: flex-end;
-      min-width: calc(96px + .48rem);
+      min-width: calc(144px + .64rem);
     }
 
     [data-button-style="text"] .legend-title-actions {
-      min-width: calc(176px + .48rem);
+      min-width: calc(260px + .64rem);
     }
 
     .legend-list,
@@ -718,7 +734,7 @@
 
     .legend-item {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-columns: minmax(0, 1fr) auto minmax(.9rem, .38fr) auto;
       gap: .38rem;
       align-items: center;
       width: 100%;
@@ -755,7 +771,8 @@
 
     .legend-filter {
       display: grid;
-      grid-template-columns: auto minmax(0, 1fr) auto;
+      grid-column: 1;
+      grid-template-columns: auto minmax(0, 1fr);
       gap: .32rem;
       align-items: center;
       width: 100%;
@@ -774,6 +791,8 @@
 
     .legend-actions {
       display: grid;
+      grid-column: 4;
+      justify-self: end;
       grid-template-columns: repeat(4, 24px);
       gap: .16rem;
       align-items: center;
@@ -858,9 +877,12 @@
 
     .level-stats {
       display: flex;
+      grid-column: 2;
       align-items: center;
+      justify-content: center;
       gap: .18rem;
       white-space: nowrap;
+      justify-self: center;
     }
 
     .count-pill {
@@ -983,6 +1005,12 @@
 
     .setting-row .segmented button .sf-symbol {
       overflow: visible;
+    }
+
+    .setting-hint {
+      margin-top: -.28rem;
+      font-size: .76rem;
+      line-height: 1.28;
     }
 
     .date-option-label {
@@ -1259,19 +1287,37 @@
     #settingsDialog[open] {
       display: grid;
       grid-template-rows: auto minmax(0, 1fr) auto;
+      width: min(720px, calc(100dvw - 1rem));
+      max-width: calc(100dvw - 1rem);
       height: min(860px, calc(100vh - 1.6rem));
       overflow: hidden;
+    }
+
+    #settingsDialog,
+    #settingsDialog * {
+      box-sizing: border-box;
     }
 
     #settingsDialog header {
       padding: .38rem .75rem;
       gap: .5rem;
+      min-width: 0;
     }
 
     #settingsDialog header .tabs {
       padding-bottom: 0;
       min-height: unset;
       flex: 1;
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    #settingsDialog .tabs button,
+    #settingsDialog .setting-row,
+    #settingsDialog .segmented,
+    #settingsDialog .actions,
+    #settingsDialog .btn-label,
+    #settingsDialog .btn-text {
       min-width: 0;
     }
 
@@ -1307,6 +1353,7 @@
       min-height: 0;
       max-height: none;
       overflow-y: auto;
+      overflow-x: hidden;
       overscroll-behavior: contain;
     }
 
@@ -1928,9 +1975,82 @@
         gap: .28rem;
       }
 
+      #settingsDialog[open] {
+        width: calc(100dvw - .75rem);
+        max-width: calc(100dvw - .75rem);
+        height: min(860px, calc(100dvh - .75rem));
+        max-height: calc(100dvh - .75rem);
+      }
+
+      #settingsDialog header {
+        padding: .34rem .45rem;
+        gap: .34rem;
+      }
+
+      #settingsDialog header .tabs {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: .22rem;
+        overflow: visible;
+      }
+
+      #settingsDialog header .tabs button {
+        min-width: 0;
+        min-height: 34px;
+        padding: .32rem .24rem;
+        font-size: .72rem;
+        white-space: normal;
+      }
+
+      #settingsDialog header .tabs button .btn-label,
+      #settingsCloseBtn .btn-label {
+        gap: .18rem;
+      }
+
+      #settingsCloseBtn {
+        flex: 0 0 auto;
+        min-width: 0;
+        padding: .36rem .42rem;
+        font-size: .74rem;
+      }
+
+      #settingsDialog .dialog-body {
+        padding: .68rem;
+      }
+
       #tab-settings .settings-category {
         gap: .54rem;
         padding: .68rem;
+      }
+
+      .setting-row .segmented {
+        gap: .12rem;
+      }
+
+      .setting-row .segmented button {
+        padding: .3rem .24rem;
+        font-size: .72rem;
+      }
+
+      #tab-settings .actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      #tab-settings .actions button {
+        min-width: 0;
+        padding: .4rem .3rem;
+        font-size: .76rem;
+      }
+
+      .dialog-bottom-bar {
+        flex-wrap: wrap;
+        gap: .35rem;
+        padding: .45rem .68rem;
+      }
+
+      .dialog-bottom-bar .spacer {
+        display: none;
       }
 
       .exclude-stat-title {
@@ -1977,7 +2097,7 @@
 
       .legend-title-actions {
         gap: .18rem;
-        min-width: calc(80px + .3rem);
+        min-width: calc(120px + .36rem);
       }
 
       .legend-list {
@@ -1985,7 +2105,7 @@
       }
 
       .legend-item {
-        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-columns: minmax(0, 1fr) auto minmax(.55rem, .24fr) auto;
         gap: .18rem;
         padding: .16rem .2rem;
         border-radius: 6px;
@@ -2002,7 +2122,7 @@
       }
 
       .legend-actions {
-        grid-column: 2;
+        grid-column: 4;
         grid-row: auto;
         grid-template-columns: repeat(4, 20px);
         gap: .1rem;
@@ -2047,7 +2167,7 @@
       }
 
       [data-button-style="text"] .legend-title-actions {
-        min-width: calc(68px + .1rem);
+        min-width: calc(102px + .2rem);
       }
 
       [data-button-style="text"] .legend-item .icon-btn {
@@ -2093,11 +2213,6 @@
           <div class="map-head-title">
             <h2 id="mapHeading">State Map</h2>
             <small id="tapHint" data-hint>Tap a state to cycle its visit level.</small>
-            <div class="map-head-hints">
-              <small data-hint data-hint-key="map-labels">Choose map label format: none, abbr, or full name</small>
-              <small data-hint data-hint-key="map-fit">Switches between screenshot-ready fit and scrollable view.</small>
-              <small data-hint data-hint-key="map-panels">Show/Hide Legend/Notes Panels.</small>
-            </div>
           </div>
           <div class="map-head-actions">
             <div class="segmented map-label-toggle" aria-label="Map labels">
@@ -2112,6 +2227,12 @@
               data-shortcut="L">Legend</button>
             <button id="notesToggleBtn" class="toggle-btn" type="button" aria-pressed="false"
               data-shortcut="N">Notes</button>
+          </div>
+          <div class="map-head-hints">
+            <small data-hint data-hint-key="map-controls">
+              Choose map labels text: none, abbr, full name<br/>
+              Switch between screenshot-ready/scrollable map views.<br/>
+              Show/Hide the Legend/Notes Panels.</small>
           </div>
         </div>
         <div class="map-viewport">
@@ -2582,11 +2703,16 @@
               </div>
               <div class="legend-title-actions">
                 <button id="smartColorsBtn" type="button" data-shortcut="C">Auto Colors</button>
+                <button id="suggestionsToggleBtn" class="toggle-btn" type="button" aria-pressed="false"
+                  data-shortcut="H">Hide Suggestions</button>
                 <button id="addLevelBtn" type="button" data-shortcut="A">Add Level</button>
               </div>
             </div>
-            <small data-hint>Top level wins the map color when a state has multiple levels. Removing levels will move
-              affected states down to the next lowest level.</small>
+            <small data-hint data-hint-key="legend-help">
+              Top level color wins when a state has multiple levels.<br/>
+              Removing levels moves affected states down a level.<br/>
+              Auto Colors apply featured color palettes to your levels.<br/>
+              Hide Suggestions controls the suggested category chips below; use those or make your own.</small>
             <div id="legendList" class="legend-list"></div>
             <div id="builtinLevels" class="chips" style="margin-top: .75rem;"></div>
           </section>
@@ -2595,7 +2721,6 @@
           <div class="row" style="justify-content: space-between;">
             <div class="notes-title-stack">
               <h2 id="notesPanelTitle">Notes</h2>
-              <small id="notesPanelSubtitle">Marked states and visit notes.</small>
               <small id="notesPanelHint" data-hint data-hint-key="notesPanelSubtitle">Search states, select legend levels to
                 filter, and use sort/view toggles to scan Notes.</small>
             </div>
@@ -2736,7 +2861,8 @@
         <div class="date-picker-actions">
           <button id="noteTodayBtn" type="button">Today</button>
           <button id="noteYearOnlyBtn" type="button">Year Only</button>
-          <small data-hint>Start with a year. Add month and day only if you know them.</small>
+          <small data-hint data-hint-key="note-date-help">Use whatever you know: year only, month and year, or a full
+            date.</small>
         </div>
       </section>
       <label>Summary or note
@@ -2775,6 +2901,8 @@
           <span><b class="exclude-stat-title"><span>Exclude</span><span>from</span><span>Stats</span></b></span>
         </label>
       </div>
+      <small data-hint data-hint-key="level-editor-help">Changes save automatically. Keep definitions short; Exclude
+        from Stats removes this level from completion totals.</small>
       <section>
         <h3>Existing Swatches</h3>
         <div id="existingSwatches" class="swatch-grid" style="margin-top: .5rem;"></div>
@@ -2792,8 +2920,8 @@
       <button id="paletteCloseBtn" type="button" data-close="paletteDialog" data-shortcut="Q">Close</button>
     </header>
     <div class="dialog-body">
-      <p class="muted" data-hint>Apply a full progressive theme across your current levels. Colors start at the top
-        legend level and continue downward.</p>
+      <p class="muted" data-hint data-hint-key="palette-help">Palettes apply top-to-bottom in legend order. You can
+        still fine-tune individual colors after applying.</p>
       <div id="paletteThemes" class="theme-swatches"></div>
     </div>
   </dialog>
@@ -2848,6 +2976,8 @@
               <button id="hintsOffBtn" type="button" aria-pressed="false" data-shortcut="O">Off</button>
             </div>
           </div>
+          <small class="setting-hint" data-hint data-hint-key="settings-hints-help">Turning Hints off hides all hints.
+            Turning them back on restores dismissed hints.</small>
         </section>
         <section class="settings-category">
           <h3>Map Interaction</h3>
@@ -2886,6 +3016,8 @@
             - Markdown (.md): structured text; use for pretty rendering or HTML based applications.<br>
             - Rich Text (.rtf): formatted text; for word processors with basic formatting.<br>
             - Plain Text (.txt): simple text; used anywhere, useful for basic notes.</p>
+          <small data-hint data-hint-key="import-export-help">JSON restores your full map. Text exports are for sharing,
+            notes, or printing.</small>
           <div class="actions">
             <button id="exportJsonBtn" class="primary" type="button" data-shortcut="J">JSON</button>
             <button id="exportMarkdownBtn" type="button" data-shortcut="M">Markdown</button>
@@ -2995,9 +3127,9 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "1.11.0.1";
+    const APP_VERSION = "1.11.0.8";
     const STORAGE_KEY = "usStateVisitMap.v1";
-    const WISHLIST_SEED_VERSION = "1.11.0";
+    const WISHLIST_SEED_VERSION = "1.11.0.6";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
       ["NV", "Nevada", 2, 2], ["AZ", "Arizona", 2, 3], ["HI", "Hawaii", 1, 6], ["MT", "Montana", 3, 0], ["WY", "Wyoming", 3, 2],
@@ -3322,9 +3454,124 @@
         tokenCostPct: 72,
         prompt: "Major Notes upgrade: improve note delete buttons; add structured Where Specifically, What For, Who With fields with date as when; add visit-type icons for first, favorite, and core memory; improve exports for structured notes.",
         category: "Notes"
+      },
+      {
+        title: "Center State Labels on Actual Shapes",
+        ticketId: "WISH-022",
+        description: "Improve map label placement so labels sit closer to each state's real visual center instead of the bounding-box center. Scope includes concave states, small states, territories, name/abbr modes, overlap checks, and manual anchor overrides where needed.",
+        priority: "P2",
+        effort: "medium",
+        targetKind: "patch",
+        targetVersion: "",
+        tokenCostPct: 18,
+        prompt: "Better align state labels to the visual center of each actual state shape rather than bounding boxes. Preserve label modes and add targeted overrides for awkward shapes.",
+        category: "Maps"
       }
     ];
     const CHANGELOG = [
+      {
+        version: "1.11.0.8",
+        date: "2026-05-16",
+        title: "Legend Toggle State Polish",
+        summary: "Legend suggestions now use clearer active-state styling and better stat alignment.",
+        highlights: [
+          "The Suggestions toggle turns blue only when suggested categories are visible.",
+          "Legend stat pills now sit in a centered aligned lane with space before the action buttons."
+        ],
+        updates: [
+          "Changed the Suggestions toggle pressed state to represent visible suggestions instead of hidden suggestions.",
+          "Reworked legend row columns to add a flexible spacer between stat pills and action buttons."
+        ]
+      },
+      {
+        version: "1.11.0.7",
+        date: "2026-05-16",
+        title: "Legend Suggestions Toggle",
+        summary: "Suggested legend categories can now stay hidden until needed.",
+        highlights: [
+          "Added a Hide Suggestions toggle between Auto Colors and Add Level.",
+          "Suggested category chips default to hidden.",
+          "Legend stat pills now sit in a centered aligned column before the action buttons."
+        ],
+        updates: [
+          "Added a persistent hideSuggestedCategories setting with safe migration for existing local data.",
+          "Updated the legend hint to explain the suggestions toggle.",
+          "Moved per-level stat pills into their own aligned legend column so the pills sit closer to center while remaining vertically aligned."
+        ]
+      },
+      {
+        version: "1.11.0.6",
+        date: "2026-05-16",
+        title: "Settings Mobile Fit",
+        summary: "Settings now ignores app button-style changes and fits more calmly on phone screens.",
+        highlights: [
+          "Settings keeps its own compact icon-and-text controls even when the app is set to Icon + Text mode.",
+          "Phone-width Settings now avoids horizontal expansion by tightening tabs, rows, exports, and footer wrapping.",
+          "Roadmap gained a label-centering ticket for more accurate map labels."
+        ],
+        updates: [
+          "Added Settings-specific overrides so global Icon + Text stacking does not alter Settings controls.",
+          "Constrained the Settings dialog to the visible viewport and hid horizontal overflow inside the dialog body.",
+          "Changed mobile Settings tabs to a three-column fit and made Settings export actions a two-column grid.",
+          "Added roadmap ticket WISH-022 for centering state labels on actual state shapes instead of bounding boxes."
+        ]
+      },
+      {
+        version: "1.11.0.5",
+        date: "2026-05-16",
+        title: "Map Button Alignment",
+        summary: "Map header controls now stay pinned to the right side.",
+        highlights: [
+          "Right-justified the map header button group across responsive layouts."
+        ],
+        updates: [
+          "Added right-edge auto spacing to the State Map header controls so the buttons remain aligned right."
+        ]
+      },
+      {
+        version: "1.11.0.4",
+        date: "2026-05-16",
+        title: "Default Fit Map",
+        summary: "The map now opens in screenshot-friendly fit mode by default.",
+        highlights: [
+          "Fit Map starts enabled when the app loads."
+        ],
+        updates: [
+          "Changed the default map viewport mode from scrollable to fit-to-screen."
+        ]
+      },
+      {
+        version: "1.11.0.3",
+        date: "2026-05-16",
+        title: "More Helpful Hints",
+        summary: "Added a few focused hints where the app benefits from a little context.",
+        highlights: [
+          "Added hints for level editing, Smart Colors, import/export, flexible note dates, and the Hints setting.",
+          "Kept each hint dismissible through the existing saved hint system."
+        ],
+        updates: [
+          "Level editing now clarifies autosave, short definitions, and Exclude from Stats behavior.",
+          "Smart Colors now explains top-to-bottom palette application and later fine-tuning.",
+          "Import and Export now distinguishes full JSON backups from shareable text exports.",
+          "The note date picker now explains year-only, month-year, and full-date entry.",
+          "The Hints setting now explains its relationship to individual hint dismissals."
+        ]
+      },
+      {
+        version: "1.11.0.2",
+        date: "2026-05-16",
+        title: "Hint Placement Polish",
+        summary: "Map and legend hints are cleaner and more useful.",
+        highlights: [
+          "Combined the map control hints into one dismissible note under the controls.",
+          "Expanded the legend hint to explain Auto Colors and suggested categories."
+        ],
+        updates: [
+          "Moved map-control guidance below the Labels, Fit Map, Legend, and Notes controls.",
+          "Added a stable legend hint key for future dismiss behavior.",
+          "Clarified that suggested categories can be used directly or replaced with custom levels."
+        ]
+      },
       {
         version: "1.11.0.1",
         date: "2026-05-16",
@@ -3601,7 +3848,7 @@
     let notesSortMode = "chrono";
     let notesViewMode = "compact";
     let notesSearchQuery = "";
-    let mapFitMode = false;
+    let mapFitMode = true;
     let noteLevelFilters = new Set();
     let powerOverlayActive = false;
     let levelAutoSaveTimer = null;
@@ -3614,7 +3861,7 @@
       return {
         appVersion: APP_VERSION,
         mapName: "Your State Map",
-        settings: { theme: "light", tapBehavior: "cycle", buttonStyle: "symbols", uiHints: true, dateOrder: "mdy", dateStyle: "alpha", mapLabels: "none" },
+        settings: { theme: "light", tapBehavior: "cycle", buttonStyle: "symbols", uiHints: true, dateOrder: "mdy", dateStyle: "alpha", mapLabels: "none", hideSuggestedCategories: true },
         levels,
         states: defaultTerritoryStates(levels),
         notes: {},
@@ -3856,6 +4103,7 @@
       if (!["mdy", "dmy", "ymd"].includes(next.settings.dateOrder)) next.settings.dateOrder = "mdy";
       if (!["numeric", "alpha"].includes(next.settings.dateStyle)) next.settings.dateStyle = "alpha";
       if (!["none", "abbr", "name"].includes(next.settings.mapLabels)) next.settings.mapLabels = "none";
+      if (typeof next.settings.hideSuggestedCategories !== "boolean") next.settings.hideSuggestedCategories = true;
       next.settings.uiHints = next.settings.uiHints !== false;
       delete next.settings.powerMode;
       next.dismissedHints = Array.isArray(input.dismissedHints)
@@ -4200,6 +4448,10 @@
       const fitTitle = mapFitMode ? "Return to scrollable map" : "Fit map on screen";
       setButtonLabel("#mapFitBtn", mapFitMode ? ICON_MAP_VIEW_SCROLL_ARROW_UP_AND_DOWN_AND_ARROW_LEFT_AND_RIGHT : ICON_MAP_VIEW_CENTER_CAMERA_METERING_SPOT, mapFitMode ? "Scroll Map" : "Fit Map", fitTitle);
       setButtonLabel("#smartColorsBtn", ICON_LEGEND_COLORS__SWATCHPALETTE_FILL, "Auto Colors");
+      const suggestionsHidden = state.settings.hideSuggestedCategories;
+      const suggestionsVisible = !suggestionsHidden;
+      setButtonLabel("#suggestionsToggleBtn", suggestionsVisible ? ICON_SETTINGS_HINT_ON__LIGHTBULB_MAX_FILL : ICON_SETTINGS_HINT_OFF__LIGHTBULB, suggestionsVisible ? "Hide Suggestions" : "Show Suggestions", suggestionsVisible ? "Hide suggested categories" : "Show suggested categories");
+      $("#suggestionsToggleBtn").setAttribute("aria-pressed", String(suggestionsVisible));
       const atMax = state.levels.length >= 5;
       setButtonLabel("#addLevelBtn", atMax ? "5/5" : ICON_GLOBAL_ACTION_ADD__PLUS_APP_FILL, atMax ? "MAX LEVELS" : "Add Level");
       setButtonLabel("#notesPanelBackBtn", ICON_GLOBAL_BACK__CHEVRON_BACKWARD, "All Notes");
@@ -4396,11 +4648,11 @@
               <span class="level-name">${escapeHtml(level.name)}</span><br>
               <small>${escapeHtml(level.definition)}</small>
             </span>
-            <span class="level-stats" aria-label="${escapeHtml(level.name)} stats">
-              ${level.countsTowardStats === false ? `<span class="percent-pill no-stat-pill" title="Excluded from stats">⊘</span>` : `<span class="percent-pill">${Math.round(((counts[level.id] || 0) / totalRegions) * 100)}%</span>`}
-              <span class="count-pill">${counts[level.id] || 0}</span>
-            </span>
           </button>
+          <span class="level-stats" aria-label="${escapeHtml(level.name)} stats">
+            ${level.countsTowardStats === false ? `<span class="percent-pill no-stat-pill" title="Excluded from stats">⊘</span>` : `<span class="percent-pill">${Math.round(((counts[level.id] || 0) / totalRegions) * 100)}%</span>`}
+            <span class="count-pill">${counts[level.id] || 0}</span>
+          </span>
           <span class="legend-actions">
             <span class="order-buttons" aria-label="Move ${escapeHtml(level.name)}">
               ${actionButtonHtml({ symbol: ICON_GLOBAL_ACTION_UP__ARROWSHAPE_UP_FILL, text: "Up", aria: `Move ${level.name} up`, attrs: `data-move-level="${level.id}" data-direction="-1" ${index === 0 ? "disabled" : ""}` })}
@@ -4470,6 +4722,11 @@
 
     function renderBuiltinLevels() {
       const container = $("#builtinLevels");
+      container.classList.toggle("hidden", state.settings.hideSuggestedCategories);
+      if (state.settings.hideSuggestedCategories) {
+        container.innerHTML = "";
+        return;
+      }
       const active = new Set(state.levels.map(level => level.id));
       const missing = BUILT_INS.filter(level => OPTIONAL_LEVEL_IDS.includes(level.id) && !active.has(level.id));
       if (!missing.length || state.levels.length >= 5) {
@@ -5410,6 +5667,7 @@
         s: () => $("#settingsBtn").click(),
         r: () => $("#renameBtn").click(),
         c: () => $("#smartColorsBtn").click(),
+        h: () => $("#suggestionsToggleBtn").click(),
         a: () => {
           const addNote = $("#notesPanelAddNoteBtn");
           if (notesPanelOpen && !notesPanelState) $("#notesSortAlphaBtn").click();
@@ -5578,6 +5836,9 @@
       $("#smartColorsBtn").addEventListener("click", () => {
         renderPaletteDialog();
         $("#paletteDialog").showModal();
+      });
+      $("#suggestionsToggleBtn").addEventListener("click", () => {
+        updateSetting("hideSuggestedCategories", !state.settings.hideSuggestedCategories);
       });
       $("#levelColor").addEventListener("input", () => {
         updateLevelColorUI();
