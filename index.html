@@ -687,39 +687,53 @@
 
     .legend-total-pills {
       display: inline-flex;
+      grid-column: 2;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: center;
+      justify-self: center;
       gap: .18rem;
       white-space: nowrap;
     }
 
+    #legendPanel {
+      --legend-action-lane: calc(144px + .64rem);
+      --legend-stat-spacer: minmax(.9rem, .38fr);
+    }
+
+    [data-button-style="text"] #legendPanel,
+    [data-button-style="both"] #legendPanel {
+      --legend-action-lane: calc(260px + .64rem);
+    }
+
     .legend-title-row {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-columns: minmax(0, 1fr) auto var(--legend-stat-spacer) var(--legend-action-lane);
       gap: .38rem;
       align-items: center;
       margin-bottom: .45rem;
     }
 
     .legend-title-main {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: .32rem;
-      align-items: center;
-      min-width: 0;
+      display: contents;
+    }
+
+    .legend-title-main h2 {
+      grid-column: 1;
     }
 
     .legend-title-actions {
       display: flex;
+      grid-column: 4;
       align-items: center;
       gap: .32rem;
       flex-wrap: nowrap;
       justify-content: flex-end;
-      min-width: calc(144px + .64rem);
+      justify-self: end;
+      min-width: var(--legend-action-lane);
     }
 
     [data-button-style="text"] .legend-title-actions {
-      min-width: calc(260px + .64rem);
+      min-width: var(--legend-action-lane);
     }
 
     .legend-list,
@@ -734,7 +748,7 @@
 
     .legend-item {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto minmax(.9rem, .38fr) auto;
+      grid-template-columns: minmax(0, 1fr) auto var(--legend-stat-spacer) var(--legend-action-lane);
       gap: .38rem;
       align-items: center;
       width: 100%;
@@ -2078,6 +2092,8 @@
       }
 
       #legendPanel {
+        --legend-action-lane: calc(120px + .36rem);
+        --legend-stat-spacer: minmax(.55rem, .24fr);
         padding: .5rem;
         gap: .42rem;
       }
@@ -2097,7 +2113,7 @@
 
       .legend-title-actions {
         gap: .18rem;
-        min-width: calc(120px + .36rem);
+        min-width: var(--legend-action-lane);
       }
 
       .legend-list {
@@ -2105,7 +2121,6 @@
       }
 
       .legend-item {
-        grid-template-columns: minmax(0, 1fr) auto minmax(.55rem, .24fr) auto;
         gap: .18rem;
         padding: .16rem .2rem;
         border-radius: 6px;
@@ -2113,7 +2128,7 @@
 
       .legend-filter {
         grid-column: 1;
-        grid-template-columns: auto minmax(0, 1fr) auto;
+        grid-template-columns: auto minmax(0, 1fr);
         gap: .2rem;
       }
 
@@ -2167,7 +2182,12 @@
       }
 
       [data-button-style="text"] .legend-title-actions {
-        min-width: calc(102px + .2rem);
+        min-width: var(--legend-action-lane);
+      }
+
+      [data-button-style="text"] #legendPanel,
+      [data-button-style="both"] #legendPanel {
+        --legend-action-lane: calc(102px + .2rem);
       }
 
       [data-button-style="text"] .legend-item .icon-btn {
@@ -3127,7 +3147,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "1.11.0.8";
+    const APP_VERSION = "1.11.0.9";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const WISHLIST_SEED_VERSION = "1.11.0.6";
     const STATES = [
@@ -3469,6 +3489,19 @@
       }
     ];
     const CHANGELOG = [
+      {
+        version: "1.11.0.9",
+        date: "2026-05-16",
+        title: "Legend Stat Alignment",
+        summary: "Legend title stats now align with the per-level stat pills.",
+        highlights: [
+          "Header stats and item stats share the same stat lane."
+        ],
+        updates: [
+          "Added shared legend grid lanes for stats, spacer, and action controls.",
+          "Kept mobile legend spacing compact while preserving stat alignment."
+        ]
+      },
       {
         version: "1.11.0.8",
         date: "2026-05-16",
