@@ -1321,6 +1321,11 @@
       padding: 0;
     }
 
+    #changelogList {
+      display: grid;
+      gap: .48rem;
+    }
+
     .roadmap-field {
       display: grid;
       gap: .18rem;
@@ -3409,7 +3414,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "1.13.0.3";
+    const APP_VERSION = "1.13.0";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -3707,28 +3712,25 @@
     ];
     const CHANGELOG = [
       {
-        version: "1.13.0.3",
+        version: "1.13.0",
         date: "2026-05-16",
-        title: "Release Notes Shortcut and Help Polish",
-        summary: "A new 1.13 pass focused on faster release-note access, clearer Help Center guidance, tighter map headers, cleaner roadmap defaults, and shortcut polish.",
+        title: "Release Notes, Help, and Shortcut Polish",
+        summary: "A focused release for faster release-note access, a clearer Help Center, tighter map controls, cleaner roadmap defaults, and more useful Developer Tools.",
         highlights: [
-          "Added a global R shortcut for Release Notes and Roadmap search flow.",
-          "Help Center and What's New sections now have leading icons for easier scanning.",
-          "State Map header spacing is tighter, with mobile controls split into label and render groups.",
-          "Roadmap now sorts by Priority by default and includes a new P0 tip jar ticket.",
-          "Developer Tools now includes a visible list of hidden commands and shortcuts.",
-          "Roadmap search, section spacing, and direct hidden-command rows got small focus/scanability refinements."
+          "Global R now opens Release Notes, then jumps to Roadmap search on the next press.",
+          "Help Center was refreshed to cover current map, legend, notes, dates, exports, hints, and shortcut behavior.",
+          "What's New and Help Center sections gained custom icons and tighter, cleaner spacing.",
+          "State Map header controls are shorter, and mobile map buttons split into label and render groups.",
+          "Roadmap now sorts by Priority by default and includes a P0 tip jar ticket.",
+          "Developer Tools includes a visible shortcut list with direct commands highlighted."
         ],
         updates: [
-          "Changed the map rename shortcut to M so R can own Release Notes globally.",
-          "Added Release Notes and Roadmap details ids for keyboard navigation and search focus.",
-          "Expanded Help Center content to cover current Legend, Notes, labels, fit mode, stats exclusion, date entry, exports, hints, and shortcut overlays.",
-          "Captured the manual Settings close-button spacing and custom Help/What's New section icon polish in this release note.",
-          "Added a tiny top gap above Roadmap search so its focused border is not clipped.",
-          "Reduced the gap between Release Notes and Roadmap, with no extra gap when Release Notes is collapsed.",
-          "The R shortcut now scrolls to the Roadmap section separator before focusing search.",
-          "Highlighted direct hidden commands that do not require Shift + Control + Option and kept them first in the Developer Tools list.",
-          "Added WISH-023 for a tip jar/support option."
+          "Changed Rename to shortcut M so R can own the Release Notes and Roadmap search flow.",
+          "Added Release Notes and Roadmap section ids for keyboard navigation, scroll targeting, and focus management.",
+          "Improved Roadmap search focus spacing, Release Notes/Roadmap separator spacing, and release note card spacing.",
+          "Expanded Help Center documentation and FAQ coverage for the latest interaction model.",
+          "Preserved and documented the Settings close-button spacing and custom section icon polish.",
+          "Added WISH-023 for a future tip jar/support option."
         ]
       },
       {
