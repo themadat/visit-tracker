@@ -134,26 +134,17 @@ For every completed change:
 ## Future Prompts
 
 --
-1.10
-
-Have the import/export section follow some of these rules. Button of equal size stretch to space. Less wasted vertical space towards the top
-
-Lets combine and update Help and FAQ into a single page called Help Center. Add a search bar that would surface and highlight potential help points or faq answers. First have Documentation, then FAQs, then Send Feedback Section. Send feedback should be a cheeky reference to if you know you know
-
-Combine Changelog and Wishlist into one page called "What's New". In there have two sub-sections Release Notes and Roadmap
-
---
 1.11
 
 Have each UI hint be individually dismissible with a light grey ICON_GLOBAL_DISMISS__X_CIRCLE_FILL. Changing the UI toggle overrides individual dismisses and either turn them all off or back on
 
 --
-1.12
+Setting close button looks a little off (needs more space)
 
-Delete button look weird on notes
+--
+2.0.0 - Improved Notes
 
-have seperate notes for who, what, where, when, how, why. Really just Where Specifically, What For, Who With (when is date)
-
-Better exports
-
-types of visits: first; favorite; core memory
+- Delete button look weird on notes
+- have seperate notes for who, what, where, when, how, why. Really just Where Specifically, What For, Who With (when is date)
+- icons for places and visit types (types of visits: first; favorite; core memory)
+- Better exports
