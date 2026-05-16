@@ -157,3 +157,5 @@ have seperate notes for who, what, where, when, how, why. Really just Where Spec
 Better exports
 
 types of visits: first; favorite; core memory
+
+improve export format
