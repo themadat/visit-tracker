@@ -653,6 +653,37 @@
       display: none;
     }
 
+    #labelDragReadout {
+      position: fixed;
+      top: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10000;
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: .55rem;
+      padding: .55rem .75rem;
+      font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, .22);
+      max-width: 320px;
+      user-select: text;
+      pointer-events: auto;
+    }
+
+    #labelDragReadout.hidden {
+      display: none;
+    }
+
+    html:not([data-developer="on"]) #labelDragReadout {
+      display: none;
+    }
+
+    html[data-developer="on"] #mapLabels text {
+      cursor: move;
+      pointer-events: auto;
+    }
+
     .summary-grid {
       display: grid;
       grid-template-columns: minmax(0, 1fr);
@@ -2813,6 +2844,8 @@
     </main>
   </div>
 
+  <div id="labelDragReadout" class="hidden" aria-live="polite"></div>
+
   <aside id="stateDrawer" class="drawer" aria-labelledby="drawerTitle" aria-hidden="true">
     <header>
       <div>
@@ -3211,7 +3244,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "1.12.0.2";
+    const APP_VERSION = "1.12.0";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -3231,22 +3264,41 @@
     const TERRITORY_IDS = ["PR", "VI", "GU", "MP", "AS"];
     const MAP_LABEL_OVERRIDES = {
       // dx/dy nudge bbox center (SVG units). x/y overrides to absolute position.
-      FL: { dy: 16 },
-      MI: { dy: 15 },
-      OK: { dy: 6 },
-      ID: { dy: 8 },
-      MD: { dy: -8, dx: 4 },
-      WV: { dy: -4 },
-      TN: { dy: 3 },
-      KY: { dy: 3 },
-      LA: { dy: 4 },
-      VA: { dx: -10 },
-      RI: { lineBreak: "newline" },
+      AK: { x: 121, y: 493 },
+      AL: { x: 650, y: 410 },
+      AR: { x: 547, y: 370 },
+      DE: { x: 843, y: 253 },
+      CA: { x: 68, y: 276 },
+      CT: { x: 858, y: 179 },
+      FL: { x: 760, y: 504 },
+      ID: { x: 189, y: 151 },
+      IN: { x: 645, y: 247 },
+      KY: { x: 676, y: 305 },
+      LA: { x: 556, y: 469 },
+      MA: { x: 869, y: 162 },
+      MD: { x: 801, y: 244 },
+      MI: { x: 661, y: 179 },
+      MN: { x: 505, y: 121 },
+      MS: { x: 596, y: 422 },
+      NC: { x: 778, y: 333 },
+      NH: { x: 867, y: 139, lineBreak: "newline" },
+      NJ: { x: 843, y: 220, lineBreak: "newline" },
+      NY: { x: 817, y: 148, lineBreak: "newline" },
+      OK: { x: 458, y: 362 },
+      PA: { x: 778, y: 213 },
+      RI: { x: 888, y: 195, lineBreak: "newline" },
+      SC: { x: 757, y: 374, lineBreak: "newline" },
+      TN: { x: 654, y: 348 },
+      TX: { x: 437, y: 456 },
+      VA: { x: 784, y: 284 },
+      VT: { x: 845, y: 120 },
+      WA: { x: 121, y: 56 },
+      WV: { x: 735, y: 277, lineBreak: "newline" },
       DC: { x: 795, y: 265, anchor: "start", abbrSize: 10, nameSize: 8 },
       PR: { abbrSize: 10, nameSize: 8, lineBreak: "newline" },
       VI: { anchor: "middle", abbrSize: 10, nameSize: 8, lineBreak: "newline" },
       GU: { anchor: "middle", abbrSize: 10, nameSize: 8 },
-      MP: { anchor: "middle", abbrSize: 10, nameSize: 8, lineBreak: "newline" },
+      MP: { anchor: "middle", abbrSize: 10, nameSize: 7, lineBreak: "newline" },
       AS: { anchor: "middle", abbrSize: 10, nameSize: 8, lineBreak: "newline" }
     };
     const BUILT_INS = [
@@ -3386,7 +3438,7 @@
         targetVersion: "",
         tokenCostPct: 28,
         prompt: "Add local saved places/home data with edit/delete and import/export persistence. No network geocoding.",
-        category: "Planning"
+        category: "Maps"
       },
       {
         title: "Add Drive Radius",
@@ -3398,7 +3450,7 @@
         targetVersion: "",
         tokenCostPct: 36,
         prompt: "Add saved-place radius planning. Persist distance/settings and show clear non-road-distance limits.",
-        category: "Planning"
+        category: "Maps"
       },
       {
         title: "Tighten iPhone Layout",
@@ -3410,19 +3462,7 @@
         targetVersion: "",
         tokenCostPct: 32,
         prompt: "Improve iPhone layout: map size, controls, dialogs, safe areas, touch targets, and text fitting.",
-        category: "Mobile"
-      },
-      {
-        title: "Improve Map Label Placement",
-        ticketId: "WISH-012",
-        description: "Refine state label anchors so abbreviations and names are easier to read. Scope includes overlap reduction, territory labels, fit mode checks, and preserving label modes.",
-        priority: "P0",
-        effort: "small",
-        targetKind: "patch",
-        targetVersion: "",
-        tokenCostPct: 9,
-        prompt: "Tune map label anchors for readability across label modes, territories, and fit/scroll map views.",
-        category: "Maps"
+        category: "UI"
       },
       {
         title: "Give Settings Close Button More Room",
@@ -3447,49 +3487,31 @@
         tokenCostPct: 72,
         prompt: "Major Notes upgrade: improve note delete buttons; add structured Where Specifically, What For, Who With fields with date as when; add visit-type icons for first, favorite, and core memory; improve exports for structured notes.",
         category: "Notes"
-      },
-      {
-        title: "Center State Labels on Actual Shapes",
-        ticketId: "WISH-022",
-        description: "Improve map label placement so labels sit closer to each state's real visual center instead of the bounding-box center. Scope includes concave states, small states, territories, name/abbr modes, overlap checks, and manual anchor overrides where needed.",
-        priority: "P2",
-        effort: "medium",
-        targetKind: "patch",
-        targetVersion: "",
-        tokenCostPct: 18,
-        prompt: "Better align state labels to the visual center of each actual state shape rather than bounding boxes. Preserve label modes and add targeted overrides for awkward shapes.",
-        category: "Maps"
       }
     ];
     const CHANGELOG = [
       {
-        version: "1.12.0.2",
+        version: "1.12.0",
         date: "2026-05-16",
-        title: "Roadmap Alignment",
-        summary: "Roadmap controls and results now stay left-aligned while sorting and filtering.",
+        title: "Developer Mode and Map Label Tuning",
+        summary: "A hidden Developer Tools mode with one-key Shortcut Mode and a drag-to-position map label tool, plus simpler hardcoded label positions, suggestions on by default, and a notes-panel detail fix.",
         highlights: [
-          "Roadmap filtering, sorting, and result cards no longer center their content.",
-          "Completed roadmap ticket WISH-005 was retired."
+          "Added a hidden Developer Tools.",
+          "In Developer Mode, have a Shortcut Mode for one-key actions and map labels become drag-to-position with a centered readout that prints the exact x/y snippet ready to paste into MAP_LABEL_OVERRIDES.",
+          "Map label positioning is now bounding-box center plus per-state dx/dy nudges — no runtime centroid computation, just hardcoded numbers that are easy to tweak.",
+          "Suggested legend categories are now visible by default for new users.",
+          "Fixed the notes panel so tapping a state again reveals Applied Levels and Visit Notes details.",
+          "Roadmap sorting now includes Target and Effort, and roadmap controls/cards stay left-aligned while filtering."
         ],
         updates: [
-          "Forced Roadmap controls and result cards to stretch and left-align in the What's New panel.",
-          "Removed WISH-005 from seeded roadmap data and completion-filtered it from existing local roadmap data."
-        ]
-      },
-      {
-        version: "1.12.0.1",
-        date: "2026-05-16",
-        title: "Developer Mode",
-        summary: "Developer tools are now available when enabled, with a persistent shortcut overlay mode for faster testing.",
-        highlights: [
-          "Added a Developer Tools menu for advanced local controls.",
-          "Added Shortcut Mode to keep shortcut badges visible and allow one-key actions without holding modifiers.",
-          "Roadmap sorting now includes Target and Effort."
-        ],
-        updates: [
-          "Added persisted developerMode and shortcutMode settings with safe migration.",
-          "Reused the existing shortcut overlay and dispatcher for Developer Tools Shortcut Mode.",
-          "Added Target and Effort options to the Roadmap sort list."
+          "Added persisted developerMode and shortcutMode settings with safe migration; Shortcut Mode requires Developer Mode.",
+          "Added a Developer Tools tab with a secret toggle to enter/exit Developer Mode.",
+          "Added pointer-driven drag handlers on SVG label text in Developer Mode, with SVG-coordinate conversion and a fixed centered readout that updates live during drag.",
+          "Removed the runtime polygon-centroid label cache; label positions are now bounding-box center plus dx/dy or absolute x/y overrides.",
+          "Added an id=\"notesPanelSubtitle\" element so renderNotesPanel can set the per-state subtitle without throwing on null, restoring the Applied Levels and Visit Notes content.",
+          "Flipped the hideSuggestedCategories default from true to false in defaultState and normalizeState's fallback.",
+          "Added Target and Effort options to the Roadmap sort list and forced Roadmap controls and result cards to stretch and left-align.",
+          "Removed completed roadmap ticket WISH-005 from seeded data and completion-filtered it from existing local data."
         ]
       },
       {
@@ -4373,6 +4395,7 @@
       $("#labelsNameBtn").setAttribute("aria-pressed", mode === "name");
       if (mode === "none") return;
 
+      const devMode = state.settings.developerMode === true;
       const svgNS = "http://www.w3.org/2000/svg";
       STATES.forEach(([abbr, name]) => {
         const tile = $(`.state-tile[data-abbr="${abbr}"]`);
@@ -4382,21 +4405,25 @@
         const label = mode === "name" ? rawLabel.replace(/\s+/g, " ").trim() : rawLabel;
         const stackWords = mode === "name" && (override.lineBreak === "newline");
         const box = tile.getBBox();
-        const x = override.x ?? (box.x + box.width / 2 + (override.dx ?? 0));
-        const y = override.y ?? (box.y + box.height / 2 + (override.dy ?? 0) + 3);
+        const cx = override.x ?? (box.x + box.width / 2 + (override.dx ?? 0));
+        const cy = override.y ?? (box.y + box.height / 2 + (override.dy ?? 0) + 3);
         const fontSize = override[`${mode}Size`] || (mode === "name" ? 10 : 12);
+        const labelLines = stackWords ? label.split(/\s+/).filter(Boolean) : [label];
+        const lineHeight = parseFloat(fontSize) * .95;
+        const yOffset = labelLines.length > 1 ? (lineHeight * (labelLines.length - 1)) / 2 : 0;
         const text = document.createElementNS(svgNS, "text");
-        text.setAttribute("x", x);
-        text.setAttribute("y", y);
+        text.dataset.abbr = abbr;
+        text.dataset.cx = cx;
+        text.dataset.cy = cy;
+        text.dataset.yOffset = yOffset;
+        text.setAttribute("x", cx);
+        text.setAttribute("y", cy - yOffset);
         text.setAttribute("text-anchor", override.anchor || "middle");
         text.setAttribute("font-size", fontSize);
-        const labelLines = stackWords ? label.split(/\s+/).filter(Boolean) : [label];
         if (labelLines.length > 1) {
-          const lineHeight = parseFloat(fontSize) * .95;
-          text.setAttribute("y", y - (lineHeight * (labelLines.length - 1)) / 2);
           labelLines.forEach((line, index) => {
             const tspan = document.createElementNS(svgNS, "tspan");
-            tspan.setAttribute("x", x);
+            tspan.setAttribute("x", cx);
             if (index) tspan.setAttribute("dy", lineHeight);
             tspan.textContent = line;
             text.append(tspan);
@@ -4405,7 +4432,71 @@
           text.textContent = label;
         }
         labels.append(text);
+        if (devMode) attachLabelDrag(text);
       });
+    }
+
+    function attachLabelDrag(textEl) {
+      const svg = $("#stateMap");
+      if (!svg) return;
+      let dragging = false;
+      let startX = 0, startY = 0, origCx = 0, origCy = 0;
+
+      const toSvgPoint = (clientX, clientY) => {
+        const pt = svg.createSVGPoint();
+        pt.x = clientX;
+        pt.y = clientY;
+        return pt.matrixTransform(svg.getScreenCTM().inverse());
+      };
+
+      const apply = (cx, cy) => {
+        const yOffset = parseFloat(textEl.dataset.yOffset) || 0;
+        textEl.dataset.cx = cx;
+        textEl.dataset.cy = cy;
+        textEl.setAttribute("x", cx);
+        textEl.setAttribute("y", cy - yOffset);
+        textEl.querySelectorAll("tspan").forEach(t => t.setAttribute("x", cx));
+      };
+
+      textEl.addEventListener("pointerdown", event => {
+        event.preventDefault();
+        event.stopPropagation();
+        dragging = true;
+        textEl.setPointerCapture(event.pointerId);
+        const p = toSvgPoint(event.clientX, event.clientY);
+        startX = p.x;
+        startY = p.y;
+        origCx = parseFloat(textEl.dataset.cx) || 0;
+        origCy = parseFloat(textEl.dataset.cy) || 0;
+      });
+
+      textEl.addEventListener("pointermove", event => {
+        if (!dragging) return;
+        const p = toSvgPoint(event.clientX, event.clientY);
+        const nx = Math.round(origCx + (p.x - startX));
+        const ny = Math.round(origCy + (p.y - startY));
+        apply(nx, ny);
+        updateLabelDragReadout(textEl.dataset.abbr, nx, ny);
+      });
+
+      const end = event => {
+        if (!dragging) return;
+        dragging = false;
+        try { textEl.releasePointerCapture(event.pointerId); } catch { }
+      };
+      textEl.addEventListener("pointerup", end);
+      textEl.addEventListener("pointercancel", end);
+    }
+
+    function updateLabelDragReadout(abbr, x, y) {
+      const readout = $("#labelDragReadout");
+      if (!readout) return;
+      readout.classList.remove("hidden");
+      readout.innerHTML = `
+        <div style="font-weight:600;margin-bottom:.15rem;">${escapeHtml(abbr)} label</div>
+        <div>x: ${x} · y: ${y}</div>
+        <div style="opacity:.7;margin-top:.3rem;user-select:all;">${escapeHtml(abbr)}: { x: ${x}, y: ${y} },</div>
+      `;
     }
 
     function levelCounts() {
