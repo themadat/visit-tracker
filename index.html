@@ -381,6 +381,20 @@
       flex: 1 1 auto;
     }
 
+    .map-head-hints {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .12rem .55rem;
+      margin-top: .14rem;
+      line-height: 1.22;
+    }
+
+    .map-head-hints small {
+      display: inline-flex;
+      align-items: center;
+      font-size: .72rem;
+    }
+
     .map-head-actions {
       display: flex;
       gap: .32rem;
@@ -611,6 +625,12 @@
       padding: .7rem;
       align-self: stretch;
       align-content: start;
+    }
+
+    .notes-title-stack {
+      display: grid;
+      gap: .12rem;
+      line-height: 1.24;
     }
 
     .summary-grid {
@@ -2073,6 +2093,11 @@
           <div class="map-head-title">
             <h2 id="mapHeading">State Map</h2>
             <small id="tapHint" data-hint>Tap a state to cycle its visit level.</small>
+            <div class="map-head-hints">
+              <small data-hint data-hint-key="map-labels">Choose map label format: none, abbr, or full name</small>
+              <small data-hint data-hint-key="map-fit">Switches between screenshot-ready fit and scrollable view.</small>
+              <small data-hint data-hint-key="map-panels">Show/Hide Legend/Notes Panels.</small>
+            </div>
           </div>
           <div class="map-head-actions">
             <div class="segmented map-label-toggle" aria-label="Map labels">
@@ -2568,10 +2593,11 @@
         </section>
         <section id="notesPanel" class="panel side-panel" aria-label="Notes">
           <div class="row" style="justify-content: space-between;">
-            <div>
+            <div class="notes-title-stack">
               <h2 id="notesPanelTitle">Notes</h2>
-              <small id="notesPanelSubtitle" data-hint>Marked states and visit notes. Select legend levels to filter
-                this view.</small>
+              <small id="notesPanelSubtitle">Marked states and visit notes.</small>
+              <small id="notesPanelHint" data-hint data-hint-key="notesPanelSubtitle">Search states, select legend levels to
+                filter, and use sort/view toggles to scan Notes.</small>
             </div>
             <button id="notesPanelBackBtn" type="button" data-shortcut="B">All</button>
           </div>
@@ -2969,7 +2995,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "1.11.0";
+    const APP_VERSION = "1.11.0.1";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const WISHLIST_SEED_VERSION = "1.11.0";
     const STATES = [
@@ -3299,6 +3325,22 @@
       }
     ];
     const CHANGELOG = [
+      {
+        version: "1.11.0.1",
+        date: "2026-05-16",
+        title: "Map Control Hints",
+        summary: "Map and Notes guidance is clearer without adding permanent clutter.",
+        highlights: [
+          "Added dismissible hints for Labels, Fit Map, and the Legend/Notes panel toggles.",
+          "Notes guidance now mentions search, legend filters, sorting, and view toggles.",
+          "Notes hint dismissal uses a stable saved key so it stays dismissed across view changes."
+        ],
+        updates: [
+          "Added compact State Map header hints for label display, screenshot fit, and panel visibility controls.",
+          "Split Notes status text from Notes helper text so filter/state status remains visible after dismissing the hint.",
+          "Kept hint dismissal compatible with the existing localStorage dismissedHints migration."
+        ]
+      },
       {
         version: "1.11.0",
         date: "2026-05-16",
@@ -4674,8 +4716,8 @@
         const notes = filteredNotesFor(notesPanelState);
         const filterNames = activeFilterNames();
         $("#notesPanelTitle").textContent = STATE_NAMES[notesPanelState];
-        $("#notesPanelSubtitle").removeAttribute("data-hint");
         $("#notesPanelSubtitle").textContent = `${names.length ? names.join(", ") : "Unvisited"}${filterNames.length ? ` · Filtered by ${filterNames.join(", ")}` : ""}`;
+        $("#notesPanelHint").textContent = "Use All to return to search, sort, view, and legend filter controls.";
         $("#notesPanelContent").className = "note-list";
         $("#notesPanelContent").innerHTML = `
           <section>
@@ -4726,11 +4768,7 @@
 
       $("#notesPanelTitle").textContent = "Notes";
       const filterNames = activeFilterNames();
-      if (filterNames.length) $("#notesPanelSubtitle").removeAttribute("data-hint");
-      else $("#notesPanelSubtitle").setAttribute("data-hint", "");
-      $("#notesPanelSubtitle").textContent = filterNames.length
-        ? `Filtered by ${filterNames.join(", ")}. Select legend levels to adjust.`
-        : "Marked states and visit notes. Select legend levels to filter this view.";
+      $("#notesPanelHint").textContent = "Select legend levels to filter, search by name, and toggle sort/view settings to scan Notes.";
       const marked = sortedMarkedStateAbbrs();
       if (!marked.length) {
         const emptyText = notesSearchQuery.trim()
