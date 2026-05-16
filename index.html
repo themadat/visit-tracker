@@ -649,6 +649,10 @@
       line-height: 1.24;
     }
 
+    #notesPanelSubtitle:empty {
+      display: none;
+    }
+
     .summary-grid {
       display: grid;
       grid-template-columns: minmax(0, 1fr);
@@ -1232,6 +1236,31 @@
       margin: 0;
     }
 
+    #tab-whatsnew .roadmap-sticky-controls,
+    #tab-whatsnew .wishlist-list,
+    #tab-whatsnew .wishlist-card,
+    #tab-whatsnew .roadmap-field {
+      width: 100%;
+      justify-items: stretch;
+      text-align: left;
+    }
+
+    #tab-whatsnew .roadmap-filters,
+    #tab-whatsnew .roadmap-sort-row {
+      justify-items: stretch;
+      justify-content: stretch;
+      text-align: left;
+    }
+
+    .roadmap-card-title {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: .4rem;
+      flex-wrap: wrap;
+      text-align: left;
+    }
+
     .release-section {
       display: grid;
       gap: .18rem;
@@ -1351,6 +1380,21 @@
     }
 
     .dialog-bottom-bar .spacer { flex: 1; }
+
+    .secret-emoji {
+      display: inline;
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      border-radius: 999px;
+      line-height: 1;
+      vertical-align: baseline;
+    }
+
+    .secret-emoji:hover {
+      background: color-mix(in srgb, var(--surface-2) 78%, var(--accent) 10%);
+    }
 
     .version-pill {
       background: var(--surface-2);
@@ -1643,6 +1687,7 @@
 
     .doc.active {
       display: grid;
+      align-content: start;
     }
 
     .doc section {
@@ -2003,7 +2048,7 @@
 
       #settingsDialog header .tabs {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
         gap: .22rem;
         overflow: visible;
       }
@@ -2742,6 +2787,7 @@
           <div class="row" style="justify-content: space-between;">
             <div class="notes-title-stack">
               <h2 id="notesPanelTitle">Notes</h2>
+              <small id="notesPanelSubtitle"></small>
               <small id="notesPanelHint" data-hint data-hint-key="notesPanelSubtitle">Search states, select legend levels to
                 filter, and use sort/view toggles to scan Notes.</small>
             </div>
@@ -2967,6 +3013,8 @@
         <button type="button" role="tab" data-tab="settings" aria-selected="true" data-shortcut="S">Settings</button>
         <button type="button" role="tab" data-tab="help" data-shortcut="H">Help Center</button>
         <button type="button" role="tab" data-tab="whatsnew" data-shortcut="G">What's New</button>
+        <button class="hidden" type="button" role="tab" data-tab="developer" data-shortcut="V" data-dev-only>Developer
+          Tools</button>
       </div>
       <button id="settingsCloseBtn" type="button" data-close="settingsDialog" data-shortcut="Q">Close</button>
     </header>
@@ -3130,6 +3178,8 @@
                 <option value="createdDesc">Newest</option>
                 <option value="createdAsc">Oldest</option>
                 <option value="priority">Priority</option>
+                <option value="target">Target</option>
+                <option value="effort">Effort</option>
                 <option value="title">Title</option>
               </select>
               <button id="resetWishFiltersBtn" type="button">Reset Filters</button>
@@ -3138,19 +3188,31 @@
           <div id="wishlistList" class="wishlist-list"></div>
         </details>
       </section>
+      <section id="tab-developer" class="doc settings-page hidden" role="tabpanel" data-dev-only>
+        <section class="settings-category">
+          <h3>Developer Tools</h3>
+          <div class="setting-row">
+            <div class="setting-label">Shortcut Mode</div>
+            <div class="segmented" aria-label="Shortcut Mode">
+              <button id="shortcutModeOnBtn" type="button" aria-pressed="false" data-shortcut="K">On</button>
+              <button id="shortcutModeOffBtn" type="button" aria-pressed="true" data-shortcut="Z">Off</button>
+            </div>
+          </div>
+        </section>
+      </section>
     </div>
     <footer class="dialog-bottom-bar">
       <b>Visit Tracker</b>
       <span class="version-pill" id="versionLabel"></span>
       <span class="spacer"></span>
-      <span>Made with ☕️ and 🥃 by Adam Lauer</span>
+      <span>Made with <button id="coffeeKeyBtn" class="secret-emoji" type="button" aria-label="Coffee">☕️</button> and
+        <button id="liquorKeyBtn" class="secret-emoji" type="button" aria-label="Cheers">🥃</button> by Adam Lauer</span>
     </footer>
   </dialog>
 
   <script>
-    const APP_VERSION = "1.11.0";
+    const APP_VERSION = "1.12.0.2";
     const STORAGE_KEY = "usStateVisitMap.v1";
-    const WISHLIST_SEED_VERSION = "1.11.0.6";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
       ["NV", "Nevada", 2, 2], ["AZ", "Arizona", 2, 3], ["HI", "Hawaii", 1, 6], ["MT", "Montana", 3, 0], ["WY", "Wyoming", 3, 2],
@@ -3168,6 +3230,17 @@
     const STATE_NAMES = Object.fromEntries(STATES.map(([abbr, name]) => [abbr, name]));
     const TERRITORY_IDS = ["PR", "VI", "GU", "MP", "AS"];
     const MAP_LABEL_OVERRIDES = {
+      // dx/dy nudge bbox center (SVG units). x/y overrides to absolute position.
+      FL: { dy: 16 },
+      MI: { dy: 15 },
+      OK: { dy: 6 },
+      ID: { dy: 8 },
+      MD: { dy: -8, dx: 4 },
+      WV: { dy: -4 },
+      TN: { dy: 3 },
+      KY: { dy: 3 },
+      LA: { dy: 4 },
+      VA: { dx: -10 },
       RI: { lineBreak: "newline" },
       DC: { x: 795, y: 265, anchor: "start", abbrSize: 10, nameSize: 8 },
       PR: { abbrSize: 10, nameSize: 8, lineBreak: "newline" },
@@ -3213,6 +3286,8 @@
     const ICON_SETTINGS_SECTION__GEARSHAPE_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27.6074 27.2461" aria-hidden="true"><path d="M12.4707 27.2412L14.7803 27.2412C15.6396 27.2412 16.2842 26.7188 16.4795 25.874L17.0898 23.3252C17.4365 23.208 17.7783 23.0664 18.0908 22.9248L20.3125 24.3018C21.0303 24.7461 21.8799 24.6729 22.4707 24.0723L24.0967 22.4561C24.6924 21.8555 24.7656 20.9863 24.3018 20.2686L22.9443 18.0615C23.0859 17.7441 23.2227 17.4219 23.3252 17.0947L25.8984 16.4844C26.7383 16.2891 27.2461 15.6445 27.2461 14.7852L27.2461 12.5146C27.2461 11.665 26.7383 11.0205 25.8984 10.8203L23.3545 10.21C23.2324 9.85352 23.0908 9.52148 22.9639 9.2334L24.3311 6.97754C24.7803 6.24023 24.7168 5.41992 24.1064 4.81445L22.4609 3.18848C21.8555 2.6416 21.084 2.52441 20.3711 2.94434L18.0908 4.35059C17.7881 4.19922 17.4512 4.07227 17.0947 3.94531L16.4795 1.3623C16.2793 0.522461 15.6396 0 14.7803 0L12.4707 0C11.6064 0 10.9717 0.522461 10.7666 1.36719L10.1611 3.92578C9.80957 4.04297 9.45801 4.17969 9.14551 4.34082L6.87988 2.94434C6.15723 2.52441 5.37109 2.6123 4.78516 3.19336L3.13965 4.81445C2.5293 5.41992 2.46582 6.24023 2.91992 6.97754L4.28223 9.2334C4.15527 9.52148 4.01367 9.85352 3.89648 10.21L1.35254 10.8203C0.517578 11.0205 0 11.665 0 12.5146L0 14.7852C0 15.6445 0.517578 16.2891 1.35254 16.4844L3.9209 17.0947C4.02832 17.4219 4.16016 17.7441 4.30176 18.0615L2.94434 20.2686C2.48535 20.9863 2.55859 21.8555 3.1543 22.4561L4.77539 24.0723C5.37109 24.6729 6.2207 24.7461 6.93359 24.3018L9.16016 22.9248C9.47266 23.0664 9.80957 23.208 10.1611 23.3252L10.7666 25.874C10.9668 26.7188 11.6064 27.2412 12.4707 27.2412ZM13.623 17.9932C11.2109 17.9932 9.24805 16.0303 9.24805 13.6182C9.24805 11.2012 11.2109 9.24316 13.623 9.24316C16.04 9.24316 17.998 11.2012 17.998 13.6182C17.998 16.0303 16.04 17.9932 13.623 17.9932Z"/></svg>`;
     const ICON_SETTINGS_SECTION__QUESTIONMARK_CIRCLE_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M25.4395 12.7246C25.4395 19.7266 19.7266 25.4395 12.7148 25.4395C5.71289 25.4395 0 19.7266 0 12.7246C0 5.71289 5.71289 0 12.7148 0C19.7266 0 25.4395 5.71289 25.4395 12.7246ZM11.1621 17.8906C11.1621 18.5645 11.748 19.1211 12.4414 19.1211C13.125 19.1211 13.7207 18.5742 13.7207 17.8906C13.7207 17.1973 13.1348 16.6504 12.4414 16.6504C11.7383 16.6504 11.1621 17.207 11.1621 17.8906ZM8.94531 8.57422C8.88672 8.76953 8.84766 8.96484 8.84766 9.17969C8.84766 9.67773 9.23828 9.96094 9.61914 9.96094C10.0098 9.96094 10.2637 9.76562 10.4492 9.48242L10.6348 9.20898C10.9961 8.36914 11.7578 7.80273 12.7637 7.80273C14.0332 7.80273 14.8535 8.50586 14.8535 9.53125C14.8535 10.4102 14.3359 10.8691 13.1641 11.6797C12.207 12.3535 11.5723 13.0273 11.5723 14.248C11.5723 14.3262 11.5723 14.4043 11.5723 14.4824C11.5723 15.0684 11.8945 15.3711 12.4609 15.3711C13.0273 15.3711 13.3594 15.0195 13.3594 14.5605C13.3594 14.4922 13.3594 14.4141 13.3594 14.3457C13.3594 13.5938 13.7695 13.1348 14.6973 12.5098C15.9766 11.6602 16.7871 10.9082 16.7871 9.44336C16.7871 7.42188 14.9902 6.26953 12.832 6.26953C10.6641 6.26953 9.25781 7.35352 8.94531 8.57422Z" /></g></svg>`;
     const ICON_SETTINGS_SECTION__SPARKLE_TEXT_CLIPBOARD_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 21.3281 34.3262"><g><rect height="34.3262" opacity="0" width="21.3281" x="0" y="0"/><path d="M4.16016 4.9707L4.16016 6.2793C4.16016 7.74414 5.18555 8.7793 6.62109 8.7793L14.3457 8.7793C15.7812 8.7793 16.8066 7.74414 16.8066 6.2793L16.8066 4.9707C16.8066 4.87429 16.8021 4.77973 16.7927 4.6875L17.207 4.6875C19.707 4.6875 20.9668 5.9668 20.9668 8.49609L20.9668 27.8125C20.9668 30.3418 19.707 31.6113 17.207 31.6113L3.75977 31.6113C1.25977 31.6113 0 30.3418 0 27.8125L0 8.49609C0 5.9668 1.25977 4.6875 3.75977 4.6875L4.17413 4.6875C4.16466 4.77973 4.16016 4.87429 4.16016 4.9707ZM4.6875 25.5566C4.28711 25.5566 3.97461 25.8691 3.97461 26.2598C3.97461 26.6406 4.29688 26.9629 4.6875 26.9629L11.3086 26.9629C11.6992 26.9629 12.0215 26.6406 12.0215 26.2598C12.0215 25.8691 11.709 25.5566 11.3086 25.5566ZM4.6875 20.6738C4.28711 20.6738 3.97461 20.9863 3.97461 21.3672C3.97461 21.7578 4.28711 22.0703 4.6875 22.0703L16.2793 22.0703C16.6797 22.0703 16.9922 21.7578 16.9922 21.3672C16.9922 20.9863 16.6797 20.6738 16.2793 20.6738ZM7.5 11.0352C7.29492 12.4023 7.12891 13.125 6.66016 13.5742C6.21094 14.0332 5.48828 14.209 4.12109 14.4043C3.98438 14.4336 3.88672 14.5605 3.88672 14.6875C3.88672 14.8242 3.98438 14.9512 4.12109 14.9707C5.48828 15.166 6.21094 15.3418 6.66016 15.8008C7.12891 16.25 7.29492 16.9727 7.5 18.3398C7.51953 18.4863 7.63672 18.584 7.7832 18.584C7.91016 18.584 8.02734 18.4863 8.05664 18.3398C8.26172 16.9727 8.42773 16.25 8.87695 15.8008C9.33594 15.3418 10.0586 15.166 11.4258 14.9707C11.5723 14.9512 11.6699 14.8242 11.6699 14.6875C11.6699 14.5605 11.5723 14.4336 11.4258 14.4043C10.0586 14.209 9.33594 14.0332 8.87695 13.5742C8.42773 13.125 8.26172 12.4023 8.05664 11.0352C8.02734 10.8984 7.91016 10.791 7.7832 10.791C7.63672 10.791 7.51953 10.8984 7.5 11.0352Z" /><path d="M13.0859 3.83789L14.3457 3.83789C15.0293 3.83789 15.4492 4.25781 15.4492 4.9707L15.4492 6.2793C15.4492 6.99219 15.0293 7.41211 14.3457 7.41211L6.62109 7.41211C5.9375 7.41211 5.51758 6.99219 5.51758 6.2793L5.51758 4.9707C5.51758 4.25781 5.9375 3.83789 6.62109 3.83789L7.88086 3.83789C7.94922 2.4707 9.0918 1.35742 10.4883 1.35742C11.875 1.35742 13.0176 2.4707 13.0859 3.83789ZM9.36523 3.91602C9.36523 4.51172 9.86328 5.0293 10.4883 5.0293C11.1035 5.0293 11.6016 4.51172 11.6016 3.91602C11.6016 3.29102 11.1035 2.79297 10.4883 2.79297C9.86328 2.79297 9.36523 3.29102 9.36523 3.91602Z" /></g></svg>`;
+    const ICON_SETTINGS_SECTION__WRENCH_AND_SCREWDRIVER_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 29.8902 30.0294"><g><rect height="30.0294" opacity="0" width="29.8902" x="0" y="0"/><path d="M23.407 22.295L24.7547 22.3828C25.1355 22.4024 25.5164 22.6563 25.741 23.0371L28.1336 27.168C28.3289 27.5391 28.3679 27.8223 28.1336 28.0567L26.6394 29.5606C26.3953 29.8047 26.1121 29.7657 25.7508 29.5703L21.6101 27.168C21.2097 26.9434 20.9754 26.5528 20.9558 26.1914L20.8582 24.8535L15.1178 19.1131C15.7842 18.284 16.5607 17.3784 17.4772 16.3828ZM8.04568 2.65628L16.0605 10.6711C16.0666 10.6887 16.0747 10.7057 16.0828 10.7227C12.975 13.8129 10.6093 15.7031 8.72957 16.9796L1.22927 9.46292C-0.421118 7.8223-0.401587 5.9766 1.23904 4.33597L2.90896 2.66605C4.54958 1.02542 6.39529 1.00589 8.04568 2.65628ZM3.83669 6.92386C3.67068 7.10941 3.65115 7.40238 3.83669 7.58792L8.84646 12.5782C9.03201 12.7637 9.33474 12.7637 9.51052 12.5684C9.6863 12.3926 9.69607 12.1192 9.50076 11.9336L4.49099 6.92386C4.32498 6.75785 4.02224 6.73832 3.83669 6.92386ZM5.49685 5.28324C5.3113 5.46878 5.32107 5.74222 5.49685 5.918L10.4969 10.9473C10.6726 11.1328 10.9949 11.1133 11.1414 10.9473C11.3367 10.7422 11.3367 10.4493 11.1511 10.2735L6.14138 5.28324C5.95583 5.08792 5.66287 5.09769 5.49685 5.28324Z"/><path d="M1.85427 28.4375C3.98318 30.5469 6.84451 30.5664 8.94412 28.4571C11.6492 25.7325 10.9851 22.8223 19.5691 14.1993C22.2058 15.459 25.4187 15.0391 27.5476 12.9102C29.7547 10.7129 30.1551 7.26566 28.5926 4.48246L25.2722 7.80277C24.8816 8.19339 24.4226 8.20316 24.0125 7.80277L22.4988 6.27933C22.0984 5.86917 22.0691 5.40042 22.4597 5.0098L25.7898 1.69925C23.0164 0.126987 19.5886 0.527378 17.3816 2.74417C15.2429 4.87308 14.823 8.08597 16.0828 10.7227C7.45974 19.2969 4.54958 18.6328 1.82498 21.3282C-0.284399 23.4375-0.264868 26.2989 1.85427 28.4375ZM18.5437 11.7383C16.2976 9.48246 16.2293 5.90824 18.3972 3.75003C19.6863 2.47074 21.5125 1.97269 23.2215 2.30472L21.3074 4.20902C20.3992 5.12699 20.4187 6.24027 21.3562 7.15824L23.1238 8.92582C24.0515 9.84378 25.1648 9.85355 26.0535 8.97464L27.9871 7.03128C28.3191 8.76957 27.8211 10.5957 26.5222 11.8946C24.3543 14.0528 20.8094 13.9746 18.5437 11.7383ZM2.92849 27.3535C1.44412 25.8399 1.45388 23.8965 2.89919 22.4512C5.78005 19.5801 7.68435 20.8692 16.825 11.9336C17.0301 12.2168 17.2644 12.4903 17.5183 12.7539C17.782 13.0078 18.0554 13.252 18.3582 13.4571C9.41287 22.5977 10.7019 24.502 7.83083 27.3828C6.38552 28.8282 4.4324 28.8477 2.92849 27.3535ZM5.35037 26.4844C6.19021 26.4844 6.86404 25.8106 6.86404 24.9707C6.86404 24.1309 6.19021 23.4571 5.35037 23.4571C4.51052 23.4571 3.83669 24.1309 3.83669 24.9707C3.83669 25.8106 4.51052 26.4844 5.35037 26.4844Z"/></g></svg>`;
+
     const ICON_SETTINGS_THEME__SUN_MAX_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 27.4805 27.1973"><g><rect height="27.1973" opacity="0" width="27.4805" x="0" y="0"/><path d="M13.5547 4.69727C14.0723 4.69727 14.4824 4.27734 14.4824 3.76953L14.4824 0.927734C14.4824 0.419922 14.0723 0 13.5547 0C13.0469 0 12.6367 0.419922 12.6367 0.927734L12.6367 3.76953C12.6367 4.27734 13.0469 4.69727 13.5547 4.69727ZM19.834 7.31445C20.1953 7.66602 20.7812 7.68555 21.1523 7.31445L23.1641 5.30273C23.5254 4.94141 23.5156 4.3457 23.1641 3.98438C22.8027 3.63281 22.2168 3.62305 21.8555 3.98438L19.834 6.00586C19.4727 6.36719 19.4824 6.95312 19.834 7.31445ZM22.4316 13.5938C22.4316 14.1016 22.8516 14.5117 23.3594 14.5117L26.1914 14.5117C26.6992 14.5117 27.1191 14.1016 27.1191 13.5938C27.1191 13.0859 26.6992 12.666 26.1914 12.666L23.3594 12.666C22.8516 12.666 22.4316 13.0859 22.4316 13.5938ZM19.834 19.873C19.4824 20.2344 19.4727 20.8301 19.834 21.1816L21.8555 23.2031C22.2168 23.5645 22.8027 23.5449 23.1641 23.1934C23.5156 22.832 23.5254 22.2461 23.1641 21.8945L21.1426 19.873C20.7812 19.5215 20.1953 19.5215 19.834 19.873ZM13.5547 22.4902C13.0469 22.4902 12.6367 22.9004 12.6367 23.4082L12.6367 26.25C12.6367 26.7676 13.0469 27.1777 13.5547 27.1777C14.0723 27.1777 14.4824 26.7676 14.4824 26.25L14.4824 23.4082C14.4824 22.9004 14.0723 22.4902 13.5547 22.4902ZM7.28516 19.873C6.92383 19.5215 6.32812 19.5215 5.9668 19.873L3.95508 21.8848C3.59375 22.2363 3.60352 22.8223 3.94531 23.1836C4.30664 23.5352 4.90234 23.5547 5.25391 23.1934L7.27539 21.1816C7.62695 20.8301 7.62695 20.2344 7.28516 19.873ZM4.67773 13.5938C4.67773 13.0859 4.26758 12.666 3.75977 12.666L0.927734 12.666C0.419922 12.666 0 13.0859 0 13.5938C0 14.1016 0.419922 14.5117 0.927734 14.5117L3.75977 14.5117C4.26758 14.5117 4.67773 14.1016 4.67773 13.5938ZM7.27539 7.31445C7.62695 6.96289 7.62695 6.35742 7.28516 6.00586L5.26367 3.98438C4.92188 3.64258 4.32617 3.63281 3.96484 3.98438C3.61328 4.3457 3.60352 4.94141 3.95508 5.29297L5.9668 7.31445C6.32812 7.67578 6.91406 7.66602 7.27539 7.31445Z" /><path d="M13.5449 19.873C17.0117 19.873 19.834 17.0605 19.834 13.5938C19.834 10.127 17.0117 7.30469 13.5449 7.30469C10.0781 7.30469 7.26562 10.127 7.26562 13.5938C7.26562 17.0605 10.0781 19.873 13.5449 19.873Z" /></g></svg>`;
     const ICON_SETTINGS_THEME__MOON_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.4297 25.3088"><g><rect height="25.3088" opacity="0" width="25.4297" x="0" y="0"/><path d="M13.0859 25.2277C18.5254 25.2277 22.9883 21.9464 24.9414 17.6691C25.3027 16.9171 24.834 16.38 24.0918 16.6241C23.1836 16.9464 21.6113 17.3077 20.0488 17.3077C12.4414 17.3077 8.11523 12.9816 8.11523 5.37414C8.11523 3.8507 8.4375 2.30773 8.93555 1.0675C9.25781 0.256952 8.70117-0.23133 7.91992 0.110467C3.69141 1.90734 0 6.38976 0 12.132C0 19.3585 5.86914 25.2277 13.0859 25.2277Z"/></g></svg>`;
     const ICON_SETTINGS_HINT_ON__LIGHTBULB_MAX_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 29.3262 43.3105"><g><rect height="43.3105" opacity="0" width="29.3262" x="0" y="0"/><path d="M3.4375 15.4102C3.93555 15.4102 4.38477 14.9902 4.38477 14.4922C4.38477 13.9844 3.93555 13.5547 3.4375 13.5547L0.917969 13.5547C0.419922 13.5547 0 13.9941 0 14.4922C0 14.9805 0.419922 15.4102 0.917969 15.4102ZM6.01562 7.34375C6.36719 7.68555 6.95312 7.69531 7.31445 7.34375C7.68555 6.97266 7.67578 6.39648 7.31445 6.03516L5.54688 4.24805C5.20508 3.88672 4.60938 3.88672 4.23828 4.24805C3.88672 4.61914 3.88672 5.18555 4.23828 5.54688ZM13.5645 3.44727C13.5645 3.94531 13.9746 4.375 14.4727 4.375C14.9902 4.375 15.4102 3.94531 15.4102 3.44727L15.4102 0.927734C15.4102 0.429688 14.9805 0 14.4727 0C13.9746 0 13.5645 0.429688 13.5645 0.927734ZM21.6309 6.03516C21.2695 6.39648 21.2598 6.97266 21.6309 7.34375C21.9922 7.70508 22.5781 7.69531 22.9297 7.34375L24.7168 5.54688C25.0781 5.18555 25.0781 4.61914 24.7168 4.24805C24.3457 3.88672 23.7793 3.88672 23.418 4.24805ZM28.0273 15.4102C28.5254 15.4102 28.9648 14.9805 28.9648 14.4922C28.9648 13.9941 28.5254 13.5547 28.0273 13.5547L25.5078 13.5547C25.0098 13.5547 24.5801 13.9844 24.5801 14.4922C24.5801 14.9902 25.0098 15.4102 25.5078 15.4102Z" /><path d="M14.4727 6.69922C10.1172 6.69922 6.67969 9.92188 6.67969 13.9062C6.67969 18.3203 9.36523 19.4922 10.0977 27.4316C10.1367 27.8613 10.3613 28.1152 10.8203 28.1152L18.1348 28.1152C18.5938 28.1152 18.8184 27.8613 18.8574 27.4316C19.5898 19.4922 22.2852 18.3203 22.2852 13.9062C22.2852 9.92188 18.8379 6.69922 14.4727 6.69922ZM10.8203 30.5469L18.1445 30.5469C18.5254 30.5469 18.8184 30.2539 18.8184 29.873C18.8184 29.4922 18.5254 29.209 18.1445 29.209L10.8203 29.209C10.4395 29.209 10.1562 29.4922 10.1562 29.873C10.1562 30.2539 10.4395 30.5469 10.8203 30.5469ZM14.4824 33.9062C16.3184 33.9062 17.8125 32.9883 17.9004 31.6406L11.0645 31.6406C11.1426 32.9883 12.6367 33.9062 14.4824 33.9062Z" /></g></svg>`;
@@ -3230,6 +3305,9 @@
     const ICON_SETTINGS_EXPORT_SIMPLETEXT__TEXT_ALIGNLEFT = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.4785 21.5332"><g><rect height="21.5332" width="25.4785" opacity="0" x="0" y="0"/><path d="M0.869141 21.5137L15.2051 21.5137C15.7031 21.5137 16.084 21.1426 16.084 20.6543C16.084 20.1562 15.7031 19.7852 15.2051 19.7852L0.869141 19.7852C0.371094 19.7852 0 20.1562 0 20.6543C0 21.1426 0.371094 21.5137 0.869141 21.5137Z"/><path d="M0.869141 14.9219L24.2383 14.9219C24.7266 14.9219 25.1172 14.541 25.1172 14.0527C25.1172 13.5645 24.7266 13.1934 24.2383 13.1934L0.869141 13.1934C0.371094 13.1934 0 13.5645 0 14.0527C0 14.541 0.371094 14.9219 0.869141 14.9219Z"/><path d="M0.869141 8.33008L15.2051 8.33008C15.7031 8.33008 16.084 7.94922 16.084 7.46094C16.084 6.97266 15.7031 6.5918 15.2051 6.5918L0.869141 6.5918C0.371094 6.5918 0 6.97266 0 7.46094C0 7.94922 0.371094 8.33008 0.869141 8.33008Z"/><path d="M0.869141 1.72852L24.2383 1.72852C24.7266 1.72852 25.1172 1.35742 25.1172 0.869141C25.1172 0.380859 24.7266 0 24.2383 0L0.869141 0C0.371094 0 0 0.380859 0 0.869141C0 1.35742 0.371094 1.72852 0.869141 1.72852Z"/></g></svg>`;
     const ICON_SETTINGS_CLEAR__CLEAR_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 23.3203 22.959"><g><rect height="22.959" opacity="0" width="23.3203" x="0" y="0"/><path d="M22.959 3.76953L22.959 19.1992C22.959 21.6797 21.6797 22.959 19.1504 22.959L3.79883 22.959C1.2793 22.959 0 21.6992 0 19.1992L0 3.76953C0 1.26953 1.2793 0 3.79883 0L19.1504 0C21.6797 0 22.959 1.2793 22.959 3.76953ZM15.1172 6.62109L11.4844 10.2344L7.87109 6.63086C7.69531 6.45508 7.5 6.36719 7.24609 6.36719C6.74805 6.36719 6.34766 6.74805 6.34766 7.24609C6.34766 7.49023 6.44531 7.70508 6.61133 7.88086L10.2148 11.4844L6.61133 15.0879C6.44531 15.2637 6.34766 15.4883 6.34766 15.7227C6.34766 16.2305 6.74805 16.6309 7.24609 16.6309C7.5 16.6309 7.72461 16.5332 7.90039 16.3574L11.4844 12.7539L15.0781 16.3574C15.2441 16.5332 15.4785 16.6309 15.7324 16.6309C16.2305 16.6309 16.6309 16.2305 16.6309 15.7227C16.6309 15.4785 16.5527 15.2539 16.3672 15.0781L12.7637 11.4844L16.377 7.87109C16.5723 7.67578 16.6406 7.48047 16.6406 7.22656C16.6406 6.73828 16.2402 6.34766 15.752 6.34766C15.5078 6.34766 15.3027 6.42578 15.1172 6.62109Z" /></g></svg>`;
     const ICON_SETTINGS_DELETE__TRASH_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24.5703 30.0293"><g><rect height="30.0293" opacity="0" width="24.5703" x="0" y="0"/><path d="M8.26172 24.1113C7.8418 24.1113 7.56836 23.8477 7.54883 23.4473L7.14844 9.35547C7.13867 8.94531 7.41211 8.69141 7.85156 8.69141C8.24219 8.69141 8.53516 8.93555 8.54492 9.3457L8.96484 23.4375C8.97461 23.8379 8.69141 24.1113 8.26172 24.1113ZM12.1094 24.1113C11.6895 24.1113 11.3867 23.8379 11.3867 23.4375L11.3867 9.35547C11.3867 8.95508 11.6895 8.69141 12.1094 8.69141C12.5293 8.69141 12.832 8.95508 12.832 9.35547L12.832 23.4375C12.832 23.8379 12.5293 24.1113 12.1094 24.1113ZM15.9473 24.1113C15.5176 24.1113 15.2441 23.8379 15.2539 23.4473L15.6641 9.35547C15.6738 8.94531 15.9668 8.69141 16.3672 8.69141C16.7969 8.69141 17.0703 8.95508 17.0605 9.36523L16.6602 23.4473C16.6406 23.8574 16.3672 24.1113 15.9473 24.1113ZM6.66992 5.58594L8.37891 5.58594L8.37891 2.90039C8.37891 2.11914 8.91602 1.61133 9.75586 1.61133L14.4336 1.61133C15.2734 1.61133 15.8105 2.11914 15.8105 2.90039L15.8105 5.58594L17.5195 5.58594L17.5195 2.80273C17.5195 1.06445 16.3965 0 14.5312 0L9.6582 0C7.80273 0 6.66992 1.06445 6.66992 2.80273ZM0.810547 6.43555L23.3984 6.43555C23.8477 6.43555 24.209 6.06445 24.209 5.625C24.209 5.17578 23.8477 4.80469 23.3984 4.80469L0.810547 4.80469C0.380859 4.80469 0 5.18555 0 5.625C0 6.07422 0.380859 6.43555 0.810547 6.43555ZM6.37695 27.8906L17.8516 27.8906C19.5312 27.8906 20.7129 26.748 20.8008 25.0684L21.7285 6.18164L2.49023 6.18164L3.41797 25.0781C3.50586 26.7578 4.66797 27.8906 6.37695 27.8906Z"/></g></svg>`;
+
+    const ICON_SETTINGS_SHORTCUTSON__TAG_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 28.2935 29.3042"><g><rect height="29.3042" opacity="0" width="28.2935" x="0" y="0"/><path d="M14.6399 27.9871L26.9739 15.6238C27.8626 14.7351 27.9309 14.2566 27.9309 12.9285L27.9309 8.13355C27.9309 6.86402 27.6672 6.48316 26.7102 5.53589L23.7805 2.6062C22.8333 1.64917 22.4524 1.3855 21.1829 1.3855L16.3879 1.3855C15.0598 1.3855 14.5813 1.45386 13.6926 2.34253L1.30982 14.6765C-0.428464 16.4148-0.447995 18.2312 1.31958 19.989L9.3274 27.9773C11.1047 29.7546 12.9016 29.7351 14.6399 27.9871ZM19.093 11.1804C18.1848 11.1804 17.4915 10.4773 17.4915 9.57886C17.4915 8.68042 18.1848 7.9773 19.093 7.9773C20.011 7.9773 20.7043 8.68042 20.7043 9.57886C20.7043 10.4773 20.011 11.1804 19.093 11.1804Z"/></g></svg>`;
+    const ICON_SETTINGS_SHORTCUTSOFF__TAG_SLASH_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 28.3106 29.3042"><g><rect height="29.3042" opacity="0" width="28.3106" x="0" y="0"/><path d="M19.0709 23.5394L14.6338 27.9871C12.8955 29.7351 11.0986 29.7546 9.3213 27.9773L1.32325 19.989C-0.454091 18.2312-0.424795 16.4148 1.31349 14.6765L5.76483 10.2392ZM23.7842 2.6062L26.7139 5.53589C27.6611 6.48316 27.9346 6.86402 27.9346 8.13355L27.9346 12.9285C27.9346 14.2566 27.8662 14.7351 26.9678 15.6238L22.1737 20.4293L8.87914 7.13475L13.6865 2.34253C14.585 1.45386 15.0635 1.3855 16.3916 1.3855L21.1865 1.3855C22.4463 1.3855 22.8272 1.64917 23.7842 2.6062ZM17.4951 9.57886C17.4951 10.4773 18.1787 11.1804 19.0967 11.1804C20.0147 11.1804 20.6983 10.4773 20.6983 9.57886C20.6983 8.68042 20.0147 7.9773 19.0967 7.9773C18.1787 7.9773 17.4951 8.68042 17.4951 9.57886Z"/><path d="M24.3115 26.8543C24.6338 27.1765 25.1611 27.1765 25.4834 26.8543C25.8057 26.532 25.8154 25.9949 25.4834 25.6726L3.63771 3.82691C3.31544 3.50464 2.7881 3.48511 2.4463 3.82691C2.1338 4.13941 2.1338 4.68628 2.4463 4.99878Z"/></g></svg>`;
 
     const ICON_MAP_LABELS_TAG_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 28.2935 29.3042"><g><rect height="29.3042" opacity="0" width="28.2935" x="0" y="0"/><path d="M14.6399 27.9871L26.9739 15.6238C27.8626 14.7351 27.9309 14.2566 27.9309 12.9285L27.9309 8.13355C27.9309 6.86402 27.6672 6.48316 26.7102 5.53589L23.7805 2.6062C22.8333 1.64917 22.4524 1.3855 21.1829 1.3855L16.3879 1.3855C15.0598 1.3855 14.5813 1.45386 13.6926 2.34253L1.30982 14.6765C-0.428464 16.4148-0.447995 18.2312 1.31958 19.989L9.3274 27.9773C11.1047 29.7546 12.9016 29.7351 14.6399 27.9871ZM19.093 11.1804C18.1848 11.1804 17.4915 10.4773 17.4915 9.57886C17.4915 8.68042 18.1848 7.9773 19.093 7.9773C20.011 7.9773 20.7043 8.68042 20.7043 9.57886C20.7043 10.4773 20.011 11.1804 19.093 11.1804Z" /></g></svg>`;
     const ICON_MAP_LABELS_NONE_CIRCLE_SLASH = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 27.8809 27.4977"><g><rect height="27.4977" opacity="0" width="27.8809" x="0" y="0"/><path d="M4.65509 7.7562C3.5193 9.47141 2.86133 11.5299 2.86133 13.7439C2.86133 19.7693 7.73438 24.6424 13.7598 24.6424C15.9722 24.6424 18.0292 23.9854 19.7435 22.851L21.0462 24.1542C18.987 25.609 16.4725 26.4588 13.7598 26.4588C6.73828 26.4588 1.04492 20.7654 1.04492 13.7439C1.04492 11.0301 1.89542 8.51325 3.35132 6.45188ZM26.4746 13.7439C26.4746 16.4639 25.6203 18.9846 24.158 21.0464L22.8564 19.7449C23.9969 18.0268 24.6582 15.9635 24.6582 13.7439C24.6582 7.71855 19.7852 2.84551 13.7598 2.84551C11.5402 2.84551 9.47694 3.50678 7.75881 4.64729L6.45355 3.34202C8.51606 1.8762 11.0381 1.01933 13.7598 1.01933C20.7812 1.01933 26.4746 6.72246 26.4746 13.7439Z" /><path d="M24.6973 25.8826C25.0293 26.2146 25.5664 26.2049 25.8789 25.8729C26.2109 25.5408 26.2012 25.0232 25.8789 24.701L2.79297 1.60527C2.4707 1.28301 1.94336 1.27324 1.60156 1.60527C1.28906 1.91777 1.28906 2.46465 1.60156 2.78691Z" /></g></svg>`;
@@ -3254,7 +3332,7 @@
         title: "Add a World Country Map",
         ticketId: "WISH-001",
         description: "Add a country-map mode alongside the US map. Scope includes a world SVG/data source, visit levels, notes, exports/imports, map mode switching, and a strategy for historical countries without breaking existing state data.",
-        priority: "P1",
+        priority: "P2",
         effort: "x-large",
         targetKind: "major",
         targetVersion: "",
@@ -3278,25 +3356,13 @@
         title: "National Park Overlay Layer",
         ticketId: "WISH-004",
         description: "Add an optional national parks layer that can be viewed with state progress. Scope includes park data, visible markers or outlines, visit status, filtering, and exports that remain readable.",
-        priority: "P2",
+        priority: "P1",
         effort: "large",
         targetKind: "minor",
         targetVersion: "",
         tokenCostPct: 46,
         prompt: "Add optional national parks overlay with visit state, filters, and export support. Keep state map behavior unchanged.",
         category: "Maps"
-      },
-      {
-        title: "Remove Remaining Page Scroll Drift",
-        ticketId: "WISH-005",
-        description: "Eliminate stray vertical page scrolling in the main app layout. Scope includes map height math, notes rail bounds, safe-area padding, and mobile single-column exceptions.",
-        priority: "P1",
-        effort: "small",
-        targetKind: "exact",
-        targetVersion: "1.8.1",
-        tokenCostPct: 10,
-        prompt: "Fix main-layout scroll drift. Preserve mobile single-column scroll. Verify map and notes bottoms align.",
-        category: "Bug Fix"
       },
       {
         title: "Polish Text Button Layout",
@@ -3311,22 +3377,10 @@
         category: "UI"
       },
       {
-        title: "Simplify Add Level Flow",
-        ticketId: "WISH-007",
-        description: "Make creating a new legend level faster and calmer. Scope includes clearer defaults, category ordering, compact color selection, validation, and low-friction save behavior.",
-        priority: "P2",
-        effort: "medium",
-        targetKind: "minor",
-        targetVersion: "",
-        tokenCostPct: 20,
-        prompt: "Refine add-level dialog for faster creation. Improve defaults, validation, color picking, and save flow.",
-        category: "UI"
-      },
-      {
         title: "Add Home and Saved Locations",
         ticketId: "WISH-009",
         description: "Let users store home and favorite locations for planning context. Scope includes local-only saved places, labels, edit/delete actions, import/export persistence, and no geocoding dependency unless explicitly added later.",
-        priority: "P3",
+        priority: "P1",
         effort: "medium",
         targetKind: "minor",
         targetVersion: "",
@@ -3338,7 +3392,7 @@
         title: "Add Drive Radius",
         ticketId: "WISH-010",
         description: "Show a planning radius from home or saved locations. Scope includes distance input, visual radius overlay where map geometry supports it, saved settings, and clear limitations for non-road distance.",
-        priority: "P3",
+        priority: "P1",
         effort: "large",
         targetKind: "minor",
         targetVersion: "",
@@ -3350,7 +3404,7 @@
         title: "Tighten iPhone Layout",
         ticketId: "WISH-011",
         description: "Tune the app for iPhone-sized screens. Scope includes map sizing, tabs, controls, dialogs, touch targets, safe areas, and avoiding cramped or clipped text.",
-        priority: "P1",
+        priority: "P2",
         effort: "medium",
         targetKind: "minor",
         targetVersion: "",
@@ -3362,97 +3416,13 @@
         title: "Improve Map Label Placement",
         ticketId: "WISH-012",
         description: "Refine state label anchors so abbreviations and names are easier to read. Scope includes overlap reduction, territory labels, fit mode checks, and preserving label modes.",
-        priority: "P2",
+        priority: "P0",
         effort: "small",
         targetKind: "patch",
         targetVersion: "",
         tokenCostPct: 9,
         prompt: "Tune map label anchors for readability across label modes, territories, and fit/scroll map views.",
         category: "Maps"
-      },
-      {
-        title: "Polish Level Editor Interactions",
-        ticketId: "WISH-013",
-        description: "Make level editing feel immediate and obvious. Scope includes auto-save semantics, close affordances, color picker clarity, keyboard/focus behavior, and confirmation only for destructive changes.",
-        priority: "P2",
-        effort: "medium",
-        targetKind: "patch",
-        targetVersion: "",
-        tokenCostPct: 22,
-        prompt: "Polish level editor: autosave edits, clear close action, obvious color picking, and safe destructive confirmations.",
-        category: "UI"
-      },
-      {
-        title: "Tighten Settings Hierarchy",
-        ticketId: "WISH-014",
-        description: "Make Settings denser and easier to scan. Scope includes parent/subcategory heading scale, aligned rows, date examples, import/export density, and avoiding airy section gaps.",
-        priority: "P1",
-        effort: "medium",
-        targetKind: "patch",
-        targetVersion: "",
-        tokenCostPct: 20,
-        prompt: "Tighten Settings layout hierarchy and spacing. Improve date examples and import/export density.",
-        category: "UI"
-      },
-      {
-        title: "Notes Rail Safe Area Scroll Polish",
-        ticketId: "WISH-015",
-        description: "Make the notes rail stop exactly at the map bottom and device safe area. Scope includes independent rail scrolling, compact/expanded notes, modal note lists, and no overall page scroll in desktop layout.",
-        priority: "P1",
-        effort: "small",
-        targetKind: "patch",
-        targetVersion: "",
-        tokenCostPct: 12,
-        prompt: "Align notes rail/modal bottoms with map and safe area. Preserve independent scrolling and desktop no-page-scroll.",
-        category: "UI"
-      },
-      {
-        title: "Standardize Settings Icons",
-        ticketId: "WISH-016",
-        description: "Use consistent SF-style symbols throughout Settings. Scope includes tabs, toggles, action buttons, icon/text/both modes, and source SVG names that match their role.",
-        priority: "P2",
-        effort: "small",
-        targetKind: "patch",
-        targetVersion: "",
-        tokenCostPct: 14,
-        prompt: "Standardize Settings icons and labels across button-style modes. Keep source names aligned with roles.",
-        category: "UI"
-      },
-      {
-        title: "Match Icon Variable Names to File Names",
-        ticketId: "WISH-017",
-        description: "Keep icon constants and source file names aligned. Scope includes naming cleanup, typo fixes, references in inline SVG constants, and no visual icon changes unless requested.",
-        priority: "P3",
-        effort: "small",
-        targetKind: "patch",
-        targetVersion: "",
-        tokenCostPct: 10,
-        prompt: "Align icon constant names with source filenames. Update references only; avoid visual changes.",
-        category: "Developer"
-      },
-      {
-        title: "Polish A-Z Sort Icon Alignment",
-        ticketId: "WISH-018",
-        description: "Make the A-Z sort icon sit visually centered and balanced with adjacent controls. Scope includes the Notes sort control, button-style modes, compact widths, and checking the icon against nearby SF-style symbols.",
-        priority: "P2",
-        effort: "small",
-        targetKind: "patch",
-        targetVersion: "",
-        tokenCostPct: 6,
-        prompt: "Tune A-Z sort icon alignment in Notes. Verify symbol/text/both button styles and compact/mobile widths.",
-        category: "UI"
-      },
-      {
-        title: "Add an SF Symbol Conversion Tool",
-        ticketId: "WISH-019",
-        description: "Add a local developer workflow for converting source SF Symbol SVG files into app-ready inline constants. Scope includes naming normalization, hidden-rect cleanup, output previews or diffs, and guardrails that avoid changing icon artwork unless requested.",
-        priority: "P2",
-        effort: "medium",
-        targetKind: "minor",
-        targetVersion: "",
-        tokenCostPct: 28,
-        prompt: "Add local SF Symbol SVG converter for inline constants. Normalize names, strip hidden opacity attrs only, preview diffs, avoid artwork edits.",
-        category: "Developer"
       },
       {
         title: "Give Settings Close Button More Room",
@@ -3492,6 +3462,36 @@
       }
     ];
     const CHANGELOG = [
+      {
+        version: "1.12.0.2",
+        date: "2026-05-16",
+        title: "Roadmap Alignment",
+        summary: "Roadmap controls and results now stay left-aligned while sorting and filtering.",
+        highlights: [
+          "Roadmap filtering, sorting, and result cards no longer center their content.",
+          "Completed roadmap ticket WISH-005 was retired."
+        ],
+        updates: [
+          "Forced Roadmap controls and result cards to stretch and left-align in the What's New panel.",
+          "Removed WISH-005 from seeded roadmap data and completion-filtered it from existing local roadmap data."
+        ]
+      },
+      {
+        version: "1.12.0.1",
+        date: "2026-05-16",
+        title: "Developer Mode",
+        summary: "Developer tools are now available when enabled, with a persistent shortcut overlay mode for faster testing.",
+        highlights: [
+          "Added a Developer Tools menu for advanced local controls.",
+          "Added Shortcut Mode to keep shortcut badges visible and allow one-key actions without holding modifiers.",
+          "Roadmap sorting now includes Target and Effort."
+        ],
+        updates: [
+          "Added persisted developerMode and shortcutMode settings with safe migration.",
+          "Reused the existing shortcut overlay and dispatcher for Developer Tools Shortcut Mode.",
+          "Added Target and Effort options to the Roadmap sort list."
+        ]
+      },
       {
         version: "1.11.0",
         date: "2026-05-16",
@@ -3765,6 +3765,7 @@
     let mapFitMode = true;
     let noteLevelFilters = new Set();
     let powerOverlayActive = false;
+    let developerGesture = [];
     let levelAutoSaveTimer = null;
     let layoutSyncFrame = 0;
     let pendingConfirm = null;
@@ -3775,23 +3776,13 @@
       return {
         appVersion: APP_VERSION,
         mapName: "Your State Map",
-        settings: { theme: "light", tapBehavior: "cycle", buttonStyle: "symbols", uiHints: true, dateOrder: "mdy", dateStyle: "alpha", mapLabels: "none", hideSuggestedCategories: true },
+        settings: { theme: "light", tapBehavior: "cycle", buttonStyle: "symbols", uiHints: true, dateOrder: "mdy", dateStyle: "alpha", mapLabels: "none", hideSuggestedCategories: false, developerMode: false, shortcutMode: false },
         levels,
         states: defaultTerritoryStates(levels),
         notes: {},
         dismissedHints: [],
-        wishlist: seedWishlist(),
-        seededWishlistVersion: WISHLIST_SEED_VERSION,
         territoryDefaultsSeeded: true
       };
-    }
-
-    function seedWishlist() {
-      return WISHLIST_SEEDS.map((wish, index) => ({
-        id: `seed-${index + 1}`,
-        createdAt: `2026-05-11T00:00:${String(index).padStart(2, "0")}.000Z`,
-        ...wish
-      }));
     }
 
     function territoryDefaultLevelId(levels) {
@@ -3926,72 +3917,6 @@
       syncNoteDateBuilder();
     }
 
-    function formatTicketId(number) {
-      return `WISH-${String(number).padStart(3, "0")}`;
-    }
-
-    function normalizeTicketId(value) {
-      const text = String(value || "").trim().toUpperCase();
-      return /^WISH-\d{3,}$/.test(text) ? text : "";
-    }
-
-    function isCompletedWishlistItem(wish) {
-      const title = String(wish?.title || "").trim().toLowerCase();
-      return ["WISH-003", "WISH-008"].includes(normalizeTicketId(wish?.ticketId)) || title === "add us territories to the map";
-    }
-
-    function assignWishlistTickets(items) {
-      const used = new Set();
-      let nextNumber = 1;
-      return items.map(wish => {
-        let ticketId = normalizeTicketId(wish.ticketId);
-        while (!ticketId || used.has(ticketId)) {
-          ticketId = formatTicketId(nextNumber);
-          nextNumber += 1;
-        }
-        used.add(ticketId);
-        const parsed = Number.parseInt(ticketId.replace("WISH-", ""), 10);
-        if (Number.isFinite(parsed) && parsed >= nextNumber) nextNumber = parsed + 1;
-        return { ...wish, ticketId };
-      });
-    }
-
-    function nextWishlistTicketId() {
-      const assigned = assignWishlistTickets([...state.wishlist, { title: "temp" }]);
-      return assigned[assigned.length - 1].ticketId;
-    }
-
-    function normalizeWishlistPriority(value) {
-      const text = String(value || "").trim().toUpperCase();
-      if (["P0", "P1", "P2", "P3"].includes(text)) return text;
-      return { HIGH: "P1", MEDIUM: "P2", LOW: "P3" }[text] || "P2";
-    }
-
-    function normalizeWishlistEffort(value) {
-      const text = String(value || "").trim().toLowerCase().replace(/\s+/g, "-");
-      const normalized = { xlarge: "x-large", "extra-large": "x-large" }[text] || text;
-      return ["small", "medium", "large", "x-large"].includes(normalized) ? normalized : "medium";
-    }
-
-    function normalizeWishlistTargetKind(wish) {
-      const rawKind = String(wish?.targetKind || wish?.targetType || "").trim().toLowerCase();
-      if (["exact", "major", "minor", "patch"].includes(rawKind)) return rawKind;
-      const rawTarget = String(wish?.targetVersion || "").trim().toLowerCase();
-      return ["major", "minor", "patch"].includes(rawTarget) ? rawTarget : "exact";
-    }
-
-    function normalizeWishlistCost(value, effort) {
-      const parsed = Number.parseInt(String(value ?? "").replace(/[^\d]/g, ""), 10);
-      if (Number.isFinite(parsed)) return Math.max(1, Math.min(parsed, 100));
-      return { small: 10, medium: 24, large: 42, "x-large": 75 }[effort] || 24;
-    }
-
-    function normalizeWishlistPrompt(value, title, description) {
-      const text = String(value || "").trim();
-      if (text) return text.slice(0, 380);
-      return `Implement ${title}. Scope: ${description}`.slice(0, 380);
-    }
-
     function wishlistTargetLabel(wish) {
       return wish.targetKind === "exact"
         ? wish.targetVersion || "Unassigned"
@@ -4017,7 +3942,9 @@
       if (!["mdy", "dmy", "ymd"].includes(next.settings.dateOrder)) next.settings.dateOrder = "mdy";
       if (!["numeric", "alpha"].includes(next.settings.dateStyle)) next.settings.dateStyle = "alpha";
       if (!["none", "abbr", "name"].includes(next.settings.mapLabels)) next.settings.mapLabels = "none";
-      if (typeof next.settings.hideSuggestedCategories !== "boolean") next.settings.hideSuggestedCategories = true;
+      if (typeof next.settings.hideSuggestedCategories !== "boolean") next.settings.hideSuggestedCategories = false;
+      next.settings.developerMode = next.settings.developerMode === true;
+      next.settings.shortcutMode = next.settings.developerMode && next.settings.shortcutMode === true;
       next.settings.uiHints = next.settings.uiHints !== false;
       delete next.settings.powerMode;
       next.dismissedHints = Array.isArray(input.dismissedHints)
@@ -4058,48 +3985,6 @@
           text: String(note.text || note.summary || "").slice(0, 700)
         })).filter(note => note.text || note.date);
       });
-      next.wishlist = Array.isArray(input.wishlist) ? input.wishlist.map(wish => {
-        const title = String(wish.title || "").slice(0, 96);
-        const description = String(wish.description || "").slice(0, 700);
-        const effort = normalizeWishlistEffort(wish.effort);
-        const targetKind = normalizeWishlistTargetKind(wish);
-        return {
-          id: String(wish.id || uid()),
-          ticketId: String(wish.ticketId || ""),
-          title,
-          description,
-          priority: normalizeWishlistPriority(wish.priority),
-          effort,
-          targetKind,
-          targetVersion: targetKind === "exact" ? String(wish.targetVersion || "").slice(0, 16) : "",
-          category: String(wish.category || "").slice(0, 40),
-          tokenCostPct: normalizeWishlistCost(wish.tokenCostPct ?? wish.cost, effort),
-          prompt: normalizeWishlistPrompt(wish.prompt || wish.implementationPrompt, title, description),
-          createdAt: String(wish.createdAt || new Date().toISOString())
-        };
-      }).filter(wish => wish.title && !isCompletedWishlistItem(wish)) : [];
-      if (input.seededWishlistVersion !== WISHLIST_SEED_VERSION) {
-        const titles = new Set(next.wishlist.map(wish => wish.title.toLowerCase()));
-        const indexByTicket = new Map(next.wishlist.map((wish, index) => [normalizeTicketId(wish.ticketId), index]).filter(([ticketId]) => ticketId));
-        seedWishlist().forEach(wish => {
-          const ticketId = normalizeTicketId(wish.ticketId);
-          const existingIndex = indexByTicket.get(ticketId);
-          if (existingIndex !== undefined) {
-            const existing = next.wishlist[existingIndex];
-            if (String(existing.id || "").startsWith("seed-")) {
-              next.wishlist[existingIndex] = { ...wish, id: existing.id, createdAt: existing.createdAt || wish.createdAt };
-              titles.add(wish.title.toLowerCase());
-            }
-            return;
-          }
-          if (!titles.has(wish.title.toLowerCase())) {
-            next.wishlist.push(wish);
-            titles.add(wish.title.toLowerCase());
-          }
-        });
-      }
-      next.wishlist = assignWishlistTickets(next.wishlist);
-      next.seededWishlistVersion = WISHLIST_SEED_VERSION;
       next.mapName = String(next.mapName || base.mapName).slice(0, 80);
       return next;
     }
@@ -4206,7 +4091,7 @@
       button.innerHTML = buttonMarkup(symbol, text);
       button.setAttribute("aria-label", aria);
       const shortcut = button.dataset.shortcut;
-      button.title = powerOverlayActive && shortcut ? `${title} (${shortcut})` : title;
+      button.title = shortcutsActive() && shortcut ? `${title} (${shortcut})` : title;
     }
 
     function setButtonLabelBoth(selector, symbol, text, aria = text) {
@@ -4215,7 +4100,7 @@
       button.innerHTML = buttonMarkup(symbol, text, true);
       button.setAttribute("aria-label", aria);
       const shortcut = button.dataset.shortcut;
-      button.title = powerOverlayActive && shortcut ? `${text} (${shortcut})` : text;
+      button.title = shortcutsActive() && shortcut ? `${text} (${shortcut})` : text;
     }
 
     function setExportBtnLabel(selector, symbol, label, ext) {
@@ -4230,7 +4115,7 @@
       button.innerHTML = `<span class="btn-label"><span class="btn-symbol" aria-hidden="true">${safeSym}</span><span class="btn-text">${textWithExt}</span></span>`;
       button.setAttribute("aria-label", fullLabel);
       const shortcut = button.dataset.shortcut;
-      button.title = powerOverlayActive && shortcut ? `${fullLabel} (${shortcut})` : fullLabel;
+      button.title = shortcutsActive() && shortcut ? `${fullLabel} (${shortcut})` : fullLabel;
     }
 
     function setDateButtonLabel(selector, symbol, text, example, aria = text) {
@@ -4247,7 +4132,7 @@
       `;
       button.setAttribute("aria-label", `${aria}: ${example}`);
       const shortcut = button.dataset.shortcut;
-      button.title = powerOverlayActive && shortcut ? `${text}: ${example} (${shortcut})` : `${text}: ${example}`;
+      button.title = shortcutsActive() && shortcut ? `${text}: ${example} (${shortcut})` : `${text}: ${example}`;
     }
 
     function actionButtonHtml({ symbol, text, className = "icon-btn", attrs = "", aria = text, shortcut = "" }) {
@@ -4396,10 +4281,13 @@
       setButtonLabelBoth("[data-tab='settings']", ICON_SETTINGS_SECTION__GEARSHAPE_FILL, "Settings");
       setButtonLabelBoth("[data-tab='help']", ICON_SETTINGS_SECTION__QUESTIONMARK_CIRCLE_FILL, "Help Center");
       setButtonLabelBoth("[data-tab='whatsnew']", ICON_SETTINGS_SECTION__SPARKLE_TEXT_CLIPBOARD_FILL, "What's New");
+      setButtonLabelBoth("[data-tab='developer']", ICON_SETTINGS_SECTION__WRENCH_AND_SCREWDRIVER_FILL, "Developer Tools");
+      setButtonLabelBoth("#shortcutModeOnBtn", ICON_SETTINGS_SHORTCUTSON__TAG_FILL, "On", "Shortcut Mode on");
+      setButtonLabelBoth("#shortcutModeOffBtn", ICON_SETTINGS_SHORTCUTSOFF__TAG_SLASH_FILL, "Off", "Shortcut Mode off");
       $("#legendToggleBtn").setAttribute("aria-pressed", String(legendPanelOpen));
       $("#notesToggleBtn").setAttribute("aria-pressed", String(notesPanelOpen));
       $("#mapFitBtn").setAttribute("aria-pressed", String(mapFitMode));
-      $("#mapFitBtn").title = powerOverlayActive ? `${fitTitle} (F)` : fitTitle;
+      $("#mapFitBtn").title = shortcutsActive() ? `${fitTitle} (F)` : fitTitle;
     }
 
     function cssPx(value) {
@@ -4443,7 +4331,8 @@
     function render() {
       document.documentElement.dataset.theme = state.settings.theme;
       document.documentElement.dataset.hints = state.settings.uiHints ? "on" : "off";
-      document.documentElement.dataset.shortcuts = powerOverlayActive ? "on" : "off";
+      document.documentElement.dataset.shortcuts = shortcutsActive() ? "on" : "off";
+      document.documentElement.dataset.developer = state.settings.developerMode ? "on" : "off";
       document.documentElement.dataset.buttonStyle = state.settings.buttonStyle;
       document.documentElement.dataset.legend = legendPanelOpen ? "open" : "closed";
       document.documentElement.dataset.notes = notesPanelOpen ? "open" : "closed";
@@ -4488,13 +4377,13 @@
       STATES.forEach(([abbr, name]) => {
         const tile = $(`.state-tile[data-abbr="${abbr}"]`);
         if (!tile) return;
-        const box = tile.getBBox();
         const override = MAP_LABEL_OVERRIDES[abbr] || {};
         const rawLabel = mode === "name" ? String(override.label || name).replace(/\\n/g, "\n") : abbr;
         const label = mode === "name" ? rawLabel.replace(/\s+/g, " ").trim() : rawLabel;
         const stackWords = mode === "name" && (override.lineBreak === "newline");
-        const x = override.x ?? box.x + box.width / 2;
-        const y = override.y ?? box.y + box.height / 2 + 3;
+        const box = tile.getBBox();
+        const x = override.x ?? (box.x + box.width / 2 + (override.dx ?? 0));
+        const y = override.y ?? (box.y + box.height / 2 + (override.dy ?? 0) + 3);
         const fontSize = override[`${mode}Size`] || (mode === "name" ? 10 : 12);
         const text = document.createElementNS(svgNS, "text");
         text.setAttribute("x", x);
@@ -4938,6 +4827,7 @@
       }
 
       $("#notesPanelTitle").textContent = "Notes";
+      $("#notesPanelSubtitle").textContent = "";
       const filterNames = activeFilterNames();
       $("#notesPanelHint").textContent = "Select legend levels to filter, search by name, and toggle sort/view settings to scan Notes.";
       const marked = sortedMarkedStateAbbrs();
@@ -5235,6 +5125,9 @@
 
     function renderSettingsControls() {
       $("#versionLabel").textContent = `v${APP_VERSION}`;
+      const developerEnabled = state.settings.developerMode === true;
+      $$("[data-dev-only]").forEach(element => element.classList.toggle("hidden", !developerEnabled));
+      if (!developerEnabled && $("#tab-developer")?.classList.contains("active")) switchTab("settings");
       $("#lightModeBtn").setAttribute("aria-pressed", state.settings.theme === "light");
       $("#darkModeBtn").setAttribute("aria-pressed", state.settings.theme === "dark");
       $("#symbolButtonsBtn").setAttribute("aria-pressed", state.settings.buttonStyle === "symbols");
@@ -5249,6 +5142,8 @@
       $("#dateYmdBtn").setAttribute("aria-pressed", state.settings.dateOrder === "ymd");
       $("#dateNumericBtn").setAttribute("aria-pressed", state.settings.dateStyle === "numeric");
       $("#dateAlphaBtn").setAttribute("aria-pressed", state.settings.dateStyle === "alpha");
+      $("#shortcutModeOnBtn").setAttribute("aria-pressed", state.settings.shortcutMode === true);
+      $("#shortcutModeOffBtn").setAttribute("aria-pressed", state.settings.shortcutMode !== true);
       const sample = "2026-06-01";
       setDateButtonLabel("#dateMdyBtn", "", "MDY", formatDateDisplay(sample, "mdy", state.settings.dateStyle));
       setDateButtonLabel("#dateDmyBtn", "", "DMY", formatDateDisplay(sample, "dmy", state.settings.dateStyle));
@@ -5285,26 +5180,30 @@
       const category = $("#wishCategoryFilter").value;
       const target = $("#wishTargetFilter").value;
       const effort = $("#wishEffortFilter").value;
-      const categories = [...new Set(state.wishlist.map(w => w.category).filter(Boolean))].sort();
+      const categories = [...new Set(WISHLIST_SEEDS.map(w => w.category).filter(Boolean))].sort();
       $("#wishCategoryFilter").innerHTML = `<option value="">All categories</option>` + categories.map(cat =>
         `<option ${category === cat ? "selected" : ""}>${escapeHtml(cat)}</option>`
       ).join("");
-      let items = state.wishlist.filter(wish => {
+      let items = WISHLIST_SEEDS.map((wish, index) => ({ ...wish, _index: index })).filter(wish => {
         const blob = `${wish.ticketId} ${wish.title} ${wish.description} ${wish.category} ${wish.priority} ${wish.effort} ${wish.targetKind} ${wish.targetVersion} ${wish.prompt}`.toLowerCase();
         return (!search || blob.includes(search)) && (!priority || wish.priority === priority) && (!category || wish.category === category) && (!target || wish.targetKind === target) && (!effort || wish.effort === effort);
       });
       const rank = { P0: 0, P1: 1, P2: 2, P3: 3 };
+      const targetRank = { exact: 0, major: 1, minor: 2, patch: 3 };
+      const effortRank = { small: 0, medium: 1, large: 2, "x-large": 3 };
       const sort = $("#wishSort").value;
       items.sort((a, b) => {
-        if (sort === "createdAsc") return a.createdAt.localeCompare(b.createdAt);
+        if (sort === "createdAsc") return a._index - b._index;
         if (sort === "priority") return rank[a.priority] - rank[b.priority] || a.title.localeCompare(b.title);
+        if (sort === "target") return (targetRank[a.targetKind] ?? 9) - (targetRank[b.targetKind] ?? 9) || (a.targetVersion || "").localeCompare(b.targetVersion || "") || a.title.localeCompare(b.title);
+        if (sort === "effort") return (effortRank[a.effort] ?? 9) - (effortRank[b.effort] ?? 9) || a.title.localeCompare(b.title);
         if (sort === "title") return a.title.localeCompare(b.title);
-        return b.createdAt.localeCompare(a.createdAt);
+        return b._index - a._index;
       });
       $("#wishlistList").innerHTML = items.length ? items.map(wish => `
         <article class="wishlist-card">
-          <div class="row" style="justify-content: space-between;">
-            <span class="row" style="gap: .4rem;"><span class="tag">${escapeHtml(wish.ticketId)}</span><b>${escapeHtml(wish.title)}</b></span>
+          <div class="roadmap-card-title">
+            <span class="tag">${escapeHtml(wish.ticketId)}</span><b>${escapeHtml(wish.title)}</b>
           </div>
           <p>${escapeHtml(wish.description || "No description")}</p>
           <div class="chips">
@@ -5463,10 +5362,14 @@
       render();
     }
 
+    function shortcutsActive() {
+      return powerOverlayActive || state.settings.shortcutMode === true;
+    }
+
     function setPowerOverlay(active) {
       if (powerOverlayActive === active) return;
       powerOverlayActive = active;
-      document.documentElement.dataset.shortcuts = active ? "on" : "off";
+      document.documentElement.dataset.shortcuts = shortcutsActive() ? "on" : "off";
       syncButtonLabels();
     }
 
@@ -5482,7 +5385,7 @@
 
     function handlePowerShortcut(event) {
       updatePowerOverlay(event);
-      if (!powerOverlayActive) return;
+      if (!shortcutsActive()) return;
       if (["shift", "control", "alt", "option", "meta"].includes(event.key.toLowerCase())) return;
       const key = shortcutKey(event);
       if ($("#renameDialog").open) {
@@ -5547,6 +5450,7 @@
           s: () => switchTab("settings"),
           h: () => switchTab("help"),
           g: () => switchTab("whatsnew"),
+          v: () => state.settings.developerMode && switchTab("developer"),
           l: () => updateSetting("theme", "light"),
           d: () => updateSetting("theme", "dark"),
           i: () => updateSetting("buttonStyle", "symbols"),
@@ -5562,6 +5466,8 @@
           3: () => updateSetting("dateOrder", "ymd"),
           n: () => updateSetting("dateStyle", "numeric"),
           a: () => updateSetting("dateStyle", "alpha"),
+          k: () => state.settings.developerMode && updateSetting("shortcutMode", true),
+          z: () => state.settings.developerMode && updateSetting("shortcutMode", false),
           j: () => $("#exportJsonBtn").click(),
           m: () => $("#exportMarkdownBtn").click(),
           e: () => $("#exportRichTextBtn").click(),
@@ -5776,6 +5682,8 @@
       $("#hintsOffBtn").addEventListener("click", () => updateSetting("uiHints", false));
       $("#cycleModeBtn").addEventListener("click", () => updateSetting("tapBehavior", "cycle"));
       $("#selectModeBtn").addEventListener("click", () => updateSetting("tapBehavior", "select"));
+      $("#shortcutModeOnBtn").addEventListener("click", () => updateSetting("shortcutMode", true));
+      $("#shortcutModeOffBtn").addEventListener("click", () => updateSetting("shortcutMode", false));
       $("#dateMdyBtn").addEventListener("click", () => updateSetting("dateOrder", "mdy"));
       $("#dateDmyBtn").addEventListener("click", () => updateSetting("dateOrder", "dmy"));
       $("#dateYmdBtn").addEventListener("click", () => updateSetting("dateOrder", "ymd"));
@@ -5817,6 +5725,8 @@
         $("#wishSort").value = "createdDesc";
         renderWishlist();
       });
+      $("#liquorKeyBtn").addEventListener("click", () => handleDeveloperGesture("liquor"));
+      $("#coffeeKeyBtn").addEventListener("click", () => handleDeveloperGesture("coffee"));
       document.addEventListener("keydown", handlePowerShortcut);
       document.addEventListener("keyup", updatePowerOverlay);
       window.addEventListener("blur", () => setPowerOverlay(false));
@@ -5830,6 +5740,22 @@
       if (key === "uiHints") state.dismissedHints = [];
       save();
       render();
+    }
+
+    function setDeveloperMode(enabled) {
+      state.settings.developerMode = enabled === true;
+      if (!state.settings.developerMode) state.settings.shortcutMode = false;
+      developerGesture = [];
+      save();
+      render();
+      if ($("#settingsDialog").open) switchTab(state.settings.developerMode ? "developer" : "settings");
+    }
+
+    function handleDeveloperGesture(token) {
+      developerGesture = [...developerGesture, token].slice(-2);
+      const pattern = developerGesture.join(">");
+      if (!state.settings.developerMode && pattern === "liquor>coffee") setDeveloperMode(true);
+      else if (state.settings.developerMode && pattern === "coffee>liquor") setDeveloperMode(false);
     }
 
     function resetSettingsDialogScroll() {
