@@ -148,3 +148,6 @@ Setting close button looks a little off (needs more space)
 - have seperate notes for who, what, where, when, how, why. Really just Where Specifically, What For, Who With (when is date)
 - icons for places and visit types (types of visits: first; favorite; core memory)
 - Better exports
+types of visits: first; favorite; core memory
+
+improve export format
