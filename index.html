@@ -161,6 +161,41 @@
       display: none !important;
     }
 
+    [data-hint].hint-dismissed {
+      display: none !important;
+    }
+
+    .hint-dismiss-btn {
+      display: inline-grid;
+      place-items: center;
+      width: 1.15rem;
+      min-width: 1.15rem;
+      min-height: 1.15rem;
+      margin-left: .28rem;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: #a9b0ba;
+      line-height: 1;
+      vertical-align: -.18rem;
+    }
+
+    .hint-dismiss-btn:hover {
+      background: color-mix(in srgb, var(--surface-2) 72%, var(--accent) 8%);
+      color: var(--muted);
+    }
+
+    .hint-dismiss-btn .sf-symbol {
+      width: .92rem;
+      height: .92rem;
+    }
+
+    .hint-dismiss-btn .sf-symbol path {
+      fill: currentColor;
+      fill-opacity: .78;
+    }
+
     button[data-shortcut] {
       position: relative;
     }
@@ -2934,9 +2969,9 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "1.10.0";
+    const APP_VERSION = "1.11.0";
     const STORAGE_KEY = "usStateVisitMap.v1";
-    const WISHLIST_SEED_VERSION = "1.10.0.1";
+    const WISHLIST_SEED_VERSION = "1.11.0";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
       ["NV", "Nevada", 2, 2], ["AZ", "Arizona", 2, 3], ["HI", "Hawaii", 1, 6], ["MT", "Montana", 3, 0], ["WY", "Wyoming", 3, 2],
@@ -3237,9 +3272,51 @@
         tokenCostPct: 28,
         prompt: "Add local SF Symbol SVG converter for inline constants. Normalize names, strip hidden opacity attrs only, preview diffs, avoid artwork edits.",
         category: "Developer"
+      },
+      {
+        title: "Give Settings Close Button More Room",
+        ticketId: "WISH-020",
+        description: "Polish the Settings close button spacing so the icon and label feel aligned with other dialog close controls. Scope includes header spacing, touch target, icon/text/both modes, and mobile width checks.",
+        priority: "P3",
+        effort: "small",
+        targetKind: "patch",
+        targetVersion: "",
+        tokenCostPct: 7,
+        prompt: "Polish Settings close button spacing. Match other dialog close controls across icon/text/both modes and mobile widths.",
+        category: "UI"
+      },
+      {
+        title: "Major Notes Upgrade",
+        ticketId: "WISH-021",
+        description: "Rebuild notes into richer structured visit entries. Scope includes improving odd-looking delete buttons, separate fields for Where Specifically, What For, and Who With alongside the date, visit-type icons for first/favorite/core memory, and stronger markdown/plain/rich exports.",
+        priority: "P1",
+        effort: "x-large",
+        targetKind: "major",
+        targetVersion: "",
+        tokenCostPct: 72,
+        prompt: "Major Notes upgrade: improve note delete buttons; add structured Where Specifically, What For, Who With fields with date as when; add visit-type icons for first, favorite, and core memory; improve exports for structured notes.",
+        category: "Notes"
       }
     ];
     const CHANGELOG = [
+      {
+        version: "1.11.0",
+        date: "2026-05-16",
+        title: "Dismissible Hints",
+        summary: "Hints can now get out of the way one at a time, while the global setting still stays in charge.",
+        highlights: [
+          "Each UI hint gets its own light grey dismiss control.",
+          "Turning Hints off hides every hint; turning them back on restores the full set.",
+          "Roadmap gained the next Settings polish and major Notes upgrade tickets."
+        ],
+        updates: [
+          "Added persistent per-hint dismissal using localStorage state migration.",
+          "Added a small ICON_GLOBAL_DISMISS__X_CIRCLE_FILL button to visible hint text.",
+          "Made the Hints setting override individual dismissals by clearing per-hint state whenever it changes.",
+          "Added roadmap ticket WISH-020 for the Settings close button spacing.",
+          "Added roadmap ticket WISH-021 for improved structured notes, note delete button polish, visit-type icons, and better exports."
+        ]
+      },
       {
         version: "1.10.0",
         date: "2026-05-16",
@@ -3499,6 +3576,7 @@
         levels,
         states: defaultTerritoryStates(levels),
         notes: {},
+        dismissedHints: [],
         wishlist: seedWishlist(),
         seededWishlistVersion: WISHLIST_SEED_VERSION,
         territoryDefaultsSeeded: true
@@ -3738,6 +3816,10 @@
       if (!["none", "abbr", "name"].includes(next.settings.mapLabels)) next.settings.mapLabels = "none";
       next.settings.uiHints = next.settings.uiHints !== false;
       delete next.settings.powerMode;
+      next.dismissedHints = Array.isArray(input.dismissedHints)
+        ? [...new Set(input.dismissedHints.map(item => String(item || "").slice(0, 80)).filter(Boolean))].slice(0, 100)
+        : [];
+      if (!next.settings.uiHints) next.dismissedHints = [];
       next.levels = Array.isArray(input.levels) && input.levels.length ? input.levels.slice(0, 5) : base.levels;
       next.levels = next.levels.map((level, index) => ({
         id: String(level.id || uid()),
@@ -4168,6 +4250,7 @@
       renderBuiltinLevels();
       renderNotesPanel();
       renderSettingsControls();
+      enhanceHints();
       if ($("#stateDrawer").classList.contains("open")) closeDrawer();
       scheduleMainLayoutSync();
     }
@@ -5124,6 +5207,53 @@
       return String(value).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "state-map";
     }
 
+    function shortHash(value) {
+      let hash = 0;
+      for (let index = 0; index < value.length; index += 1) {
+        hash = ((hash << 5) - hash + value.charCodeAt(index)) | 0;
+      }
+      return Math.abs(hash).toString(36);
+    }
+
+    function hintKeyFor(element) {
+      const text = element.dataset.hintText || element.textContent.trim();
+      element.dataset.hintText = text;
+      const explicit = element.dataset.hintKey || element.id;
+      return explicit ? `hint:${explicit}` : `hint:${shortHash(text)}`;
+    }
+
+    function enhanceHints() {
+      const dismissed = new Set(state.dismissedHints || []);
+      $$("[data-hint]").forEach(hint => {
+        $(".hint-dismiss-btn", hint)?.remove();
+        const key = hintKeyFor(hint);
+        hint.classList.toggle("hint-dismissed", dismissed.has(key));
+        if (dismissed.has(key)) return;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "hint-dismiss-btn";
+        button.dataset.dismissHint = key;
+        button.setAttribute("aria-label", "Dismiss hint");
+        button.title = "Dismiss hint";
+        button.innerHTML = ICON_GLOBAL_DISMISS__X_CIRCLE_FILL;
+        button.addEventListener("click", event => {
+          event.preventDefault();
+          event.stopPropagation();
+          dismissHint(key);
+        });
+        hint.append(button);
+      });
+    }
+
+    function dismissHint(key) {
+      if (!state.settings.uiHints) return;
+      const dismissed = new Set(state.dismissedHints || []);
+      dismissed.add(key);
+      state.dismissedHints = [...dismissed];
+      save();
+      render();
+    }
+
     function setPowerOverlay(active) {
       if (powerOverlayActive === active) return;
       powerOverlayActive = active;
@@ -5484,6 +5614,7 @@
 
     function updateSetting(key, value) {
       state.settings[key] = value;
+      if (key === "uiHints") state.dismissedHints = [];
       save();
       render();
     }

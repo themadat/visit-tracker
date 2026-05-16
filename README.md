@@ -132,22 +132,3 @@ For every completed change:
 
 
 ## Future Prompts
-
---
-1.11
-
-Have each UI hint be individually dismissible with a light grey ICON_GLOBAL_DISMISS__X_CIRCLE_FILL. Changing the UI toggle overrides individual dismisses and either turn them all off or back on
-
---
-Setting close button looks a little off (needs more space)
-
---
-2.0.0 - Improved Notes
-
-- Delete button look weird on notes
-- have seperate notes for who, what, where, when, how, why. Really just Where Specifically, What For, Who With (when is date)
-- icons for places and visit types (types of visits: first; favorite; core memory)
-- Better exports
-types of visits: first; favorite; core memory
-
-improve export format
