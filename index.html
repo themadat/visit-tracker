@@ -3459,7 +3459,7 @@
       <section class="smart-convert-row">
         <label>Smart Convert
           <input id="noteSmartConvert" maxlength="420" placeholder="Type a quick note to auto-fill the fields below">
-          <small data-hint data-hint-key="note-smart-convert-help">Type a quick note, then use Auto Convert to fill this in.</small>
+          <small data-hint data-hint-key="note-smart-convert-help">Type a quick note, then Auto Convert fills recognized fields and sends leftover text to Additional Details.</small>
         </label>
         <button id="noteSmartConvertBtn" type="button" data-shortcut="W">Auto Convert</button>
       </section>
@@ -3719,6 +3719,8 @@
             <li>Use Expanded, Condensed, or Text Only view. Text Only is selectable and has a copy button for Apple
               Notes.
             </li>
+            <li>Use Smart Convert in the note editor to turn a quick note into dates, levels, location specifics,
+              people, purpose, and details.</li>
             <li>Use the eye button in Notes to show or hide locations that only have levels excluded from stats.</li>
             <li>Add dates as a year, month and year, or full date. Settings controls the display order and month-name vs
               numeric formatting.</li>
@@ -3730,7 +3732,7 @@
           <p><b>Color tools:</b> Auto Colors can apply a smart palette to your current levels. Suggested categories can
             be shown or hidden from the Legend.</p>
           <p><b>Structured notes:</b> Notes can include Where Specifically, What For, Who With, Additional Details, and
-            First, Favorite, or Memorable visit tags.</p>
+            one icon label: First, Favorite, or Memorable.</p>
           <p><b>What's New:</b> Returning users may see a compact banner and red dots when a major feature release is
             available. Open What's New or dismiss the banner to clear it.</p>
           <p><b>Export formats:</b> JSON (.json) is a full backup, re-importable into this app. Markdown (.md) renders
@@ -3754,6 +3756,11 @@
             your Alphabetical or Chronological sort inside each group.</p>
           <p><b>What is Text Only view for?</b><br>It renders a clean plain-text version of the current Notes view that
             is easy to select, copy, and paste into Apple Notes.</p>
+          <p><b>How does Smart Convert work?</b><br>Type a quick note in the note editor, then Auto Convert fills any
+            recognized date, level, visit icon, where, what, and who fields. Any leftover text goes to Additional
+            Details.</p>
+          <p><b>Can one note have multiple visit icons?</b><br>Not yet. A note can currently use one icon label: First,
+            Favorite, or Memorable.</p>
           <p><b>What's the difference between cycle and select mode?</b><br>Cycle taps rotate through your active levels
             automatically. Select mode opens a picker so you can choose a level and add a note in one step.</p>
           <p><b>Can I have more than five levels?</b><br>No. Five is the cap — enough for any reasonable visit taxonomy
@@ -3883,7 +3890,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "2.0.0.6";
+    const APP_VERSION = "2.0.0";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -4213,69 +4220,10 @@
     ];
     const CHANGELOG = [
       {
-        version: "2.0.0.6",
+        version: "2.0.0",
         date: "2026-05-16",
-        title: "Smart Convert Refinement",
-        summary: "A small notes build that makes Smart Convert faster to reach and clearer about what it fills in.",
-        highlights: [
-          "Moved Smart Convert to the top of the note editor.",
-          "Updated the helper copy to invite quick-note entry before auto-filling the structured fields.",
-          "Smart Convert now removes parsed pieces from the remaining text, sends leftovers to Additional Details, and clears the quick note field."
-        ],
-        updates: [
-          "If Smart Convert cannot parse a quick note, it now places the full note in Additional Details."
-        ]
-      },
-      {
-        version: "2.0.0.5",
-        date: "2026-05-16",
-        title: "Expanded Notes Visual Polish",
-        summary: "A small polish build for expanded notes readability and the current single-icon note label behavior.",
-        highlights: [
-          "Expanded note dates now have more breathing room beside the visit-type icon.",
-          "Expanded location parent rows use larger location icons and text.",
-          "Note visit-type labels now save and normalize to one selected icon label."
-        ],
-        updates: [
-          "Added WISH-025 to track future support for multiple note icon labels."
-        ]
-      },
-      {
-        version: "2.0.0.4",
-        date: "2026-05-16",
-        title: "Notes Toolbar and Backup Cleanup",
-        summary: "A polish build for cleaner Notes controls, safer developer defaults reset, and leaner JSON backup data.",
-        highlights: [
-          "Developer reset now preserves levels, marked locations, and notes while resetting app UI defaults.",
-          "Notes view controls now come before sort controls, grouped buttons stretch evenly, and category, visibility, and copy are square controls.",
-          "Condensed rows are taller, and Expanded note symbols are larger for easier scanning."
-        ],
-        updates: [
-          "Removed obsolete wishlist and seededWishlistVersion keys from normalized and exported JSON data.",
-          "Cleaned up Notes control row sizing so every container shares the same height."
-        ]
-      },
-      {
-        version: "2.0.0.3",
-        date: "2026-05-16",
-        title: "Notes Editing and Shortcut Polish",
-        summary: "A refinement build for faster notes search, cleaner note editing, tighter notes views, and developer reset controls.",
-        highlights: [
-          "Notes search now focuses with /, and the Notes toolbar has tighter square toggles with stretched segmented controls.",
-          "Condensed Notes uses the highest level per location, while Expanded Notes opens note editing directly from each note row.",
-          "The note editor now uses level radio buttons, adds a delete action, and includes a smart convert helper for structured note fields."
-        ],
-        updates: [
-          "Removed notes header rows, added category labels to Text Only output when grouping is enabled, and tightened location-edit note columns.",
-          "Fixed the opt-out visibility button icon refresh and centered the What's New Learn More action without underline.",
-          "Added a Developer Tools reset-to-defaults action."
-        ]
-      },
-      {
-        version: "2.0.0.2",
-        date: "2026-05-16",
-        title: "Notes Polish and Release Banner Controls",
-        summary: "A refinement build for the 2.0 notes experience, smarter legend stats, wider What's New messaging, and developer banner reset tools.",
+        title: "Major Notes Upgrade",
+        summary: "Richer visit notes, smarter search and views, release notifications, and a more copy-ready notes workflow.",
         notice: {
           version: "2.0.0",
           title: "Major Notes Upgrade",
@@ -4283,34 +4231,17 @@
           cta: "Learn More"
         },
         highlights: [
-          "What's New messaging now has more horizontal room, a cleaner Learn More call-to-action, and a developer reset button.",
-          "Legend counts now count each location only toward its highest active level.",
-          "Notes gained default-on categorical grouping, an opt-out visibility toggle, and tighter Condensed/Text Only formats."
+          "Notes now support structured fields for where, what, who, details, dates, levels, and a single visit icon label.",
+          "Notes gained Chronological, Alphabetical, Categorical, Expanded, Condensed, and Text Only views with broader search.",
+          "Text Only and text exports are easier to copy into notes, while JSON backups stay lean and restore the full map.",
+          "Returning users can see a What's New banner and update dots for major feature releases."
         ],
         updates: [
-          "Moved latest-feature notice content into the changelog data so release messaging stays in one place.",
-          "Moved Notes search into the Notes header and expanded its placeholder to describe the broader search.",
-          "Updated location and visit type symbols to use the existing SF-style icon constants.",
-          "Added WISH-024 for a future setting that chooses the Condensed Notes date behavior."
-        ]
-      },
-      {
-        version: "2.0.0.1",
-        date: "2026-05-16",
-        title: "Major Notes Upgrade and What's New Notifications",
-        summary: "A major notes release with structured visit fields, richer scan views, location grouping, copy-ready text, and a new What's New banner for returning users.",
-        highlights: [
-          "Notes now support Where Specifically, What For, Who With, Additional Details, and visit type tags for First, Favorite, and Memorable.",
-          "Notes gained Chronological, Alphabetical, and optional Categorical grouping by City, State, or Territory.",
-          "Expanded, Condensed, and Text Only views make notes easier to scan or copy into Apple Notes.",
-          "Returning users can see a compact What's New banner and red update dots when a new feature release is available."
-        ],
-        updates: [
-          "Search now checks location name, abbreviation, type, levels, dates, note text, structured fields, and visit type labels.",
-          "Selected location notes show the location type and use tighter separated sections for levels and notes.",
-          "Markdown, Rich Text, and Plain Text exports include the new structured note fields.",
-          "Help Center was refreshed for grouped notes, Text Only copy, structured note editing, and What's New notifications.",
-          "Removed the completed Major Notes Upgrade roadmap item."
+          "Smart Convert can turn a quick note into structured note fields, remove parsed pieces from the remaining details, and clear itself after parsing.",
+          "Legend stats count each location toward its highest active level, and opt-out-only locations can be shown or hidden in Notes.",
+          "Selected locations open into Notes with tighter Applied Levels and Visit Notes sections.",
+          "Developer Tools gained banner reset, shortcut mode, and defaults reset controls for maintenance.",
+          "Help Center coverage and dismissible hints were refreshed for the 2.0 notes workflow."
         ]
       },
       {
@@ -6032,7 +5963,7 @@
         const type = locationTypeMeta(notesPanelState);
         $("#notesPanelTitle").textContent = STATE_NAMES[notesPanelState];
         $("#notesPanelSubtitle").innerHTML = `${locationTypeIcon(notesPanelState)} ${escapeHtml(type.label)} · ${escapeHtml(names.length ? names.join(", ") : "Unvisited")}${filterNames.length ? ` · Filtered by ${escapeHtml(filterNames.join(", "))}` : ""}`;
-        $("#notesPanelHint").textContent = "Use All to return to search, sort, view, and legend filter controls.";
+        $("#notesPanelHint").textContent = "Use All to return to search, sort, view, legend filters, and Text Only copy.";
         $("#notesPanelContent").className = "note-list";
         $("#notesPanelContent").innerHTML = `
           <div class="notes-location-editor">
@@ -6101,7 +6032,7 @@
       $("#notesPanelTitle").textContent = "Notes";
       $("#notesPanelSubtitle").textContent = "";
       const filterNames = activeFilterNames();
-      $("#notesPanelHint").textContent = "Search by location, type, level, date, or detail. Use Categorical for City/State/Territory groups, and the eye button to show or hide opt-out-only locations.";
+      $("#notesPanelHint").textContent = "Search by location, type, level, date, or detail. Use Categorical groups, the eye button for opt-out-only locations, and Text Only for copy-ready notes.";
       const marked = sortedMarkedStateAbbrs();
       if (!marked.length) {
         const emptyText = notesSearchQuery.trim()

@@ -8,9 +8,9 @@ US State Visit Map is a single-file, offline HTML/CSS/JS app for tracking visits
 
 Current anchors:
 
-- `APP_VERSION`: `1.10.0.5`
+- `APP_VERSION`: `2.0.0`
 - storage key: `usStateVisitMap.v1`
-- wishlist seed version: `1.10.0.1`
+- roadmap/wishlist is developer-facing seed data only; do not persist user roadmap data in backups.
 
 ## Critical Constraints
 
@@ -24,7 +24,7 @@ Current anchors:
 - Keep the app single-file/offline unless explicitly asked otherwise.
 - New persisted field: update `defaultState()` and `normalizeState()`.
 - Every completed change: bump fourth `APP_VERSION` number and update `CHANGELOG`.
-- When finalizing a release, set `APP_VERSION` to the released semantic version and collapse same-line patch/build notes into that release entry.
+- When finalizing a release, set `APP_VERSION` to the released semantic version, collapse same-line patch/build notes into that release entry, and update Help Center plus dismissible hints wherever user-facing behavior, controls, workflows, or terminology changed.
 - Update `README.md` and `context/LLM_HANDOFF.md` when a change affects repo rules, architecture, workflow, or handoff context.
 - Changelog wording must be public-safe: describe features and changes, not internal tickets, prompts, or workflow mechanics.
 - Roadmap items use P0-P3 priority, small/medium/large/x-large effort, exact-or-bucket target, scoped description, token cost %, and a terse LLM prompt.
@@ -68,9 +68,7 @@ Change state, call `save()` when persistence is needed, then `render()` or the n
   settings: { theme, tapBehavior, buttonStyle, uiHints, dateOrder, dateStyle, mapLabels },
   levels: [{ id, name, definition, color, countsTowardStats }],
   states: { CA: ["visited"] },
-  notes: { CA: [{ id, date, levelId, text }] },
-  wishlist: [{ id, ticketId, title, description, priority, effort, targetKind, targetVersion, category, tokenCostPct, prompt, createdAt }],
-  seededWishlistVersion,
+  notes: { CA: [{ id, date, levelId, where, what, who, details, text, visitTypes }] },
   territoryDefaultsSeeded
 }
 ```
@@ -94,7 +92,7 @@ UX taste: compact, practical, map-first, light personality in docs/release copy.
 - Help + FAQ should become Help Center with search.
 - Changelog + roadmap should become What's New.
 - Public release notes describe features, not internal tickets/prompts/wishlist mechanics.
-- Collapse build-level changelog entries into major.minor release entries.
+- Collapse build-level changelog entries into major.minor release entries, then update Help Center and dismissible hints for the same user-facing changes before calling the release cut done.
 - Changelog format: `Major.Minor.Patch :: YYYY-mm-dd :: cheeky theme name`, then a bold one-line summary, then short `highlights` and denser `updates`.
 
 ## Verify
