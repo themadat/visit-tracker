@@ -132,15 +132,3 @@ For every completed change:
 
 
 ## Future Prompts
-
-Add in a global shortcut `R` to open up Release Notes, hitting `R` again collapses the Roadmap and brings focus to the Roadmap Search
-Add icons to the left of the What's New and Help Center Sections
-Tweak the X Close button to have a bit more space between X and Close so it looks better
-Sort by Priority by Default
-In developer mode have a list of hidden commands and shortcuts.
-Update my Help center to cover all the latest and greatest
-Shrink the State Map Header Section a bit vertically. Its too Tall.
-Have the map buttons break into groups: Label group and the render/toggle group. No changes on desktop, but on mobile they should take up two lines stack on top of each other right aligned
-
-Wishlist: Add tip jar
-
