@@ -177,13 +177,21 @@
       display: none !important;
     }
 
+    small[data-hint],
+    p[data-hint],
+    .setting-hint[data-hint] {
+      display: flex;
+      align-items: center;
+      gap: .36rem;
+    }
+
     .hint-dismiss-btn {
       display: inline-grid;
       place-items: center;
       width: 1.15rem;
       min-width: 1.15rem;
       min-height: 1.15rem;
-      margin-left: .28rem;
+      margin-left: auto;
       padding: 0;
       border: 0;
       border-radius: 999px;
@@ -191,6 +199,8 @@
       color: #a9b0ba;
       line-height: 1;
       vertical-align: -.18rem;
+      align-self: center;
+      flex: 0 0 auto;
     }
 
     .hint-dismiss-btn:hover {
@@ -554,6 +564,17 @@
       justify-content: flex-end;
       margin-left: auto;
       min-width: 0;
+    }
+
+    .map-resize-title-hint {
+      flex: 1 1 14rem;
+      min-width: 11rem;
+      max-width: 22rem;
+      color: var(--muted);
+      font-size: .72rem;
+      line-height: 1.18;
+      text-align: right;
+      justify-content: flex-end;
     }
 
     .map-action-group {
@@ -1380,6 +1401,8 @@
       display: grid;
       gap: .02rem;
       line-height: 1;
+      justify-items: center;
+      text-align: center;
     }
 
     .level-checks {
@@ -1933,6 +1956,23 @@
       height: 1.14rem;
     }
 
+    .notes-icon-filter .empty-icon-circle {
+      display: block;
+      width: 1.05rem;
+      height: 1.05rem;
+      border: 1.8px solid currentColor;
+      border-radius: 999px;
+      opacity: .82;
+    }
+
+    .notes-toggle-hint,
+    .notes-icon-filter-hint {
+      color: var(--muted);
+      font-size: .74rem;
+      line-height: 1.22;
+      margin-top: -.08rem;
+    }
+
     .notes-copy-btn.is-copied {
       background: var(--accent);
       border-color: var(--accent);
@@ -2031,6 +2071,12 @@
 
     .smart-convert-row button {
       min-height: 38px;
+    }
+
+    .note-inline-hints {
+      display: grid;
+      gap: .22rem;
+      margin-top: -.55rem;
     }
 
     .visit-type-chip {
@@ -2262,10 +2308,11 @@
       position: absolute;
       right: .12rem;
       top: 50%;
-      transform: translateY(-50%);
-      display: inline-flex;
+      transform: translateY(calc(-50% - .03rem));
+      display: grid;
       align-items: center;
       justify-content: center;
+      place-items: center;
       min-width: 1.05rem;
       height: 1.05rem;
       border-radius: 999px;
@@ -2273,7 +2320,7 @@
       color: white;
       font-size: .74rem;
       font-weight: 900;
-      line-height: 1;
+      line-height: 0;
     }
 
     [data-theme="dark"] .tag-more-add {
@@ -2659,6 +2706,20 @@
       opacity: .8;
     }
 
+    .developer-json {
+      max-height: 220px;
+      overflow: auto;
+      margin: 0;
+      padding: .72rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface-2);
+      color: var(--text);
+      font: 11px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
     #tab-settings .actions {
       gap: .38rem;
     }
@@ -2880,7 +2941,7 @@
 
       #notesPanel {
         align-content: stretch;
-        grid-template-rows: auto auto auto minmax(0, 1fr);
+        grid-template-rows: auto auto auto auto auto minmax(0, 1fr);
         height: 100%;
       }
 
@@ -2974,6 +3035,12 @@
         flex-direction: column;
         align-items: flex-end;
         gap: .18rem;
+      }
+
+      .map-resize-title-hint {
+        max-width: 100%;
+        min-width: 0;
+        justify-content: flex-end;
       }
 
       .map-action-group {
@@ -3348,6 +3415,8 @@
             <small id="tapHint" data-hint>Tap a state to cycle its visit level.</small>
           </div>
           <div class="map-head-actions">
+            <small id="mapResizeHint" class="map-resize-title-hint" data-hint data-hint-key="map-resize">
+              Looks wonky? Drag the divider to resize the map and cards to fit your needs.</small>
             <div class="map-action-group map-label-group">
               <div class="segmented map-label-toggle" aria-label="Map labels">
                 <span id="labelsToggleLabel" title="Map Label Type">Labels</span>
@@ -3370,8 +3439,6 @@
               Choose map labels text: none, abbr, full name.<br />
               Switch between screenshot-ready/scrollable map views.<br />
               Show/Hide the Legend/Notes Panels.</small>
-            <small data-hint data-hint-key="map-resize">
-              Looks wonky? Drag the divider to resize the map and cards to fit your needs.</small>
           </div>
         </div>
         <div class="map-viewport">
@@ -3864,11 +3931,6 @@
           <div class="row notes-panel-head" style="justify-content: space-between;">
             <div class="notes-title-stack">
               <h2 id="notesPanelTitle">Notes</h2>
-              <small id="notesPanelSubtitle"></small>
-              <small id="notesPanelHint" data-hint data-hint-key="notesPanelSubtitle">
-                Use Groups to view Locations by Category.<br />
-                Use Visible Toggle excluded level locations.<br />
-                Copy to Clipboard the Text Only view.</small>
             </div>
             <div id="notesPanelSearchWrap" class="notes-search">
               <input id="notesStateSearch" type="search" placeholder="Search groups, names, levels, dates, notes, tags, etc..."
@@ -3878,9 +3940,9 @@
           </div>
           <div class="notes-controls" aria-label="Notes display controls">
             <div class="segmented" aria-label="Notes view">
-              <button id="notesViewExpandedBtn" type="button" aria-pressed="false" data-shortcut="E">Expanded
+              <button id="notesViewExpandedBtn" type="button" aria-pressed="true" data-shortcut="E">Expanded
                 View</button>
-              <button id="notesViewCompactBtn" type="button" aria-pressed="true" data-shortcut="K">Condensed</button>
+              <button id="notesViewCompactBtn" type="button" aria-pressed="false" data-shortcut="K">Condensed</button>
               <button id="notesViewTextBtn" type="button" aria-pressed="false" data-shortcut="O">Text Only</button>
             </div>
             <div class="segmented" aria-label="Notes sort order">
@@ -3893,7 +3955,14 @@
               data-shortcut="V">Show Opt-Out</button>
             <button id="copyNotesTextBtn" class="notes-copy-btn" type="button" data-shortcut="P">Copy</button>
           </div>
+          <small id="notesPanelSubtitle" class="notes-toggle-hint" data-hint data-hint-key="notesPanelSubtitle">
+            Use Groups to view locations by category.<br/>
+            Use Visible to show or hide opt-out-only locations.<br/>
+            Copy grabs the Text Only view.</small>
           <ol id="notesIconFilters" class="notes-icon-filters" aria-label="Filter notes by icon"></ol>
+          <small id="notesIconFilterHint" class="notes-icon-filter-hint" data-hint data-hint-key="notes-icon-filter-help">
+            Select icons to filter notes. Empty circle is all Notes without an icon.<br/>
+            Right-Click or Long-Press an icon to switch between filter on just it or show all.</small>
           <div id="notesPanelContent" class="note-list"></div>
         </section>
       </aside>
@@ -3990,17 +4059,21 @@
       <section class="smart-convert-row">
         <label>Smart Convert
           <input id="noteSmartConvert" maxlength="420" placeholder="Type a quick note to auto-fill the fields below">
-          <small data-hint data-hint-key="note-smart-convert-help">Type a quick note, then Auto Convert fills recognized
-            fields and sends leftover text to Additional Details.</small>
         </label>
         <button id="noteSmartConvertBtn" type="button" data-shortcut="W">Auto Convert</button>
         <button id="noteTagSettingsBtn" type="button" data-shortcut="Y">Tags</button>
       </section>
+      <div class="note-inline-hints">
+        <small data-hint data-hint-key="note-smart-convert-help">Type a quick note, then Auto Convert looks for dates,
+          levels, tag names, and keywords like “at”, “for”, and “with”. Leftover text goes to Additional Details.</small>
+        <small data-hint data-hint-key="note-tag-settings-help">Quick link to Tags Setting to choose which appear below,
+          rename, sort, and set shortcuts.</small>
+        <small data-hint data-hint-key="note-label-help">
+          Select Location Tags. Recommend no more than 4 for a cleaner UI/UX.<br />
+          When the cursor is outside a text field, use the letter hotkeys to toggle Location Tags on/off.</small>
+      </div>
       <section id="visitTypeRow" class="visit-type-row" aria-label="Visit labels">
       </section>
-      <small data-hint data-hint-key="note-label-help">
-        Select Location Tags. Recommend no more than 4 for a cleaner UI/UX.<br />
-        When the cursor is outside a text field, use the letter hotkeys to toggle Location Tags on/off.</small>
       <section class="partial-date-picker" aria-label="Date">
         <div class="date-picker-head">
           <span id="noteDatePreview" class="date-preview-pill">No date</span>
@@ -4335,6 +4408,11 @@
             if you like it too and find it useful that's awesome!
             Feel free to share, but have no expectations around continued support and functionality.
           </p>
+          <p class="help-feedback">
+            P.P.S. This app gets the most love in Desktop Mode with Button Style set to Icons and Hints turned off, 
+            because that is how I actually use it. 
+            Mobile, text button, and hint quirks still matter; they just wait politely in line.
+          </p>
         </section>
       </section>
 
@@ -4410,6 +4488,10 @@
           </div>
         </section>
         <section class="settings-category">
+          <h3>Settings JSON</h3>
+          <pre id="developerSettingsJson" class="developer-json" aria-label="Current settings JSON"></pre>
+        </section>
+        <section class="settings-category">
           <h3>Hidden Commands</h3>
           <div class="shortcut-list">
             <div class="shortcut-row is-direct"><kbd>R</kbd><span>Global: open Release Notes. Press again to jump into
@@ -4443,7 +4525,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "2.2.0.6";
+    const APP_VERSION = "2.2.0.7";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -4645,6 +4727,7 @@
       state: { label: "State", icon: "state", order: 1 },
       territory: { label: "Territory", icon: "territory", order: 2 }
     };
+    const NOTE_FILTER_NO_ICON = "__no-icon";
     const DEFAULT_ACTIVE_VISIT_TYPE_IDS = ["star", "heart", "bookmark", "flag", "house"];
     const VISIT_TYPES = [
       { id: "star", label: "First", icon: "star", shortcut: "f", enabled: true, searchTags: ["new", "initial"] },
@@ -4663,6 +4746,18 @@
     ];
 
     const WISHLIST_SEEDS = [
+      {
+        title: "Move Panel Toggles to App Header",
+        ticketId: "WISH-031",
+        description: "Move the Legend and Notes toggles into the app header between Edit and Settings, add a Map visibility toggle to the left of Legend, and keep Map on by default.",
+        priority: "P1",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 24,
+        prompt: "Move Map, Legend, and Notes visibility toggles into the app header between Edit and Settings. Default Map to on, preserve responsive layout, and keep current panel behavior intact.",
+        category: "Layout"
+      },
       {
         title: "Better Scrollable Map With Zoom",
         ticketId: "WISH-029",
@@ -4845,6 +4940,22 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "2.2.0.7",
+        date: "2026-05-18",
+        title: "Notes Filter Polish",
+        summary: "A 2.2 development build that makes note icon filtering explicit, friendlier, and harder to accidentally lose.",
+        highlights: [
+          "Notes now defaults to Expanded view and shows all icon filters as active, including a blank-circle filter for notes without tags.",
+          "Right-clicking or pressing and holding a Notes icon filter isolates it; repeating that action restores all icon filters.",
+          "Closing a changed note now asks before discarding unsaved edits."
+        ],
+        updates: [
+          "Developer Tools now shows the current Settings JSON.",
+          "Dismissible hints were moved and expanded around note filters, Smart Convert, tag settings, and resize guidance.",
+          "Added roadmap item WISH-031 for moving Map, Legend, and Notes toggles into the app header."
+        ]
+      },
       {
         version: "2.2.0.6",
         date: "2026-05-18",
@@ -5303,13 +5414,15 @@
     let notesPanelOpen = true;
     let notesPanelState = null;
     let notesSortMode = "chrono";
-    let notesViewMode = "compact";
+    let notesViewMode = "expanded";
     let notesCategoricalMode = true;
     let notesHideExcludedOnly = false;
     let notesSearchQuery = "";
     let mapFitMode = true;
     let noteLevelFilters = new Set();
     let noteVisitTypeFilters = new Set();
+    let noteIconLongPressTimer = 0;
+    let noteIconLongPressHandled = false;
     let collapsedNoteCategories = new Set();
     let notesCopyTimer = 0;
     let notesCopyActive = false;
@@ -5324,6 +5437,7 @@
     let levelAutoSaveTimer = null;
     let layoutSyncFrame = 0;
     let pendingConfirm = null;
+    let noteDialogBaseline = "";
     let state = loadState();
 
     function defaultState() {
@@ -5880,7 +5994,7 @@
       });
     }
 
-    function requestConfirm({ title, message, actionLabel = "Delete", danger = true, onConfirm }) {
+    function requestConfirm({ title, message, actionLabel = "Delete", danger = true, preserveOpenDialogs = false, onConfirm }) {
       pendingConfirm = onConfirm;
       $("#confirmTitle").textContent = title;
       $("#confirmMessage").textContent = message;
@@ -5888,7 +6002,7 @@
       $("#confirmActionBtn").dataset.actionLabel = actionLabel;
       $("#confirmActionBtn").dataset.shortcut = confirmShortcutFor(actionLabel, danger);
       syncConfirmButtons();
-      closeOpenDialogs("confirmDialog");
+      if (!preserveOpenDialogs) closeOpenDialogs("confirmDialog");
       if ($("#confirmDialog").open) $("#confirmDialog").close();
       $("#confirmDialog").showModal();
     }
@@ -6434,8 +6548,27 @@
       return !noteLevelFilters.size || noteLevelFilters.has(note.levelId);
     }
 
+    function noteIconFilterIds() {
+      return [...activeVisitTypes().map(type => type.id), NOTE_FILTER_NO_ICON];
+    }
+
+    function ensureNoteIconFilters() {
+      const valid = new Set(noteIconFilterIds());
+      noteVisitTypeFilters = new Set([...noteVisitTypeFilters].filter(id => valid.has(id)));
+      if (!noteVisitTypeFilters.size) noteVisitTypeFilters = new Set(valid);
+      return valid;
+    }
+
+    function allNoteIconFiltersSelected() {
+      const valid = ensureNoteIconFilters();
+      return noteVisitTypeFilters.size === valid.size && [...valid].every(id => noteVisitTypeFilters.has(id));
+    }
+
     function noteMatchesVisitTypeFilter(note) {
-      return !noteVisitTypeFilters.size || (note.visitTypes || []).some(id => noteVisitTypeFilters.has(id));
+      ensureNoteIconFilters();
+      const ids = (note.visitTypes || []).filter(id => visitTypeMeta(id));
+      if (!ids.length) return noteVisitTypeFilters.has(NOTE_FILTER_NO_ICON);
+      return ids.some(id => noteVisitTypeFilters.has(id));
     }
 
     function noteMatchesAllFilters(note) {
@@ -6444,7 +6577,9 @@
 
     function activeFilterNames() {
       const levels = [...noteLevelFilters].map(id => levelById(id)?.name).filter(Boolean);
-      const icons = [...noteVisitTypeFilters].map(id => visitTypeMeta(id)?.label).filter(Boolean);
+      const icons = allNoteIconFiltersSelected()
+        ? []
+        : [...noteVisitTypeFilters].map(id => id === NOTE_FILTER_NO_ICON ? "No icon" : visitTypeMeta(id)?.label).filter(Boolean);
       return [...levels, ...icons];
     }
 
@@ -6455,7 +6590,7 @@
     }
 
     function stateMatchesVisitTypeFilter(abbr) {
-      if (!noteVisitTypeFilters.size) return true;
+      if (allNoteIconFiltersSelected()) return true;
       return (state.notes[abbr] || []).some(noteMatchesVisitTypeFilter);
     }
 
@@ -6711,25 +6846,71 @@
       const list = $("#notesIconFilters");
       if (!list) return;
       const active = activeVisitTypes();
-      noteVisitTypeFilters = new Set([...noteVisitTypeFilters].filter(id => active.some(type => type.id === id)));
-      list.classList.toggle("hidden", Boolean(notesPanelState) || !active.length);
-      list.innerHTML = active.map(type => `
+      ensureNoteIconFilters();
+      const items = [
+        ...active.map(type => ({ id: type.id, label: type.label, icon: visitTypeIcon(type.id) })),
+        { id: NOTE_FILTER_NO_ICON, label: "No icon", icon: `<span class="empty-icon-circle" aria-hidden="true"></span>` }
+      ];
+      list.classList.toggle("hidden", Boolean(notesPanelState) || !items.length);
+      $("#notesIconFilterHint")?.classList.toggle("hidden", Boolean(notesPanelState) || !items.length);
+      list.innerHTML = items.map(type => `
         <li>
           <button class="notes-icon-filter" type="button" aria-pressed="${noteVisitTypeFilters.has(type.id)}"
             data-filter-visit-type="${type.id}" title="${escapeHtml(type.label)}" aria-label="Filter notes by ${escapeHtml(type.label)}">
-            ${visitTypeIcon(type.id)}
+            ${type.icon}
           </button>
         </li>
       `).join("");
       $$("[data-filter-visit-type]", list).forEach(button => {
-        button.addEventListener("click", () => toggleNoteVisitTypeFilter(button.dataset.filterVisitType));
+        let pressTimer = 0;
+        button.addEventListener("click", event => {
+          if (noteIconLongPressHandled) {
+            event.preventDefault();
+            noteIconLongPressHandled = false;
+            return;
+          }
+          toggleNoteVisitTypeFilter(button.dataset.filterVisitType);
+        });
+        button.addEventListener("contextmenu", event => {
+          event.preventDefault();
+          soloNoteVisitTypeFilter(button.dataset.filterVisitType);
+        });
+        button.addEventListener("pointerdown", event => {
+          if (event.pointerType === "mouse") return;
+          clearTimeout(pressTimer);
+          noteIconLongPressHandled = false;
+          pressTimer = window.setTimeout(() => {
+            noteIconLongPressHandled = true;
+            soloNoteVisitTypeFilter(button.dataset.filterVisitType);
+            window.setTimeout(() => noteIconLongPressHandled = false, 700);
+          }, 520);
+          noteIconLongPressTimer = pressTimer;
+        });
+        ["pointerup", "pointercancel", "pointerleave"].forEach(type => {
+          button.addEventListener(type, () => {
+            clearTimeout(pressTimer);
+            if (noteIconLongPressTimer === pressTimer) noteIconLongPressTimer = 0;
+          });
+        });
       });
     }
 
     function toggleNoteVisitTypeFilter(typeId) {
-      if (!visitTypeMeta(typeId)) return;
+      if (typeId !== NOTE_FILTER_NO_ICON && !visitTypeMeta(typeId)) return;
+      ensureNoteIconFilters();
       if (noteVisitTypeFilters.has(typeId)) noteVisitTypeFilters.delete(typeId);
       else noteVisitTypeFilters.add(typeId);
+      renderNotesPanel();
+    }
+
+    function soloNoteVisitTypeFilter(typeId) {
+      if (typeId !== NOTE_FILTER_NO_ICON && !visitTypeMeta(typeId)) return;
+      ensureNoteIconFilters();
+      if (noteVisitTypeFilters.size === 1 && noteVisitTypeFilters.has(typeId)) {
+        noteVisitTypeFilters = new Set(noteIconFilterIds());
+      } else {
+        noteVisitTypeFilters = new Set([typeId]);
+      }
       renderNotesPanel();
     }
 
@@ -6921,6 +7102,7 @@
       $("#notesPanelBackBtn").classList.toggle("hidden", !notesPanelState);
       $("#notesPanelSearchWrap").classList.toggle("hidden", Boolean(notesPanelState));
       $(".notes-controls").classList.toggle("hidden", Boolean(notesPanelState));
+      $("#notesPanelSubtitle").classList.toggle("hidden", Boolean(notesPanelState));
       $("#notesPanelContent").className = ["compact", "expanded"].includes(notesViewMode) ? "compact-notes compact-notes-states" : "note-list";
       if (notesPanelState && STATE_NAMES[notesPanelState]) {
         selectedState = notesPanelState;
@@ -6930,7 +7112,6 @@
         const filterNames = activeFilterNames();
         const type = locationTypeMeta(notesPanelState);
         $("#notesPanelTitle").textContent = STATE_NAMES[notesPanelState];
-        $("#notesPanelSubtitle").innerHTML = `${locationTypeIcon(notesPanelState)} ${escapeHtml(type.label)} · ${escapeHtml(names.length ? names.join(", ") : "Unvisited")}${filterNames.length ? ` · Filtered by ${escapeHtml(filterNames.join(", "))}` : ""}`;
         $("#notesPanelContent").className = "note-list";
         $("#notesPanelContent").innerHTML = `
           <div class="notes-location-editor">
@@ -6997,14 +7178,13 @@
       }
 
       $("#notesPanelTitle").textContent = "Notes";
-      $("#notesPanelSubtitle").textContent = "";
       const filterNames = activeFilterNames();
       const marked = sortedMarkedStateAbbrs();
       if (!marked.length) {
         const emptyText = notesSearchQuery.trim()
           ? "No states match that search."
           : notesHideExcludedOnly ? "No visible marked locations. Opt-out-only locations are hidden."
-            : noteVisitTypeFilters.size ? "No locations match the selected icon filters."
+            : !allNoteIconFiltersSelected() ? "No locations match the selected icon filters."
               : noteLevelFilters.size ? "No states match the selected legend filters." : "No marked states yet.";
         $("#notesPanelContent").innerHTML = `<div class="empty">${emptyText}</div>`;
       } else if (notesViewMode === "text") {
@@ -7483,6 +7663,46 @@
       $("#noteDialog").showModal();
       $("#noteSmartConvert").focus();
       $("#noteSmartConvert").select();
+      noteDialogBaseline = noteFormSnapshot();
+    }
+
+    function noteFormSnapshot() {
+      if (!$("#noteForm")) return "";
+      return JSON.stringify({
+        id: $("#noteId").value,
+        year: $("#noteYear").value,
+        month: $("#noteMonth").value,
+        day: $("#noteDay").value,
+        date: $("#noteDate").value,
+        levelId: $("#noteLevel").value,
+        where: $("#noteWhere").value,
+        what: $("#noteWhat").value,
+        who: $("#noteWho").value,
+        details: $("#noteText").value,
+        smart: $("#noteSmartConvert").value,
+        visitTypes: selectedNoteVisitTypes().slice().sort()
+      });
+    }
+
+    function noteDialogHasUnsavedChanges() {
+      return $("#noteDialog").open && noteFormSnapshot() !== noteDialogBaseline;
+    }
+
+    function closeNoteDialog({ force = false } = {}) {
+      if (force || !noteDialogHasUnsavedChanges()) {
+        $("#noteDialog").close();
+        return;
+      }
+      requestConfirm({
+        title: "Discard Note Changes?",
+        message: "This note has unsaved changes. Close it without saving?",
+        actionLabel: "Discard Changes",
+        preserveOpenDialogs: true,
+        onConfirm: () => {
+          noteDialogBaseline = noteFormSnapshot();
+          $("#noteDialog").close();
+        }
+      });
     }
 
     function saveNoteFromForm() {
@@ -7515,6 +7735,7 @@
       addStateLevel(selectedState, levelId);
       save();
       render();
+      noteDialogBaseline = noteFormSnapshot();
       return true;
     }
 
@@ -7720,6 +7941,7 @@
       $("#dateAlphaBtn").setAttribute("aria-pressed", state.settings.dateStyle === "alpha");
       $("#shortcutModeOnBtn").setAttribute("aria-pressed", state.settings.shortcutMode === true);
       $("#shortcutModeOffBtn").setAttribute("aria-pressed", state.settings.shortcutMode !== true);
+      if ($("#developerSettingsJson")) $("#developerSettingsJson").textContent = JSON.stringify(state.settings, null, 2);
       const sample = "2026-06-01";
       setDateButtonLabel("#dateMdyBtn", "", "MDY", formatDateDisplay(sample, "mdy", state.settings.dateStyle));
       setDateButtonLabel("#dateDmyBtn", "", "DMY", formatDateDisplay(sample, "dmy", state.settings.dateStyle));
@@ -8050,7 +8272,7 @@
       if (!$("#noteDialog").open || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
       if (event.key === "Escape") {
         event.preventDefault();
-        $("#noteDialog").close();
+        closeNoteDialog();
         return;
       }
       if (event.key === "Enter" && !event.shiftKey) {
@@ -8137,8 +8359,8 @@
       }
       if ($("#noteDialog").open) {
         const noteActions = {
-          q: () => $("#noteDialog").close(),
-          x: () => $("#noteDialog").close(),
+        q: () => closeNoteDialog(),
+        x: () => closeNoteDialog(),
           s: () => $("#noteForm").requestSubmit(),
           d: () => !$("#deleteNoteFromDialogBtn").classList.contains("hidden") && $("#deleteNoteFromDialogBtn").click(),
           w: applySmartNoteConvert,
@@ -8325,7 +8547,10 @@
         event.stopPropagation();
         markReleaseSeen();
       });
-      $$("[data-close]").forEach(button => button.addEventListener("click", () => $(`#${button.dataset.close}`).close()));
+      $$("[data-close]").forEach(button => button.addEventListener("click", () => {
+        if (button.dataset.close === "noteDialog") closeNoteDialog();
+        else $(`#${button.dataset.close}`).close();
+      }));
       $("#confirmActionBtn").addEventListener("click", () => {
         const action = pendingConfirm;
         pendingConfirm = null;
@@ -8406,6 +8631,10 @@
       $("#noteSmartConvertBtn").addEventListener("click", applySmartNoteConvert);
       $("#noteTagSettingsBtn").addEventListener("click", () => openVisitTagSettings("note"));
       $("#noteDialog").addEventListener("keydown", handleNoteDialogKeydown);
+      $("#noteDialog").addEventListener("cancel", event => {
+        event.preventDefault();
+        closeNoteDialog();
+      });
       $("#deleteNoteFromDialogBtn").addEventListener("click", () => {
         const noteId = $("#deleteNoteFromDialogBtn").dataset.noteId || $("#noteId").value;
         if (!noteId) return;
@@ -8518,7 +8747,7 @@
             notesPanelOpen = true;
             legendPanelOpen = true;
             notesSortMode = "chrono";
-            notesViewMode = "compact";
+            notesViewMode = "expanded";
             notesCategoricalMode = true;
             notesHideExcludedOnly = false;
             notesSearchQuery = "";
