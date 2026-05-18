@@ -3749,9 +3749,9 @@
             <li>Click a Legend level to filter Notes by that level. Click it again to clear the filter.</li>
             <li>Use Notes search to find locations by name, type, level, dates, visit tags, or note details.</li>
             <li>Sort Notes chronologically or alphabetically, and turn on Categorical to group City, State, and
-              Territory locations while keeping the chosen sort inside each group.</li>
-            <li>Use Expanded, Condensed, or Text Only view. Text Only is selectable and has a copy button for Apple
-              Notes.
+              Territory locations with sticky section headers.</li>
+            <li>Use Expanded, Condensed, or Text Only view. Condensed is column-balanced for quick scanning, and Text
+              Only is selectable with a copy button for Apple Notes.
             </li>
             <li>Use Smart Convert in the note editor to turn a quick note into dates, levels, location specifics,
               people, purpose, and details.</li>
@@ -3786,10 +3786,11 @@
           <p><b>Can I move data to another device?</b><br>Export a JSON backup in Settings, then import it in the app on
             the other device.</p>
           <p><b>Can I undo a reset?</b><br>No. Export a JSON backup first if you want a safety net.</p>
-          <p><b>What does Categorical do in Notes?</b><br>It groups locations by City, State, and Territory, then keeps
-            your Alphabetical or Chronological sort inside each group.</p>
+          <p><b>What does Categorical do in Notes?</b><br>It groups locations by City, State, and Territory, keeps your
+            Alphabetical or Chronological sort inside each group, and keeps the current group header sticky while you
+            scroll.</p>
           <p><b>What is Text Only view for?</b><br>It renders a clean plain-text version of the current Notes view that
-            is easy to select, copy, and paste into Apple Notes.</p>
+            is easy to select, copy, and paste into Apple Notes. Single-note locations stay on one line when possible.</p>
           <p><b>How does Smart Convert work?</b><br>Type a quick note in the note editor, then Auto Convert fills any
             recognized date, level, visit icon, where, what, and who fields. Any leftover text goes to Additional
             Details.</p>
@@ -3924,7 +3925,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "2.1.0.2";
+    const APP_VERSION = "2.1.0";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -4278,35 +4279,28 @@
     ];
     const CHANGELOG = [
       {
-        version: "2.1.0.2",
+        version: "2.1.0",
         date: "2026-05-17",
-        title: "Notes Hierarchy Tuning",
-        summary: "A compact Notes layout pass for better header alignment, column balance, and category/location/note hierarchy.",
+        title: "Notes Layout Polish",
+        summary: "A focused Notes release with better scanning, sticky groups, clearer hierarchy, and cleaner copy-ready text.",
+        notice: {
+          version: "2.1.0",
+          title: "Notes Layout Polish",
+          summary: "Sticky groups, cleaner columns, clearer hierarchy, and better copy-ready notes.",
+          cta: "Learn More"
+        },
         highlights: [
-          "Notes header content is vertically centered with the search bar.",
-          "Condensed rows now use 40/20/20/20 column spacing.",
-          "Category labels and icons are larger with more breathing room."
+          "Notes search now stretches across the available header space and aligns cleanly with the Notes title.",
+          "Categorical group headers stick while scrolling, show counts before the chevron, and use larger labels and icons.",
+          "Condensed rows use balanced 40/20/20/20 columns for faster scanning.",
+          "Expanded Notes now has clearer hierarchy between category, location, and note rows."
         ],
         updates: [
           "Expanded location rows now nudge the icon/name inward and add a wider icon-to-name gap.",
           "Expanded note rows now align the visit icon more evenly between the row edge and date.",
-          "Roadmap gained a future Legend layout item for hidden edit controls, drag-and-drop ordering, and right-aligned stats."
-        ]
-      },
-      {
-        version: "2.1.0.1",
-        date: "2026-05-17",
-        title: "Notes Polish Pass",
-        summary: "A focused 2.1 development build for tighter Notes search, sticky groups, clearer hierarchy, and cleaner Text Only output.",
-        highlights: [
-          "Notes search now stretches across the available header space.",
-          "Categorical group headers stick while scrolling and show the count before the chevron.",
-          "Expanded Notes now has clearer visual hierarchy between category, location, and note rows."
-        ],
-        updates: [
-          "Condensed location rows now use equal-width columns that stretch across the panel.",
           "Text Only output keeps single-note locations on one line, uses a deeper indent for multi-note details, and switches to SF Pro Rounded.",
-          "Roadmap gained a future Settings text size slider item."
+          "Help Center and Notes guidance were refreshed for the polished Notes layout.",
+          "Roadmap gained future follow-up items for text sizing and Legend layout."
         ]
       },
       {
@@ -6127,7 +6121,7 @@
       $("#notesPanelTitle").textContent = "Notes";
       $("#notesPanelSubtitle").textContent = "";
       const filterNames = activeFilterNames();
-      $("#notesPanelHint").textContent = "Search by location, type, level, date, or detail. Use Categorical groups, the eye button for opt-out-only locations, and Text Only for copy-ready notes.";
+      $("#notesPanelHint").textContent = "Search by location, type, level, date, or detail. Use sticky Categorical groups, the eye button for opt-out-only locations, and Text Only for copy-ready notes.";
       const marked = sortedMarkedStateAbbrs();
       if (!marked.length) {
         const emptyText = notesSearchQuery.trim()
