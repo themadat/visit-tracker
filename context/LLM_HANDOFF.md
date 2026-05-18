@@ -8,7 +8,7 @@ US State Visit Map is a single-file, offline HTML/CSS/JS app for tracking visits
 
 Current anchors:
 
-- `APP_VERSION`: `2.0.0`
+- `APP_VERSION`: `2.1.0.1`
 - storage key: `usStateVisitMap.v1`
 - roadmap/wishlist is developer-facing seed data only; do not persist user roadmap data in backups.
 
