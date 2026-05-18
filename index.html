@@ -449,14 +449,53 @@
       margin: 0 auto;
       padding: clamp(.75rem, 1.6vw, 1.25rem);
       display: grid;
-      grid-template-columns: minmax(0, var(--map-column-width, 2fr)) minmax(320px, 1fr);
-      gap: .85rem;
+      grid-template-columns: minmax(0, var(--map-column-width, 2fr)) 14px minmax(320px, 1fr);
+      gap: .45rem;
       align-items: stretch;
       min-height: 0;
     }
 
     [data-legend="closed"][data-notes="closed"] .main {
       grid-template-columns: 1fr;
+    }
+
+    .main-resize-handle {
+      position: relative;
+      align-self: stretch;
+      width: 14px;
+      min-width: 14px;
+      min-height: 120px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: col-resize;
+      touch-action: none;
+    }
+
+    .main-resize-handle::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 4px;
+      height: min(72px, calc(100% - 2rem));
+      min-height: 42px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--line) 72%, var(--accent) 18%);
+      transform: translate(-50%, -50%);
+      transition: width .16s ease, background .16s ease, box-shadow .16s ease;
+    }
+
+    .main-resize-handle:hover::before,
+    .main-resize-handle:focus-visible::before,
+    html[data-resizing-main="true"] .main-resize-handle::before {
+      width: 6px;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent);
+    }
+
+    [data-legend="closed"][data-notes="closed"] .main-resize-handle {
+      display: none;
     }
 
     .panel {
@@ -490,8 +529,9 @@
     }
 
     .map-head-hints {
-      display: flex;
-      justify-content: flex-end;
+      display: grid;
+      justify-items: end;
+      gap: .12rem;
       flex: 1 1 100%;
       margin-top: -.24rem;
       line-height: 1.22;
@@ -1225,9 +1265,13 @@
     }
 
     .date-heading-actions button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       min-height: 34px;
       height: 34px;
       box-sizing: border-box;
+      text-align: center;
     }
 
     .date-builder {
@@ -1284,13 +1328,19 @@
     }
 
     .date-preview-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       border: 1px solid var(--line);
       border-radius: 999px;
       background: var(--surface);
       color: var(--accent-2);
       padding: .24rem .58rem;
+      width: 7.35rem;
+      min-width: 7.35rem;
       font-size: 1rem;
       font-weight: 800;
+      font-variant-numeric: tabular-nums;
       line-height: 1.1;
       justify-self: start;
       align-self: center;
@@ -1623,6 +1673,8 @@
       overflow-y: auto;
       overflow-x: hidden;
       overscroll-behavior: contain;
+      align-content: start;
+      align-items: start;
     }
 
     #settingsCloseBtn .btn-label {
@@ -1835,6 +1887,52 @@
       color: #07111f;
     }
 
+    .notes-icon-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .22rem;
+      align-items: center;
+      margin: .04rem 0 .14rem;
+      padding: 0;
+      list-style: none;
+    }
+
+    .notes-icon-filters.hidden {
+      display: none;
+    }
+
+    .notes-icon-filters li {
+      margin: 0;
+      padding: 0;
+    }
+
+    .notes-icon-filter {
+      display: inline-grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      min-height: 30px;
+      padding: 0;
+      border-radius: 9px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .notes-icon-filter:hover,
+    .notes-icon-filter:focus-visible,
+    .notes-icon-filter[aria-pressed="true"] {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 13%, var(--surface));
+      color: var(--accent-2);
+    }
+
+    .notes-icon-filter .sf-symbol {
+      width: 1.14rem;
+      height: 1.14rem;
+    }
+
     .notes-copy-btn.is-copied {
       background: var(--accent);
       border-color: var(--accent);
@@ -1888,7 +1986,7 @@
     }
 
     .visit-type-row {
-      grid-template-columns: repeat(auto-fit, minmax(7.2rem, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: .3rem;
     }
 
@@ -1927,7 +2025,7 @@
     }
 
     .smart-convert-row {
-      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-columns: minmax(0, 1fr) auto auto;
       align-items: end;
     }
 
@@ -1985,6 +2083,22 @@
     .tag-editor-list {
       display: grid;
       gap: .52rem;
+      align-content: start;
+      align-items: start;
+    }
+
+    .tag-selected-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: .34rem;
+      align-items: start;
+    }
+
+    .tag-more-grid {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      gap: .34rem;
+      align-items: start;
     }
 
     .tag-editor-section {
@@ -2008,15 +2122,28 @@
 
     .tag-editor-row {
       display: grid;
-      grid-template-columns: auto auto minmax(0, 1fr) auto;
+      grid-template-columns: auto minmax(0, 1fr) auto;
       align-items: center;
-      gap: .58rem;
+      gap: .4rem;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      padding: .48rem .55rem;
+      padding: .48rem;
       background: var(--surface);
       cursor: pointer;
-      transition: background .15s ease, border-color .15s ease, box-shadow .15s ease;
+      align-self: start;
+      transition: background .15s ease, border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+    }
+
+    .tag-editor-row.is-enabled {
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      grid-template-areas:
+        "drag icon toggle"
+        "fields fields fields";
+      justify-items: center;
+      align-items: center;
+      min-height: 108px;
+      padding: .38rem;
+      gap: .3rem;
     }
 
     .tag-editor-row.is-enabled {
@@ -2031,10 +2158,13 @@
     }
 
     .tag-editor-row.is-dragging {
-      opacity: .55;
+      opacity: .72;
+      transform: scale(.985);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, .16);
     }
 
     .tag-drag-handle {
+      grid-area: drag;
       color: var(--muted);
       cursor: grab;
       font-weight: 900;
@@ -2044,6 +2174,7 @@
     }
 
     .tag-render-preview {
+      grid-area: icon;
       display: inline-grid;
       place-items: center;
       width: 2.35rem;
@@ -2053,20 +2184,33 @@
       background: var(--surface-2);
     }
 
+    .tag-editor-row.is-enabled .tag-render-preview {
+      justify-self: center;
+      width: 2.45rem;
+      height: 2.45rem;
+    }
+
     .tag-render-preview .sf-symbol {
       width: 1.75rem;
       height: 1.75rem;
     }
 
+    .tag-editor-row.is-enabled .tag-render-preview .sf-symbol {
+      width: 1.85rem;
+      height: 1.85rem;
+    }
+
     .tag-editor-fields {
+      grid-area: fields;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(4.2rem, .28fr);
-      gap: .42rem;
+      grid-template-columns: minmax(0, 1fr) 3.5rem;
+      gap: .24rem;
       align-items: end;
       min-width: 0;
     }
 
     .tag-state-pill {
+      grid-area: toggle;
       border: 1px solid var(--line);
       border-radius: 999px;
       padding: .16rem .45rem;
@@ -2076,6 +2220,73 @@
       font-weight: 850;
       min-height: 28px;
       cursor: pointer;
+      justify-self: end;
+    }
+
+    .tag-more-option {
+      display: grid;
+      justify-items: center;
+      gap: .18rem;
+      min-height: 66px;
+      padding: .34rem .22rem .3rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .tag-more-option:hover,
+    .tag-more-option:focus-visible {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 9%, var(--surface));
+    }
+
+    .tag-more-symbol-wrap {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 100%;
+      min-height: 1.75rem;
+    }
+
+    .tag-more-option .sf-symbol {
+      width: 1.55rem;
+      height: 1.55rem;
+      color: var(--accent-2);
+      justify-self: center;
+    }
+
+    .tag-more-add {
+      position: absolute;
+      right: .12rem;
+      top: 50%;
+      transform: translateY(-50%);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 1.05rem;
+      height: 1.05rem;
+      border-radius: 999px;
+      background: var(--accent);
+      color: white;
+      font-size: .74rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    [data-theme="dark"] .tag-more-add {
+      color: #07111f;
+    }
+
+    .tag-more-name {
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: .68rem;
+      font-weight: 850;
     }
 
     .tag-editor-row label {
@@ -2669,7 +2880,7 @@
 
       #notesPanel {
         align-content: stretch;
-        grid-template-rows: auto auto minmax(0, 1fr);
+        grid-template-rows: auto auto auto minmax(0, 1fr);
         height: 100%;
       }
 
@@ -2685,6 +2896,10 @@
     @media (max-width: 980px) {
       .main {
         grid-template-columns: 1fr;
+      }
+
+      .main-resize-handle {
+        display: none;
       }
 
       .map-panel {
@@ -2818,9 +3033,12 @@
       .date-builder,
       .note-field-grid,
       .note-level-radios,
-      .smart-convert-row,
-      .visit-type-row {
+      .smart-convert-row {
         grid-template-columns: 1fr;
+      }
+
+      .visit-type-row {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
       }
 
       .date-picker-head {
@@ -2950,7 +3168,7 @@
       }
 
       .tag-editor-row {
-        grid-template-columns: auto auto minmax(0, 1fr);
+        grid-template-columns: auto minmax(0, 1fr) auto;
         gap: .32rem;
       }
 
@@ -2958,9 +3176,21 @@
         grid-template-columns: 1fr;
       }
 
+      .tag-editor-row.is-enabled {
+        min-height: 104px;
+      }
+
       .tag-state-pill {
-        grid-column: 2 / -1;
+        grid-column: auto;
         justify-self: start;
+      }
+
+      .tag-selected-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .tag-more-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
       }
 
       #legendPanel {
@@ -3137,9 +3367,11 @@
           </div>
           <div class="map-head-hints">
             <small data-hint data-hint-key="map-controls">
-              Choose map labels text: none, abbr, full name<br />
+              Choose map labels text: none, abbr, full name.<br />
               Switch between screenshot-ready/scrollable map views.<br />
               Show/Hide the Legend/Notes Panels.</small>
+            <small data-hint data-hint-key="map-resize">
+              Looks wonky? Drag the divider to resize the map and cards to fit your needs.</small>
           </div>
         </div>
         <div class="map-viewport">
@@ -3600,6 +3832,9 @@
         </div>
       </section>
 
+      <button id="mainResizeHandle" class="main-resize-handle" type="button" aria-label="Resize map and cards"
+        title="Resize map and cards"></button>
+
       <aside id="sidePanel" class="side-panel-wrap" aria-label="Visit tools">
         <section id="legendPanel" class="panel side-panel" aria-label="Visit summary and editable legend">
           <section>
@@ -3630,12 +3865,13 @@
             <div class="notes-title-stack">
               <h2 id="notesPanelTitle">Notes</h2>
               <small id="notesPanelSubtitle"></small>
-              <small id="notesPanelHint" data-hint data-hint-key="notesPanelSubtitle">Search states, select legend
-                levels to
-                filter, and use sort/view toggles to scan Notes.</small>
+              <small id="notesPanelHint" data-hint data-hint-key="notesPanelSubtitle">
+                Use Groups to view Locations by Category.<br />
+                Use Visible Toggle excluded level locations.<br />
+                Copy to Clipboard the Text Only view.</small>
             </div>
             <div id="notesPanelSearchWrap" class="notes-search">
-              <input id="notesStateSearch" type="search" placeholder="Search locations, dates, notes, etc..."
+              <input id="notesStateSearch" type="search" placeholder="Search groups, names, levels, dates, notes, tags, etc..."
                 aria-label="Search notes">
             </div>
             <button id="notesPanelBackBtn" type="button" data-shortcut="B">All</button>
@@ -3657,6 +3893,7 @@
               data-shortcut="V">Show Opt-Out</button>
             <button id="copyNotesTextBtn" class="notes-copy-btn" type="button" data-shortcut="P">Copy</button>
           </div>
+          <ol id="notesIconFilters" class="notes-icon-filters" aria-label="Filter notes by icon"></ol>
           <div id="notesPanelContent" class="note-list"></div>
         </section>
       </aside>
@@ -3757,11 +3994,13 @@
             fields and sends leftover text to Additional Details.</small>
         </label>
         <button id="noteSmartConvertBtn" type="button" data-shortcut="W">Auto Convert</button>
+        <button id="noteTagSettingsBtn" type="button" data-shortcut="Y">Tags</button>
       </section>
       <section id="visitTypeRow" class="visit-type-row" aria-label="Visit labels">
       </section>
-      <small data-hint data-hint-key="note-label-help">Pick any labels that fit; no more than 4 is recommended for
-        clean rows. When the cursor is outside a text field, use the letter badges to toggle them.</small>
+      <small data-hint data-hint-key="note-label-help">
+        Select Location Tags. Recommend no more than 4 for a cleaner UI/UX.<br />
+        When the cursor is outside a text field, use the letter hotkeys to toggle Location Tags on/off.</small>
       <section class="partial-date-picker" aria-label="Date">
         <div class="date-picker-head">
           <span id="noteDatePreview" class="date-preview-pill">No date</span>
@@ -3847,8 +4086,7 @@
           <span><b class="exclude-stat-title"><span>Exclude</span><span>from</span><span>Stats</span></b></span>
         </label>
       </div>
-      <small data-hint data-hint-key="level-editor-help">Changes save automatically. Keep definitions short; Exclude
-        from Stats removes this level from completion totals.</small>
+      <small data-hint data-hint-key="level-editor-help">Exclude from Stats removes any location in this level from completion totals.</small>
       <section>
         <h3>Existing Swatches</h3>
         <div id="existingSwatches" class="swatch-grid" style="margin-top: .5rem;"></div>
@@ -3866,8 +4104,9 @@
       <button id="paletteCloseBtn" type="button" data-close="paletteDialog" data-shortcut="Q">Close</button>
     </header>
     <div class="dialog-body">
-      <p class="muted" data-hint data-hint-key="palette-help">Palettes apply top-to-bottom in legend order. You can
-        still fine-tune individual colors after applying.</p>
+      <p class="muted" data-hint data-hint-key="palette-help">
+        Palettes apply top-to-bottom in legend order.<br/>
+        Fine-tune individual colors via Edit Legend Level.</p>
       <div id="paletteThemes" class="theme-swatches"></div>
     </div>
   </dialog>
@@ -3898,9 +4137,6 @@
     <div class="dialog-body">
       <small data-hint data-hint-key="tag-editor-help">Selected tags appear in the note editor. Drag selected rows to
         change order, click rows to add or hide them, and search More Icons for optional labels.</small>
-      <label class="tag-search-row">Find More Icons
-        <input id="tagSearchInput" type="search" maxlength="80" placeholder="Search hidden tags and icons">
-      </label>
       <div id="tagEditorList" class="tag-editor-list"></div>
     </div>
   </dialog>
@@ -3975,10 +4211,10 @@
           </div>
         </section>
         <section class="settings-category">
-          <h3>Note Tags</h3>
+          <h3>Location Notes</h3>
           <div class="setting-row">
-            <div class="setting-label">Location Icons</div>
-            <button id="visitTagSettingsBtn" type="button" data-shortcut="Y">Choose Tags</button>
+            <div class="setting-label">Location Tags</div>
+            <button id="visitTagSettingsBtn" type="button" data-shortcut="Y">Choose, Reorder, Rename, Assign Hotkeys</button>
           </div>
           <small class="setting-hint" data-hint data-hint-key="settings-note-tags-help">Pick which note icon labels
             appear in the note editor, rename them, drag to sort, set shortcuts, and search extra optional icons.</small>
@@ -4022,8 +4258,8 @@
           <ol>
             <li>Tap a state to mark it. In cycle mode, a first tap on an already marked state shows it in Notes; the
               next tap cycles levels.</li>
-            <li>Use the State Map header to switch labels, fit the map for screenshots, and show or hide Legend and
-              Notes.</li>
+            <li>Use the State Map header to switch labels, fit the map for screenshots, show or hide Legend and Notes,
+              and drag the divider on desktop to resize the map and cards.</li>
             <li>Use the Legend to edit level names, definitions, colors, order, and whether a level counts toward stats.
             </li>
             <li>Click a Legend level to filter Notes by that level. Click it again to clear the filter.</li>
@@ -4046,8 +4282,8 @@
           <p><b>Color tools:</b> Auto Colors can apply a smart palette to your current levels. Suggested categories can
             be shown or hidden from the Legend.</p>
           <p><b>Structured notes:</b> Notes can include Where Specifically, What For, Who With, Additional Details, and
-            multiple icon labels. Settings lets you choose, rename, sort, shortcut, and search optional labels shown in
-            the note editor.</p>
+            multiple icon labels. Use the Tags button in the note editor or Settings to choose, rename, sort, shortcut,
+            and search optional labels.</p>
           <p><b>What's New:</b> Returning users may see a compact banner and red dots when a major feature release is
             available. Open What's New or dismiss the banner to clear it.</p>
           <p><b>Export formats:</b> JSON (.json) is a full backup, re-importable into this app. Markdown (.md) renders
@@ -4207,7 +4443,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "2.2.0.3";
+    const APP_VERSION = "2.2.0.6";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -4377,13 +4613,14 @@
     const __WAND_AND_SPARKLES_INVERSE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.9766 26.5527"><g><rect height="26.5527" opacity="0" width="25.9766" x="0" y="0"/><path d="M17.4805 9.31641C17.6465 9.31641 17.7734 9.19922 17.8125 9.0332C18.3691 6.04492 18.8086 5.43945 21.8359 4.99023C22.0117 4.96094 22.1191 4.83398 22.1191 4.66797C22.1191 4.48242 22.0117 4.35547 21.8359 4.32617C18.8086 3.87695 18.2715 3.22266 17.8125 0.3125C17.7734 0.117188 17.6465 0 17.4805 0C17.2949 0 17.168 0.117188 17.1387 0.302734C16.5723 3.26172 16.123 3.87695 13.1152 4.32617C12.9199 4.35547 12.8125 4.48242 12.8125 4.66797C12.8125 4.83398 12.9199 4.95117 13.1152 4.99023C16.123 5.43945 16.6602 6.03516 17.1387 9.02344C17.1582 9.19922 17.2754 9.31641 17.4805 9.31641ZM3.4375 19.4141C3.61328 19.4141 3.71094 19.3066 3.74023 19.1406C4.08203 16.8652 4.08203 16.6406 6.60156 16.2793C6.77734 16.25 6.88477 16.1426 6.88477 15.9766C6.88477 15.8105 6.77734 15.7031 6.60156 15.6738C4.08203 15.3027 4.08203 15.0879 3.74023 12.8125C3.71094 12.6465 3.61328 12.5293 3.4375 12.5293C3.27148 12.5293 3.16406 12.6465 3.13477 12.8125C2.79297 15.0879 2.79297 15.3027 0.273438 15.6738C0.107422 15.7031 0 15.8105 0 15.9766C0 16.1426 0.107422 16.25 0.273438 16.2793C2.79297 16.6406 2.79297 16.8652 3.13477 19.1406C3.16406 19.3066 3.27148 19.4141 3.4375 19.4141ZM7.65625 23.0859C7.7832 23.0859 7.88086 22.9883 7.90039 22.8613C8.125 21.4844 8.08594 21.3574 9.7168 21.0547C9.85352 21.0254 9.93164 20.9277 9.93164 20.8008C9.93164 20.6738 9.85352 20.5859 9.7168 20.5566C8.0957 20.2539 8.14453 20.1367 7.90039 18.7402C7.88086 18.6133 7.77344 18.5254 7.65625 18.5254C7.5293 18.5254 7.44141 18.6133 7.41211 18.7598C7.13867 20.1367 7.2168 20.2832 5.60547 20.5566C5.46875 20.5859 5.38086 20.6641 5.38086 20.8008C5.38086 20.9277 5.46875 21.0254 5.5957 21.0547C7.2168 21.3574 7.13867 21.4844 7.41211 22.8613C7.44141 22.9883 7.5293 23.0859 7.65625 23.0859Z"/><path d="M23.8477 24.1699C24.3359 23.6719 24.3457 22.9102 23.8477 22.4023L7.60742 6.17188C7.10938 5.66406 6.28906 5.67383 5.82031 6.17188C5.33203 6.67969 5.33203 7.44141 5.83008 7.94922L22.0605 24.1699C22.5684 24.6973 23.3789 24.6777 23.8477 24.1699ZM23.2031 23.5254C23.0469 23.6816 22.793 23.6914 22.6367 23.5254L10.8398 11.7383L11.416 11.1621L23.2031 22.959C23.3691 23.125 23.3691 23.3691 23.2031 23.5254Z"/></g></svg>`;
 
     // Future Location or Notes Types
+    const __CIRCLE_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M12.7051 19.4531C16.4258 19.4531 19.4336 16.4453 19.4336 12.7246C19.4336 8.99414 16.4258 5.99609 12.7051 5.99609C8.98438 5.99609 5.97656 8.99414 5.97656 12.7246C5.97656 16.4453 8.98438 19.4531 12.7051 19.4531ZM12.7051 17.7734C9.92188 17.7734 7.65625 15.5078 7.65625 12.7246C7.65625 9.93164 9.92188 7.66602 12.7051 7.66602C15.498 7.66602 17.7539 9.93164 17.7539 12.7246C17.7539 15.5078 15.498 17.7734 12.7051 17.7734Z"/></g></svg>`;
+    
     const __AIRPLANE_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M20.9082 12.7246C20.9082 11.9043 19.834 11.2891 18.4863 11.2891L15.7812 11.2891C15.4492 11.2891 15.3418 11.2402 15.127 11.0059L10.6934 6.17188C10.5371 5.99609 10.3418 5.9082 10.1172 5.9082L9.35547 5.9082C9.11133 5.9082 8.96484 6.13281 9.07227 6.37695L11.2988 11.3086L8.07617 11.6602L6.91406 9.53125C6.79688 9.3457 6.64062 9.24805 6.37695 9.24805L6.08398 9.24805C5.85938 9.24805 5.70312 9.39453 5.70312 9.62891L5.70312 15.8301C5.70312 16.0547 5.85938 16.2012 6.08398 16.2012L6.37695 16.2012C6.64062 16.2012 6.79688 16.1035 6.91406 15.918L8.07617 13.7891L11.2988 14.1406L9.07227 19.0723C8.96484 19.3164 9.11133 19.541 9.35547 19.541L10.1172 19.541C10.3418 19.541 10.5371 19.4531 10.6934 19.2773L15.127 14.4434C15.3418 14.209 15.4492 14.1602 15.7812 14.1602L18.4863 14.1602C19.834 14.1602 20.9082 13.5449 20.9082 12.7246Z"/></g></svg>`;
     const __BELL_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M7.05078 17.2754L18.3789 17.2754C18.9258 17.2754 19.2578 16.9824 19.2578 16.543C19.2578 15.8398 18.5742 15.2344 17.9688 14.6094C17.4219 14.0234 17.373 12.8516 17.2852 11.8555C17.1875 9.38477 16.4648 7.64648 14.668 7.03125C14.4141 6.10352 13.7012 5.40039 12.7148 5.40039C11.7285 5.40039 11.0156 6.10352 10.7715 7.03125C8.96484 7.64648 8.25195 9.38477 8.1543 11.8555C8.05664 12.8516 7.98828 14.0234 7.46094 14.6094C6.875 15.2441 6.18164 15.8398 6.18164 16.543C6.18164 16.9824 6.50391 17.2754 7.05078 17.2754ZM12.7148 20.1074C13.8672 20.1074 14.6973 19.3066 14.7949 18.2812L10.6348 18.2812C10.7422 19.3066 11.5625 20.1074 12.7148 20.1074Z"/></g></svg>`;
     const __BICYCLE_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M7.10938 17.7344C9.0625 17.7344 10.6348 16.1621 10.6348 14.209C10.6348 12.2559 9.0625 10.6836 7.10938 10.6836C5.15625 10.6836 3.58398 12.2559 3.58398 14.209C3.58398 16.1621 5.15625 17.7344 7.10938 17.7344ZM7.12891 16.7871C5.68359 16.7871 4.53125 15.6348 4.53125 14.1895C4.53125 12.7539 5.67383 11.6113 7.12891 11.6113C8.55469 11.6113 9.70703 12.7637 9.70703 14.1895C9.70703 15.6348 8.55469 16.7871 7.12891 16.7871ZM7.10938 15.0293C7.56836 15.0293 7.92969 14.668 7.92969 14.209C7.92969 13.75 7.56836 13.3887 7.10938 13.3887C6.65039 13.3887 6.28906 13.75 6.28906 14.209C6.28906 14.668 6.65039 15.0293 7.10938 15.0293ZM18.3008 17.7344C20.2539 17.7344 21.8262 16.1621 21.8262 14.209C21.8262 12.2559 20.2539 10.6836 18.3008 10.6836C16.3477 10.6836 14.7656 12.2559 14.7656 14.209C14.7656 16.1621 16.3477 17.7344 18.3008 17.7344ZM18.3203 16.7871C16.875 16.7871 15.7227 15.6348 15.7227 14.1895C15.7227 12.7539 16.8652 11.6113 18.3203 11.6113C19.7461 11.6113 20.8984 12.7637 20.8984 14.1895C20.8984 15.6348 19.7461 16.7871 18.3203 16.7871ZM18.3203 15.0293C18.7695 15.0293 19.1309 14.668 19.1309 14.209C19.1309 13.75 18.7695 13.3887 18.3203 13.3887C17.8516 13.3887 17.4902 13.75 17.4902 14.209C17.4902 14.668 17.8516 15.0293 18.3203 15.0293ZM8.29102 8.59375L10.6445 8.59375C10.8984 8.59375 11.123 8.37891 11.123 8.13477C11.123 7.87109 10.918 7.65625 10.6445 7.65625L8.29102 7.65625C8.02734 7.65625 7.82227 7.86133 7.82227 8.13477C7.82227 8.37891 8.02734 8.59375 8.29102 8.59375ZM6.97266 13.6914L7.72461 14.2383L10.498 11.1328L11.9043 13.6426L10.293 13.6426L10.293 14.541L11.9727 14.541C12.4805 14.541 12.7246 14.4336 12.998 14.1211L16.2305 10.3613L17.7344 14.1211L18.5938 13.7402L15.791 6.80664C15.6641 6.51367 15.4883 6.40625 15.1562 6.40625L13.584 6.40625C13.3105 6.40625 13.0957 6.62109 13.0957 6.875C13.0957 7.12891 13.3008 7.34375 13.584 7.34375L15.0195 7.34375L15.8301 9.36523L10.9082 9.98047L9.95117 8.26172L8.98438 8.45703L9.98047 10.2246ZM11.3965 10.8594L15.1465 10.2637L12.666 13.125Z"/></g></svg>`;
     const __BOOKMARK_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M8.94531 19.3945C9.22852 19.3945 9.4043 19.2383 9.89258 18.7598L12.6465 16.0059C12.6855 15.9668 12.7344 15.9668 12.7637 16.0059L15.5273 18.7598C16.0059 19.2383 16.1816 19.3945 16.4746 19.3945C16.8555 19.3945 17.0996 19.1211 17.0996 18.6621L17.0996 7.99805C17.0996 6.79688 16.4844 6.17188 15.293 6.17188L10.1172 6.17188C8.92578 6.17188 8.31055 6.79688 8.31055 7.99805L8.31055 18.6621C8.31055 19.1211 8.55469 19.3945 8.94531 19.3945Z"/></g></svg>`;
     const __BRIEFCASE_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M7.49023 18.3984L17.9492 18.3984C19.2285 18.3984 19.8535 17.7832 19.8535 16.5137L19.8535 10.0879C19.8535 8.81836 19.2285 8.20312 17.9492 8.20312L7.49023 8.20312C6.20117 8.20312 5.57617 8.81836 5.57617 10.0879L5.57617 16.5137C5.57617 17.7832 6.20117 18.3984 7.49023 18.3984ZM11.709 14.0918C11.2793 14.0918 11.0254 13.8379 11.0254 13.3984L11.0254 12.8711C9.22852 12.7539 7.46094 12.4316 5.57617 11.7676L5.57617 10.7227C7.93945 11.6797 10.2148 12.002 12.7148 12.002C15.2148 12.002 17.4902 11.6797 19.8535 10.7227L19.8535 11.7676C17.9688 12.4316 16.2012 12.7539 14.4141 12.8711L14.4141 13.3984C14.4141 13.8379 14.1504 14.0918 13.7207 14.0918ZM8.94531 8.71094L10.0488 8.71094L10.0488 7.48047C10.0488 7.11914 10.2637 6.9043 10.6543 6.9043L14.7852 6.9043C15.1758 6.9043 15.4004 7.11914 15.4004 7.48047L15.4004 8.71094L16.4844 8.71094L16.4844 7.43164C16.4844 6.46484 15.8496 5.86914 14.8438 5.86914L10.5957 5.86914C9.58008 5.86914 8.94531 6.46484 8.94531 7.43164Z"/></g></svg>`;
     const __CAR_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M5.75195 16.9922C5.75195 17.4219 6.09375 17.7637 6.52344 17.7637L7.22656 17.7637C7.65625 17.7637 7.99805 17.4219 7.99805 16.9922L7.99805 16.0156C9.31641 16.0938 11.2109 16.1523 12.7148 16.1523C14.2285 16.1523 16.1133 16.0938 17.4316 16.0156L17.4316 16.9922C17.4316 17.4219 17.7734 17.7637 18.2031 17.7637L18.8965 17.7637C19.3359 17.7637 19.6777 17.4219 19.6777 16.9922L19.6777 13.6328C19.6777 12.6172 19.4531 12.0703 18.9258 11.3965L18.4277 10.7324C18.1934 9.64844 17.8027 8.52539 17.6074 8.08594C17.2852 7.42188 16.6797 7.05078 15.918 6.95312C15.5176 6.9043 14.1992 6.86523 12.7148 6.86523C11.2305 6.86523 9.91211 6.9043 9.51172 6.95312C8.75 7.04102 8.14453 7.42188 7.82227 8.08594C7.62695 8.52539 7.22656 9.64844 7.01172 10.7324L6.50391 11.3965C5.97656 12.0703 5.75195 12.6172 5.75195 13.6328ZM8.37891 10.2051C8.53516 9.52148 8.78906 8.75 8.97461 8.4375C9.14062 8.1543 9.32617 8.00781 9.67773 7.96875C10.1074 7.90039 11.0938 7.88086 12.7148 7.88086C14.3359 7.88086 15.3223 7.89062 15.752 7.96875C16.1035 8.00781 16.2891 8.1543 16.4551 8.4375C16.6504 8.74023 16.9043 9.52148 17.0508 10.2051C17.0996 10.3906 17.0215 10.4785 16.8066 10.4688C15.8496 10.3906 14.7559 10.3418 12.7148 10.3418C10.6738 10.3418 9.58008 10.3906 8.62305 10.4688C8.4082 10.4785 8.33984 10.3906 8.37891 10.2051ZM7.50977 13.6328C7.50977 13.1152 7.91016 12.7246 8.41797 12.7246C8.92578 12.7246 9.32617 13.1152 9.32617 13.6328C9.32617 14.1504 8.92578 14.5312 8.41797 14.5312C7.91016 14.5312 7.50977 14.1504 7.50977 13.6328ZM10.5273 13.7012C10.5273 13.3105 10.791 13.0469 11.1719 13.0469L14.248 13.0469C14.6387 13.0469 14.9023 13.3105 14.9023 13.7012C14.9023 14.082 14.6387 14.3457 14.248 14.3457L11.1719 14.3457C10.791 14.3457 10.5273 14.082 10.5273 13.7012ZM16.1035 13.6328C16.1035 13.1152 16.5039 12.7246 17.0117 12.7246C17.5195 12.7246 17.9199 13.1152 17.9199 13.6328C17.9199 14.1504 17.5195 14.5312 17.0117 14.5312C16.5039 14.5312 16.1035 14.1504 16.1035 13.6328Z"/></g></svg>`;
-    const __CIRCLE_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M12.7051 19.4531C16.4258 19.4531 19.4336 16.4453 19.4336 12.7246C19.4336 8.99414 16.4258 5.99609 12.7051 5.99609C8.98438 5.99609 5.97656 8.99414 5.97656 12.7246C5.97656 16.4453 8.98438 19.4531 12.7051 19.4531ZM12.7051 17.7734C9.92188 17.7734 7.65625 15.5078 7.65625 12.7246C7.65625 9.93164 9.92188 7.66602 12.7051 7.66602C15.498 7.66602 17.7539 9.93164 17.7539 12.7246C17.7539 15.5078 15.498 17.7734 12.7051 17.7734Z"/></g></svg>`;
     const __DIAMOND_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M6.26953 13.7305L11.709 19.1602C12.373 19.834 13.0469 19.8535 13.7207 19.1797L19.1797 13.7207C19.8438 13.0664 19.8242 12.373 19.1602 11.709L13.7305 6.2793C13.0566 5.61523 12.3828 5.5957 11.7188 6.26953L6.25 11.7188C5.5957 12.3828 5.61523 13.0762 6.26953 13.7305Z"/></g></svg>`;
     const __ENVIRONMENTS_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M11.2598 9.55078C11.3672 9.55078 11.4551 9.47266 11.4746 9.3457C11.7285 7.93945 11.7871 7.76367 13.2324 7.57812C13.3691 7.54883 13.457 7.4707 13.457 7.35352C13.457 7.22656 13.3691 7.11914 13.2324 7.09961C11.7969 6.92383 11.6992 6.74805 11.4746 5.35156C11.4551 5.21484 11.3574 5.13672 11.2598 5.13672C11.1328 5.13672 11.0352 5.21484 11.0156 5.3418C10.7617 6.75781 10.6836 6.92383 9.23828 7.09961C9.13086 7.11914 9.0332 7.22656 9.0332 7.35352C9.0332 7.4707 9.13086 7.54883 9.23828 7.57812C10.6934 7.76367 10.8203 7.93945 11.0156 9.33594C11.0352 9.46289 11.123 9.55078 11.2598 9.55078ZM9.73633 17.2266L20.791 17.2266C21.6602 17.2266 21.9824 16.416 21.4062 15.7324L16.0352 9.30664C15.8105 9.02344 15.5371 8.85742 15.2637 8.85742C14.9707 8.85742 14.707 9.02344 14.4727 9.30664L9.0918 15.7324C8.51562 16.416 8.85742 17.2266 9.73633 17.2266ZM8.50586 15.2344L11.0449 12.1875L9.11133 9.91211C8.87695 9.63867 8.64258 9.53125 8.38867 9.53125C8.125 9.53125 7.88086 9.63867 7.64648 9.91211L3.73047 14.541C3.23242 15.1074 3.49609 15.9277 4.30664 15.9277L8.125 15.9277C8.18359 15.6934 8.31055 15.4492 8.50586 15.2344Z"/></g></svg>`;
     const __FIGURE_HIKING_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M12.666 7.59766C13.5156 7.59766 14.1992 6.9043 14.1992 6.05469C14.1992 5.20508 13.5156 4.52148 12.666 4.52148C11.8066 4.52148 11.1133 5.20508 11.1133 6.05469C11.1133 6.9043 11.8066 7.59766 12.666 7.59766ZM7.96875 19.2383C7.27539 20.0684 8.4082 20.8691 8.97461 20.1953L10.9766 17.8027C11.1816 17.5684 11.2598 17.4316 11.416 17.1191L12.6758 14.3848C13.0664 13.5645 13.125 13.0566 13.1836 12.1875L13.2715 11.0449L14.375 12.1094C14.6289 12.3438 14.8145 12.4219 15.2441 12.4219L16.8555 12.4219C17.2852 12.4219 17.5781 12.168 17.5781 11.7676C17.5781 11.377 17.2852 11.123 16.8555 11.123L15.127 11.123L12.998 8.78906C12.6758 8.44727 12.2656 8.25195 11.7676 8.25195C11.6406 8.25195 11.5137 8.27148 11.3965 8.30078C11.3965 7.76367 10.9766 7.35352 10.3906 7.35352L9.64844 7.35352C8.86719 7.35352 8.38867 7.8418 8.38867 8.62305L8.38867 12.168C8.38867 12.7051 8.7793 13.0957 9.30664 13.0957L10.293 13.0957C10.293 13.5645 10.4199 13.8965 10.6836 14.2969L10.0391 16.7871ZM12.4121 16.4941C12.5977 16.7285 12.666 16.8457 12.7441 16.9922L14.209 19.9707C14.668 20.8887 16.0156 20.3125 15.5273 19.3359L14.0918 16.4258C13.9746 16.1914 13.8184 15.9375 13.6719 15.7422L13.125 14.9707ZM16.5234 20.1172C16.5234 20.3027 16.6699 20.459 16.8652 20.459C17.0508 20.459 17.207 20.3027 17.207 20.1172L17.207 13.0078C17.0605 13.0371 16.9336 13.0469 16.8555 13.0469L16.5234 13.0469ZM16.5234 10.498L16.8555 10.498C16.9434 10.498 17.0605 10.5078 17.207 10.5371L17.207 9.50195C17.207 9.31641 17.0605 9.16992 16.8652 9.16992C16.6699 9.16992 16.5234 9.31641 16.5234 9.50195Z"/></g></svg>`;
@@ -4400,6 +4637,8 @@
     const __GLOBE_AMERICAS_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M13.2324 22.2949C14.834 22.2949 19.2676 16.4844 19.2676 14.3164C19.2676 13.1055 16.5332 10.7129 15.1172 10.7129C14.4922 10.7129 13.4961 11.6113 12.7832 11.6113C12.0508 11.6113 10.4004 10.1855 10.4004 9.55078C10.4004 9.19922 10.7324 8.96484 11.0938 8.96484C11.6895 8.96484 12.6953 10.0293 13.6328 10.0293C14.4629 10.0293 14.9219 9.45312 14.9219 8.61328C14.9219 8.21289 14.6973 7.79297 14.3262 7.22656C15.6445 6.57227 18.3496 5.17578 19.1504 3.33984C17.9883 1.9043 15.4883 0.996094 12.6953 0.996094C8.47656 0.996094 4.44336 3.39844 3.74023 5.79102C3.49609 7.2168 4.44336 8.7793 6.29883 10.4004L8.17383 12.041C8.74023 12.5391 9.08203 12.7734 9.08203 13.0957C9.08203 13.6035 8.52539 14.0332 8.52539 14.7266C8.52539 15.3613 8.82812 15.8887 9.48242 16.377C11.4746 17.8711 12.0215 18.1348 12.0215 18.6133C12.041 19.4434 11.543 20.0781 11.543 20.8496C11.543 21.5332 12.4414 22.2949 13.2324 22.2949ZM12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.9551C6.51367 23.9551 1.48438 18.9258 1.48438 12.7246C1.48438 6.51367 6.51367 1.48438 12.7148 1.48438C18.9258 1.48438 23.9551 6.51367 23.9551 12.7246C23.9551 18.9258 18.9258 23.9551 12.7148 23.9551Z"/></g></svg>`;
     const __BUILDING_2_CROP_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623ZM12.7148 24.5312C13.8281 24.5312 14.8926 24.375 15.8984 24.0625L15.8984 8.49609C15.8984 7.58789 15.4102 7.03125 14.5215 7.03125L6.11328 7.03125C5.24414 7.03125 4.73633 7.58789 4.73633 8.49609L4.73633 21.0645C6.71875 23.2031 9.54102 24.5312 12.7148 24.5312ZM7.71484 21.2988C7.55859 21.2988 7.45117 21.1816 7.45117 21.0156L7.45117 19.6484C7.45117 19.4922 7.55859 19.3652 7.71484 19.3652L9.12109 19.3652C9.27734 19.3652 9.39453 19.4922 9.39453 19.6484L9.39453 21.0156C9.39453 21.1816 9.27734 21.2988 9.12109 21.2988ZM11.4648 21.2988C11.3086 21.2988 11.2012 21.1816 11.2012 21.0156L11.2012 19.6484C11.2012 19.4922 11.3086 19.3652 11.4648 19.3652L12.8711 19.3652C13.0273 19.3652 13.1348 19.4922 13.1348 19.6484L13.1348 21.0156C13.1348 21.1816 13.0273 21.2988 12.8711 21.2988ZM7.71484 17.9199C7.55859 17.9199 7.45117 17.8027 7.45117 17.6465L7.45117 16.2793C7.45117 16.123 7.55859 16.0059 7.71484 16.0059L9.12109 16.0059C9.27734 16.0059 9.39453 16.123 9.39453 16.2793L9.39453 17.6465C9.39453 17.8027 9.27734 17.9199 9.12109 17.9199ZM11.4648 17.9199C11.3086 17.9199 11.2012 17.8027 11.2012 17.6465L11.2012 16.2793C11.2012 16.123 11.3086 16.0059 11.4648 16.0059L12.8711 16.0059C13.0273 16.0059 13.1348 16.123 13.1348 16.2793L13.1348 17.6465C13.1348 17.8027 13.0273 17.9199 12.8711 17.9199ZM7.71484 14.5508C7.55859 14.5508 7.45117 14.4336 7.45117 14.2773L7.45117 12.9102C7.45117 12.7539 7.55859 12.6367 7.71484 12.6367L9.12109 12.6367C9.27734 12.6367 9.39453 12.7539 9.39453 12.9102L9.39453 14.2773C9.39453 14.4336 9.27734 14.5508 9.12109 14.5508ZM11.4648 14.5508C11.3086 14.5508 11.2012 14.4336 11.2012 14.2773L11.2012 12.9102C11.2012 12.7539 11.3086 12.6367 11.4648 12.6367L12.8711 12.6367C13.0273 12.6367 13.1348 12.7539 13.1348 12.9102L13.1348 14.2773C13.1348 14.4336 13.0273 14.5508 12.8711 14.5508ZM7.71484 11.2109C7.55859 11.2109 7.45117 11.084 7.45117 10.9375L7.45117 9.56055C7.45117 9.4043 7.55859 9.28711 7.71484 9.28711L9.12109 9.28711C9.27734 9.28711 9.39453 9.4043 9.39453 9.56055L9.39453 10.9375C9.39453 11.084 9.27734 11.2109 9.12109 11.2109ZM11.4648 11.2109C11.3086 11.2109 11.2012 11.084 11.2012 10.9375L11.2012 9.56055C11.2012 9.4043 11.3086 9.28711 11.4648 9.28711L12.8711 9.28711C13.0273 9.28711 13.1348 9.4043 13.1348 9.56055L13.1348 10.9375C13.1348 11.084 13.0273 11.2109 12.8711 11.2109ZM16.8164 23.7402C18.877 22.9102 20.625 21.4551 21.8066 19.6094L21.8066 11.7383C21.8066 10.8203 21.3086 10.2734 20.4297 10.2734L16.8164 10.2734ZM18.6914 19.9414C18.5645 19.9414 18.457 19.8438 18.457 19.7266L18.457 18.5352C18.457 18.418 18.5645 18.3008 18.6914 18.3008L19.9121 18.3008C20.0391 18.3008 20.127 18.418 20.127 18.5352L20.127 19.7266C20.127 19.8438 20.0391 19.9414 19.9121 19.9414ZM18.6914 16.9922C18.5645 16.9922 18.457 16.8945 18.457 16.7676L18.457 15.5859C18.457 15.459 18.5645 15.3613 18.6914 15.3613L19.9121 15.3613C20.0391 15.3613 20.127 15.459 20.127 15.5859L20.127 16.7676C20.127 16.8945 20.0391 16.9922 19.9121 16.9922ZM18.6914 14.0527C18.5645 14.0527 18.457 13.9453 18.457 13.8184L18.457 12.627C18.457 12.5098 18.5645 12.4121 18.6914 12.4121L19.9121 12.4121C20.0391 12.4121 20.127 12.5098 20.127 12.627L20.127 13.8184C20.127 13.9453 20.0391 14.0527 19.9121 14.0527Z"/></g></svg>`;
     const __FLAG_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M7.88086 19.4629C8.19336 19.4629 8.39844 19.2285 8.39844 18.9453L8.39844 15.1465C8.64258 15.0488 9.16016 14.8828 9.9707 14.8828C12.2363 14.8828 13.6328 16.0059 15.8496 16.0059C16.7676 16.0059 17.1875 15.9082 17.666 15.6836C18.1738 15.4492 18.3984 15.1172 18.3984 14.6094L18.3984 8.36914C18.3984 8.01758 18.2227 7.7832 17.7539 7.7832C17.4023 7.7832 16.8359 8.05664 15.7812 8.05664C13.6133 8.05664 12.1973 6.92383 9.90234 6.92383C8.95508 6.92383 8.53516 7.04102 8.0957 7.23633C7.59766 7.45117 7.35352 7.82227 7.35352 8.31055L7.35352 18.9453C7.35352 19.2188 7.59766 19.4629 7.88086 19.4629Z"/></g></svg>`;
+    const __GEAR_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M12.7051 19.7949C12.8809 19.7949 13.0371 19.7949 13.2031 19.7754L13.5449 20.4395C13.6719 20.6641 13.8574 20.7617 14.1113 20.7227C14.3555 20.6738 14.5312 20.5078 14.5605 20.2539L14.6484 19.5312C14.9707 19.4434 15.293 19.3262 15.5859 19.1895L16.1426 19.6875C16.3184 19.8633 16.543 19.8828 16.7578 19.7559C16.9824 19.6289 17.0898 19.4141 17.0312 19.1699L16.8555 18.4473C17.1289 18.2617 17.3926 18.0469 17.6172 17.8223L18.3105 18.0957C18.5449 18.1934 18.7598 18.1445 18.9258 17.9492C19.082 17.7539 19.1113 17.5 18.9746 17.3047L18.5645 16.6797C18.7598 16.416 18.9258 16.1328 19.0723 15.8203L19.8047 15.8594C20.0586 15.8691 20.2539 15.7422 20.332 15.498C20.4199 15.2734 20.3516 15.0391 20.1562 14.8828L19.5703 14.4336C19.6582 14.1211 19.707 13.7988 19.7461 13.4668L20.4492 13.2422C20.6934 13.1543 20.8301 12.9688 20.8301 12.7246C20.8301 12.4805 20.6934 12.2754 20.4492 12.207L19.7461 11.9824C19.707 11.6504 19.6582 11.3281 19.5703 11.0059L20.166 10.5664C20.3613 10.4004 20.4102 10.1953 20.3418 9.96094C20.2637 9.72656 20.0684 9.57031 19.8047 9.57031L19.0723 9.62891C18.9258 9.32617 18.7598 9.04297 18.5742 8.75977L18.9844 8.1543C19.1016 7.91992 19.0918 7.71484 18.9453 7.50977C18.7695 7.32422 18.5449 7.25586 18.3008 7.34375L17.627 7.63672C17.3926 7.40234 17.1387 7.19727 16.8652 6.99219L17.041 6.2793C17.0801 6.03516 16.9922 5.83008 16.7773 5.69336C16.5625 5.57617 16.3184 5.56641 16.123 5.76172L15.5957 6.25C15.3027 6.12305 14.9805 6.00586 14.6484 5.91797L14.5703 5.18555C14.5215 4.94141 14.375 4.77539 14.1211 4.72656C13.877 4.6875 13.6719 4.76562 13.5352 5.00977L13.2031 5.66406C13.0469 5.6543 12.8809 5.64453 12.7051 5.64453C12.5391 5.64453 12.373 5.6543 12.207 5.66406L11.875 5.00977C11.748 4.78516 11.5527 4.6875 11.3086 4.72656C11.0645 4.77539 10.8789 4.93164 10.8496 5.18555L10.7617 5.91797C10.4395 6.00586 10.127 6.11328 9.82422 6.25L9.28711 5.76172C9.11133 5.58594 8.86719 5.56641 8.65234 5.68359C8.4375 5.82031 8.33008 6.02539 8.38867 6.26953L8.55469 6.99219C8.29102 7.1875 8.02734 7.40234 7.79297 7.62695L7.10938 7.35352C6.875 7.24609 6.65039 7.31445 6.49414 7.5C6.33789 7.68555 6.29883 7.92969 6.44531 8.14453L6.8457 8.76953C6.66016 9.0332 6.48438 9.31641 6.33789 9.61914L5.61523 9.58984C5.36133 9.58008 5.15625 9.7168 5.07812 9.94141C5 10.1758 5.04883 10.4102 5.25391 10.5566L5.83984 11.0059C5.76172 11.3281 5.70312 11.6504 5.67383 11.9824L4.96094 12.207C4.72656 12.2754 4.58984 12.4805 4.58984 12.7246C4.58984 12.9688 4.7168 13.1543 4.96094 13.2422L5.67383 13.4668C5.70312 13.7988 5.76172 14.1211 5.83984 14.4336L5.24414 14.8926C5.03906 15.0488 4.98047 15.2539 5.06836 15.4785C5.16602 15.7227 5.35156 15.8789 5.61523 15.8594L6.33789 15.8105C6.48438 16.1133 6.66016 16.416 6.8457 16.6797L6.43555 17.3047C6.28906 17.5293 6.31836 17.7441 6.47461 17.9297C6.65039 18.1152 6.875 18.2031 7.11914 18.0957L7.7832 17.8027C8.02734 18.0371 8.27148 18.2617 8.55469 18.4473L8.37891 19.1797C8.32031 19.4336 8.41797 19.6289 8.63281 19.7559C8.85742 19.8633 9.10156 19.8633 9.28711 19.6875L9.82422 19.1895C10.127 19.3262 10.4297 19.4336 10.752 19.5312L10.8496 20.2637C10.8789 20.5176 11.0449 20.6738 11.2793 20.7227C11.5332 20.752 11.748 20.6641 11.875 20.4395L12.207 19.7754C12.3633 19.7949 12.5391 19.7949 12.7051 19.7949ZM12.7051 18.5645C9.48242 18.5645 6.86523 15.9473 6.86523 12.7246C6.86523 9.49219 9.48242 6.88477 12.7051 6.88477C15.9375 6.88477 18.5449 9.49219 18.5449 12.7246C18.5449 15.9473 15.9375 18.5645 12.7051 18.5645ZM11.3965 11.6309L12.4121 11.0742L9.82422 6.66992L8.82812 7.23633ZM13.8281 12.1484L13.8281 13.2812L19.3945 13.2812L19.3945 12.1484ZM12.4219 14.4043L11.4258 13.8281L8.75977 18.1738L9.75586 18.7695ZM12.7051 14.668C13.7793 14.668 14.6484 13.7891 14.6484 12.7246C14.6484 11.6504 13.7793 10.7715 12.7051 10.7715C11.6309 10.7715 10.7617 11.6504 10.7617 12.7246C10.7617 13.7891 11.6309 14.668 12.7051 14.668ZM12.7051 13.5156C12.2656 13.5156 11.9043 13.1641 11.9043 12.7246C11.9043 12.2852 12.2656 11.9238 12.7051 11.9238C13.1445 11.9238 13.5059 12.2852 13.5059 12.7246C13.5059 13.1641 13.1445 13.5156 12.7051 13.5156Z"/></g></svg>`;
+
 
     const LOCATION_TYPES = {
       city: { label: "City", icon: "city", order: 0 },
@@ -4408,21 +4647,58 @@
     };
     const DEFAULT_ACTIVE_VISIT_TYPE_IDS = ["star", "heart", "bookmark", "flag", "house"];
     const VISIT_TYPES = [
-      { id: "star", label: "First", icon: "star", shortcut: "f", enabled: true },
-      { id: "heart", label: "Favorite", icon: "heart", shortcut: "v", enabled: true },
-      { id: "bookmark", label: "Memorable", icon: "bookmark", shortcut: "b", enabled: true },
-      { id: "flag", label: "Flagged", icon: "flag", shortcut: "x", enabled: true },
-      { id: "house", label: "Home", icon: "house", shortcut: "h", enabled: true },
-      { id: "briefcase", label: "Work", icon: "briefcase", shortcut: "", enabled: false },
-      { id: "bell", label: "Wedding", icon: "bell", shortcut: "", enabled: false },
-      { id: "sportscourt", label: "Sport", icon: "sportscourt", shortcut: "", enabled: false },
-      { id: "figure_hiking", label: "Hiking", icon: "figure_hiking", shortcut: "", enabled: false },
-      { id: "tree", label: "Park", icon: "tree", shortcut: "", enabled: false },
-      { id: "airplane", label: "Airport", icon: "airplane", shortcut: "", enabled: false },
-      { id: "sailboat", label: "Cruise", icon: "sailboat", shortcut: "", enabled: false },
+      { id: "star", label: "First", icon: "star", shortcut: "f", enabled: true, searchTags: ["new", "initial"] },
+      { id: "heart", label: "Favorite", icon: "heart", shortcut: "v", enabled: true, searchTags: ["love", "best"] },
+      { id: "bookmark", label: "Memorable", icon: "bookmark", shortcut: "b", enabled: true, searchTags: ["memory", "remember", "core"] },
+      { id: "flag", label: "Flagged", icon: "flag", shortcut: "x", enabled: true, searchTags: ["important", "marker"] },
+      { id: "house", label: "Home", icon: "house", shortcut: "h", enabled: true, searchTags: ["house", "saved"] },
+      { id: "briefcase", label: "Work", icon: "briefcase", shortcut: "", enabled: false, searchTags: ["business", "office", "job"] },
+      { id: "bell", label: "Wedding", icon: "bell", shortcut: "", enabled: false, searchTags: ["marriage", "ceremony"] },
+      { id: "sportscourt", label: "Sport", icon: "sportscourt", shortcut: "", enabled: false, searchTags: ["sports", "game", "court"] },
+      { id: "figure_hiking", label: "Hiking", icon: "figure_hiking", shortcut: "", enabled: false, searchTags: ["hike", "trail", "walk"] },
+      { id: "tree", label: "Park", icon: "tree", shortcut: "", enabled: false, searchTags: ["parks", "nature", "forest"] },
+      { id: "airplane", label: "Airport", icon: "airplane", shortcut: "", enabled: false, searchTags: ["flight", "plane", "layover"] },
+      { id: "sailboat", label: "Cruise", icon: "sailboat", shortcut: "", enabled: false, searchTags: ["boat", "ship", "boating"] },
+      { id: "bicycle", label: "Bicycle", icon: "bicycle", shortcut: "", enabled: false, searchTags: ["bike", "cycling", "cycle"] },
     ];
 
     const WISHLIST_SEEDS = [
+      {
+        title: "Better Scrollable Map With Zoom",
+        ticketId: "WISH-029",
+        description: "Improve scrollable map mode with smoother panning, practical zoom controls, and touch-friendly bounds so close-up map work feels intentional instead of cramped.",
+        priority: "P1",
+        effort: "large",
+        targetKind: "exact",
+        targetVersion: "2.3.0",
+        tokenCostPct: 38,
+        prompt: "Improve scrollable map mode with touch-friendly pan/zoom controls, clear reset behavior, and no regression to fit-map screenshot mode.",
+        category: "Maps"
+      },
+      {
+        title: "Map Locations With Latitude/Longitude",
+        ticketId: "WISH-030",
+        description: "Allow saved locations to appear on the map using latitude and longitude, including local persistence, import/export support, and note/location linking without adding a backend.",
+        priority: "P1",
+        effort: "x-large",
+        targetKind: "exact",
+        targetVersion: "2.3.0",
+        tokenCostPct: 58,
+        prompt: "Add latitude/longitude-backed saved locations on the map. Persist locally, include import/export, and connect location markers to notes without adding backend services.",
+        category: "Maps"
+      },
+      {
+        title: "Improve Add to Home Screen",
+        ticketId: "WISH-028",
+        description: "Improve the installed app experience with a better home-screen icon, app name, and related metadata while keeping the single-file/offline setup intact.",
+        priority: "P1",
+        effort: "small",
+        targetKind: "patch",
+        targetVersion: "",
+        tokenCostPct: 12,
+        prompt: "Improve Add to Home Screen polish: app icon, app name, and install metadata. Keep the app single-file/offline and verify mobile behavior.",
+        category: "Mobile"
+      },
       {
         title: "Better Legend Layout",
         ticketId: "WISH-027",
@@ -4569,6 +4845,53 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "2.2.0.6",
+        date: "2026-05-18",
+        title: "Tag Settings Polish",
+        summary: "A 2.2 development build that makes icon tag settings denser, clearer, and easier to search.",
+        highlights: [
+          "More Icons cards now keep the icon centered while right-aligning the add control.",
+          "Icon search now supports multiple built-in search tags, so searches like bike can find Bicycle.",
+          "Dragging selected icon tags now reflows the grid live before the drop."
+        ],
+        updates: [
+          "Selected icon tag cards are more vertically compact and no longer stretch to fill excess height.",
+          "Notes now reserves a dedicated row for the icon filter toolbar so the list does not cover it."
+        ]
+      },
+      {
+        version: "2.2.0.5",
+        date: "2026-05-18",
+        title: "Icon Filter Pass",
+        summary: "A 2.2 development build that makes note tag filtering quicker and settles the desktop map/cards split.",
+        highlights: [
+          "Desktop now defaults to a 66/33 map-to-cards split while preserving any manually resized layout.",
+          "Notes now has an ordered active-icon filter strip between the controls and the list, with hover labels and click-to-filter behavior.",
+          "Location Icon Tags now keeps newly available optional tags in More Icons unless they are part of the default selected set."
+        ],
+        updates: [
+          "Selected tag cards are more compact, with the icon between the drag handle and On pill.",
+          "Added roadmap items for a better scrollable/zoomable map and latitude/longitude-backed map locations."
+        ]
+      },
+      {
+        version: "2.2.0.4",
+        date: "2026-05-18",
+        title: "Resizable Notes Workspace",
+        summary: "A 2.2 development build that adds a draggable desktop split and makes note tag editing more direct.",
+        highlights: [
+          "Desktop now has a draggable divider between the map and Legend/Notes cards, with a dismissible resize hint.",
+          "The note editor now offers a Tags shortcut beside Auto Convert and returns to the note after editing tag settings.",
+          "Location Icon Tags now uses a four-across selected grid, an eight-across compact More Icons grid, and auto-assigns available hotkeys when tags are added."
+        ],
+        updates: [
+          "The date pill now keeps a consistent width so date typing does not shift the controls.",
+          "Note tags now render four across in the note editor.",
+          "Added roadmap item WISH-028 for improving Add to Home Screen icon/name polish.",
+          "Preserved the manually refined icon tag ids and added icon rendering support for the current tag set."
+        ]
+      },
       {
         version: "2.2.0.3",
         date: "2026-05-18",
@@ -4986,6 +5309,7 @@
     let notesSearchQuery = "";
     let mapFitMode = true;
     let noteLevelFilters = new Set();
+    let noteVisitTypeFilters = new Set();
     let collapsedNoteCategories = new Set();
     let notesCopyTimer = 0;
     let notesCopyActive = false;
@@ -4993,7 +5317,10 @@
     let developerGesture = [];
     let releaseShortcutPrimed = false;
     let draggingVisitTagId = "";
+    let visitTagDragCommitted = false;
     let visitTagSearchQuery = "";
+    let visitTagReturnTarget = "settings";
+    let mainResizeActive = false;
     let levelAutoSaveTimer = null;
     let layoutSyncFrame = 0;
     let pendingConfirm = null;
@@ -5004,7 +5331,7 @@
       return {
         appVersion: APP_VERSION,
         mapName: "Your State Map",
-        settings: { theme: "light", tapBehavior: "cycle", buttonStyle: "symbols", uiHints: true, dateOrder: "mdy", dateStyle: "alpha", mapLabels: "none", hideSuggestedCategories: false, developerMode: false, shortcutMode: false },
+        settings: { theme: "light", tapBehavior: "cycle", buttonStyle: "symbols", uiHints: true, dateOrder: "mdy", dateStyle: "alpha", mapLabels: "none", mapSplitRatio: .66, hideSuggestedCategories: false, developerMode: false, shortcutMode: false },
         levels,
         states: defaultTerritoryStates(levels),
         notes: {},
@@ -5038,6 +5365,11 @@
       return String(value || "").trim().toLowerCase().replace(/[^a-z]/g, "").slice(0, 1);
     }
 
+    function normalizeVisitTypeSearchTags(value) {
+      const raw = Array.isArray(value) ? value : String(value || "").split(",");
+      return [...new Set(raw.map(item => String(item || "").trim().toLowerCase()).filter(Boolean))].slice(0, 12);
+    }
+
     function normalizeVisitTypeConfig(inputTypes, defaults = VISIT_TYPES) {
       const defaultById = Object.fromEntries(defaults.map(type => [type.id, type]));
       const saved = Array.isArray(inputTypes) ? inputTypes : [];
@@ -5054,12 +5386,14 @@
       }).map(id => {
         const base = defaultById[id];
         const custom = savedById[id] || {};
+        const hasSavedType = Object.prototype.hasOwnProperty.call(savedById, id);
         return {
           id,
           label: String(custom.label || base.label).slice(0, 24),
           icon: base.icon,
           shortcut: normalizeVisitTypeShortcut(custom.shortcut) || normalizeVisitTypeShortcut(base.shortcut),
-          enabled: custom.enabled !== false
+          searchTags: normalizeVisitTypeSearchTags(custom.searchTags || base.searchTags),
+          enabled: typeof custom.enabled === "boolean" ? custom.enabled : hasSavedType ? custom.enabled !== false : base.enabled !== false
         };
       });
     }
@@ -5221,6 +5555,12 @@
       if (!["mdy", "dmy", "ymd"].includes(next.settings.dateOrder)) next.settings.dateOrder = "mdy";
       if (!["numeric", "alpha"].includes(next.settings.dateStyle)) next.settings.dateStyle = "alpha";
       if (!["none", "abbr", "name"].includes(next.settings.mapLabels)) next.settings.mapLabels = "none";
+      const savedSplitRatio = next.settings.mapSplitRatio;
+      next.settings.mapSplitRatio = savedSplitRatio === null || savedSplitRatio === undefined || savedSplitRatio === ""
+        ? .66
+        : Number.isFinite(Number(savedSplitRatio))
+          ? Math.max(.34, Math.min(.78, Number(savedSplitRatio)))
+          : .66;
       if (typeof next.settings.hideSuggestedCategories !== "boolean") next.settings.hideSuggestedCategories = false;
       next.settings.developerMode = next.settings.developerMode === true;
       next.settings.shortcutMode = next.settings.developerMode && next.settings.shortcutMode === true;
@@ -5650,9 +5990,10 @@
       setButtonLabel("#saveNoteBtn", ICON_GLOBAL_ACTION_APPLY__CHECKMARK, "Save Note");
       setButtonLabel("#deleteNoteFromDialogBtn", ICON_GLOBAL_ACTION_DELETE__DELETE_LEFT_FILL, "Delete Note");
       setButtonLabel("#noteSmartConvertBtn", __WAND_AND_SPARKLES_INVERSE, "Auto Convert", "Smart convert note text");
+      setButtonLabel("#noteTagSettingsBtn", __GEAR_CIRCLE, "Tags", "Choose note tags");
       setButtonLabel("#levelDialogCloseBtn", ICON_GLOBAL_CLOSE__XMARK, "Close");
       setButtonLabel("#paletteCloseBtn", ICON_GLOBAL_CLOSE__XMARK, "Close");
-      setButtonLabelBoth("#tagDialogBackBtn", ICON_GLOBAL_BACK__CHEVRON_BACKWARD, "Back to Settings");
+      setButtonLabelBoth("#tagDialogBackBtn", ICON_GLOBAL_BACK__CHEVRON_BACKWARD, visitTagReturnTarget === "note" ? "Back to Note" : "Back to Settings");
       setButtonLabelBoth("#tagDialogCloseBtn", ICON_GLOBAL_CLOSE__XMARK, "Close");
       setButtonLabelBoth("#settingsCloseBtn", ICON_GLOBAL_CLOSE__XMARK, "Close");
       syncConfirmButtons();
@@ -5665,7 +6006,7 @@
       setButtonLabelBoth("#hintsOffBtn", ICON_SETTINGS_HINT_OFF__LIGHTBULB, "Off", "Hints off");
       setButtonLabelBoth("#cycleModeBtn", ICON_SETTINGS_MAP_CYCLE__ARROW_TRIANGLEHEAD_2_CLOCKWISE, "Cycle", "Tap to cycle");
       setButtonLabelBoth("#selectModeBtn", ICON_SETTINGS_MAP_SELECT__SCOPE, "Select", "Tap to select");
-      setButtonLabelBoth("#visitTagSettingsBtn", __CIRCLE_CIRCLE, "Choose Tags");
+      setButtonLabelBoth("#visitTagSettingsBtn", __CIRCLE_CIRCLE, "Choose, Reorder, Rename, Assign Hotkeys");
       setExportBtnLabel("#exportJsonBtn", ICON_SETTINGS_EXPORT_JSON__CURLYBRACES, "JSON", ".json");
       setExportBtnLabel("#exportMarkdownBtn", ICON_SETTINGS_EXPORT_MARKDOWN__RICHTEXT_PAGE, "Markdown", ".md");
       setExportBtnLabel("#exportRichTextBtn", ICON_SETTINGS_EXPORT_RICHTEXT__CHARACTER_TEXT_JUSTIFY, "Rich Text", ".rtf");
@@ -5691,6 +6032,53 @@
       return Number.parseFloat(value) || 0;
     }
 
+    function mainLayoutMetrics() {
+      const main = $(".main");
+      if (!main) return null;
+      const mainStyle = getComputedStyle(main);
+      const rect = main.getBoundingClientRect();
+      const sideOpen = legendPanelOpen || notesPanelOpen;
+      const columnGap = cssPx(mainStyle.columnGap || mainStyle.gap);
+      const paddingLeft = cssPx(mainStyle.paddingLeft);
+      const paddingRight = cssPx(mainStyle.paddingRight);
+      const mainWidth = main.clientWidth - paddingLeft - paddingRight;
+      const handleWidth = sideOpen ? ($("#mainResizeHandle")?.getBoundingClientRect().width || 0) : 0;
+      const available = Math.max(320, mainWidth - handleWidth - (sideOpen ? columnGap * 2 : 0));
+      const sideMin = sideOpen ? 320 : 0;
+      return {
+        main,
+        contentLeft: rect.left + paddingLeft,
+        available,
+        minMap: 320,
+        maxMap: Math.max(320, available - sideMin)
+      };
+    }
+
+    function clampMapColumn(width, metrics = mainLayoutMetrics()) {
+      if (!metrics) return 320;
+      return Math.max(metrics.minMap, Math.min(metrics.maxMap, width));
+    }
+
+    function setMainSplitFromClientX(clientX, persist = false) {
+      const metrics = mainLayoutMetrics();
+      if (!metrics) return;
+      const mapColumn = clampMapColumn(clientX - metrics.contentLeft, metrics);
+      state.settings.mapSplitRatio = Math.max(.34, Math.min(.78, mapColumn / metrics.available));
+      metrics.main.style.setProperty("--map-column-width", `${Math.floor(mapColumn)}px`);
+      if (persist) save();
+    }
+
+    function nudgeMainSplit(delta) {
+      const metrics = mainLayoutMetrics();
+      if (!metrics) return;
+      const current = Number.isFinite(Number(state.settings.mapSplitRatio))
+        ? Number(state.settings.mapSplitRatio)
+        : clampMapColumn($(".map-panel")?.getBoundingClientRect().width || metrics.available * .66, metrics) / metrics.available;
+      state.settings.mapSplitRatio = Math.max(.34, Math.min(.78, current + delta));
+      save();
+      syncMainLayout();
+    }
+
     function syncMainLayout() {
       const main = $(".main");
       if (!main) return;
@@ -5701,19 +6089,25 @@
       const mapWrap = $(".map-wrap");
       const mapHead = $(".map-head");
       if (!mapWrap || !mapHead) return;
-      const mainStyle = getComputedStyle(main);
       const wrapStyle = getComputedStyle(mapWrap);
-      const mainWidth = main.clientWidth - cssPx(mainStyle.paddingLeft) - cssPx(mainStyle.paddingRight);
+      const metrics = mainLayoutMetrics();
+      if (!metrics) return;
+      const mainStyle = getComputedStyle(main);
       const mainHeight = main.clientHeight - cssPx(mainStyle.paddingTop) - cssPx(mainStyle.paddingBottom);
-      const columnGap = cssPx(mainStyle.columnGap || mainStyle.gap);
       const wrapX = cssPx(wrapStyle.paddingLeft) + cssPx(wrapStyle.paddingRight);
       const wrapY = cssPx(wrapStyle.paddingTop) + cssPx(wrapStyle.paddingBottom);
       const mapBodyHeight = Math.max(220, mainHeight - mapHead.getBoundingClientRect().height - wrapY - 2);
       const heightBoundColumn = Math.ceil(mapBodyHeight * MAP_ASPECT_RATIO + wrapX + 2);
       const sideOpen = legendPanelOpen || notesPanelOpen;
-      const sideMin = sideOpen ? 320 : 0;
-      const maxMapColumn = Math.max(320, sideOpen ? mainWidth - columnGap - sideMin : mainWidth);
-      const mapColumn = Math.max(320, Math.min(maxMapColumn, heightBoundColumn));
+      if (!sideOpen) {
+        main.style.removeProperty("--map-column-width");
+        return;
+      }
+      const savedRatio = Number(state.settings.mapSplitRatio);
+      const targetColumn = Number.isFinite(savedRatio)
+        ? metrics.available * Math.max(.34, Math.min(.78, savedRatio))
+        : heightBoundColumn;
+      const mapColumn = clampMapColumn(targetColumn, metrics);
       main.style.setProperty("--map-column-width", `${Math.floor(mapColumn)}px`);
     }
 
@@ -5892,6 +6286,18 @@
 
     function visitTypeIcon(id) {
       return ({
+        star: __STAR_CIRCLE,
+        heart: __HEART_CIRCLE,
+        bookmark: __BOOKMARK_CIRCLE,
+        flag: __FLAG_CIRCLE,
+        house: __HOUSE_CIRCLE,
+        briefcase: __BRIEFCASE_CIRCLE,
+        bell: __BELL_CIRCLE,
+        sportscourt: __SPORTSCOURT_CIRCLE,
+        figure_hiking: __FIGURE_HIKING_CIRCLE,
+        tree: __TREE_CIRCLE,
+        airplane: __AIRPLANE_CIRCLE,
+        sailboat: __SAILBOAT_CIRCLE,
         first: __STAR_CIRCLE,
         favorite: __HEART_CIRCLE,
         memorable: __BOOKMARK_CIRCLE,
@@ -6028,14 +6434,29 @@
       return !noteLevelFilters.size || noteLevelFilters.has(note.levelId);
     }
 
+    function noteMatchesVisitTypeFilter(note) {
+      return !noteVisitTypeFilters.size || (note.visitTypes || []).some(id => noteVisitTypeFilters.has(id));
+    }
+
+    function noteMatchesAllFilters(note) {
+      return noteMatchesLevelFilter(note) && noteMatchesVisitTypeFilter(note);
+    }
+
     function activeFilterNames() {
-      return [...noteLevelFilters].map(id => levelById(id)?.name).filter(Boolean);
+      const levels = [...noteLevelFilters].map(id => levelById(id)?.name).filter(Boolean);
+      const icons = [...noteVisitTypeFilters].map(id => visitTypeMeta(id)?.label).filter(Boolean);
+      return [...levels, ...icons];
     }
 
     function stateMatchesLevelFilter(abbr) {
       if (!noteLevelFilters.size) return true;
       return getStateLevelIds(abbr).some(id => noteLevelFilters.has(id))
         || (state.notes[abbr] || []).some(noteMatchesLevelFilter);
+    }
+
+    function stateMatchesVisitTypeFilter(abbr) {
+      if (!noteVisitTypeFilters.size) return true;
+      return (state.notes[abbr] || []).some(noteMatchesVisitTypeFilter);
     }
 
     function stateOnlyHasExcludedLevels(abbr) {
@@ -6072,7 +6493,7 @@
     }
 
     function filteredNotesFor(abbr) {
-      return sortedNotesFor(abbr).filter(noteMatchesLevelFilter);
+      return sortedNotesFor(abbr).filter(noteMatchesAllFilters);
     }
 
     function filteredStateLevelNames(abbr) {
@@ -6200,7 +6621,9 @@
 
     function markedStateAbbrs() {
       const marked = new Set([...Object.keys(state.states), ...Object.keys(state.notes).filter(abbr => (state.notes[abbr] || []).length)]);
-      return STATES.map(([abbr]) => abbr).filter(abbr => marked.has(abbr) && stateMatchesLevelFilter(abbr) && stateMatchesExcludedVisibility(abbr));
+      return STATES.map(([abbr]) => abbr).filter(abbr =>
+        marked.has(abbr) && stateMatchesLevelFilter(abbr) && stateMatchesVisitTypeFilter(abbr) && stateMatchesExcludedVisibility(abbr)
+      );
     }
 
     function renderMarkedStatesDrawer() {
@@ -6249,7 +6672,9 @@
 
     function sortedMarkedStateAbbrs() {
       const marked = notesSearchQuery.trim()
-        ? STATES.map(([abbr]) => abbr).filter(abbr => stateMatchesNotesSearch(abbr) && stateMatchesLevelFilter(abbr) && stateMatchesExcludedVisibility(abbr))
+        ? STATES.map(([abbr]) => abbr).filter(abbr =>
+          stateMatchesNotesSearch(abbr) && stateMatchesLevelFilter(abbr) && stateMatchesVisitTypeFilter(abbr) && stateMatchesExcludedVisibility(abbr)
+        )
         : markedStateAbbrs();
       return marked.sort((a, b) => {
         if (notesSortMode === "chrono") {
@@ -6279,6 +6704,33 @@
       $("#notesViewTextBtn").setAttribute("aria-pressed", notesViewMode === "text");
       $("#copyNotesTextBtn").classList.toggle("is-copied", notesCopyActive);
       $("#notesStateSearch").value = notesSearchQuery;
+      renderNotesIconFilters();
+    }
+
+    function renderNotesIconFilters() {
+      const list = $("#notesIconFilters");
+      if (!list) return;
+      const active = activeVisitTypes();
+      noteVisitTypeFilters = new Set([...noteVisitTypeFilters].filter(id => active.some(type => type.id === id)));
+      list.classList.toggle("hidden", Boolean(notesPanelState) || !active.length);
+      list.innerHTML = active.map(type => `
+        <li>
+          <button class="notes-icon-filter" type="button" aria-pressed="${noteVisitTypeFilters.has(type.id)}"
+            data-filter-visit-type="${type.id}" title="${escapeHtml(type.label)}" aria-label="Filter notes by ${escapeHtml(type.label)}">
+            ${visitTypeIcon(type.id)}
+          </button>
+        </li>
+      `).join("");
+      $$("[data-filter-visit-type]", list).forEach(button => {
+        button.addEventListener("click", () => toggleNoteVisitTypeFilter(button.dataset.filterVisitType));
+      });
+    }
+
+    function toggleNoteVisitTypeFilter(typeId) {
+      if (!visitTypeMeta(typeId)) return;
+      if (noteVisitTypeFilters.has(typeId)) noteVisitTypeFilters.delete(typeId);
+      else noteVisitTypeFilters.add(typeId);
+      renderNotesPanel();
     }
 
     function locationTypeTag(abbr) {
@@ -6479,7 +6931,6 @@
         const type = locationTypeMeta(notesPanelState);
         $("#notesPanelTitle").textContent = STATE_NAMES[notesPanelState];
         $("#notesPanelSubtitle").innerHTML = `${locationTypeIcon(notesPanelState)} ${escapeHtml(type.label)} · ${escapeHtml(names.length ? names.join(", ") : "Unvisited")}${filterNames.length ? ` · Filtered by ${escapeHtml(filterNames.join(", "))}` : ""}`;
-        $("#notesPanelHint").textContent = "Use All to return to search, sort, view, legend filters, and Text Only copy.";
         $("#notesPanelContent").className = "note-list";
         $("#notesPanelContent").innerHTML = `
           <div class="notes-location-editor">
@@ -6548,12 +6999,13 @@
       $("#notesPanelTitle").textContent = "Notes";
       $("#notesPanelSubtitle").textContent = "";
       const filterNames = activeFilterNames();
-      $("#notesPanelHint").textContent = "Search by location, type, level, date, or detail. Use sticky Categorical groups, the eye button for opt-out-only locations, and Text Only for copy-ready notes.";
       const marked = sortedMarkedStateAbbrs();
       if (!marked.length) {
         const emptyText = notesSearchQuery.trim()
           ? "No states match that search."
-          : notesHideExcludedOnly ? "No visible marked locations. Opt-out-only locations are hidden." : noteLevelFilters.size ? "No states match the selected legend filters." : "No marked states yet.";
+          : notesHideExcludedOnly ? "No visible marked locations. Opt-out-only locations are hidden."
+            : noteVisitTypeFilters.size ? "No locations match the selected icon filters."
+              : noteLevelFilters.size ? "No states match the selected legend filters." : "No marked states yet.";
         $("#notesPanelContent").innerHTML = `<div class="empty">${emptyText}</div>`;
       } else if (notesViewMode === "text") {
         $("#notesPanelContent").innerHTML = `<pre id="notesTextOnly" class="notes-text-only" tabindex="0">${escapeHtml(buildNotesTextOnly(marked))}</pre>`;
@@ -6693,7 +7145,8 @@
       return [...new Set([...hidden, ...$$("input[name='visitType']:checked", $("#noteForm")).map(input => input.value)])];
     }
 
-    function openVisitTagSettings() {
+    function openVisitTagSettings(returnTarget = "settings") {
+      visitTagReturnTarget = returnTarget === "note" ? "note" : "settings";
       renderVisitTagSettings();
       closeOpenDialogs("tagDialog");
       $("#tagDialog").showModal();
@@ -6702,6 +7155,11 @@
 
     function backToSettingsFromTags() {
       if ($("#tagDialog").open) $("#tagDialog").close();
+      if (visitTagReturnTarget === "note") {
+        $("#noteDialog").showModal();
+        $("#noteSmartConvert")?.focus();
+        return;
+      }
       switchTab("settings");
       if (!$("#settingsDialog").open) $("#settingsDialog").showModal();
     }
@@ -6711,7 +7169,8 @@
       const matchesQuery = type => !query
         || type.id.toLowerCase().includes(query)
         || String(type.label || "").toLowerCase().includes(query)
-        || String(type.icon || "").toLowerCase().includes(query);
+        || String(type.icon || "").toLowerCase().includes(query)
+        || (type.searchTags || []).some(tag => tag.toLowerCase().includes(query));
       const active = allVisitTypes().filter(type => type.enabled !== false);
       const inactive = allVisitTypes().filter(type => type.enabled === false && matchesQuery(type));
       const tagRow = (type, enabled) => `
@@ -6724,25 +7183,34 @@
               <input data-tag-label="${type.id}" value="${escapeHtml(type.label)}" maxlength="24">
             </label>
             <label>Hotkey
-              <input class="tag-shortcut-input" data-tag-shortcut="${type.id}" value="${escapeHtml(type.shortcut || "")}" maxlength="1" inputmode="latin" placeholder="None">
+              <input class="tag-shortcut-input" data-tag-shortcut="${type.id}" value="${escapeHtml(type.shortcut || "")}" maxlength="1" inputmode="latin" placeholder="--">
             </label>
           </div>
           <button class="tag-state-pill" type="button" data-tag-toggle-button="${type.id}">${enabled ? "On" : "Add"}</button>
         </article>
       `;
-      $("#tagSearchInput").value = visitTagSearchQuery;
+      const moreIcon = type => `
+        <button class="tag-more-option" type="button" data-tag-add="${type.id}" title="Add ${escapeHtml(type.label)}">
+          <span class="tag-more-symbol-wrap">${visitTypeIcon(type.id)}<span class="tag-more-add" aria-hidden="true">+</span></span>
+          <span class="tag-more-name">${escapeHtml(type.label)}</span>
+        </button>
+      `;
       $("#tagEditorList").innerHTML = `
         <section class="tag-editor-section">
           <h3><span>Selected Tags</span><small>${active.length}</small></h3>
-          ${active.length ? active.map(type => tagRow(type, true)).join("") : `<div class="empty">No tags selected.</div>`}
+          ${active.length ? `<div class="tag-selected-grid">${active.map(type => tagRow(type, true)).join("")}</div>` : `<div class="empty">No tags selected.</div>`}
         </section>
+        <label class="tag-search-row">Find More Icons
+          <input id="tagSearchInput" type="search" maxlength="80" placeholder="Search icons/tags" value="${escapeHtml(visitTagSearchQuery)}">
+        </label>
         <section class="tag-editor-section">
           <h3><span>More Icons</span><small>${inactive.length}</small></h3>
-          ${inactive.length ? inactive.map(type => tagRow(type, false)).join("") : `<div class="empty">No hidden icons match that search.</div>`}
+          ${inactive.length ? `<div class="tag-more-grid">${inactive.map(moreIcon).join("")}</div>` : `<div class="empty">No hidden icons match that search.</div>`}
         </section>
       `;
       bindVisitTagSettings();
       enhanceHints();
+      syncButtonLabels();
     }
 
     function updateVisitTag(id, patch) {
@@ -6752,6 +7220,32 @@
       save();
       render();
       if ($("#tagDialog").open) renderVisitTagSettings();
+    }
+
+    function suggestedVisitTypeShortcut(type) {
+      const used = new Set(activeVisitTypes()
+        .filter(item => item.id !== type.id)
+        .map(item => normalizeVisitTypeShortcut(item.shortcut))
+        .filter(Boolean));
+      const text = `${type.label || ""}${type.id || ""}`.toLowerCase().replace(/[^a-z]/g, "");
+      const candidates = [...new Set([...text, ..."abcdefghijklmnopqrstuvwxyz"])];
+      return candidates.find(letter => !used.has(letter)) || "";
+    }
+
+    function enableVisitTag(id) {
+      const current = visitTypeMeta(id);
+      if (!current) return;
+      updateVisitTag(id, {
+        enabled: true,
+        shortcut: normalizeVisitTypeShortcut(current.shortcut) || suggestedVisitTypeShortcut(current)
+      });
+    }
+
+    function toggleVisitTag(id) {
+      const current = visitTypeMeta(id);
+      if (!current) return;
+      if (current.enabled === false) enableVisitTag(id);
+      else updateVisitTag(id, { enabled: false });
     }
 
     function bindVisitTagSettings() {
@@ -6787,14 +7281,16 @@
       $$("[data-tag-toggle-button]").forEach(button => {
         button.addEventListener("click", event => {
           event.stopPropagation();
-          const current = visitTypeMeta(button.dataset.tagToggleButton);
-          updateVisitTag(button.dataset.tagToggleButton, { enabled: current?.enabled === false });
+          toggleVisitTag(button.dataset.tagToggleButton);
         });
+      });
+      $$("[data-tag-add]").forEach(button => {
+        button.addEventListener("click", () => enableVisitTag(button.dataset.tagAdd));
       });
       $$("[data-tag-row]").forEach(row => {
         const toggle = event => {
           if (event.target.closest("input, button")) return;
-          updateVisitTag(row.dataset.tagRow, { enabled: row.getAttribute("aria-pressed") !== "true" });
+          toggleVisitTag(row.dataset.tagRow);
         };
         row.addEventListener("click", toggle);
         row.addEventListener("keydown", event => {
@@ -6803,27 +7299,71 @@
           toggle(event);
         });
       });
+      $(".tag-selected-grid")?.addEventListener("dragover", event => {
+        if (!draggingVisitTagId) return;
+        event.preventDefault();
+        event.dataTransfer.dropEffect = "move";
+      });
+      $(".tag-selected-grid")?.addEventListener("drop", event => {
+        if (!draggingVisitTagId) return;
+        event.preventDefault();
+        visitTagDragCommitted = true;
+        commitVisitTagOrderFromDom();
+      });
       $$(".tag-editor-row.is-enabled").forEach(row => {
         row.addEventListener("dragstart", event => {
           draggingVisitTagId = row.dataset.tagId;
+          visitTagDragCommitted = false;
           row.classList.add("is-dragging");
           event.dataTransfer.effectAllowed = "move";
           event.dataTransfer.setData("text/plain", draggingVisitTagId);
         });
         row.addEventListener("dragend", () => {
+          const shouldReset = draggingVisitTagId && !visitTagDragCommitted;
           draggingVisitTagId = "";
+          visitTagDragCommitted = false;
           row.classList.remove("is-dragging");
+          if (shouldReset && $("#tagDialog").open) renderVisitTagSettings();
         });
         row.addEventListener("dragover", event => {
-          if (!draggingVisitTagId || draggingVisitTagId === row.dataset.tagId) return;
+          if (!draggingVisitTagId) return;
           event.preventDefault();
           event.dataTransfer.dropEffect = "move";
+          repositionVisitTagRow(row, event);
         });
         row.addEventListener("drop", event => {
           event.preventDefault();
-          moveVisitTag(draggingVisitTagId || event.dataTransfer.getData("text/plain"), row.dataset.tagId);
+          draggingVisitTagId = draggingVisitTagId || event.dataTransfer.getData("text/plain");
+          visitTagDragCommitted = true;
+          commitVisitTagOrderFromDom();
         });
       });
+    }
+
+    function repositionVisitTagRow(targetRow, event) {
+      const draggingRow = $$(".tag-editor-row.is-enabled").find(row => row.dataset.tagId === draggingVisitTagId);
+      if (!draggingRow || draggingRow === targetRow || draggingRow.parentElement !== targetRow.parentElement) return;
+      const rect = targetRow.getBoundingClientRect();
+      const sameBand = event.clientY >= rect.top && event.clientY <= rect.bottom;
+      const before = sameBand ? event.clientX < rect.left + rect.width / 2 : event.clientY < rect.top + rect.height / 2;
+      targetRow.parentElement.insertBefore(draggingRow, before ? targetRow : targetRow.nextSibling);
+    }
+
+    function commitVisitTagOrderFromDom() {
+      const orderedIds = $$(".tag-selected-grid .tag-editor-row.is-enabled")
+        .map(row => row.dataset.tagId)
+        .filter(Boolean);
+      if (!orderedIds.length) return;
+      const byId = Object.fromEntries(state.visitTypes.map(type => [type.id, type]));
+      const orderedSet = new Set(orderedIds);
+      state.visitTypes = [
+        ...orderedIds.map(id => byId[id]).filter(Boolean),
+        ...state.visitTypes.filter(type => !orderedSet.has(type.id))
+      ];
+      draggingVisitTagId = "";
+      save();
+      render();
+      if ($("#tagDialog").open) renderVisitTagSettings();
     }
 
     function moveVisitTag(fromId, toId) {
@@ -7530,6 +8070,43 @@
       toggleNoteVisitType(type.id);
     }
 
+    function bindMainResizeHandle() {
+      const handle = $("#mainResizeHandle");
+      if (!handle) return;
+      handle.addEventListener("pointerdown", event => {
+        if (!DESKTOP_LAYOUT_QUERY.matches || !(legendPanelOpen || notesPanelOpen)) return;
+        event.preventDefault();
+        mainResizeActive = true;
+        document.documentElement.dataset.resizingMain = "true";
+        handle.setPointerCapture?.(event.pointerId);
+        setMainSplitFromClientX(event.clientX);
+      });
+      window.addEventListener("pointermove", event => {
+        if (!mainResizeActive) return;
+        event.preventDefault();
+        setMainSplitFromClientX(event.clientX);
+      });
+      window.addEventListener("pointerup", event => {
+        if (!mainResizeActive) return;
+        event.preventDefault();
+        mainResizeActive = false;
+        delete document.documentElement.dataset.resizingMain;
+        setMainSplitFromClientX(event.clientX, true);
+        scheduleMainLayoutSync();
+      });
+      handle.addEventListener("keydown", event => {
+        if (!["ArrowLeft", "ArrowRight", "Home"].includes(event.key)) return;
+        event.preventDefault();
+        if (event.key === "Home") {
+          state.settings.mapSplitRatio = .66;
+          save();
+          syncMainLayout();
+          return;
+        }
+        nudgeMainSplit(event.key === "ArrowLeft" ? -.025 : .025);
+      });
+    }
+
     function handlePowerShortcut(event) {
       updatePowerOverlay(event);
       if (handleGlobalShortcut(event)) return;
@@ -7564,9 +8141,12 @@
           x: () => $("#noteDialog").close(),
           s: () => $("#noteForm").requestSubmit(),
           d: () => !$("#deleteNoteFromDialogBtn").classList.contains("hidden") && $("#deleteNoteFromDialogBtn").click(),
-          w: applySmartNoteConvert
+          w: applySmartNoteConvert,
+          y: () => openVisitTagSettings("note")
         };
-        activeVisitTypes().forEach(type => noteActions[type.shortcut] = () => toggleNoteVisitType(type.id));
+        activeVisitTypes().forEach(type => {
+          if (type.shortcut) noteActions[type.shortcut] = () => toggleNoteVisitType(type.id);
+        });
         if (!noteActions[key]) return;
         event.preventDefault();
         noteActions[key]();
@@ -7712,6 +8292,7 @@
     }
 
     function bindEvents() {
+      bindMainResizeHandle();
       $("#renameBtn").addEventListener("click", () => {
         $("#mapNameInput").value = state.mapName;
         $("#renameDialog").showModal();
@@ -7823,6 +8404,7 @@
         syncNoteDateBuilder();
       });
       $("#noteSmartConvertBtn").addEventListener("click", applySmartNoteConvert);
+      $("#noteTagSettingsBtn").addEventListener("click", () => openVisitTagSettings("note"));
       $("#noteDialog").addEventListener("keydown", handleNoteDialogKeydown);
       $("#deleteNoteFromDialogBtn").addEventListener("click", () => {
         const noteId = $("#deleteNoteFromDialogBtn").dataset.noteId || $("#noteId").value;
@@ -7931,6 +8513,7 @@
             };
             selectedState = null;
             noteLevelFilters = new Set();
+            noteVisitTypeFilters = new Set();
             notesPanelState = null;
             notesPanelOpen = true;
             legendPanelOpen = true;

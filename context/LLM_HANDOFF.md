@@ -8,7 +8,7 @@ US State Visit Map is a single-file, offline HTML/CSS/JS app for tracking visits
 
 Current anchors:
 
-- `APP_VERSION`: `2.2.0.3`
+- `APP_VERSION`: `2.2.0.6`
 - storage key: `usStateVisitMap.v1`
 - roadmap/wishlist is developer-facing seed data only; do not persist user roadmap data in backups.
 
@@ -65,26 +65,27 @@ Change state, call `save()` when persistence is needed, then `render()` or the n
 ```js
 {
   appVersion, mapName,
-  settings: { theme, tapBehavior, buttonStyle, uiHints, dateOrder, dateStyle, mapLabels },
+  settings: { theme, tapBehavior, buttonStyle, uiHints, dateOrder, dateStyle, mapLabels, mapSplitRatio },
   levels: [{ id, name, definition, color, countsTowardStats }],
-  visitTypes: [{ id, label, icon, shortcut, enabled }],
+  visitTypes: [{ id, label, icon, shortcut, enabled, searchTags }],
   states: { CA: ["visited"] },
   notes: { CA: [{ id, date, levelId, where, what, who, details, text, visitTypes }] },
   territoryDefaultsSeeded
 }
 ```
 
-Invariants: level order controls map color; `levels` max is 5; state level IDs must exist; dates normalize to `YYYY`, `YYYY-MM`, or `YYYY-MM-DD`; `visitTypes` may contain multiple known ids and `state.visitTypes` stores the configurable label/order/shortcut/enabled setup; new default note tags enable First, Favorite, Memorable, Flagged, and Home while preserving saved tag customizations; opt-out levels do not count toward completion; territories seed once.
+Invariants: level order controls map color; `levels` max is 5; state level IDs must exist; dates normalize to `YYYY`, `YYYY-MM`, or `YYYY-MM-DD`; `visitTypes` may contain multiple known ids and `state.visitTypes` stores the configurable label/order/shortcut/enabled/search-tag setup; `settings.mapSplitRatio` stores the desktop map/cards divider position and defaults to `0.66`; new default note tags enable First, Favorite, Memorable, Flagged, and Home while preserving saved tag customizations; opt-out levels do not count toward completion; territories seed once.
 
 ## Product Surface
 
-Clickable SVG map; map labels none/abbr/name; editable legend levels/colors/stats; notes search/filter/sort/compact/expanded; settings for theme/buttons/hints/tap/date/import/export; JSON/Markdown/RTF export; JSON import; shortcut overlay via Shift + Option + Control/Command.
+Clickable SVG map; resizable desktop map/cards split; map labels none/abbr/name; editable legend levels/colors/stats; notes search/filter/sort/compact/expanded plus active icon filter strip; settings for theme/buttons/hints/tap/date/import/export and compact draggable icon-tag curation; JSON/Markdown/RTF export; JSON import; shortcut overlay via Shift + Option + Control/Command.
 
 UX taste: compact, practical, map-first, light personality in docs/release copy. Avoid airy marketing-style UI.
 
 ## User Preference Memory
 
 - Desktop main view is viewport-locked above 980px: app/body do not vertically scroll, the map column is height-limited, and Notes panel content scrolls internally to align with the map bottom without stretching note rows/cards.
+- Desktop map/cards split can be manually resized with the divider; preserve `settings.mapSplitRatio` and default unset/old values to a 66/33 map-to-cards split.
 - Mobile/tablet keeps the single-column page scroll below 981px.
 - Hints should become individually dismissible; global hints toggle overrides all.
 - Settings uses compact category sections; parent headings should stay visually stronger than row-level setting labels.
