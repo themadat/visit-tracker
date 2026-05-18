@@ -1156,6 +1156,11 @@
       text-align: center;
     }
 
+    .setting-row>button {
+      width: 100%;
+      min-height: 34px;
+    }
+
     .setting-row .segmented button .btn-label {
       line-height: 1.16;
     }
@@ -1204,32 +1209,38 @@
       background: var(--surface-2);
     }
 
-    .date-picker-head,
-    .date-heading-actions {
-      display: flex;
+    .date-picker-head {
+      display: grid;
+      grid-template-columns: auto auto minmax(0, 1fr);
       align-items: center;
-      gap: .4rem;
+      gap: .42rem;
       min-width: 0;
     }
 
-    .date-picker-head {
-      justify-content: space-between;
+    .date-heading-actions {
+      display: flex;
+      align-items: center;
+      gap: .32rem;
+      min-width: 0;
     }
 
-    .date-heading-actions h3 {
-      margin: 0;
+    .date-heading-actions button {
+      min-height: 34px;
+      height: 34px;
+      box-sizing: border-box;
     }
 
     .date-builder {
       display: grid;
-      grid-template-columns: minmax(88px, .72fr) minmax(0, 1.28fr) minmax(76px, .56fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: .38rem;
-      align-items: end;
+      align-items: center;
+      min-width: 0;
     }
 
     .date-builder label {
       display: grid;
-      gap: .16rem;
+      min-width: 0;
     }
 
     .date-year-row {
@@ -1243,8 +1254,10 @@
     .date-year-row button,
     .month-chip {
       min-height: 34px;
+      height: 34px;
       padding: .24rem .34rem;
       font-size: .8rem;
+      box-sizing: border-box;
     }
 
     .month-chip-grid {
@@ -1279,6 +1292,9 @@
       font-size: 1rem;
       font-weight: 800;
       line-height: 1.1;
+      justify-self: start;
+      align-self: center;
+      white-space: nowrap;
     }
 
     .chip {
@@ -1578,6 +1594,30 @@
     }
 
     #settingsDialog .dialog-body {
+      min-height: 0;
+      max-height: none;
+      overflow-y: auto;
+      overflow-x: hidden;
+      overscroll-behavior: contain;
+    }
+
+    #tagDialog[open] {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      width: min(760px, calc(100dvw - 1rem));
+      max-width: calc(100dvw - 1rem);
+      height: min(820px, calc(100dvh - 1.2rem));
+      overflow: hidden;
+    }
+
+    #tagDialog header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: var(--surface);
+    }
+
+    #tagDialog .dialog-body {
       min-height: 0;
       max-height: none;
       overflow-y: auto;
@@ -1942,6 +1982,116 @@
       text-transform: uppercase;
     }
 
+    .tag-editor-list {
+      display: grid;
+      gap: .52rem;
+    }
+
+    .tag-editor-section {
+      display: grid;
+      gap: .34rem;
+    }
+
+    .tag-editor-section h3 {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .6rem;
+      margin: .08rem 0 0;
+      font-size: .85rem;
+    }
+
+    .tag-search-row {
+      display: grid;
+      gap: .22rem;
+    }
+
+    .tag-editor-row {
+      display: grid;
+      grid-template-columns: auto auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: .58rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: .48rem .55rem;
+      background: var(--surface);
+      cursor: pointer;
+      transition: background .15s ease, border-color .15s ease, box-shadow .15s ease;
+    }
+
+    .tag-editor-row.is-enabled {
+      border-color: color-mix(in srgb, var(--accent) 58%, var(--line));
+      background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 22%, transparent);
+    }
+
+    .tag-editor-row:focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .tag-editor-row.is-dragging {
+      opacity: .55;
+    }
+
+    .tag-drag-handle {
+      color: var(--muted);
+      cursor: grab;
+      font-weight: 900;
+      user-select: none;
+      min-width: 1.2rem;
+      text-align: center;
+    }
+
+    .tag-render-preview {
+      display: inline-grid;
+      place-items: center;
+      width: 2.35rem;
+      height: 2.35rem;
+      border-radius: 999px;
+      color: var(--accent-2);
+      background: var(--surface-2);
+    }
+
+    .tag-render-preview .sf-symbol {
+      width: 1.75rem;
+      height: 1.75rem;
+    }
+
+    .tag-editor-fields {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(4.2rem, .28fr);
+      gap: .42rem;
+      align-items: end;
+      min-width: 0;
+    }
+
+    .tag-state-pill {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: .16rem .45rem;
+      background: var(--surface);
+      color: var(--muted);
+      font-size: .68rem;
+      font-weight: 850;
+      min-height: 28px;
+      cursor: pointer;
+    }
+
+    .tag-editor-row label {
+      gap: .14rem;
+    }
+
+    .tag-editor-row input {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .tag-shortcut-input {
+      text-align: center;
+      text-transform: uppercase;
+    }
+
     #notesSortAlphaBtn .sf-symbol {
       width: 1.35em;
       height: 1.12em;
@@ -1975,7 +2125,7 @@
     }
 
     .compact-notes-states .compact-note-row {
-      grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 3fr) minmax(0, 1.5fr) minmax(0, 1.5fr) minmax(0, 1.5fr) minmax(0, 2.5fr);
     }
 
     .compact-notes-notes .compact-note-row {
@@ -2022,7 +2172,7 @@
     }
 
     .compact-note-row.is-expanded-child {
-      grid-template-columns: minmax(6.2rem, .7fr) minmax(2.8rem, .34fr) minmax(0, 1.5fr) minmax(0, .12fr);
+      grid-template-columns: minmax(4.5rem, .42fr) minmax(4.2rem, .48fr) minmax(2.8rem, .34fr) minmax(0, 1.5fr) minmax(0, .12fr);
       width: calc(100% - .22rem);
       margin-left: .22rem;
       border-style: dashed;
@@ -2038,7 +2188,7 @@
     .compact-note-icon {
       display: inline-grid;
       place-items: center;
-      min-width: 1.1rem;
+      min-width: 4.25rem;
       justify-content: center;
     }
 
@@ -2064,7 +2214,7 @@
     }
 
     .selected-note-list .compact-note-row {
-      grid-template-columns: minmax(2.75rem, .35fr) minmax(4.2rem, .62fr) minmax(3rem, .45fr) minmax(0, 1.35fr) max-content;
+      grid-template-columns: minmax(4.75rem, .5fr) minmax(4.2rem, .62fr) minmax(3rem, .45fr) minmax(0, 1.35fr) max-content;
       min-height: 34px;
       height: auto;
       padding: .34rem .45rem;
@@ -2075,8 +2225,14 @@
     }
 
     .selected-note-list .compact-note-icon {
-      min-width: 2.75rem;
+      min-width: 4.75rem;
       justify-content: flex-start;
+    }
+
+    .compact-state-icons {
+      justify-self: end;
+      justify-content: flex-end;
+      gap: .1rem;
     }
 
     .compact-note-row>* {
@@ -2668,12 +2824,16 @@
       }
 
       .date-picker-head {
+        grid-template-columns: 1fr;
         align-items: stretch;
-        flex-direction: column;
       }
 
       .date-heading-actions {
-        justify-content: space-between;
+        justify-content: start;
+      }
+
+      .date-preview-pill {
+        justify-self: start;
       }
 
       .month-chip-grid {
@@ -2789,6 +2949,20 @@
         grid-template-columns: 1fr;
       }
 
+      .tag-editor-row {
+        grid-template-columns: auto auto minmax(0, 1fr);
+        gap: .32rem;
+      }
+
+      .tag-editor-fields {
+        grid-template-columns: 1fr;
+      }
+
+      .tag-state-pill {
+        grid-column: 2 / -1;
+        justify-self: start;
+      }
+
       #legendPanel {
         --legend-action-lane: calc(120px + .36rem);
         --legend-stat-spacer: minmax(.55rem, .24fr);
@@ -2895,7 +3069,7 @@
       }
 
       .compact-notes-states .compact-note-row {
-        grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr));
+        grid-template-columns: minmax(0, 3fr) minmax(0, 1.5fr) minmax(0, 1.5fr) minmax(0, 1.5fr) minmax(0, 2.5fr);
       }
 
       .compact-notes-notes .compact-note-row {
@@ -2924,7 +3098,8 @@
         <span id="releaseNoticePill" class="release-pill">v2.0.0</span>
         <span class="release-copy">
           <b id="releaseNoticeTitle">Major Notes Upgrade</b>
-          <small id="releaseNoticeSummary">Richer visit notes, better sorting, grouped locations, and copy-ready text.</small>
+          <small id="releaseNoticeSummary">Richer visit notes, better sorting, grouped locations, and copy-ready
+            text.</small>
         </span>
         <span id="releaseNoticeCta" class="release-cta">Learn<br>More</span>
         <button id="releaseNoticeDismissBtn" class="release-dismiss ghost" type="button" aria-label="Dismiss update"
@@ -3578,41 +3753,42 @@
       <section class="smart-convert-row">
         <label>Smart Convert
           <input id="noteSmartConvert" maxlength="420" placeholder="Type a quick note to auto-fill the fields below">
-          <small data-hint data-hint-key="note-smart-convert-help">Type a quick note, then Auto Convert fills recognized fields and sends leftover text to Additional Details.</small>
+          <small data-hint data-hint-key="note-smart-convert-help">Type a quick note, then Auto Convert fills recognized
+            fields and sends leftover text to Additional Details.</small>
         </label>
         <button id="noteSmartConvertBtn" type="button" data-shortcut="W">Auto Convert</button>
       </section>
       <section id="visitTypeRow" class="visit-type-row" aria-label="Visit labels">
       </section>
-      <small data-hint data-hint-key="note-label-help">Pick any labels that fit. When the cursor is outside a text field, use the letter badges to toggle them.</small>
-      <section class="partial-date-picker" aria-labelledby="noteDateHeading">
+      <small data-hint data-hint-key="note-label-help">Pick any labels that fit; no more than 4 is recommended for
+        clean rows. When the cursor is outside a text field, use the letter badges to toggle them.</small>
+      <section class="partial-date-picker" aria-label="Date">
         <div class="date-picker-head">
+          <span id="noteDatePreview" class="date-preview-pill">No date</span>
           <div class="date-heading-actions">
-            <h3 id="noteDateHeading">Date</h3>
             <button id="noteTodayBtn" type="button">Today</button>
             <button id="noteYearOnlyBtn" type="button">Year Only</button>
           </div>
-          <span id="noteDatePreview" class="date-preview-pill">No date</span>
+          <div class="date-builder">
+            <label aria-label="Year">
+              <span class="date-year-row">
+                <button type="button" data-note-year-delta="-1" aria-label="Previous year">−</button>
+                <input id="noteYear" type="text" inputmode="numeric" maxlength="4" placeholder="Year"
+                  autocomplete="off" required>
+                <button type="button" data-note-year-delta="1" aria-label="Next year">+</button>
+              </span>
+            </label>
+            <label aria-label="Month">
+              <select id="noteMonth">
+                <option value="">Month</option>
+              </select>
+            </label>
+            <label aria-label="Day optional">
+              <input id="noteDay" type="text" inputmode="numeric" maxlength="2" placeholder="Day (Optional)" disabled>
+            </label>
+          </div>
         </div>
         <input id="noteDate" type="hidden">
-        <div class="date-builder">
-          <label>Year
-            <span class="date-year-row">
-              <button type="button" data-note-year-delta="-1" aria-label="Previous year">−</button>
-              <input id="noteYear" type="text" inputmode="numeric" maxlength="4" placeholder="YYYY" autocomplete="off"
-                required>
-              <button type="button" data-note-year-delta="1" aria-label="Next year">+</button>
-            </span>
-          </label>
-          <label>Month
-            <select id="noteMonth">
-              <option value="">Unknown month</option>
-            </select>
-          </label>
-          <label>Day
-            <input id="noteDay" type="text" inputmode="numeric" maxlength="2" placeholder="Optional" disabled>
-          </label>
-        </div>
         <div id="noteMonthChips" class="month-chip-grid" aria-label="Quick month choices"></div>
         <div class="date-picker-actions">
           <small data-hint data-hint-key="note-date-help">Use whatever you know: year only, month and year, or a full
@@ -3710,6 +3886,25 @@
     </div>
   </dialog>
 
+  <dialog id="tagDialog">
+    <header>
+      <h2>Location Icon Tags</h2>
+      <div class="dialog-head-actions">
+        <button id="tagDialogBackBtn" type="button" data-shortcut="B">Back to Settings</button>
+        <button id="tagDialogCloseBtn" class="dialog-close" type="button" data-close="tagDialog"
+          data-shortcut="Q">Close</button>
+      </div>
+    </header>
+    <div class="dialog-body">
+      <small data-hint data-hint-key="tag-editor-help">Selected tags appear in the note editor. Drag selected rows to
+        change order, click rows to add or hide them, and search More Icons for optional labels.</small>
+      <label class="tag-search-row">Find More Icons
+        <input id="tagSearchInput" type="search" maxlength="80" placeholder="Search hidden tags and icons">
+      </label>
+      <div id="tagEditorList" class="tag-editor-list"></div>
+    </div>
+  </dialog>
+
   <dialog id="settingsDialog">
     <header>
       <div class="tabs" role="tablist" aria-label="Settings sections">
@@ -3780,6 +3975,15 @@
           </div>
         </section>
         <section class="settings-category">
+          <h3>Note Tags</h3>
+          <div class="setting-row">
+            <div class="setting-label">Location Icons</div>
+            <button id="visitTagSettingsBtn" type="button" data-shortcut="Y">Choose Tags</button>
+          </div>
+          <small class="setting-hint" data-hint data-hint-key="settings-note-tags-help">Pick which note icon labels
+            appear in the note editor, rename them, drag to sort, set shortcuts, and search extra optional icons.</small>
+        </section>
+        <section class="settings-category">
           <h3>Import and Export</h3>
           <p class="muted">
             Data is saved in this local browser only.<br />
@@ -3842,7 +4046,8 @@
           <p><b>Color tools:</b> Auto Colors can apply a smart palette to your current levels. Suggested categories can
             be shown or hidden from the Legend.</p>
           <p><b>Structured notes:</b> Notes can include Where Specifically, What For, Who With, Additional Details, and
-            one icon label: First, Favorite, or Memorable.</p>
+            multiple icon labels. Settings lets you choose, rename, sort, shortcut, and search optional labels shown in
+            the note editor.</p>
           <p><b>What's New:</b> Returning users may see a compact banner and red dots when a major feature release is
             available. Open What's New or dismiss the banner to clear it.</p>
           <p><b>Export formats:</b> JSON (.json) is a full backup, re-importable into this app. Markdown (.md) renders
@@ -3866,12 +4071,13 @@
             Alphabetical or Chronological sort inside each group, and keeps the current group header sticky while you
             scroll.</p>
           <p><b>What is Text Only view for?</b><br>It renders a clean plain-text version of the current Notes view that
-            is easy to select, copy, and paste into Apple Notes. Single-note locations stay on one line when possible.</p>
+            is easy to select, copy, and paste into Apple Notes. Single-note locations stay on one line when possible.
+          </p>
           <p><b>How does Smart Convert work?</b><br>Type a quick note in the note editor, then Auto Convert fills any
             recognized date, level, visit icon, where, what, and who fields. Any leftover text goes to Additional
             Details.</p>
-          <p><b>Can one note have multiple visit icons?</b><br>Not yet. A note can currently use one icon label: First,
-            Favorite, or Memorable.</p>
+          <p><b>Can one note have multiple visit icons?</b><br>Yes. Pick any labels that fit, though four or fewer keeps
+            Notes rows easier to scan.</p>
           <p><b>What's the difference between cycle and select mode?</b><br>Cycle taps rotate through your active levels
             automatically. Select mode opens a picker so you can choose a level and add a note in one step.</p>
           <p><b>Can I have more than five levels?</b><br>No. Five is the cap — enough for any reasonable visit taxonomy
@@ -4001,7 +4207,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "2.2.0.1";
+    const APP_VERSION = "2.2.0.3";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -4079,18 +4285,7 @@
     const __RECTANGLE_GRID_1X2_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 27.4609 22.9785"><g><rect height="22.9785" opacity="0" width="27.4609" x="0" y="0"/><path d="M2.62695 22.9785L24.4727 22.9785C26.2109 22.9785 27.0996 22.1387 27.0996 20.3711L27.0996 15.1758C27.0996 13.4082 26.2109 12.5684 24.4727 12.5684L2.62695 12.5684C0.888672 12.5684 0 13.4082 0 15.1758L0 20.3711C0 22.1387 0.888672 22.9785 2.62695 22.9785Z"/><path d="M2.62695 10.4297L24.4727 10.4297C26.2109 10.4297 27.0996 9.59961 27.0996 7.82227L27.0996 2.62695C27.0996 0.859375 26.2109 0.0292969 24.4727 0.0292969L2.62695 0.0292969C0.888672 0.0292969 0 0.859375 0 2.62695L0 7.82227C0 9.59961 0.888672 10.4297 2.62695 10.4297Z"/></g></svg>`;
     const __RECTANGLE_GRID_1X3_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 27.8418 24.0527"><g><rect height="24.0527" opacity="0" width="27.8418" x="0" y="0"/><path d="M2.07031 24.0332L25.4102 24.0332C26.7188 24.0332 27.4805 23.291 27.4805 21.9238L27.4805 19.0918C27.4805 17.7246 26.7188 16.9824 25.4102 16.9824L2.07031 16.9824C0.761719 16.9824 0 17.7246 0 19.0918L0 21.9238C0 23.291 0.761719 24.0332 2.07031 24.0332Z"/><path d="M2.07031 15.5371L25.4102 15.5371C26.7188 15.5371 27.4805 14.8047 27.4805 13.4375L27.4805 10.5957C27.4805 9.22852 26.7188 8.49609 25.4102 8.49609L2.07031 8.49609C0.761719 8.49609 0 9.22852 0 10.5957L0 13.4375C0 14.8047 0.761719 15.5371 2.07031 15.5371Z"/><path d="M2.07031 7.05078L25.4102 7.05078C26.7188 7.05078 27.4805 6.30859 27.4805 4.94141L27.4805 2.10938C27.4805 0.742188 26.7188 0 25.4102 0L2.07031 0C0.761719 0 0 0.742188 0 2.10938L0 4.94141C0 6.30859 0.761719 7.05078 2.07031 7.05078Z"/></g></svg>`;
 
-    // Future Location or Notes Types
-    const __BOOKMARK_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M8.94531 19.3945C9.22852 19.3945 9.4043 19.2383 9.89258 18.7598L12.6465 16.0059C12.6855 15.9668 12.7344 15.9668 12.7637 16.0059L15.5273 18.7598C16.0059 19.2383 16.1816 19.3945 16.4746 19.3945C16.8555 19.3945 17.0996 19.1211 17.0996 18.6621L17.0996 7.99805C17.0996 6.79688 16.4844 6.17188 15.293 6.17188L10.1172 6.17188C8.92578 6.17188 8.31055 6.79688 8.31055 7.99805L8.31055 18.6621C8.31055 19.1211 8.55469 19.3945 8.94531 19.3945Z"/></g></svg>`;
-    const __SPORTSCOURT_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M4.95117 14.7852L6.35742 14.7852C6.8457 14.7852 7.07031 14.541 7.07031 14.0723L7.07031 11.4062C7.07031 10.9277 6.8457 10.6934 6.35742 10.6934L4.95117 10.6934ZM7.04102 18.0273L12.2754 18.0273L12.2754 15.5664C10.8887 15.3516 9.82422 14.1699 9.82422 12.7246C9.82422 11.2891 10.8887 10.0879 12.2754 9.89258L12.2754 7.43164L7.04102 7.43164C5.68359 7.43164 4.95117 8.18359 4.95117 9.54102L4.95117 9.85352L6.34766 9.85352C7.35352 9.85352 7.90039 10.4199 7.90039 11.416L7.90039 14.0625C7.90039 15.0488 7.35352 15.6152 6.34766 15.6152L4.95117 15.6152L4.95117 15.9277C4.95117 17.2852 5.68359 18.0273 7.04102 18.0273ZM12.2754 14.7461L12.2754 10.7031C11.3281 10.8887 10.6348 11.7188 10.6348 12.7246C10.6348 13.7402 11.3281 14.5508 12.2754 14.7461ZM13.1348 14.7461C14.0918 14.5508 14.7754 13.7402 14.7754 12.7246C14.7754 11.7188 14.0918 10.8887 13.1348 10.7031ZM13.1348 18.0273L18.3691 18.0273C19.7266 18.0273 20.4688 17.2852 20.4688 15.9277L20.4688 15.6152L19.0625 15.6152C18.0566 15.6152 17.5098 15.0488 17.5098 14.0625L17.5098 11.416C17.5098 10.4199 18.0566 9.85352 19.0625 9.85352L20.4688 9.85352L20.4688 9.54102C20.4688 8.18359 19.7266 7.43164 18.3691 7.43164L13.1348 7.43164L13.1348 9.89258C14.5215 10.0879 15.5859 11.2891 15.5859 12.7246C15.5859 14.1699 14.5215 15.3516 13.1348 15.5664ZM20.4688 14.7852L20.4688 10.6934L19.0527 10.6934C18.5742 10.6934 18.3398 10.9277 18.3398 11.4062L18.3398 14.0723C18.3398 14.541 18.5742 14.7852 19.0527 14.7852Z"/></g></svg>`;
-    const __DIAMOND_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M6.26953 13.7305L11.709 19.1602C12.373 19.834 13.0469 19.8535 13.7207 19.1797L19.1797 13.7207C19.8438 13.0664 19.8242 12.373 19.1602 11.709L13.7305 6.2793C13.0566 5.61523 12.3828 5.5957 11.7188 6.26953L6.25 11.7188C5.5957 12.3828 5.61523 13.0762 6.26953 13.7305Z"/></g></svg>`;
-    const __HEART_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M9.69727 7.13867C7.56836 7.13867 6.03516 8.75 6.03516 10.9473C6.03516 14.3457 9.6582 17.4219 12.1387 18.9844C12.3438 19.1113 12.5879 19.2578 12.7344 19.2578C12.8809 19.2578 13.1152 19.1113 13.291 18.9844C15.7324 17.3535 19.4043 14.3457 19.4043 10.9473C19.4043 8.75 17.8613 7.13867 15.7422 7.13867C14.4141 7.13867 13.3301 7.92969 12.7148 9.05273C12.0996 7.92969 11.0352 7.13867 9.69727 7.13867Z"/></g></svg>`;
-    const __STAR_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M9.01367 19.1992L12.7051 16.5039L16.3965 19.1992C17.041 19.6875 17.7344 19.1895 17.4805 18.418L16.0352 14.0625L19.7559 11.4062C20.332 10.9863 20.1562 10.1074 19.3359 10.1172L14.7656 10.1465L13.3691 5.77148C13.1348 5.03906 12.2754 5.03906 12.0508 5.77148L10.6543 10.1465L6.07422 10.1172C5.26367 10.1074 5.05859 10.9668 5.66406 11.416L9.38477 14.0625L7.93945 18.418C7.68555 19.1895 8.37891 19.6875 9.01367 19.1992Z"/></g></svg>`;
-    const __HOUSE_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M6.95312 17.5781C6.95312 18.4473 7.4707 18.9551 8.35938 18.9551L17.0801 18.9551C17.959 18.9551 18.4766 18.4473 18.4766 17.5781L18.4766 12.0898L13.1152 7.58789C12.8516 7.36328 12.5684 7.37305 12.3047 7.58789L6.95312 12.0801ZM14.4043 17.8418L11.0254 17.8418L11.0254 13.7695C11.0254 13.4863 11.2207 13.3008 11.5039 13.3008L13.9258 13.3008C14.2188 13.3008 14.4043 13.4863 14.4043 13.7695ZM4.93164 11.6211C4.93164 11.8848 5.14648 12.1387 5.48828 12.1387C5.6543 12.1387 5.79102 12.041 5.9082 11.9336L12.3535 6.5332C12.6074 6.31836 12.832 6.33789 13.0762 6.5332L19.502 11.9336C19.6484 12.041 19.7754 12.1387 19.9414 12.1387C20.2344 12.1387 20.4785 11.9336 20.4785 11.6406C20.4785 11.4453 20.4199 11.3086 20.2832 11.1914L13.6426 5.61523C13.0859 5.13672 12.3633 5.13672 11.7969 5.61523L5.13672 11.1914C5 11.3086 4.93164 11.4648 4.93164 11.6211ZM16.9727 8.85742L18.4766 10.127L18.4766 7.08984C18.4766 6.83594 18.3105 6.66016 18.0566 6.66016L17.4023 6.66016C17.1484 6.66016 16.9727 6.83594 16.9727 7.08984Z"/></g></svg>`;
-    const __ENVIRONMENTS_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M11.2598 9.55078C11.3672 9.55078 11.4551 9.47266 11.4746 9.3457C11.7285 7.93945 11.7871 7.76367 13.2324 7.57812C13.3691 7.54883 13.457 7.4707 13.457 7.35352C13.457 7.22656 13.3691 7.11914 13.2324 7.09961C11.7969 6.92383 11.6992 6.74805 11.4746 5.35156C11.4551 5.21484 11.3574 5.13672 11.2598 5.13672C11.1328 5.13672 11.0352 5.21484 11.0156 5.3418C10.7617 6.75781 10.6836 6.92383 9.23828 7.09961C9.13086 7.11914 9.0332 7.22656 9.0332 7.35352C9.0332 7.4707 9.13086 7.54883 9.23828 7.57812C10.6934 7.76367 10.8203 7.93945 11.0156 9.33594C11.0352 9.46289 11.123 9.55078 11.2598 9.55078ZM9.73633 17.2266L20.791 17.2266C21.6602 17.2266 21.9824 16.416 21.4062 15.7324L16.0352 9.30664C15.8105 9.02344 15.5371 8.85742 15.2637 8.85742C14.9707 8.85742 14.707 9.02344 14.4727 9.30664L9.0918 15.7324C8.51562 16.416 8.85742 17.2266 9.73633 17.2266ZM8.50586 15.2344L11.0449 12.1875L9.11133 9.91211C8.87695 9.63867 8.64258 9.53125 8.38867 9.53125C8.125 9.53125 7.88086 9.63867 7.64648 9.91211L3.73047 14.541C3.23242 15.1074 3.49609 15.9277 4.30664 15.9277L8.125 15.9277C8.18359 15.6934 8.31055 15.4492 8.50586 15.2344Z"/></g></svg>`;
-    const __MAPPIN_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M9.96094 7.88086C9.96094 9.13086 10.8105 10.1758 11.9531 10.498L11.9531 17.4316C11.9531 19.1309 12.2266 20.5371 12.7051 20.5371C13.1836 20.5371 13.4473 19.1602 13.4473 17.4316L13.4473 10.498C14.6094 10.1855 15.4492 9.14062 15.4492 7.88086C15.4492 6.36719 14.2188 5.13672 12.7051 5.13672C11.1914 5.13672 9.96094 6.36719 9.96094 7.88086ZM11.1133 7.17773C11.1035 6.68945 11.5332 6.2793 12.002 6.2793C12.4902 6.2793 12.8906 6.68945 12.8809 7.17773C12.8809 7.64648 12.4902 8.05664 12.002 8.05664C11.5332 8.05664 11.123 7.64648 11.1133 7.17773Z"/></g></svg>`;
-    const __TREE_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M5.39062 14.5801C5.39062 15.9277 6.29883 16.8555 7.60742 16.8555C8.01758 16.8555 8.48633 16.748 8.97461 16.4941C9.375 16.875 10.3223 17.3047 11.2891 17.3047C11.0938 16.4258 10.5078 15.2246 10.1172 14.5312C10.9277 14.4336 11.3477 13.9746 11.5625 13.3301C11.8848 13.5742 12.2266 13.7109 12.7051 13.7109C13.1836 13.7109 13.5254 13.5742 13.8574 13.3301C14.0723 13.9746 14.4824 14.4336 15.293 14.5312C14.9121 15.2246 14.3262 16.4258 14.1309 17.3047C15.0879 17.3047 16.0352 16.875 16.4355 16.4941C16.9238 16.748 17.3926 16.8555 17.8027 16.8555C19.1211 16.8555 20.0195 15.9277 20.0195 14.5801C20.0195 13.8867 19.7266 13.1543 19.082 12.4902C19.5898 11.9629 19.8047 11.3379 19.8047 10.6738C19.8047 9.32617 18.75 8.08594 17.4609 7.95898C17.4316 6.64062 15.9961 5.69336 14.5996 5.69336C13.877 5.69336 13.2031 5.92773 12.7051 6.45508C12.207 5.92773 11.543 5.69336 10.8203 5.69336C9.42383 5.69336 7.97852 6.64062 7.95898 7.95898C6.66016 8.08594 5.60547 9.32617 5.60547 10.6738C5.60547 11.3379 5.82031 11.9629 6.32812 12.4902C5.68359 13.1543 5.39062 13.8867 5.39062 14.5801ZM12.7051 20.4297C13.2031 20.4297 13.5449 20.2637 13.5449 20.0195C13.5449 19.6875 13.4473 18.8281 13.4473 17.9004C13.4473 16.8262 14.2676 15.127 15.1465 13.4766L14.4629 13.0371C13.7793 14.2871 13.4375 14.9707 13.1445 15.6543L13.1152 13.0566L12.2559 13.0176L12.2656 15.6641C11.9824 14.9707 11.6113 14.248 10.9863 13.1738L10.4297 13.877C11.1426 15.127 11.9727 16.8262 11.9727 17.9004C11.9727 18.8281 11.8652 19.6875 11.8652 20.0195C11.8652 20.2637 12.2168 20.4297 12.7051 20.4297Z"/></g></svg>`;
-    const __PERSON_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M6.88477 19.1406L18.5254 19.1406C18.9746 19.1406 19.1895 18.8477 19.1895 18.418C19.1895 17.041 17.1191 13.3984 12.7051 13.3984C8.30078 13.3984 6.23047 17.041 6.23047 18.418C6.23047 18.8477 6.43555 19.1406 6.88477 19.1406ZM12.7051 12.373C14.4922 12.3828 15.9277 10.8691 15.9277 8.85742C15.9277 6.96289 14.4922 5.40039 12.7051 5.40039C10.918 5.40039 9.48242 6.96289 9.48242 8.85742C9.48242 10.8691 10.918 12.3633 12.7051 12.373Z"/></g></svg>`;
-
+    
 
     // Future Top Bar
     const __GIFT_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24.3457 27.0996"><g><rect height="27.0996" opacity="0" width="24.3457" x="0" y="0"/><path d="M1.86523 22.9004C1.86523 24.9023 3.06641 25.9961 5.06836 25.9961L11.0254 25.9961L11.0254 14.707L1.86523 14.707ZM12.959 25.9961L18.916 25.9961C20.918 25.9961 22.1191 24.9023 22.1191 22.9004L22.1191 14.707L12.959 14.707ZM0 11.5918C0 12.8711 0.732422 13.4473 2.02148 13.4473L11.0254 13.4473L11.0254 6.77734L9.20898 6.77734C7.14844 6.77734 5.9082 5.54688 5.9082 4.0625C5.9082 2.71484 6.88477 1.91406 8.25195 1.91406C9.82422 1.91406 11.0254 3.125 11.0254 5.06836L11.0254 6.77734L12.959 6.77734L12.959 5.06836C12.959 3.125 14.1602 1.91406 15.7324 1.91406C17.0996 1.91406 18.0762 2.71484 18.0762 4.0625C18.0762 5.54688 16.8359 6.77734 14.7754 6.77734L12.959 6.77734L12.959 13.4473L21.9629 13.4473C23.2617 13.4473 23.9844 12.8711 23.9844 11.5918L23.9844 8.63281C23.9844 7.34375 23.2617 6.77734 21.9629 6.77734L18.7305 6.77734C19.5312 6.10352 20.0098 5.13672 20.0098 3.97461C20.0098 1.64062 18.1836 0 15.8301 0C14.043 0 12.6074 0.996094 11.9922 2.71484C11.377 0.996094 9.94141 0 8.1543 0C5.80078 0 3.97461 1.64062 3.97461 3.97461C3.97461 5.13672 4.45312 6.10352 5.25391 6.77734L2.02148 6.77734C0.78125 6.77734 0 7.34375 0 8.63281Z"/></g></svg>`;
@@ -4176,32 +4371,55 @@
     const __LIST_BULLET_RECTANGLE_PORTRAIT = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 21.3281 26.9238"><g><rect height="26.9238" opacity="0" width="21.3281" x="0" y="0"/><path d="M0 23.125C0 25.6445 1.25977 26.9238 3.75977 26.9238L17.207 26.9238C19.707 26.9238 20.9668 25.6445 20.9668 23.125L20.9668 3.80859C20.9668 1.28906 19.707 0.00976562 17.207 0.00976562L3.75977 0.00976562C1.25977 0.00976562 0 1.28906 0 3.80859ZM1.72852 23.0859L1.72852 3.84766C1.72852 2.48047 2.45117 1.73828 3.85742 1.73828L17.1094 1.73828C18.5156 1.73828 19.2383 2.48047 19.2383 3.84766L19.2383 23.0859C19.2383 24.4531 18.5156 25.1953 17.1094 25.1953L3.85742 25.1953C2.45117 25.1953 1.72852 24.4531 1.72852 23.0859Z"/><path d="M4.88281 6.76758C5.51758 6.76758 6.03516 6.25 6.03516 5.60547C6.03516 4.9707 5.51758 4.45312 4.88281 4.45312C4.24805 4.45312 3.7207 4.98047 3.7207 5.60547C3.7207 6.24023 4.24805 6.76758 4.88281 6.76758Z"/><path d="M8.41797 6.29883L16.5625 6.29883C16.9434 6.29883 17.2461 5.98633 17.2461 5.60547C17.2461 5.22461 16.9434 4.92188 16.5625 4.92188L8.41797 4.92188C8.03711 4.92188 7.73438 5.22461 7.73438 5.60547C7.73438 5.98633 8.03711 6.29883 8.41797 6.29883Z"/><path d="M4.88281 10.6836C5.51758 10.6836 6.03516 10.166 6.03516 9.52148C6.03516 8.87695 5.51758 8.36914 4.88281 8.36914C4.23828 8.36914 3.7207 8.88672 3.7207 9.52148C3.7207 10.166 4.23828 10.6836 4.88281 10.6836Z"/><path d="M8.41797 10.2051L16.5625 10.2051C16.9531 10.2051 17.2461 9.91211 17.2461 9.52148C17.2461 9.14062 16.9531 8.84766 16.5625 8.84766L8.41797 8.84766C8.02734 8.84766 7.73438 9.14062 7.73438 9.52148C7.73438 9.91211 8.02734 10.2051 8.41797 10.2051Z"/><path d="M4.88281 14.7363C5.51758 14.7363 6.03516 14.2188 6.03516 13.584C6.03516 12.9395 5.51758 12.4219 4.88281 12.4219C4.24805 12.4219 3.7207 12.9492 3.7207 13.584C3.7207 14.209 4.24805 14.7363 4.88281 14.7363Z"/><path d="M8.41797 14.2676L16.5625 14.2676C16.9434 14.2676 17.2461 13.9648 17.2461 13.584C17.2461 13.2031 16.9531 12.9004 16.5625 12.9004L8.41797 12.9004C8.02734 12.9004 7.73438 13.2031 7.73438 13.584C7.73438 13.9648 8.03711 14.2676 8.41797 14.2676Z"/></g></svg>`;
     const __DOCUMENT_ON_DOCUMENT = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.9473 31.5137"><g><rect height="31.5137" opacity="0" width="25.9473" x="0" y="0"/><path d="M17.7539 1.12305L24.4629 7.91992C25.3125 8.78906 25.5859 9.64844 25.5859 10.9863L25.5859 21.5039C25.5859 24.0234 24.3262 25.3027 21.8262 25.3027L19.4824 25.3027L19.4824 23.5742L21.7383 23.5742C23.1348 23.5742 23.8574 22.832 23.8574 21.4746L23.8574 10.4785L17.6465 10.4785C16.2891 10.4785 15.6152 9.84375 15.6152 8.44727L15.6152 1.72852L9.96094 1.72852C8.55469 1.72852 7.83203 2.5 7.83203 3.83789L7.83203 6.17187L6.10352 6.17187L6.10352 3.79883C6.10352 1.2793 7.38281 0 9.87305 0L14.8535 0C16.0254 0 16.9336 0.292969 17.7539 1.12305ZM17.1875 8.21289C17.1875 8.71094 17.3926 8.90625 17.8809 8.90625L23.3691 8.90625L17.1875 2.64648Z"/><path d="M0 27.6758C0 30.2051 1.25977 31.4746 3.75977 31.4746L15.7227 31.4746C18.2227 31.4746 19.4824 30.1953 19.4824 27.6758L19.4824 17.5977C19.4824 16.1426 19.3066 15.5078 18.3984 14.5898L11.1621 7.25586C10.3027 6.37695 9.59961 6.17188 8.30078 6.17188L3.75977 6.17188C1.2793 6.17188 0 7.46094 0 9.9707ZM1.72852 27.6465L1.72852 10.0098C1.72852 8.67188 2.45117 7.90039 3.85742 7.90039L8.28125 7.90039L8.28125 15.3906C8.28125 16.8848 9.0332 17.5977 10.4883 17.5977L17.7539 17.5977L17.7539 27.6465C17.7539 29.0039 17.0312 29.7461 15.625 29.7461L3.84766 29.7461C2.45117 29.7461 1.72852 29.0039 1.72852 27.6465ZM10.6836 15.9668C10.127 15.9668 9.91211 15.752 9.91211 15.1953L9.91211 8.36914L17.4121 15.9668Z"/></g></svg>`;
 
-    const __GLOBE_AMERICAS_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M13.2324 22.2949C14.834 22.2949 19.2676 16.4844 19.2676 14.3164C19.2676 13.1055 16.5332 10.7129 15.1172 10.7129C14.4922 10.7129 13.4961 11.6113 12.7832 11.6113C12.0508 11.6113 10.4004 10.1855 10.4004 9.55078C10.4004 9.19922 10.7324 8.96484 11.0938 8.96484C11.6895 8.96484 12.6953 10.0293 13.6328 10.0293C14.4629 10.0293 14.9219 9.45312 14.9219 8.61328C14.9219 8.21289 14.6973 7.79297 14.3262 7.22656C15.6445 6.57227 18.3496 5.17578 19.1504 3.33984C17.9883 1.9043 15.4883 0.996094 12.6953 0.996094C8.47656 0.996094 4.44336 3.39844 3.74023 5.79102C3.49609 7.2168 4.44336 8.7793 6.29883 10.4004L8.17383 12.041C8.74023 12.5391 9.08203 12.7734 9.08203 13.0957C9.08203 13.6035 8.52539 14.0332 8.52539 14.7266C8.52539 15.3613 8.82812 15.8887 9.48242 16.377C11.4746 17.8711 12.0215 18.1348 12.0215 18.6133C12.041 19.4434 11.543 20.0781 11.543 20.8496C11.543 21.5332 12.4414 22.2949 13.2324 22.2949ZM12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.9551C6.51367 23.9551 1.48438 18.9258 1.48438 12.7246C1.48438 6.51367 6.51367 1.48438 12.7148 1.48438C18.9258 1.48438 23.9551 6.51367 23.9551 12.7246C23.9551 18.9258 18.9258 23.9551 12.7148 23.9551Z"/></g></svg>`;
-    const __BUILDING_2_CROP_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623ZM12.7148 24.5312C13.8281 24.5312 14.8926 24.375 15.8984 24.0625L15.8984 8.49609C15.8984 7.58789 15.4102 7.03125 14.5215 7.03125L6.11328 7.03125C5.24414 7.03125 4.73633 7.58789 4.73633 8.49609L4.73633 21.0645C6.71875 23.2031 9.54102 24.5312 12.7148 24.5312ZM7.71484 21.2988C7.55859 21.2988 7.45117 21.1816 7.45117 21.0156L7.45117 19.6484C7.45117 19.4922 7.55859 19.3652 7.71484 19.3652L9.12109 19.3652C9.27734 19.3652 9.39453 19.4922 9.39453 19.6484L9.39453 21.0156C9.39453 21.1816 9.27734 21.2988 9.12109 21.2988ZM11.4648 21.2988C11.3086 21.2988 11.2012 21.1816 11.2012 21.0156L11.2012 19.6484C11.2012 19.4922 11.3086 19.3652 11.4648 19.3652L12.8711 19.3652C13.0273 19.3652 13.1348 19.4922 13.1348 19.6484L13.1348 21.0156C13.1348 21.1816 13.0273 21.2988 12.8711 21.2988ZM7.71484 17.9199C7.55859 17.9199 7.45117 17.8027 7.45117 17.6465L7.45117 16.2793C7.45117 16.123 7.55859 16.0059 7.71484 16.0059L9.12109 16.0059C9.27734 16.0059 9.39453 16.123 9.39453 16.2793L9.39453 17.6465C9.39453 17.8027 9.27734 17.9199 9.12109 17.9199ZM11.4648 17.9199C11.3086 17.9199 11.2012 17.8027 11.2012 17.6465L11.2012 16.2793C11.2012 16.123 11.3086 16.0059 11.4648 16.0059L12.8711 16.0059C13.0273 16.0059 13.1348 16.123 13.1348 16.2793L13.1348 17.6465C13.1348 17.8027 13.0273 17.9199 12.8711 17.9199ZM7.71484 14.5508C7.55859 14.5508 7.45117 14.4336 7.45117 14.2773L7.45117 12.9102C7.45117 12.7539 7.55859 12.6367 7.71484 12.6367L9.12109 12.6367C9.27734 12.6367 9.39453 12.7539 9.39453 12.9102L9.39453 14.2773C9.39453 14.4336 9.27734 14.5508 9.12109 14.5508ZM11.4648 14.5508C11.3086 14.5508 11.2012 14.4336 11.2012 14.2773L11.2012 12.9102C11.2012 12.7539 11.3086 12.6367 11.4648 12.6367L12.8711 12.6367C13.0273 12.6367 13.1348 12.7539 13.1348 12.9102L13.1348 14.2773C13.1348 14.4336 13.0273 14.5508 12.8711 14.5508ZM7.71484 11.2109C7.55859 11.2109 7.45117 11.084 7.45117 10.9375L7.45117 9.56055C7.45117 9.4043 7.55859 9.28711 7.71484 9.28711L9.12109 9.28711C9.27734 9.28711 9.39453 9.4043 9.39453 9.56055L9.39453 10.9375C9.39453 11.084 9.27734 11.2109 9.12109 11.2109ZM11.4648 11.2109C11.3086 11.2109 11.2012 11.084 11.2012 10.9375L11.2012 9.56055C11.2012 9.4043 11.3086 9.28711 11.4648 9.28711L12.8711 9.28711C13.0273 9.28711 13.1348 9.4043 13.1348 9.56055L13.1348 10.9375C13.1348 11.084 13.0273 11.2109 12.8711 11.2109ZM16.8164 23.7402C18.877 22.9102 20.625 21.4551 21.8066 19.6094L21.8066 11.7383C21.8066 10.8203 21.3086 10.2734 20.4297 10.2734L16.8164 10.2734ZM18.6914 19.9414C18.5645 19.9414 18.457 19.8438 18.457 19.7266L18.457 18.5352C18.457 18.418 18.5645 18.3008 18.6914 18.3008L19.9121 18.3008C20.0391 18.3008 20.127 18.418 20.127 18.5352L20.127 19.7266C20.127 19.8438 20.0391 19.9414 19.9121 19.9414ZM18.6914 16.9922C18.5645 16.9922 18.457 16.8945 18.457 16.7676L18.457 15.5859C18.457 15.459 18.5645 15.3613 18.6914 15.3613L19.9121 15.3613C20.0391 15.3613 20.127 15.459 20.127 15.5859L20.127 16.7676C20.127 16.8945 20.0391 16.9922 19.9121 16.9922ZM18.6914 14.0527C18.5645 14.0527 18.457 13.9453 18.457 13.8184L18.457 12.627C18.457 12.5098 18.5645 12.4121 18.6914 12.4121L19.9121 12.4121C20.0391 12.4121 20.127 12.5098 20.127 12.627L20.127 13.8184C20.127 13.9453 20.0391 14.0527 19.9121 14.0527Z"/></g></svg>`;
-    const __FLAG_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M7.88086 19.4629C8.19336 19.4629 8.39844 19.2285 8.39844 18.9453L8.39844 15.1465C8.64258 15.0488 9.16016 14.8828 9.9707 14.8828C12.2363 14.8828 13.6328 16.0059 15.8496 16.0059C16.7676 16.0059 17.1875 15.9082 17.666 15.6836C18.1738 15.4492 18.3984 15.1172 18.3984 14.6094L18.3984 8.36914C18.3984 8.01758 18.2227 7.7832 17.7539 7.7832C17.4023 7.7832 16.8359 8.05664 15.7812 8.05664C13.6133 8.05664 12.1973 6.92383 9.90234 6.92383C8.95508 6.92383 8.53516 7.04102 8.0957 7.23633C7.59766 7.45117 7.35352 7.82227 7.35352 8.31055L7.35352 18.9453C7.35352 19.2188 7.59766 19.4629 7.88086 19.4629Z"/></g></svg>`;
-
     const __EYE_SLASH = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 34.4141 26.5528"><g><rect height="26.5528" opacity="0" width="34.4141" x="0" y="0"/><path d="M7.79253 7.15637C4.18854 9.41589 1.9043 12.3433 1.9043 13.2813C1.9043 15.1074 8.56445 22.2852 17.0312 22.2852C18.811 22.2852 20.5113 21.9673 22.0788 21.4361L23.4874 22.844C21.5396 23.5695 19.3679 24.0137 17.0312 24.0137C7.10938 24.0137 0 15.8301 0 13.2813C0 11.7921 2.43672 8.38295 6.44783 5.81228ZM34.0527 13.2813C34.0527 14.7335 31.7829 18.0149 27.9691 20.5667L26.6442 19.2419C30.0218 17.0539 32.1484 14.3132 32.1484 13.2813C32.1484 11.6797 25.4883 4.27736 17.0312 4.27736C15.4106 4.27736 13.8562 4.54857 12.4039 5.00158L11.0015 3.59918C12.8424 2.94832 14.8712 2.55861 17.0312 2.55861C27.0215 2.55861 34.0527 10.7324 34.0527 13.2813ZM15.0528 14.4133C15.2518 14.7625 15.5418 15.0527 15.8917 15.2518L20.211 19.5692C19.258 20.0592 18.1765 20.3321 17.0312 20.3321C13.1348 20.3321 9.96094 17.1582 9.96094 13.2617C9.96094 12.1176 10.2332 11.0372 10.7224 10.0849ZM24.1016 13.2617C24.1016 14.2714 23.8891 15.2325 23.5027 16.1004L14.1926 6.79025C15.0605 6.40386 16.0216 6.19143 17.0312 6.19143C20.9375 6.19143 24.1016 9.35549 24.1016 13.2617Z"/><path d="M27.0605 24.209C27.3828 24.5313 27.9004 24.5508 28.2422 24.209C28.5938 23.8477 28.5645 23.3594 28.2422 23.0274L7.00195 1.80666C6.68945 1.48439 6.15234 1.47463 5.82031 1.80666C5.49805 2.11916 5.49805 2.66603 5.82031 2.9883Z"/></g></svg>`;
     const __EYE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 34.4141 21.4746"><g><rect height="21.4746" opacity="0" width="34.4141" x="0" y="0"/><path d="M17.0312 21.4746C27.0605 21.4746 34.0527 13.291 34.0527 10.7422C34.0527 8.19336 27.0215 0.0195312 17.0312 0.0195312C7.13867 0.0195312 0 8.19336 0 10.7422C0 13.291 7.10938 21.4746 17.0312 21.4746ZM17.0312 19.7461C8.56445 19.7461 1.9043 12.5684 1.9043 10.7422C1.9043 9.14062 8.56445 1.73828 17.0312 1.73828C25.4883 1.73828 32.1484 9.14062 32.1484 10.7422C32.1484 12.5684 25.4883 19.7461 17.0312 19.7461ZM17.0312 17.793C20.9375 17.793 24.1016 14.6191 24.1016 10.7227C24.1016 6.81641 20.9375 3.65234 17.0312 3.65234C13.1348 3.65234 9.96094 6.81641 9.96094 10.7227C9.96094 14.6191 13.1348 17.793 17.0312 17.793ZM17.0312 13.0176C15.7617 13.0176 14.7461 11.9922 14.7461 10.7324C14.7461 9.46289 15.7617 8.4375 17.0312 8.4375C18.3008 8.4375 19.3262 9.46289 19.3262 10.7324C19.3262 11.9922 18.3008 13.0176 17.0312 13.0176Z"/></g></svg>`;
 
     const __WAND_AND_SPARKLES_INVERSE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.9766 26.5527"><g><rect height="26.5527" opacity="0" width="25.9766" x="0" y="0"/><path d="M17.4805 9.31641C17.6465 9.31641 17.7734 9.19922 17.8125 9.0332C18.3691 6.04492 18.8086 5.43945 21.8359 4.99023C22.0117 4.96094 22.1191 4.83398 22.1191 4.66797C22.1191 4.48242 22.0117 4.35547 21.8359 4.32617C18.8086 3.87695 18.2715 3.22266 17.8125 0.3125C17.7734 0.117188 17.6465 0 17.4805 0C17.2949 0 17.168 0.117188 17.1387 0.302734C16.5723 3.26172 16.123 3.87695 13.1152 4.32617C12.9199 4.35547 12.8125 4.48242 12.8125 4.66797C12.8125 4.83398 12.9199 4.95117 13.1152 4.99023C16.123 5.43945 16.6602 6.03516 17.1387 9.02344C17.1582 9.19922 17.2754 9.31641 17.4805 9.31641ZM3.4375 19.4141C3.61328 19.4141 3.71094 19.3066 3.74023 19.1406C4.08203 16.8652 4.08203 16.6406 6.60156 16.2793C6.77734 16.25 6.88477 16.1426 6.88477 15.9766C6.88477 15.8105 6.77734 15.7031 6.60156 15.6738C4.08203 15.3027 4.08203 15.0879 3.74023 12.8125C3.71094 12.6465 3.61328 12.5293 3.4375 12.5293C3.27148 12.5293 3.16406 12.6465 3.13477 12.8125C2.79297 15.0879 2.79297 15.3027 0.273438 15.6738C0.107422 15.7031 0 15.8105 0 15.9766C0 16.1426 0.107422 16.25 0.273438 16.2793C2.79297 16.6406 2.79297 16.8652 3.13477 19.1406C3.16406 19.3066 3.27148 19.4141 3.4375 19.4141ZM7.65625 23.0859C7.7832 23.0859 7.88086 22.9883 7.90039 22.8613C8.125 21.4844 8.08594 21.3574 9.7168 21.0547C9.85352 21.0254 9.93164 20.9277 9.93164 20.8008C9.93164 20.6738 9.85352 20.5859 9.7168 20.5566C8.0957 20.2539 8.14453 20.1367 7.90039 18.7402C7.88086 18.6133 7.77344 18.5254 7.65625 18.5254C7.5293 18.5254 7.44141 18.6133 7.41211 18.7598C7.13867 20.1367 7.2168 20.2832 5.60547 20.5566C5.46875 20.5859 5.38086 20.6641 5.38086 20.8008C5.38086 20.9277 5.46875 21.0254 5.5957 21.0547C7.2168 21.3574 7.13867 21.4844 7.41211 22.8613C7.44141 22.9883 7.5293 23.0859 7.65625 23.0859Z"/><path d="M23.8477 24.1699C24.3359 23.6719 24.3457 22.9102 23.8477 22.4023L7.60742 6.17188C7.10938 5.66406 6.28906 5.67383 5.82031 6.17188C5.33203 6.67969 5.33203 7.44141 5.83008 7.94922L22.0605 24.1699C22.5684 24.6973 23.3789 24.6777 23.8477 24.1699ZM23.2031 23.5254C23.0469 23.6816 22.793 23.6914 22.6367 23.5254L10.8398 11.7383L11.416 11.1621L23.2031 22.959C23.3691 23.125 23.3691 23.3691 23.2031 23.5254Z"/></g></svg>`;
 
+    // Future Location or Notes Types
+    const __AIRPLANE_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M20.9082 12.7246C20.9082 11.9043 19.834 11.2891 18.4863 11.2891L15.7812 11.2891C15.4492 11.2891 15.3418 11.2402 15.127 11.0059L10.6934 6.17188C10.5371 5.99609 10.3418 5.9082 10.1172 5.9082L9.35547 5.9082C9.11133 5.9082 8.96484 6.13281 9.07227 6.37695L11.2988 11.3086L8.07617 11.6602L6.91406 9.53125C6.79688 9.3457 6.64062 9.24805 6.37695 9.24805L6.08398 9.24805C5.85938 9.24805 5.70312 9.39453 5.70312 9.62891L5.70312 15.8301C5.70312 16.0547 5.85938 16.2012 6.08398 16.2012L6.37695 16.2012C6.64062 16.2012 6.79688 16.1035 6.91406 15.918L8.07617 13.7891L11.2988 14.1406L9.07227 19.0723C8.96484 19.3164 9.11133 19.541 9.35547 19.541L10.1172 19.541C10.3418 19.541 10.5371 19.4531 10.6934 19.2773L15.127 14.4434C15.3418 14.209 15.4492 14.1602 15.7812 14.1602L18.4863 14.1602C19.834 14.1602 20.9082 13.5449 20.9082 12.7246Z"/></g></svg>`;
+    const __BELL_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M7.05078 17.2754L18.3789 17.2754C18.9258 17.2754 19.2578 16.9824 19.2578 16.543C19.2578 15.8398 18.5742 15.2344 17.9688 14.6094C17.4219 14.0234 17.373 12.8516 17.2852 11.8555C17.1875 9.38477 16.4648 7.64648 14.668 7.03125C14.4141 6.10352 13.7012 5.40039 12.7148 5.40039C11.7285 5.40039 11.0156 6.10352 10.7715 7.03125C8.96484 7.64648 8.25195 9.38477 8.1543 11.8555C8.05664 12.8516 7.98828 14.0234 7.46094 14.6094C6.875 15.2441 6.18164 15.8398 6.18164 16.543C6.18164 16.9824 6.50391 17.2754 7.05078 17.2754ZM12.7148 20.1074C13.8672 20.1074 14.6973 19.3066 14.7949 18.2812L10.6348 18.2812C10.7422 19.3066 11.5625 20.1074 12.7148 20.1074Z"/></g></svg>`;
+    const __BICYCLE_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M7.10938 17.7344C9.0625 17.7344 10.6348 16.1621 10.6348 14.209C10.6348 12.2559 9.0625 10.6836 7.10938 10.6836C5.15625 10.6836 3.58398 12.2559 3.58398 14.209C3.58398 16.1621 5.15625 17.7344 7.10938 17.7344ZM7.12891 16.7871C5.68359 16.7871 4.53125 15.6348 4.53125 14.1895C4.53125 12.7539 5.67383 11.6113 7.12891 11.6113C8.55469 11.6113 9.70703 12.7637 9.70703 14.1895C9.70703 15.6348 8.55469 16.7871 7.12891 16.7871ZM7.10938 15.0293C7.56836 15.0293 7.92969 14.668 7.92969 14.209C7.92969 13.75 7.56836 13.3887 7.10938 13.3887C6.65039 13.3887 6.28906 13.75 6.28906 14.209C6.28906 14.668 6.65039 15.0293 7.10938 15.0293ZM18.3008 17.7344C20.2539 17.7344 21.8262 16.1621 21.8262 14.209C21.8262 12.2559 20.2539 10.6836 18.3008 10.6836C16.3477 10.6836 14.7656 12.2559 14.7656 14.209C14.7656 16.1621 16.3477 17.7344 18.3008 17.7344ZM18.3203 16.7871C16.875 16.7871 15.7227 15.6348 15.7227 14.1895C15.7227 12.7539 16.8652 11.6113 18.3203 11.6113C19.7461 11.6113 20.8984 12.7637 20.8984 14.1895C20.8984 15.6348 19.7461 16.7871 18.3203 16.7871ZM18.3203 15.0293C18.7695 15.0293 19.1309 14.668 19.1309 14.209C19.1309 13.75 18.7695 13.3887 18.3203 13.3887C17.8516 13.3887 17.4902 13.75 17.4902 14.209C17.4902 14.668 17.8516 15.0293 18.3203 15.0293ZM8.29102 8.59375L10.6445 8.59375C10.8984 8.59375 11.123 8.37891 11.123 8.13477C11.123 7.87109 10.918 7.65625 10.6445 7.65625L8.29102 7.65625C8.02734 7.65625 7.82227 7.86133 7.82227 8.13477C7.82227 8.37891 8.02734 8.59375 8.29102 8.59375ZM6.97266 13.6914L7.72461 14.2383L10.498 11.1328L11.9043 13.6426L10.293 13.6426L10.293 14.541L11.9727 14.541C12.4805 14.541 12.7246 14.4336 12.998 14.1211L16.2305 10.3613L17.7344 14.1211L18.5938 13.7402L15.791 6.80664C15.6641 6.51367 15.4883 6.40625 15.1562 6.40625L13.584 6.40625C13.3105 6.40625 13.0957 6.62109 13.0957 6.875C13.0957 7.12891 13.3008 7.34375 13.584 7.34375L15.0195 7.34375L15.8301 9.36523L10.9082 9.98047L9.95117 8.26172L8.98438 8.45703L9.98047 10.2246ZM11.3965 10.8594L15.1465 10.2637L12.666 13.125Z"/></g></svg>`;
+    const __BOOKMARK_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M8.94531 19.3945C9.22852 19.3945 9.4043 19.2383 9.89258 18.7598L12.6465 16.0059C12.6855 15.9668 12.7344 15.9668 12.7637 16.0059L15.5273 18.7598C16.0059 19.2383 16.1816 19.3945 16.4746 19.3945C16.8555 19.3945 17.0996 19.1211 17.0996 18.6621L17.0996 7.99805C17.0996 6.79688 16.4844 6.17188 15.293 6.17188L10.1172 6.17188C8.92578 6.17188 8.31055 6.79688 8.31055 7.99805L8.31055 18.6621C8.31055 19.1211 8.55469 19.3945 8.94531 19.3945Z"/></g></svg>`;
+    const __BRIEFCASE_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M7.49023 18.3984L17.9492 18.3984C19.2285 18.3984 19.8535 17.7832 19.8535 16.5137L19.8535 10.0879C19.8535 8.81836 19.2285 8.20312 17.9492 8.20312L7.49023 8.20312C6.20117 8.20312 5.57617 8.81836 5.57617 10.0879L5.57617 16.5137C5.57617 17.7832 6.20117 18.3984 7.49023 18.3984ZM11.709 14.0918C11.2793 14.0918 11.0254 13.8379 11.0254 13.3984L11.0254 12.8711C9.22852 12.7539 7.46094 12.4316 5.57617 11.7676L5.57617 10.7227C7.93945 11.6797 10.2148 12.002 12.7148 12.002C15.2148 12.002 17.4902 11.6797 19.8535 10.7227L19.8535 11.7676C17.9688 12.4316 16.2012 12.7539 14.4141 12.8711L14.4141 13.3984C14.4141 13.8379 14.1504 14.0918 13.7207 14.0918ZM8.94531 8.71094L10.0488 8.71094L10.0488 7.48047C10.0488 7.11914 10.2637 6.9043 10.6543 6.9043L14.7852 6.9043C15.1758 6.9043 15.4004 7.11914 15.4004 7.48047L15.4004 8.71094L16.4844 8.71094L16.4844 7.43164C16.4844 6.46484 15.8496 5.86914 14.8438 5.86914L10.5957 5.86914C9.58008 5.86914 8.94531 6.46484 8.94531 7.43164Z"/></g></svg>`;
+    const __CAR_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M5.75195 16.9922C5.75195 17.4219 6.09375 17.7637 6.52344 17.7637L7.22656 17.7637C7.65625 17.7637 7.99805 17.4219 7.99805 16.9922L7.99805 16.0156C9.31641 16.0938 11.2109 16.1523 12.7148 16.1523C14.2285 16.1523 16.1133 16.0938 17.4316 16.0156L17.4316 16.9922C17.4316 17.4219 17.7734 17.7637 18.2031 17.7637L18.8965 17.7637C19.3359 17.7637 19.6777 17.4219 19.6777 16.9922L19.6777 13.6328C19.6777 12.6172 19.4531 12.0703 18.9258 11.3965L18.4277 10.7324C18.1934 9.64844 17.8027 8.52539 17.6074 8.08594C17.2852 7.42188 16.6797 7.05078 15.918 6.95312C15.5176 6.9043 14.1992 6.86523 12.7148 6.86523C11.2305 6.86523 9.91211 6.9043 9.51172 6.95312C8.75 7.04102 8.14453 7.42188 7.82227 8.08594C7.62695 8.52539 7.22656 9.64844 7.01172 10.7324L6.50391 11.3965C5.97656 12.0703 5.75195 12.6172 5.75195 13.6328ZM8.37891 10.2051C8.53516 9.52148 8.78906 8.75 8.97461 8.4375C9.14062 8.1543 9.32617 8.00781 9.67773 7.96875C10.1074 7.90039 11.0938 7.88086 12.7148 7.88086C14.3359 7.88086 15.3223 7.89062 15.752 7.96875C16.1035 8.00781 16.2891 8.1543 16.4551 8.4375C16.6504 8.74023 16.9043 9.52148 17.0508 10.2051C17.0996 10.3906 17.0215 10.4785 16.8066 10.4688C15.8496 10.3906 14.7559 10.3418 12.7148 10.3418C10.6738 10.3418 9.58008 10.3906 8.62305 10.4688C8.4082 10.4785 8.33984 10.3906 8.37891 10.2051ZM7.50977 13.6328C7.50977 13.1152 7.91016 12.7246 8.41797 12.7246C8.92578 12.7246 9.32617 13.1152 9.32617 13.6328C9.32617 14.1504 8.92578 14.5312 8.41797 14.5312C7.91016 14.5312 7.50977 14.1504 7.50977 13.6328ZM10.5273 13.7012C10.5273 13.3105 10.791 13.0469 11.1719 13.0469L14.248 13.0469C14.6387 13.0469 14.9023 13.3105 14.9023 13.7012C14.9023 14.082 14.6387 14.3457 14.248 14.3457L11.1719 14.3457C10.791 14.3457 10.5273 14.082 10.5273 13.7012ZM16.1035 13.6328C16.1035 13.1152 16.5039 12.7246 17.0117 12.7246C17.5195 12.7246 17.9199 13.1152 17.9199 13.6328C17.9199 14.1504 17.5195 14.5312 17.0117 14.5312C16.5039 14.5312 16.1035 14.1504 16.1035 13.6328Z"/></g></svg>`;
+    const __CIRCLE_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M12.7051 19.4531C16.4258 19.4531 19.4336 16.4453 19.4336 12.7246C19.4336 8.99414 16.4258 5.99609 12.7051 5.99609C8.98438 5.99609 5.97656 8.99414 5.97656 12.7246C5.97656 16.4453 8.98438 19.4531 12.7051 19.4531ZM12.7051 17.7734C9.92188 17.7734 7.65625 15.5078 7.65625 12.7246C7.65625 9.93164 9.92188 7.66602 12.7051 7.66602C15.498 7.66602 17.7539 9.93164 17.7539 12.7246C17.7539 15.5078 15.498 17.7734 12.7051 17.7734Z"/></g></svg>`;
+    const __DIAMOND_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M6.26953 13.7305L11.709 19.1602C12.373 19.834 13.0469 19.8535 13.7207 19.1797L19.1797 13.7207C19.8438 13.0664 19.8242 12.373 19.1602 11.709L13.7305 6.2793C13.0566 5.61523 12.3828 5.5957 11.7188 6.26953L6.25 11.7188C5.5957 12.3828 5.61523 13.0762 6.26953 13.7305Z"/></g></svg>`;
+    const __ENVIRONMENTS_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M11.2598 9.55078C11.3672 9.55078 11.4551 9.47266 11.4746 9.3457C11.7285 7.93945 11.7871 7.76367 13.2324 7.57812C13.3691 7.54883 13.457 7.4707 13.457 7.35352C13.457 7.22656 13.3691 7.11914 13.2324 7.09961C11.7969 6.92383 11.6992 6.74805 11.4746 5.35156C11.4551 5.21484 11.3574 5.13672 11.2598 5.13672C11.1328 5.13672 11.0352 5.21484 11.0156 5.3418C10.7617 6.75781 10.6836 6.92383 9.23828 7.09961C9.13086 7.11914 9.0332 7.22656 9.0332 7.35352C9.0332 7.4707 9.13086 7.54883 9.23828 7.57812C10.6934 7.76367 10.8203 7.93945 11.0156 9.33594C11.0352 9.46289 11.123 9.55078 11.2598 9.55078ZM9.73633 17.2266L20.791 17.2266C21.6602 17.2266 21.9824 16.416 21.4062 15.7324L16.0352 9.30664C15.8105 9.02344 15.5371 8.85742 15.2637 8.85742C14.9707 8.85742 14.707 9.02344 14.4727 9.30664L9.0918 15.7324C8.51562 16.416 8.85742 17.2266 9.73633 17.2266ZM8.50586 15.2344L11.0449 12.1875L9.11133 9.91211C8.87695 9.63867 8.64258 9.53125 8.38867 9.53125C8.125 9.53125 7.88086 9.63867 7.64648 9.91211L3.73047 14.541C3.23242 15.1074 3.49609 15.9277 4.30664 15.9277L8.125 15.9277C8.18359 15.6934 8.31055 15.4492 8.50586 15.2344Z"/></g></svg>`;
+    const __FIGURE_HIKING_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M12.666 7.59766C13.5156 7.59766 14.1992 6.9043 14.1992 6.05469C14.1992 5.20508 13.5156 4.52148 12.666 4.52148C11.8066 4.52148 11.1133 5.20508 11.1133 6.05469C11.1133 6.9043 11.8066 7.59766 12.666 7.59766ZM7.96875 19.2383C7.27539 20.0684 8.4082 20.8691 8.97461 20.1953L10.9766 17.8027C11.1816 17.5684 11.2598 17.4316 11.416 17.1191L12.6758 14.3848C13.0664 13.5645 13.125 13.0566 13.1836 12.1875L13.2715 11.0449L14.375 12.1094C14.6289 12.3438 14.8145 12.4219 15.2441 12.4219L16.8555 12.4219C17.2852 12.4219 17.5781 12.168 17.5781 11.7676C17.5781 11.377 17.2852 11.123 16.8555 11.123L15.127 11.123L12.998 8.78906C12.6758 8.44727 12.2656 8.25195 11.7676 8.25195C11.6406 8.25195 11.5137 8.27148 11.3965 8.30078C11.3965 7.76367 10.9766 7.35352 10.3906 7.35352L9.64844 7.35352C8.86719 7.35352 8.38867 7.8418 8.38867 8.62305L8.38867 12.168C8.38867 12.7051 8.7793 13.0957 9.30664 13.0957L10.293 13.0957C10.293 13.5645 10.4199 13.8965 10.6836 14.2969L10.0391 16.7871ZM12.4121 16.4941C12.5977 16.7285 12.666 16.8457 12.7441 16.9922L14.209 19.9707C14.668 20.8887 16.0156 20.3125 15.5273 19.3359L14.0918 16.4258C13.9746 16.1914 13.8184 15.9375 13.6719 15.7422L13.125 14.9707ZM16.5234 20.1172C16.5234 20.3027 16.6699 20.459 16.8652 20.459C17.0508 20.459 17.207 20.3027 17.207 20.1172L17.207 13.0078C17.0605 13.0371 16.9336 13.0469 16.8555 13.0469L16.5234 13.0469ZM16.5234 10.498L16.8555 10.498C16.9434 10.498 17.0605 10.5078 17.207 10.5371L17.207 9.50195C17.207 9.31641 17.0605 9.16992 16.8652 9.16992C16.6699 9.16992 16.5234 9.31641 16.5234 9.50195Z"/></g></svg>`;
+    const __HEART_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M9.69727 7.13867C7.56836 7.13867 6.03516 8.75 6.03516 10.9473C6.03516 14.3457 9.6582 17.4219 12.1387 18.9844C12.3438 19.1113 12.5879 19.2578 12.7344 19.2578C12.8809 19.2578 13.1152 19.1113 13.291 18.9844C15.7324 17.3535 19.4043 14.3457 19.4043 10.9473C19.4043 8.75 17.8613 7.13867 15.7422 7.13867C14.4141 7.13867 13.3301 7.92969 12.7148 9.05273C12.0996 7.92969 11.0352 7.13867 9.69727 7.13867Z"/></g></svg>`;
+    const __HOUSE_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M6.95312 17.5781C6.95312 18.4473 7.4707 18.9551 8.35938 18.9551L17.0801 18.9551C17.959 18.9551 18.4766 18.4473 18.4766 17.5781L18.4766 12.0898L13.1152 7.58789C12.8516 7.36328 12.5684 7.37305 12.3047 7.58789L6.95312 12.0801ZM14.4043 17.8418L11.0254 17.8418L11.0254 13.7695C11.0254 13.4863 11.2207 13.3008 11.5039 13.3008L13.9258 13.3008C14.2188 13.3008 14.4043 13.4863 14.4043 13.7695ZM4.93164 11.6211C4.93164 11.8848 5.14648 12.1387 5.48828 12.1387C5.6543 12.1387 5.79102 12.041 5.9082 11.9336L12.3535 6.5332C12.6074 6.31836 12.832 6.33789 13.0762 6.5332L19.502 11.9336C19.6484 12.041 19.7754 12.1387 19.9414 12.1387C20.2344 12.1387 20.4785 11.9336 20.4785 11.6406C20.4785 11.4453 20.4199 11.3086 20.2832 11.1914L13.6426 5.61523C13.0859 5.13672 12.3633 5.13672 11.7969 5.61523L5.13672 11.1914C5 11.3086 4.93164 11.4648 4.93164 11.6211ZM16.9727 8.85742L18.4766 10.127L18.4766 7.08984C18.4766 6.83594 18.3105 6.66016 18.0566 6.66016L17.4023 6.66016C17.1484 6.66016 16.9727 6.83594 16.9727 7.08984Z"/></g></svg>`;
+    const __MAPPIN_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M9.96094 7.88086C9.96094 9.13086 10.8105 10.1758 11.9531 10.498L11.9531 17.4316C11.9531 19.1309 12.2266 20.5371 12.7051 20.5371C13.1836 20.5371 13.4473 19.1602 13.4473 17.4316L13.4473 10.498C14.6094 10.1855 15.4492 9.14062 15.4492 7.88086C15.4492 6.36719 14.2188 5.13672 12.7051 5.13672C11.1914 5.13672 9.96094 6.36719 9.96094 7.88086ZM11.1133 7.17773C11.1035 6.68945 11.5332 6.2793 12.002 6.2793C12.4902 6.2793 12.8906 6.68945 12.8809 7.17773C12.8809 7.64648 12.4902 8.05664 12.002 8.05664C11.5332 8.05664 11.123 7.64648 11.1133 7.17773Z"/></g></svg>`;
+    const __PERSON_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M6.88477 19.1406L18.5254 19.1406C18.9746 19.1406 19.1895 18.8477 19.1895 18.418C19.1895 17.041 17.1191 13.3984 12.7051 13.3984C8.30078 13.3984 6.23047 17.041 6.23047 18.418C6.23047 18.8477 6.43555 19.1406 6.88477 19.1406ZM12.7051 12.373C14.4922 12.3828 15.9277 10.8691 15.9277 8.85742C15.9277 6.96289 14.4922 5.40039 12.7051 5.40039C10.918 5.40039 9.48242 6.96289 9.48242 8.85742C9.48242 10.8691 10.918 12.3633 12.7051 12.373Z"/></g></svg>`;
+    const __SAILBOAT_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M11.377 17.4023L12.3145 17.4023L13.3203 5.74219C13.3301 5.64453 13.4277 5.64453 13.457 5.73242C13.8867 7.00195 14.1504 8.61328 14.1504 10.0879C14.1504 12.0996 13.5449 13.8965 12.3828 15.0293L12.2949 15.8984C13.9551 16.0742 15.6348 16.0059 16.6992 15.8398C17.4902 15.7129 17.8809 15.4004 18.1348 14.707C18.4668 13.8574 18.584 12.9785 18.584 12.0312C18.584 9.54102 17.4902 6.73828 14.1016 4.95117C13.8477 4.80469 13.6035 4.74609 13.3887 4.74609C12.9004 4.74609 12.4609 5.06836 12.4219 5.5957ZM7.71484 15.8984C9.02344 16.0352 10.5957 16.0352 11.9043 15.9082L12.5684 7.70508L7.35352 14.9805C7.04102 15.4297 7.19727 15.8398 7.71484 15.8984ZM8.61328 19.9512L15.5078 19.9512C15.9375 19.9512 16.2598 19.834 16.5723 19.5312C17.2168 18.916 18.0078 17.6758 18.0078 17.1875C18.0078 16.8848 17.8027 16.6504 17.373 16.6992C14.3066 17.1289 10.8105 17.1289 7.59766 17.1289C7.12891 17.1289 6.89453 17.4902 7.05078 17.9004L7.5293 19.1895C7.71484 19.7168 8.06641 19.9512 8.61328 19.9512Z"/></g></svg>`;
+    const __SPORTSCOURT_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M4.95117 14.7852L6.35742 14.7852C6.8457 14.7852 7.07031 14.541 7.07031 14.0723L7.07031 11.4062C7.07031 10.9277 6.8457 10.6934 6.35742 10.6934L4.95117 10.6934ZM7.04102 18.0273L12.2754 18.0273L12.2754 15.5664C10.8887 15.3516 9.82422 14.1699 9.82422 12.7246C9.82422 11.2891 10.8887 10.0879 12.2754 9.89258L12.2754 7.43164L7.04102 7.43164C5.68359 7.43164 4.95117 8.18359 4.95117 9.54102L4.95117 9.85352L6.34766 9.85352C7.35352 9.85352 7.90039 10.4199 7.90039 11.416L7.90039 14.0625C7.90039 15.0488 7.35352 15.6152 6.34766 15.6152L4.95117 15.6152L4.95117 15.9277C4.95117 17.2852 5.68359 18.0273 7.04102 18.0273ZM12.2754 14.7461L12.2754 10.7031C11.3281 10.8887 10.6348 11.7188 10.6348 12.7246C10.6348 13.7402 11.3281 14.5508 12.2754 14.7461ZM13.1348 14.7461C14.0918 14.5508 14.7754 13.7402 14.7754 12.7246C14.7754 11.7188 14.0918 10.8887 13.1348 10.7031ZM13.1348 18.0273L18.3691 18.0273C19.7266 18.0273 20.4688 17.2852 20.4688 15.9277L20.4688 15.6152L19.0625 15.6152C18.0566 15.6152 17.5098 15.0488 17.5098 14.0625L17.5098 11.416C17.5098 10.4199 18.0566 9.85352 19.0625 9.85352L20.4688 9.85352L20.4688 9.54102C20.4688 8.18359 19.7266 7.43164 18.3691 7.43164L13.1348 7.43164L13.1348 9.89258C14.5215 10.0879 15.5859 11.2891 15.5859 12.7246C15.5859 14.1699 14.5215 15.3516 13.1348 15.5664ZM20.4688 14.7852L20.4688 10.6934L19.0527 10.6934C18.5742 10.6934 18.3398 10.9277 18.3398 11.4062L18.3398 14.0723C18.3398 14.541 18.5742 14.7852 19.0527 14.7852Z"/></g></svg>`;
+    const __STAR_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M9.01367 19.1992L12.7051 16.5039L16.3965 19.1992C17.041 19.6875 17.7344 19.1895 17.4805 18.418L16.0352 14.0625L19.7559 11.4062C20.332 10.9863 20.1562 10.1074 19.3359 10.1172L14.7656 10.1465L13.3691 5.77148C13.1348 5.03906 12.2754 5.03906 12.0508 5.77148L10.6543 10.1465L6.07422 10.1172C5.26367 10.1074 5.05859 10.9668 5.66406 11.416L9.38477 14.0625L7.93945 18.418C7.68555 19.1895 8.37891 19.6875 9.01367 19.1992Z"/></g></svg>`;
+    const __SUITCASE_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M9.41406 8.85742L10.459 8.85742L10.459 7.75391C10.459 7.30469 10.7227 7.05078 11.1914 7.05078L14.2188 7.05078C14.6875 7.05078 14.9609 7.30469 14.9609 7.75391L14.9609 8.84766L15.9961 8.84766L15.9961 7.66602C15.9961 6.55273 15.3711 6.00586 14.2871 6.00586L11.123 6.00586C10.0879 6.00586 9.41406 6.55273 9.41406 7.66602ZM7.79297 18.1641L7.79297 8.33008L7.35352 8.33008C6.12305 8.33008 5.51758 8.92578 5.51758 10.1465L5.51758 16.3379C5.51758 17.5586 6.12305 18.1641 7.35352 18.1641ZM8.76953 18.1641L16.6504 18.1641L16.6504 8.33008L8.76953 8.33008ZM17.627 18.1641L18.0566 18.1641C19.2969 18.1641 19.9023 17.5586 19.9023 16.3379L19.9023 10.1465C19.9023 8.92578 19.2969 8.33008 18.0566 8.33008L17.627 8.33008Z"/></g></svg>`;
+    const __TRAM_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M9.3457 17.8223L16.0742 17.8223C17.2754 17.8223 17.8906 17.0215 17.8906 15.9473L17.8906 11.6504C17.8906 9.91211 17.6465 8.22266 17.3926 7.22656C17.1484 6.23047 16.4551 5.50781 15.4297 5.40039C14.9707 5.3418 13.9453 5.26367 12.7051 5.26367C11.4746 5.26367 10.4492 5.3418 9.98047 5.40039C8.96484 5.50781 8.27148 6.23047 8.02734 7.22656C7.77344 8.22266 7.51953 9.91211 7.51953 11.6504L7.51953 15.9473C7.51953 17.0215 8.13477 17.8223 9.3457 17.8223ZM12.7051 13.8184C11.3184 13.8086 10.0781 13.75 9.38477 13.6719C9.00391 13.6328 8.82812 13.3789 8.82812 13.0078L8.82812 11.5625C8.82812 10.3711 8.95508 9.375 9.07227 8.84766C9.13086 8.55469 9.31641 8.34961 9.58984 8.32031C10.3027 8.23242 11.1719 8.18359 12.7051 8.18359C14.2285 8.17383 15.1074 8.23242 15.7812 8.31055C16.084 8.34961 16.2695 8.55469 16.3379 8.84766C16.4453 9.375 16.582 10.3711 16.582 11.5625L16.582 13.0078C16.582 13.3789 16.4062 13.6328 16.0254 13.6719C15.0781 13.7695 13.8281 13.8184 12.7051 13.8184ZM9.83398 16.4941C9.36523 16.4941 9.02344 16.1621 9.02344 15.6836C9.02344 15.2246 9.36523 14.873 9.83398 14.873C10.3027 14.873 10.6445 15.2246 10.6445 15.6836C10.6445 16.1621 10.293 16.4941 9.83398 16.4941ZM15.5762 16.5039C15.1074 16.5039 14.7559 16.1523 14.7559 15.6836C14.7559 15.2246 15.1074 14.8633 15.5762 14.8633C16.0449 14.8633 16.3965 15.2246 16.3965 15.6836C16.3965 16.1523 16.0254 16.5039 15.5762 16.5039ZM11.1133 7.17773C10.8984 7.17773 10.7617 7.03125 10.7617 6.82617C10.7617 6.62109 10.8984 6.48438 11.1133 6.48438L14.3066 6.48438C14.5117 6.48438 14.6484 6.62109 14.6484 6.82617C14.6484 7.03125 14.5117 7.17773 14.3066 7.17773ZM8.47656 20.3809L8.79883 20.3809C8.95508 20.3809 9.04297 20.332 9.12109 20.2051L10.791 17.5098L9.73633 17.5098L8.23242 19.9023C8.0957 20.1367 8.21289 20.3809 8.47656 20.3809ZM9.04297 19.6289L16.377 19.6289L16.377 18.7891L9.04297 18.7891ZM16.6406 20.3809L16.9531 20.3809C17.2168 20.3809 17.3242 20.1367 17.1777 19.9023L15.7031 17.5098L14.6387 17.5098L16.3086 20.2051C16.3867 20.332 16.4746 20.3809 16.6406 20.3809Z"/></g></svg>`;
+    const __TREE_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M5.39062 14.5801C5.39062 15.9277 6.29883 16.8555 7.60742 16.8555C8.01758 16.8555 8.48633 16.748 8.97461 16.4941C9.375 16.875 10.3223 17.3047 11.2891 17.3047C11.0938 16.4258 10.5078 15.2246 10.1172 14.5312C10.9277 14.4336 11.3477 13.9746 11.5625 13.3301C11.8848 13.5742 12.2266 13.7109 12.7051 13.7109C13.1836 13.7109 13.5254 13.5742 13.8574 13.3301C14.0723 13.9746 14.4824 14.4336 15.293 14.5312C14.9121 15.2246 14.3262 16.4258 14.1309 17.3047C15.0879 17.3047 16.0352 16.875 16.4355 16.4941C16.9238 16.748 17.3926 16.8555 17.8027 16.8555C19.1211 16.8555 20.0195 15.9277 20.0195 14.5801C20.0195 13.8867 19.7266 13.1543 19.082 12.4902C19.5898 11.9629 19.8047 11.3379 19.8047 10.6738C19.8047 9.32617 18.75 8.08594 17.4609 7.95898C17.4316 6.64062 15.9961 5.69336 14.5996 5.69336C13.877 5.69336 13.2031 5.92773 12.7051 6.45508C12.207 5.92773 11.543 5.69336 10.8203 5.69336C9.42383 5.69336 7.97852 6.64062 7.95898 7.95898C6.66016 8.08594 5.60547 9.32617 5.60547 10.6738C5.60547 11.3379 5.82031 11.9629 6.32812 12.4902C5.68359 13.1543 5.39062 13.8867 5.39062 14.5801ZM12.7051 20.4297C13.2031 20.4297 13.5449 20.2637 13.5449 20.0195C13.5449 19.6875 13.4473 18.8281 13.4473 17.9004C13.4473 16.8262 14.2676 15.127 15.1465 13.4766L14.4629 13.0371C13.7793 14.2871 13.4375 14.9707 13.1445 15.6543L13.1152 13.0566L12.2559 13.0176L12.2656 15.6641C11.9824 14.9707 11.6113 14.248 10.9863 13.1738L10.4297 13.877C11.1426 15.127 11.9727 16.8262 11.9727 17.9004C11.9727 18.8281 11.8652 19.6875 11.8652 20.0195C11.8652 20.2637 12.2168 20.4297 12.7051 20.4297Z"/></g></svg>`;
+    const __GLOBE_AMERICAS_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M13.2324 22.2949C14.834 22.2949 19.2676 16.4844 19.2676 14.3164C19.2676 13.1055 16.5332 10.7129 15.1172 10.7129C14.4922 10.7129 13.4961 11.6113 12.7832 11.6113C12.0508 11.6113 10.4004 10.1855 10.4004 9.55078C10.4004 9.19922 10.7324 8.96484 11.0938 8.96484C11.6895 8.96484 12.6953 10.0293 13.6328 10.0293C14.4629 10.0293 14.9219 9.45312 14.9219 8.61328C14.9219 8.21289 14.6973 7.79297 14.3262 7.22656C15.6445 6.57227 18.3496 5.17578 19.1504 3.33984C17.9883 1.9043 15.4883 0.996094 12.6953 0.996094C8.47656 0.996094 4.44336 3.39844 3.74023 5.79102C3.49609 7.2168 4.44336 8.7793 6.29883 10.4004L8.17383 12.041C8.74023 12.5391 9.08203 12.7734 9.08203 13.0957C9.08203 13.6035 8.52539 14.0332 8.52539 14.7266C8.52539 15.3613 8.82812 15.8887 9.48242 16.377C11.4746 17.8711 12.0215 18.1348 12.0215 18.6133C12.041 19.4434 11.543 20.0781 11.543 20.8496C11.543 21.5332 12.4414 22.2949 13.2324 22.2949ZM12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.9551C6.51367 23.9551 1.48438 18.9258 1.48438 12.7246C1.48438 6.51367 6.51367 1.48438 12.7148 1.48438C18.9258 1.48438 23.9551 6.51367 23.9551 12.7246C23.9551 18.9258 18.9258 23.9551 12.7148 23.9551Z"/></g></svg>`;
+    const __BUILDING_2_CROP_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623ZM12.7148 24.5312C13.8281 24.5312 14.8926 24.375 15.8984 24.0625L15.8984 8.49609C15.8984 7.58789 15.4102 7.03125 14.5215 7.03125L6.11328 7.03125C5.24414 7.03125 4.73633 7.58789 4.73633 8.49609L4.73633 21.0645C6.71875 23.2031 9.54102 24.5312 12.7148 24.5312ZM7.71484 21.2988C7.55859 21.2988 7.45117 21.1816 7.45117 21.0156L7.45117 19.6484C7.45117 19.4922 7.55859 19.3652 7.71484 19.3652L9.12109 19.3652C9.27734 19.3652 9.39453 19.4922 9.39453 19.6484L9.39453 21.0156C9.39453 21.1816 9.27734 21.2988 9.12109 21.2988ZM11.4648 21.2988C11.3086 21.2988 11.2012 21.1816 11.2012 21.0156L11.2012 19.6484C11.2012 19.4922 11.3086 19.3652 11.4648 19.3652L12.8711 19.3652C13.0273 19.3652 13.1348 19.4922 13.1348 19.6484L13.1348 21.0156C13.1348 21.1816 13.0273 21.2988 12.8711 21.2988ZM7.71484 17.9199C7.55859 17.9199 7.45117 17.8027 7.45117 17.6465L7.45117 16.2793C7.45117 16.123 7.55859 16.0059 7.71484 16.0059L9.12109 16.0059C9.27734 16.0059 9.39453 16.123 9.39453 16.2793L9.39453 17.6465C9.39453 17.8027 9.27734 17.9199 9.12109 17.9199ZM11.4648 17.9199C11.3086 17.9199 11.2012 17.8027 11.2012 17.6465L11.2012 16.2793C11.2012 16.123 11.3086 16.0059 11.4648 16.0059L12.8711 16.0059C13.0273 16.0059 13.1348 16.123 13.1348 16.2793L13.1348 17.6465C13.1348 17.8027 13.0273 17.9199 12.8711 17.9199ZM7.71484 14.5508C7.55859 14.5508 7.45117 14.4336 7.45117 14.2773L7.45117 12.9102C7.45117 12.7539 7.55859 12.6367 7.71484 12.6367L9.12109 12.6367C9.27734 12.6367 9.39453 12.7539 9.39453 12.9102L9.39453 14.2773C9.39453 14.4336 9.27734 14.5508 9.12109 14.5508ZM11.4648 14.5508C11.3086 14.5508 11.2012 14.4336 11.2012 14.2773L11.2012 12.9102C11.2012 12.7539 11.3086 12.6367 11.4648 12.6367L12.8711 12.6367C13.0273 12.6367 13.1348 12.7539 13.1348 12.9102L13.1348 14.2773C13.1348 14.4336 13.0273 14.5508 12.8711 14.5508ZM7.71484 11.2109C7.55859 11.2109 7.45117 11.084 7.45117 10.9375L7.45117 9.56055C7.45117 9.4043 7.55859 9.28711 7.71484 9.28711L9.12109 9.28711C9.27734 9.28711 9.39453 9.4043 9.39453 9.56055L9.39453 10.9375C9.39453 11.084 9.27734 11.2109 9.12109 11.2109ZM11.4648 11.2109C11.3086 11.2109 11.2012 11.084 11.2012 10.9375L11.2012 9.56055C11.2012 9.4043 11.3086 9.28711 11.4648 9.28711L12.8711 9.28711C13.0273 9.28711 13.1348 9.4043 13.1348 9.56055L13.1348 10.9375C13.1348 11.084 13.0273 11.2109 12.8711 11.2109ZM16.8164 23.7402C18.877 22.9102 20.625 21.4551 21.8066 19.6094L21.8066 11.7383C21.8066 10.8203 21.3086 10.2734 20.4297 10.2734L16.8164 10.2734ZM18.6914 19.9414C18.5645 19.9414 18.457 19.8438 18.457 19.7266L18.457 18.5352C18.457 18.418 18.5645 18.3008 18.6914 18.3008L19.9121 18.3008C20.0391 18.3008 20.127 18.418 20.127 18.5352L20.127 19.7266C20.127 19.8438 20.0391 19.9414 19.9121 19.9414ZM18.6914 16.9922C18.5645 16.9922 18.457 16.8945 18.457 16.7676L18.457 15.5859C18.457 15.459 18.5645 15.3613 18.6914 15.3613L19.9121 15.3613C20.0391 15.3613 20.127 15.459 20.127 15.5859L20.127 16.7676C20.127 16.8945 20.0391 16.9922 19.9121 16.9922ZM18.6914 14.0527C18.5645 14.0527 18.457 13.9453 18.457 13.8184L18.457 12.627C18.457 12.5098 18.5645 12.4121 18.6914 12.4121L19.9121 12.4121C20.0391 12.4121 20.127 12.5098 20.127 12.627L20.127 13.8184C20.127 13.9453 20.0391 14.0527 19.9121 14.0527Z"/></g></svg>`;
+    const __FLAG_CIRCLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M7.88086 19.4629C8.19336 19.4629 8.39844 19.2285 8.39844 18.9453L8.39844 15.1465C8.64258 15.0488 9.16016 14.8828 9.9707 14.8828C12.2363 14.8828 13.6328 16.0059 15.8496 16.0059C16.7676 16.0059 17.1875 15.9082 17.666 15.6836C18.1738 15.4492 18.3984 15.1172 18.3984 14.6094L18.3984 8.36914C18.3984 8.01758 18.2227 7.7832 17.7539 7.7832C17.4023 7.7832 16.8359 8.05664 15.7812 8.05664C13.6133 8.05664 12.1973 6.92383 9.90234 6.92383C8.95508 6.92383 8.53516 7.04102 8.0957 7.23633C7.59766 7.45117 7.35352 7.82227 7.35352 8.31055L7.35352 18.9453C7.35352 19.2188 7.59766 19.4629 7.88086 19.4629Z"/></g></svg>`;
 
     const LOCATION_TYPES = {
       city: { label: "City", icon: "city", order: 0 },
       state: { label: "State", icon: "state", order: 1 },
       territory: { label: "Territory", icon: "territory", order: 2 }
     };
+    const DEFAULT_ACTIVE_VISIT_TYPE_IDS = ["star", "heart", "bookmark", "flag", "house"];
     const VISIT_TYPES = [
-      { id: "first", label: "First", icon: "first", shortcut: "a" },
-      { id: "favorite", label: "Favorite", icon: "favorite", shortcut: "b" },
-      { id: "memorable", label: "Memorable", icon: "memorable", shortcut: "c" },
-      { id: "home", label: "Home", icon: "home", shortcut: "d" },
-      { id: "sport", label: "Sport", icon: "sport", shortcut: "e" },
-      { id: "wedding", label: "Wedding", icon: "wedding", shortcut: "f" },
-      { id: "flagged", label: "Flagged", icon: "flagged", shortcut: "g" },
-      { id: "park", label: "Park", icon: "park", shortcut: "h" },
-      { id: "work", label: "Work", icon: "work", shortcut: "i" },
-      { id: "friend", label: "Friend", icon: "friend", shortcut: "j" }
+      { id: "star", label: "First", icon: "star", shortcut: "f", enabled: true },
+      { id: "heart", label: "Favorite", icon: "heart", shortcut: "v", enabled: true },
+      { id: "bookmark", label: "Memorable", icon: "bookmark", shortcut: "b", enabled: true },
+      { id: "flag", label: "Flagged", icon: "flag", shortcut: "x", enabled: true },
+      { id: "house", label: "Home", icon: "house", shortcut: "h", enabled: true },
+      { id: "briefcase", label: "Work", icon: "briefcase", shortcut: "", enabled: false },
+      { id: "bell", label: "Wedding", icon: "bell", shortcut: "", enabled: false },
+      { id: "sportscourt", label: "Sport", icon: "sportscourt", shortcut: "", enabled: false },
+      { id: "figure_hiking", label: "Hiking", icon: "figure_hiking", shortcut: "", enabled: false },
+      { id: "tree", label: "Park", icon: "tree", shortcut: "", enabled: false },
+      { id: "airplane", label: "Airport", icon: "airplane", shortcut: "", enabled: false },
+      { id: "sailboat", label: "Cruise", icon: "sailboat", shortcut: "", enabled: false },
     ];
 
     const WISHLIST_SEEDS = [
@@ -4351,6 +4569,38 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "2.2.0.3",
+        date: "2026-05-18",
+        title: "Tag Picker Tightening",
+        summary: "A 2.2 development build that tightens date entry and makes note icon tags easier to curate.",
+        highlights: [
+          "The note date row now leads with the generated date pill and uses equal-width Year, Month, and Day controls with fewer labels.",
+          "Location Icon Tags now opens as a cleaner Settings subview with a sticky header, Back to Settings action, search, larger icons, and highlighted selected rows.",
+          "New default tag setups start with First, Favorite, Memorable, Flagged, and Home enabled while the rest stay available as searchable optional icons."
+        ],
+        updates: [
+          "Expanded Notes and selected-location visit notes now reserve room for four note icons.",
+          "Today and Year Only now match the date input height.",
+          "Existing saved tag labels, shortcuts, order, and enabled states are preserved during migration."
+        ]
+      },
+      {
+        version: "2.2.0.2",
+        date: "2026-05-17",
+        title: "Configurable Note Icons",
+        summary: "A 2.2 development build for faster note entry, configurable visit labels, and denser note scanning.",
+        highlights: [
+          "Settings now includes a Location Icon Tags editor for enabling labels, renaming them, sorting by drag and drop, and choosing shortcut letters.",
+          "The note editor now opens directly into Smart Convert, keeps date controls on one tight row, and recommends keeping visible note labels to four or fewer.",
+          "Condensed Notes gained a right-aligned icon-label column, while Text Only notes append selected label names in brackets."
+        ],
+        updates: [
+          "Added Play, Hiking, Airport, Boating, Beach, and Cruise to the default note label set.",
+          "Visit label shortcuts now prefer the first letter of each label with a few collision-safe exceptions.",
+          "Expanded note rows now keep dates aligned even when a note has multiple icons."
+        ]
+      },
       {
         version: "2.2.0.1",
         date: "2026-05-17",
@@ -4742,6 +4992,8 @@
     let powerOverlayActive = false;
     let developerGesture = [];
     let releaseShortcutPrimed = false;
+    let draggingVisitTagId = "";
+    let visitTagSearchQuery = "";
     let levelAutoSaveTimer = null;
     let layoutSyncFrame = 0;
     let pendingConfirm = null;
@@ -4756,6 +5008,7 @@
         levels,
         states: defaultTerritoryStates(levels),
         notes: {},
+        visitTypes: defaultVisitTypes(),
         dismissedHints: [],
         lastSeenReleaseVersion: APP_VERSION,
         dismissedReleaseVersion: "",
@@ -4770,6 +5023,53 @@
     function defaultTerritoryStates(levels) {
       const levelId = territoryDefaultLevelId(levels);
       return levelId ? Object.fromEntries(TERRITORY_IDS.map(abbr => [abbr, [levelId]])) : {};
+    }
+
+    function defaultVisitTypes() {
+      const enabledByDefault = new Set(DEFAULT_ACTIVE_VISIT_TYPE_IDS);
+      return VISIT_TYPES.map(type => ({
+        ...type,
+        shortcut: enabledByDefault.has(type.id) ? type.shortcut : "",
+        enabled: enabledByDefault.has(type.id)
+      }));
+    }
+
+    function normalizeVisitTypeShortcut(value) {
+      return String(value || "").trim().toLowerCase().replace(/[^a-z]/g, "").slice(0, 1);
+    }
+
+    function normalizeVisitTypeConfig(inputTypes, defaults = VISIT_TYPES) {
+      const defaultById = Object.fromEntries(defaults.map(type => [type.id, type]));
+      const saved = Array.isArray(inputTypes) ? inputTypes : [];
+      const savedById = Object.fromEntries(saved.map(type => [type?.id, type]).filter(([id]) => id));
+      const orderedIds = [
+        ...saved.map(type => type?.id).filter(id => defaultById[id]),
+        ...defaults.map(type => type.id)
+      ];
+      const seen = new Set();
+      return orderedIds.filter(id => {
+        if (seen.has(id)) return false;
+        seen.add(id);
+        return true;
+      }).map(id => {
+        const base = defaultById[id];
+        const custom = savedById[id] || {};
+        return {
+          id,
+          label: String(custom.label || base.label).slice(0, 24),
+          icon: base.icon,
+          shortcut: normalizeVisitTypeShortcut(custom.shortcut) || normalizeVisitTypeShortcut(base.shortcut),
+          enabled: custom.enabled !== false
+        };
+      });
+    }
+
+    function allVisitTypes() {
+      return Array.isArray(state?.visitTypes) && state.visitTypes.length ? state.visitTypes : VISIT_TYPES;
+    }
+
+    function activeVisitTypes() {
+      return allVisitTypes().filter(type => type.enabled !== false);
     }
 
     function pad2(value) {
@@ -4855,7 +5155,7 @@
     }
 
     function populateNoteDatePicker() {
-      $("#noteMonth").innerHTML = `<option value="">Unknown month</option>` + MONTH_NAMES.map((name, index) =>
+      $("#noteMonth").innerHTML = `<option value="">Month</option>` + MONTH_NAMES.map((name, index) =>
         `<option value="${pad2(index + 1)}">${name}</option>`
       ).join("");
       $("#noteMonthChips").innerHTML = MONTH_NAMES.map((name, index) =>
@@ -4942,6 +5242,7 @@
           ? level.countsTowardStats
           : (BUILT_INS.find(item => item.id === level.id)?.countsTowardStats ?? !isOptOutLevel(level))
       }));
+      next.visitTypes = normalizeVisitTypeConfig(input.visitTypes, base.visitTypes);
       const validLevelIds = new Set(next.levels.map(l => l.id));
       next.states = {};
       Object.entries(input.states || {}).forEach(([abbr, raw]) => {
@@ -4969,8 +5270,9 @@
 
     function normalizeNote(note, abbr, next, validLevelIds) {
       const details = String(note.details || note.text || note.summary || "").slice(0, 700);
+      const validVisitTypeIds = new Set((next.visitTypes || VISIT_TYPES).map(type => type.id));
       const visitTypes = Array.isArray(note.visitTypes)
-        ? [...new Set(note.visitTypes.filter(id => VISIT_TYPES.some(type => type.id === id)))]
+        ? [...new Set(note.visitTypes.filter(id => validVisitTypeIds.has(id)))]
         : [];
       return {
         id: String(note.id || uid()),
@@ -5350,6 +5652,8 @@
       setButtonLabel("#noteSmartConvertBtn", __WAND_AND_SPARKLES_INVERSE, "Auto Convert", "Smart convert note text");
       setButtonLabel("#levelDialogCloseBtn", ICON_GLOBAL_CLOSE__XMARK, "Close");
       setButtonLabel("#paletteCloseBtn", ICON_GLOBAL_CLOSE__XMARK, "Close");
+      setButtonLabelBoth("#tagDialogBackBtn", ICON_GLOBAL_BACK__CHEVRON_BACKWARD, "Back to Settings");
+      setButtonLabelBoth("#tagDialogCloseBtn", ICON_GLOBAL_CLOSE__XMARK, "Close");
       setButtonLabelBoth("#settingsCloseBtn", ICON_GLOBAL_CLOSE__XMARK, "Close");
       syncConfirmButtons();
       setButtonLabelBoth("#lightModeBtn", ICON_SETTINGS_THEME__SUN_MAX_FILL, "Light");
@@ -5361,6 +5665,7 @@
       setButtonLabelBoth("#hintsOffBtn", ICON_SETTINGS_HINT_OFF__LIGHTBULB, "Off", "Hints off");
       setButtonLabelBoth("#cycleModeBtn", ICON_SETTINGS_MAP_CYCLE__ARROW_TRIANGLEHEAD_2_CLOCKWISE, "Cycle", "Tap to cycle");
       setButtonLabelBoth("#selectModeBtn", ICON_SETTINGS_MAP_SELECT__SCOPE, "Select", "Tap to select");
+      setButtonLabelBoth("#visitTagSettingsBtn", __CIRCLE_CIRCLE, "Choose Tags");
       setExportBtnLabel("#exportJsonBtn", ICON_SETTINGS_EXPORT_JSON__CURLYBRACES, "JSON", ".json");
       setExportBtnLabel("#exportMarkdownBtn", ICON_SETTINGS_EXPORT_MARKDOWN__RICHTEXT_PAGE, "Markdown", ".md");
       setExportBtnLabel("#exportRichTextBtn", ICON_SETTINGS_EXPORT_RICHTEXT__CHARACTER_TEXT_JUSTIFY, "Rich Text", ".rtf");
@@ -5596,12 +5901,18 @@
         flagged: __FLAG_CIRCLE,
         park: __TREE_CIRCLE,
         work: __BUILDING_2_CROP_CIRCLE,
-        friend: __PERSON_CIRCLE
-      }[id]) || "";
+        friend: __PERSON_CIRCLE,
+        play: __BICYCLE_CIRCLE,
+        hiking: __FIGURE_HIKING_CIRCLE,
+        airport: __AIRPLANE_CIRCLE,
+        boating: __SAILBOAT_CIRCLE,
+        beach: __ENVIRONMENTS_CIRCLE,
+        cruise: __SUITCASE_CIRCLE
+      }[id]) || __MAPPIN_CIRCLE;
     }
 
     function visitTypeMeta(id) {
-      return VISIT_TYPES.find(type => type.id === id) || null;
+      return allVisitTypes().find(type => type.id === id) || VISIT_TYPES.find(type => type.id === id) || null;
     }
 
     function noteVisitTypeLabels(note) {
@@ -5988,6 +6299,19 @@
       return icons ? `<span class="visit-icon-stack" aria-label="${escapeHtml(labels.map(type => type.label).join(", "))}">${icons}</span>` : "";
     }
 
+    function visitTypeIconStackForState(abbr) {
+      const ids = new Set();
+      filteredNotesFor(abbr).forEach(note => (note.visitTypes || []).forEach(id => ids.add(id)));
+      const labels = allVisitTypes().filter(type => ids.has(type.id));
+      const icons = labels.map(type => visitTypeIcon(type.id)).join("");
+      return icons ? `<span class="visit-icon-stack" aria-label="${escapeHtml(labels.map(type => type.label).join(", "))}">${icons}</span>` : "";
+    }
+
+    function visitTypeTextSuffix(note) {
+      const labels = noteVisitTypeLabels(note).map(type => type.label);
+      return labels.length ? ` [${labels.join(", ")}]` : "";
+    }
+
     function renderNoteFieldStack(note) {
       const lines = noteFieldLines(note, "", false);
       return lines.length
@@ -5997,7 +6321,7 @@
 
     function textOnlyNoteLine(note) {
       const parts = [formatTextOnlyDate(note.date), levelById(note.levelId)?.name || "No level", ...noteFieldValues(note)];
-      return `        - ${parts.filter(Boolean).join(" :: ")}`;
+      return `        - ${parts.filter(Boolean).join(" :: ")}${visitTypeTextSuffix(note)}`;
     }
 
     function formatTextOnlyDate(value) {
@@ -6019,7 +6343,7 @@
       if (notes.length === 1) {
         const note = notes[0];
         const noteParts = [formatTextOnlyDate(note.date), noteFieldValues(note).join(", ")].filter(Boolean);
-        return `- [${checked}] ${STATE_NAMES[abbr]} (${abbr})${suffix}${noteParts.length ? ` :: ${noteParts.join(" :: ")}` : ""}`;
+        return `- [${checked}] ${STATE_NAMES[abbr]} (${abbr})${suffix}${noteParts.length ? ` :: ${noteParts.join(" :: ")}` : ""}${visitTypeTextSuffix(note)}`;
       }
       const lines = [`- [${checked}] ${STATE_NAMES[abbr]} (${abbr})${suffix}`];
       notes.forEach(note => lines.push(textOnlyNoteLine(note)));
@@ -6074,6 +6398,7 @@
           <span>${escapeHtml(names)}</span>
           <span>${escapeHtml(dates)}</span>
           <span class="compact-note-text">${escapeHtml(text)}</span>
+          <span class="compact-state-icons">${visitTypeIconStackForState(abbr)}</span>
         </button>
       `;
     }
@@ -6087,7 +6412,8 @@
         </button>
         ${notes.map(note => `
           <button class="compact-note-row is-expanded is-expanded-child" type="button" data-note-state="${abbr}" data-edit-note="${note.id}">
-            <span><span class="compact-note-icon">${visitTypeIconStack(note)}</span>${escapeHtml(formatDateDisplay(note.date))}</span>
+            <span class="compact-note-icon">${visitTypeIconStack(note)}</span>
+            <span>${escapeHtml(formatDateDisplay(note.date))}</span>
             <span>${escapeHtml(levelById(note.levelId)?.name || "No level")}</span>
             <span class="compact-note-text">${escapeHtml(noteSummary(note))}</span>
             <span></span>
@@ -6321,12 +6647,12 @@
 
     function renderVisitTypeChips(selectedIds = []) {
       const selected = new Set(selectedIds);
-      $("#visitTypeRow").innerHTML = VISIT_TYPES.map(type => `
+      $("#visitTypeRow").innerHTML = activeVisitTypes().map(type => `
         <label class="visit-type-chip" role="checkbox" tabindex="0" aria-checked="${selected.has(type.id)}" title="${escapeHtml(type.label)} (${type.shortcut.toUpperCase()})">
           <input type="checkbox" name="visitType" value="${type.id}" ${selected.has(type.id) ? "checked" : ""}>
           <span>${visitTypeIcon(type.id)}</span><span>${escapeHtml(type.label)}</span><span class="visit-type-key">${escapeHtml(type.shortcut)}</span>
         </label>
-      `).join("");
+      `).join("") || `<div class="empty">No note tags enabled. Choose tags in Settings.</div>`;
       bindVisitTypeChips();
     }
 
@@ -6346,8 +6672,11 @@
     }
 
     function setNoteVisitTypes(typeIds = []) {
-      const valid = new Set(VISIT_TYPES.map(type => type.id));
-      renderVisitTypeChips([...new Set(typeIds)].filter(id => valid.has(id)));
+      const active = new Set(activeVisitTypes().map(type => type.id));
+      const known = new Set(allVisitTypes().map(type => type.id));
+      const unique = [...new Set(typeIds)].filter(id => known.has(id));
+      $("#noteForm").dataset.hiddenVisitTypes = JSON.stringify(unique.filter(id => !active.has(id)));
+      renderVisitTypeChips(unique.filter(id => active.has(id)));
     }
 
     function toggleNoteVisitType(typeId) {
@@ -6360,7 +6689,154 @@
     }
 
     function selectedNoteVisitTypes() {
-      return $$("input[name='visitType']:checked", $("#noteForm")).map(input => input.value);
+      const hidden = JSON.parse($("#noteForm").dataset.hiddenVisitTypes || "[]");
+      return [...new Set([...hidden, ...$$("input[name='visitType']:checked", $("#noteForm")).map(input => input.value)])];
+    }
+
+    function openVisitTagSettings() {
+      renderVisitTagSettings();
+      closeOpenDialogs("tagDialog");
+      $("#tagDialog").showModal();
+      $("#tagSearchInput")?.focus();
+    }
+
+    function backToSettingsFromTags() {
+      if ($("#tagDialog").open) $("#tagDialog").close();
+      switchTab("settings");
+      if (!$("#settingsDialog").open) $("#settingsDialog").showModal();
+    }
+
+    function renderVisitTagSettings() {
+      const query = visitTagSearchQuery.trim().toLowerCase();
+      const matchesQuery = type => !query
+        || type.id.toLowerCase().includes(query)
+        || String(type.label || "").toLowerCase().includes(query)
+        || String(type.icon || "").toLowerCase().includes(query);
+      const active = allVisitTypes().filter(type => type.enabled !== false);
+      const inactive = allVisitTypes().filter(type => type.enabled === false && matchesQuery(type));
+      const tagRow = (type, enabled) => `
+        <article class="tag-editor-row ${enabled ? "is-enabled" : ""}" role="button" tabindex="0"
+          aria-pressed="${enabled}" draggable="${enabled ? "true" : "false"}" data-tag-id="${type.id}" data-tag-row="${type.id}">
+          <span class="tag-drag-handle" aria-hidden="true">${enabled ? "⋮⋮" : "+"}</span>
+          <span class="tag-render-preview">${visitTypeIcon(type.id)}</span>
+          <div class="tag-editor-fields">
+            <label>Name
+              <input data-tag-label="${type.id}" value="${escapeHtml(type.label)}" maxlength="24">
+            </label>
+            <label>Hotkey
+              <input class="tag-shortcut-input" data-tag-shortcut="${type.id}" value="${escapeHtml(type.shortcut || "")}" maxlength="1" inputmode="latin" placeholder="None">
+            </label>
+          </div>
+          <button class="tag-state-pill" type="button" data-tag-toggle-button="${type.id}">${enabled ? "On" : "Add"}</button>
+        </article>
+      `;
+      $("#tagSearchInput").value = visitTagSearchQuery;
+      $("#tagEditorList").innerHTML = `
+        <section class="tag-editor-section">
+          <h3><span>Selected Tags</span><small>${active.length}</small></h3>
+          ${active.length ? active.map(type => tagRow(type, true)).join("") : `<div class="empty">No tags selected.</div>`}
+        </section>
+        <section class="tag-editor-section">
+          <h3><span>More Icons</span><small>${inactive.length}</small></h3>
+          ${inactive.length ? inactive.map(type => tagRow(type, false)).join("") : `<div class="empty">No hidden icons match that search.</div>`}
+        </section>
+      `;
+      bindVisitTagSettings();
+      enhanceHints();
+    }
+
+    function updateVisitTag(id, patch) {
+      const index = state.visitTypes.findIndex(type => type.id === id);
+      if (index < 0) return;
+      state.visitTypes[index] = { ...state.visitTypes[index], ...patch };
+      save();
+      render();
+      if ($("#tagDialog").open) renderVisitTagSettings();
+    }
+
+    function bindVisitTagSettings() {
+      const searchInput = $("#tagSearchInput");
+      searchInput?.addEventListener("input", () => {
+        const cursor = searchInput.selectionStart || searchInput.value.length;
+        visitTagSearchQuery = searchInput.value;
+        renderVisitTagSettings();
+        const nextSearch = $("#tagSearchInput");
+        nextSearch?.focus();
+        nextSearch?.setSelectionRange(cursor, cursor);
+      });
+      $$("[data-tag-label]").forEach(input => {
+        input.addEventListener("click", event => event.stopPropagation());
+        input.addEventListener("keydown", event => event.stopPropagation());
+        input.addEventListener("change", () => {
+          const type = visitTypeMeta(input.dataset.tagLabel);
+          const fallback = VISIT_TYPES.find(item => item.id === input.dataset.tagLabel)?.label || "Tag";
+          updateVisitTag(input.dataset.tagLabel, { label: input.value.trim().slice(0, 24) || type?.label || fallback });
+        });
+      });
+      $$("[data-tag-shortcut]").forEach(input => {
+        input.addEventListener("click", event => event.stopPropagation());
+        input.addEventListener("keydown", event => event.stopPropagation());
+        input.addEventListener("input", () => {
+          input.value = normalizeVisitTypeShortcut(input.value).toUpperCase();
+        });
+        input.addEventListener("change", () => {
+          const current = visitTypeMeta(input.dataset.tagShortcut);
+          updateVisitTag(input.dataset.tagShortcut, { shortcut: normalizeVisitTypeShortcut(input.value) || current?.shortcut || "" });
+        });
+      });
+      $$("[data-tag-toggle-button]").forEach(button => {
+        button.addEventListener("click", event => {
+          event.stopPropagation();
+          const current = visitTypeMeta(button.dataset.tagToggleButton);
+          updateVisitTag(button.dataset.tagToggleButton, { enabled: current?.enabled === false });
+        });
+      });
+      $$("[data-tag-row]").forEach(row => {
+        const toggle = event => {
+          if (event.target.closest("input, button")) return;
+          updateVisitTag(row.dataset.tagRow, { enabled: row.getAttribute("aria-pressed") !== "true" });
+        };
+        row.addEventListener("click", toggle);
+        row.addEventListener("keydown", event => {
+          if (event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
+          toggle(event);
+        });
+      });
+      $$(".tag-editor-row.is-enabled").forEach(row => {
+        row.addEventListener("dragstart", event => {
+          draggingVisitTagId = row.dataset.tagId;
+          row.classList.add("is-dragging");
+          event.dataTransfer.effectAllowed = "move";
+          event.dataTransfer.setData("text/plain", draggingVisitTagId);
+        });
+        row.addEventListener("dragend", () => {
+          draggingVisitTagId = "";
+          row.classList.remove("is-dragging");
+        });
+        row.addEventListener("dragover", event => {
+          if (!draggingVisitTagId || draggingVisitTagId === row.dataset.tagId) return;
+          event.preventDefault();
+          event.dataTransfer.dropEffect = "move";
+        });
+        row.addEventListener("drop", event => {
+          event.preventDefault();
+          moveVisitTag(draggingVisitTagId || event.dataTransfer.getData("text/plain"), row.dataset.tagId);
+        });
+      });
+    }
+
+    function moveVisitTag(fromId, toId) {
+      if (!fromId || !toId || fromId === toId) return;
+      const from = state.visitTypes.findIndex(type => type.id === fromId);
+      const to = state.visitTypes.findIndex(type => type.id === toId);
+      if (from < 0 || to < 0) return;
+      const [item] = state.visitTypes.splice(from, 1);
+      state.visitTypes.splice(to, 0, item);
+      draggingVisitTagId = "";
+      save();
+      render();
+      if ($("#tagDialog").open) renderVisitTagSettings();
     }
 
     function applySmartNoteConvert() {
@@ -6409,7 +6885,7 @@
         removeFromRemainder(dateCandidate);
         parsed = true;
       }
-      const matchedVisitTypes = VISIT_TYPES.filter(type => lower.includes(type.label.toLowerCase()));
+      const matchedVisitTypes = activeVisitTypes().filter(type => lower.includes(type.label.toLowerCase()));
       if (matchedVisitTypes.length) {
         setNoteVisitTypes([...new Set([...selectedNoteVisitTypes(), ...matchedVisitTypes.map(type => type.id)])]);
         matchedVisitTypes.forEach(type => removeFromRemainder(type.label));
@@ -6465,8 +6941,8 @@
       setNoteVisitTypes(note?.visitTypes || []);
       $("#noteText").value = note ? noteDetails(note) : "";
       $("#noteDialog").showModal();
-      $("#noteYear").focus();
-      $("#noteYear").select();
+      $("#noteSmartConvert").focus();
+      $("#noteSmartConvert").select();
     }
 
     function saveNoteFromForm() {
@@ -7048,7 +7524,7 @@
         return;
       }
       if (isTypingTarget(event.target)) return;
-      const type = VISIT_TYPES.find(item => item.shortcut === shortcutKey(event));
+      const type = activeVisitTypes().find(item => item.shortcut === shortcutKey(event));
       if (!type) return;
       event.preventDefault();
       toggleNoteVisitType(type.id);
@@ -7090,10 +7566,21 @@
           d: () => !$("#deleteNoteFromDialogBtn").classList.contains("hidden") && $("#deleteNoteFromDialogBtn").click(),
           w: applySmartNoteConvert
         };
-        VISIT_TYPES.forEach(type => noteActions[type.shortcut] = () => toggleNoteVisitType(type.id));
+        activeVisitTypes().forEach(type => noteActions[type.shortcut] = () => toggleNoteVisitType(type.id));
         if (!noteActions[key]) return;
         event.preventDefault();
         noteActions[key]();
+        return;
+      }
+      if ($("#tagDialog").open) {
+        if (key === "b") {
+          event.preventDefault();
+          backToSettingsFromTags();
+          return;
+        }
+        if (key !== "q" && key !== "x") return;
+        event.preventDefault();
+        $("#tagDialog").close();
         return;
       }
       if ($("#levelDialog").open) {
@@ -7129,7 +7616,7 @@
           l: () => updateSetting("theme", "light"),
           d: () => updateSetting("theme", "dark"),
           i: () => updateSetting("buttonStyle", "symbols"),
-          y: () => updateSetting("buttonStyle", "symbols"),
+          y: openVisitTagSettings,
           t: () => updateSetting("buttonStyle", "text"),
           b: () => updateSetting("buttonStyle", "both"),
           u: () => updateSetting("uiHints", true),
@@ -7407,6 +7894,8 @@
       $("#dateYmdBtn").addEventListener("click", () => updateSetting("dateOrder", "ymd"));
       $("#dateNumericBtn").addEventListener("click", () => updateSetting("dateStyle", "numeric"));
       $("#dateAlphaBtn").addEventListener("click", () => updateSetting("dateStyle", "alpha"));
+      $("#visitTagSettingsBtn").addEventListener("click", openVisitTagSettings);
+      $("#tagDialogBackBtn").addEventListener("click", backToSettingsFromTags);
       $("#resetAppBtn").addEventListener("click", () => {
         requestConfirm({
           title: "Reset App Data?",
