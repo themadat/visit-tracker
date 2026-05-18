@@ -1688,7 +1688,7 @@
 
     .notes-panel-head {
       gap: .5rem;
-      align-items: start;
+      align-items: center;
     }
 
     .notes-panel-head .notes-title-stack {
@@ -1930,7 +1930,7 @@
     }
 
     .compact-notes-states .compact-note-row {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr));
     }
 
     .compact-notes-notes .compact-note-row {
@@ -1966,6 +1966,16 @@
       height: 1.08em;
     }
 
+    .compact-note-row.is-expanded-parent>span:first-child {
+      padding-left: .24rem;
+    }
+
+    .compact-note-row.is-expanded-parent b {
+      display: inline-flex;
+      align-items: center;
+      gap: .48rem;
+    }
+
     .compact-note-row.is-expanded-child {
       grid-template-columns: minmax(4.1rem, .5fr) minmax(2.8rem, .34fr) minmax(0, 1.65fr) minmax(0, .12fr);
       width: calc(100% - .22rem);
@@ -1976,7 +1986,8 @@
     }
 
     .compact-note-row.is-expanded-child>span:first-child {
-      gap: .34rem;
+      padding-left: .18rem;
+      gap: .2rem;
     }
 
     .compact-note-icon {
@@ -2057,7 +2068,19 @@
       background: var(--surface-2);
       color: var(--text);
       font-weight: 850;
-      font-size: .93rem;
+      font-size: 1.35rem;
+    }
+
+    .notes-category-heading>span:first-child {
+      display: inline-flex;
+      align-items: center;
+      gap: .72rem;
+      min-width: 0;
+    }
+
+    .notes-category-heading>span:first-child .sf-symbol {
+      width: 1.12em;
+      height: 1.12em;
     }
 
     .notes-category-heading small {
@@ -2065,6 +2088,7 @@
       align-items: center;
       gap: .22rem;
       font-weight: 750;
+      font-size: .82rem;
     }
 
     .notes-text-only {
@@ -2786,7 +2810,7 @@
       }
 
       .compact-notes-states .compact-note-row {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr));
       }
 
       .compact-notes-notes .compact-note-row {
@@ -3900,7 +3924,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "2.1.0.1";
+    const APP_VERSION = "2.1.0.2";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -4096,6 +4120,18 @@
 
     const WISHLIST_SEEDS = [
       {
+        title: "Better Legend Layout",
+        ticketId: "WISH-027",
+        description: "Rework the Legend for a cleaner compact layout with edit controls hidden until needed, drag-and-drop priority ordering, and stats aligned on the right.",
+        priority: "P2",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 24,
+        prompt: "Improve the Legend layout with hidden edit controls, drag-and-drop level priority ordering, and right-aligned stats. Preserve existing level data and keyboard accessibility.",
+        category: "UI"
+      },
+      {
         title: "Add Text Size Slider",
         ticketId: "WISH-026",
         description: "Add a Settings control for app text size so users can tune readability without breaking compact map and notes layouts. Scope includes local persistence, sensible min/max values, Help Center wording, and mobile checks.",
@@ -4241,6 +4277,22 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "2.1.0.2",
+        date: "2026-05-17",
+        title: "Notes Hierarchy Tuning",
+        summary: "A compact Notes layout pass for better header alignment, column balance, and category/location/note hierarchy.",
+        highlights: [
+          "Notes header content is vertically centered with the search bar.",
+          "Condensed rows now use 40/20/20/20 column spacing.",
+          "Category labels and icons are larger with more breathing room."
+        ],
+        updates: [
+          "Expanded location rows now nudge the icon/name inward and add a wider icon-to-name gap.",
+          "Expanded note rows now align the visit icon more evenly between the row edge and date.",
+          "Roadmap gained a future Legend layout item for hidden edit controls, drag-and-drop ordering, and right-aligned stats."
+        ]
+      },
       {
         version: "2.1.0.1",
         date: "2026-05-17",
