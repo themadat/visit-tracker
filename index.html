@@ -1692,13 +1692,13 @@
     }
 
     .notes-panel-head .notes-title-stack {
-      flex: 1 1 auto;
+      flex: 0 1 auto;
       min-width: 0;
     }
 
     .notes-panel-head .notes-search {
-      flex: 1 1 13rem;
-      max-width: 25rem;
+      flex: 1 1 18rem;
+      max-width: none;
     }
 
     .notes-controls {
@@ -1930,7 +1930,7 @@
     }
 
     .compact-notes-states .compact-note-row {
-      grid-template-columns: minmax(4.8rem, .8fr) minmax(3rem, .42fr) minmax(3.4rem, .46fr) minmax(0, 1.1fr);
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
     .compact-notes-notes .compact-note-row {
@@ -1955,14 +1955,15 @@
 
     .compact-note-row.is-expanded-parent {
       background: var(--surface-2);
-      font-size: .88rem;
-      font-weight: 850;
-      min-height: 38px;
+      font-size: .84rem;
+      font-weight: 820;
+      min-height: 34px;
+      color: var(--text);
     }
 
     .compact-note-row.is-expanded-parent .sf-symbol {
-      width: 1.22em;
-      height: 1.22em;
+      width: 1.08em;
+      height: 1.08em;
     }
 
     .compact-note-row.is-expanded-child {
@@ -1970,6 +1971,8 @@
       width: calc(100% - .22rem);
       margin-left: .22rem;
       border-style: dashed;
+      font-size: .74rem;
+      color: var(--muted);
     }
 
     .compact-note-row.is-expanded-child>span:first-child {
@@ -2041,6 +2044,9 @@
     }
 
     .notes-category-heading {
+      position: sticky;
+      top: 0;
+      z-index: 3;
       width: 100%;
       display: flex;
       align-items: center;
@@ -2051,9 +2057,13 @@
       background: var(--surface-2);
       color: var(--text);
       font-weight: 850;
+      font-size: .93rem;
     }
 
     .notes-category-heading small {
+      display: inline-flex;
+      align-items: center;
+      gap: .22rem;
       font-weight: 750;
     }
 
@@ -2070,7 +2080,7 @@
       overflow: auto;
       white-space: pre-wrap;
       user-select: text;
-      font: .76rem/1.36 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font: .76rem/1.36 "SF Pro Rounded", "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     .theme-row {
@@ -2776,7 +2786,7 @@
       }
 
       .compact-notes-states .compact-note-row {
-        grid-template-columns: minmax(4rem, .8fr) minmax(3.2rem, .58fr) minmax(3.8rem, .62fr) minmax(0, 1.25fr);
+        grid-template-columns: repeat(4, minmax(0, 1fr));
       }
 
       .compact-notes-notes .compact-note-row {
@@ -3890,7 +3900,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "2.0.0";
+    const APP_VERSION = "2.1.0.1";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -4086,6 +4096,18 @@
 
     const WISHLIST_SEEDS = [
       {
+        title: "Add Text Size Slider",
+        ticketId: "WISH-026",
+        description: "Add a Settings control for app text size so users can tune readability without breaking compact map and notes layouts. Scope includes local persistence, sensible min/max values, Help Center wording, and mobile checks.",
+        priority: "P2",
+        effort: "small",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 14,
+        prompt: "Add a persisted text-size slider in Settings. Apply it through CSS variables, keep compact layouts usable, and document the behavior in Help Center.",
+        category: "Accessibility"
+      },
+      {
         title: "Add Tip Jar",
         ticketId: "WISH-023",
         description: "Add an optional local tip-jar/support link area without adding trackers, payments SDKs, or external dependencies to the core app. Scope includes Settings or Help Center placement, graceful hiding when unused, and export-safe copy.",
@@ -4219,6 +4241,22 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "2.1.0.1",
+        date: "2026-05-17",
+        title: "Notes Polish Pass",
+        summary: "A focused 2.1 development build for tighter Notes search, sticky groups, clearer hierarchy, and cleaner Text Only output.",
+        highlights: [
+          "Notes search now stretches across the available header space.",
+          "Categorical group headers stick while scrolling and show the count before the chevron.",
+          "Expanded Notes now has clearer visual hierarchy between category, location, and note rows."
+        ],
+        updates: [
+          "Condensed location rows now use equal-width columns that stretch across the panel.",
+          "Text Only output keeps single-note locations on one line, uses a deeper indent for multi-note details, and switches to SF Pro Rounded.",
+          "Roadmap gained a future Settings text size slider item."
+        ]
+      },
       {
         version: "2.0.0",
         date: "2026-05-16",
@@ -5812,7 +5850,7 @@
 
     function textOnlyNoteLine(note) {
       const parts = [formatTextOnlyDate(note.date), levelById(note.levelId)?.name || "No level", ...noteFieldValues(note)];
-      return `    - ${parts.filter(Boolean).join(" :: ")}`;
+      return `        - ${parts.filter(Boolean).join(" :: ")}`;
     }
 
     function formatTextOnlyDate(value) {
@@ -5831,6 +5869,11 @@
       const checked = stateCountsTowardStats(abbr) ? "X" : " ";
       const levelText = names.join(", ");
       const suffix = levelText ? ` :: ${type.label} :: ${levelText}` : "";
+      if (notes.length === 1) {
+        const note = notes[0];
+        const noteParts = [formatTextOnlyDate(note.date), noteFieldValues(note).join(", ")].filter(Boolean);
+        return `- [${checked}] ${STATE_NAMES[abbr]} (${abbr})${suffix}${noteParts.length ? ` :: ${noteParts.join(" :: ")}` : ""}`;
+      }
       const lines = [`- [${checked}] ${STATE_NAMES[abbr]} (${abbr})${suffix}`];
       notes.forEach(note => lines.push(textOnlyNoteLine(note)));
       return lines.join("\n");
@@ -5858,7 +5901,7 @@
         <section class="notes-category-group">
           <button class="notes-category-heading" type="button" data-toggle-note-category="${group.type}" aria-expanded="${!collapsed}">
             <span>${locationTypeIcon(group.type)} ${escapeHtml(meta.label)}</span>
-            <small>${collapsed ? "▸" : "▾"} ${group.abbrs.length}</small>
+            <small><span>${group.abbrs.length}</span><span aria-hidden="true">${collapsed ? "▸" : "▾"}</span></small>
           </button>
           ${collapsed ? "" : renderItems(group.abbrs)}
         </section>
