@@ -8,7 +8,7 @@ US State Visit Map is a single-file, offline HTML/CSS/JS app for tracking visits
 
 Current anchors:
 
-- `APP_VERSION`: `2.2.0.1`
+- `APP_VERSION`: `2.2.0.3`
 - storage key: `usStateVisitMap.v1`
 - roadmap/wishlist is developer-facing seed data only; do not persist user roadmap data in backups.
 
@@ -67,13 +67,14 @@ Change state, call `save()` when persistence is needed, then `render()` or the n
   appVersion, mapName,
   settings: { theme, tapBehavior, buttonStyle, uiHints, dateOrder, dateStyle, mapLabels },
   levels: [{ id, name, definition, color, countsTowardStats }],
+  visitTypes: [{ id, label, icon, shortcut, enabled }],
   states: { CA: ["visited"] },
   notes: { CA: [{ id, date, levelId, where, what, who, details, text, visitTypes }] },
   territoryDefaultsSeeded
 }
 ```
 
-Invariants: level order controls map color; `levels` max is 5; state level IDs must exist; dates normalize to `YYYY`, `YYYY-MM`, or `YYYY-MM-DD`; `visitTypes` may contain multiple known ids; opt-out levels do not count toward completion; territories seed once.
+Invariants: level order controls map color; `levels` max is 5; state level IDs must exist; dates normalize to `YYYY`, `YYYY-MM`, or `YYYY-MM-DD`; `visitTypes` may contain multiple known ids and `state.visitTypes` stores the configurable label/order/shortcut/enabled setup; new default note tags enable First, Favorite, Memorable, Flagged, and Home while preserving saved tag customizations; opt-out levels do not count toward completion; territories seed once.
 
 ## Product Surface
 
