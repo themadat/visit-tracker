@@ -4548,7 +4548,7 @@
             in Obsidian, Notion, or any Markdown viewer. Rich Text (.rtf) opens in Word or Pages. Simple Text (.txt)
             pastes anywhere.</p>
           <p><b>Shortcut overlays:</b> Hold Shift + Control + Option to show temporary hint badges on actionable
-            controls.</p>
+            controls. Developer Tools lists hidden commands, including H H to restore dismissed hints while testing.</p>
         </section>
         <section class="help-section">
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ</h3>
@@ -4715,7 +4715,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "2.3.0.8";
+    const APP_VERSION = "2.2.1";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -5846,104 +5846,22 @@
     ];
     const CHANGELOG = [
       {
-        version: "2.3.0.8",
+        version: "2.2.1",
         date: "2026-05-19",
-        title: "Travel Log Candidate",
-        summary: "A 2.3 development build that refines the rename roadmap around a visual travel journal direction.",
+        title: "Map Cards Tune-Up",
+        summary: "A patch release for cleaner map/card controls, tighter hints, safer testing shortcuts, and the next naming direction.",
         highlights: [
-          "Promoted Travel Log as the top rename candidate."
+          "Map, Legend, and Notes visibility controls now live together in the top app bar, including a new Map visibility toggle.",
+          "Title-bar tips are tighter and separate panel/edit guidance from the resize hint.",
+          "Map label and fit/scroll guidance now sits beside the map controls instead of taking an extra row.",
+          "The desktop map/cards divider track is tighter and hidden whenever the map is not visible.",
+          "Developer Tools now documents the hidden double-H shortcut for resetting dismissed hints while testing."
         ],
         updates: [
-          "Reframed the rename item around seeing where someone has been, what is left to visit, and keeping notes as supporting memories."
-        ]
-      },
-      {
-        version: "2.3.0.7",
-        date: "2026-05-19",
-        title: "Header Fit And Map Hints",
-        summary: "A 2.3 development build that tightens the title bar and moves map hints next to the controls they explain.",
-        highlights: [
-          "Reduced title-bar vertical padding while keeping the current concise title hint copy.",
-          "Vertically centered the What's New banner in the title bar.",
-          "Moved the map label/render hint to the left of the map toggles."
-        ],
-        updates: [
-          "Map-card guidance now sits in the control row instead of adding extra height below it."
-        ]
-      },
-      {
-        version: "2.3.0.6",
-        date: "2026-05-19",
-        title: "Developer Shortcut Notes",
-        summary: "A 2.3 development build that documents the hidden hint reset shortcut for testing.",
-        highlights: [
-          "Added the double-H hint reset shortcut to Developer Tools under Hidden Commands."
-        ],
-        updates: [
-          "The shortcut remains global and direct: press H twice outside text entry to restore dismissed hints."
-        ]
-      },
-      {
-        version: "2.3.0.5",
-        date: "2026-05-19",
-        title: "Title Bar Tips",
-        summary: "A 2.3 development build that moves panel guidance into the title bar.",
-        highlights: [
-          "Moved the Map, Legend, and Notes visibility hint into the app title bar above the resize tip.",
-          "Grouped the panel hint with a short reminder that Edit renames the app header."
-        ],
-        updates: [
-          "The map-card hint now stays focused on labels and screenshot-ready map rendering."
-        ]
-      },
-      {
-        version: "2.3.0.4",
-        date: "2026-05-19",
-        title: "Hint Reset Shortcut",
-        summary: "A 2.3 development build that adds a faster way to restore dismissed UI hints while testing.",
-        highlights: [
-          "Added a hidden double-H keyboard shortcut that turns Hints off and back on, clearing dismissed hints in one move."
-        ],
-        updates: [
-          "The shortcut works outside text entry and keeps the visible Settings controls unchanged."
-        ]
-      },
-      {
-        version: "2.3.0.3",
-        date: "2026-05-19",
-        title: "Header Panel Controls",
-        summary: "A 2.3 development build that moves panel visibility into the app header.",
-        highlights: [
-          "Map, Legend, and Notes visibility controls now live in the top app bar between Rename and Settings.",
-          "Added a Map visibility toggle, kept the map on by default, and preserved the existing Legend and Notes behavior."
-        ],
-        updates: [
-          "The main layout now avoids blank states by keeping at least one panel visible and hides the resize divider when the map is not shown."
-        ]
-      },
-      {
-        version: "2.3.0.2",
-        date: "2026-05-19",
-        title: "Rename Roadmap",
-        summary: "A 2.3 development build that adds app renaming to the developer roadmap.",
-        highlights: [
-          "Added a rename-app roadmap item with candidate names: PlaceMark, Waypoint Journal, Travel Ledger, MapLog, Memory Map, Placebook, and Map Notes."
-        ],
-        updates: [
-          "The rename scope includes visible app name, docs, exports, install metadata, and release notes while preserving existing user data."
-        ]
-      },
-      {
-        version: "2.3.0.1",
-        date: "2026-05-19",
-        title: "Divider And Icon Polish",
-        summary: "A 2.3 development build that tightens the map divider gap and gives tall control icons more room.",
-        highlights: [
-          "The desktop map/cards resize handle now sits in a tighter track with less empty space around it.",
-          "Tall Notes and note-editor symbols are flex-centered with safer SVG sizing so their lower edges do not get clipped."
-        ],
-        updates: [
-          "Targets compact controls including Text Only, Copy, and the note editor Tags/settings button without changing the broader icon system."
+          "The main layout now avoids blank states by keeping at least one panel visible.",
+          "Tall Notes and note-editor symbols have safer centering so their lower edges do not get clipped.",
+          "The rename roadmap now treats Travel Log as the top candidate for the app's visual travel journal direction.",
+          "Help Center and dismissible hints were refreshed for the current header, map-control, and hidden shortcut behavior."
         ]
       },
       {
