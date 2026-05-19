@@ -811,6 +811,10 @@
       align-content: start;
     }
 
+    #notesPanel {
+      --notes-category-sticky-top: 0px;
+    }
+
     .notes-title-stack {
       display: grid;
       gap: .12rem;
@@ -1993,7 +1997,25 @@
       color: var(--muted);
       font-size: .72rem;
       line-height: 1.28;
-      padding: .16rem 0 .18rem;
+      padding: .18rem 0 .22rem;
+      margin-bottom: .12rem;
+    }
+
+    #notesPanel[data-note-hints="hidden"] {
+      gap: .42rem;
+    }
+
+    #notesPanel[data-note-hints="hidden"] .notes-icon-filters {
+      margin-bottom: .02rem;
+    }
+
+    #notesPanel[data-note-hints="hidden"] .notes-filter-summary {
+      padding: .02rem 0 .04rem;
+      margin-bottom: .02rem;
+    }
+
+    #notesPanel[data-note-hints="hidden"] #notesPanelContent {
+      margin-top: -.08rem;
     }
 
     .notes-copy-btn.is-copied {
@@ -2565,7 +2587,7 @@
 
     .notes-category-heading {
       position: sticky;
-      top: 0;
+      top: var(--notes-category-sticky-top, 0px);
       z-index: 3;
       width: 100%;
       display: flex;
@@ -2772,6 +2794,20 @@
     .developer-json-line {
       padding: .35rem 0;
       border-top: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+    }
+
+    .developer-json-line.is-inline {
+      display: block;
+      padding: 0;
+      border-top: 0;
+      white-space: nowrap;
+      overflow-x: auto;
+    }
+
+    .developer-json-line.is-inline code {
+      display: block;
+      color: var(--text);
+      font: inherit;
     }
 
     .developer-json-line:first-of-type {
@@ -2999,7 +3035,7 @@
 
       #notesPanel {
         align-content: stretch;
-        grid-template-rows: auto auto auto auto auto minmax(0, 1fr);
+        grid-template-rows: auto auto auto auto auto auto minmax(0, 1fr);
         height: 100%;
       }
 
@@ -3971,8 +4007,8 @@
               </div>
             </div>
             <small data-hint data-hint-key="legend-help">
-              Top level color wins for locations with multiple levels. Removing levels move locations down.<br />
-              Auto Colors apply featured color palettes | Show/Hide level auto suggestions | Or make your own.
+              Top level color applies in multiple level cases. Removing levels demote locations.<br />
+              Auto Colors for featured palettes | Show/Hide auto-suggestions | Make your own.
             </small>
             <div id="legendList" class="legend-list"></div>
             <div id="builtinLevels" class="chips" style="margin-top: .75rem;"></div>
@@ -4575,7 +4611,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "2.2.0.8";
+    const APP_VERSION = "2.2.0.11";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -5002,6 +5038,45 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "2.2.0.11",
+        date: "2026-05-18",
+        title: "Notes Scroll Repair",
+        summary: "A 2.2 development build that fixes the desktop Notes scroll track and restores category headers to the top of the list.",
+        highlights: [
+          "Desktop Notes now gives the list its own real scroll row, preventing hint/filter content from cutting into the list.",
+          "Grouped Notes headers now stick to the top of the Notes list instead of stopping early."
+        ],
+        updates: [
+          "Developer JSON parent key/value rows were tightened further to remove extra visual spacing."
+        ]
+      },
+      {
+        version: "2.2.0.10",
+        date: "2026-05-18",
+        title: "Notes Layout Repair",
+        summary: "A 2.2 development build that fixes the Notes summary/header overlap and tightens Developer JSON rows.",
+        highlights: [
+          "The permanent Notes filter summary now stays visible without pushing grouped headings below the list content.",
+          "Notes list spacing stays roomier while hints are visible and tightens again after those hints are dismissed."
+        ],
+        updates: [
+          "Developer JSON parent-level key/value rows now render as compact single-line entries without extra vertical breaks."
+        ]
+      },
+      {
+        version: "2.2.0.9",
+        date: "2026-05-18",
+        title: "Notes Spacing Polish",
+        summary: "A 2.2 development build that keeps Notes filter context visible and makes Developer JSON easier to scan.",
+        highlights: [
+          "Notes category headings now respect the visible hint and filter-summary area so the permanent filter summary stays readable.",
+          "When Notes hints are dismissed, the icon filter, summary, and list tighten back up for denser scanning."
+        ],
+        updates: [
+          "Developer JSON now keeps simple parent-level properties on one line while large collections remain collapsed by default."
+        ]
+      },
       {
         version: "2.2.0.8",
         date: "2026-05-18",
@@ -5848,7 +5923,9 @@
     }
 
     function exportStateObject() {
-      return pruneObsoleteBackupKeys(clone(state));
+      const output = pruneObsoleteBackupKeys(clone(state));
+      output.appVersion = APP_VERSION;
+      return output;
     }
 
     function releaseVersionParts(version) {
@@ -6307,11 +6384,24 @@
       main.style.setProperty("--map-column-width", `${Math.floor(mapColumn)}px`);
     }
 
+    function syncNotesPanelLayout() {
+      const panel = $("#notesPanel");
+      const content = $("#notesPanelContent");
+      if (!panel || !content) return;
+      const hintVisible = state.settings.uiHints && $$("[data-hint]", panel).some(hint => {
+        const style = getComputedStyle(hint);
+        return style.display !== "none" && style.visibility !== "hidden" && !hint.classList.contains("hidden") && !hint.classList.contains("hint-dismissed");
+      });
+      panel.dataset.noteHints = hintVisible ? "visible" : "hidden";
+      panel.style.setProperty("--notes-category-sticky-top", "0px");
+    }
+
     function scheduleMainLayoutSync() {
       if (layoutSyncFrame) cancelAnimationFrame(layoutSyncFrame);
       layoutSyncFrame = requestAnimationFrame(() => {
         layoutSyncFrame = 0;
         syncMainLayout();
+        syncNotesPanelLayout();
       });
     }
 
@@ -6673,14 +6763,14 @@
         : [...noteVisitTypeFilters].map(id => id === NOTE_FILTER_NO_ICON ? "No icon" : visitTypeMeta(id)?.label).filter(Boolean);
       const parts = [
         search ? `"${search}"` : "",
-        levels.length ? `${levels.join(", ")}` : "All levels",
-        icons.length ? `${icons.join(", ")}` : "All icons",
+        levels.length ? `${levels.join(", ")}` : "All Levels",
+        icons.length ? `${icons.join(", ")}` : "All Icons",
         `${notesViewMode === "compact" ? "Condensed" : notesViewMode === "text" ? "Text Only" : "Expanded"}`,
         notesSortMode === "alpha" ? "Alphabetical" : "Chronological",
         notesCategoricalMode ? "Grouped" : "Ungrouped",
         notesHideExcludedOnly ? "Excluded Hidden" : "Excluded Visible"
       ].filter(Boolean);;
-      return `Showing ${markedCount} Location${markedCount === 1 ? "" : "s"} [` + parts.join(" :: ") +']';
+      return `${markedCount} Location${markedCount === 1 ? "" : "s"} [` + parts.join(" :: ") +']';
     }
 
     function renderNotesFilterSummary(markedCount = 0) {
@@ -8084,7 +8174,10 @@
           if (collapsed.has(key)) {
             return `<details><summary>${label}: <small>${escapeHtml(jsonSummary(value))}</small></summary><pre>${escapeHtml(json)}</pre></details>`;
           }
-          return `<div class="developer-json-line"><b>${label}:</b><pre>${escapeHtml(json)}</pre></div>`;
+          if (!value || typeof value !== "object") {
+            return `<div class="developer-json-line is-inline"><code><b>${label}:</b> ${escapeHtml(`${JSON.stringify(value)}${comma}`)}</code></div>`;
+          }
+          return `<details class="developer-json-line" open><summary>${label}: <small>${escapeHtml(jsonSummary(value))}</small></summary><pre>${escapeHtml(json)}</pre></details>`;
         }),
         `<div>}</div>`
       ].join("");
