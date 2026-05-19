@@ -4715,7 +4715,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "2.3.0.7";
+    const APP_VERSION = "2.3.0.8";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -5654,13 +5654,13 @@
       {
         title: "Rename App",
         ticketId: "WISH-033",
-        description: "Evaluate a broader app name that fits the current map, notes, tags, exports, and future globe/parks/location-planning roadmap. Current favorites: PlaceMark, Waypoint Journal, Travel Ledger, MapLog, Memory Map, Placebook, and Map Notes.",
+        description: "Evaluate a broader app name that fits a personal visual travel journal centered on seeing where someone has been and what is left to visit. Top choice: Travel Log. Other candidates: PlaceMark, Waypoint Journal, Travel Ledger, MapLog, Memory Map, Placebook, and Map Notes.",
         priority: "P2",
         effort: "medium",
         targetKind: "major",
         targetVersion: "3.0.0",
         tokenCostPct: 18,
-        prompt: "Explore and implement an app rename. Compare candidates PlaceMark, Waypoint Journal, Travel Ledger, MapLog, Memory Map, Placebook, and Map Notes against current features and future roadmap. Update title, visible app name, docs, exports, install metadata, and release notes without changing user data.",
+        prompt: "Explore and implement an app rename. Treat Travel Log as the top candidate, then compare PlaceMark, Waypoint Journal, Travel Ledger, MapLog, Memory Map, Placebook, and Map Notes against the app's visual travel journal direction, current features, and future roadmap. Update title, visible app name, docs, exports, install metadata, and release notes without changing user data.",
         category: "Branding"
       },
       {
@@ -5845,6 +5845,18 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "2.3.0.8",
+        date: "2026-05-19",
+        title: "Travel Log Candidate",
+        summary: "A 2.3 development build that refines the rename roadmap around a visual travel journal direction.",
+        highlights: [
+          "Promoted Travel Log as the top rename candidate."
+        ],
+        updates: [
+          "Reframed the rename item around seeing where someone has been, what is left to visit, and keeping notes as supporting memories."
+        ]
+      },
       {
         version: "2.3.0.7",
         date: "2026-05-19",
