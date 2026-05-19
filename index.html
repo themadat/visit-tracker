@@ -469,8 +469,8 @@
       margin: 0 auto;
       padding: clamp(.75rem, 1.6vw, 1.25rem);
       display: grid;
-      grid-template-columns: minmax(0, var(--map-column-width, 2fr)) 14px minmax(320px, 1fr);
-      gap: .45rem;
+      grid-template-columns: minmax(0, var(--map-column-width, 2fr)) 10px minmax(320px, 1fr);
+      gap: .28rem;
       align-items: stretch;
       min-height: 0;
     }
@@ -482,8 +482,8 @@
     .main-resize-handle {
       position: relative;
       align-self: stretch;
-      width: 14px;
-      min-width: 14px;
+      width: 10px;
+      min-width: 10px;
       min-height: 120px;
       padding: 0;
       border: 0;
@@ -1875,9 +1875,14 @@
     }
 
     .notes-controls button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       white-space: nowrap;
       min-height: var(--notes-control-size);
       padding: .34rem .45rem;
+      line-height: 1;
+      overflow: visible;
     }
 
     .notes-controls .segmented button {
@@ -1901,6 +1906,27 @@
       aspect-ratio: 1;
       padding: 0;
       justify-content: center;
+    }
+
+    .notes-controls button>.sf-symbol,
+    .notes-controls button .btn-symbol,
+    .notes-controls button .btn-symbol>.sf-symbol,
+    .smart-convert-row button .btn-symbol,
+    .smart-convert-row button .btn-symbol>.sf-symbol,
+    .smart-convert-row button>.sf-symbol {
+      display: block;
+      width: 1.18em;
+      height: 1.18em;
+      margin-block: -.03em;
+      vertical-align: middle;
+    }
+
+    .notes-controls button .btn-symbol,
+    .smart-convert-row button .btn-symbol {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
     }
 
     .notes-category-toggle[aria-pressed="true"] {
@@ -2115,7 +2141,12 @@
     }
 
     .smart-convert-row button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       min-height: 38px;
+      line-height: 1;
+      overflow: visible;
     }
 
     .note-inline-hints {
@@ -4621,7 +4652,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "2.2.0";
+    const APP_VERSION = "2.3.0.1";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -5658,7 +5689,7 @@
         title: "Choose Condensed Notes Date Summary",
         ticketId: "WISH-024",
         description: "Add a user setting for how Condensed Notes chooses the date shown on parent location rows. Options should include single date, earliest, latest, and highest-level-based behavior.",
-        priority: "P2",
+        priority: "P3",
         effort: "small",
         targetKind: "minor",
         targetVersion: "",
@@ -5739,18 +5770,6 @@
         category: "UI"
       },
       {
-        title: "Give Settings Close Button More Room",
-        ticketId: "WISH-020",
-        description: "Polish the Settings close button spacing so the icon and label feel aligned with other dialog close controls. Scope includes header spacing, touch target, icon/text/both modes, and mobile width checks.",
-        priority: "P3",
-        effort: "small",
-        targetKind: "patch",
-        targetVersion: "",
-        tokenCostPct: 7,
-        prompt: "Polish Settings close button spacing. Match other dialog close controls across icon/text/both modes and mobile widths.",
-        category: "UI"
-      },
-      {
         title: "Optimize iPhone UI",
         ticketId: "WISH-011",
         description: "Tune the app for iPhone-sized screens. Scope includes map sizing, tabs, controls, dialogs, touch targets, safe areas, and avoiding cramped or clipped text.",
@@ -5764,6 +5783,19 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "2.3.0.1",
+        date: "2026-05-19",
+        title: "Divider And Icon Polish",
+        summary: "A 2.3 development build that tightens the map divider gap and gives tall control icons more room.",
+        highlights: [
+          "The desktop map/cards resize handle now sits in a tighter track with less empty space around it.",
+          "Tall Notes and note-editor symbols are flex-centered with safer SVG sizing so their lower edges do not get clipped."
+        ],
+        updates: [
+          "Targets compact controls including Text Only, Copy, and the note editor Tags/settings button without changing the broader icon system."
+        ]
+      },
       {
         version: "2.2.0",
         date: "2026-05-19",
