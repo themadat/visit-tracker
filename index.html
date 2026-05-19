@@ -4611,7 +4611,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "2.2.0.11";
+    const APP_VERSION = "2.2.0.12";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -5038,6 +5038,18 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "2.2.0.12",
+        date: "2026-05-18",
+        title: "Live Developer JSON",
+        summary: "A 2.2 development build that keeps Developer JSON synced as settings change.",
+        highlights: [
+          "Developer JSON now refreshes after saved settings changes and during map divider resize updates."
+        ],
+        updates: [
+          "The exported appVersion shown in Developer JSON continues to reflect the current build even before the next full save."
+        ]
+      },
       {
         version: "2.2.0.11",
         date: "2026-05-18",
@@ -5913,6 +5925,7 @@
       pruneObsoleteBackupKeys(state);
       state.appVersion = APP_VERSION;
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      renderDeveloperJson();
     }
 
     function pruneObsoleteBackupKeys(target) {
@@ -6338,6 +6351,7 @@
       const mapColumn = clampMapColumn(clientX - metrics.contentLeft, metrics);
       state.settings.mapSplitRatio = Math.max(.34, Math.min(.78, mapColumn / metrics.available));
       metrics.main.style.setProperty("--map-column-width", `${Math.floor(mapColumn)}px`);
+      renderDeveloperJson();
       if (persist) save();
     }
 
