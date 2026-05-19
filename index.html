@@ -5861,6 +5861,8 @@
           "The main layout now avoids blank states by keeping at least one panel visible.",
           "Tall Notes and note-editor symbols have safer centering so their lower edges do not get clipped.",
           "The rename roadmap now treats Travel Log as the top candidate for the app's visual travel journal direction.",
+          "Fresh browser profiles can still see the latest feature banner, while this patch release remains unhighlighted.",
+          "Existing saved data migrates from its stored app version when no explicit release-notice state exists.",
           "Help Center and dismissible hints were refreshed for the current header, map-control, and hidden shortcut behavior."
         ]
       },
@@ -6292,7 +6294,7 @@
         notes: {},
         visitTypes: defaultVisitTypes(),
         dismissedHints: [],
-        lastSeenReleaseVersion: APP_VERSION,
+        lastSeenReleaseVersion: "0.0.0",
         dismissedReleaseVersion: "",
         territoryDefaultsSeeded: true
       };
@@ -6525,7 +6527,10 @@
         ? [...new Set(input.dismissedHints.map(item => String(item || "").slice(0, 80)).filter(Boolean))].slice(0, 100)
         : [];
       if (!next.settings.uiHints) next.dismissedHints = [];
-      next.lastSeenReleaseVersion = String(input.lastSeenReleaseVersion || input.appVersion || APP_VERSION);
+      const hasLastSeenReleaseVersion = Object.prototype.hasOwnProperty.call(input, "lastSeenReleaseVersion");
+      next.lastSeenReleaseVersion = hasLastSeenReleaseVersion
+        ? String(input.lastSeenReleaseVersion || "0.0.0")
+        : String(input.appVersion || APP_VERSION);
       next.dismissedReleaseVersion = String(input.dismissedReleaseVersion || "");
       next.levels = Array.isArray(input.levels) && input.levels.length ? input.levels.slice(0, 5) : base.levels;
       next.levels = next.levels.map((level, index) => ({
