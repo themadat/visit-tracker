@@ -8,7 +8,7 @@ US State Visit Map is a single-file, offline HTML/CSS/JS app for tracking visits
 
 Current anchors:
 
-- `APP_VERSION`: `2.2.0.11`
+- `APP_VERSION`: `2.2.0.12`
 - storage key: `usStateVisitMap.v1`
 - roadmap/wishlist is developer-facing seed data only; do not persist user roadmap data in backups.
 
@@ -78,7 +78,7 @@ Invariants: level order controls map color; `levels` max is 5; state level IDs m
 
 ## Product Surface
 
-Clickable SVG map; resizable desktop map/cards split; map labels none/abbr/name; editable legend levels/colors/stats; notes search/filter/sort/compact/expanded plus active icon filter strip with a leftmost no-icon filter, permanent filter summary, and category headings sticky at the top of the Notes list scroll area; settings for theme/buttons/hints/tap/date/import/export and compact draggable icon-tag curation; developer JSON tree mirrors full export data with large collections collapsed; JSON/Markdown/RTF export; JSON import; shortcut overlay via Shift + Option + Control/Command.
+Clickable SVG map; resizable desktop map/cards split; map labels none/abbr/name; editable legend levels/colors/stats; notes search/filter/sort/compact/expanded plus active icon filter strip with a leftmost no-icon filter, permanent filter summary, and category headings sticky at the top of the Notes list scroll area; settings for theme/buttons/hints/tap/date/import/export and compact draggable icon-tag curation; developer JSON tree mirrors full export data with large collections collapsed and refreshes from save/map-resize paths; JSON/Markdown/RTF export; JSON import; shortcut overlay via Shift + Option + Control/Command.
 
 UX taste: compact, practical, map-first, light personality in docs/release copy. Avoid airy marketing-style UI.
 
