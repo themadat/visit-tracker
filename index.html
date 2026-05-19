@@ -4616,7 +4616,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "2.2.0.14";
+    const APP_VERSION = "2.2.0.15";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -5453,7 +5453,101 @@
     };
     const NOTE_FILTER_NO_ICON = "__no-icon";
     const DEFAULT_ACTIVE_VISIT_TYPE_IDS = ["star", "heart", "bookmark", "flag", "house"];
-    const VISIT_TYPES = [
+    const ICON_SEARCH_TAG_ALIASES = {
+      airplane: ["flight", "plane", "airport", "layover", "travel"],
+      automobile: ["car", "drive", "road", "vehicle"],
+      bicycle: ["bike", "cycling", "ride"],
+      bookmark: ["memory", "remember", "saved"],
+      briefcase: ["work", "business", "office"],
+      building: ["city", "office", "work"],
+      bus: ["transit", "transportation"],
+      calendar: ["date", "schedule"],
+      camera: ["photo", "picture"],
+      car: ["drive", "road", "vehicle"],
+      cart: ["shopping", "store"],
+      clock: ["time", "chrono"],
+      cross: ["medical", "health"],
+      cup: ["coffee", "drink", "meal"],
+      fork: ["food", "restaurant", "meal"],
+      gamecontroller: ["game", "play"],
+      graduationcap: ["school", "college", "education"],
+      heart: ["favorite", "love", "best"],
+      house: ["home", "saved", "location"],
+      leaf: ["nature", "park"],
+      map: ["travel", "route"],
+      mappin: ["place", "location", "pin"],
+      mountain: ["hike", "trail", "outdoors"],
+      music: ["concert", "show"],
+      park: ["nature", "tree"],
+      person: ["friend", "family", "people"],
+      sailboat: ["boat", "cruise", "water"],
+      sportscourt: ["sport", "sports", "game"],
+      star: ["first", "favorite", "featured"],
+      stethoscope: ["medical", "health"],
+      suitcase: ["travel", "trip", "luggage"],
+      ticket: ["event", "show"],
+      train: ["rail", "transit"],
+      tree: ["park", "nature", "forest"],
+      tram: ["transit", "transportation"]
+    };
+    const VISIT_TYPE_ICON_ALIASES = {
+      first: "star",
+      favorite: "heart",
+      memorable: "bookmark",
+      home: "house",
+      sport: "sportscourt",
+      wedding: "diamond",
+      flagged: "flag",
+      park: "tree",
+      work: "building_2_crop",
+      friend: "person",
+      play: "bicycle",
+      boating: "sailboat",
+      beach: "environments",
+      cruise: "suitcase"
+    };
+
+    function autoCircleIconIds() {
+      const source = typeof document === "undefined" ? "" : document.currentScript?.textContent || "";
+      return [...new Set([...source.matchAll(/const (__[A-Z0-9_]+_CIRCLE)\s*=/g)]
+        .map(match => match[1].replace(/^__|_CIRCLE$/g, "").toLowerCase()))]
+        .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+    }
+
+    const CIRCLE_ICON_IDS = autoCircleIconIds();
+    const CIRCLE_ICON_ID_SET = new Set(CIRCLE_ICON_IDS);
+
+    function iconLabelFromId(id) {
+      return String(id || "").split("_").filter(Boolean).map(part => {
+        if (/^\d+$/.test(part)) return part;
+        if (part.length <= 2) return part.toUpperCase();
+        return part.charAt(0).toUpperCase() + part.slice(1);
+      }).join(" ");
+    }
+
+    function iconSearchTagsFromId(id) {
+      const parts = String(id || "").split("_").filter(Boolean);
+      const tags = new Set([parts.join(" "), parts.join(""), String(id || "").replace(/_/g, "-")]);
+      parts.forEach(part => {
+        tags.add(part);
+        (ICON_SEARCH_TAG_ALIASES[part] || []).forEach(tag => tags.add(tag));
+      });
+      if (parts.includes("slash")) ["hidden", "off", "no", "exclude"].forEach(tag => tags.add(tag));
+      if (parts.includes("fill")) tags.add("filled");
+      return [...tags].map(tag => String(tag || "").trim().toLowerCase()).filter(Boolean).slice(0, 12);
+    }
+
+    function circleIconSvg(id) {
+      const key = String(id || "").toLowerCase().replace(/[^a-z0-9_]/g, "");
+      if (!CIRCLE_ICON_ID_SET.has(key)) return "";
+      try {
+        return eval(`__${key.toUpperCase()}_CIRCLE`);
+      } catch {
+        return "";
+      }
+    }
+
+    const BASE_VISIT_TYPES = [
       { id: "star", label: "First", icon: "star", shortcut: "f", enabled: true, searchTags: ["new", "initial"] },
       { id: "heart", label: "Favorite", icon: "heart", shortcut: "v", enabled: true, searchTags: ["love", "best"] },
       { id: "bookmark", label: "Memorable", icon: "bookmark", shortcut: "b", enabled: true, searchTags: ["memory", "remember", "core"] },
@@ -5467,6 +5561,20 @@
       { id: "airplane", label: "Airport", icon: "airplane", shortcut: "", enabled: false, searchTags: ["flight", "plane", "layover"] },
       { id: "sailboat", label: "Cruise", icon: "sailboat", shortcut: "", enabled: false, searchTags: ["boat", "ship", "boating"] },
       { id: "bicycle", label: "Bicycle", icon: "bicycle", shortcut: "", enabled: false, searchTags: ["bike", "cycling", "cycle"] },
+    ];
+    const BASE_VISIT_TYPE_IDS = new Set(BASE_VISIT_TYPES.map(type => type.id));
+    const VISIT_TYPES = [
+      ...BASE_VISIT_TYPES,
+      ...CIRCLE_ICON_IDS
+        .filter(id => !BASE_VISIT_TYPE_IDS.has(id))
+        .map(id => ({
+          id,
+          label: iconLabelFromId(id),
+          icon: id,
+          shortcut: "",
+          enabled: false,
+          searchTags: iconSearchTagsFromId(id)
+        }))
     ];
 
     const WISHLIST_SEEDS = [
@@ -5676,6 +5784,18 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "2.2.0.15",
+        date: "2026-05-19",
+        title: "More Icon Catalog",
+        summary: "A 2.2 development build that exposes the manually added circle symbols in Location Icon Tags.",
+        highlights: [
+          "More Icons now auto-discovers every imported __*_CIRCLE symbol and offers it as an optional note tag."
+        ],
+        updates: [
+          "Generated icon tags get readable labels and search aliases from their SF-style symbol names while preserving the current default selected tags."
+        ]
+      },
       {
         version: "2.2.0.14",
         date: "2026-05-19",
@@ -7252,36 +7372,7 @@
     }
 
     function visitTypeIcon(id) {
-      return ({
-        star: __STAR_CIRCLE,
-        heart: __HEART_CIRCLE,
-        bookmark: __BOOKMARK_CIRCLE,
-        flag: __FLAG_CIRCLE,
-        house: __HOUSE_CIRCLE,
-        briefcase: __BRIEFCASE_CIRCLE,
-        bell: __BELL_CIRCLE,
-        sportscourt: __SPORTSCOURT_CIRCLE,
-        figure_hiking: __FIGURE_HIKING_CIRCLE,
-        tree: __TREE_CIRCLE,
-        airplane: __AIRPLANE_CIRCLE,
-        sailboat: __SAILBOAT_CIRCLE,
-        first: __STAR_CIRCLE,
-        favorite: __HEART_CIRCLE,
-        memorable: __BOOKMARK_CIRCLE,
-        home: __HOUSE_CIRCLE,
-        sport: __SPORTSCOURT_CIRCLE,
-        wedding: __DIAMOND_CIRCLE,
-        flagged: __FLAG_CIRCLE,
-        park: __TREE_CIRCLE,
-        work: __BUILDING_2_CROP_CIRCLE,
-        friend: __PERSON_CIRCLE,
-        play: __BICYCLE_CIRCLE,
-        hiking: __FIGURE_HIKING_CIRCLE,
-        airport: __AIRPLANE_CIRCLE,
-        boating: __SAILBOAT_CIRCLE,
-        beach: __ENVIRONMENTS_CIRCLE,
-        cruise: __SUITCASE_CIRCLE
-      }[id]) || __MAPPIN_CIRCLE;
+      return circleIconSvg(VISIT_TYPE_ICON_ALIASES[id] || id) || __MAPPIN_CIRCLE;
     }
 
     function visitTypeMeta(id) {
