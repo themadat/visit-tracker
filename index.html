@@ -4154,8 +4154,8 @@
         <small data-hint data-hint-key="note-smart-convert-help">Type a quick note, then Auto Convert looks for dates,
           levels, tag names, and keywords like “at”, “for”, and “with”. Leftover text goes to Additional
           Details.</small>
-        <small data-hint data-hint-key="note-tag-settings-help">Quick link to Tags Setting to choose which appear below,
-          rename, sort, and set shortcuts.</small>
+        <small data-hint data-hint-key="note-tag-settings-help">Quick link to Location Tags to choose which appear
+          below, rename, sort, set shortcuts, and add optional icons.</small>
       </div>
       <section id="visitTypeRow" class="visit-type-row" aria-label="Visit labels">
       </section>
@@ -4298,7 +4298,8 @@
     </header>
     <div class="dialog-body">
       <small data-hint data-hint-key="tag-editor-help">Selected tags appear in the note editor. Drag selected rows to
-        change order, click rows to add or hide them, and search More Icons for optional labels.</small>
+        change order, click rows to add or hide them, and search More Icons for optional labels from the circle icon
+        catalog.</small>
       <div id="tagEditorList" class="tag-editor-list"></div>
     </div>
   </dialog>
@@ -4380,8 +4381,8 @@
               Hotkeys</button>
           </div>
           <small class="setting-hint" data-hint data-hint-key="settings-note-tags-help">Pick which note icon labels
-            appear in the note editor, rename them, drag to sort, set shortcuts, and search extra optional
-            icons.</small>
+            appear in the note editor, rename them, drag to sort, set shortcuts, and search the optional circle icon
+            catalog.</small>
         </section>
         <section class="settings-category">
           <h3>Import and Export</h3>
@@ -4435,6 +4436,8 @@
             </li>
             <li>Use Smart Convert in the note editor to turn a quick note into dates, levels, location specifics,
               people, purpose, and details.</li>
+            <li>Use Location Tags to add icon labels to notes. Settings lets you rename, reorder, shortcut, and search
+              the optional circle icon catalog.</li>
             <li>Use the eye button in Notes to show or hide locations that only have levels excluded from stats.</li>
             <li>Add dates as a year, month and year, or full date. Settings controls the display order and month-name vs
               numeric formatting.</li>
@@ -4447,7 +4450,7 @@
             be shown or hidden from the Legend.</p>
           <p><b>Structured notes:</b> Notes can include Where Specifically, What For, Who With, Additional Details, and
             multiple icon labels. Use the Tags button in the note editor or Settings to choose, rename, sort, shortcut,
-            and search optional labels.</p>
+            and search optional labels from the circle icon catalog.</p>
           <p><b>What's New:</b> Returning users may see a compact banner and red dots when a major feature release is
             available. Open What's New or dismiss the banner to clear it.</p>
           <p><b>Export formats:</b> JSON (.json) is a full backup, re-importable into this app. Markdown (.md) renders
@@ -4478,6 +4481,8 @@
             Details.</p>
           <p><b>Can one note have multiple visit icons?</b><br>Yes. Pick any labels that fit, though four or fewer keeps
             Notes rows easier to scan.</p>
+          <p><b>Where do the extra Location Tags come from?</b><br>More Icons is built from the circle symbols bundled
+            into this file. Search by icon name, label, or related terms, then add the ones you want.</p>
           <p><b>What's the difference between cycle and select mode?</b><br>Cycle taps rotate through your active levels
             automatically. Select mode opens a picker so you can choose a level and add a note in one step.</p>
           <p><b>Can I have more than five levels?</b><br>No. Five is the cap — enough for any reasonable visit taxonomy
@@ -4616,7 +4621,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "2.2.0.16";
+    const APP_VERSION = "2.2.0";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -5760,229 +5765,28 @@
     ];
     const CHANGELOG = [
       {
-        version: "2.2.0.16",
+        version: "2.2.0",
         date: "2026-05-19",
-        title: "Direct Icon IDs",
-        summary: "A 2.2 development build that removes the Location Icon Tag alias bridge.",
+        title: "Tag, You're It",
+        summary: "Faster note entry, configurable icon tags, a bigger searchable icon catalog, and a resizable Notes workspace.",
+        notice: {
+          version: "2.2.0",
+          title: "Tag, You're It",
+          summary: "Faster notes, configurable icon tags, a resizable map/cards split, and a much bigger icon catalog.",
+          cta: "Learn More"
+        },
         highlights: [
-          "Visit tag icons now render directly from their real circle icon IDs."
+          "Visit notes can now carry multiple icon labels, with direct keyboard toggles and a clearer note editor built for fast entry.",
+          "Settings now includes Location Icon Tags: choose, rename, reorder, shortcut, search, and add optional labels from More Icons.",
+          "More Icons now auto-discovers every imported circle symbol, generates readable labels and search tags, and renders icons directly from their symbol IDs.",
+          "Notes now includes an active icon-filter strip, a blank-circle filter for untagged notes, clearer filter status, and safer unsaved-change confirmation.",
+          "Desktop gained a draggable map/cards divider, sticky grouped Notes headers, and a more reliable internal Notes scroll area."
         ],
         updates: [
-          "The icon catalog stays simpler now that base tags use the same IDs as their backing symbols."
-        ]
-      },
-      {
-        version: "2.2.0.15",
-        date: "2026-05-19",
-        title: "More Icon Catalog",
-        summary: "A 2.2 development build that exposes the manually added circle symbols in Location Icon Tags.",
-        highlights: [
-          "More Icons now auto-discovers every imported __*_CIRCLE symbol and offers it as an optional note tag."
-        ],
-        updates: [
-          "Generated icon tags get readable labels and search aliases from their SF-style symbol names while preserving the current default selected tags."
-        ]
-      },
-      {
-        version: "2.2.0.14",
-        date: "2026-05-19",
-        title: "Notes View Restore",
-        summary: "A 2.2 development build that restores the expanded and condensed Notes views.",
-        highlights: [
-          "Expanded and condensed Notes views no longer fail when a location-type icon constant is unavailable."
-        ],
-        updates: [
-          "State location icons now fall back to the existing map symbol until the exact globe symbol is present."
-        ]
-      },
-      {
-        version: "2.2.0.13",
-        date: "2026-05-19",
-        title: "No Icon Symbol",
-        summary: "A 2.2 development build that swaps the Notes no-icon filter to the shared circle SVG.",
-        highlights: [
-          "The Notes no-icon filter now renders with the __CIRCLE SF-style symbol instead of a CSS placeholder."
-        ],
-        updates: [
-          "Keeps the empty-note filter aligned with the app's icon constant system."
-        ]
-      },
-      {
-        version: "2.2.0.12",
-        date: "2026-05-18",
-        title: "Live Developer JSON",
-        summary: "A 2.2 development build that keeps Developer JSON synced as settings change.",
-        highlights: [
-          "Developer JSON now refreshes after saved settings changes and during map divider resize updates."
-        ],
-        updates: [
-          "The exported appVersion shown in Developer JSON continues to reflect the current build even before the next full save."
-        ]
-      },
-      {
-        version: "2.2.0.11",
-        date: "2026-05-18",
-        title: "Notes Scroll Repair",
-        summary: "A 2.2 development build that fixes the desktop Notes scroll track and restores category headers to the top of the list.",
-        highlights: [
-          "Desktop Notes now gives the list its own real scroll row, preventing hint/filter content from cutting into the list.",
-          "Grouped Notes headers now stick to the top of the Notes list instead of stopping early."
-        ],
-        updates: [
-          "Developer JSON parent key/value rows were tightened further to remove extra visual spacing."
-        ]
-      },
-      {
-        version: "2.2.0.10",
-        date: "2026-05-18",
-        title: "Notes Layout Repair",
-        summary: "A 2.2 development build that fixes the Notes summary/header overlap and tightens Developer JSON rows.",
-        highlights: [
-          "The permanent Notes filter summary now stays visible without pushing grouped headings below the list content.",
-          "Notes list spacing stays roomier while hints are visible and tightens again after those hints are dismissed."
-        ],
-        updates: [
-          "Developer JSON parent-level key/value rows now render as compact single-line entries without extra vertical breaks."
-        ]
-      },
-      {
-        version: "2.2.0.9",
-        date: "2026-05-18",
-        title: "Notes Spacing Polish",
-        summary: "A 2.2 development build that keeps Notes filter context visible and makes Developer JSON easier to scan.",
-        highlights: [
-          "Notes category headings now respect the visible hint and filter-summary area so the permanent filter summary stays readable.",
-          "When Notes hints are dismissed, the icon filter, summary, and list tighten back up for denser scanning."
-        ],
-        updates: [
-          "Developer JSON now keeps simple parent-level properties on one line while large collections remain collapsed by default."
-        ]
-      },
-      {
-        version: "2.2.0.8",
-        date: "2026-05-18",
-        title: "Notes Status Polish",
-        summary: "A 2.2 development build that clarifies note filters, keeps resize guidance in the top bar, and improves developer inspection.",
-        highlights: [
-          "Notes now shows a compact permanent descriptor for search, level, icon, view, sort, grouping, and opt-out visibility state.",
-          "The no-icon filter now sits first in the Notes icon strip, with a distinct hover render from active and inactive states.",
-          "The resize hint moved into the top bar beside Rename and dismiss buttons now sit directly after their hint text."
-        ],
-        updates: [
-          "Developer Tools now shows the full export JSON with large collections collapsed by default.",
-          "The note tag selection hint moved below the tag buttons.",
-          "Added roadmap item WISH-032 for cleaning up modal dialog buttons, symbols, and shortcuts."
-        ]
-      },
-      {
-        version: "2.2.0.7",
-        date: "2026-05-18",
-        title: "Notes Filter Polish",
-        summary: "A 2.2 development build that makes note icon filtering explicit, friendlier, and harder to accidentally lose.",
-        highlights: [
-          "Notes now defaults to Expanded view and shows all icon filters as active, including a blank-circle filter for notes without tags.",
-          "Right-clicking or pressing and holding a Notes icon filter isolates it; repeating that action restores all icon filters.",
-          "Closing a changed note now asks before discarding unsaved edits."
-        ],
-        updates: [
-          "Developer Tools now shows the current Settings JSON.",
-          "Dismissible hints were moved and expanded around note filters, Smart Convert, tag settings, and resize guidance.",
-          "Added roadmap item WISH-031 for moving Map, Legend, and Notes toggles into the app header."
-        ]
-      },
-      {
-        version: "2.2.0.6",
-        date: "2026-05-18",
-        title: "Tag Settings Polish",
-        summary: "A 2.2 development build that makes icon tag settings denser, clearer, and easier to search.",
-        highlights: [
-          "More Icons cards now keep the icon centered while right-aligning the add control.",
-          "Icon search now supports multiple built-in search tags, so searches like bike can find Bicycle.",
-          "Dragging selected icon tags now reflows the grid live before the drop."
-        ],
-        updates: [
-          "Selected icon tag cards are more vertically compact and no longer stretch to fill excess height.",
-          "Notes now reserves a dedicated row for the icon filter toolbar so the list does not cover it."
-        ]
-      },
-      {
-        version: "2.2.0.5",
-        date: "2026-05-18",
-        title: "Icon Filter Pass",
-        summary: "A 2.2 development build that makes note tag filtering quicker and settles the desktop map/cards split.",
-        highlights: [
-          "Desktop now defaults to a 66/33 map-to-cards split while preserving any manually resized layout.",
-          "Notes now has an ordered active-icon filter strip between the controls and the list, with hover labels and click-to-filter behavior.",
-          "Location Icon Tags now keeps newly available optional tags in More Icons unless they are part of the default selected set."
-        ],
-        updates: [
-          "Selected tag cards are more compact, with the icon between the drag handle and On pill.",
-          "Added roadmap items for a better scrollable/zoomable map and latitude/longitude-backed map locations."
-        ]
-      },
-      {
-        version: "2.2.0.4",
-        date: "2026-05-18",
-        title: "Resizable Notes Workspace",
-        summary: "A 2.2 development build that adds a draggable desktop split and makes note tag editing more direct.",
-        highlights: [
-          "Desktop now has a draggable divider between the map and Legend/Notes cards, with a dismissible resize hint.",
-          "The note editor now offers a Tags shortcut beside Auto Convert and returns to the note after editing tag settings.",
-          "Location Icon Tags now uses a four-across selected grid, an eight-across compact More Icons grid, and auto-assigns available hotkeys when tags are added."
-        ],
-        updates: [
-          "The date pill now keeps a consistent width so date typing does not shift the controls.",
-          "Note tags now render four across in the note editor.",
-          "Added roadmap item WISH-028 for improving Add to Home Screen icon/name polish.",
-          "Preserved the manually refined icon tag ids and added icon rendering support for the current tag set."
-        ]
-      },
-      {
-        version: "2.2.0.3",
-        date: "2026-05-18",
-        title: "Tag Picker Tightening",
-        summary: "A 2.2 development build that tightens date entry and makes note icon tags easier to curate.",
-        highlights: [
-          "The note date row now leads with the generated date pill and uses equal-width Year, Month, and Day controls with fewer labels.",
-          "Location Icon Tags now opens as a cleaner Settings subview with a sticky header, Back to Settings action, search, larger icons, and highlighted selected rows.",
-          "New default tag setups start with First, Favorite, Memorable, Flagged, and Home enabled while the rest stay available as searchable optional icons."
-        ],
-        updates: [
-          "Expanded Notes and selected-location visit notes now reserve room for four note icons.",
-          "Today and Year Only now match the date input height.",
-          "Existing saved tag labels, shortcuts, order, and enabled states are preserved during migration."
-        ]
-      },
-      {
-        version: "2.2.0.2",
-        date: "2026-05-17",
-        title: "Configurable Note Icons",
-        summary: "A 2.2 development build for faster note entry, configurable visit labels, and denser note scanning.",
-        highlights: [
-          "Settings now includes a Location Icon Tags editor for enabling labels, renaming them, sorting by drag and drop, and choosing shortcut letters.",
-          "The note editor now opens directly into Smart Convert, keeps date controls on one tight row, and recommends keeping visible note labels to four or fewer.",
-          "Condensed Notes gained a right-aligned icon-label column, while Text Only notes append selected label names in brackets."
-        ],
-        updates: [
-          "Added Play, Hiking, Airport, Boating, Beach, and Cruise to the default note label set.",
-          "Visit label shortcuts now prefer the first letter of each label with a few collision-safe exceptions.",
-          "Expanded note rows now keep dates aligned even when a note has multiple icons."
-        ]
-      },
-      {
-        version: "2.2.0.1",
-        date: "2026-05-17",
-        title: "Note Editor Speed Pass",
-        summary: "A 2.2 development build for faster note editing, denser dates, and multi-label visit icons.",
-        highlights: [
-          "The note editor now supports Enter to save, Escape to close, and Delete to remove an existing note when focus is not in a text field.",
-          "The date picker is tighter, with Today and Year Only beside the Date heading and a larger generated date pill.",
-          "Visit notes can now carry multiple icon labels, including Home, Sport, Wedding, Flagged, Park, Work, and Friend."
-        ],
-        updates: [
-          "Visit label buttons now show letter badges and can be toggled with single-letter shortcuts when the cursor is outside a text field.",
-          "Expanded and selected-location note rows now render multiple visit icons in a compact stack, and selected-location note rows are larger and row-click editable.",
-          "Removed the completed multiple-note-label roadmap item and preserved the added Person circle icon for the new Friend label."
+          "The date picker was tightened for partial dates, with consistent controls for year-only, month-year, or full dates.",
+          "Expanded and selected-location note rows now show multiple icons cleanly, align dates better, and open notes for editing from the row.",
+          "Developer Tools now refreshes exported JSON as settings change, with large collections collapsed for easier inspection.",
+          "Help Center and dismissible hints were refreshed for note tags, Smart Convert, icon filters, and map resizing."
         ]
       },
       {
