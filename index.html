@@ -4616,7 +4616,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "2.2.0.15";
+    const APP_VERSION = "2.2.0.16";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -5490,23 +5490,6 @@
       tree: ["park", "nature", "forest"],
       tram: ["transit", "transportation"]
     };
-    const VISIT_TYPE_ICON_ALIASES = {
-      first: "star",
-      favorite: "heart",
-      memorable: "bookmark",
-      home: "house",
-      sport: "sportscourt",
-      wedding: "diamond",
-      flagged: "flag",
-      park: "tree",
-      work: "building_2_crop",
-      friend: "person",
-      play: "bicycle",
-      boating: "sailboat",
-      beach: "environments",
-      cruise: "suitcase"
-    };
-
     function autoCircleIconIds() {
       const source = typeof document === "undefined" ? "" : document.currentScript?.textContent || "";
       return [...new Set([...source.matchAll(/const (__[A-Z0-9_]+_CIRCLE)\s*=/g)]
@@ -5553,14 +5536,6 @@
       { id: "bookmark", label: "Memorable", icon: "bookmark", shortcut: "b", enabled: true, searchTags: ["memory", "remember", "core"] },
       { id: "flag", label: "Flagged", icon: "flag", shortcut: "x", enabled: true, searchTags: ["important", "marker"] },
       { id: "house", label: "Home", icon: "house", shortcut: "h", enabled: true, searchTags: ["house", "saved"] },
-      { id: "briefcase", label: "Work", icon: "briefcase", shortcut: "", enabled: false, searchTags: ["business", "office", "job"] },
-      { id: "bell", label: "Wedding", icon: "bell", shortcut: "", enabled: false, searchTags: ["marriage", "ceremony"] },
-      { id: "sportscourt", label: "Sport", icon: "sportscourt", shortcut: "", enabled: false, searchTags: ["sports", "game", "court"] },
-      { id: "figure_hiking", label: "Hiking", icon: "figure_hiking", shortcut: "", enabled: false, searchTags: ["hike", "trail", "walk"] },
-      { id: "tree", label: "Park", icon: "tree", shortcut: "", enabled: false, searchTags: ["parks", "nature", "forest"] },
-      { id: "airplane", label: "Airport", icon: "airplane", shortcut: "", enabled: false, searchTags: ["flight", "plane", "layover"] },
-      { id: "sailboat", label: "Cruise", icon: "sailboat", shortcut: "", enabled: false, searchTags: ["boat", "ship", "boating"] },
-      { id: "bicycle", label: "Bicycle", icon: "bicycle", shortcut: "", enabled: false, searchTags: ["bike", "cycling", "cycle"] },
     ];
     const BASE_VISIT_TYPE_IDS = new Set(BASE_VISIT_TYPES.map(type => type.id));
     const VISIT_TYPES = [
@@ -5784,6 +5759,18 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "2.2.0.16",
+        date: "2026-05-19",
+        title: "Direct Icon IDs",
+        summary: "A 2.2 development build that removes the Location Icon Tag alias bridge.",
+        highlights: [
+          "Visit tag icons now render directly from their real circle icon IDs."
+        ],
+        updates: [
+          "The icon catalog stays simpler now that base tags use the same IDs as their backing symbols."
+        ]
+      },
       {
         version: "2.2.0.15",
         date: "2026-05-19",
@@ -7372,7 +7359,7 @@
     }
 
     function visitTypeIcon(id) {
-      return circleIconSvg(VISIT_TYPE_ICON_ALIASES[id] || id) || __MAPPIN_CIRCLE;
+      return circleIconSvg(id) || __MAPPIN_CIRCLE;
     }
 
     function visitTypeMeta(id) {
