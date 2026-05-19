@@ -4616,7 +4616,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "2.2.0.12";
+    const APP_VERSION = "2.2.0.14";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -5676,6 +5676,30 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "2.2.0.14",
+        date: "2026-05-19",
+        title: "Notes View Restore",
+        summary: "A 2.2 development build that restores the expanded and condensed Notes views.",
+        highlights: [
+          "Expanded and condensed Notes views no longer fail when a location-type icon constant is unavailable."
+        ],
+        updates: [
+          "State location icons now fall back to the existing map symbol until the exact globe symbol is present."
+        ]
+      },
+      {
+        version: "2.2.0.13",
+        date: "2026-05-19",
+        title: "No Icon Symbol",
+        summary: "A 2.2 development build that swaps the Notes no-icon filter to the shared circle SVG.",
+        highlights: [
+          "The Notes no-icon filter now renders with the __CIRCLE SF-style symbol instead of a CSS placeholder."
+        ],
+        updates: [
+          "Keeps the empty-note filter aligned with the app's icon constant system."
+        ]
+      },
       {
         version: "2.2.0.12",
         date: "2026-05-18",
@@ -7219,7 +7243,12 @@
 
     function locationTypeIcon(abbrOrType) {
       const type = LOCATION_TYPES[abbrOrType] ? abbrOrType : locationTypeFor(abbrOrType);
-      return ({ city: __BUILDING_2_CROP_CIRCLE, state: __GLOBE_AMERICAS_FILL, territory: __FLAG_CIRCLE }[type]) || __GLOBE_AMERICAS_FILL;
+      const icons = {
+        city: typeof __BUILDING_2_CROP_CIRCLE === "string" ? __BUILDING_2_CROP_CIRCLE : __MAPPIN_CIRCLE,
+        state: typeof __GLOBE_AMERICAS_FILL === "string" ? __GLOBE_AMERICAS_FILL : __MAP_CIRCLE,
+        territory: typeof __FLAG_CIRCLE === "string" ? __FLAG_CIRCLE : __MAPPIN_CIRCLE
+      };
+      return icons[type] || icons.state;
     }
 
     function visitTypeIcon(id) {
@@ -7698,7 +7727,7 @@
       const active = activeVisitTypes();
       ensureNoteIconFilters();
       const items = [
-        { id: NOTE_FILTER_NO_ICON, label: "No icon", icon: `<span class="empty-icon-circle" aria-hidden="true"></span>` },
+        { id: NOTE_FILTER_NO_ICON, label: "No icon", icon: __CIRCLE },
         ...active.map(type => ({ id: type.id, label: type.label, icon: visitTypeIcon(type.id) }))
       ];
       list.classList.toggle("hidden", Boolean(notesPanelState) || !items.length);
