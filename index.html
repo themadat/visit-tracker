@@ -185,6 +185,8 @@
       align-items: center;
       justify-content: flex-start;
       gap: .36rem;
+      font-size: .75rem;
+      line-height: 1.1;
     }
 
     .hint-dismiss-btn {
@@ -326,8 +328,8 @@
 
     .topbar-hints small {
       color: var(--muted);
-      font-size: .68rem;
-      line-height: 1.08;
+      font-size: .75rem;
+      line-height: 1.1;
       text-align: right;
       justify-content: flex-end;
     }
@@ -608,14 +610,14 @@
       gap: .12rem;
       flex: 1 1 18rem;
       min-width: 10rem;
-      line-height: 1.14;
+      line-height: 1.1;
     }
 
     .map-head-hints small {
       display: inline-flex;
       align-items: center;
       justify-content: flex-end;
-      font-size: .69rem;
+      font-size: .75rem;
       text-align: right;
     }
 
@@ -1895,6 +1897,12 @@
     .notes-panel-head .notes-search {
       flex: 1 1 18rem;
       max-width: none;
+    }
+
+    .notes-panel-head .notes-back-hint {
+      margin-left: auto;
+      color: var(--muted);
+      white-space: nowrap;
     }
 
     .notes-controls {
@@ -4114,6 +4122,8 @@
               <input id="notesStateSearch" type="search"
                 placeholder="Search groups, names, levels, dates, notes, tags, etc..." aria-label="Search notes">
             </div>
+            <small id="notesPanelBackHint" class="notes-back-hint" data-hint data-hint-key="notes-panel-back-hint">
+              Hit Back to return to the main list.</small>
             <button id="notesPanelBackBtn" type="button" data-shortcut="B">All</button>
           </div>
           <div class="notes-controls" aria-label="Notes display controls">
@@ -4130,11 +4140,11 @@
             <button id="notesCategoryToggleBtn" class="notes-category-toggle" type="button" aria-pressed="true"
               data-shortcut="Y">Categorical</button>
             <button id="notesExcludedToggleBtn" class="notes-excluded-toggle" type="button" aria-pressed="true"
-              data-shortcut="V">Show Opt-Out</button>
+              data-shortcut="V">Show Excluded</button>
             <button id="copyNotesTextBtn" class="notes-copy-btn" type="button" data-shortcut="P">Copy</button>
           </div>
           <small id="notesPanelSubtitle" class="notes-toggle-hint" data-hint data-hint-key="notesPanelSubtitle">
-            View | Sort | Group by Category | Show/hide excluded Locations | Copy the Text Only view.</small>
+            Group by Category | Show/Hide Excluded Locations | Copy the Text Only View.</small>
           <ol id="notesIconFilters" class="notes-icon-filters" aria-label="Filter notes by icon"></ol>
           <small id="notesIconFilterHint" class="notes-icon-filter-hint" data-hint
             data-hint-key="notes-icon-filter-help">
@@ -4535,7 +4545,7 @@
             <li>Use JSON Import/Export in Settings to back up data or move it to another device. Text exports are for
               sharing or saving elsewhere.</li>
           </ol>
-          <p><b>Default levels:</b> Visited and Not Interested. Not Interested is the opt-out level and is excluded from
+          <p><b>Default levels:</b> Visited and Not Interested. Not Interested is a excluded level and doesn't count towards
             total completion.</p>
           <p><b>Color tools:</b> Auto Colors can apply a smart palette to your current levels. Suggested categories can
             be shown or hidden from the Legend.</p>
@@ -4596,9 +4606,9 @@
             Feel free to share, but have no expectations around continued support and functionality.
           </p>
           <p class="help-feedback">
-            P.P.S. This app gets the most love in Desktop Mode with Button Style set to Icons and Hints turned off,
+            P.P.S. This app gets the most love in Desktop Size, Dark Mode, with Icon Button Style and Hints Off,
             because that is how I actually use it.
-            Mobile, text button, and hint quirks still matter; they just wait politely in line.
+            Mobile layout, Light mode, Text buttons, and Hint quirks still matter; they just wait politely in line.
           </p>
         </section>
       </section>
@@ -4695,8 +4705,8 @@
             <div class="shortcut-row"><kbd>0 1 2</kbd><span>Switch map labels between None, Abbr, and Name.</span></div>
             <div class="shortcut-row"><kbd>C H A</kbd><span>Auto Colors, suggested categories, and contextual add
                 actions.</span></div>
-            <div class="shortcut-row"><kbd>B T E K Y V O P</kbd><span>Notes back, chronological sort, Expanded,
-                Condensed, Categorical, opt-out visibility, Text Only, and Copy.</span></div>
+            <div class="shortcut-row"><kbd>B T E K Y V O P</kbd><span>Notes Back, Chronological Sort, Expanded,
+                Condensed, Categorical, Excluded Visibility, Text Only, and Copy.</span></div>
             <div class="shortcut-row"><kbd>W</kbd><span>Developer: reset the What's New banner and badges.</span></div>
             <div class="shortcut-row"><kbd>F</kbd><span>Developer: reset local app data to defaults.</span></div>
             <div class="shortcut-row"><kbd>Q X</kbd><span>Close dialogs or cancel confirm actions.</span></div>
@@ -5935,7 +5945,7 @@
         ],
         updates: [
           "Smart Convert can turn a quick note into structured note fields, remove parsed pieces from the remaining details, and clear itself after parsing.",
-          "Legend stats count each location toward its highest active level, and opt-out-only locations can be shown or hidden in Notes.",
+          "Legend stats count each location toward its highest active level, and excluded only locations can be shown or hidden in Notes.",
           "Selected locations open into Notes with tighter Applied Levels and Visit Notes sections.",
           "Developer Tools gained banner reset, shortcut mode, and defaults reset controls for maintenance.",
           "Help Center coverage and dismissible hints were refreshed for the 2.0 notes workflow."
@@ -6115,7 +6125,7 @@
           "Added per-level control for whether a level counts toward stats.",
           "Added non-counting level styling and quick-add options.",
           "Moved total completion into the Legend header.",
-          "Kept opt-out levels visible on the map while excluding them from completion math."
+          "Kept excluded levels visible on the map while excluding them from completion math."
         ]
       },
       {
@@ -6255,9 +6265,9 @@
     let notesPanelOpen = true;
     let notesPanelState = null;
     let notesSortMode = "chrono";
-    let notesViewMode = "expanded";
+    let notesViewMode = "compact";
     let notesCategoricalMode = true;
-    let notesHideExcludedOnly = false;
+    let notesHideExcludedOnly = true;
     let notesSearchQuery = "";
     let mapFitMode = true;
     let noteLevelFilters = new Set();
@@ -6301,7 +6311,7 @@
     }
 
     function territoryDefaultLevelId(levels) {
-      return (levels || []).find(level => level.countsTowardStats === false || isOptOutLevel(level))?.id || "";
+      return (levels || []).find(level => level.countsTowardStats === false || isExcludedLevel(level))?.id || "";
     }
 
     function defaultTerritoryStates(levels) {
@@ -6540,7 +6550,7 @@
         color: /^#[0-9a-f]{6}$/i.test(level.color || "") ? level.color : THEMES.Classic[index] || "#2563eb",
         countsTowardStats: typeof level.countsTowardStats === "boolean"
           ? level.countsTowardStats
-          : (BUILT_INS.find(item => item.id === level.id)?.countsTowardStats ?? !isOptOutLevel(level))
+          : (BUILT_INS.find(item => item.id === level.id)?.countsTowardStats ?? !isExcludedLevel(level))
       }));
       next.visitTypes = normalizeVisitTypeConfig(input.visitTypes, base.visitTypes);
       const validLevelIds = new Set(next.levels.map(l => l.id));
@@ -6591,7 +6601,7 @@
       return Boolean(note.text || note.details || note.where || note.what || note.who || (note.visitTypes || []).length);
     }
 
-    function isOptOutLevel(level) {
+    function isExcludedLevel(level) {
       const text = `${level.id || ""} ${level.name || ""}`.toLowerCase();
       return text.includes("not-interested") || text.includes("not interested") || text.includes("don't want") || text.includes("dont want");
     }
@@ -6949,7 +6959,7 @@
       setButtonLabel("#notesSortAlphaBtn", __TEXTFORMAT_CHARACTERS_ARROW_LEFT_AND_RIGHT, "Alphabetical");
       setButtonLabel("#notesSortChronoBtn", __CLOCK_ARROW_TRIANGLEHEAD_2_COUNTERCLOCKWISE_ROTATE_90, "Chronological");
       setButtonLabel("#notesCategoryToggleBtn", __RECTANGLE_3_GROUP_FILL, "Categorical", "Group by Location Type");
-      setButtonLabel("#notesExcludedToggleBtn", notesHideExcludedOnly ? __EYE_SLASH : __EYE, notesHideExcludedOnly ? "Opt-Out Hidden" : "Opt-Out Visible", notesHideExcludedOnly ? "Show opt-out-only locations" : "Hide opt-out-only locations");
+      setButtonLabel("#notesExcludedToggleBtn", notesHideExcludedOnly ? __EYE_SLASH : __EYE, notesHideExcludedOnly ? "Excluded Hidden" : "Excluded Visible", notesHideExcludedOnly ? "Show excluded locations" : "Hide excluded locations");
       setButtonLabel("#notesViewExpandedBtn", __RECTANGLE_EXPAND_VERTICAL, "Expanded", "Expanded View");
       setButtonLabel("#notesViewCompactBtn", __RECTANGLE_COMPRESS_VERTICAL, "Condensed", "Condensed View");
       setButtonLabel("#notesViewTextBtn", __LIST_BULLET_RECTANGLE_PORTRAIT, "Text Only");
@@ -7906,7 +7916,7 @@
       const levelId = dominantLevel(abbr)?.id || "";
       const notes = sortedNotesFor(abbr).filter(note => !levelId || note.levelId === levelId);
       const dates = notes.map(note => note.date).filter(Boolean).sort();
-      return dates[0] ? formatDateDisplay(dates[0]) : "None";
+      return dates[0] ? formatDateDisplay(dates[0]) : "No Dates";
     }
 
     function compactStateRow(abbr) {
@@ -7990,6 +8000,7 @@
       if (!$("#notesPanel")) return;
       renderNotesPanelControls();
       $("#notesPanelBackBtn").classList.toggle("hidden", !notesPanelState);
+      $("#notesPanelBackHint").classList.toggle("hidden", !notesPanelState);
       $("#notesPanelSearchWrap").classList.toggle("hidden", Boolean(notesPanelState));
       $(".notes-controls").classList.toggle("hidden", Boolean(notesPanelState));
       $("#notesPanelSubtitle").classList.toggle("hidden", Boolean(notesPanelState));
@@ -8075,7 +8086,7 @@
       if (!marked.length) {
         const emptyText = notesSearchQuery.trim()
           ? "No states match that search."
-          : notesHideExcludedOnly ? "No visible marked locations. Opt-out-only locations are hidden."
+          : notesHideExcludedOnly ? "No visible marked locations. Excluded locations are hidden."
             : !allNoteIconFiltersSelected() ? "No locations match the selected icon filters."
               : noteLevelFilters.size ? "No states match the selected legend filters." : "No marked states yet.";
         $("#notesPanelContent").innerHTML = `<div class="empty">${emptyText}</div>`;
@@ -9706,7 +9717,7 @@
             notesSortMode = "chrono";
             notesViewMode = "expanded";
             notesCategoricalMode = true;
-            notesHideExcludedOnly = false;
+            notesHideExcludedOnly = true;
             notesSearchQuery = "";
             mapFitMode = true;
             save();
