@@ -126,6 +126,7 @@
 
     [data-button-style="both"] .segmented button .btn-label,
     [data-button-style="both"] .map-head-actions button .btn-label,
+    [data-button-style="both"] .toolbar-panel-toggle-group button .btn-label,
     [data-button-style="both"] .notes-controls button .btn-label,
     [data-button-style="both"] .legend-actions button .btn-label,
     [data-button-style="both"] .icon-btn .btn-label {
@@ -184,6 +185,8 @@
       align-items: center;
       justify-content: flex-start;
       gap: .36rem;
+      font-size: .75rem;
+      line-height: 1.1;
     }
 
     .hint-dismiss-btn {
@@ -295,12 +298,12 @@
       position: sticky;
       top: 0;
       z-index: 20;
-      min-height: 62px;
+      min-height: 54px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
-      padding: .85rem clamp(.9rem, 2vw, 1.5rem);
+      gap: .72rem;
+      padding: .48rem clamp(.85rem, 1.8vw, 1.25rem);
       background: color-mix(in srgb, var(--surface) 92%, transparent);
       border-bottom: 1px solid var(--line);
       backdrop-filter: blur(14px);
@@ -310,17 +313,25 @@
       min-width: 0;
       display: flex;
       align-items: center;
-      gap: .65rem;
+      gap: .52rem;
       flex: 1 1 auto;
     }
 
-    .topbar-resize-hint {
-      flex: 0 1 23rem;
-      max-width: min(34vw, 23rem);
+    .topbar-hints {
+      flex: 0 1 30rem;
+      max-width: min(40vw, 30rem);
+      display: grid;
+      justify-items: end;
+      gap: .04rem;
+      min-width: 0;
+    }
+
+    .topbar-hints small {
       color: var(--muted);
-      font-size: .72rem;
-      line-height: 1.18;
+      font-size: .75rem;
+      line-height: 1.1;
       text-align: right;
+      justify-content: flex-end;
     }
 
     h1 {
@@ -343,6 +354,42 @@
       flex: 0 0 auto;
     }
 
+    .toolbar-panel-toggle-group {
+      display: flex;
+      align-items: center;
+      gap: .18rem;
+      padding: .18rem;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: color-mix(in srgb, var(--surface) 88%, var(--bg));
+      flex: 0 0 auto;
+    }
+
+    .toolbar-panel-toggle-group button {
+      width: 40px;
+      min-width: 40px;
+      min-height: 40px;
+      aspect-ratio: 1;
+      padding: 0;
+      display: inline-grid;
+      place-items: center;
+      flex: 0 0 40px;
+    }
+
+    .toolbar-panel-toggle-group .sf-symbol {
+      width: 1.08em;
+      height: 1.08em;
+    }
+
+    [data-button-style="text"] .toolbar-panel-toggle-group button,
+    [data-button-style="both"] .toolbar-panel-toggle-group button {
+      width: auto;
+      min-width: 56px;
+      aspect-ratio: auto;
+      padding: 0 .45rem;
+      flex-basis: auto;
+    }
+
     #settingsBtn {
       position: relative;
       width: 40px;
@@ -355,8 +402,8 @@
     .release-notice {
       position: absolute;
       left: 50%;
-      top: .48rem;
-      transform: translateX(-50%);
+      top: 50%;
+      transform: translate(-50%, -50%);
       width: min(68vw, 880px);
       min-height: 44px;
       display: grid;
@@ -469,8 +516,8 @@
       margin: 0 auto;
       padding: clamp(.75rem, 1.6vw, 1.25rem);
       display: grid;
-      grid-template-columns: minmax(0, var(--map-column-width, 2fr)) 14px minmax(320px, 1fr);
-      gap: .45rem;
+      grid-template-columns: minmax(0, var(--map-column-width, 2fr)) 10px minmax(320px, 1fr);
+      gap: .28rem;
       align-items: stretch;
       min-height: 0;
     }
@@ -479,11 +526,19 @@
       grid-template-columns: 1fr;
     }
 
+    [data-map-panel="closed"] .main {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    [data-map-panel="closed"] .map-panel {
+      display: none;
+    }
+
     .main-resize-handle {
       position: relative;
       align-self: stretch;
-      width: 14px;
-      min-width: 14px;
+      width: 10px;
+      min-width: 10px;
       min-height: 120px;
       padding: 0;
       border: 0;
@@ -514,6 +569,7 @@
       box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent);
     }
 
+    [data-map-panel="closed"] .main-resize-handle,
     [data-legend="closed"][data-notes="closed"] .main-resize-handle {
       display: none;
     }
@@ -545,31 +601,31 @@
 
     .map-head-title {
       min-width: 0;
-      flex: 1 1 auto;
+      flex: 0 0 auto;
     }
 
     .map-head-hints {
       display: grid;
       justify-items: end;
       gap: .12rem;
-      flex: 1 1 100%;
-      margin-top: -.24rem;
-      line-height: 1.22;
+      flex: 1 1 18rem;
+      min-width: 10rem;
+      line-height: 1.1;
     }
 
     .map-head-hints small {
       display: inline-flex;
       align-items: center;
       justify-content: flex-end;
-      font-size: .72rem;
+      font-size: .75rem;
       text-align: right;
     }
 
     .map-head-actions {
       display: flex;
-      gap: .32rem;
+      gap: .42rem;
       align-items: center;
-      flex: 0 0 auto;
+      flex: 1 1 auto;
       flex-wrap: nowrap;
       justify-content: flex-end;
       margin-left: auto;
@@ -1843,6 +1899,12 @@
       max-width: none;
     }
 
+    .notes-panel-head .notes-back-hint {
+      margin-left: auto;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
     .notes-controls {
       --notes-control-size: 36px;
       display: flex;
@@ -1875,9 +1937,14 @@
     }
 
     .notes-controls button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       white-space: nowrap;
       min-height: var(--notes-control-size);
       padding: .34rem .45rem;
+      line-height: 1;
+      overflow: visible;
     }
 
     .notes-controls .segmented button {
@@ -1901,6 +1968,27 @@
       aspect-ratio: 1;
       padding: 0;
       justify-content: center;
+    }
+
+    .notes-controls button>.sf-symbol,
+    .notes-controls button .btn-symbol,
+    .notes-controls button .btn-symbol>.sf-symbol,
+    .smart-convert-row button .btn-symbol,
+    .smart-convert-row button .btn-symbol>.sf-symbol,
+    .smart-convert-row button>.sf-symbol {
+      display: block;
+      width: 1.18em;
+      height: 1.18em;
+      margin-block: -.03em;
+      vertical-align: middle;
+    }
+
+    .notes-controls button .btn-symbol,
+    .smart-convert-row button .btn-symbol {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
     }
 
     .notes-category-toggle[aria-pressed="true"] {
@@ -2115,7 +2203,12 @@
     }
 
     .smart-convert-row button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       min-height: 38px;
+      line-height: 1;
+      overflow: visible;
     }
 
     .note-inline-hints {
@@ -3477,9 +3570,12 @@
     <header class="topbar">
       <div class="title-wrap">
         <h1 id="mapTitle">Your State Map</h1>
-        <small id="mapResizeHint" class="topbar-resize-hint" data-hint data-hint-key="map-resize">
-          Looks wonky? Drag the divider to resize<br />
-          the map and cards to fit your needs.</small>
+        <div class="topbar-hints" aria-label="Title bar tips">
+          <small id="topbarPanelHint" data-hint data-hint-key="topbar-panel-controls">
+            Edit the Map Name | Toggle Cards Shown: Map, Legend, Notes.</small>
+          <small id="mapResizeHint" class="topbar-resize-hint" data-hint data-hint-key="map-resize">
+            Looks wonky? Resize the map and cards to fit your needs.</small>
+        </div>
         <button id="renameBtn" class="ghost" type="button" data-shortcut="M">Rename</button>
       </div>
       <div id="whatsNewNotice" class="release-notice hidden" role="button" tabindex="0" aria-label="Open release notes">
@@ -3494,6 +3590,14 @@
           title="Dismiss">×</button>
       </div>
       <nav class="toolbar" aria-label="App actions">
+        <div class="toolbar-panel-toggle-group" aria-label="Visible panels">
+          <button id="mapToggleBtn" class="toggle-btn" type="button" aria-pressed="true"
+            data-shortcut="G">Map</button>
+          <button id="legendToggleBtn" class="toggle-btn" type="button" aria-pressed="true"
+            data-shortcut="L">Legend</button>
+          <button id="notesToggleBtn" class="toggle-btn" type="button" aria-pressed="true"
+            data-shortcut="N">Notes</button>
+        </div>
         <button id="settingsBtn" type="button" data-shortcut="S">Settings</button>
       </nav>
     </header>
@@ -3506,6 +3610,11 @@
             <small id="tapHint" data-hint>Tap a state to cycle its visit level.</small>
           </div>
           <div class="map-head-actions">
+            <div class="map-head-hints">
+              <small data-hint data-hint-key="map-controls">
+                Choose map labels text: none, abbr, full name.<br />
+                Switch between screenshot-ready/scrollable map views.</small>
+            </div>
             <div class="map-action-group map-label-group">
               <div class="segmented map-label-toggle" aria-label="Map labels">
                 <span id="labelsToggleLabel" title="Map Label Type">Labels</span>
@@ -3517,17 +3626,7 @@
             <div class="map-action-group map-toggle-group">
               <button id="mapFitBtn" class="toggle-btn" type="button" aria-pressed="false"
                 aria-label="Fit map on screen" data-shortcut="F">Fit Map</button>
-              <button id="legendToggleBtn" class="toggle-btn" type="button" aria-pressed="true"
-                data-shortcut="L">Legend</button>
-              <button id="notesToggleBtn" class="toggle-btn" type="button" aria-pressed="false"
-                data-shortcut="N">Notes</button>
             </div>
-          </div>
-          <div class="map-head-hints">
-            <small data-hint data-hint-key="map-controls">
-              Choose map labels text: none, abbr, full name.<br />
-              Switch between screenshot-ready/scrollable map views.<br />
-              Show/Hide the Legend/Notes Panels.</small>
           </div>
         </div>
         <div class="map-viewport">
@@ -4023,6 +4122,8 @@
               <input id="notesStateSearch" type="search"
                 placeholder="Search groups, names, levels, dates, notes, tags, etc..." aria-label="Search notes">
             </div>
+            <small id="notesPanelBackHint" class="notes-back-hint" data-hint data-hint-key="notes-panel-back-hint">
+              Hit Back to return to the main list.</small>
             <button id="notesPanelBackBtn" type="button" data-shortcut="B">All</button>
           </div>
           <div class="notes-controls" aria-label="Notes display controls">
@@ -4039,11 +4140,11 @@
             <button id="notesCategoryToggleBtn" class="notes-category-toggle" type="button" aria-pressed="true"
               data-shortcut="Y">Categorical</button>
             <button id="notesExcludedToggleBtn" class="notes-excluded-toggle" type="button" aria-pressed="true"
-              data-shortcut="V">Show Opt-Out</button>
+              data-shortcut="V">Show Excluded</button>
             <button id="copyNotesTextBtn" class="notes-copy-btn" type="button" data-shortcut="P">Copy</button>
           </div>
           <small id="notesPanelSubtitle" class="notes-toggle-hint" data-hint data-hint-key="notesPanelSubtitle">
-            View | Sort | Group by Category | Show/hide excluded Locations | Copy the Text Only view.</small>
+            Group by Category | Show/Hide Excluded Locations | Copy the Text Only View.</small>
           <ol id="notesIconFilters" class="notes-icon-filters" aria-label="Filter notes by icon"></ol>
           <small id="notesIconFilterHint" class="notes-icon-filter-hint" data-hint
             data-hint-key="notes-icon-filter-help">
@@ -4423,8 +4524,8 @@
           <ol>
             <li>Tap a state to mark it. In cycle mode, a first tap on an already marked state shows it in Notes; the
               next tap cycles levels.</li>
-            <li>Use the State Map header to switch labels, fit the map for screenshots, show or hide Legend and Notes,
-              and drag the divider on desktop to resize the map and cards.</li>
+            <li>Use the app header to show or hide Map, Legend, and Notes. Use the State Map header to switch labels,
+              fit the map for screenshots, and drag the divider on desktop to resize the map and cards.</li>
             <li>Use the Legend to edit level names, definitions, colors, order, and whether a level counts toward stats.
             </li>
             <li>Click a Legend level to filter Notes by that level. Click it again to clear the filter.</li>
@@ -4444,7 +4545,7 @@
             <li>Use JSON Import/Export in Settings to back up data or move it to another device. Text exports are for
               sharing or saving elsewhere.</li>
           </ol>
-          <p><b>Default levels:</b> Visited and Not Interested. Not Interested is the opt-out level and is excluded from
+          <p><b>Default levels:</b> Visited and Not Interested. Not Interested is a excluded level and doesn't count towards
             total completion.</p>
           <p><b>Color tools:</b> Auto Colors can apply a smart palette to your current levels. Suggested categories can
             be shown or hidden from the Legend.</p>
@@ -4457,7 +4558,7 @@
             in Obsidian, Notion, or any Markdown viewer. Rich Text (.rtf) opens in Word or Pages. Simple Text (.txt)
             pastes anywhere.</p>
           <p><b>Shortcut overlays:</b> Hold Shift + Control + Option to show temporary hint badges on actionable
-            controls.</p>
+            controls. Developer Tools lists hidden commands, including H H to restore dismissed hints while testing.</p>
         </section>
         <section class="help-section">
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ</h3>
@@ -4505,9 +4606,9 @@
             Feel free to share, but have no expectations around continued support and functionality.
           </p>
           <p class="help-feedback">
-            P.P.S. This app gets the most love in Desktop Mode with Button Style set to Icons and Hints turned off,
+            P.P.S. This app gets the most love in Desktop Size, Dark Mode, with Icon Button Style and Hints Off,
             because that is how I actually use it.
-            Mobile, text button, and hint quirks still matter; they just wait politely in line.
+            Mobile layout, Light mode, Text buttons, and Hint quirks still matter; they just wait politely in line.
           </p>
         </section>
       </section>
@@ -4593,16 +4694,19 @@
             <div class="shortcut-row is-direct"><kbd>R</kbd><span>Global: open Release Notes. Press again to jump into
                 Roadmap search.</span></div>
             <div class="shortcut-row is-direct"><kbd>/</kbd><span>Global: focus Notes search.</span></div>
+            <div class="shortcut-row is-direct"><kbd>H H</kbd><span>Global: reset dismissed hints by toggling Hints off
+                and back on.</span></div>
             <div class="shortcut-row"><kbd>M</kbd><span>Rename the map from the main screen.</span></div>
             <div class="shortcut-row"><kbd>S</kbd><span>Open Settings.</span></div>
+            <div class="shortcut-row"><kbd>G</kbd><span>Toggle the Map panel.</span></div>
             <div class="shortcut-row"><kbd>L</kbd><span>Toggle the Legend panel.</span></div>
             <div class="shortcut-row"><kbd>N</kbd><span>Toggle the Notes panel.</span></div>
             <div class="shortcut-row"><kbd>F</kbd><span>Toggle fitted vs scrollable map rendering.</span></div>
             <div class="shortcut-row"><kbd>0 1 2</kbd><span>Switch map labels between None, Abbr, and Name.</span></div>
             <div class="shortcut-row"><kbd>C H A</kbd><span>Auto Colors, suggested categories, and contextual add
                 actions.</span></div>
-            <div class="shortcut-row"><kbd>B T E K Y V O P</kbd><span>Notes back, chronological sort, Expanded,
-                Condensed, Categorical, opt-out visibility, Text Only, and Copy.</span></div>
+            <div class="shortcut-row"><kbd>B T E K Y V O P</kbd><span>Notes Back, Chronological Sort, Expanded,
+                Condensed, Categorical, Excluded Visibility, Text Only, and Copy.</span></div>
             <div class="shortcut-row"><kbd>W</kbd><span>Developer: reset the What's New banner and badges.</span></div>
             <div class="shortcut-row"><kbd>F</kbd><span>Developer: reset local app data to defaults.</span></div>
             <div class="shortcut-row"><kbd>Q X</kbd><span>Close dialogs or cancel confirm actions.</span></div>
@@ -4621,7 +4725,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "2.2.0";
+    const APP_VERSION = "2.2.1";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -4699,11 +4803,10 @@
     const __RECTANGLE_GRID_1X2_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 27.4609 22.9785"><g><rect height="22.9785" opacity="0" width="27.4609" x="0" y="0"/><path d="M2.62695 22.9785L24.4727 22.9785C26.2109 22.9785 27.0996 22.1387 27.0996 20.3711L27.0996 15.1758C27.0996 13.4082 26.2109 12.5684 24.4727 12.5684L2.62695 12.5684C0.888672 12.5684 0 13.4082 0 15.1758L0 20.3711C0 22.1387 0.888672 22.9785 2.62695 22.9785Z"/><path d="M2.62695 10.4297L24.4727 10.4297C26.2109 10.4297 27.0996 9.59961 27.0996 7.82227L27.0996 2.62695C27.0996 0.859375 26.2109 0.0292969 24.4727 0.0292969L2.62695 0.0292969C0.888672 0.0292969 0 0.859375 0 2.62695L0 7.82227C0 9.59961 0.888672 10.4297 2.62695 10.4297Z"/></g></svg>`;
     const __RECTANGLE_GRID_1X3_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 27.8418 24.0527"><g><rect height="24.0527" opacity="0" width="27.8418" x="0" y="0"/><path d="M2.07031 24.0332L25.4102 24.0332C26.7188 24.0332 27.4805 23.291 27.4805 21.9238L27.4805 19.0918C27.4805 17.7246 26.7188 16.9824 25.4102 16.9824L2.07031 16.9824C0.761719 16.9824 0 17.7246 0 19.0918L0 21.9238C0 23.291 0.761719 24.0332 2.07031 24.0332Z"/><path d="M2.07031 15.5371L25.4102 15.5371C26.7188 15.5371 27.4805 14.8047 27.4805 13.4375L27.4805 10.5957C27.4805 9.22852 26.7188 8.49609 25.4102 8.49609L2.07031 8.49609C0.761719 8.49609 0 9.22852 0 10.5957L0 13.4375C0 14.8047 0.761719 15.5371 2.07031 15.5371Z"/><path d="M2.07031 7.05078L25.4102 7.05078C26.7188 7.05078 27.4805 6.30859 27.4805 4.94141L27.4805 2.10938C27.4805 0.742188 26.7188 0 25.4102 0L2.07031 0C0.761719 0 0 0.742188 0 2.10938L0 4.94141C0 6.30859 0.761719 7.05078 2.07031 7.05078Z"/></g></svg>`;
 
-
-
     // Future Top Bar
     const __GIFT_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24.3457 27.0996"><g><rect height="27.0996" opacity="0" width="24.3457" x="0" y="0"/><path d="M1.86523 22.9004C1.86523 24.9023 3.06641 25.9961 5.06836 25.9961L11.0254 25.9961L11.0254 14.707L1.86523 14.707ZM12.959 25.9961L18.916 25.9961C20.918 25.9961 22.1191 24.9023 22.1191 22.9004L22.1191 14.707L12.959 14.707ZM0 11.5918C0 12.8711 0.732422 13.4473 2.02148 13.4473L11.0254 13.4473L11.0254 6.77734L9.20898 6.77734C7.14844 6.77734 5.9082 5.54688 5.9082 4.0625C5.9082 2.71484 6.88477 1.91406 8.25195 1.91406C9.82422 1.91406 11.0254 3.125 11.0254 5.06836L11.0254 6.77734L12.959 6.77734L12.959 5.06836C12.959 3.125 14.1602 1.91406 15.7324 1.91406C17.0996 1.91406 18.0762 2.71484 18.0762 4.0625C18.0762 5.54688 16.8359 6.77734 14.7754 6.77734L12.959 6.77734L12.959 13.4473L21.9629 13.4473C23.2617 13.4473 23.9844 12.8711 23.9844 11.5918L23.9844 8.63281C23.9844 7.34375 23.2617 6.77734 21.9629 6.77734L18.7305 6.77734C19.5312 6.10352 20.0098 5.13672 20.0098 3.97461C20.0098 1.64062 18.1836 0 15.8301 0C14.043 0 12.6074 0.996094 11.9922 2.71484C11.377 0.996094 9.94141 0 8.1543 0C5.80078 0 3.97461 1.64062 3.97461 3.97461C3.97461 5.13672 4.45312 6.10352 5.25391 6.77734L2.02148 6.77734C0.78125 6.77734 0 7.34375 0 8.63281Z"/></g></svg>`;
     const __SQUARE_AND_ARROW_UP_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 22.4512 30.1465"><g><rect height="30.1465" opacity="0" width="22.4512" x="0" y="0"/><path d="M6.75781 5.67383C6.30859 5.67383 5.98633 5.35156 5.98633 4.91211C5.98633 4.6875 6.07422 4.51172 6.24023 4.3457L10.4199 0.283203C10.6348 0.0683594 10.8301 0 11.0449 0C11.2598 0 11.4551 0.0683594 11.6699 0.283203L15.8496 4.3457C16.0059 4.51172 16.1035 4.6875 16.1035 4.91211C16.1035 5.35156 15.7617 5.67383 15.3125 5.67383C15.1074 5.67383 14.8828 5.58594 14.7266 5.41016L12.6074 3.18359L11.0449 1.54297L9.48242 3.18359L7.35352 5.41016C7.19727 5.58594 6.96289 5.67383 6.75781 5.67383ZM11.0449 18.1738C10.5859 18.1738 10.1855 17.793 10.1855 17.3438L10.1855 4.23828L10.3125 1.11328C10.332 0.712891 10.6445 0.380859 11.0449 0.380859C11.4453 0.380859 11.7578 0.712891 11.7773 1.11328L11.9043 4.23828L11.9043 17.3438C11.9043 17.793 11.5039 18.1738 11.0449 18.1738ZM5.20508 27.9297L16.8848 27.9297C20.2344 27.9297 22.0898 26.0645 22.0898 22.7246L22.0898 13.0859C22.0898 9.74609 20.2344 7.89062 16.8848 7.89062L5.20508 7.89062C1.85547 7.89062 0 9.74609 0 13.0859L0 22.7246C0 26.0645 1.85547 27.9297 5.20508 27.9297Z"/></g></svg>`;
+    const __MAP_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 26.0352 24.4434"><g><rect height="24.4434" opacity="0" width="26.0352" x="0" y="0"/><path d="M0 22.6562C0 23.4961 0.488281 23.9746 1.30859 23.9746C1.60156 23.9746 1.9043 23.8867 2.26562 23.6816L7.74414 20.7031L7.74414 0.15625C7.50977 0.253906 7.25586 0.380859 7.01172 0.517578L1.01562 4.01367C0.332031 4.39453 0 4.92188 0 5.70312ZM9.29688 20.5371L15.6152 24.1602C15.8105 24.2676 16.0059 24.3555 16.1914 24.4043L16.1914 4.07227L10.0293 0.302734C9.80469 0.166016 9.55078 0.0585938 9.29688 0ZM17.7539 24.3652C17.8906 24.3164 18.0371 24.2578 18.1738 24.1699L24.668 20.4492C25.3418 20.0586 25.6738 19.541 25.6738 18.75L25.6738 1.78711C25.6738 0.9375 25.1758 0.46875 24.375 0.46875C24.082 0.46875 23.7793 0.556641 23.418 0.761719L17.7539 3.88672Z"/></g></svg>`;
 
     // Settings
     // Help Center
@@ -5559,6 +5662,18 @@
 
     const WISHLIST_SEEDS = [
       {
+        title: "Rename App",
+        ticketId: "WISH-033",
+        description: "Evaluate a broader app name that fits a personal visual travel journal centered on seeing where someone has been and what is left to visit. Top choice: Travel Log. Other candidates: PlaceMark, Waypoint Journal, Travel Ledger, MapLog, Memory Map, Placebook, and Map Notes.",
+        priority: "P2",
+        effort: "medium",
+        targetKind: "major",
+        targetVersion: "3.0.0",
+        tokenCostPct: 18,
+        prompt: "Explore and implement an app rename. Treat Travel Log as the top candidate, then compare PlaceMark, Waypoint Journal, Travel Ledger, MapLog, Memory Map, Placebook, and Map Notes against the app's visual travel journal direction, current features, and future roadmap. Update title, visible app name, docs, exports, install metadata, and release notes without changing user data.",
+        category: "Branding"
+      },
+      {
         title: "Cleanup Modal Dialog Pop-Ups",
         ticketId: "WISH-032",
         description: "Normalize modal headers, button layout, symbols, text labels, shortcut hints, and destructive confirmations across the app.",
@@ -5569,18 +5684,6 @@
         tokenCostPct: 24,
         prompt: "Polish all modal dialog pop-ups: align headers, close/save/delete controls, icon/text rendering, shortcut badges, confirmations, and mobile spacing while preserving behavior.",
         category: "UI"
-      },
-      {
-        title: "Move Panel Toggles to App Header",
-        ticketId: "WISH-031",
-        description: "Move the Legend and Notes toggles into the app header between Edit and Settings, add a Map visibility toggle to the left of Legend, and keep Map on by default.",
-        priority: "P1",
-        effort: "medium",
-        targetKind: "minor",
-        targetVersion: "",
-        tokenCostPct: 24,
-        prompt: "Move Map, Legend, and Notes visibility toggles into the app header between Edit and Settings. Default Map to on, preserve responsive layout, and keep current panel behavior intact.",
-        category: "Layout"
       },
       {
         title: "Better Scrollable Map With Zoom",
@@ -5658,7 +5761,7 @@
         title: "Choose Condensed Notes Date Summary",
         ticketId: "WISH-024",
         description: "Add a user setting for how Condensed Notes chooses the date shown on parent location rows. Options should include single date, earliest, latest, and highest-level-based behavior.",
-        priority: "P2",
+        priority: "P3",
         effort: "small",
         targetKind: "minor",
         targetVersion: "",
@@ -5739,18 +5842,6 @@
         category: "UI"
       },
       {
-        title: "Give Settings Close Button More Room",
-        ticketId: "WISH-020",
-        description: "Polish the Settings close button spacing so the icon and label feel aligned with other dialog close controls. Scope includes header spacing, touch target, icon/text/both modes, and mobile width checks.",
-        priority: "P3",
-        effort: "small",
-        targetKind: "patch",
-        targetVersion: "",
-        tokenCostPct: 7,
-        prompt: "Polish Settings close button spacing. Match other dialog close controls across icon/text/both modes and mobile widths.",
-        category: "UI"
-      },
-      {
         title: "Optimize iPhone UI",
         ticketId: "WISH-011",
         description: "Tune the app for iPhone-sized screens. Scope includes map sizing, tabs, controls, dialogs, touch targets, safe areas, and avoiding cramped or clipped text.",
@@ -5764,6 +5855,27 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "2.2.1",
+        date: "2026-05-19",
+        title: "Map Cards Tune-Up",
+        summary: "A patch release for cleaner map/card controls, tighter hints, safer testing shortcuts, and the next naming direction.",
+        highlights: [
+          "Map, Legend, and Notes visibility controls now live together in the top app bar, including a new Map visibility toggle.",
+          "Title-bar tips are tighter and separate panel/edit guidance from the resize hint.",
+          "Map label and fit/scroll guidance now sits beside the map controls instead of taking an extra row.",
+          "The desktop map/cards divider track is tighter and hidden whenever the map is not visible.",
+          "Developer Tools now documents the hidden double-H shortcut for resetting dismissed hints while testing."
+        ],
+        updates: [
+          "The main layout now avoids blank states by keeping at least one panel visible.",
+          "Tall Notes and note-editor symbols have safer centering so their lower edges do not get clipped.",
+          "The rename roadmap now treats Travel Log as the top candidate for the app's visual travel journal direction.",
+          "Fresh browser profiles can still see the latest feature banner, while this patch release remains unhighlighted.",
+          "Existing saved data migrates from its stored app version when no explicit release-notice state exists.",
+          "Help Center and dismissible hints were refreshed for the current header, map-control, and hidden shortcut behavior."
+        ]
+      },
       {
         version: "2.2.0",
         date: "2026-05-19",
@@ -5833,7 +5945,7 @@
         ],
         updates: [
           "Smart Convert can turn a quick note into structured note fields, remove parsed pieces from the remaining details, and clear itself after parsing.",
-          "Legend stats count each location toward its highest active level, and opt-out-only locations can be shown or hidden in Notes.",
+          "Legend stats count each location toward its highest active level, and excluded only locations can be shown or hidden in Notes.",
           "Selected locations open into Notes with tighter Applied Levels and Visit Notes sections.",
           "Developer Tools gained banner reset, shortcut mode, and defaults reset controls for maintenance.",
           "Help Center coverage and dismissible hints were refreshed for the 2.0 notes workflow."
@@ -6013,7 +6125,7 @@
           "Added per-level control for whether a level counts toward stats.",
           "Added non-counting level styling and quick-add options.",
           "Moved total completion into the Legend header.",
-          "Kept opt-out levels visible on the map while excluding them from completion math."
+          "Kept excluded levels visible on the map while excluding them from completion math."
         ]
       },
       {
@@ -6148,17 +6260,20 @@
     const DESKTOP_LAYOUT_QUERY = window.matchMedia("(min-width: 981px)");
     let selectedState = null;
     let drawerMode = "state";
+    let mapPanelOpen = true;
     let legendPanelOpen = true;
     let notesPanelOpen = true;
     let notesPanelState = null;
     let notesSortMode = "chrono";
-    let notesViewMode = "expanded";
+    let notesViewMode = "compact";
     let notesCategoricalMode = true;
-    let notesHideExcludedOnly = false;
+    let notesHideExcludedOnly = true;
     let notesSearchQuery = "";
     let mapFitMode = true;
     let noteLevelFilters = new Set();
     let noteVisitTypeFilters = new Set();
+    let hiddenHintResetKeyTime = 0;
+    let hiddenHintResetKeyTimer = 0;
     let noteIconLongPressTimer = 0;
     let noteIconLongPressHandled = false;
     let collapsedNoteCategories = new Set();
@@ -6189,14 +6304,14 @@
         notes: {},
         visitTypes: defaultVisitTypes(),
         dismissedHints: [],
-        lastSeenReleaseVersion: APP_VERSION,
+        lastSeenReleaseVersion: "0.0.0",
         dismissedReleaseVersion: "",
         territoryDefaultsSeeded: true
       };
     }
 
     function territoryDefaultLevelId(levels) {
-      return (levels || []).find(level => level.countsTowardStats === false || isOptOutLevel(level))?.id || "";
+      return (levels || []).find(level => level.countsTowardStats === false || isExcludedLevel(level))?.id || "";
     }
 
     function defaultTerritoryStates(levels) {
@@ -6422,7 +6537,10 @@
         ? [...new Set(input.dismissedHints.map(item => String(item || "").slice(0, 80)).filter(Boolean))].slice(0, 100)
         : [];
       if (!next.settings.uiHints) next.dismissedHints = [];
-      next.lastSeenReleaseVersion = String(input.lastSeenReleaseVersion || input.appVersion || APP_VERSION);
+      const hasLastSeenReleaseVersion = Object.prototype.hasOwnProperty.call(input, "lastSeenReleaseVersion");
+      next.lastSeenReleaseVersion = hasLastSeenReleaseVersion
+        ? String(input.lastSeenReleaseVersion || "0.0.0")
+        : String(input.appVersion || APP_VERSION);
       next.dismissedReleaseVersion = String(input.dismissedReleaseVersion || "");
       next.levels = Array.isArray(input.levels) && input.levels.length ? input.levels.slice(0, 5) : base.levels;
       next.levels = next.levels.map((level, index) => ({
@@ -6432,7 +6550,7 @@
         color: /^#[0-9a-f]{6}$/i.test(level.color || "") ? level.color : THEMES.Classic[index] || "#2563eb",
         countsTowardStats: typeof level.countsTowardStats === "boolean"
           ? level.countsTowardStats
-          : (BUILT_INS.find(item => item.id === level.id)?.countsTowardStats ?? !isOptOutLevel(level))
+          : (BUILT_INS.find(item => item.id === level.id)?.countsTowardStats ?? !isExcludedLevel(level))
       }));
       next.visitTypes = normalizeVisitTypeConfig(input.visitTypes, base.visitTypes);
       const validLevelIds = new Set(next.levels.map(l => l.id));
@@ -6483,7 +6601,7 @@
       return Boolean(note.text || note.details || note.where || note.what || note.who || (note.visitTypes || []).length);
     }
 
-    function isOptOutLevel(level) {
+    function isExcludedLevel(level) {
       const text = `${level.id || ""} ${level.name || ""}`.toLowerCase();
       return text.includes("not-interested") || text.includes("not interested") || text.includes("don't want") || text.includes("dont want");
     }
@@ -6821,6 +6939,7 @@
     function syncButtonLabels() {
       setButtonLabel("#renameBtn", ICON_GLOABL_ACTION_EDIT__PENCIL, "Rename");
       setButtonLabel("#settingsBtn", ICON_GLOBAL_SETTINGS__GEARSHAPE_FILL, "Settings");
+      setButtonLabel("#mapToggleBtn", __MAP_FILL, "Map", "Toggle Map Panel", "Toggle Map Panel");
       setButtonLabel("#legendToggleBtn", ICON_MAP_MODAL_LEGEND_CHECKLIST_UNCHECKED, "Legend", "Toggle Legend Panel", "Toggle Legend Panel");
       setButtonLabel("#notesToggleBtn", ICON_MAP_MODAL_NOTES_LIST_BULLET_CLIPBOARD_FILL, "Notes", "Toggle Notes Panel", "Toggle Notes Panel");
       $("#labelsToggleLabel").innerHTML = prefersSymbols() ? ICON_MAP_LABELS_TAG_FILL : "Labels";
@@ -6840,7 +6959,7 @@
       setButtonLabel("#notesSortAlphaBtn", __TEXTFORMAT_CHARACTERS_ARROW_LEFT_AND_RIGHT, "Alphabetical");
       setButtonLabel("#notesSortChronoBtn", __CLOCK_ARROW_TRIANGLEHEAD_2_COUNTERCLOCKWISE_ROTATE_90, "Chronological");
       setButtonLabel("#notesCategoryToggleBtn", __RECTANGLE_3_GROUP_FILL, "Categorical", "Group by Location Type");
-      setButtonLabel("#notesExcludedToggleBtn", notesHideExcludedOnly ? __EYE_SLASH : __EYE, notesHideExcludedOnly ? "Opt-Out Hidden" : "Opt-Out Visible", notesHideExcludedOnly ? "Show opt-out-only locations" : "Hide opt-out-only locations");
+      setButtonLabel("#notesExcludedToggleBtn", notesHideExcludedOnly ? __EYE_SLASH : __EYE, notesHideExcludedOnly ? "Excluded Hidden" : "Excluded Visible", notesHideExcludedOnly ? "Show excluded locations" : "Hide excluded locations");
       setButtonLabel("#notesViewExpandedBtn", __RECTANGLE_EXPAND_VERTICAL, "Expanded", "Expanded View");
       setButtonLabel("#notesViewCompactBtn", __RECTANGLE_COMPRESS_VERTICAL, "Condensed", "Condensed View");
       setButtonLabel("#notesViewTextBtn", __LIST_BULLET_RECTANGLE_PORTRAIT, "Text Only");
@@ -6881,6 +7000,7 @@
       setButtonLabelBoth("#shortcutModeOffBtn", ICON_SETTINGS_SHORTCUTSOFF__TAG_SLASH_FILL, "Off", "Shortcut Mode off");
       setDocSectionIcons();
       syncVisitTypeIcons();
+      $("#mapToggleBtn").setAttribute("aria-pressed", String(mapPanelOpen));
       $("#legendToggleBtn").setAttribute("aria-pressed", String(legendPanelOpen));
       $("#notesToggleBtn").setAttribute("aria-pressed", String(notesPanelOpen));
       $("#mapFitBtn").setAttribute("aria-pressed", String(mapFitMode));
@@ -6897,13 +7017,14 @@
       const mainStyle = getComputedStyle(main);
       const rect = main.getBoundingClientRect();
       const sideOpen = legendPanelOpen || notesPanelOpen;
+      const splitOpen = mapPanelOpen && sideOpen;
       const columnGap = cssPx(mainStyle.columnGap || mainStyle.gap);
       const paddingLeft = cssPx(mainStyle.paddingLeft);
       const paddingRight = cssPx(mainStyle.paddingRight);
       const mainWidth = main.clientWidth - paddingLeft - paddingRight;
-      const handleWidth = sideOpen ? ($("#mainResizeHandle")?.getBoundingClientRect().width || 0) : 0;
-      const available = Math.max(320, mainWidth - handleWidth - (sideOpen ? columnGap * 2 : 0));
-      const sideMin = sideOpen ? 320 : 0;
+      const handleWidth = splitOpen ? ($("#mainResizeHandle")?.getBoundingClientRect().width || 0) : 0;
+      const available = Math.max(320, mainWidth - handleWidth - (splitOpen ? columnGap * 2 : 0));
+      const sideMin = splitOpen ? 320 : 0;
       return {
         main,
         contentLeft: rect.left + paddingLeft,
@@ -6919,6 +7040,7 @@
     }
 
     function setMainSplitFromClientX(clientX, persist = false) {
+      if (!mapPanelOpen || !(legendPanelOpen || notesPanelOpen)) return;
       const metrics = mainLayoutMetrics();
       if (!metrics) return;
       const mapColumn = clampMapColumn(clientX - metrics.contentLeft, metrics);
@@ -6929,6 +7051,7 @@
     }
 
     function nudgeMainSplit(delta) {
+      if (!mapPanelOpen || !(legendPanelOpen || notesPanelOpen)) return;
       const metrics = mainLayoutMetrics();
       if (!metrics) return;
       const current = Number.isFinite(Number(state.settings.mapSplitRatio))
@@ -6959,7 +7082,7 @@
       const mapBodyHeight = Math.max(220, mainHeight - mapHead.getBoundingClientRect().height - wrapY - 2);
       const heightBoundColumn = Math.ceil(mapBodyHeight * MAP_ASPECT_RATIO + wrapX + 2);
       const sideOpen = legendPanelOpen || notesPanelOpen;
-      if (!sideOpen) {
+      if (!mapPanelOpen || !sideOpen) {
         main.style.removeProperty("--map-column-width");
         return;
       }
@@ -6998,6 +7121,7 @@
       document.documentElement.dataset.shortcuts = shortcutsActive() ? "on" : "off";
       document.documentElement.dataset.developer = state.settings.developerMode ? "on" : "off";
       document.documentElement.dataset.buttonStyle = state.settings.buttonStyle;
+      document.documentElement.dataset.mapPanel = mapPanelOpen ? "open" : "closed";
       document.documentElement.dataset.legend = legendPanelOpen ? "open" : "closed";
       document.documentElement.dataset.notes = notesPanelOpen ? "open" : "closed";
       document.documentElement.dataset.mapMode = mapFitMode ? "fit" : "scroll";
@@ -7542,8 +7666,22 @@
       $$("[data-open-marked]").forEach(button => button.addEventListener("click", () => openStateDrawer(button.dataset.openMarked)));
     }
 
+    function ensurePanelVisible(preferred = "map") {
+      if (mapPanelOpen || legendPanelOpen || notesPanelOpen) return;
+      if (preferred === "legend") legendPanelOpen = true;
+      else if (preferred === "notes") notesPanelOpen = true;
+      else mapPanelOpen = true;
+    }
+
+    function toggleMapPanel() {
+      mapPanelOpen = !mapPanelOpen;
+      ensurePanelVisible("legend");
+      render();
+    }
+
     function toggleLegendPanel() {
       legendPanelOpen = !legendPanelOpen;
+      ensurePanelVisible("map");
       render();
     }
 
@@ -7553,6 +7691,7 @@
         closeDrawer();
         notesPanelState = selectedState;
       }
+      ensurePanelVisible("map");
       render();
     }
 
@@ -7777,7 +7916,7 @@
       const levelId = dominantLevel(abbr)?.id || "";
       const notes = sortedNotesFor(abbr).filter(note => !levelId || note.levelId === levelId);
       const dates = notes.map(note => note.date).filter(Boolean).sort();
-      return dates[0] ? formatDateDisplay(dates[0]) : "None";
+      return dates[0] ? formatDateDisplay(dates[0]) : "No Dates";
     }
 
     function compactStateRow(abbr) {
@@ -7861,6 +8000,7 @@
       if (!$("#notesPanel")) return;
       renderNotesPanelControls();
       $("#notesPanelBackBtn").classList.toggle("hidden", !notesPanelState);
+      $("#notesPanelBackHint").classList.toggle("hidden", !notesPanelState);
       $("#notesPanelSearchWrap").classList.toggle("hidden", Boolean(notesPanelState));
       $(".notes-controls").classList.toggle("hidden", Boolean(notesPanelState));
       $("#notesPanelSubtitle").classList.toggle("hidden", Boolean(notesPanelState));
@@ -7946,7 +8086,7 @@
       if (!marked.length) {
         const emptyText = notesSearchQuery.trim()
           ? "No states match that search."
-          : notesHideExcludedOnly ? "No visible marked locations. Opt-out-only locations are hidden."
+          : notesHideExcludedOnly ? "No visible marked locations. Excluded locations are hidden."
             : !allNoteIconFiltersSelected() ? "No locations match the selected icon filters."
               : noteLevelFilters.size ? "No states match the selected legend filters." : "No marked states yet.";
         $("#notesPanelContent").innerHTML = `<div class="empty">${emptyText}</div>`;
@@ -9053,6 +9193,7 @@
     function handleGlobalShortcut(event) {
       if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || isTypingTarget(event.target)) return false;
       const key = shortcutKey(event);
+      if (handleHiddenHintResetShortcut(event, key)) return true;
       if (key === "/") {
         event.preventDefault();
         focusNotesSearchShortcut();
@@ -9061,6 +9202,33 @@
       if (key !== "r") return false;
       event.preventDefault();
       openReleaseNotesShortcut();
+      return true;
+    }
+
+    function handleHiddenHintResetShortcut(event, key) {
+      if (key !== "h") {
+        hiddenHintResetKeyTime = 0;
+        if (hiddenHintResetKeyTimer) {
+          clearTimeout(hiddenHintResetKeyTimer);
+          hiddenHintResetKeyTimer = 0;
+        }
+        return false;
+      }
+      const now = performance.now();
+      const isSecondPress = hiddenHintResetKeyTime && now - hiddenHintResetKeyTime < 850;
+      hiddenHintResetKeyTime = now;
+      if (hiddenHintResetKeyTimer) clearTimeout(hiddenHintResetKeyTimer);
+      hiddenHintResetKeyTimer = window.setTimeout(() => {
+        hiddenHintResetKeyTime = 0;
+        hiddenHintResetKeyTimer = 0;
+      }, 850);
+      if (!isSecondPress) return false;
+      event.preventDefault();
+      hiddenHintResetKeyTime = 0;
+      clearTimeout(hiddenHintResetKeyTimer);
+      hiddenHintResetKeyTimer = 0;
+      updateSetting("uiHints", false);
+      requestAnimationFrame(() => updateSetting("uiHints", true));
       return true;
     }
 
@@ -9092,7 +9260,7 @@
       const handle = $("#mainResizeHandle");
       if (!handle) return;
       handle.addEventListener("pointerdown", event => {
-        if (!DESKTOP_LAYOUT_QUERY.matches || !(legendPanelOpen || notesPanelOpen)) return;
+        if (!DESKTOP_LAYOUT_QUERY.matches || !mapPanelOpen || !(legendPanelOpen || notesPanelOpen)) return;
         event.preventDefault();
         mainResizeActive = true;
         document.documentElement.dataset.resizingMain = "true";
@@ -9114,6 +9282,7 @@
       });
       handle.addEventListener("keydown", event => {
         if (!["ArrowLeft", "ArrowRight", "Home"].includes(event.key)) return;
+        if (!mapPanelOpen || !(legendPanelOpen || notesPanelOpen)) return;
         event.preventDefault();
         if (event.key === "Home") {
           state.settings.mapSplitRatio = .66;
@@ -9243,6 +9412,7 @@
       }
       if (isTypingTarget(event.target)) return;
       const actions = {
+        g: toggleMapPanel,
         l: toggleLegendPanel,
         n: toggleNotesPanel,
         f: toggleMapFitMode,
@@ -9357,6 +9527,7 @@
       $("#labelsNoneBtn").addEventListener("click", () => updateSetting("mapLabels", "none"));
       $("#labelsAbbrBtn").addEventListener("click", () => updateSetting("mapLabels", "abbr"));
       $("#labelsNameBtn").addEventListener("click", () => updateSetting("mapLabels", "name"));
+      $("#mapToggleBtn").addEventListener("click", toggleMapPanel);
       $("#legendToggleBtn").addEventListener("click", toggleLegendPanel);
       $("#notesToggleBtn").addEventListener("click", toggleNotesPanel);
       $("#mapFitBtn").addEventListener("click", toggleMapFitMode);
@@ -9542,10 +9713,11 @@
             notesPanelState = null;
             notesPanelOpen = true;
             legendPanelOpen = true;
+            mapPanelOpen = true;
             notesSortMode = "chrono";
             notesViewMode = "expanded";
             notesCategoricalMode = true;
-            notesHideExcludedOnly = false;
+            notesHideExcludedOnly = true;
             notesSearchQuery = "";
             mapFitMode = true;
             save();
