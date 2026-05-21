@@ -8,7 +8,7 @@ US State Visit Map is a single-file, offline HTML/CSS/JS app for tracking visits
 
 Current anchors:
 
-- `APP_VERSION`: `2.2.1`
+- `APP_VERSION`: `2.3.0.12`
 - storage key: `usStateVisitMap.v1`
 - roadmap/wishlist is developer-facing seed data only; do not persist user roadmap data in backups.
 
@@ -65,7 +65,7 @@ Change state, call `save()` when persistence is needed, then `render()` or the n
 ```js
 {
   appVersion, mapName,
-  settings: { theme, tapBehavior, buttonStyle, uiHints, dateOrder, dateStyle, mapLabels, mapSplitRatio },
+  settings: { theme, tapBehavior, buttonStyle, uiHints, textScale, dateOrder, dateStyle, mapLabels, mapSplitRatio },
   levels: [{ id, name, definition, color, countsTowardStats }],
   visitTypes: [{ id, label, icon, shortcut, enabled, searchTags }],
   states: { CA: ["visited"] },
@@ -78,7 +78,7 @@ Invariants: level order controls map color; `levels` max is 5; state level IDs m
 
 ## Product Surface
 
-Clickable SVG map; header-level Map/Legend/Notes visibility toggles with Map on by default and compact title-bar hints for panel visibility/editing plus divider resizing; resizable desktop map/cards split with a tighter divider track; map labels none/abbr/name; map label/render hints sit left of the map controls; editable legend levels/colors/stats; notes search/filter/sort/compact/expanded plus active icon filter strip with a leftmost no-icon filter using the shared `__CIRCLE` SVG, location-type icons with a safe state-map fallback when the requested globe symbol is not present, permanent filter summary, and category headings sticky at the top of the Notes list scroll area; settings for theme/buttons/hints/tap/date/import/export and compact draggable icon-tag curation; Location Icon Tags auto-catalogs every imported `__*_CIRCLE` constant into More Icons with generated labels/search tags while preserving the default active tag set, and tag icon rendering uses direct symbol IDs without an alias bridge; developer JSON tree mirrors full export data with large collections collapsed and refreshes from save/map-resize paths; JSON/Markdown/RTF export; JSON import; shortcut overlay via Shift + Option + Control/Command; hidden `H` `H` tester shortcut resets dismissed hints by toggling Hints off and back on and is documented in Developer Tools.
+Clickable SVG map; header-level Map/Legend/Notes visibility toggles with Map on by default and compact title-bar hints for panel visibility/editing plus divider resizing; Developer Mode shows a compact version pill under the title-bar map name; resizable desktop map/cards split with a tighter divider track; map labels none/abbr/name; map label/render hints sit left of the map controls; scrollable map mode is the default and has compact title-bar zoom controls ordered out/percent/in/reset, then Fit Map to the right, 50% zoom steps up to 1000%, drag-to-pan, viewport-center anchored zoom-button behavior, centered reset/initial scroll positioning, and pointer-anchored pinch/modified-wheel zoom; map zoom controls and Fit Map normalize around a 40px header control height, with zoom buttons fixed at 38x38; fit-map mode stays clean for screenshots; mobile gives the app title its own line before title-bar controls and keeps the State Map header compact; editable legend levels/colors/stats; notes search/filter/sort/compact/expanded plus active icon filter strip with a leftmost no-icon filter using the shared `__CIRCLE` SVG, location-type icons with a safe state-map fallback when the requested globe symbol is not present, permanent filter summary, and category headings sticky at the top of the Notes list scroll area; settings for text size/theme/buttons/hints/tap/date/import/export and compact draggable icon-tag curation; Text Size is an iOS-style oval slider with its percent text visually riding the moving thumb; Location Icon Tags auto-catalogs every imported `__*_CIRCLE` constant into More Icons with generated labels/search tags while preserving the default active tag set, and tag icon rendering uses direct symbol IDs without an alias bridge; developer JSON tree mirrors full export data with large collections collapsed and refreshes from save/map-resize paths; JSON/Markdown/RTF export; JSON import; shortcut overlay via Shift + Option + Control/Command includes map zoom and text size shortcuts using physical minus/plus keys; hidden `H` `H` tester shortcut resets dismissed hints by toggling Hints off and back on and is documented in Developer Tools.
 
 What's New behavior: patch releases may omit `notice`; the banner uses the latest changelog entry with a `notice`. Fresh localStorage profiles seed `lastSeenReleaseVersion` to `0.0.0` so they can see the latest feature notice, while older saved data without this field migrates from its stored `appVersion`.
 
