@@ -800,7 +800,7 @@
       gap: 2px;
       flex: 0 0 auto;
       height: 40px;
-      padding: 0;
+      padding: 0 3px;
       border: 1px solid var(--line);
       border-radius: 11px;
       background: color-mix(in srgb, var(--surface-2) 88%, var(--surface) 12%);
@@ -837,12 +837,25 @@
       display: grid;
       place-items: center;
       min-width: 3rem;
+      width: 3rem;
       min-height: 34px;
+      height: 34px;
+      padding: 0 .18rem;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
       text-align: center;
       font-size: .72rem;
       font-weight: 700;
       color: var(--muted);
-      user-select: none;
+      appearance: textfield;
+    }
+
+    .map-zoom-readout:focus {
+      color: var(--text);
+      background: var(--surface);
+      box-shadow: var(--focus);
+      outline: none;
     }
 
     [data-map-mode="fit"] .map-zoom-controls {
@@ -3833,7 +3846,7 @@
       <div class="title-wrap">
         <div class="title-stack">
           <h1 id="mapTitle">Your State Map</h1>
-          <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v2.3.0.13</span>
+          <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v2.3.0</span>
         </div>
         <div class="topbar-hints" aria-label="Title bar tips">
           <small id="topbarPanelHint" data-hint data-hint-key="topbar-panel-controls">
@@ -3878,11 +3891,12 @@
             <div class="map-head-hints">
               <small data-hint data-hint-key="map-controls">
                 Choose map labels text: none, abbr, full name.<br />
-                Switch between screenshot-ready fit and scrollable pan/zoom map views.</small>
+                Switch map views, type an exact zoom percent, or pan the scrollable map.</small>
             </div>
             <div class="map-zoom-controls" aria-label="Scrollable map zoom controls">
               <button id="mapZoomOutBtn" type="button" aria-label="Zoom map out" data-shortcut="-">Zoom Out</button>
-              <span id="mapZoomReadout" class="map-zoom-readout" aria-live="polite">100%</span>
+              <input id="mapZoomReadout" class="map-zoom-readout" type="text" inputmode="numeric"
+                aria-label="Map zoom percentage" value="100%">
               <button id="mapZoomInBtn" type="button" aria-label="Zoom map in" data-shortcut="+">Zoom In</button>
               <button id="mapZoomResetBtn" type="button" aria-label="Reset map zoom" data-shortcut="R">Reset Zoom</button>
             </div>
@@ -4811,8 +4825,9 @@
               next tap cycles levels.</li>
             <li>Use the app header to show or hide Map, Legend, and Notes. Use the State Map header to switch labels,
               fit the map for screenshots, or return to scrollable mode with pan and zoom controls.</li>
-            <li>In scrollable map mode, drag the map to pan, use the zoom controls to move in or out, and reset to 100%
-              when you want the full map again. Drag the divider on desktop to resize the map and cards.</li>
+            <li>In scrollable map mode, drag the map to pan, type an exact zoom percentage, use the zoom controls to
+              move in or out, and reset to 100% when you want the full map again. Drag the divider on desktop to resize
+              the map and cards.</li>
             <li>Use the Legend to edit level names, definitions, colors, order, and whether a level counts toward stats.
             </li>
             <li>Click a Legend level to filter Notes by that level. Click it again to clear the filter.</li>
@@ -5015,7 +5030,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "2.3.0.13";
+    const APP_VERSION = "2.3.0";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -6133,205 +6148,43 @@
     ];
     const CHANGELOG = [
       {
-        version: "2.3.0.13",
+        version: "2.3.0",
         date: "2026-05-21",
-        title: "Fit Check",
-        summary: "A 2.3 development build that restores exact map zoom sizing and clearer fit/scroll state.",
+        title: "Map Goes Places",
+        summary: "A map-focused release with scrollable pan/zoom, cleaner fit controls, better mobile header behavior, and sharper map-control shortcuts.",
+        notice: {
+          version: "2.3.0",
+          title: "Map Goes Places",
+          summary: "Scrollable pan and zoom, editable zoom percentages, cleaner fit controls, and a tighter map header.",
+          cta: "Learn More"
+        },
         highlights: [
-          "Zoom in, zoom out, and reset controls are explicitly locked to 38x38.",
-          "The fit/scroll button now shows the current map mode while the tooltip describes what it will switch to.",
-          "Text Size percentage positioning is anchored to the moving slider thumb."
+          "The State Map now opens in scrollable mode with pan-and-zoom controls available immediately.",
+          "Zoom supports 50% steps up to 1000%, direct typed percentages, pointer-anchored wheel zoom, and plus/minus snapping from custom values.",
+          "Fit Map now sits beside the zoom controls, shows the current map mode, and uses clearer fit/scroll symbols and tooltips.",
+          "The map header is tighter on desktop and mobile, with controls grouped for faster use and cleaner screenshot mode behavior."
         ],
         updates: [
-          "Fit mode now uses the outward-square symbol, while scroll mode uses the dot-and-arrows symbol."
-        ]
-      },
-      {
-        version: "2.3.0.12",
-        date: "2026-05-21",
-        title: "Dev Badge",
-        summary: "A 2.3 development build that makes Developer Mode visible in the title bar.",
-        highlights: [
-          "Developer Mode now shows a compact \"Dev Mode\" version pill directly under the map title."
-        ],
-        updates: [
-          "The pill appears only while Developer Mode is enabled and reflects the current build version."
-        ]
-      },
-      {
-        version: "2.3.0.11",
-        date: "2026-05-21",
-        title: "Thumb Drive",
-        summary: "A 2.3 development build that puts Text Size percentage on the moving slider thumb.",
-        highlights: [
-          "Text Size percentage now rides with the slider thumb so it feels embedded in the control.",
-          "The Text Size thumb is a wider oval to support 100%+ values.",
-          "Zoom in, zoom out, and reset buttons are locked to 38x38 inside the 40px zoom control group."
-        ],
-        updates: [
-          "The slider track still fills edge to edge while the value stays centered on the thumb."
-        ]
-      },
-      {
-        version: "2.3.0.10",
-        date: "2026-05-21",
-        title: "Oval Office Hours",
-        summary: "A 2.3 development build that tightens map controls and fully embeds the Text Size percent.",
-        highlights: [
-          "The Text Size percentage now renders directly inside the slider track without its own badge.",
-          "The Text Size slider is a wider oval so 100%+ values fit more naturally.",
-          "Map zoom controls and the Fit Map button now normalize to a 40px control height."
-        ],
-        updates: [
-          "Added a roadmap item for settable Legend positioning in any map corner."
-        ]
-      },
-      {
-        version: "2.3.0.9",
-        date: "2026-05-21",
-        title: "Slider Tuck",
-        summary: "A 2.3 development build that makes the Text Size slider cleaner and wider.",
-        highlights: [
-          "The Text Size percentage now sits inside the slider pill instead of taking its own column.",
-          "The slider track is a slightly taller oval and stretches farther across the Appearance row."
-        ],
-        updates: [
-          "The Text Size value remains readable while the slider keeps its iOS-style thumb and shortcut behavior."
-        ]
-      },
-      {
-        version: "2.3.0.8",
-        date: "2026-05-21",
-        title: "Tiny State Microscope",
-        summary: "A 2.3 development build that doubles the scrollable map zoom ceiling.",
-        highlights: [
-          "Scrollable map zoom now reaches 1000% for tiny-state closeups."
-        ],
-        updates: [
-          "Zoom step size stays at 50% so the control remains predictable."
-        ]
-      },
-      {
-        version: "2.3.0.7",
-        date: "2026-05-21",
-        title: "Zoom Holds Its Place",
-        summary: "A 2.3 development build that makes zoom shortcuts and viewport anchoring behave correctly.",
-        highlights: [
-          "Zoom buttons now preserve the current visible map center instead of jumping back to the full-map center.",
-          "Map zoom and Text Size shortcuts now recognize physical minus/plus keys while Shift-Control-Option is held.",
-          "The zoom percentage readout now matches the height of the map label control group."
-        ],
-        updates: [
-          "Initial scroll mode and reset can still center the map, while zooming keeps your current view anchored."
-        ]
-      },
-      {
-        version: "2.3.0.6",
-        date: "2026-05-21",
-        title: "Big Zoom Energy",
-        summary: "A 2.3 development build that makes scrollable map zoom bigger, faster, and cleaner.",
-        highlights: [
-          "Scrollable map zoom now reaches 500% with 50% button steps so small states can fill the screen.",
-          "Zoom controls are shorter and better aligned with the surrounding map header controls.",
-          "Shortcut overlay mode now includes map zoom and Settings text-size shortcuts."
-        ],
-        updates: [
-          "Zoom button actions continue to recenter the map in scroll mode.",
-          "Developer shortcut documentation now includes the new zoom and text-size keys."
-        ]
-      },
-      {
-        version: "2.3.0.5",
-        date: "2026-05-21",
-        title: "Readable Road",
-        summary: "A 2.3 development build that adds a compact iOS-style text size control.",
-        highlights: [
-          "Settings now has an iOS-style Text Size slider above Theme in Appearance.",
-          "Text Size persists locally and scales the app through a CSS variable without changing map zoom."
-        ],
-        updates: [
-          "Help Center now mentions the Text Size control.",
-          "Completed text-size and saved-location roadmap cleanup by removing the finished roadmap entries from the developer seed list."
-        ]
-      },
-      {
-        version: "2.3.0.4",
-        date: "2026-05-21",
-        title: "Centered Map Zoom",
-        summary: "A 2.3 development build that keeps scrollable zoom focused on the available map area.",
-        highlights: [
-          "Scrollable map mode now centers the map in the visible map area on first load, zoom button changes, and zoom reset.",
-          "Zoom buttons use a centered canvas behavior while pointer-based zoom still honors the pointer position."
-        ],
-        updates: [
-          "Scroll mode now uses a normal scroll origin so centered zooming does not fight the map layout."
-        ]
-      },
-      {
-        version: "2.3.0.3",
-        date: "2026-05-21",
-        title: "Scrollable Map Default",
-        summary: "A 2.3 development build that opens directly into the pan-and-zoom map layout.",
-        highlights: [
-          "The State Map now defaults to scrollable mode so zoom and pan controls are available immediately.",
-          "Fit Map moved to the right of the zoom controls, keeping the zoom cluster together before the screenshot toggle."
-        ],
-        updates: [
-          "Full data reset and developer reset now restore the map to scrollable mode instead of fit mode."
-        ]
-      },
-      {
-        version: "2.3.0.2",
-        date: "2026-05-21",
-        title: "Map Header Zoom Tune-Up",
-        summary: "A 2.3 development build that moves map zoom into the header and tightens mobile header space.",
-        highlights: [
-          "Scrollable map zoom controls now sit in the map title bar between Fit Map and Labels.",
-          "Zoom controls are ordered for faster thumb use: out, percentage, in, then reset.",
-          "Mobile title bars now give the map name its own line before the controls."
-        ],
-        updates: [
-          "Scrollable map zoom can continue past 130% because the SVG no longer inherits the desktop height cap.",
-          "The State Map header is more compact on small screens and no longer stacks map controls into a tall column.",
-          "Map control hints are suppressed in the narrow State Map header to keep the mobile map surface taller."
-        ]
-      },
-      {
-        version: "2.3.0.1",
-        date: "2026-05-21",
-        title: "Scrollable Map Zoom",
-        summary: "A 2.3 development build that makes scrollable map mode easier to pan, zoom, and reset.",
-        highlights: [
-          "Scrollable map mode now has overlay zoom controls with zoom out, reset, and zoom in actions.",
-          "Dragging the map pans it in scroll mode without accidentally marking a state after a pan.",
-          "Trackpad pinch/modified-wheel zoom keeps the zoom anchored near the pointer.",
-          "Fit-map mode stays clean for screenshot sharing and hides the zoom controls."
-        ],
-        updates: [
-          "The map resize hint is hidden in mobile/single-column mode.",
-          "Developer reset and full data reset now restore map zoom back to 100%.",
-          "Completed the scrollable-map zoom roadmap item."
+          "Zoom buttons preserve the current visible map center, while reset and initial scroll mode center the map cleanly.",
+          "Dragging the scrollable map pans without accidentally marking a state after a pan.",
+          "Map zoom, fit mode, and Text Size shortcuts work with the Shift-Control-Option overlay and Developer Shortcut Mode.",
+          "Developer Mode now shows a compact version pill under the title bar name.",
+          "Help Center and dismissible map hints were refreshed for scrollable map mode, typed zoom percentages, fit mode, and current header controls."
         ]
       },
       {
         version: "2.2.1",
-        date: "2026-05-19",
-        title: "Map Cards Tune-Up",
-        summary: "A patch release for cleaner map/card controls, tighter hints, safer testing shortcuts, and the next naming direction.",
+        date: "2026-05-21",
+        title: "Readable Road",
+        summary: "A small patch release for the Text Size slider and readability tuning.",
         highlights: [
-          "Map, Legend, and Notes visibility controls now live together in the top app bar, including a new Map visibility toggle.",
-          "Title-bar tips are tighter and separate panel/edit guidance from the resize hint.",
-          "Map label and fit/scroll guidance now sits beside the map controls instead of taking an extra row.",
-          "The desktop map/cards divider track is tighter and hidden whenever the map is not visible.",
-          "Developer Tools now documents the hidden double-H shortcut for resetting dismissed hints while testing."
+          "Settings now includes a compact iOS-style Text Size slider above Theme in Appearance.",
+          "Text Size persists locally and scales the app without changing map zoom.",
+          "The percentage sits inside the moving slider thumb, with a wider oval thumb that keeps 100%+ values readable."
         ],
         updates: [
-          "The main layout now avoids blank states by keeping at least one panel visible.",
-          "Tall Notes and note-editor symbols have safer centering so their lower edges do not get clipped.",
-          "The rename roadmap now treats Travel Log as the top candidate for the app's visual travel journal direction.",
-          "Fresh browser profiles can still see the latest feature banner, while this patch release remains unhighlighted.",
-          "Existing saved data migrates from its stored app version when no explicit release-notice state exists.",
-          "Help Center and dismissible hints were refreshed for the current header, map-control, and hidden shortcut behavior."
+          "The Text Size slider fills edge to edge while keeping the value centered on the thumb.",
+          "Help Center now mentions Text Size as separate from map zoom."
         ]
       },
       {
@@ -7481,7 +7334,7 @@
       $("#mapZoomOutBtn").disabled = mapFitMode || mapZoom <= MAP_ZOOM_MIN + .001;
       $("#mapZoomResetBtn").disabled = mapFitMode;
       $("#mapZoomInBtn").disabled = mapFitMode || mapZoom >= MAP_ZOOM_MAX - .001;
-      $("#mapZoomReadout").textContent = `${Math.round(mapZoom * 100)}%`;
+      if (document.activeElement !== $("#mapZoomReadout")) $("#mapZoomReadout").value = `${Math.round(mapZoom * 100)}%`;
       $("#mapFitBtn").title = shortcutsActive() ? `${fitTitle} (F)` : fitTitle;
     }
 
@@ -8200,6 +8053,36 @@
       return Math.max(MAP_ZOOM_MIN, Math.min(MAP_ZOOM_MAX, Number(value) || 1));
     }
 
+    function formatMapZoom(value = mapZoom) {
+      return `${Math.round(clampMapZoom(value) * 100)}%`;
+    }
+
+    function parseMapZoomPercent(value) {
+      const numeric = Number.parseFloat(String(value || "").replace(/%/g, "").trim());
+      if (!Number.isFinite(numeric)) return null;
+      return clampMapZoom(numeric / 100);
+    }
+
+    function commitMapZoomReadout() {
+      const input = $("#mapZoomReadout");
+      const zoom = parseMapZoomPercent(input.value);
+      if (!zoom) {
+        input.value = formatMapZoom();
+        return;
+      }
+      input.value = formatMapZoom(zoom);
+      setMapZoom(zoom);
+    }
+
+    function snappedMapZoom(delta) {
+      const steps = mapZoom / MAP_ZOOM_STEP;
+      const rounded = Math.round(steps);
+      if (Math.abs(steps - rounded) < .001) return mapZoom + delta;
+      return delta > 0
+        ? Math.ceil(steps) * MAP_ZOOM_STEP
+        : Math.floor(steps) * MAP_ZOOM_STEP;
+    }
+
     function setMapZoom(value, anchor = null) {
       if (mapFitMode) mapFitMode = false;
       const previous = mapZoom;
@@ -8223,7 +8106,7 @@
     function nudgeMapZoom(delta) {
       const wrap = $(".map-wrap");
       const anchor = wrap && !mapFitMode ? { x: wrap.clientWidth / 2, y: wrap.clientHeight / 2 } : null;
-      setMapZoom(mapZoom + delta, anchor);
+      setMapZoom(snappedMapZoom(delta), anchor);
     }
 
     function resetMapZoom() {
@@ -9847,6 +9730,20 @@
       $("#mapZoomOutBtn").addEventListener("click", () => nudgeMapZoom(-MAP_ZOOM_STEP));
       $("#mapZoomResetBtn").addEventListener("click", resetMapZoom);
       $("#mapZoomInBtn").addEventListener("click", () => nudgeMapZoom(MAP_ZOOM_STEP));
+      $("#mapZoomReadout").addEventListener("focus", event => event.target.select());
+      $("#mapZoomReadout").addEventListener("blur", commitMapZoomReadout);
+      $("#mapZoomReadout").addEventListener("keydown", event => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          commitMapZoomReadout();
+          event.target.blur();
+        }
+        if (event.key === "Escape") {
+          event.preventDefault();
+          event.target.value = formatMapZoom();
+          event.target.blur();
+        }
+      });
       wrap.addEventListener("pointerdown", event => {
         if (mapFitMode || event.button > 0) return;
         mapPanState = {
