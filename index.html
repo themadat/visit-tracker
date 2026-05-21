@@ -23,6 +23,7 @@
       --shadow: 0 18px 50px rgba(16, 24, 40, .14);
       --radius: 8px;
       --focus: 0 0 0 3px rgba(29, 111, 214, .28);
+      --app-text-scale: 1;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
@@ -50,6 +51,7 @@
 
     html {
       scroll-behavior: smooth;
+      font-size: clamp(14px, calc(16px * var(--app-text-scale)), 20px);
     }
 
     body {
@@ -222,15 +224,18 @@
       fill-opacity: .78;
     }
 
-    button[data-shortcut] {
+    button[data-shortcut],
+    .shortcut-target[data-shortcut] {
       position: relative;
     }
 
-    button[data-shortcut]::after {
+    button[data-shortcut]::after,
+    .shortcut-target[data-shortcut]::after {
       display: none;
     }
 
-    [data-shortcuts="on"] button[data-shortcut]::after {
+    [data-shortcuts="on"] button[data-shortcut]::after,
+    [data-shortcuts="on"] .shortcut-target[data-shortcut]::after {
       content: attr(data-shortcut);
       position: absolute;
       top: -.42rem;
@@ -315,6 +320,27 @@
       align-items: center;
       gap: .52rem;
       flex: 1 1 auto;
+    }
+
+    .title-stack {
+      min-width: 0;
+      display: grid;
+      gap: .14rem;
+      flex: 1 1 auto;
+    }
+
+    .dev-mode-pill {
+      justify-self: start;
+      width: fit-content;
+      padding: .18rem .48rem;
+      border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--line) 66%);
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--accent) 13%, var(--surface) 87%);
+      color: var(--accent-2);
+      font-size: .68rem;
+      font-weight: 850;
+      line-height: 1;
+      letter-spacing: 0;
     }
 
     .topbar-hints {
@@ -709,9 +735,9 @@
 
     [data-button-style="symbols"] .map-head-actions button {
       flex: 0 0 auto;
-      width: 38px;
-      min-width: 38px;
-      min-height: 38px;
+      width: 40px;
+      min-width: 40px;
+      min-height: 40px;
       aspect-ratio: 1;
       padding: 0;
       font-size: .96rem;
@@ -756,8 +782,84 @@
 
     .map-wrap {
       padding: clamp(.7rem, 2vw, 1.2rem);
-      overflow-x: auto;
+      overflow: auto;
       min-height: 0;
+      overscroll-behavior: contain;
+      touch-action: pan-x pan-y;
+      cursor: grab;
+    }
+
+    .map-wrap.is-panning {
+      cursor: grabbing;
+      user-select: none;
+    }
+
+    .map-zoom-controls {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      flex: 0 0 auto;
+      height: 40px;
+      padding: 0 3px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: color-mix(in srgb, var(--surface-2) 88%, var(--surface) 12%);
+      backdrop-filter: blur(10px);
+    }
+
+    .map-zoom-controls button {
+      width: 38px;
+      min-width: 38px;
+      min-height: 38px;
+      padding: 0;
+      display: inline-grid;
+      place-items: center;
+    }
+
+    #mapZoomInBtn,
+    #mapZoomOutBtn,
+    #mapZoomResetBtn {
+      width: 32px;
+      min-width: 32px;
+      max-width: 32px;
+      height: 32px;
+      min-height: 32px;
+      max-height: 32px;
+    }
+
+    .map-toggle-group button {
+      width: 40px;
+      min-width: 40px;
+      min-height: 40px;
+    }
+
+    .map-zoom-readout {
+      display: grid;
+      place-items: center;
+      min-width: 3rem;
+      width: 3rem;
+      min-height: 34px;
+      height: 34px;
+      padding: 0 .18rem;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      text-align: center;
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--muted);
+      appearance: textfield;
+    }
+
+    .map-zoom-readout:focus {
+      color: var(--text);
+      background: var(--surface);
+      box-shadow: var(--focus);
+      outline: none;
+    }
+
+    [data-map-mode="fit"] .map-zoom-controls {
+      display: none;
     }
 
     [data-map-mode="fit"] .map-wrap {
@@ -765,6 +867,18 @@
       place-items: center;
       overflow: hidden;
       padding: clamp(.35rem, 1.4vw, .85rem);
+      cursor: default;
+      touch-action: auto;
+    }
+
+    [data-map-mode="scroll"] .map-wrap {
+      display: block;
+    }
+
+    [data-map-mode="scroll"] #stateMap {
+      width: var(--map-zoom-width, 100%);
+      max-width: none;
+      max-height: none;
     }
 
     [data-map-mode="fit"] #stateMap {
@@ -1287,6 +1401,100 @@
 
     .setting-row .segmented button .sf-symbol {
       overflow: visible;
+    }
+
+    .text-size-control {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: .48rem;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .text-size-control .size-letter {
+      color: var(--muted);
+      font-weight: 850;
+      line-height: 1;
+    }
+
+    .text-size-control .size-letter.small {
+      font-size: .74rem;
+    }
+
+    .text-size-control .size-letter.large {
+      font-size: 1.12rem;
+    }
+
+    .text-size-slider-wrap {
+      --thumb-pct: 43%;
+      --thumb-ratio: .43;
+      --text-thumb-width: 3.55rem;
+      --text-thumb-half: 1.775rem;
+      position: relative;
+      display: grid;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .ios-range {
+      --range-pct: 43%;
+      appearance: none;
+      width: 100%;
+      min-width: 0;
+      height: 40px;
+      border: 0;
+      border-radius: 999px;
+      padding: 0;
+      background: linear-gradient(to right, var(--accent) var(--range-pct), var(--surface-2) var(--range-pct));
+      cursor: pointer;
+    }
+
+    .ios-range::-webkit-slider-thumb {
+      appearance: none;
+      width: var(--text-thumb-width);
+      height: 30px;
+      border-radius: 999px;
+      border: 1px solid color-mix(in srgb, var(--line) 78%, var(--text) 10%);
+      background: var(--surface);
+      box-shadow: 0 2px 8px rgba(16, 24, 40, .22);
+    }
+
+    .ios-range::-moz-range-thumb {
+      width: var(--text-thumb-width);
+      height: 30px;
+      border-radius: 999px;
+      border: 1px solid color-mix(in srgb, var(--line) 78%, var(--text) 10%);
+      background: var(--surface);
+      box-shadow: 0 2px 8px rgba(16, 24, 40, .22);
+    }
+
+    .ios-range:focus-visible {
+      outline: none;
+      box-shadow: var(--focus);
+    }
+
+    .text-size-value {
+      position: absolute;
+      left: calc(var(--text-thumb-half) + (100% - var(--text-thumb-width)) * var(--thumb-ratio));
+      top: 50%;
+      transform: translate(-50%, -50%);
+      display: grid;
+      place-items: center;
+      width: var(--text-thumb-width);
+      height: 30px;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: color-mix(in srgb, var(--text) 72%, var(--muted) 28%);
+      font-size: .78rem;
+      font-weight: 850;
+      text-align: center;
+      line-height: 1;
+      pointer-events: none;
+      box-shadow: none;
+      text-shadow: 0 1px 0 color-mix(in srgb, var(--surface) 76%, transparent);
     }
 
     .setting-hint {
@@ -3083,8 +3291,7 @@
         display: grid;
         align-items: start;
         justify-items: center;
-        overflow-x: auto;
-        overflow-y: hidden;
+        overflow: auto;
       }
 
       [data-map-mode="fit"] .map-wrap {
@@ -3092,7 +3299,19 @@
         overflow: hidden;
       }
 
-      #stateMap,
+      [data-map-mode="scroll"] .map-wrap {
+        display: block;
+      }
+
+      #stateMap {
+        min-width: 0;
+        max-height: 100%;
+      }
+
+      [data-map-mode="scroll"] #stateMap {
+        max-height: none;
+      }
+
       [data-map-mode="fit"] #stateMap {
         width: 100%;
         min-width: 0;
@@ -3142,6 +3361,10 @@
     }
 
     @media (max-width: 980px) {
+      #mapResizeHint {
+        display: none !important;
+      }
+
       .main {
         grid-template-columns: 1fr;
       }
@@ -3173,10 +3396,46 @@
 
     @media (max-width: 620px) {
       .topbar {
-        align-items: center;
+        align-items: flex-start;
         flex-direction: row;
         flex-wrap: wrap;
-        gap: .55rem;
+        gap: .38rem .48rem;
+        padding: .42rem .65rem;
+      }
+
+      .title-wrap {
+        display: contents;
+      }
+
+      .title-stack {
+        order: 1;
+        flex: 1 1 100%;
+        width: 100%;
+      }
+
+      #mapTitle {
+        order: 1;
+        flex: 1 1 100%;
+        width: 100%;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+      }
+
+      #renameBtn {
+        order: 2;
+      }
+
+      .topbar-hints {
+        order: 4;
+        flex: 1 1 100%;
+        max-width: 100%;
+        justify-items: start;
+      }
+
+      .topbar-hints small {
+        text-align: left;
+        justify-content: flex-start;
       }
 
       .release-notice {
@@ -3193,8 +3452,12 @@
       }
 
       .toolbar {
+        order: 2;
+        flex: 1 1 auto;
+        margin-left: auto;
         justify-content: flex-end;
         width: auto;
+        gap: .34rem;
       }
 
       .toolbar button {
@@ -3208,20 +3471,32 @@
       }
 
       .map-head {
-        align-items: center;
+        align-items: flex-start;
         flex-direction: row;
-        gap: .32rem .45rem;
-        padding: .52rem .65rem;
+        gap: .28rem .4rem;
+        padding: .42rem .56rem;
+      }
+
+      .map-head-title {
+        flex: 1 1 100%;
+        display: flex;
+        align-items: baseline;
+        flex-wrap: wrap;
+        gap: .18rem .48rem;
       }
 
       .map-head-actions {
-        width: auto;
+        width: 100%;
         justify-content: flex-end;
-        flex: 0 0 auto;
-        flex-wrap: nowrap;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: .18rem;
+        flex: 1 1 100%;
+        flex-wrap: wrap;
+        flex-direction: row;
+        align-items: center;
+        gap: .2rem;
+      }
+
+      .map-head-hints {
+        display: none !important;
       }
 
       .map-action-group {
@@ -3569,7 +3844,10 @@
   <div class="app">
     <header class="topbar">
       <div class="title-wrap">
-        <h1 id="mapTitle">Your State Map</h1>
+        <div class="title-stack">
+          <h1 id="mapTitle">Your State Map</h1>
+          <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v2.3.0</span>
+        </div>
         <div class="topbar-hints" aria-label="Title bar tips">
           <small id="topbarPanelHint" data-hint data-hint-key="topbar-panel-controls">
             Edit the Map Name | Toggle Cards Shown: Map, Legend, Notes.</small>
@@ -3613,7 +3891,18 @@
             <div class="map-head-hints">
               <small data-hint data-hint-key="map-controls">
                 Choose map labels text: none, abbr, full name.<br />
-                Switch between screenshot-ready/scrollable map views.</small>
+                Switch map views, type an exact zoom percent, or pan the scrollable map.</small>
+            </div>
+            <div class="map-zoom-controls" aria-label="Scrollable map zoom controls">
+              <button id="mapZoomOutBtn" type="button" aria-label="Zoom map out" data-shortcut="-">Zoom Out</button>
+              <input id="mapZoomReadout" class="map-zoom-readout" type="text" inputmode="numeric"
+                aria-label="Map zoom percentage" value="100%">
+              <button id="mapZoomInBtn" type="button" aria-label="Zoom map in" data-shortcut="+">Zoom In</button>
+              <button id="mapZoomResetBtn" type="button" aria-label="Reset map zoom" data-shortcut="R">Reset Zoom</button>
+            </div>
+            <div class="map-action-group map-toggle-group">
+              <button id="mapFitBtn" class="toggle-btn" type="button" aria-pressed="false"
+                aria-label="Fit map on screen" data-shortcut="F">Fit Map</button>
             </div>
             <div class="map-action-group map-label-group">
               <div class="segmented map-label-toggle" aria-label="Map labels">
@@ -3623,15 +3912,11 @@
                 <button id="labelsNameBtn" type="button" aria-pressed="false" data-shortcut="2">Name</button>
               </div>
             </div>
-            <div class="map-action-group map-toggle-group">
-              <button id="mapFitBtn" class="toggle-btn" type="button" aria-pressed="false"
-                aria-label="Fit map on screen" data-shortcut="F">Fit Map</button>
-            </div>
           </div>
         </div>
         <div class="map-viewport">
           <div class="map-wrap">
-            <svg id="stateMap" viewBox="0 0 959 593" role="img" aria-labelledby="svgTitle svgDesc">
+            <svg id="stateMap" viewBox="0 0 934 593" role="img" aria-labelledby="svgTitle svgDesc">
               <title id="svgTitle">Clickable US state visit map</title>
               <desc id="svgDesc">Outline map of all 50 United States, Washington DC, and US territories.</desc>
               <g class="map-states">
@@ -4422,6 +4707,20 @@
         <section class="settings-category">
           <h3>Appearance</h3>
           <div class="setting-row">
+            <div class="setting-label">Text Size</div>
+            <div class="text-size-control shortcut-target" aria-label="Text size" data-shortcut="- + R">
+              <span class="size-letter small" aria-hidden="true">A</span>
+              <span class="text-size-slider-wrap">
+                <input id="textSizeSlider" class="ios-range" type="range" min="85" max="120" step="5" value="100"
+                  aria-label="Text size">
+                <output id="textSizeValue" class="text-size-value" for="textSizeSlider">100%</output>
+              </span>
+              <span class="size-letter large" aria-hidden="true">A</span>
+            </div>
+          </div>
+          <small class="setting-hint" data-hint data-hint-key="settings-text-size-help">Text Size adjusts the whole app
+            while map zoom stays separate.</small>
+          <div class="setting-row">
             <div class="setting-label">Theme</div>
             <div class="segmented" aria-label="Theme">
               <button id="lightModeBtn" type="button" aria-pressed="true" data-shortcut="L">Light</button>
@@ -4525,7 +4824,10 @@
             <li>Tap a state to mark it. In cycle mode, a first tap on an already marked state shows it in Notes; the
               next tap cycles levels.</li>
             <li>Use the app header to show or hide Map, Legend, and Notes. Use the State Map header to switch labels,
-              fit the map for screenshots, and drag the divider on desktop to resize the map and cards.</li>
+              fit the map for screenshots, or return to scrollable mode with pan and zoom controls.</li>
+            <li>In scrollable map mode, drag the map to pan, type an exact zoom percentage, use the zoom controls to
+              move in or out, and reset to 100% when you want the full map again. Drag the divider on desktop to resize
+              the map and cards.</li>
             <li>Use the Legend to edit level names, definitions, colors, order, and whether a level counts toward stats.
             </li>
             <li>Click a Legend level to filter Notes by that level. Click it again to clear the filter.</li>
@@ -4542,6 +4844,7 @@
             <li>Use the eye button in Notes to show or hide locations that only have levels excluded from stats.</li>
             <li>Add dates as a year, month and year, or full date. Settings controls the display order and month-name vs
               numeric formatting.</li>
+            <li>Use Settings > Appearance > Text Size to tune readability without changing map zoom.</li>
             <li>Use JSON Import/Export in Settings to back up data or move it to another device. Text exports are for
               sharing or saving elsewhere.</li>
           </ol>
@@ -4702,7 +5005,9 @@
             <div class="shortcut-row"><kbd>L</kbd><span>Toggle the Legend panel.</span></div>
             <div class="shortcut-row"><kbd>N</kbd><span>Toggle the Notes panel.</span></div>
             <div class="shortcut-row"><kbd>F</kbd><span>Toggle fitted vs scrollable map rendering.</span></div>
+            <div class="shortcut-row"><kbd>- + R</kbd><span>Zoom the scrollable map out, zoom in, or reset to 100%.</span></div>
             <div class="shortcut-row"><kbd>0 1 2</kbd><span>Switch map labels between None, Abbr, and Name.</span></div>
+            <div class="shortcut-row"><kbd>- + R</kbd><span>Settings: decrease, increase, or reset Text Size.</span></div>
             <div class="shortcut-row"><kbd>C H A</kbd><span>Auto Colors, suggested categories, and contextual add
                 actions.</span></div>
             <div class="shortcut-row"><kbd>B T E K Y V O P</kbd><span>Notes Back, Chronological Sort, Expanded,
@@ -4725,7 +5030,7 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "2.2.1";
+    const APP_VERSION = "2.3.0";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -4807,6 +5112,17 @@
     const __GIFT_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24.3457 27.0996"><g><rect height="27.0996" opacity="0" width="24.3457" x="0" y="0"/><path d="M1.86523 22.9004C1.86523 24.9023 3.06641 25.9961 5.06836 25.9961L11.0254 25.9961L11.0254 14.707L1.86523 14.707ZM12.959 25.9961L18.916 25.9961C20.918 25.9961 22.1191 24.9023 22.1191 22.9004L22.1191 14.707L12.959 14.707ZM0 11.5918C0 12.8711 0.732422 13.4473 2.02148 13.4473L11.0254 13.4473L11.0254 6.77734L9.20898 6.77734C7.14844 6.77734 5.9082 5.54688 5.9082 4.0625C5.9082 2.71484 6.88477 1.91406 8.25195 1.91406C9.82422 1.91406 11.0254 3.125 11.0254 5.06836L11.0254 6.77734L12.959 6.77734L12.959 5.06836C12.959 3.125 14.1602 1.91406 15.7324 1.91406C17.0996 1.91406 18.0762 2.71484 18.0762 4.0625C18.0762 5.54688 16.8359 6.77734 14.7754 6.77734L12.959 6.77734L12.959 13.4473L21.9629 13.4473C23.2617 13.4473 23.9844 12.8711 23.9844 11.5918L23.9844 8.63281C23.9844 7.34375 23.2617 6.77734 21.9629 6.77734L18.7305 6.77734C19.5312 6.10352 20.0098 5.13672 20.0098 3.97461C20.0098 1.64062 18.1836 0 15.8301 0C14.043 0 12.6074 0.996094 11.9922 2.71484C11.377 0.996094 9.94141 0 8.1543 0C5.80078 0 3.97461 1.64062 3.97461 3.97461C3.97461 5.13672 4.45312 6.10352 5.25391 6.77734L2.02148 6.77734C0.78125 6.77734 0 7.34375 0 8.63281Z"/></g></svg>`;
     const __SQUARE_AND_ARROW_UP_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 22.4512 30.1465"><g><rect height="30.1465" opacity="0" width="22.4512" x="0" y="0"/><path d="M6.75781 5.67383C6.30859 5.67383 5.98633 5.35156 5.98633 4.91211C5.98633 4.6875 6.07422 4.51172 6.24023 4.3457L10.4199 0.283203C10.6348 0.0683594 10.8301 0 11.0449 0C11.2598 0 11.4551 0.0683594 11.6699 0.283203L15.8496 4.3457C16.0059 4.51172 16.1035 4.6875 16.1035 4.91211C16.1035 5.35156 15.7617 5.67383 15.3125 5.67383C15.1074 5.67383 14.8828 5.58594 14.7266 5.41016L12.6074 3.18359L11.0449 1.54297L9.48242 3.18359L7.35352 5.41016C7.19727 5.58594 6.96289 5.67383 6.75781 5.67383ZM11.0449 18.1738C10.5859 18.1738 10.1855 17.793 10.1855 17.3438L10.1855 4.23828L10.3125 1.11328C10.332 0.712891 10.6445 0.380859 11.0449 0.380859C11.4453 0.380859 11.7578 0.712891 11.7773 1.11328L11.9043 4.23828L11.9043 17.3438C11.9043 17.793 11.5039 18.1738 11.0449 18.1738ZM5.20508 27.9297L16.8848 27.9297C20.2344 27.9297 22.0898 26.0645 22.0898 22.7246L22.0898 13.0859C22.0898 9.74609 20.2344 7.89062 16.8848 7.89062L5.20508 7.89062C1.85547 7.89062 0 9.74609 0 13.0859L0 22.7246C0 26.0645 1.85547 27.9297 5.20508 27.9297Z"/></g></svg>`;
     const __MAP_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 26.0352 24.4434"><g><rect height="24.4434" opacity="0" width="26.0352" x="0" y="0"/><path d="M0 22.6562C0 23.4961 0.488281 23.9746 1.30859 23.9746C1.60156 23.9746 1.9043 23.8867 2.26562 23.6816L7.74414 20.7031L7.74414 0.15625C7.50977 0.253906 7.25586 0.380859 7.01172 0.517578L1.01562 4.01367C0.332031 4.39453 0 4.92188 0 5.70312ZM9.29688 20.5371L15.6152 24.1602C15.8105 24.2676 16.0059 24.3555 16.1914 24.4043L16.1914 4.07227L10.0293 0.302734C9.80469 0.166016 9.55078 0.0585938 9.29688 0ZM17.7539 24.3652C17.8906 24.3164 18.0371 24.2578 18.1738 24.1699L24.668 20.4492C25.3418 20.0586 25.6738 19.541 25.6738 18.75L25.6738 1.78711C25.6738 0.9375 25.1758 0.46875 24.375 0.46875C24.082 0.46875 23.7793 0.556641 23.418 0.761719L17.7539 3.88672Z"/></g></svg>`;
+
+    const __PLUS_MAGNIFYINGGLASS = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24.7656 24.6387"><g><rect height="24.6387" opacity="0" width="24.7656" x="0" y="0"/><path d="M0 9.88281C0 15.3223 4.43359 19.7559 9.88281 19.7559C12.0801 19.7559 14.1016 19.0332 15.7422 17.8125L22.1777 24.2578C22.4219 24.5117 22.7637 24.6387 23.1152 24.6387C23.8867 24.6387 24.4043 24.0527 24.4043 23.3203C24.4043 22.959 24.2773 22.6465 24.043 22.4023L17.6367 15.9668C18.9648 14.2969 19.7656 12.1777 19.7656 9.88281C19.7656 4.43359 15.332 0 9.88281 0C4.43359 0 0 4.43359 0 9.88281ZM1.82617 9.88281C1.82617 5.43945 5.43945 1.82617 9.88281 1.82617C14.3262 1.82617 17.9297 5.43945 17.9297 9.88281C17.9297 14.3164 14.3262 17.9297 9.88281 17.9297C5.43945 17.9297 1.82617 14.3164 1.82617 9.88281Z"/><path d="M6.60156 10.6738L13.1543 10.6738C13.5938 10.6738 13.9453 10.3223 13.9453 9.88281C13.9453 9.43359 13.5938 9.08203 13.1543 9.08203L6.60156 9.08203C6.15234 9.08203 5.80078 9.43359 5.80078 9.88281C5.80078 10.3223 6.15234 10.6738 6.60156 10.6738ZM10.6738 13.1543L10.6738 6.60156C10.6738 6.15234 10.3223 5.80078 9.88281 5.80078C9.43359 5.80078 9.08203 6.15234 9.08203 6.60156L9.08203 13.1543C9.08203 13.6035 9.43359 13.9453 9.88281 13.9453C10.3223 13.9453 10.6738 13.5938 10.6738 13.1543Z"/></g></svg>`;
+    const __MINUS_MAGNIFYINGGLASS = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24.7656 24.6387"><g><rect height="24.6387" opacity="0" width="24.7656" x="0" y="0"/><path d="M0 9.88281C0 15.3223 4.43359 19.7559 9.88281 19.7559C12.0801 19.7559 14.1016 19.0332 15.7422 17.8125L22.1777 24.2578C22.4219 24.5117 22.7637 24.6387 23.1152 24.6387C23.8867 24.6387 24.4043 24.0527 24.4043 23.3203C24.4043 22.959 24.2773 22.6465 24.043 22.4023L17.6367 15.9668C18.9648 14.2969 19.7656 12.1777 19.7656 9.88281C19.7656 4.43359 15.332 0 9.88281 0C4.43359 0 0 4.43359 0 9.88281ZM1.82617 9.88281C1.82617 5.43945 5.43945 1.82617 9.88281 1.82617C14.3262 1.82617 17.9297 5.43945 17.9297 9.88281C17.9297 14.3164 14.3262 17.9297 9.88281 17.9297C5.43945 17.9297 1.82617 14.3164 1.82617 9.88281Z"/><path d="M6.5918 10.6738L13.1543 10.6738C13.5938 10.6738 13.9551 10.3125 13.9551 9.88281C13.9551 9.44336 13.5938 9.08203 13.1543 9.08203L6.5918 9.08203C6.16211 9.08203 5.80078 9.44336 5.80078 9.88281C5.80078 10.3125 6.16211 10.6738 6.5918 10.6738Z"/></g></svg>`;
+    const __ARROW_UP_LEFT_AND_DOWN_RIGHT_MAGNIFYINGGLASS = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24.7656 24.6387"><g><rect height="24.6387" opacity="0" width="24.7656" x="0" y="0"/><path d="M0 9.88281C0 15.3223 4.43359 19.7559 9.88281 19.7559C12.0801 19.7559 14.1016 19.0332 15.7422 17.8125L22.1777 24.2578C22.4219 24.5117 22.7637 24.6387 23.1152 24.6387C23.8867 24.6387 24.4043 24.0527 24.4043 23.3203C24.4043 22.959 24.2773 22.6465 24.043 22.4023L17.6367 15.9668C18.9648 14.2969 19.7656 12.1777 19.7656 9.88281C19.7656 4.43359 15.332 0 9.88281 0C4.43359 0 0 4.43359 0 9.88281ZM1.82617 9.88281C1.82617 5.43945 5.43945 1.82617 9.88281 1.82617C14.3262 1.82617 17.9297 5.43945 17.9297 9.88281C17.9297 14.3164 14.3262 17.9297 9.88281 17.9297C5.43945 17.9297 1.82617 14.3164 1.82617 9.88281Z"/><path d="M13.2812 9.95117L9.91211 13.3008C9.53125 13.6719 9.66797 14.3457 10.3125 14.3457L13.6426 14.3457C14.0723 14.3457 14.3359 14.0527 14.3359 13.5449L14.3359 10.3516C14.3359 9.70703 13.6328 9.61914 13.2812 9.95117ZM6.43555 9.78516L9.80469 6.43555C10.1855 6.06445 10.0488 5.40039 9.4043 5.40039L6.07422 5.40039C5.64453 5.40039 5.38086 5.68359 5.38086 6.19141L5.38086 9.38477C5.38086 10.0293 6.08398 10.1172 6.43555 9.78516ZM11.5137 12.5098C12.207 13.1836 13.2031 12.2168 12.5195 11.5234L8.21289 7.2168C7.50977 6.51367 6.50391 7.5 7.20703 8.20312Z"/></g></svg>`;
+    const __SQUARE_ARROWTRIANGLE_4_OUTWARD = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 26.5527 26.5918"><g><rect height="26.5918" opacity="0" width="26.5527" x="0" y="0"/><path d="M1.19141 5.88867L5.91797 1.17188C6.38672 0.703125 6.2207 0 5.50781 0L0.927734 0C0.283203 0 0 0.3125 0 0.927734L0 5.48828C0 6.20117 0.703125 6.36719 1.19141 5.88867ZM25 5.88867C25.4883 6.36719 26.1914 6.20117 26.1914 5.48828L26.1914 0.917969C26.1914 0.3125 25.9082 0 25.2734 0L20.6934 0C19.9707 0 19.8145 0.703125 20.2734 1.17188ZM1.19141 20.6836C0.703125 20.2051 0 20.3711 0 21.084L0 25.6543C0 26.2695 0.283203 26.582 0.917969 26.582L5.50781 26.582C6.2207 26.582 6.38672 25.8789 5.91797 25.4102ZM25 20.6836L20.2734 25.4102C19.8145 25.8789 19.9707 26.582 20.6934 26.582L25.2734 26.582C25.9082 26.582 26.1914 26.2695 26.1914 25.6543L26.1914 21.084C26.1914 20.3711 25.4883 20.2051 25 20.6836Z"/><path d="M8.52539 21.6602L17.666 21.6602C20.1953 21.6602 21.4648 20.3906 21.4648 17.9004L21.4648 8.68164C21.4648 6.18164 20.1953 4.91211 17.666 4.91211L8.52539 4.91211C5.99609 4.91211 4.72656 6.19141 4.72656 8.68164L4.72656 17.9004C4.72656 20.3809 5.99609 21.6602 8.52539 21.6602ZM8.55469 19.9316C7.19727 19.9316 6.45508 19.209 6.45508 17.8027L6.45508 8.76953C6.45508 7.37305 7.19727 6.65039 8.55469 6.65039L17.6367 6.65039C18.9746 6.65039 19.7363 7.37305 19.7363 8.76953L19.7363 17.8027C19.7363 19.209 18.9746 19.9316 17.6367 19.9316Z"/></g></svg>`;
+
+
+    const __INSET_FILLED_TOPLEFT_RECTANGLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 29.9512 22.959"><g><rect height="22.959" opacity="0" width="29.9512" x="0" y="0"/><path d="M3.79883 22.959L25.7812 22.959C28.3105 22.959 29.5898 21.6797 29.5898 19.1992L29.5898 3.76953C29.5898 1.2793 28.3105 0 25.7812 0L3.79883 0C1.2793 0 0 1.26953 0 3.76953L0 19.1992C0 21.6992 1.2793 22.959 3.79883 22.959ZM3.83789 21.2305C2.4707 21.2305 1.72852 20.5078 1.72852 19.1016L1.72852 3.85742C1.72852 2.46094 2.4707 1.72852 3.83789 1.72852L25.752 1.72852C27.0898 1.72852 27.8516 2.46094 27.8516 3.85742L27.8516 19.1016C27.8516 20.5078 27.0898 21.2305 25.752 21.2305Z"/><path d="M4.51172 11.4746L13.5645 11.4746C14.4238 11.4746 14.7949 11.0938 14.7949 10.2246L14.7949 4.54102C14.7949 3.67188 14.4238 3.29102 13.5645 3.29102L4.51172 3.29102C3.66211 3.29102 3.29102 3.67188 3.29102 4.54102L3.29102 10.2246C3.29102 11.0938 3.66211 11.4746 4.51172 11.4746Z"/></g></svg>`;
+    const __INSET_FILLED_BOTTOMLEFT_RECTANGLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 29.9512 22.959"><g><rect height="22.959" opacity="0" width="29.9512" x="0" y="0"/><path d="M3.79883 22.959L25.7812 22.959C28.3105 22.959 29.5898 21.6797 29.5898 19.1992L29.5898 3.76953C29.5898 1.2793 28.3105 0 25.7812 0L3.79883 0C1.2793 0 0 1.26953 0 3.76953L0 19.1992C0 21.6992 1.2793 22.959 3.79883 22.959ZM3.83789 21.2305C2.4707 21.2305 1.72852 20.5078 1.72852 19.1016L1.72852 3.85742C1.72852 2.46094 2.4707 1.72852 3.83789 1.72852L25.752 1.72852C27.0898 1.72852 27.8516 2.46094 27.8516 3.85742L27.8516 19.1016C27.8516 20.5078 27.0898 21.2305 25.752 21.2305Z"/><path d="M4.51172 19.668L13.5645 19.668C14.4238 19.668 14.7949 19.2871 14.7949 18.4277L14.7949 12.7148C14.7949 11.8555 14.4238 11.4746 13.5645 11.4746L4.51172 11.4746C3.66211 11.4746 3.29102 11.8555 3.29102 12.7148L3.29102 18.4277C3.29102 19.2871 3.66211 19.668 4.51172 19.668Z"/></g></svg>`;
+    const __INSET_FILLED_BOTTOMRIGHT_RECTANGLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 29.9512 22.959"><g><rect height="22.959" opacity="0" width="29.9512" x="0" y="0"/><path d="M3.79883 22.959L25.7812 22.959C28.3105 22.959 29.5898 21.6797 29.5898 19.1992L29.5898 3.76953C29.5898 1.2793 28.3105 0 25.7812 0L3.79883 0C1.2793 0 0 1.26953 0 3.76953L0 19.1992C0 21.6992 1.2793 22.959 3.79883 22.959ZM3.83789 21.2305C2.4707 21.2305 1.72852 20.5078 1.72852 19.1016L1.72852 3.85742C1.72852 2.46094 2.4707 1.72852 3.83789 1.72852L25.752 1.72852C27.0898 1.72852 27.8516 2.46094 27.8516 3.85742L27.8516 19.1016C27.8516 20.5078 27.0898 21.2305 25.752 21.2305Z"/><path d="M16.0254 19.668L25.0684 19.668C25.9277 19.668 26.2988 19.2871 26.2988 18.4277L26.2988 12.7148C26.2988 11.8555 25.9277 11.4746 25.0684 11.4746L16.0254 11.4746C15.166 11.4746 14.7949 11.8555 14.7949 12.7148L14.7949 18.4277C14.7949 19.2871 15.166 19.668 16.0254 19.668Z"/></g></svg>`;
+    const __INSET_FILLED_TOPRIGHT_RECTANGLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 29.9512 22.959"><g><rect height="22.959" opacity="0" width="29.9512" x="0" y="0"/><path d="M3.79883 22.959L25.7812 22.959C28.3105 22.959 29.5898 21.6797 29.5898 19.1992L29.5898 3.76953C29.5898 1.2793 28.3105 0 25.7812 0L3.79883 0C1.2793 0 0 1.26953 0 3.76953L0 19.1992C0 21.6992 1.2793 22.959 3.79883 22.959ZM3.83789 21.2305C2.4707 21.2305 1.72852 20.5078 1.72852 19.1016L1.72852 3.85742C1.72852 2.46094 2.4707 1.72852 3.83789 1.72852L25.752 1.72852C27.0898 1.72852 27.8516 2.46094 27.8516 3.85742L27.8516 19.1016C27.8516 20.5078 27.0898 21.2305 25.752 21.2305Z"/><path d="M16.0254 11.4746L25.0684 11.4746C25.9277 11.4746 26.2988 11.0938 26.2988 10.2246L26.2988 4.54102C26.2988 3.67188 25.9277 3.29102 25.0684 3.29102L16.0254 3.29102C15.166 3.29102 14.7949 3.67188 14.7949 4.54102L14.7949 10.2246C14.7949 11.0938 15.166 11.4746 16.0254 11.4746Z"/></g></svg>`;
 
     // Settings
     // Help Center
@@ -5662,6 +5978,18 @@
 
     const WISHLIST_SEEDS = [
       {
+        title: "Settable Legend Position",
+        ticketId: "WISH-034",
+        description: "Let users choose which map corner hosts the Legend overlay or card position when layout supports it. Scope includes corner choices, local persistence, responsive behavior, and sensible collision handling with map controls.",
+        priority: "P2",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 22,
+        prompt: "Add a setting for Legend position with corner choices. Persist locally, avoid collisions with map controls, and keep desktop/mobile layouts usable.",
+        category: "UI"
+      },
+      {
         title: "Rename App",
         ticketId: "WISH-033",
         description: "Evaluate a broader app name that fits a personal visual travel journal centered on seeing where someone has been and what is left to visit. Top choice: Travel Log. Other candidates: PlaceMark, Waypoint Journal, Travel Ledger, MapLog, Memory Map, Placebook, and Map Notes.",
@@ -5684,18 +6012,6 @@
         tokenCostPct: 24,
         prompt: "Polish all modal dialog pop-ups: align headers, close/save/delete controls, icon/text rendering, shortcut badges, confirmations, and mobile spacing while preserving behavior.",
         category: "UI"
-      },
-      {
-        title: "Better Scrollable Map With Zoom",
-        ticketId: "WISH-029",
-        description: "Improve scrollable map mode with smoother panning, practical zoom controls, and touch-friendly bounds so close-up map work feels intentional instead of cramped.",
-        priority: "P1",
-        effort: "large",
-        targetKind: "exact",
-        targetVersion: "2.3.0",
-        tokenCostPct: 38,
-        prompt: "Improve scrollable map mode with touch-friendly pan/zoom controls, clear reset behavior, and no regression to fit-map screenshot mode.",
-        category: "Maps"
       },
       {
         title: "Map Locations With Latitude/Longitude",
@@ -5734,18 +6050,6 @@
         category: "UI"
       },
       {
-        title: "Add Text Size Slider",
-        ticketId: "WISH-026",
-        description: "Add a Settings control for app text size so users can tune readability without breaking compact map and notes layouts. Scope includes local persistence, sensible min/max values, Help Center wording, and mobile checks.",
-        priority: "P2",
-        effort: "small",
-        targetKind: "minor",
-        targetVersion: "",
-        tokenCostPct: 14,
-        prompt: "Add a persisted text-size slider in Settings. Apply it through CSS variables, keep compact layouts usable, and document the behavior in Help Center.",
-        category: "Accessibility"
-      },
-      {
         title: "Add Tip Jar",
         ticketId: "WISH-023",
         description: "Add an optional local tip-jar/support link area without adding trackers, payments SDKs, or external dependencies to the core app. Scope includes Settings or Help Center placement, graceful hiding when unused, and export-safe copy.",
@@ -5768,18 +6072,6 @@
         tokenCostPct: 10,
         prompt: "Add a Notes display setting for Condensed parent-row date behavior: single date, earliest, latest, or based on highest level. Preserve current behavior as the default unless changed.",
         category: "Notes"
-      },
-      {
-        title: "Add Home and Saved Locations",
-        ticketId: "WISH-009",
-        description: "Let users store home and favorite locations for planning context. Scope includes local-only saved places, labels, edit/delete actions, import/export persistence, and no geocoding dependency unless explicitly added later.",
-        priority: "P1",
-        effort: "medium",
-        targetKind: "minor",
-        targetVersion: "",
-        tokenCostPct: 28,
-        prompt: "Add local saved places/home data with edit/delete and import/export persistence. No network geocoding.",
-        category: "Maps"
       },
       {
         title: "Add Drive Radius",
@@ -5856,24 +6148,43 @@
     ];
     const CHANGELOG = [
       {
-        version: "2.2.1",
-        date: "2026-05-19",
-        title: "Map Cards Tune-Up",
-        summary: "A patch release for cleaner map/card controls, tighter hints, safer testing shortcuts, and the next naming direction.",
+        version: "2.3.0",
+        date: "2026-05-21",
+        title: "Map Goes Places",
+        summary: "A map-focused release with scrollable pan/zoom, cleaner fit controls, better mobile header behavior, and sharper map-control shortcuts.",
+        notice: {
+          version: "2.3.0",
+          title: "Map Goes Places",
+          summary: "Scrollable pan and zoom, editable zoom percentages, cleaner fit controls, and a tighter map header.",
+          cta: "Learn More"
+        },
         highlights: [
-          "Map, Legend, and Notes visibility controls now live together in the top app bar, including a new Map visibility toggle.",
-          "Title-bar tips are tighter and separate panel/edit guidance from the resize hint.",
-          "Map label and fit/scroll guidance now sits beside the map controls instead of taking an extra row.",
-          "The desktop map/cards divider track is tighter and hidden whenever the map is not visible.",
-          "Developer Tools now documents the hidden double-H shortcut for resetting dismissed hints while testing."
+          "The State Map now opens in scrollable mode with pan-and-zoom controls available immediately.",
+          "Zoom supports 50% steps up to 1000%, direct typed percentages, pointer-anchored wheel zoom, and plus/minus snapping from custom values.",
+          "Fit Map now sits beside the zoom controls, shows the current map mode, and uses clearer fit/scroll symbols and tooltips.",
+          "The map header is tighter on desktop and mobile, with controls grouped for faster use and cleaner screenshot mode behavior."
         ],
         updates: [
-          "The main layout now avoids blank states by keeping at least one panel visible.",
-          "Tall Notes and note-editor symbols have safer centering so their lower edges do not get clipped.",
-          "The rename roadmap now treats Travel Log as the top candidate for the app's visual travel journal direction.",
-          "Fresh browser profiles can still see the latest feature banner, while this patch release remains unhighlighted.",
-          "Existing saved data migrates from its stored app version when no explicit release-notice state exists.",
-          "Help Center and dismissible hints were refreshed for the current header, map-control, and hidden shortcut behavior."
+          "Zoom buttons preserve the current visible map center, while reset and initial scroll mode center the map cleanly.",
+          "Dragging the scrollable map pans without accidentally marking a state after a pan.",
+          "Map zoom, fit mode, and Text Size shortcuts work with the Shift-Control-Option overlay and Developer Shortcut Mode.",
+          "Developer Mode now shows a compact version pill under the title bar name.",
+          "Help Center and dismissible map hints were refreshed for scrollable map mode, typed zoom percentages, fit mode, and current header controls."
+        ]
+      },
+      {
+        version: "2.2.1",
+        date: "2026-05-21",
+        title: "Readable Road",
+        summary: "A small patch release for the Text Size slider and readability tuning.",
+        highlights: [
+          "Settings now includes a compact iOS-style Text Size slider above Theme in Appearance.",
+          "Text Size persists locally and scales the app without changing map zoom.",
+          "The percentage sits inside the moving slider thumb, with a wider oval thumb that keeps 100%+ values readable."
+        ],
+        updates: [
+          "The Text Size slider fills edge to edge while keeping the value centered on the thumb.",
+          "Help Center now mentions Text Size as separate from map zoom."
         ]
       },
       {
@@ -6256,7 +6567,10 @@
     const clone = obj => JSON.parse(JSON.stringify(obj));
     const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const MONTH_LOOKUP = Object.fromEntries(MONTH_NAMES.flatMap((name, index) => [[name.toLowerCase(), index + 1], [name.slice(0, 3).toLowerCase(), index + 1]]));
-    const MAP_ASPECT_RATIO = 959 / 593;
+    const MAP_ASPECT_RATIO = 934 / 593;
+    const MAP_ZOOM_MIN = 1;
+    const MAP_ZOOM_MAX = 10;
+    const MAP_ZOOM_STEP = .5;
     const DESKTOP_LAYOUT_QUERY = window.matchMedia("(min-width: 981px)");
     let selectedState = null;
     let drawerMode = "state";
@@ -6269,7 +6583,10 @@
     let notesCategoricalMode = true;
     let notesHideExcludedOnly = true;
     let notesSearchQuery = "";
-    let mapFitMode = true;
+    let mapFitMode = false;
+    let mapZoom = 1;
+    let mapPanState = null;
+    let centerMapAfterRender = true;
     let noteLevelFilters = new Set();
     let noteVisitTypeFilters = new Set();
     let hiddenHintResetKeyTime = 0;
@@ -6298,7 +6615,7 @@
       return {
         appVersion: APP_VERSION,
         mapName: "Your State Map",
-        settings: { theme: "light", tapBehavior: "cycle", buttonStyle: "symbols", uiHints: true, dateOrder: "mdy", dateStyle: "alpha", mapLabels: "none", mapSplitRatio: .66, hideSuggestedCategories: false, developerMode: false, shortcutMode: false },
+        settings: { theme: "light", tapBehavior: "cycle", buttonStyle: "symbols", uiHints: true, textScale: 1, dateOrder: "mdy", dateStyle: "alpha", mapLabels: "none", mapSplitRatio: .66, hideSuggestedCategories: false, developerMode: false, shortcutMode: false },
         levels,
         states: defaultTerritoryStates(levels),
         notes: {},
@@ -6511,6 +6828,12 @@
       }
     }
 
+    function normalizeTextScale(value) {
+      const numeric = Number(value);
+      if (!Number.isFinite(numeric)) return 1;
+      return Math.max(.85, Math.min(1.2, Math.round(numeric * 20) / 20));
+    }
+
     function normalizeState(input) {
       const base = defaultState();
       const next = { ...base, ...input };
@@ -6528,6 +6851,7 @@
         : Number.isFinite(Number(savedSplitRatio))
           ? Math.max(.34, Math.min(.78, Number(savedSplitRatio)))
           : .66;
+      next.settings.textScale = normalizeTextScale(next.settings.textScale);
       if (typeof next.settings.hideSuggestedCategories !== "boolean") next.settings.hideSuggestedCategories = false;
       next.settings.developerMode = next.settings.developerMode === true;
       next.settings.shortcutMode = next.settings.developerMode && next.settings.shortcutMode === true;
@@ -6946,8 +7270,11 @@
       setButtonLabel("#labelsNoneBtn", ICON_MAP_LABELS_NONE_CIRCLE_SLASH, "None", "No map labels");
       setButtonLabel("#labelsAbbrBtn", ICON_MAP_LABELS_ABBR_CHARACTER, "Abbr", "Show state abbreviations");
       setButtonLabel("#labelsNameBtn", ICON_MAP_LABELS_NAME_TEXTFORMAT, "Name", "Show state names");
-      const fitTitle = mapFitMode ? "Return to scrollable map" : "Fit map on screen";
-      setButtonLabel("#mapFitBtn", mapFitMode ? ICON_MAP_VIEW_SCROLL_ARROW_UP_AND_DOWN_AND_ARROW_LEFT_AND_RIGHT : ICON_MAP_VIEW_CENTER_CAMERA_METERING_SPOT, mapFitMode ? "Scroll Map" : "Fit Map", fitTitle);
+      const fitTitle = mapFitMode ? "Switch to scrollable map" : "Switch to fit map";
+      setButtonLabel("#mapFitBtn", mapFitMode ? __SQUARE_ARROWTRIANGLE_4_OUTWARD : __DOT_ARROWTRIANGLES_UP_RIGHT_DOWN_LEFT_CIRCLE, mapFitMode ? "Fit Map" : "Scroll Map", mapFitMode ? "Fit map mode" : "Scrollable map mode", fitTitle);
+      setButtonLabel("#mapZoomOutBtn", __MINUS_CIRCLE, "Zoom Out", "Zoom map out", "Zoom map out");
+      setButtonLabel("#mapZoomResetBtn", __ARROW_COUNTERCLOCKWISE_CIRCLE, "Reset", "Reset map zoom", "Reset map zoom");
+      setButtonLabel("#mapZoomInBtn", __PLUS_CIRCLE, "Zoom In", "Zoom map in", "Zoom map in");
       setButtonLabel("#smartColorsBtn", ICON_LEGEND_COLORS__SWATCHPALETTE_FILL, "Auto Colors");
       const suggestionsHidden = state.settings.hideSuggestedCategories;
       const suggestionsVisible = !suggestionsHidden;
@@ -7004,6 +7331,10 @@
       $("#legendToggleBtn").setAttribute("aria-pressed", String(legendPanelOpen));
       $("#notesToggleBtn").setAttribute("aria-pressed", String(notesPanelOpen));
       $("#mapFitBtn").setAttribute("aria-pressed", String(mapFitMode));
+      $("#mapZoomOutBtn").disabled = mapFitMode || mapZoom <= MAP_ZOOM_MIN + .001;
+      $("#mapZoomResetBtn").disabled = mapFitMode;
+      $("#mapZoomInBtn").disabled = mapFitMode || mapZoom >= MAP_ZOOM_MAX - .001;
+      if (document.activeElement !== $("#mapZoomReadout")) $("#mapZoomReadout").value = `${Math.round(mapZoom * 100)}%`;
       $("#mapFitBtn").title = shortcutsActive() ? `${fitTitle} (F)` : fitTitle;
     }
 
@@ -7106,12 +7437,24 @@
       panel.style.setProperty("--notes-category-sticky-top", "0px");
     }
 
+    function centerScrollableMap() {
+      if (mapFitMode) return;
+      const wrap = $(".map-wrap");
+      if (!wrap) return;
+      wrap.scrollLeft = Math.max(0, (wrap.scrollWidth - wrap.clientWidth) / 2);
+      wrap.scrollTop = Math.max(0, (wrap.scrollHeight - wrap.clientHeight) / 2);
+    }
+
     function scheduleMainLayoutSync() {
       if (layoutSyncFrame) cancelAnimationFrame(layoutSyncFrame);
       layoutSyncFrame = requestAnimationFrame(() => {
         layoutSyncFrame = 0;
         syncMainLayout();
         syncNotesPanelLayout();
+        if (centerMapAfterRender) {
+          centerMapAfterRender = false;
+          requestAnimationFrame(centerScrollableMap);
+        }
       });
     }
 
@@ -7125,7 +7468,12 @@
       document.documentElement.dataset.legend = legendPanelOpen ? "open" : "closed";
       document.documentElement.dataset.notes = notesPanelOpen ? "open" : "closed";
       document.documentElement.dataset.mapMode = mapFitMode ? "fit" : "scroll";
+      document.documentElement.style.setProperty("--app-text-scale", String(normalizeTextScale(state.settings.textScale)));
+      document.documentElement.style.setProperty("--map-zoom", String(mapZoom));
+      document.documentElement.style.setProperty("--map-zoom-width", `${Math.round(mapZoom * 100)}%`);
       $("#mapTitle").textContent = state.mapName;
+      $("#devModePill").textContent = `Dev Mode v${APP_VERSION}`;
+      $("#devModePill").classList.toggle("hidden", state.settings.developerMode !== true);
       $("#tapHint").textContent = state.settings.tapBehavior === "cycle"
         ? "Tap a state to cycle its visit level."
         : "Tap a state to choose a level and add a note.";
@@ -7697,7 +8045,78 @@
 
     function toggleMapFitMode() {
       mapFitMode = !mapFitMode;
+      if (!mapFitMode) centerMapAfterRender = true;
       render();
+    }
+
+    function clampMapZoom(value) {
+      return Math.max(MAP_ZOOM_MIN, Math.min(MAP_ZOOM_MAX, Number(value) || 1));
+    }
+
+    function formatMapZoom(value = mapZoom) {
+      return `${Math.round(clampMapZoom(value) * 100)}%`;
+    }
+
+    function parseMapZoomPercent(value) {
+      const numeric = Number.parseFloat(String(value || "").replace(/%/g, "").trim());
+      if (!Number.isFinite(numeric)) return null;
+      return clampMapZoom(numeric / 100);
+    }
+
+    function commitMapZoomReadout() {
+      const input = $("#mapZoomReadout");
+      const zoom = parseMapZoomPercent(input.value);
+      if (!zoom) {
+        input.value = formatMapZoom();
+        return;
+      }
+      input.value = formatMapZoom(zoom);
+      setMapZoom(zoom);
+    }
+
+    function snappedMapZoom(delta) {
+      const steps = mapZoom / MAP_ZOOM_STEP;
+      const rounded = Math.round(steps);
+      if (Math.abs(steps - rounded) < .001) return mapZoom + delta;
+      return delta > 0
+        ? Math.ceil(steps) * MAP_ZOOM_STEP
+        : Math.floor(steps) * MAP_ZOOM_STEP;
+    }
+
+    function setMapZoom(value, anchor = null) {
+      if (mapFitMode) mapFitMode = false;
+      const previous = mapZoom;
+      mapZoom = clampMapZoom(value);
+      const wrap = $(".map-wrap");
+      const ratio = previous ? mapZoom / previous : 1;
+      if (wrap && anchor) {
+        const beforeLeft = wrap.scrollLeft + anchor.x;
+        const beforeTop = wrap.scrollTop + anchor.y;
+        render();
+        requestAnimationFrame(() => {
+          wrap.scrollLeft = Math.max(0, beforeLeft * ratio - anchor.x);
+          wrap.scrollTop = Math.max(0, beforeTop * ratio - anchor.y);
+        });
+        return;
+      }
+      centerMapAfterRender = true;
+      render();
+    }
+
+    function nudgeMapZoom(delta) {
+      const wrap = $(".map-wrap");
+      const anchor = wrap && !mapFitMode ? { x: wrap.clientWidth / 2, y: wrap.clientHeight / 2 } : null;
+      setMapZoom(snappedMapZoom(delta), anchor);
+    }
+
+    function resetMapZoom() {
+      mapZoom = 1;
+      centerMapAfterRender = true;
+      render();
+    }
+
+    function adjustTextScale(delta) {
+      updateSetting("textScale", normalizeTextScale(state.settings.textScale + delta));
     }
 
     function sortDateForState(abbr) {
@@ -8828,6 +9247,15 @@
       const developerEnabled = state.settings.developerMode === true;
       $$("[data-dev-only]").forEach(element => element.classList.toggle("hidden", !developerEnabled));
       if (!developerEnabled && $("#tab-developer")?.classList.contains("active")) switchTab("settings");
+      const textScale = normalizeTextScale(state.settings.textScale);
+      const textSizePercent = Math.round(textScale * 100);
+      const textThumbPercent = ((textSizePercent - 85) / 35) * 100;
+      const textThumbRatio = Math.max(0, Math.min(1, (textSizePercent - 85) / 35));
+      $("#textSizeSlider").value = String(textSizePercent);
+      $("#textSizeSlider").style.setProperty("--range-pct", `${textThumbPercent}%`);
+      $(".text-size-slider-wrap")?.style.setProperty("--thumb-pct", `${textThumbPercent}%`);
+      $(".text-size-slider-wrap")?.style.setProperty("--thumb-ratio", textThumbRatio);
+      $("#textSizeValue").textContent = `${textSizePercent}%`;
       $("#lightModeBtn").setAttribute("aria-pressed", state.settings.theme === "light");
       $("#darkModeBtn").setAttribute("aria-pressed", state.settings.theme === "dark");
       $("#symbolButtonsBtn").setAttribute("aria-pressed", state.settings.buttonStyle === "symbols");
@@ -9145,6 +9573,8 @@
     function shortcutKey(event) {
       if (event.code?.startsWith("Key")) return event.code.slice(3).toLowerCase();
       if (event.code?.startsWith("Digit")) return event.code.slice(5);
+      if (event.code === "Minus" || event.code === "NumpadSubtract") return "-";
+      if (event.code === "Equal" || event.code === "NumpadAdd") return event.shiftKey || event.code === "NumpadAdd" ? "+" : "=";
       return event.key.toLowerCase();
     }
 
@@ -9294,6 +9724,78 @@
       });
     }
 
+    function bindMapPanZoom() {
+      const wrap = $(".map-wrap");
+      if (!wrap) return;
+      $("#mapZoomOutBtn").addEventListener("click", () => nudgeMapZoom(-MAP_ZOOM_STEP));
+      $("#mapZoomResetBtn").addEventListener("click", resetMapZoom);
+      $("#mapZoomInBtn").addEventListener("click", () => nudgeMapZoom(MAP_ZOOM_STEP));
+      $("#mapZoomReadout").addEventListener("focus", event => event.target.select());
+      $("#mapZoomReadout").addEventListener("blur", commitMapZoomReadout);
+      $("#mapZoomReadout").addEventListener("keydown", event => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          commitMapZoomReadout();
+          event.target.blur();
+        }
+        if (event.key === "Escape") {
+          event.preventDefault();
+          event.target.value = formatMapZoom();
+          event.target.blur();
+        }
+      });
+      wrap.addEventListener("pointerdown", event => {
+        if (mapFitMode || event.button > 0) return;
+        mapPanState = {
+          pointerId: event.pointerId,
+          x: event.clientX,
+          y: event.clientY,
+          scrollLeft: wrap.scrollLeft,
+          scrollTop: wrap.scrollTop,
+          moved: false
+        };
+        wrap.classList.add("is-panning");
+        wrap.setPointerCapture?.(event.pointerId);
+      });
+      wrap.addEventListener("pointermove", event => {
+        if (!mapPanState || mapPanState.pointerId !== event.pointerId) return;
+        const dx = event.clientX - mapPanState.x;
+        const dy = event.clientY - mapPanState.y;
+        if (Math.abs(dx) > 3 || Math.abs(dy) > 3) mapPanState.moved = true;
+        if (!mapPanState.moved) return;
+        event.preventDefault();
+        wrap.scrollLeft = mapPanState.scrollLeft - dx;
+        wrap.scrollTop = mapPanState.scrollTop - dy;
+      });
+      const endPan = event => {
+        if (!mapPanState || mapPanState.pointerId !== event.pointerId) return;
+        const moved = mapPanState.moved;
+        mapPanState = null;
+        wrap.classList.remove("is-panning");
+        try { wrap.releasePointerCapture(event.pointerId); } catch { }
+        if (moved) {
+          wrap.dataset.blockClick = "true";
+          setTimeout(() => delete wrap.dataset.blockClick, 0);
+        }
+      };
+      wrap.addEventListener("pointerup", endPan);
+      wrap.addEventListener("pointercancel", endPan);
+      wrap.addEventListener("click", event => {
+        if (wrap.dataset.blockClick !== "true") return;
+        event.preventDefault();
+        event.stopPropagation();
+      }, true);
+      wrap.addEventListener("wheel", event => {
+        if (mapFitMode || !(event.ctrlKey || event.metaKey)) return;
+        event.preventDefault();
+        const rect = wrap.getBoundingClientRect();
+        setMapZoom(mapZoom + (event.deltaY > 0 ? -MAP_ZOOM_STEP : MAP_ZOOM_STEP), {
+          x: event.clientX - rect.left,
+          y: event.clientY - rect.top
+        });
+      }, { passive: false });
+    }
+
     function handlePowerShortcut(event) {
       updatePowerOverlay(event);
       if (handleGlobalShortcut(event)) return;
@@ -9380,6 +9882,10 @@
           h: () => switchTab("help"),
           g: () => switchTab("whatsnew"),
           v: () => state.settings.developerMode && switchTab("developer"),
+          "-": () => adjustTextScale(-.05),
+          "+": () => adjustTextScale(.05),
+          "=": () => adjustTextScale(.05),
+          r: () => updateSetting("textScale", 1),
           l: () => updateSetting("theme", "light"),
           d: () => updateSetting("theme", "dark"),
           i: () => updateSetting("buttonStyle", "symbols"),
@@ -9416,6 +9922,10 @@
         l: toggleLegendPanel,
         n: toggleNotesPanel,
         f: toggleMapFitMode,
+        "-": () => nudgeMapZoom(-MAP_ZOOM_STEP),
+        "+": () => nudgeMapZoom(MAP_ZOOM_STEP),
+        "=": () => nudgeMapZoom(MAP_ZOOM_STEP),
+        r: resetMapZoom,
         s: () => $("#settingsBtn").click(),
         m: () => $("#renameBtn").click(),
         c: () => $("#smartColorsBtn").click(),
@@ -9481,6 +9991,7 @@
 
     function bindEvents() {
       bindMainResizeHandle();
+      bindMapPanZoom();
       $("#renameBtn").addEventListener("click", () => {
         $("#mapNameInput").value = state.mapName;
         $("#renameDialog").showModal();
@@ -9656,6 +10167,7 @@
         event.preventDefault();
         saveLevelFromForm();
       });
+      $("#textSizeSlider").addEventListener("input", event => updateSetting("textScale", Number(event.target.value) / 100));
       $("#lightModeBtn").addEventListener("click", () => updateSetting("theme", "light"));
       $("#darkModeBtn").addEventListener("click", () => updateSetting("theme", "dark"));
       $("#symbolButtonsBtn").addEventListener("click", () => updateSetting("buttonStyle", "symbols"));
@@ -9682,6 +10194,9 @@
           onConfirm: () => {
             state = defaultState();
             selectedState = null;
+            mapZoom = 1;
+            mapFitMode = false;
+            centerMapAfterRender = true;
             save();
             closeDrawer();
             render();
@@ -9719,7 +10234,9 @@
             notesCategoricalMode = true;
             notesHideExcludedOnly = true;
             notesSearchQuery = "";
-            mapFitMode = true;
+            mapFitMode = false;
+            mapZoom = 1;
+            centerMapAfterRender = true;
             save();
             closeDrawer();
             render();
@@ -9760,6 +10277,7 @@
     }
 
     function updateSetting(key, value) {
+      if (key === "textScale") value = normalizeTextScale(value);
       state.settings[key] = value;
       if (key === "uiHints") state.dismissedHints = [];
       save();
