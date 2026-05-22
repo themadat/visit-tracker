@@ -2425,7 +2425,7 @@
       overflow: auto;
       max-height: calc(100vh - 7rem);
       display: grid;
-      gap: 1rem;
+      gap: .5rem;
     }
 
     .form-grid {
@@ -2890,8 +2890,6 @@
 
     .note-inline-hints {
       display: grid;
-      gap: .22rem;
-      margin-top: -.55rem;
     }
 
     .visit-type-chip {
@@ -2979,6 +2977,17 @@
     .tag-search-row {
       display: grid;
       gap: .22rem;
+    }
+
+    .tag-more-sticky {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      display: grid;
+      gap: .34rem;
+      padding: .42rem 0 .34rem;
+      background: var(--surface);
+      box-shadow: 0 1px 0 var(--line);
     }
 
     .tag-editor-row {
@@ -3087,9 +3096,9 @@
     .tag-more-option {
       display: grid;
       justify-items: center;
-      gap: .18rem;
-      min-height: 66px;
-      padding: .34rem .22rem .3rem;
+      gap: .26rem;
+      min-height: 96px;
+      padding: .54rem .26rem .42rem;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: var(--surface);
@@ -3109,33 +3118,33 @@
       display: grid;
       place-items: center;
       width: 100%;
-      min-height: 1.75rem;
+      min-height: 2.6rem;
     }
 
     .tag-more-option .sf-symbol {
-      width: 1.55rem;
-      height: 1.55rem;
+      width: 2.4rem;
+      height: 2.4rem;
       color: var(--accent-2);
       justify-self: center;
     }
 
     .tag-more-add {
       position: absolute;
-      right: .12rem;
+      right: .14rem;
       top: 50%;
-      transform: translateY(calc(-50% - .03rem));
+      transform: translateY(calc(-50% - 2px));
       display: grid;
-      align-items: center;
-      justify-content: center;
       place-items: center;
-      min-width: 1.05rem;
-      height: 1.05rem;
+      width: 1.3rem;
+      min-width: 1.3rem;
+      height: 1.3rem;
+      padding: 0 0 2px;
       border-radius: 999px;
       background: var(--accent);
       color: white;
-      font-size: .74rem;
+      font-size: .92rem;
       font-weight: 900;
-      line-height: 0;
+      line-height: 1;
     }
 
     [data-theme="dark"] .tag-more-add {
@@ -3197,14 +3206,15 @@
       height: 20px;
     }
 
+    /* This is the Location Icon and Name in Expanded Moded */
     .compact-notes-states .compact-note-row {
       display: grid;
-      grid-template-columns: minmax(20px, 48%) 82px 46px minmax(0, 1fr);
+      grid-template-columns: minmax(20px, 50%) 80px 30px minmax(0, 1fr);
     }
 
     .compact-notes-notes .compact-note-row {
       display: grid;
-      grid-template-columns: 1.25rem minmax(3.25rem, .42fr) minmax(2.7rem, .34fr) minmax(0, 1.8fr) max-content;
+      grid-template-columns: 1.25rem minmax(3.25rem, .42fr) minmax(0, 1.8fr) max-content;
     }
 
     .compact-note-row.is-note-detail {
@@ -3246,8 +3256,9 @@
       gap: .48rem;
     }
 
+    /* This is the Notes under a Location in Expanded Moded */
     .compact-note-row.is-expanded-child {
-      grid-template-columns: minmax(4.5rem, .42fr) minmax(4.2rem, .48fr) minmax(2.8rem, .34fr) minmax(0, 1.5fr) minmax(0, .12fr);
+      grid-template-columns: 90px 75px minmax(0, 1.5fr) minmax(0, 0);
       width: calc(100% - .22rem);
       margin-left: .22rem;
       border-style: dashed;
@@ -3274,6 +3285,19 @@
       min-width: 0;
     }
 
+    .visit-icon-empty-dot {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      border-radius: 999px;
+      background: var(--state-empty);
+    }
+
+    .compact-note-row.is-expanded .visit-icon-empty-dot {
+      width: 1.25em;
+      height: 1.25em;
+    }
+
     .compact-note-icon .sf-symbol {
       width: 1.12em;
       height: 1.12em;
@@ -3289,7 +3313,7 @@
     }
 
     .selected-note-list .compact-note-row {
-      grid-template-columns: minmax(4.75rem, .5fr) minmax(4.2rem, .62fr) minmax(3rem, .45fr) minmax(0, 1.35fr) max-content;
+      grid-template-columns: 100px 90px minmax(0, 1fr) max-content;
       min-height: 34px;
       height: auto;
       padding: .34rem .45rem;
@@ -4193,7 +4217,7 @@
       }
 
       .visit-type-row {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .date-picker-head {
@@ -4379,10 +4403,6 @@
 
       .legend-help-position {
         display: none;
-      }
-
-      .compact-notes-states .compact-note-row {
-        grid-template-columns: minmax(20px, 44%) 76px 42px minmax(0, 1fr);
       }
 
       .legend-list {
@@ -5225,11 +5245,11 @@
         <button id="noteTagSettingsBtn" type="button" data-shortcut="Y">Tags</button>
       </section>
       <div class="note-inline-hints">
-        <small data-hint data-hint-key="note-smart-convert-help">Type a quick note, then Auto Convert looks for dates,
-          levels, tag names, and keywords like “at”, “for”, and “with”. Leftover text goes to Additional
-          Details.</small>
+        <small data-hint data-hint-key="note-smart-convert-help">
+          Type a quick note, then Auto Convert looks for items like “at”, “for”, and “with”.<br />
+          Leftover text goes to Additional Details.</small>
         <small data-hint data-hint-key="note-tag-settings-help">Quick link to Location Tags to choose which appear
-          below, rename, sort, set shortcuts, and add optional icons.</small>
+          below, rename, sort, and set shortcuts.</small>
       </div>
       <section id="visitTypeRow" class="visit-type-row" aria-label="Visit labels">
       </section>
@@ -9608,10 +9628,18 @@
         : "";
     }
 
-    function visitTypeIconStack(note) {
+    function visitTypeIconStack(note, options = {}) {
       const labels = noteVisitTypeLabels(note);
       const icons = labels.map(type => visitTypeIcon(type.id)).join("");
-      return icons ? `<span class="visit-icon-stack" aria-label="${escapeHtml(labels.map(type => type.label).join(", "))}">${icons}</span>` : "";
+      const color = options.color;
+      const styleAttr = color ? `style="color:${escapeHtml(color)}"` : "";
+      if (icons) {
+        return `<span class="visit-icon-stack" ${styleAttr} aria-label="${escapeHtml(labels.map(type => type.label).join(", "))}">${icons}</span>`;
+      }
+      if (color) {
+        return `<span class="visit-icon-stack is-empty" aria-hidden="true"><span class="visit-icon-empty-dot" style="background:${escapeHtml(color)}"></span></span>`;
+      }
+      return "";
     }
 
     function visitTypeIconStackForState(abbr) {
@@ -9735,15 +9763,16 @@
           <span>${compactLocationName(abbr, dominantLevel(abbr))}</span>
           <span></span><span></span><span></span>
         </button>
-        ${notes.map(note => `
+        ${notes.map(note => {
+          const noteLevel = levelById(note.levelId);
+          return `
           <button class="compact-note-row is-expanded is-expanded-child" type="button" data-note-state="${abbr}" data-edit-note="${note.id}">
-            <span class="compact-note-icon">${visitTypeIconStack(note)}</span>
+            <span class="compact-note-icon">${visitTypeIconStack(note, { color: noteLevel?.color })}</span>
             <span>${escapeHtml(formatDateDisplay(note.date))}</span>
-            <span>${escapeHtml(levelById(note.levelId)?.name || "No level")}</span>
             <span class="compact-note-text">${escapeHtml(noteSummary(note))}</span>
             <span></span>
           </button>
-        `).join("")}
+        `;}).join("")}
       `;
     }
 
@@ -9755,35 +9784,37 @@
       if (notesViewMode === "compact") {
         return `
           <div class="compact-notes compact-notes-notes selected-note-list">
-            ${notes.map(note => `
+            ${notes.map(note => {
+              const noteLevel = levelById(note.levelId);
+              return `
               <article class="compact-note-row" role="button" tabindex="0" data-edit-note-row="${note.id}">
-                <span class="compact-note-icon">${visitTypeIconStack(note)}</span>
+                <span class="compact-note-icon">${visitTypeIconStack(note, { color: noteLevel?.color })}</span>
                 <time datetime="${escapeHtml(note.date)}">${escapeHtml(formatDateDisplay(note.date))}</time>
-                <span>${compactLevelDot(levelById(note.levelId))}</span>
                 <span class="compact-note-text">${escapeHtml(noteSummary(note))}</span>
                 <span class="actions">
                   ${actionButtonHtml({ symbol: ICON_GLOABL_ACTION_EDIT__PENCIL, text: "Edit", className: "icon-btn", attrs: `data-edit-note="${note.id}"` })}
                   ${actionButtonHtml({ symbol: ICON_GLOBAL_ACTION_DELETE__DELETE_LEFT_FILL, text: "Delete", className: "icon-btn danger", attrs: `data-delete-note="${note.id}"` })}
                 </span>
               </article>
-            `).join("")}
+            `;}).join("")}
           </div>
         `;
       }
       return `
           <div class="compact-notes compact-notes-notes selected-note-list">
-          ${notes.map(note => `
+          ${notes.map(note => {
+            const noteLevel = levelById(note.levelId);
+            return `
             <article class="compact-note-row is-expanded" role="button" tabindex="0" data-edit-note-row="${note.id}">
-              <span class="compact-note-icon">${visitTypeIconStack(note)}</span>
+              <span class="compact-note-icon">${visitTypeIconStack(note, { color: noteLevel?.color })}</span>
               <time datetime="${escapeHtml(note.date)}">${escapeHtml(formatDateDisplay(note.date))}</time>
-              <span>${escapeHtml(levelById(note.levelId)?.name || "No level")}</span>
               <span class="compact-note-text">${escapeHtml(noteSummary(note))}</span>
               <span class="actions">
                 ${actionButtonHtml({ symbol: ICON_GLOABL_ACTION_EDIT__PENCIL, text: "Edit", className: "icon-btn", attrs: `data-edit-note="${note.id}"` })}
                 ${actionButtonHtml({ symbol: ICON_GLOBAL_ACTION_DELETE__DELETE_LEFT_FILL, text: "Delete", className: "icon-btn danger", attrs: `data-delete-note="${note.id}"` })}
               </span>
             </article>
-          `).join("")}
+          `;}).join("")}
         </div>
       `;
     }
@@ -10077,11 +10108,13 @@
           <h3><span>Selected Tags</span><small>${active.length}</small></h3>
           ${active.length ? `<div class="tag-selected-grid">${active.map(type => tagRow(type, true)).join("")}</div>` : `<div class="empty">No tags selected.</div>`}
         </section>
-        <label class="tag-search-row">Find More Icons
-          <input id="tagSearchInput" type="search" maxlength="80" placeholder="Search icons/tags" value="${escapeHtml(visitTagSearchQuery)}">
-        </label>
-        <section class="tag-editor-section">
-          <h3><span>More Icons</span><small>${inactive.length}</small></h3>
+        <div class="tag-more-sticky">
+          <label class="tag-search-row">
+            <span class="tag-search-label">More Available Icons <small>(${inactive.length})</small></span>
+            <input id="tagSearchInput" type="search" maxlength="80" placeholder="Search icons/tags" value="${escapeHtml(visitTagSearchQuery)}">
+          </label>
+        </div>
+        <section class="tag-editor-section tag-more-section">
           ${inactive.length ? `<div class="tag-more-grid">${inactive.map(moreIcon).join("")}</div>` : `<div class="empty">No hidden icons match that search.</div>`}
         </section>
       `;
