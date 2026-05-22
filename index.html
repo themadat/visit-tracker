@@ -122,7 +122,7 @@
     [data-button-style="both"] .tabs button .btn-label,
     [data-button-style="both"] .actions button:not(.icon-btn) .btn-label,
     [data-button-style="both"] .theme-row>button .btn-label,
-    [data-button-style="both"] .chip .btn-label {
+    [data-button-style="both"] .levelAutosuggestionChip .btn-label {
       flex-direction: column;
       gap: .08rem;
     }
@@ -187,7 +187,7 @@
       display: flex;
       align-items: center;
       justify-content: flex-start;
-      gap: .36rem;
+      gap: .25rem;
       font-size: .75rem;
       line-height: 1.1;
     }
@@ -198,7 +198,6 @@
       width: 1.15rem;
       min-width: 1.15rem;
       min-height: 1.15rem;
-      margin-left: .18rem;
       padding: 0;
       border: 0;
       border-radius: 999px;
@@ -223,6 +222,65 @@
     .hint-dismiss-btn .sf-symbol path {
       fill: currentColor;
       fill-opacity: .78;
+    }
+
+    .hint-dot-btn {
+      position: relative;
+      display: inline-grid;
+      place-items: center;
+      width: 32px;
+      min-width: 32px;
+      height: 32px;
+      min-height: 32px;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: #a9b0ba;
+      font-size: .55rem;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: 0;
+      flex: 0 0 auto;
+    }
+
+    .hint-dot-btn::before {
+      content: "";
+      position: absolute;
+      inset: 50% auto auto 50%;
+      width: 1.18rem;
+      height: 1.18rem;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--surface-2) 82%, transparent);
+      transform: translate(-50%, -50%);
+    }
+
+    .hint-dot-btn:hover::before,
+    .hint-dot-btn:focus-visible::before {
+      background: color-mix(in srgb, var(--surface-2) 72%, var(--accent) 8%);
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 28%, transparent);
+    }
+
+    .hint-dot-btn:hover {
+      color: var(--muted);
+    }
+
+    .hint-dot-btn span {
+      position: relative;
+      z-index: 1;
+      transform: translateY(-.02rem);
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
 
     button[data-shortcut],
@@ -462,6 +520,7 @@
       position: absolute;
       left: 50%;
       top: 50%;
+      z-index: 8;
       transform: translate(-50%, -50%);
       width: min(68vw, 880px);
       min-height: 44px;
@@ -528,10 +587,31 @@
     }
 
     .release-dismiss {
+      position: relative;
+      display: inline-grid;
+      place-items: center;
+      width: 28px;
       min-width: 28px;
+      height: 28px;
       min-height: 28px;
       padding: 0;
       border-radius: 50%;
+      line-height: 1;
+      text-align: center;
+    }
+
+    .release-dismiss .sf-symbol {
+      position: absolute;
+      inset: 50% auto auto 50%;
+      width: .86rem;
+      height: .86rem;
+      transform: translate(-50%, -50%);
+    }
+
+    @media (min-width: 621px) {
+      .release-dismiss .sf-symbol {
+        transform: translate(calc(-50% + 1px), calc(-55% + 1px));
+      }
     }
 
     .has-release-dot {
@@ -727,7 +807,7 @@
     .map-head-hints {
       display: grid;
       justify-items: end;
-      gap: .12rem;
+      gap: .25rem;
       flex: 1 1 18rem;
       min-width: 10rem;
       line-height: 1.1;
@@ -786,6 +866,10 @@
       place-items: center;
     }
 
+    #labelsToggleLabel {
+      width: 40px;
+    }
+
     .map-label-toggle {
       flex: 0 1 auto;
       flex-wrap: nowrap;
@@ -799,8 +883,8 @@
       display: grid;
       place-items: center;
       align-self: stretch;
-      width: 50px;
-      min-width: 50px;
+      width: 40px;
+      min-width: 40px;
       min-height: 30px;
       padding: 0 .34rem;
       border: 0;
@@ -813,8 +897,8 @@
     }
 
     .map-label-toggle>span .sf-symbol {
-      width: 1.575em;
-      height: 1.575em;
+      width: 24px;
+      height: 24px;
       color: color-mix(in srgb, var(--text) 72%, var(--muted) 28%);
     }
 
@@ -833,14 +917,22 @@
       background: color-mix(in srgb, var(--surface) 54%, var(--surface-2) 46%);
     }
 
+    #labelsNoneBtn .sf-symbol,
+    #labelsAbbrBtn .sf-symbol {
+      width: 16px;
+      height: 16px;
+      overflow: visible;
+    }
+
     #labelsNameBtn .sf-symbol {
-      width: 1.55em;
+      width: 25px;
+      height: 16px;
       overflow: visible;
     }
 
     [data-button-style="symbols"] .map-head-actions {
       flex-wrap: nowrap;
-      gap: .36rem;
+      gap: .25rem;
     }
 
     [data-button-style="symbols"] .map-head-actions button {
@@ -860,8 +952,8 @@
     }
 
     [data-button-style="symbols"] .map-label-toggle>span {
-      width: 50px;
-      min-width: 50px;
+      width: 48px;
+      min-width: 48px;
       min-height: 32px;
       padding: 0;
       font-size: .78rem;
@@ -1314,7 +1406,7 @@
     .note-list,
     .wishlist-list {
       display: grid;
-      gap: .4rem;
+      gap: .2rem;
       align-content: start;
       align-items: start;
       grid-auto-rows: max-content;
@@ -1325,6 +1417,7 @@
       grid-template-columns: minmax(0, 1fr) auto;
       gap: .38rem;
       align-items: center;
+      height: 32px;
       width: 100%;
       text-align: left;
       padding: .36rem .42rem;
@@ -1389,7 +1482,7 @@
       display: grid;
       grid-column: 1;
       grid-template-columns: auto minmax(0, 1fr);
-      gap: .32rem;
+      gap: .5rem;
       align-items: center;
       width: 100%;
       min-height: 0;
@@ -1409,6 +1502,7 @@
       display: grid;
       grid-column: 2;
       justify-self: end;
+      align-self: center;
       grid-template-columns: repeat(4, 24px);
       gap: .16rem;
       align-items: center;
@@ -1432,7 +1526,40 @@
       max-width: calc(48px + .16rem);
       opacity: 1;
       pointer-events: auto;
+      margin-right: calc(24px + .16rem);
       transform: translateX(0);
+    }
+
+    .legend-swipe-dismiss {
+      display: none;
+      position: absolute;
+      right: .42rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 24px;
+      min-width: 24px;
+      height: 24px;
+      min-height: 24px;
+      padding: 0;
+      color: var(--muted);
+    }
+
+    .legend-swipe-dismiss.icon-btn {
+      display: none;
+    }
+
+    html:not([data-legend-editing="true"]) .legend-item.is-swiped .legend-swipe-dismiss.icon-btn {
+      display: inline-grid;
+      place-items: center;
+    }
+
+    .legend-swipe-dismiss .sf-symbol {
+      width: .92rem;
+      height: .92rem;
+    }
+
+    .legend-help-position {
+      display: contents;
     }
 
     html:not([data-legend-editing="true"]) .legend-item.is-swiped .order-buttons {
@@ -1449,6 +1576,8 @@
     }
 
     .icon-btn {
+      display: inline-grid;
+      place-items: center;
       min-height: 24px;
       min-width: 24px;
       padding: .06rem;
@@ -1938,11 +2067,15 @@
       white-space: nowrap;
     }
 
-    .chip {
-      min-height: 34px;
+    .levelAutosuggestionChips {
+      padding: .5rem 0 0 0;
+    }
+
+    .levelAutosuggestionChip {
+      min-height: 32px;
       border-radius: 999px;
-      padding: .35rem .7rem;
-      font-size: .86rem;
+      padding: .5rem;
+      font-size: .85rem;
     }
 
     .level-count-toggle {
@@ -2292,7 +2425,7 @@
       overflow: auto;
       max-height: calc(100vh - 7rem);
       display: grid;
-      gap: 1rem;
+      gap: .5rem;
     }
 
     .form-grid {
@@ -2436,6 +2569,10 @@
       font-size: .86rem;
     }
 
+    .notes-search input::placeholder {
+      font-size: .75rem;
+    }
+
     .notes-controls .segmented {
       flex: 1 1 0;
       justify-content: stretch;
@@ -2515,14 +2652,25 @@
     .notes-icon-filters {
       display: flex;
       flex-wrap: wrap;
-      gap: .22rem;
+      gap: 2px;
       align-items: center;
-      margin: .04rem 0 .14rem;
+      margin: 0;
       padding: 0;
       list-style: none;
     }
 
     .notes-icon-filters.hidden {
+      display: none;
+    }
+
+    .notes-icon-filter-row {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      margin: .04rem 0 .14rem;
+    }
+
+    .notes-icon-filter-row.hidden {
       display: none;
     }
 
@@ -2534,15 +2682,18 @@
     .notes-icon-filter {
       display: inline-grid;
       place-items: center;
-      width: 30px;
-      height: 30px;
-      min-height: 30px;
+      width: 32px;
+      height: 32px;
+      min-height: 32px;
       padding: 0;
-      border-radius: 9px;
+      border-radius: 8px;
       border: 1px solid var(--line);
       background: var(--surface);
       color: var(--muted);
       cursor: pointer;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-touch-callout: none;
     }
 
     .notes-icon-filter:hover {
@@ -2593,11 +2744,31 @@
     }
 
     .notes-filter-summary {
+      font-size: .7rem;
+      line-height: 1.1;
+    }
+
+    .notes-filter-summary strong {
+      display: flex;
+      align-items: baseline;
+      gap: .25rem;
+      flex-wrap: wrap;
+      color: var(--text);
+      font-size: .8rem;
+      line-height: 1.2;
+    }
+
+    .notes-filter-summary .mode-bracket {
       color: var(--muted);
-      font-size: .72rem;
-      line-height: 1.28;
-      padding: .18rem 0 .22rem;
-      margin-bottom: .12rem;
+      font-size: .6rem;
+      line-height: 1.1;
+      text-transform: uppercase;
+    }
+
+    .notes-filter-summary em {
+      color: var(--muted);
+      font-size: .7rem;
+      line-height: 1.1;
     }
 
     #notesPanel[data-note-hints="hidden"] {
@@ -2605,11 +2776,6 @@
     }
 
     #notesPanel[data-note-hints="hidden"] .notes-icon-filters {
-      margin-bottom: .02rem;
-    }
-
-    #notesPanel[data-note-hints="hidden"] .notes-filter-summary {
-      padding: .02rem 0 .04rem;
       margin-bottom: .02rem;
     }
 
@@ -2724,8 +2890,6 @@
 
     .note-inline-hints {
       display: grid;
-      gap: .22rem;
-      margin-top: -.55rem;
     }
 
     .visit-type-chip {
@@ -2791,7 +2955,7 @@
 
     .tag-more-grid {
       display: grid;
-      grid-template-columns: repeat(8, minmax(0, 1fr));
+      grid-template-columns: repeat(6, minmax(0, 1fr));
       gap: .34rem;
       align-items: start;
     }
@@ -2813,6 +2977,17 @@
     .tag-search-row {
       display: grid;
       gap: .22rem;
+    }
+
+    .tag-more-sticky {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      display: grid;
+      gap: .34rem;
+      padding: .42rem 0 .34rem;
+      background: var(--surface);
+      box-shadow: 0 1px 0 var(--line);
     }
 
     .tag-editor-row {
@@ -2921,9 +3096,9 @@
     .tag-more-option {
       display: grid;
       justify-items: center;
-      gap: .18rem;
-      min-height: 66px;
-      padding: .34rem .22rem .3rem;
+      gap: .26rem;
+      min-height: 96px;
+      padding: .54rem .26rem .42rem;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: var(--surface);
@@ -2943,33 +3118,33 @@
       display: grid;
       place-items: center;
       width: 100%;
-      min-height: 1.75rem;
+      min-height: 2.6rem;
     }
 
     .tag-more-option .sf-symbol {
-      width: 1.55rem;
-      height: 1.55rem;
+      width: 2.4rem;
+      height: 2.4rem;
       color: var(--accent-2);
       justify-self: center;
     }
 
     .tag-more-add {
       position: absolute;
-      right: .12rem;
+      right: .14rem;
       top: 50%;
-      transform: translateY(calc(-50% - .03rem));
+      transform: translateY(calc(-50% - 2px));
       display: grid;
-      align-items: center;
-      justify-content: center;
       place-items: center;
-      min-width: 1.05rem;
-      height: 1.05rem;
+      width: 1.3rem;
+      min-width: 1.3rem;
+      height: 1.3rem;
+      padding: 0 0 2px;
       border-radius: 999px;
       background: var(--accent);
       color: white;
-      font-size: .74rem;
+      font-size: .92rem;
       font-weight: 900;
-      line-height: 0;
+      line-height: 1;
     }
 
     [data-theme="dark"] .tag-more-add {
@@ -3031,12 +3206,15 @@
       height: 20px;
     }
 
+    /* This is the Location Icon and Name in Expanded Moded */
     .compact-notes-states .compact-note-row {
-      grid-template-columns: minmax(0, 3fr) minmax(0, 1.5fr) minmax(0, 1.5fr) minmax(0, 1.5fr) minmax(0, 2.5fr);
+      display: grid;
+      grid-template-columns: minmax(20px, 50%) 80px 30px minmax(0, 1fr);
     }
 
     .compact-notes-notes .compact-note-row {
-      grid-template-columns: 1.25rem minmax(3.25rem, .42fr) minmax(2.7rem, .34fr) minmax(0, 1.8fr) max-content;
+      display: grid;
+      grid-template-columns: 1.25rem minmax(3.25rem, .42fr) minmax(0, 1.8fr) max-content;
     }
 
     .compact-note-row.is-note-detail {
@@ -3078,8 +3256,9 @@
       gap: .48rem;
     }
 
+    /* This is the Notes under a Location in Expanded Moded */
     .compact-note-row.is-expanded-child {
-      grid-template-columns: minmax(4.5rem, .42fr) minmax(4.2rem, .48fr) minmax(2.8rem, .34fr) minmax(0, 1.5fr) minmax(0, .12fr);
+      grid-template-columns: 90px 75px minmax(0, 1.5fr) minmax(0, 0);
       width: calc(100% - .22rem);
       margin-left: .22rem;
       border-style: dashed;
@@ -3106,6 +3285,19 @@
       min-width: 0;
     }
 
+    .visit-icon-empty-dot {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      border-radius: 999px;
+      background: var(--state-empty);
+    }
+
+    .compact-note-row.is-expanded .visit-icon-empty-dot {
+      width: 1.25em;
+      height: 1.25em;
+    }
+
     .compact-note-icon .sf-symbol {
       width: 1.12em;
       height: 1.12em;
@@ -3121,7 +3313,7 @@
     }
 
     .selected-note-list .compact-note-row {
-      grid-template-columns: minmax(4.75rem, .5fr) minmax(4.2rem, .62fr) minmax(3rem, .45fr) minmax(0, 1.35fr) max-content;
+      grid-template-columns: 100px 90px minmax(0, 1fr) max-content;
       min-height: 34px;
       height: auto;
       padding: .34rem .45rem;
@@ -3163,6 +3355,53 @@
     .compact-note-row .actions {
       flex-wrap: nowrap;
       gap: .1rem;
+    }
+
+    .compact-level-wrap,
+    .compact-note-count {
+      display: inline-flex;
+      align-items: center;
+      gap: .24rem;
+      min-width: 0;
+    }
+
+    .compact-level-dot {
+      width: .78rem;
+      height: .78rem;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 0, 0, .22);
+      background: var(--level-color, var(--state-empty));
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .24);
+      flex: 0 0 auto;
+    }
+
+    .compact-level-dot.is-empty {
+      background: var(--state-empty);
+    }
+
+    .compact-note-count .sf-symbol {
+      width: .86rem;
+      height: .86rem;
+      color: var(--muted);
+    }
+
+    .compact-location-name {
+      display: inline-flex;
+      align-items: center;
+      gap: .28rem;
+      min-width: 0;
+    }
+
+    .compact-location-icon {
+      display: inline-grid;
+      place-items: center;
+      color: var(--level-color, var(--muted));
+      flex: 0 0 auto;
+    }
+
+    .compact-location-icon .sf-symbol {
+      width: 1em;
+      height: 1em;
     }
 
     .compact-note-row .icon-btn {
@@ -3751,9 +3990,17 @@
       .filters {
         grid-template-columns: 1fr 1fr;
       }
+
+      .legend-help-position {
+        display: none;
+      }
     }
 
     @media (max-width: 620px) {
+      .notes-search input::placeholder {
+        font-size: .6rem;
+      }
+
       .topbar {
         align-items: center;
         flex-direction: row;
@@ -3794,19 +4041,51 @@
       }
 
       .topbar-hints {
-        display: none;
+        order: 2;
+        display: grid;
+        flex: 1 1 100%;
+        width: 100%;
+        max-width: none;
+        justify-items: center;
+        gap: .04rem;
+      }
+
+      .topbar-hints small {
+        text-align: center;
+        justify-content: center;
+        font-size: .7rem;
       }
 
       .release-notice {
-        display: none;
+        left: .65rem;
+        right: .65rem;
+        top: auto;
+        bottom: .42rem;
+        width: auto;
+        transform: none;
+        z-index: 12;
+        grid-template-columns: auto minmax(0, 1fr) auto auto;
+        gap: .34rem;
+        padding: .38rem .42rem;
+        min-height: 40px;
       }
 
       .release-copy small {
         white-space: normal;
+        display: none;
+      }
+
+      .release-copy b {
+        font-size: .78rem;
+      }
+
+      .release-pill,
+      .release-cta {
+        font-size: .68rem;
       }
 
       .toolbar {
-        order: 2;
+        order: 3;
         flex: 1 1 100%;
         margin-left: 0;
         justify-content: center;
@@ -3853,7 +4132,18 @@
       }
 
       .map-head-hints {
-        display: none !important;
+        display: grid;
+        order: -1;
+        flex: 0 0 100%;
+        width: 100%;
+        min-width: 0;
+        justify-items: center;
+      }
+
+      .map-head-hints small {
+        text-align: center;
+        justify-content: center;
+        font-size: .7rem;
       }
 
       .map-action-group {
@@ -3874,8 +4164,9 @@
       }
 
       [data-button-style="symbols"] .map-head-actions {
-        width: auto;
-        flex-wrap: nowrap;
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: center;
       }
 
       [data-button-style="symbols"] .map-head-actions button {
@@ -3926,7 +4217,7 @@
       }
 
       .visit-type-row {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .date-picker-head {
@@ -4078,7 +4369,7 @@
       }
 
       .tag-more-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
 
       #legendPanel {
@@ -4110,8 +4401,12 @@
         display: none;
       }
 
+      .legend-help-position {
+        display: none;
+      }
+
       .legend-list {
-        gap: .18rem;
+        gap: .25rem;
       }
 
       .legend-item {
@@ -4140,6 +4435,15 @@
       .legend-item.is-swiped .legend-actions {
         grid-template-columns: repeat(2, 20px);
         max-width: calc(40px + .1rem);
+        margin-right: calc(20px + .1rem);
+      }
+
+      .legend-swipe-dismiss {
+        right: .2rem;
+        width: 20px;
+        min-width: 20px;
+        height: 20px;
+        min-height: 20px;
       }
 
       [data-legend-editing="true"] .legend-item.is-swiped .legend-actions {
@@ -4211,14 +4515,6 @@
         font-size: .62rem;
       }
 
-      .compact-notes-states .compact-note-row {
-        grid-template-columns: minmax(0, 3fr) minmax(0, 1.5fr) minmax(0, 1.5fr) minmax(0, 1.5fr) minmax(0, 2.5fr);
-      }
-
-      .compact-notes-notes .compact-note-row {
-        grid-template-columns: 1.2rem minmax(3.15rem, .48fr) minmax(2.7rem, .38fr) minmax(0, 1.45fr) max-content;
-      }
-
       .compact-note-row.header {
         display: none;
       }
@@ -4239,7 +4535,7 @@
             <h1 id="mapTitle">Your Visit Tracker</h1>
             <button id="renameBtn" class="ghost title-edit-btn" type="button" data-shortcut="M">Rename</button>
           </div>
-          <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v2.4.0.10</span>
+          <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v2.4.0.16</span>
         </div>
         <div class="topbar-hints" aria-label="Title bar tips">
           <small id="topbarPanelHint" data-hint data-hint-key="topbar-panel-controls">
@@ -4257,12 +4553,15 @@
         </span>
         <span id="releaseNoticeCta" class="release-cta">Learn<br>More</span>
         <button id="releaseNoticeDismissBtn" class="release-dismiss ghost" type="button" aria-label="Dismiss update"
-          title="Dismiss">×</button>
+          title="Dismiss"><svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+            viewBox="0 0 20.1197 19.7779">
+            <path
+              d="M18.1262 0.303967L0.27467 18.1555C-0.0866577 18.5169-0.0964233 19.1321 0.27467 19.5032C0.65553 19.8645 1.261 19.8645 1.63209 19.5032L19.4739 1.65162C19.845 1.2903 19.8547 0.675061 19.4739 0.303967C19.1028-0.0573608 18.4973-0.0671265 18.1262 0.303967ZM19.4739 18.1555L1.63209 0.303967C1.261-0.0573608 0.645764-0.0671265 0.27467 0.303967C-0.0866577 0.684827-0.0866577 1.2903 0.27467 1.65162L18.1262 19.5032C18.4876 19.8645 19.1126 19.8743 19.4739 19.5032C19.845 19.1223 19.845 18.5169 19.4739 18.1555Z" />
+          </svg></button>
       </div>
       <nav class="toolbar" aria-label="App actions">
         <div class="toolbar-panel-toggle-group" aria-label="Visible panels">
-          <button id="mapToggleBtn" class="toggle-btn" type="button" aria-pressed="true"
-            data-shortcut="G">Map</button>
+          <button id="mapToggleBtn" class="toggle-btn" type="button" aria-pressed="true" data-shortcut="G">Map</button>
           <button id="legendToggleBtn" class="toggle-btn" type="button" aria-pressed="true"
             data-shortcut="L">Legend</button>
           <button id="notesToggleBtn" class="toggle-btn" type="button" aria-pressed="true"
@@ -4277,20 +4576,21 @@
         <div class="map-head">
           <div class="map-head-title">
             <h2 id="mapHeading">US Map</h2>
-            <small id="tapHint" data-hint>Tap a location to select and cycle its visit level.</small>
+            <small id="tapHint" data-hint>Tap a Location to select/cycle Log Level.</small>
           </div>
           <div class="map-head-actions">
             <div class="map-head-hints">
               <small data-hint data-hint-key="map-controls">
-                Switch map views (zoom/pan/scroll | fit).<br />
-                Choose map labels text: none, abbr, full name.</small>
+                Switch Map Views: Zoom/Pan/Scroll | Fit<br />
+                Choose Map Labels: NONE | ABBR | Full Name</small>
             </div>
             <div class="map-zoom-controls" aria-label="Scrollable map zoom controls">
               <button id="mapZoomOutBtn" type="button" aria-label="Zoom map out" data-shortcut="-">Zoom Out</button>
               <input id="mapZoomReadout" class="map-zoom-readout" type="text" inputmode="numeric"
                 aria-label="Map zoom percentage" value="100%">
               <button id="mapZoomInBtn" type="button" aria-label="Zoom map in" data-shortcut="+">Zoom In</button>
-              <button id="mapZoomResetBtn" type="button" aria-label="Reset map zoom" data-shortcut="R">Reset Zoom</button>
+              <button id="mapZoomResetBtn" type="button" aria-label="Reset map zoom" data-shortcut="R">Reset
+                Zoom</button>
             </div>
             <div class="map-action-group map-toggle-group">
               <button id="mapFitBtn" class="toggle-btn" type="button" aria-pressed="false"
@@ -4793,14 +5093,13 @@
               </div>
             </div>
             <small data-hint data-hint-key="legend-help">
-              Drag Legend or Position Button to choose preferred corner.<br />
-              Top level color applies in multiple level cases.<br />
-              Removing levels demotes locations.<br />
-              Drag to reorder | Swipe right-to-left for Quick Actions.<br />
-              Featured Palettes | Auto-Suggestions | Add/Edit your Own.
+              <span class="legend-help-position">Drag Legend to Preferred Spot or use Position Button.<br /></span>
+              Top Level Wins & Deleting Demotes in Multi-Levels.<br />
+              Drag to Reorder | Swipe Left for Quick Actions.<br />
+              Featured Palettes | Auto-Suggest | Add/Edit Levels.
             </small>
             <div id="legendList" class="legend-list"></div>
-            <div id="builtinLevels" class="chips" style="margin-top: .75rem;"></div>
+            <div id="builtinLevels" class="levelAutosuggestionChips"></div>
           </section>
         </section>
         <section id="notesPanel" class="panel side-panel" aria-label="Notes">
@@ -4834,12 +5133,16 @@
             <button id="copyNotesTextBtn" class="notes-copy-btn" type="button" data-shortcut="P">Copy</button>
           </div>
           <small id="notesPanelSubtitle" class="notes-toggle-hint" data-hint data-hint-key="notesPanelSubtitle">
-            Group by Category | Show/Hide Excluded Locations | Copy the Text Only View.</small>
-          <ol id="notesIconFilters" class="notes-icon-filters" aria-label="Filter notes by icon"></ol>
+            Category Grouping | Show/Hide Excluded Locations | Copy Text Only.</small>
+          <div id="notesIconFilterRow" class="notes-icon-filter-row">
+            <ol id="notesIconFilters" class="notes-icon-filters" aria-label="Filter notes by icon"></ol>
+            <button id="notesTagSettingsMiniBtn" class="hint-dot-btn" type="button"
+              aria-label="Open location tag settings" title="Open location tag settings"><span>•••</span></button>
+          </div>
           <small id="notesIconFilterHint" class="notes-icon-filter-hint" data-hint
             data-hint-key="notes-icon-filter-help">
             Select icons to filter notes. Empty circle is all Notes without an icon.<br />
-            Right-Click or Long-Press an icon to switch between filter on just it or show all.</small>
+            Right-Click/Long-Press an icon to toggle filter on just it or show all.</small>
           <div id="notesFilterSummary" class="notes-filter-summary" aria-live="polite"></div>
           <div id="notesPanelContent" class="note-list"></div>
         </section>
@@ -4942,11 +5245,11 @@
         <button id="noteTagSettingsBtn" type="button" data-shortcut="Y">Tags</button>
       </section>
       <div class="note-inline-hints">
-        <small data-hint data-hint-key="note-smart-convert-help">Type a quick note, then Auto Convert looks for dates,
-          levels, tag names, and keywords like “at”, “for”, and “with”. Leftover text goes to Additional
-          Details.</small>
+        <small data-hint data-hint-key="note-smart-convert-help">
+          Type a quick note, then Auto Convert looks for items like “at”, “for”, and “with”.<br />
+          Leftover text goes to Additional Details.</small>
         <small data-hint data-hint-key="note-tag-settings-help">Quick link to Location Tags to choose which appear
-          below, rename, sort, set shortcuts, and add optional icons.</small>
+          below, rename, sort, and set shortcuts.</small>
       </div>
       <section id="visitTypeRow" class="visit-type-row" aria-label="Visit labels">
       </section>
@@ -5226,7 +5529,8 @@
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-docs"></span>Documentation
           </h3>
           <ol>
-            <li>Tap a location to mark it. In cycle mode, a first tap on an already marked location shows it in Notes; the
+            <li>Tap a location to mark it. In cycle mode, a first tap on an already marked location shows it in Notes;
+              the
               next tap cycles levels.</li>
             <li>Use the app header to show or hide Map, Legend, and Notes. Use the Location Map header to switch labels,
               fit the map for screenshots, or return to scrollable mode with pan and zoom controls.</li>
@@ -5260,7 +5564,8 @@
             <li>Use JSON Import/Export in Settings to back up data or move it to another device. Text exports are for
               sharing or saving elsewhere.</li>
           </ol>
-          <p><b>Default levels:</b> Visited and Not Interested. Not Interested is a excluded level and doesn't count towards
+          <p><b>Default levels:</b> Visited and Not Interested. Not Interested is a excluded level and doesn't count
+            towards
             total completion.</p>
           <p><b>Color tools:</b> Auto Colors can apply a smart palette to your current levels. Suggested categories can
             be shown or hidden from the Legend. Palette order follows the current Legend priority.</p>
@@ -5273,7 +5578,8 @@
             in Obsidian, Notion, or any Markdown viewer. Rich Text (.rtf) opens in Word or Pages. Simple Text (.txt)
             pastes anywhere.</p>
           <p><b>Shortcut overlays:</b> Hold Shift + Control + Option to show temporary hint badges on actionable
-            controls. Developer Tools lists hidden commands, including H H to restore dismissed hints while testing.</p>
+            controls. Developer Tools lists hidden commands, including H H to restore dismissed hints and the update
+            banner while testing.</p>
         </section>
         <section class="help-section">
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ</h3>
@@ -5416,17 +5722,21 @@
             <div class="shortcut-row is-direct"><kbd>R</kbd><span>Global: open Release Notes. Press again to jump into
                 Roadmap search.</span></div>
             <div class="shortcut-row is-direct"><kbd>/</kbd><span>Global: focus Notes search.</span></div>
-            <div class="shortcut-row is-direct"><kbd>H H</kbd><span>Global: reset dismissed hints by toggling Hints off
-                and back on.</span></div>
+            <div class="shortcut-row is-direct"><kbd>H H</kbd><span>Global: reset dismissed hints and the What's New
+                banner by toggling Hints off and back on.</span></div>
+            <div class="shortcut-row is-direct"><kbd>Tap x4</kbd><span>Quad-tap the app name to run the same hint and
+                banner reset.</span></div>
             <div class="shortcut-row"><kbd>M</kbd><span>Rename the map from the main screen.</span></div>
             <div class="shortcut-row"><kbd>S</kbd><span>Open Settings.</span></div>
             <div class="shortcut-row"><kbd>G</kbd><span>Toggle the Map panel.</span></div>
             <div class="shortcut-row"><kbd>L</kbd><span>Toggle the Legend panel.</span></div>
             <div class="shortcut-row"><kbd>N</kbd><span>Toggle the Notes panel.</span></div>
             <div class="shortcut-row"><kbd>F</kbd><span>Toggle fitted vs scrollable map rendering.</span></div>
-            <div class="shortcut-row"><kbd>- + R</kbd><span>Zoom the scrollable map out, zoom in, or reset to 100%.</span></div>
+            <div class="shortcut-row"><kbd>- + R</kbd><span>Zoom the scrollable map out, zoom in, or reset to
+                100%.</span></div>
             <div class="shortcut-row"><kbd>0 1 2</kbd><span>Switch map labels between None, Abbr, and Name.</span></div>
-            <div class="shortcut-row"><kbd>- + R</kbd><span>Settings: decrease, increase, or reset Text Size.</span></div>
+            <div class="shortcut-row"><kbd>- + R</kbd><span>Settings: decrease, increase, or reset Text Size.</span>
+            </div>
             <div class="shortcut-row"><kbd>C H A</kbd><span>Auto Colors, suggested categories, and contextual add
                 actions.</span></div>
             <div class="shortcut-row"><kbd>B T E K Y V O P</kbd><span>Notes Back, Chronological Sort, Expanded,
@@ -5450,7 +5760,7 @@
 
   <script>
     const APP_NAME = "Visit Tracker";
-    const APP_VERSION = "2.4.0.10";
+    const APP_VERSION = "2.4.0.16";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -6317,6 +6627,7 @@
       graduationcap: ["school", "college", "education"],
       heart: ["favorite", "love", "best"],
       house: ["home", "saved", "location"],
+      infinity: ["wedding"],
       leaf: ["nature", "park"],
       map: ["travel", "route"],
       mappin: ["place", "location", "pin"],
@@ -6556,7 +6867,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "2.4.0.10",
+        version: "2.4.0.16",
         date: "2026-05-22",
         title: "Legend Gets Legs",
         summary: "A 2.4 development build that makes the Legend movable, draggable, more compact, and calmer until edit mode is needed.",
@@ -6568,6 +6879,15 @@
         ],
         updates: [
           "Map, Legend, and Notes visibility now restore across reloads.",
+          "Location Tag settings now show More Icons in a 6-column grid on wider screens and a 3-column grid on mobile.",
+          "Desktop Legend swipe actions no longer add a layout column, the banner close icon is nudged to the visual center, Notes search placeholders are smaller, and the Notes summary now uses the requested count-plus-bracket format.",
+          "Notes summary now keeps the view/sort/grouping bracket beside the location count, filters stay on their own compact line, the ellipsis shortcut is smaller, and Legend swipe close controls only appear while swiped.",
+          "The What's New dismiss control now uses a centered SVG close icon, Notes filter summaries split filter and mode details across two compact lines, and Legend quick actions stay vertically centered in desktop rows.",
+          "The hidden H H test shortcut and a quad-tap on the app name now restore dismissed hints and the What's New banner highlight together.",
+          "Condensed Notes now colors the location-type icon by the highest visit level instead of spending a separate column on level text.",
+          "What's New and swipe quick-action close buttons are centered, the tag-settings ellipsis got a ghost-style circular hover target, and Notes filter summary details are smaller small-caps text.",
+          "Mobile hints now sit above their controls, What's New can overlay the mobile toolbar, Notes filters gained a tiny tag-settings shortcut, and condensed Notes rows use level color dots with clipboard note counts.",
+          "Long-press note icon filters are steadier on touch screens, swiped Legend quick actions gained a far-right dismiss button, and the Notes filter summary now emphasizes the location count on its own line.",
           "Notes sort, view, category grouping, excluded visibility, Legend level filters, icon filters, selected location, and collapsed note categories now persist.",
           "Scrollable map pan center now saves with zoom, so high-zoom map views come back where you left them.",
           "Dragging the Legend back over its original placement now restores a blue current-position outline instead of making the target disappear.",
@@ -6789,7 +7109,7 @@
         title: "Visitor's Center",
         summary: "The app got a new name, a new layout, four ways out, and a Help Center that actually helps.",
         highlights: [
-          `${APP_NAME}. That's the name now.`,
+          `Visit Tracker. That's the name now.`,
           "Settings, Help Center, and What's New are a top navigation bar — always visible, never buried.",
           "App name and version live in a tidy footer pill at the bottom of the panel.",
           "Four export formats: JSON for backups, Markdown for docs, Rich Text for word processors, and Simple Text for anywhere else. Equal buttons, clear labels, file extensions included.",
@@ -7049,8 +7369,11 @@
     let noteVisitTypeFilters = new Set();
     let hiddenHintResetKeyTime = 0;
     let hiddenHintResetKeyTimer = 0;
+    let titleQuadTapCount = 0;
+    let titleQuadTapTimer = 0;
     let noteIconLongPressTimer = 0;
     let noteIconLongPressHandled = false;
+    let noteIconGestureSuppressUntil = 0;
     let collapsedNoteCategories = new Set();
     let notesCopyTimer = 0;
     let notesCopyActive = false;
@@ -7081,7 +7404,36 @@
       return {
         appVersion: APP_VERSION,
         mapName: "Your Visit Tracker",
-        settings: { theme: "light", tapBehavior: "cycle", buttonStyle: "symbols", uiHints: true, textScale: 1, dateOrder: "mdy", dateStyle: "alpha", mapLabels: "none", mapSplitRatio: .66, mapViewMode: "scroll", mapZoom: 1, mapPanCenter: { x: .5, y: .5 }, mapPanelOpen: true, legendPanelOpen: true, notesPanelOpen: true, notesSortMode: "chrono", notesViewMode: "compact", notesCategoricalMode: true, notesHideExcludedOnly: true, noteLevelFilters: [], noteVisitTypeFilters: [], selectedState: "", notesPanelState: "", collapsedNoteCategories: [], legendPosition: "right-top", hideSuggestedCategories: false, developerMode: false, shortcutMode: false },
+        settings: {
+          theme: "light",
+          tapBehavior: "cycle",
+          buttonStyle: "symbols",
+          uiHints: true,
+          textScale: 1,
+          dateOrder: "mdy",
+          dateStyle: "alpha",
+          mapLabels: "none",
+          mapSplitRatio: .66,
+          mapViewMode: "fit",
+          mapZoom: 1,
+          mapPanCenter: { x: .5, y: .5 },
+          mapPanelOpen: true,
+          legendPanelOpen: true,
+          notesPanelOpen: true,
+          notesSortMode: "chrono",
+          notesViewMode: "compact",
+          notesCategoricalMode: true,
+          notesHideExcludedOnly: true,
+          noteLevelFilters: [],
+          noteVisitTypeFilters: [],
+          selectedState: "",
+          notesPanelState: "",
+          collapsedNoteCategories: [],
+          legendPosition: "right-top",
+          hideSuggestedCategories: false,
+          developerMode: false,
+          shortcutMode: false
+        },
         levels,
         states: defaultTerritoryStates(levels),
         notes: {},
@@ -7551,6 +7903,25 @@
       state.dismissedReleaseVersion = "";
       save();
       render();
+    }
+
+    function resetHintsAndReleaseHighlight() {
+      const restoreRelease = () => {
+        state.lastSeenReleaseVersion = "1.13.0";
+        state.dismissedReleaseVersion = "";
+      };
+      state.settings.uiHints = false;
+      state.dismissedHints = [];
+      restoreRelease();
+      save();
+      render();
+      requestAnimationFrame(() => {
+        state.settings.uiHints = true;
+        state.dismissedHints = [];
+        restoreRelease();
+        save();
+        render();
+      });
     }
 
     function renderReleaseNotice() {
@@ -8154,9 +8525,6 @@
       $("#mapTitle").textContent = state.mapName;
       $("#devModePill").textContent = `Dev Mode v${APP_VERSION}`;
       $("#devModePill").classList.toggle("hidden", state.settings.developerMode !== true);
-      $("#tapHint").textContent = state.settings.tapBehavior === "cycle"
-        ? "Tap a location to select then cycle its visit level."
-        : "Tap a location to choose a level and add a note.";
       placeLegendPanel();
       syncButtonLabels();
       renderMap();
@@ -8411,6 +8779,7 @@
             ${actionButtonHtml({ symbol: ICON_GLOABL_ACTION_EDIT__PENCIL, text: "Edit", aria: `Edit ${level.name}`, attrs: `data-level-edit="${level.id}"` })}
             ${actionButtonHtml({ symbol: ICON_GLOBAL_ACTION_DELETE__DELETE_LEFT_FILL, text: "Delete", className: "icon-btn danger", aria: `Delete ${level.name}`, attrs: `data-level-delete="${level.id}"` })}
           </span>
+          <button class="icon-btn legend-swipe-dismiss" type="button" data-legend-swipe-close="${level.id}" aria-label="Dismiss ${escapeHtml(level.name)} quick actions" title="Dismiss quick actions">${buttonMarkup(ICON_GLOBAL_CLOSE__XMARK, "Close")}</button>
         </div>
       `).join("");
       $$("[data-filter-level]").forEach(button => button.addEventListener("click", event => {
@@ -8424,6 +8793,10 @@
       $$("[data-level-edit]").forEach(button => button.addEventListener("click", () => openLevelDialog(button.dataset.levelEdit)));
       $$("[data-move-level]").forEach(button => button.addEventListener("click", () => moveLevel(button.dataset.moveLevel, Number(button.dataset.direction))));
       $$("[data-level-delete]").forEach(button => button.addEventListener("click", () => deleteLevel(button.dataset.levelDelete)));
+      $$("[data-legend-swipe-close]").forEach(button => button.addEventListener("click", event => {
+        event.stopPropagation();
+        closeLegendSwipes();
+      }));
       bindLegendLevelDrag();
       bindLegendLevelSwipe();
       const atMax = state.levels.length >= 5;
@@ -8746,26 +9119,29 @@
       const levels = [...noteLevelFilters].map(id => levelById(id)?.name).filter(Boolean);
       const icons = allNoteIconFiltersSelected()
         ? []
-        : [...noteVisitTypeFilters].map(id => id === NOTE_FILTER_NO_ICON ? "No icon" : visitTypeMeta(id)?.label).filter(Boolean);
+        : [...noteVisitTypeFilters].map(id => id === NOTE_FILTER_NO_ICON ? "No Icon" : visitTypeMeta(id)?.label).filter(Boolean);
       return [...levels, ...icons];
     }
 
-    function notesModeSummary(markedCount) {
+    function notesModeSummaryHtml(markedCount) {
       const search = notesSearchQuery.trim();
       const levels = [...noteLevelFilters].map(id => levelById(id)?.name).filter(Boolean);
       const icons = allNoteIconFiltersSelected()
         ? []
-        : [...noteVisitTypeFilters].map(id => id === NOTE_FILTER_NO_ICON ? "No icon" : visitTypeMeta(id)?.label).filter(Boolean);
-      const parts = [
-        search ? `"${search}"` : "",
+        : [...noteVisitTypeFilters].map(id => id === NOTE_FILTER_NO_ICON ? "No Icon" : visitTypeMeta(id)?.label).filter(Boolean);
+      const filterParts = [
+        notesHideExcludedOnly ? "⊘ Hidden" : "⊘ Shown",
         levels.length ? `${levels.join(", ")}` : "All Levels",
         icons.length ? `${icons.join(", ")}` : "All Icons",
+        search ? `"${search}"` : "",
+      ].filter(Boolean);
+      const modeParts = [
         `${notesViewMode === "compact" ? "Condensed" : notesViewMode === "text" ? "Text Only" : "Expanded"}`,
         notesSortMode === "alpha" ? "Alphabetical" : "Chronological",
-        notesCategoricalMode ? "Grouped" : "Ungrouped",
-        notesHideExcludedOnly ? "Excluded Hidden" : "Excluded Visible"
-      ].filter(Boolean);;
-      return `${markedCount} Location${markedCount === 1 ? "" : "s"} [` + parts.join(" :: ") + ']';
+        notesCategoricalMode ? "Grouped" : "Ungrouped"
+      ].filter(Boolean);
+      const countLabel = `${markedCount} Location${markedCount === 1 ? "" : "s"}`;
+      return `<strong><span>${escapeHtml(countLabel)}</span><span class="mode-bracket">[${escapeHtml(modeParts.join(" | "))}]</span></strong><em>${escapeHtml(filterParts.join(" | "))}</em>`;
     }
 
     function renderNotesFilterSummary(markedCount = 0) {
@@ -8773,7 +9149,7 @@
       if (!summary) return;
       const hidden = Boolean(notesPanelState);
       summary.classList.toggle("hidden", hidden);
-      summary.textContent = hidden ? "" : notesModeSummary(markedCount);
+      summary.innerHTML = hidden ? "" : notesModeSummaryHtml(markedCount);
     }
 
     function stateMatchesLevelFilter(abbr) {
@@ -8853,7 +9229,7 @@
         return;
       }
       container.innerHTML = missing.map(level => `
-        <button class="chip ${level.countsTowardStats === false ? "is-nonstat" : ""}" type="button" data-add-builtin="${level.id}" title="${escapeHtml(level.definition)}">
+        <button class="levelAutosuggestionChip ${level.countsTowardStats === false ? "is-nonstat" : ""}" type="button" data-add-builtin="${level.id}" title="${escapeHtml(level.definition)}">
           ${prefersSymbols() ? `${level.countsTowardStats === false ? "⊘" : "+"} ${escapeHtml(level.name)}` : buttonMarkup(level.countsTowardStats === false ? "⊘" : "+", `Add ${level.name}`)}
         </button>
       `).join("");
@@ -9166,10 +9542,12 @@
       const active = activeVisitTypes();
       ensureNoteIconFilters();
       const items = [
-        { id: NOTE_FILTER_NO_ICON, label: "No icon", icon: __CIRCLE },
+        { id: NOTE_FILTER_NO_ICON, label: "No Icon", icon: __CIRCLE },
         ...active.map(type => ({ id: type.id, label: type.label, icon: visitTypeIcon(type.id) }))
       ];
-      list.classList.toggle("hidden", Boolean(notesPanelState) || !items.length);
+      const hideFilters = Boolean(notesPanelState) || !items.length;
+      $("#notesIconFilterRow")?.classList.toggle("hidden", hideFilters);
+      list.classList.toggle("hidden", hideFilters);
       $("#notesIconFilterHint")?.classList.toggle("hidden", Boolean(notesPanelState) || !items.length);
       list.innerHTML = items.map(type => `
         <li>
@@ -9182,7 +9560,7 @@
       $$("[data-filter-visit-type]", list).forEach(button => {
         let pressTimer = 0;
         button.addEventListener("click", event => {
-          if (noteIconLongPressHandled) {
+          if (noteIconLongPressHandled || Date.now() < noteIconGestureSuppressUntil) {
             event.preventDefault();
             noteIconLongPressHandled = false;
             return;
@@ -9191,22 +9569,26 @@
         });
         button.addEventListener("contextmenu", event => {
           event.preventDefault();
+          if (Date.now() < noteIconGestureSuppressUntil) return;
           soloNoteVisitTypeFilter(button.dataset.filterVisitType);
         });
         button.addEventListener("pointerdown", event => {
           if (event.pointerType === "mouse") return;
           clearTimeout(pressTimer);
           noteIconLongPressHandled = false;
+          button.setPointerCapture?.(event.pointerId);
           pressTimer = window.setTimeout(() => {
             noteIconLongPressHandled = true;
+            noteIconGestureSuppressUntil = Date.now() + 1200;
             soloNoteVisitTypeFilter(button.dataset.filterVisitType);
             window.setTimeout(() => noteIconLongPressHandled = false, 700);
           }, 520);
           noteIconLongPressTimer = pressTimer;
         });
         ["pointerup", "pointercancel", "pointerleave"].forEach(type => {
-          button.addEventListener(type, () => {
+          button.addEventListener(type, event => {
             clearTimeout(pressTimer);
+            if (noteIconLongPressHandled || Date.now() < noteIconGestureSuppressUntil) event.preventDefault();
             if (noteIconLongPressTimer === pressTimer) noteIconLongPressTimer = 0;
           });
         });
@@ -9246,10 +9628,18 @@
         : "";
     }
 
-    function visitTypeIconStack(note) {
+    function visitTypeIconStack(note, options = {}) {
       const labels = noteVisitTypeLabels(note);
       const icons = labels.map(type => visitTypeIcon(type.id)).join("");
-      return icons ? `<span class="visit-icon-stack" aria-label="${escapeHtml(labels.map(type => type.label).join(", "))}">${icons}</span>` : "";
+      const color = options.color;
+      const styleAttr = color ? `style="color:${escapeHtml(color)}"` : "";
+      if (icons) {
+        return `<span class="visit-icon-stack" ${styleAttr} aria-label="${escapeHtml(labels.map(type => type.label).join(", "))}">${icons}</span>`;
+      }
+      if (color) {
+        return `<span class="visit-icon-stack is-empty" aria-hidden="true"><span class="visit-icon-empty-dot" style="background:${escapeHtml(color)}"></span></span>`;
+      }
+      return "";
     }
 
     function visitTypeIconStackForState(abbr) {
@@ -9339,18 +9729,28 @@
       return dates[0] ? formatDateDisplay(dates[0]) : "No Dates";
     }
 
+    function compactLevelDot(level, fallbackLabel = "No level") {
+      const name = level?.name || fallbackLabel;
+      const color = level?.color || "var(--state-empty)";
+      return `<span class="compact-level-wrap" title="${escapeHtml(name)}" aria-label="${escapeHtml(name)}"><span class="compact-level-dot ${level ? "" : "is-empty"}" style="--level-color:${escapeHtml(color)}"></span><span class="sr-only">${escapeHtml(name)}</span></span>`;
+    }
+
+    function compactLocationName(abbr, level) {
+      const name = STATE_NAMES[abbr];
+      const label = level?.name || (noteLevelFilters.size ? "Notes only" : "Unvisited");
+      const color = level?.color || "var(--muted)";
+      return `<span class="compact-location-name" title="${escapeHtml(label)}"><span class="compact-location-icon" style="--level-color:${escapeHtml(color)}" aria-hidden="true">${locationTypeIcon(abbr)}</span><b>${escapeHtml(name)}</b><span class="sr-only">${escapeHtml(label)}</span></span>`;
+    }
+
     function compactStateRow(abbr) {
       const dominant = dominantLevel(abbr);
-      const names = dominant ? dominant.name : (noteLevelFilters.size ? "Notes only" : "Unvisited");
       const notes = filteredNotesFor(abbr);
       const dates = highestLevelDateForState(abbr);
-      const text = `${notes.length} note${notes.length === 1 ? "" : "s"}`;
       return `
         <button class="compact-note-row" type="button" data-open-notes-state="${abbr}">
-          <span><b>${locationTypeIcon(abbr)} ${escapeHtml(STATE_NAMES[abbr])}</b></span>
-          <span>${escapeHtml(names)}</span>
+          <span>${compactLocationName(abbr, dominant)}</span>
           <span>${escapeHtml(dates)}</span>
-          <span class="compact-note-text">${escapeHtml(text)}</span>
+          <span class="compact-note-text compact-note-count" aria-label="${notes.length} visit notes"><span>${notes.length}</span>${ICON_MAP_MODAL_NOTES_LIST_BULLET_CLIPBOARD_FILL}</span>
           <span class="compact-state-icons">${visitTypeIconStackForState(abbr)}</span>
         </button>
       `;
@@ -9360,18 +9760,19 @@
       const notes = filteredNotesFor(abbr);
       return `
         <button class="compact-note-row is-expanded is-expanded-parent" type="button" data-open-notes-state="${abbr}">
-          <span><b>${locationTypeIcon(abbr)} ${escapeHtml(STATE_NAMES[abbr])}</b></span>
+          <span>${compactLocationName(abbr, dominantLevel(abbr))}</span>
           <span></span><span></span><span></span>
         </button>
-        ${notes.map(note => `
+        ${notes.map(note => {
+          const noteLevel = levelById(note.levelId);
+          return `
           <button class="compact-note-row is-expanded is-expanded-child" type="button" data-note-state="${abbr}" data-edit-note="${note.id}">
-            <span class="compact-note-icon">${visitTypeIconStack(note)}</span>
+            <span class="compact-note-icon">${visitTypeIconStack(note, { color: noteLevel?.color })}</span>
             <span>${escapeHtml(formatDateDisplay(note.date))}</span>
-            <span>${escapeHtml(levelById(note.levelId)?.name || "No level")}</span>
             <span class="compact-note-text">${escapeHtml(noteSummary(note))}</span>
             <span></span>
           </button>
-        `).join("")}
+        `;}).join("")}
       `;
     }
 
@@ -9383,35 +9784,37 @@
       if (notesViewMode === "compact") {
         return `
           <div class="compact-notes compact-notes-notes selected-note-list">
-            ${notes.map(note => `
+            ${notes.map(note => {
+              const noteLevel = levelById(note.levelId);
+              return `
               <article class="compact-note-row" role="button" tabindex="0" data-edit-note-row="${note.id}">
-                <span class="compact-note-icon">${visitTypeIconStack(note)}</span>
+                <span class="compact-note-icon">${visitTypeIconStack(note, { color: noteLevel?.color })}</span>
                 <time datetime="${escapeHtml(note.date)}">${escapeHtml(formatDateDisplay(note.date))}</time>
-                <span>${escapeHtml(levelById(note.levelId)?.name || "No level")}</span>
                 <span class="compact-note-text">${escapeHtml(noteSummary(note))}</span>
                 <span class="actions">
                   ${actionButtonHtml({ symbol: ICON_GLOABL_ACTION_EDIT__PENCIL, text: "Edit", className: "icon-btn", attrs: `data-edit-note="${note.id}"` })}
                   ${actionButtonHtml({ symbol: ICON_GLOBAL_ACTION_DELETE__DELETE_LEFT_FILL, text: "Delete", className: "icon-btn danger", attrs: `data-delete-note="${note.id}"` })}
                 </span>
               </article>
-            `).join("")}
+            `;}).join("")}
           </div>
         `;
       }
       return `
           <div class="compact-notes compact-notes-notes selected-note-list">
-          ${notes.map(note => `
+          ${notes.map(note => {
+            const noteLevel = levelById(note.levelId);
+            return `
             <article class="compact-note-row is-expanded" role="button" tabindex="0" data-edit-note-row="${note.id}">
-              <span class="compact-note-icon">${visitTypeIconStack(note)}</span>
+              <span class="compact-note-icon">${visitTypeIconStack(note, { color: noteLevel?.color })}</span>
               <time datetime="${escapeHtml(note.date)}">${escapeHtml(formatDateDisplay(note.date))}</time>
-              <span>${escapeHtml(levelById(note.levelId)?.name || "No level")}</span>
               <span class="compact-note-text">${escapeHtml(noteSummary(note))}</span>
               <span class="actions">
                 ${actionButtonHtml({ symbol: ICON_GLOABL_ACTION_EDIT__PENCIL, text: "Edit", className: "icon-btn", attrs: `data-edit-note="${note.id}"` })}
                 ${actionButtonHtml({ symbol: ICON_GLOBAL_ACTION_DELETE__DELETE_LEFT_FILL, text: "Delete", className: "icon-btn danger", attrs: `data-delete-note="${note.id}"` })}
               </span>
             </article>
-          `).join("")}
+          `;}).join("")}
         </div>
       `;
     }
@@ -9705,11 +10108,13 @@
           <h3><span>Selected Tags</span><small>${active.length}</small></h3>
           ${active.length ? `<div class="tag-selected-grid">${active.map(type => tagRow(type, true)).join("")}</div>` : `<div class="empty">No tags selected.</div>`}
         </section>
-        <label class="tag-search-row">Find More Icons
-          <input id="tagSearchInput" type="search" maxlength="80" placeholder="Search icons/tags" value="${escapeHtml(visitTagSearchQuery)}">
-        </label>
-        <section class="tag-editor-section">
-          <h3><span>More Icons</span><small>${inactive.length}</small></h3>
+        <div class="tag-more-sticky">
+          <label class="tag-search-row">
+            <span class="tag-search-label">More Available Icons <small>(${inactive.length})</small></span>
+            <input id="tagSearchInput" type="search" maxlength="80" placeholder="Search icons/tags" value="${escapeHtml(visitTagSearchQuery)}">
+          </label>
+        </div>
+        <section class="tag-editor-section tag-more-section">
           ${inactive.length ? `<div class="tag-more-grid">${inactive.map(moreIcon).join("")}</div>` : `<div class="empty">No hidden icons match that search.</div>`}
         </section>
       `;
@@ -10690,9 +11095,24 @@
       hiddenHintResetKeyTime = 0;
       clearTimeout(hiddenHintResetKeyTimer);
       hiddenHintResetKeyTimer = 0;
-      updateSetting("uiHints", false);
-      requestAnimationFrame(() => updateSetting("uiHints", true));
+      resetHintsAndReleaseHighlight();
       return true;
+    }
+
+    function handleTitleQuadTap(event) {
+      const now = performance.now();
+      if (titleQuadTapTimer) clearTimeout(titleQuadTapTimer);
+      titleQuadTapCount = now - (Number($("#mapTitle").dataset.lastTap || 0)) < 900 ? titleQuadTapCount + 1 : 1;
+      $("#mapTitle").dataset.lastTap = String(now);
+      titleQuadTapTimer = window.setTimeout(() => {
+        titleQuadTapCount = 0;
+        titleQuadTapTimer = 0;
+      }, 900);
+      if (titleQuadTapCount < 4) return;
+      event.preventDefault();
+      titleQuadTapCount = 0;
+      titleQuadTapTimer = 0;
+      resetHintsAndReleaseHighlight();
     }
 
     function handleNoteDialogKeydown(event) {
@@ -11041,6 +11461,7 @@
         $("#renameDialog").close();
         render();
       });
+      $("#mapTitle").addEventListener("click", handleTitleQuadTap);
       $("#settingsBtn").addEventListener("click", () => {
         renderChangelog();
         renderWishlist();
@@ -11126,6 +11547,7 @@
         renderNotesPanel();
       });
       $("#copyNotesTextBtn").addEventListener("click", () => copyNotesText());
+      $("#notesTagSettingsMiniBtn").addEventListener("click", () => openVisitTagSettings("settings"));
       $("#closeDrawerBtn").addEventListener("click", closeDrawer);
       $("#clearStateLevelsBtn").addEventListener("click", clearSelectedStateLevels);
       $("#addNoteBtn").addEventListener("click", () => openNoteDialog());
