@@ -225,27 +225,50 @@
     }
 
     .hint-dot-btn {
+      position: relative;
       display: inline-grid;
       place-items: center;
-      width: 1.35rem;
-      min-width: 1.35rem;
-      height: 1.35rem;
-      min-height: 1.35rem;
+      width: 32px;
+      min-width: 32px;
+      height: 32px;
+      min-height: 32px;
       padding: 0;
       border: 0;
       border-radius: 999px;
       background: transparent;
       color: #a9b0ba;
-      font-size: 1rem;
+      font-size: .78rem;
       font-weight: 900;
-      line-height: 0;
-      letter-spacing: .03em;
+      line-height: 1;
+      letter-spacing: 0;
       flex: 0 0 auto;
     }
 
-    .hint-dot-btn:hover {
+    .hint-dot-btn::before {
+      content: "";
+      position: absolute;
+      inset: 50% auto auto 50%;
+      width: 1.18rem;
+      height: 1.18rem;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--surface-2) 82%, transparent);
+      transform: translate(-50%, -50%);
+    }
+
+    .hint-dot-btn:hover::before,
+    .hint-dot-btn:focus-visible::before {
       background: color-mix(in srgb, var(--surface-2) 72%, var(--accent) 8%);
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 28%, transparent);
+    }
+
+    .hint-dot-btn:hover {
       color: var(--muted);
+    }
+
+    .hint-dot-btn span {
+      position: relative;
+      z-index: 1;
+      transform: translateY(-.03rem);
     }
 
     .sr-only {
@@ -564,10 +587,21 @@
     }
 
     .release-dismiss {
+      display: grid;
+      place-items: center;
+      width: 28px;
       min-width: 28px;
+      height: 28px;
       min-height: 28px;
       padding: 0;
       border-radius: 50%;
+      line-height: 1;
+      text-align: center;
+    }
+
+    .release-dismiss .sf-symbol {
+      width: .92rem;
+      height: .92rem;
     }
 
     .has-release-dot {
@@ -1458,6 +1492,7 @@
       display: grid;
       grid-column: 2;
       justify-self: end;
+      align-self: center;
       grid-template-columns: repeat(4, 24px);
       gap: .16rem;
       align-items: center;
@@ -1488,12 +1523,26 @@
       display: none;
       grid-column: 3;
       justify-self: end;
+      width: 24px;
+      min-width: 24px;
+      height: 24px;
+      min-height: 24px;
+      padding: 0;
       color: var(--muted);
     }
 
     html:not([data-legend-editing="true"]) .legend-item.is-swiped .legend-swipe-dismiss {
       display: inline-grid;
       place-items: center;
+    }
+
+    .legend-swipe-dismiss .sf-symbol {
+      width: .92rem;
+      height: .92rem;
+    }
+
+    .legend-help-position {
+      display: contents;
     }
 
     html:not([data-legend-editing="true"]) .legend-item.is-swiped .order-buttons {
@@ -1510,6 +1559,8 @@
     }
 
     .icon-btn {
+      display: inline-grid;
+      place-items: center;
       min-height: 24px;
       min-width: 24px;
       padding: .06rem;
@@ -2594,7 +2645,7 @@
     .notes-icon-filter-row {
       display: flex;
       align-items: center;
-      gap: .18rem;
+      gap: 2px;
       margin: .04rem 0 .14rem;
     }
 
@@ -2691,6 +2742,14 @@
       margin-top: .04rem;
       font-style: normal;
       font-weight: 750;
+      font-size: .62rem;
+      line-height: 1.25;
+      letter-spacing: .045em;
+      text-transform: uppercase;
+    }
+
+    .notes-filter-summary em+em {
+      margin-top: .02rem;
     }
 
     #notesPanel[data-note-hints="hidden"] {
@@ -3126,7 +3185,7 @@
 
     .compact-notes-states .compact-note-row {
       display: grid;
-      grid-template-columns: minmax(20px, 36%) 85px 75px 45px minmax(0px, 7%);
+      grid-template-columns: minmax(20px, 48%) 82px 46px minmax(0, 1fr);
     }
 
     .compact-notes-notes .compact-note-row {
@@ -3286,6 +3345,25 @@
       width: .86rem;
       height: .86rem;
       color: var(--muted);
+    }
+
+    .compact-location-name {
+      display: inline-flex;
+      align-items: center;
+      gap: .28rem;
+      min-width: 0;
+    }
+
+    .compact-location-icon {
+      display: inline-grid;
+      place-items: center;
+      color: var(--level-color, var(--muted));
+      flex: 0 0 auto;
+    }
+
+    .compact-location-icon .sf-symbol {
+      width: 1em;
+      height: 1em;
     }
 
     .compact-note-row .icon-btn {
@@ -4285,6 +4363,10 @@
         display: none;
       }
 
+      .compact-notes-states .compact-note-row {
+        grid-template-columns: minmax(20px, 44%) 76px 42px minmax(0, 1fr);
+      }
+
       .legend-list {
         gap: .25rem;
       }
@@ -4406,7 +4488,7 @@
             <h1 id="mapTitle">Your Visit Tracker</h1>
             <button id="renameBtn" class="ghost title-edit-btn" type="button" data-shortcut="M">Rename</button>
           </div>
-          <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v2.4.0.11</span>
+          <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v2.4.0.13</span>
         </div>
         <div class="topbar-hints" aria-label="Title bar tips">
           <small id="topbarPanelHint" data-hint data-hint-key="topbar-panel-controls">
@@ -4424,7 +4506,10 @@
         </span>
         <span id="releaseNoticeCta" class="release-cta">Learn<br>More</span>
         <button id="releaseNoticeDismissBtn" class="release-dismiss ghost" type="button" aria-label="Dismiss update"
-          title="Dismiss">×</button>
+          title="Dismiss"><svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+            viewBox="0 0 16 16">
+            <path d="M3.3 2.2 8 6.9l4.7-4.7 1.1 1.1L9.1 8l4.7 4.7-1.1 1.1L8 9.1l-4.7 4.7-1.1-1.1L6.9 8 2.2 3.3z" />
+          </svg></button>
       </div>
       <nav class="toolbar" aria-label="App actions">
         <div class="toolbar-panel-toggle-group" aria-label="Visible panels">
@@ -4960,7 +5045,7 @@
               </div>
             </div>
             <small data-hint data-hint-key="legend-help">
-              <span class="legend-help-position">Drag Legend to Preferred Spot or use Position Button.<br />
+              <span class="legend-help-position">Drag Legend to Preferred Spot or use Position Button.<br /></span>
               Top Level Wins & Deleting Demotes in Multi-Levels.<br />
               Drag to Reorder | Swipe Left for Quick Actions.<br />
               Featured Palettes | Auto-Suggest | Add/Edit Levels.
@@ -5004,7 +5089,7 @@
           <div id="notesIconFilterRow" class="notes-icon-filter-row">
             <ol id="notesIconFilters" class="notes-icon-filters" aria-label="Filter notes by icon"></ol>
             <button id="notesTagSettingsMiniBtn" class="hint-dot-btn" type="button"
-              aria-label="Open location tag settings" title="Open location tag settings">•••</button>
+              aria-label="Open location tag settings" title="Open location tag settings"><span>•••</span></button>
           </div>
           <small id="notesIconFilterHint" class="notes-icon-filter-hint" data-hint
             data-hint-key="notes-icon-filter-help">
@@ -5445,7 +5530,8 @@
             in Obsidian, Notion, or any Markdown viewer. Rich Text (.rtf) opens in Word or Pages. Simple Text (.txt)
             pastes anywhere.</p>
           <p><b>Shortcut overlays:</b> Hold Shift + Control + Option to show temporary hint badges on actionable
-            controls. Developer Tools lists hidden commands, including H H to restore dismissed hints while testing.</p>
+            controls. Developer Tools lists hidden commands, including H H to restore dismissed hints and the update
+            banner while testing.</p>
         </section>
         <section class="help-section">
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ</h3>
@@ -5588,8 +5674,10 @@
             <div class="shortcut-row is-direct"><kbd>R</kbd><span>Global: open Release Notes. Press again to jump into
                 Roadmap search.</span></div>
             <div class="shortcut-row is-direct"><kbd>/</kbd><span>Global: focus Notes search.</span></div>
-            <div class="shortcut-row is-direct"><kbd>H H</kbd><span>Global: reset dismissed hints by toggling Hints off
-                and back on.</span></div>
+            <div class="shortcut-row is-direct"><kbd>H H</kbd><span>Global: reset dismissed hints and the What's New
+                banner by toggling Hints off and back on.</span></div>
+            <div class="shortcut-row is-direct"><kbd>Tap x4</kbd><span>Quad-tap the app name to run the same hint and
+                banner reset.</span></div>
             <div class="shortcut-row"><kbd>M</kbd><span>Rename the map from the main screen.</span></div>
             <div class="shortcut-row"><kbd>S</kbd><span>Open Settings.</span></div>
             <div class="shortcut-row"><kbd>G</kbd><span>Toggle the Map panel.</span></div>
@@ -5624,7 +5712,7 @@
 
   <script>
     const APP_NAME = "Visit Tracker";
-    const APP_VERSION = "2.4.0.11";
+    const APP_VERSION = "2.4.0.13";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -6731,7 +6819,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "2.4.0.11",
+        version: "2.4.0.13",
         date: "2026-05-22",
         title: "Legend Gets Legs",
         summary: "A 2.4 development build that makes the Legend movable, draggable, more compact, and calmer until edit mode is needed.",
@@ -6743,6 +6831,10 @@
         ],
         updates: [
           "Map, Legend, and Notes visibility now restore across reloads.",
+          "The What's New dismiss control now uses a centered SVG close icon, Notes filter summaries split filter and mode details across two compact lines, and Legend quick actions stay vertically centered in desktop rows.",
+          "The hidden H H test shortcut and a quad-tap on the app name now restore dismissed hints and the What's New banner highlight together.",
+          "Condensed Notes now colors the location-type icon by the highest visit level instead of spending a separate column on level text.",
+          "What's New and swipe quick-action close buttons are centered, the tag-settings ellipsis got a ghost-style circular hover target, and Notes filter summary details are smaller small-caps text.",
           "Mobile hints now sit above their controls, What's New can overlay the mobile toolbar, Notes filters gained a tiny tag-settings shortcut, and condensed Notes rows use level color dots with clipboard note counts.",
           "Long-press note icon filters are steadier on touch screens, swiped Legend quick actions gained a far-right dismiss button, and the Notes filter summary now emphasizes the location count on its own line.",
           "Notes sort, view, category grouping, excluded visibility, Legend level filters, icon filters, selected location, and collapsed note categories now persist.",
@@ -7226,6 +7318,8 @@
     let noteVisitTypeFilters = new Set();
     let hiddenHintResetKeyTime = 0;
     let hiddenHintResetKeyTimer = 0;
+    let titleQuadTapCount = 0;
+    let titleQuadTapTimer = 0;
     let noteIconLongPressTimer = 0;
     let noteIconLongPressHandled = false;
     let noteIconGestureSuppressUntil = 0;
@@ -7758,6 +7852,25 @@
       state.dismissedReleaseVersion = "";
       save();
       render();
+    }
+
+    function resetHintsAndReleaseHighlight() {
+      const restoreRelease = () => {
+        state.lastSeenReleaseVersion = "1.13.0";
+        state.dismissedReleaseVersion = "";
+      };
+      state.settings.uiHints = false;
+      state.dismissedHints = [];
+      restoreRelease();
+      save();
+      render();
+      requestAnimationFrame(() => {
+        state.settings.uiHints = true;
+        state.dismissedHints = [];
+        restoreRelease();
+        save();
+        render();
+      });
     }
 
     function renderReleaseNotice() {
@@ -8965,17 +9078,19 @@
       const icons = allNoteIconFiltersSelected()
         ? []
         : [...noteVisitTypeFilters].map(id => id === NOTE_FILTER_NO_ICON ? "No icon" : visitTypeMeta(id)?.label).filter(Boolean);
-      const parts = [
+      const filterParts = [
         search ? `"${search}"` : "",
         levels.length ? `${levels.join(", ")}` : "All Levels",
-        icons.length ? `${icons.join(", ")}` : "All Icons",
+        icons.length ? `${icons.join(", ")}` : "All Icons"
+      ].filter(Boolean);
+      const modeParts = [
         `${notesViewMode === "compact" ? "Condensed" : notesViewMode === "text" ? "Text Only" : "Expanded"}`,
         notesSortMode === "alpha" ? "Alphabetical" : "Chronological",
         notesCategoricalMode ? "Grouped" : "Ungrouped",
         notesHideExcludedOnly ? "Excluded Hidden" : "Excluded Visible"
       ].filter(Boolean);
       const countLabel = `${markedCount} Location${markedCount === 1 ? "" : "s"}`;
-      return `<strong>${escapeHtml(countLabel)}</strong><em>${escapeHtml(parts.join(" | "))}</em>`;
+      return `<strong>${escapeHtml(countLabel)}</strong><em>${escapeHtml(filterParts.join(" | "))}</em><em>${escapeHtml(modeParts.join(" | "))}</em>`;
     }
 
     function renderNotesFilterSummary(markedCount = 0) {
@@ -9561,14 +9676,20 @@
       return `<span class="compact-level-wrap" title="${escapeHtml(name)}" aria-label="${escapeHtml(name)}"><span class="compact-level-dot ${level ? "" : "is-empty"}" style="--level-color:${escapeHtml(color)}"></span><span class="sr-only">${escapeHtml(name)}</span></span>`;
     }
 
+    function compactLocationName(abbr, level) {
+      const name = STATE_NAMES[abbr];
+      const label = level?.name || (noteLevelFilters.size ? "Notes only" : "Unvisited");
+      const color = level?.color || "var(--muted)";
+      return `<span class="compact-location-name" title="${escapeHtml(label)}"><span class="compact-location-icon" style="--level-color:${escapeHtml(color)}" aria-hidden="true">${locationTypeIcon(abbr)}</span><b>${escapeHtml(name)}</b><span class="sr-only">${escapeHtml(label)}</span></span>`;
+    }
+
     function compactStateRow(abbr) {
       const dominant = dominantLevel(abbr);
       const notes = filteredNotesFor(abbr);
       const dates = highestLevelDateForState(abbr);
       return `
         <button class="compact-note-row" type="button" data-open-notes-state="${abbr}">
-          <span><b>${locationTypeIcon(abbr)} ${escapeHtml(STATE_NAMES[abbr])}</b></span>
-          <span>${compactLevelDot(dominant, noteLevelFilters.size ? "Notes only" : "Unvisited")}</span>
+          <span>${compactLocationName(abbr, dominant)}</span>
           <span>${escapeHtml(dates)}</span>
           <span class="compact-note-text compact-note-count" aria-label="${notes.length} visit notes"><span>${notes.length}</span>${ICON_MAP_MODAL_NOTES_LIST_BULLET_CLIPBOARD_FILL}</span>
           <span class="compact-state-icons">${visitTypeIconStackForState(abbr)}</span>
@@ -9580,7 +9701,7 @@
       const notes = filteredNotesFor(abbr);
       return `
         <button class="compact-note-row is-expanded is-expanded-parent" type="button" data-open-notes-state="${abbr}">
-          <span><b>${locationTypeIcon(abbr)} ${escapeHtml(STATE_NAMES[abbr])}</b></span>
+          <span>${compactLocationName(abbr, dominantLevel(abbr))}</span>
           <span></span><span></span><span></span>
         </button>
         ${notes.map(note => `
@@ -10910,9 +11031,24 @@
       hiddenHintResetKeyTime = 0;
       clearTimeout(hiddenHintResetKeyTimer);
       hiddenHintResetKeyTimer = 0;
-      updateSetting("uiHints", false);
-      requestAnimationFrame(() => updateSetting("uiHints", true));
+      resetHintsAndReleaseHighlight();
       return true;
+    }
+
+    function handleTitleQuadTap(event) {
+      const now = performance.now();
+      if (titleQuadTapTimer) clearTimeout(titleQuadTapTimer);
+      titleQuadTapCount = now - (Number($("#mapTitle").dataset.lastTap || 0)) < 900 ? titleQuadTapCount + 1 : 1;
+      $("#mapTitle").dataset.lastTap = String(now);
+      titleQuadTapTimer = window.setTimeout(() => {
+        titleQuadTapCount = 0;
+        titleQuadTapTimer = 0;
+      }, 900);
+      if (titleQuadTapCount < 4) return;
+      event.preventDefault();
+      titleQuadTapCount = 0;
+      titleQuadTapTimer = 0;
+      resetHintsAndReleaseHighlight();
     }
 
     function handleNoteDialogKeydown(event) {
@@ -11261,6 +11397,7 @@
         $("#renameDialog").close();
         render();
       });
+      $("#mapTitle").addEventListener("click", handleTitleQuadTap);
       $("#settingsBtn").addEventListener("click", () => {
         renderChangelog();
         renderWishlist();
