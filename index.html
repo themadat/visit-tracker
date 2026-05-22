@@ -329,6 +329,33 @@
       flex: 1 1 auto;
     }
 
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .title-edit-btn {
+      flex: 0 0 auto;
+      font-size: clamp(.6rem, 1.1vw, .9rem);
+      line-height: 1;
+      padding: .22rem .48rem;
+      min-height: 0;
+    }
+
+    [data-button-style="symbols"] .title-edit-btn {
+      width: auto;
+      min-width: 0;
+      aspect-ratio: 1;
+      padding: .22rem;
+    }
+
+    .title-edit-btn .sf-symbol {
+      width: 1em;
+      height: 1em;
+    }
+
     .dev-mode-pill {
       justify-self: start;
       width: fit-content;
@@ -362,7 +389,7 @@
 
     h1 {
       min-width: 0;
-      flex: 1 1 auto;
+      flex: 0 1 auto;
       margin: 0;
       font-size: clamp(1.2rem, 2.2vw, 1.8rem);
       line-height: 1.1;
@@ -700,6 +727,22 @@
       justify-content: flex-end;
       font-size: .75rem;
       text-align: right;
+    }
+
+    .map-head-hints small[data-hint-key="map-controls"] {
+      gap: .12rem;
+    }
+
+    .map-head-hints small[data-hint-key="map-controls"] .hint-dismiss-btn {
+      margin-left: 0;
+      width: .95rem;
+      min-width: .95rem;
+      min-height: .95rem;
+    }
+
+    .map-head-hints small[data-hint-key="map-controls"] .hint-dismiss-btn .sf-symbol {
+      width: .8rem;
+      height: .8rem;
     }
 
     .map-head-actions {
@@ -3597,6 +3640,10 @@
         grid-template-rows: minmax(0, 1fr);
       }
 
+      [data-legend-area="left"]:not([data-legend-preview-position]) .side-panel-wrap {
+        grid-template-rows: minmax(0, 1fr);
+      }
+
       .side-panel {
         min-height: 0;
         overflow: hidden;
@@ -3675,17 +3722,18 @@
         width: 100%;
       }
 
+      .title-row {
+        width: 100%;
+      }
+
       #mapTitle {
         order: 1;
-        flex: 1 1 100%;
-        width: 100%;
+        flex: 1 1 auto;
+        min-width: 0;
+        width: auto;
         white-space: normal;
         overflow: visible;
         text-overflow: clip;
-      }
-
-      #renameBtn {
-        order: 2;
       }
 
       .topbar-hints {
@@ -4123,7 +4171,10 @@
     <header class="topbar">
       <div class="title-wrap">
         <div class="title-stack">
-          <h1 id="mapTitle">Your State Map</h1>
+          <div class="title-row">
+            <h1 id="mapTitle">Your State Map</h1>
+            <button id="renameBtn" class="ghost title-edit-btn" type="button" data-shortcut="M">Rename</button>
+          </div>
           <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v2.4.0.6</span>
         </div>
         <div class="topbar-hints" aria-label="Title bar tips">
@@ -4132,7 +4183,6 @@
           <small id="mapResizeHint" class="topbar-resize-hint" data-hint data-hint-key="map-resize">
             Looks wonky? Resize the map and cards to fit your needs.</small>
         </div>
-        <button id="renameBtn" class="ghost" type="button" data-shortcut="M">Rename</button>
       </div>
       <div id="whatsNewNotice" class="release-notice hidden" role="button" tabindex="0" aria-label="Open release notes">
         <span id="releaseNoticePill" class="release-pill">v2.0.0</span>
@@ -8323,6 +8373,28 @@
       return true;
     }
 
+    function flipLegendReorder(list, performMove) {
+      const items = $$("[data-legend-item]", list);
+      const before = new Map();
+      items.forEach(el => before.set(el, el.getBoundingClientRect().top));
+      performMove();
+      items.forEach(el => {
+        const oldTop = before.get(el);
+        if (oldTop == null) return;
+        const delta = oldTop - el.getBoundingClientRect().top;
+        if (!delta) return;
+        el.style.transition = "none";
+        el.style.transform = `translateY(${delta}px)`;
+      });
+      void list.offsetHeight;
+      requestAnimationFrame(() => {
+        items.forEach(el => {
+          el.style.transition = "";
+          el.style.transform = "";
+        });
+      });
+    }
+
     function legendDropTargetFromY(list, draggedItem, clientY) {
       const rows = $$("[data-legend-item]", list).filter(row => row !== draggedItem);
       if (!rows.length) return null;
@@ -8338,70 +8410,81 @@
     function bindLegendLevelDrag() {
       const list = $("#legendList");
       if (!list) return;
-      $$("[data-legend-item]", list).forEach(item => {
-        let startX = 0;
-        let startY = 0;
-        let pointerId = null;
-        let mode = "";
-        item.addEventListener("pointerdown", event => {
-          if (event.target.closest(".legend-actions button, input, select, textarea, a")) {
-            return;
-          }
-          if (event.button && event.button !== 0) return;
-          startX = event.clientX;
-          startY = event.clientY;
-          pointerId = event.pointerId;
-          mode = "";
-          item.setPointerCapture?.(event.pointerId);
-          draggedLegendLevelId = item.dataset.legendItem;
-          legendDragCommitted = false;
+      if (list.dataset.dragBound === "true") return;
+      list.dataset.dragBound = "true";
+      let startX = 0;
+      let startY = 0;
+      let pointerId = null;
+      let mode = "";
+      let activeItem = null;
+      const onMove = event => {
+        if (pointerId !== event.pointerId || !activeItem || !draggedLegendLevelId) return;
+        const dx = event.clientX - startX;
+        const dy = event.clientY - startY;
+        if (!mode) {
+          if (dx < -38 && Math.abs(dx) > Math.abs(dy) * 1.35) mode = "swipe";
+          else if (Math.abs(dy) > 8 && Math.abs(dy) > Math.abs(dx) * .9) {
+            mode = "drag";
+            activeItem.classList.add("is-dragging");
+            closeLegendSwipes();
+          } else return;
+        }
+        event.preventDefault();
+        legendSwipeSuppressClickUntil = Date.now() + 500;
+        activeItem.dataset.swipeSuppress = "true";
+        if (mode === "swipe") {
+          const swipedItem = activeItem;
+          closeLegendSwipes(swipedItem);
+          swipedItem.classList.add("is-swiped");
+          detachDocListeners();
+          setTimeout(() => {
+            swipedItem.dataset.swipeSuppress = "";
+          }, 520);
+          return;
+        }
+        const placement = legendDropTargetFromY(list, activeItem, event.clientY);
+        if (!placement) return;
+        const { target, after: insertAfter } = placement;
+        if (!reorderLevelRelative(draggedLegendLevelId, target.dataset.legendItem, insertAfter)) return;
+        legendDragCommitted = true;
+        const movedItem = activeItem;
+        flipLegendReorder(list, () => {
+          if (insertAfter) target.after(movedItem);
+          else target.before(movedItem);
         });
-        item.addEventListener("pointermove", event => {
-          if (pointerId !== event.pointerId || !draggedLegendLevelId) return;
-          const dx = event.clientX - startX;
-          const dy = event.clientY - startY;
-          if (!mode) {
-            if (dx < -38 && Math.abs(dx) > Math.abs(dy) * 1.35) mode = "swipe";
-            else if (Math.abs(dy) > 8 && Math.abs(dy) > Math.abs(dx) * .9) {
-              mode = "drag";
-              item.classList.add("is-dragging");
-              closeLegendSwipes();
-            } else return;
-          }
-          event.preventDefault();
-          legendSwipeSuppressClickUntil = Date.now() + 500;
-          item.dataset.swipeSuppress = "true";
-          if (mode === "swipe") {
-            closeLegendSwipes(item);
-            item.classList.add("is-swiped");
-            draggedLegendLevelId = "";
-            pointerId = null;
-            setTimeout(() => {
-              item.dataset.swipeSuppress = "";
-            }, 520);
-            return;
-          }
-          const placement = legendDropTargetFromY(list, item, event.clientY);
-          if (!placement) return;
-          const { target, after: insertAfter } = placement;
-          if (!reorderLevelRelative(draggedLegendLevelId, target.dataset.legendItem, insertAfter)) return;
-          legendDragCommitted = true;
-          if (insertAfter) target.after(item);
-          else target.before(item);
-        });
-        const finish = event => {
-          if (pointerId !== event.pointerId) return;
-          item.releasePointerCapture?.(event.pointerId);
-          if (mode === "drag" && legendDragCommitted) save();
-          item.classList.remove("is-dragging");
-          draggedLegendLevelId = "";
-          pointerId = null;
-          const shouldRender = mode === "drag";
-          mode = "";
-          if (shouldRender) render();
-        };
-        item.addEventListener("pointerup", finish);
-        item.addEventListener("pointercancel", finish);
+      };
+      const onFinish = event => {
+        if (pointerId !== event.pointerId) return;
+        const wasDrag = mode === "drag";
+        if (wasDrag && legendDragCommitted) save();
+        if (activeItem) activeItem.classList.remove("is-dragging");
+        detachDocListeners();
+        if (wasDrag) render();
+      };
+      const detachDocListeners = () => {
+        document.removeEventListener("pointermove", onMove);
+        document.removeEventListener("pointerup", onFinish);
+        document.removeEventListener("pointercancel", onFinish);
+        draggedLegendLevelId = "";
+        pointerId = null;
+        activeItem = null;
+        mode = "";
+      };
+      list.addEventListener("pointerdown", event => {
+        const item = event.target.closest("[data-legend-item]");
+        if (!item || !list.contains(item)) return;
+        if (event.target.closest(".legend-actions button, input, select, textarea, a")) return;
+        if (event.button && event.button !== 0) return;
+        startX = event.clientX;
+        startY = event.clientY;
+        pointerId = event.pointerId;
+        mode = "";
+        activeItem = item;
+        draggedLegendLevelId = item.dataset.legendItem;
+        legendDragCommitted = false;
+        document.addEventListener("pointermove", onMove);
+        document.addEventListener("pointerup", onFinish);
+        document.addEventListener("pointercancel", onFinish);
       });
     }
 
@@ -10468,14 +10551,16 @@
           scrollTop: wrap.scrollTop,
           moved: false
         };
-        wrap.classList.add("is-panning");
-        wrap.setPointerCapture?.(event.pointerId);
       });
       wrap.addEventListener("pointermove", event => {
         if (!mapPanState || mapPanState.pointerId !== event.pointerId) return;
         const dx = event.clientX - mapPanState.x;
         const dy = event.clientY - mapPanState.y;
-        if (Math.abs(dx) > 3 || Math.abs(dy) > 3) mapPanState.moved = true;
+        if (!mapPanState.moved && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) {
+          mapPanState.moved = true;
+          wrap.classList.add("is-panning");
+          wrap.setPointerCapture?.(event.pointerId);
+        }
         if (!mapPanState.moved) return;
         event.preventDefault();
         wrap.scrollLeft = mapPanState.scrollLeft - dx;
@@ -10486,8 +10571,8 @@
         const moved = mapPanState.moved;
         mapPanState = null;
         wrap.classList.remove("is-panning");
-        try { wrap.releasePointerCapture(event.pointerId); } catch { }
         if (moved) {
+          try { wrap.releasePointerCapture(event.pointerId); } catch { }
           wrap.dataset.blockClick = "true";
           setTimeout(() => delete wrap.dataset.blockClick, 0);
         }
