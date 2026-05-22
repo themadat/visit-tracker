@@ -4,7 +4,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>US State Visit Map</title>
+  <title>Visit Tracker</title>
+  <!-- title is overwritten by APP_NAME at startup -->
   <style>
     :root {
       color-scheme: light;
@@ -338,22 +339,26 @@
 
     .title-edit-btn {
       flex: 0 0 auto;
-      font-size: clamp(.6rem, 1.1vw, .9rem);
+      font-size: clamp(.5rem, .85vw, .72rem);
       line-height: 1;
-      padding: .22rem .48rem;
+      padding: 0;
       min-height: 0;
+      display: grid;
+      place-items: center;
     }
 
     [data-button-style="symbols"] .title-edit-btn {
-      width: auto;
-      min-width: 0;
+      width: 1.5rem;
+      min-width: 1.5rem;
+      height: 1.5rem;
+      min-height: 1.5rem;
       aspect-ratio: 1;
-      padding: .22rem;
+      padding: 0;
     }
 
     .title-edit-btn .sf-symbol {
-      width: 1em;
-      height: 1em;
+      width: .85rem;
+      height: .85rem;
     }
 
     .dev-mode-pill {
@@ -1171,6 +1176,12 @@
       justify-self: start;
       gap: .18rem;
       white-space: nowrap;
+      padding-left: .42rem;
+    }
+
+    .legend-total-pills .percent-pill,
+    .legend-total-pills .count-pill {
+      border: 0;
     }
 
     #legendPanel {
@@ -3705,9 +3716,10 @@
 
     @media (max-width: 620px) {
       .topbar {
-        align-items: flex-start;
+        align-items: center;
         flex-direction: row;
         flex-wrap: wrap;
+        justify-content: center;
         gap: .38rem .48rem;
         padding: .42rem .65rem;
       }
@@ -3720,41 +3732,34 @@
         order: 1;
         flex: 1 1 100%;
         width: 100%;
+        justify-items: center;
+      }
+
+      .dev-mode-pill {
+        justify-self: center;
       }
 
       .title-row {
         width: 100%;
+        justify-content: center;
       }
 
       #mapTitle {
-        order: 1;
-        flex: 1 1 auto;
+        flex: 0 1 auto;
         min-width: 0;
         width: auto;
+        text-align: center;
         white-space: normal;
         overflow: visible;
         text-overflow: clip;
       }
 
       .topbar-hints {
-        order: 4;
-        flex: 1 1 100%;
-        max-width: 100%;
-        justify-items: start;
-      }
-
-      .topbar-hints small {
-        text-align: left;
-        justify-content: flex-start;
+        display: none;
       }
 
       .release-notice {
-        position: static;
-        order: 3;
-        transform: none;
-        width: 100%;
-        flex: 0 0 100%;
-        padding: .5rem .55rem;
+        display: none;
       }
 
       .release-copy small {
@@ -3763,10 +3768,10 @@
 
       .toolbar {
         order: 2;
-        flex: 1 1 auto;
-        margin-left: auto;
-        justify-content: flex-end;
-        width: auto;
+        flex: 1 1 100%;
+        margin-left: 0;
+        justify-content: center;
+        width: 100%;
         gap: .34rem;
       }
 
@@ -3781,7 +3786,8 @@
       }
 
       .map-head {
-        align-items: flex-start;
+        align-items: center;
+        justify-content: center;
         flex-direction: row;
         gap: .28rem .4rem;
         padding: .42rem .56rem;
@@ -3791,13 +3797,15 @@
         flex: 1 1 100%;
         display: flex;
         align-items: baseline;
+        justify-content: center;
+        text-align: center;
         flex-wrap: wrap;
         gap: .18rem .48rem;
       }
 
       .map-head-actions {
         width: 100%;
-        justify-content: flex-end;
+        justify-content: center;
         flex: 1 1 100%;
         flex-wrap: wrap;
         flex-direction: row;
@@ -3810,8 +3818,16 @@
       }
 
       .map-action-group {
-        justify-content: flex-end;
+        justify-content: center;
         gap: .22rem;
+      }
+
+      [data-map-mode="scroll"] .map-wrap {
+        text-align: center;
+      }
+
+      [data-map-mode="scroll"] #stateMap {
+        display: inline-block;
       }
 
       .map-head-actions button {
@@ -4119,6 +4135,11 @@
         padding: .03rem .22rem;
         font-size: .64rem;
         line-height: 1.1;
+      }
+
+      .legend-total-pills {
+        gap: .32rem;
+        padding-left: .2rem;
       }
 
       .legend-item .icon-btn {
@@ -4729,10 +4750,11 @@
               </div>
             </div>
             <small data-hint data-hint-key="legend-help">
-              Drag Legend or use Position Button to choose preferred corner.<br />
-              Top level color applies in multiple level cases. Removing levels demotes locations.<br />
+              Drag Legend or Position Button to choose preferred corner.<br />
+              Top level color applies in multiple level cases.<br />
+              Removing levels demotes locations.<br />
               Drag to reorder | Swipe right-to-left for Quick Actions.<br />
-              Featured Palettes | Show/Hide Auto-Suggestions | Make your Own or Edit.
+              Featured Palettes | Auto-Suggestions | Add/Edit your Own.
             </small>
             <div id="legendList" class="legend-list"></div>
             <div id="builtinLevels" class="chips" style="margin-top: .75rem;"></div>
@@ -5368,7 +5390,7 @@
       </section>
     </div>
     <footer class="dialog-bottom-bar">
-      <b>Visit Tracker</b>
+      <b id="appNameLabel">Visit Tracker</b>
       <span class="version-pill" id="versionLabel"></span>
       <span class="spacer"></span>
       <span>Made with <button id="coffeeKeyBtn" class="secret-emoji" type="button" aria-label="Coffee">☕️</button> and
@@ -5378,6 +5400,7 @@
   </dialog>
 
   <script>
+    const APP_NAME = "Visit Tracker";
     const APP_VERSION = "2.4.0.6";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
@@ -6708,7 +6731,7 @@
         title: "Visitor's Center",
         summary: "The app got a new name, a new layout, four ways out, and a Help Center that actually helps.",
         highlights: [
-          "Visit Tracker. That's the name now.",
+          `${APP_NAME}. That's the name now.`,
           "Settings, Help Center, and What's New are a top navigation bar — always visible, never buried.",
           "App name and version live in a tidy footer pill at the bottom of the panel.",
           "Four export formats: JSON for backups, Markdown for docs, Rich Text for word processors, and Simple Text for anywhere else. Equal buttons, clear labels, file extensions included.",
@@ -10014,6 +10037,8 @@
 
     function renderSettingsControls() {
       $("#versionLabel").textContent = `v${APP_VERSION}`;
+      $("#appNameLabel").textContent = APP_NAME;
+      if (document.title !== APP_NAME) document.title = APP_NAME;
       const developerEnabled = state.settings.developerMode === true;
       $$("[data-dev-only]").forEach(element => element.classList.toggle("hidden", !developerEnabled));
       if (!developerEnabled && $("#tab-developer")?.classList.contains("active")) switchTab("settings");
@@ -10212,7 +10237,7 @@
       const counts = levelCounts();
       const counted = countedStateTotal();
       const completionTotal = completionRegionTotal();
-      const lines = [`# ${state.mapName}`, "", `Generated by US State Visit Map ${APP_VERSION}`, "", "## Overall Stats"];
+      const lines = [`# ${state.mapName}`, "", `Generated by ${APP_NAME} ${APP_VERSION}`, "", "## Overall Stats"];
       lines.push(`- Total counted regions: ${counted} of ${completionTotal}`, `- Completion: ${Math.round((counted / completionTotal) * 100)}%`, "", "## Summary by Level");
       state.levels.forEach(level => lines.push(`- ${level.name}: ${counts[level.id] || 0} regions`));
       lines.push(`- Unvisited: ${STATES.length - Object.keys(state.states).length} regions`, "", "## Region-by-Region");
@@ -10275,7 +10300,7 @@
         .join("; ") || "None";
       const lines = [
         state.mapName,
-        `Generated by US State Visit Map ${APP_VERSION}`,
+        `Generated by ${APP_NAME} ${APP_VERSION}`,
         "",
         "Overall Stats",
         `Total counted regions: ${counted} of ${completionTotal}`,
@@ -11163,7 +11188,7 @@
             }
           });
         } catch {
-          showMessage("Import Failed", "That file does not look like a valid US State Visit Map JSON backup.");
+          showMessage("Import Failed", `That file does not look like a valid ${APP_NAME} JSON backup.`);
         } finally {
           event.target.value = "";
         }
