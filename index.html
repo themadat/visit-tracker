@@ -339,6 +339,7 @@
 
     .title-edit-btn {
       flex: 0 0 auto;
+      align-self: flex-end;
       font-size: clamp(.5rem, .85vw, .72rem);
       line-height: 1;
       padding: 0;
@@ -706,6 +707,12 @@
       font-weight: 850;
       font-size: .78rem;
       min-height: 4rem;
+    }
+
+    .legend-placement-preview.is-current {
+      border: 2px solid var(--accent);
+      background: color-mix(in srgb, var(--accent) 12%, var(--surface-2));
+      color: var(--accent-2);
     }
 
     .side-panel-wrap>.legend-placement-preview {
@@ -1338,8 +1345,21 @@
     }
 
     .legend-item.is-dragging {
-      opacity: .55;
-      transform: scale(.992);
+      opacity: .96;
+      pointer-events: none;
+      transition: none;
+      transform: translate3d(var(--legend-drag-x, 0px), var(--legend-drag-y, 0px), 0);
+      z-index: 80;
+      box-shadow: var(--shadow);
+      cursor: grabbing;
+    }
+
+    .legend-drag-placeholder {
+      width: 100%;
+      border: 2px solid var(--accent);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--accent) 10%, var(--surface-2));
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 24%, transparent);
     }
 
     .legend-item.is-filtered {
@@ -4219,7 +4239,7 @@
             <h1 id="mapTitle">Your Visit Tracker</h1>
             <button id="renameBtn" class="ghost title-edit-btn" type="button" data-shortcut="M">Rename</button>
           </div>
-          <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v2.4.0.6</span>
+          <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v2.4.0.10</span>
         </div>
         <div class="topbar-hints" aria-label="Title bar tips">
           <small id="topbarPanelHint" data-hint data-hint-key="topbar-panel-controls">
@@ -4256,7 +4276,7 @@
       <section class="panel map-panel" aria-labelledby="mapHeading">
         <div class="map-head">
           <div class="map-head-title">
-            <h2 id="mapHeading">State Map</h2>
+            <h2 id="mapHeading">US Map</h2>
             <small id="tapHint" data-hint>Tap a location to select and cycle its visit level.</small>
           </div>
           <div class="map-head-actions">
@@ -5212,7 +5232,9 @@
               fit the map for screenshots, or return to scrollable mode with pan and zoom controls.</li>
             <li>In scrollable map mode, drag the map to pan, type an exact zoom percentage, use the zoom controls to
               move in or out, and reset to 100% when you want the full map again. Drag the divider on desktop to resize
-              the map and cards.</li>
+              the map and cards. Your zoom level and fit/scroll map view are saved with the rest of your settings.</li>
+            <li>The app restores your last visible panels, selected Notes location, Notes sort/view/grouping/filter
+              choices, collapsed note categories, and scrollable map pan position.</li>
             <li>Use the Legend to edit level names, definitions, colors, order, and whether a level counts toward stats.
               Drag levels anytime to reorder, turn Edit on to reveal all row controls, or swipe a row right-to-left for
               quick Edit/Delete.</li>
@@ -5263,6 +5285,10 @@
             backend or external service.</p>
           <p><b>Can I move data to another device?</b><br>Export a JSON backup in Settings, then import it in the app on
             the other device.</p>
+          <p><b>Will my map zoom come back?</b><br>Yes. The app saves your scrollable-map zoom level and whether you
+            were using Fit Map or Scroll Map, plus your last pan position in scrollable mode.</p>
+          <p><b>Will my Notes filters come back?</b><br>Yes. Notes view, sort, grouping, excluded visibility, Legend
+            filters, icon filters, collapsed categories, and selected location restore with your local settings.</p>
           <p><b>Can I undo a reset?</b><br>No. Export a JSON backup first if you want a safety net.</p>
           <p><b>What does Categorical do in Notes?</b><br>It groups locations by City, State, and Territory, keeps your
             Alphabetical or Chronological sort inside each group, and keeps the current group header sticky while you
@@ -5424,7 +5450,7 @@
 
   <script>
     const APP_NAME = "Visit Tracker";
-    const APP_VERSION = "2.4.0.6";
+    const APP_VERSION = "2.4.0.10";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -6530,16 +6556,25 @@
     ];
     const CHANGELOG = [
       {
-        version: "2.4.0.6",
+        version: "2.4.0.10",
         date: "2026-05-22",
         title: "Legend Gets Legs",
-        summary: "A 2.4 development build that makes the Legend movable, draggable, and calmer until edit mode is needed.",
+        summary: "A 2.4 development build that makes the Legend movable, draggable, more compact, and calmer until edit mode is needed.",
         highlights: [
           "Legend edit controls now hide behind an active Edit toggle and slide into view only when editing.",
           "Legend levels can be dragged to reorder priority with live row movement.",
-          "Legend position can be cycled or changed by dragging the Legend title between upper/lower right and upper/lower left map placements."
+          "Legend position can be picked from a mini corner menu or changed by dragging the Legend title between upper/lower right and upper/lower left map placements.",
+          "Scrollable map zoom level, pan position, fit/scroll view mode, panels, Notes filters, and Notes view preferences now persist in Settings and JSON backups."
         ],
         updates: [
+          "Map, Legend, and Notes visibility now restore across reloads.",
+          "Notes sort, view, category grouping, excluded visibility, Legend level filters, icon filters, selected location, and collapsed note categories now persist.",
+          "Scrollable map pan center now saves with zoom, so high-zoom map views come back where you left them.",
+          "Dragging the Legend back over its original placement now restores a blue current-position outline instead of making the target disappear.",
+          "Legend level sorting now uses a placeholder drop slot and commits order once on release, reducing row jitter while dragging.",
+          "The title-bar Edit/Rename control now bottom-aligns with the map name for a cleaner header.",
+          "Map view mode and exact zoom level now save to localStorage, export in JSON, import from backups, and restore on reload.",
+          "Legend stat ovals and total pills keep the user's tighter 24px height for denser rows.",
           "Legend placement preview now hides in the current corner, owns the candidate layout while dragging, and uses right-column row rules for top/bottom previews.",
           "Legend quick actions now reveal with a right-to-left swipe.",
           "Legend row dragging captures the pointer immediately so click-and-move sorting is more reliable.",
@@ -6557,7 +6592,7 @@
           "Level definitions are visible inline beside names in subtle text.",
           "Roadmap search now has a live count pill beside the search field that updates with search and filters.",
           "Roadmap filter drop-down options and the Roadmap search placeholder now include item counts, future target priorities were reorganized, and completed Legend roadmap items were retired.",
-          "Help Center and Legend hints were refreshed for the new edit, drag, and position controls."
+          "Help Center, Release Notes, README, and Legend hints were refreshed for the post-2.3 map and Legend controls."
         ]
       },
       {
@@ -7007,6 +7042,8 @@
     let mapFitMode = false;
     let mapZoom = 1;
     let mapPanState = null;
+    let mapPanRestoreActive = false;
+    let mapPanSaveTimer = 0;
     let centerMapAfterRender = true;
     let noteLevelFilters = new Set();
     let noteVisitTypeFilters = new Set();
@@ -7037,13 +7074,14 @@
     let pendingConfirm = null;
     let noteDialogBaseline = "";
     let state = loadState();
+    syncRuntimeUiFromSettings();
 
     function defaultState() {
       const levels = DEFAULT_LEVEL_IDS.map(id => clone(BUILT_INS.find(level => level.id === id)));
       return {
         appVersion: APP_VERSION,
         mapName: "Your Visit Tracker",
-        settings: { theme: "light", tapBehavior: "cycle", buttonStyle: "symbols", uiHints: true, textScale: 1, dateOrder: "mdy", dateStyle: "alpha", mapLabels: "none", mapSplitRatio: .66, legendPosition: "right-top", hideSuggestedCategories: false, developerMode: false, shortcutMode: false },
+        settings: { theme: "light", tapBehavior: "cycle", buttonStyle: "symbols", uiHints: true, textScale: 1, dateOrder: "mdy", dateStyle: "alpha", mapLabels: "none", mapSplitRatio: .66, mapViewMode: "scroll", mapZoom: 1, mapPanCenter: { x: .5, y: .5 }, mapPanelOpen: true, legendPanelOpen: true, notesPanelOpen: true, notesSortMode: "chrono", notesViewMode: "compact", notesCategoricalMode: true, notesHideExcludedOnly: true, noteLevelFilters: [], noteVisitTypeFilters: [], selectedState: "", notesPanelState: "", collapsedNoteCategories: [], legendPosition: "right-top", hideSuggestedCategories: false, developerMode: false, shortcutMode: false },
         levels,
         states: defaultTerritoryStates(levels),
         notes: {},
@@ -7262,6 +7300,15 @@
       return Math.max(.85, Math.min(1.2, Math.round(numeric * 20) / 20));
     }
 
+    function normalizeMapPanCenter(value) {
+      const x = Number(value?.x);
+      const y = Number(value?.y);
+      return {
+        x: Number.isFinite(x) ? Math.max(0, Math.min(1, x)) : .5,
+        y: Number.isFinite(y) ? Math.max(0, Math.min(1, y)) : .5
+      };
+    }
+
     function normalizeState(input) {
       const base = defaultState();
       const next = { ...base, ...input };
@@ -7274,6 +7321,23 @@
       if (!["numeric", "alpha"].includes(next.settings.dateStyle)) next.settings.dateStyle = "alpha";
       if (!["none", "abbr", "name"].includes(next.settings.mapLabels)) next.settings.mapLabels = "none";
       if (!LEGEND_POSITION_ORDER.includes(next.settings.legendPosition)) next.settings.legendPosition = "right-top";
+      if (!["scroll", "fit"].includes(next.settings.mapViewMode)) next.settings.mapViewMode = next.settings.mapFitMode === true ? "fit" : "scroll";
+      next.settings.mapZoom = clampMapZoom(next.settings.mapZoom);
+      next.settings.mapPanCenter = normalizeMapPanCenter(next.settings.mapPanCenter);
+      ["mapPanelOpen", "legendPanelOpen", "notesPanelOpen"].forEach(key => {
+        if (typeof next.settings[key] !== "boolean") next.settings[key] = base.settings[key];
+      });
+      if (!next.settings.mapPanelOpen && !next.settings.legendPanelOpen && !next.settings.notesPanelOpen) next.settings.mapPanelOpen = true;
+      if (!["alpha", "chrono"].includes(next.settings.notesSortMode)) next.settings.notesSortMode = "chrono";
+      if (!["expanded", "compact", "text"].includes(next.settings.notesViewMode)) next.settings.notesViewMode = "compact";
+      if (typeof next.settings.notesCategoricalMode !== "boolean") next.settings.notesCategoricalMode = true;
+      if (typeof next.settings.notesHideExcludedOnly !== "boolean") next.settings.notesHideExcludedOnly = true;
+      next.settings.selectedState = STATE_NAMES[next.settings.selectedState] ? next.settings.selectedState : "";
+      next.settings.notesPanelState = STATE_NAMES[next.settings.notesPanelState] ? next.settings.notesPanelState : "";
+      next.settings.collapsedNoteCategories = Array.isArray(next.settings.collapsedNoteCategories)
+        ? [...new Set(next.settings.collapsedNoteCategories.filter(type => LOCATION_TYPES[type]))]
+        : [];
+      delete next.settings.mapFitMode;
       const savedSplitRatio = next.settings.mapSplitRatio;
       next.settings.mapSplitRatio = savedSplitRatio === null || savedSplitRatio === undefined || savedSplitRatio === ""
         ? .66
@@ -7307,6 +7371,14 @@
       }));
       next.visitTypes = normalizeVisitTypeConfig(input.visitTypes, base.visitTypes);
       const validLevelIds = new Set(next.levels.map(l => l.id));
+      next.settings.noteLevelFilters = Array.isArray(next.settings.noteLevelFilters)
+        ? [...new Set(next.settings.noteLevelFilters.filter(id => validLevelIds.has(id)))]
+        : [];
+      const validVisitFilterIds = new Set([NOTE_FILTER_NO_ICON, ...next.visitTypes.filter(type => type.enabled).map(type => type.id)]);
+      next.settings.noteVisitTypeFilters = Array.isArray(next.settings.noteVisitTypeFilters)
+        ? [...new Set(next.settings.noteVisitTypeFilters.filter(id => validVisitFilterIds.has(id)))]
+        : [];
+      if (!next.settings.noteVisitTypeFilters.length) next.settings.noteVisitTypeFilters = [...validVisitFilterIds];
       next.states = {};
       Object.entries(input.states || {}).forEach(([abbr, raw]) => {
         if (!STATE_NAMES[abbr]) return;
@@ -7365,8 +7437,61 @@
       return [...new Set(ids)].slice(0, 5);
     }
 
+    function captureMapPanSetting() {
+      const wrap = $(".map-wrap");
+      if (!wrap || mapFitMode || mapPanRestoreActive) return;
+      const maxX = Math.max(1, wrap.scrollWidth);
+      const maxY = Math.max(1, wrap.scrollHeight);
+      state.settings.mapPanCenter = normalizeMapPanCenter({
+        x: (wrap.scrollLeft + wrap.clientWidth / 2) / maxX,
+        y: (wrap.scrollTop + wrap.clientHeight / 2) / maxY
+      });
+    }
+
+    function syncRuntimeUiSettingsToState({ captureMapPan = true } = {}) {
+      if (!state?.settings) return;
+      if (captureMapPan) captureMapPanSetting();
+      state.settings.mapPanelOpen = mapPanelOpen !== false;
+      state.settings.legendPanelOpen = legendPanelOpen !== false;
+      state.settings.notesPanelOpen = notesPanelOpen !== false;
+      state.settings.notesSortMode = ["alpha", "chrono"].includes(notesSortMode) ? notesSortMode : "chrono";
+      state.settings.notesViewMode = ["expanded", "compact", "text"].includes(notesViewMode) ? notesViewMode : "compact";
+      state.settings.notesCategoricalMode = notesCategoricalMode === true;
+      state.settings.notesHideExcludedOnly = notesHideExcludedOnly === true;
+      ensureNoteIconFilters();
+      state.settings.noteLevelFilters = [...noteLevelFilters].filter(id => levelById(id));
+      state.settings.noteVisitTypeFilters = [...noteVisitTypeFilters].filter(id => id === NOTE_FILTER_NO_ICON || visitTypeMeta(id));
+      state.settings.selectedState = selectedState && STATE_NAMES[selectedState] ? selectedState : "";
+      state.settings.notesPanelState = notesPanelState && STATE_NAMES[notesPanelState] ? notesPanelState : "";
+      state.settings.collapsedNoteCategories = [...collapsedNoteCategories].filter(type => LOCATION_TYPES[type]);
+      state.settings.mapViewMode = mapFitMode ? "fit" : "scroll";
+      state.settings.mapZoom = clampMapZoom(mapZoom);
+      state.settings.mapPanCenter = normalizeMapPanCenter(state.settings.mapPanCenter);
+    }
+
+    function syncRuntimeUiFromSettings() {
+      syncRuntimeMapViewFromSettings();
+      mapPanelOpen = state.settings.mapPanelOpen !== false;
+      legendPanelOpen = state.settings.legendPanelOpen !== false;
+      notesPanelOpen = state.settings.notesPanelOpen !== false;
+      notesSortMode = ["alpha", "chrono"].includes(state.settings.notesSortMode) ? state.settings.notesSortMode : "chrono";
+      notesViewMode = ["expanded", "compact", "text"].includes(state.settings.notesViewMode) ? state.settings.notesViewMode : "compact";
+      notesCategoricalMode = state.settings.notesCategoricalMode !== false;
+      notesHideExcludedOnly = state.settings.notesHideExcludedOnly !== false;
+      selectedState = STATE_NAMES[state.settings.selectedState] ? state.settings.selectedState : null;
+      notesPanelState = STATE_NAMES[state.settings.notesPanelState] ? state.settings.notesPanelState : null;
+      if (notesPanelState) selectedState = notesPanelState;
+      noteLevelFilters = new Set((state.settings.noteLevelFilters || []).filter(id => levelById(id)));
+      noteVisitTypeFilters = new Set(Array.isArray(state.settings.noteVisitTypeFilters) ? state.settings.noteVisitTypeFilters : []);
+      ensureNoteIconFilters();
+      collapsedNoteCategories = new Set((state.settings.collapsedNoteCategories || []).filter(type => LOCATION_TYPES[type]));
+      ensurePanelVisible("map");
+      syncRuntimeUiSettingsToState({ captureMapPan: false });
+    }
+
     function save() {
       pruneObsoleteBackupKeys(state);
+      syncRuntimeUiSettingsToState();
       state.appVersion = APP_VERSION;
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       renderDeveloperJson();
@@ -7853,14 +7978,11 @@
 
     function placeLegendPreview(position) {
       if (!LEGEND_POSITION_ORDER.includes(position)) return;
-      if (position === legendPosition()) {
-        clearLegendPreview();
-        return;
-      }
       const panel = $("#legendPanel");
       const preview = legendPlacementPreview();
       const height = Math.max(64, Math.ceil(panel?.getBoundingClientRect().height || 0));
       preview.style.minHeight = `${height}px`;
+      preview.classList.toggle("is-current", position === legendPosition());
       document.documentElement.dataset.legendPreviewPosition = position;
       let target = $("#sidePanel");
       if (position === "left-top") target = $("#legendSlotTop");
@@ -7974,8 +8096,28 @@
       if (mapFitMode) return;
       const wrap = $(".map-wrap");
       if (!wrap) return;
-      wrap.scrollLeft = Math.max(0, (wrap.scrollWidth - wrap.clientWidth) / 2);
-      wrap.scrollTop = Math.max(0, (wrap.scrollHeight - wrap.clientHeight) / 2);
+      const center = normalizeMapPanCenter(state.settings.mapPanCenter);
+      mapPanRestoreActive = true;
+      wrap.scrollLeft = Math.max(0, center.x * wrap.scrollWidth - wrap.clientWidth / 2);
+      wrap.scrollTop = Math.max(0, center.y * wrap.scrollHeight - wrap.clientHeight / 2);
+      requestAnimationFrame(() => { mapPanRestoreActive = false; });
+    }
+
+    function saveMapPanSoon(immediate = false) {
+      if (mapFitMode || mapPanRestoreActive) return;
+      captureMapPanSetting();
+      renderDeveloperJson();
+      if (immediate) {
+        if (mapPanSaveTimer) clearTimeout(mapPanSaveTimer);
+        mapPanSaveTimer = 0;
+        save();
+        return;
+      }
+      if (mapPanSaveTimer) clearTimeout(mapPanSaveTimer);
+      mapPanSaveTimer = window.setTimeout(() => {
+        mapPanSaveTimer = 0;
+        save();
+      }, 220);
     }
 
     function scheduleMainLayoutSync() {
@@ -8294,6 +8436,7 @@
       if (!levelById(levelId)) return;
       if (noteLevelFilters.has(levelId)) noteLevelFilters.delete(levelId);
       else noteLevelFilters.add(levelId);
+      save();
       renderLegend();
       renderNotesPanel();
     }
@@ -8406,51 +8549,40 @@
       return true;
     }
 
-    function reorderLevelRelative(levelId, targetId, afterTarget) {
-      const from = state.levels.findIndex(level => level.id === levelId);
-      if (from < 0 || levelId === targetId) return false;
-      const [level] = state.levels.splice(from, 1);
-      const targetIndex = state.levels.findIndex(item => item.id === targetId);
-      if (targetIndex < 0) {
-        state.levels.splice(from, 0, level);
-        return false;
-      }
-      state.levels.splice(targetIndex + (afterTarget ? 1 : 0), 0, level);
-      return true;
+    function legendDragOrderFromPlaceholder(list, draggedItem, placeholder) {
+      const byId = new Map(state.levels.map(level => [level.id, level]));
+      const ids = Array.from(list.children)
+        .filter(el => el === placeholder || (el.matches?.("[data-legend-item]") && el !== draggedItem))
+        .map(el => el === placeholder ? draggedItem.dataset.legendItem : el.dataset.legendItem)
+        .filter(id => byId.has(id));
+      const seen = new Set(ids);
+      state.levels.forEach(level => {
+        if (!seen.has(level.id)) ids.push(level.id);
+      });
+      return ids.map(id => byId.get(id)).filter(Boolean);
     }
 
-    function flipLegendReorder(list, performMove) {
-      const items = $$("[data-legend-item]", list);
-      const before = new Map();
-      items.forEach(el => before.set(el, el.getBoundingClientRect().top));
-      performMove();
-      items.forEach(el => {
-        const oldTop = before.get(el);
-        if (oldTop == null) return;
-        const delta = oldTop - el.getBoundingClientRect().top;
-        if (!delta) return;
-        el.style.transition = "none";
-        el.style.transform = `translateY(${delta}px)`;
-      });
-      void list.offsetHeight;
-      requestAnimationFrame(() => {
-        items.forEach(el => {
-          el.style.transition = "";
-          el.style.transform = "";
-        });
-      });
+    function commitLegendPlaceholderOrder(list, draggedItem, placeholder) {
+      if (!placeholder || !draggedItem) return false;
+      const nextLevels = legendDragOrderFromPlaceholder(list, draggedItem, placeholder);
+      const changed = nextLevels.some((level, index) => level.id !== state.levels[index]?.id);
+      if (changed) state.levels = nextLevels;
+      return changed;
     }
 
-    function legendDropTargetFromY(list, draggedItem, clientY) {
+    function moveLegendPlaceholder(list, draggedItem, placeholder, clientY) {
+      if (!placeholder) return;
       const rows = $$("[data-legend-item]", list).filter(row => row !== draggedItem);
-      if (!rows.length) return null;
-      if (clientY < rows[0].getBoundingClientRect().top) return { target: rows[0], after: false };
+      if (!rows.length) return;
       for (const row of rows) {
         const rect = row.getBoundingClientRect();
-        if (clientY < rect.top + rect.height / 2) return { target: row, after: false };
+        if (clientY < rect.top + rect.height / 2) {
+          if (placeholder.nextElementSibling !== row) row.before(placeholder);
+          return;
+        }
       }
       const last = rows.at(-1);
-      return last ? { target: last, after: true } : null;
+      if (last && placeholder.previousElementSibling !== last) last.after(placeholder);
     }
 
     function bindLegendLevelDrag() {
@@ -8463,6 +8595,37 @@
       let pointerId = null;
       let mode = "";
       let activeItem = null;
+      let placeholder = null;
+      let dragRect = null;
+      const beginDrag = () => {
+        if (!activeItem || placeholder) return;
+        dragRect = activeItem.getBoundingClientRect();
+        placeholder = document.createElement("div");
+        placeholder.className = "legend-drag-placeholder";
+        placeholder.style.height = `${dragRect.height}px`;
+        placeholder.style.minHeight = `${dragRect.height}px`;
+        placeholder.setAttribute("aria-hidden", "true");
+        activeItem.after(placeholder);
+        activeItem.classList.add("is-dragging");
+        activeItem.style.position = "fixed";
+        activeItem.style.left = `${dragRect.left}px`;
+        activeItem.style.top = `${dragRect.top}px`;
+        activeItem.style.width = `${dragRect.width}px`;
+        activeItem.style.height = `${dragRect.height}px`;
+        activeItem.style.setProperty("--legend-drag-x", "0px");
+        activeItem.style.setProperty("--legend-drag-y", "0px");
+        closeLegendSwipes();
+      };
+      const cleanupDrag = () => {
+        placeholder?.remove();
+        placeholder = null;
+        dragRect = null;
+        if (!activeItem) return;
+        activeItem.classList.remove("is-dragging");
+        ["position", "left", "top", "width", "height"].forEach(prop => activeItem.style.removeProperty(prop));
+        activeItem.style.removeProperty("--legend-drag-x");
+        activeItem.style.removeProperty("--legend-drag-y");
+      };
       const onMove = event => {
         if (pointerId !== event.pointerId || !activeItem || !draggedLegendLevelId) return;
         const dx = event.clientX - startX;
@@ -8471,8 +8634,7 @@
           if (dx < -38 && Math.abs(dx) > Math.abs(dy) * 1.35) mode = "swipe";
           else if (Math.abs(dy) > 8 && Math.abs(dy) > Math.abs(dx) * .9) {
             mode = "drag";
-            activeItem.classList.add("is-dragging");
-            closeLegendSwipes();
+            beginDrag();
           } else return;
         }
         event.preventDefault();
@@ -8488,22 +8650,17 @@
           }, 520);
           return;
         }
-        const placement = legendDropTargetFromY(list, activeItem, event.clientY);
-        if (!placement) return;
-        const { target, after: insertAfter } = placement;
-        if (!reorderLevelRelative(draggedLegendLevelId, target.dataset.legendItem, insertAfter)) return;
-        legendDragCommitted = true;
-        const movedItem = activeItem;
-        flipLegendReorder(list, () => {
-          if (insertAfter) target.after(movedItem);
-          else target.before(movedItem);
-        });
+        activeItem.style.setProperty("--legend-drag-x", `${dx}px`);
+        activeItem.style.setProperty("--legend-drag-y", `${dy}px`);
+        moveLegendPlaceholder(list, activeItem, placeholder, event.clientY);
       };
       const onFinish = event => {
         if (pointerId !== event.pointerId) return;
         const wasDrag = mode === "drag";
-        if (wasDrag && legendDragCommitted) save();
-        if (activeItem) activeItem.classList.remove("is-dragging");
+        const shouldCommit = wasDrag && event.type === "pointerup";
+        legendDragCommitted = shouldCommit ? commitLegendPlaceholderOrder(list, activeItem, placeholder) : false;
+        cleanupDrag();
+        if (legendDragCommitted) save();
         detachDocListeners();
         if (wasDrag) render();
       };
@@ -8737,6 +8894,7 @@
       notesPanelOpen = true;
       notesPanelState = abbr;
       closeDrawer();
+      save();
     }
 
     function openStateDrawer(abbr) {
@@ -8787,6 +8945,7 @@
       notesPanelOpen = true;
       notesPanelState = null;
       closeDrawer();
+      save();
       render();
     }
 
@@ -8834,6 +8993,7 @@
     function toggleMapPanel() {
       mapPanelOpen = !mapPanelOpen;
       ensurePanelVisible("legend");
+      save();
       render();
     }
 
@@ -8846,6 +9006,7 @@
       }
       legendPanelOpen = !legendPanelOpen;
       ensurePanelVisible("map");
+      save();
       render();
     }
 
@@ -8856,12 +9017,16 @@
         notesPanelState = selectedState;
       }
       ensurePanelVisible("map");
+      save();
       render();
     }
 
     function toggleMapFitMode() {
-      mapFitMode = !mapFitMode;
+      const nextFit = !mapFitMode;
+      if (nextFit) captureMapPanSetting();
+      mapFitMode = nextFit;
       if (!mapFitMode) centerMapAfterRender = true;
+      persistMapViewSettings();
       render();
     }
 
@@ -8877,6 +9042,20 @@
       const numeric = Number.parseFloat(String(value || "").replace(/%/g, "").trim());
       if (!Number.isFinite(numeric)) return null;
       return clampMapZoom(numeric / 100);
+    }
+
+    function syncRuntimeMapViewFromSettings() {
+      mapFitMode = state.settings.mapViewMode === "fit";
+      mapZoom = clampMapZoom(state.settings.mapZoom);
+      state.settings.mapViewMode = mapFitMode ? "fit" : "scroll";
+      state.settings.mapZoom = mapZoom;
+      centerMapAfterRender = !mapFitMode;
+    }
+
+    function persistMapViewSettings() {
+      state.settings.mapViewMode = mapFitMode ? "fit" : "scroll";
+      state.settings.mapZoom = clampMapZoom(mapZoom);
+      save();
     }
 
     function commitMapZoomReadout() {
@@ -8903,6 +9082,7 @@
       if (mapFitMode) mapFitMode = false;
       const previous = mapZoom;
       mapZoom = clampMapZoom(value);
+      persistMapViewSettings();
       const wrap = $(".map-wrap");
       const ratio = previous ? mapZoom / previous : 1;
       if (wrap && anchor) {
@@ -8912,6 +9092,7 @@
         requestAnimationFrame(() => {
           wrap.scrollLeft = Math.max(0, beforeLeft * ratio - anchor.x);
           wrap.scrollTop = Math.max(0, beforeTop * ratio - anchor.y);
+          saveMapPanSoon(true);
         });
         return;
       }
@@ -8927,7 +9108,9 @@
 
     function resetMapZoom() {
       mapZoom = 1;
+      state.settings.mapPanCenter = { x: .5, y: .5 };
       centerMapAfterRender = true;
+      persistMapViewSettings();
       render();
     }
 
@@ -9035,6 +9218,7 @@
       ensureNoteIconFilters();
       if (noteVisitTypeFilters.has(typeId)) noteVisitTypeFilters.delete(typeId);
       else noteVisitTypeFilters.add(typeId);
+      save();
       renderNotesPanel();
     }
 
@@ -9046,6 +9230,7 @@
       } else {
         noteVisitTypeFilters = new Set([typeId]);
       }
+      save();
       renderNotesPanel();
     }
 
@@ -9342,11 +9527,13 @@
         const type = button.dataset.toggleNoteCategory;
         if (collapsedNoteCategories.has(type)) collapsedNoteCategories.delete(type);
         else collapsedNoteCategories.add(type);
+        save();
         renderNotesPanel();
       }));
       $$("[data-open-notes-state]").forEach(button => button.addEventListener("click", () => {
         selectedState = button.dataset.openNotesState;
         notesPanelState = selectedState;
+        save();
         renderMap();
         renderNotesPanel();
       }));
@@ -10456,6 +10643,7 @@
     function focusNotesSearchShortcut() {
       notesPanelOpen = true;
       notesPanelState = null;
+      save();
       render();
       requestAnimationFrame(() => {
         const input = $("#notesStateSearch");
@@ -10623,10 +10811,12 @@
           try { wrap.releasePointerCapture(event.pointerId); } catch { }
           wrap.dataset.blockClick = "true";
           setTimeout(() => delete wrap.dataset.blockClick, 0);
+          saveMapPanSoon(true);
         }
       };
       wrap.addEventListener("pointerup", endPan);
       wrap.addEventListener("pointercancel", endPan);
+      wrap.addEventListener("scroll", () => saveMapPanSoon());
       wrap.addEventListener("click", event => {
         if (wrap.dataset.blockClick !== "true") return;
         event.preventDefault();
@@ -10892,6 +11082,7 @@
       $("#mapFitBtn").addEventListener("click", toggleMapFitMode);
       $("#notesPanelBackBtn").addEventListener("click", () => {
         notesPanelState = null;
+        save();
         renderNotesPanel();
       });
       $("#notesStateSearch").addEventListener("input", event => {
@@ -10900,31 +11091,38 @@
       });
       $("#notesSortAlphaBtn").addEventListener("click", () => {
         notesSortMode = "alpha";
+        save();
         renderNotesPanel();
       });
       $("#notesSortChronoBtn").addEventListener("click", () => {
         notesSortMode = "chrono";
+        save();
         renderNotesPanel();
       });
       $("#notesCategoryToggleBtn").addEventListener("click", () => {
         notesCategoricalMode = !notesCategoricalMode;
+        save();
         renderNotesPanel();
       });
       $("#notesExcludedToggleBtn").addEventListener("click", () => {
         notesHideExcludedOnly = !notesHideExcludedOnly;
+        save();
         syncButtonLabels();
         renderNotesPanel();
       });
       $("#notesViewExpandedBtn").addEventListener("click", () => {
         notesViewMode = "expanded";
+        save();
         renderNotesPanel();
       });
       $("#notesViewCompactBtn").addEventListener("click", () => {
         notesViewMode = "compact";
+        save();
         renderNotesPanel();
       });
       $("#notesViewTextBtn").addEventListener("click", () => {
         notesViewMode = "text";
+        save();
         renderNotesPanel();
       });
       $("#copyNotesTextBtn").addEventListener("click", () => copyNotesText());
@@ -11046,8 +11244,7 @@
             state = defaultState();
             selectedState = null;
             legendEditMode = false;
-            mapZoom = 1;
-            mapFitMode = false;
+            syncRuntimeUiFromSettings();
             centerMapAfterRender = true;
             save();
             closeDrawer();
@@ -11087,8 +11284,7 @@
             notesHideExcludedOnly = true;
             notesSearchQuery = "";
             legendEditMode = false;
-            mapFitMode = false;
-            mapZoom = 1;
+            syncRuntimeMapViewFromSettings();
             centerMapAfterRender = true;
             save();
             closeDrawer();
@@ -11203,7 +11399,7 @@
             actionLabel: "Import Backup",
             onConfirm: () => {
               state = imported;
-              selectedState = null;
+              syncRuntimeUiFromSettings();
               save();
               closeDrawer();
               render();

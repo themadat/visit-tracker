@@ -46,10 +46,25 @@ Useful code regions in `index.html`:
 
 - Constants: `APP_VERSION`, `STORAGE_KEY`, `STATES`, `BUILT_INS`, `THEMES`, `WISHLIST_SEEDS`, `CHANGELOG`
 - Persistence: `defaultState`, `loadState`, `normalizeState`, `save`
-- Map behavior: `initMap`, `handleStateTap`, `cycleState`, `renderMap`
-- Legend: `renderLegend`, `moveLevel`, `deleteLevel`, `smartApplyPalette`
+- Map behavior: `initMap`, `handleStateTap`, `cycleState`, `renderMap`, `bindMapPanZoom`, `setMapZoom`, `toggleMapFitMode`
+- Legend: `renderLegend`, `moveLevel`, `deleteLevel`, `smartApplyPalette`, `setLegendPosition`
 - Notes: `renderNotesPanel`, `openNoteDialog`, `saveNoteFromForm`, note sorting/filter helpers
 - Settings/import/export: `renderSettingsControls`, `exportMarkdown`, `exportRichText`, `importJson`
+
+Current persisted settings include map layout state such as `mapSplitRatio`, `legendPosition`, `mapViewMode`, `mapZoom`, `mapPanCenter`, visible panels, selected Notes location, Notes sort/view/grouping/filter choices, and collapsed Notes categories.
+
+## Current 2.4 Development Surface
+
+Since `2.3.0`, the active work has focused on the Legend and map layout:
+
+- Legend editing is calmer by default: Edit reveals row controls, while levels remain draggable for priority sorting.
+- Legend rows support right-to-left swipe quick actions for Edit/Delete.
+- Legend position can be chosen from a desktop corner picker or by dragging the Legend title, with live placement previews.
+- Legend stats are embedded into compact color ovals, with total completion under the Legend title.
+- Left-side Legend positions reserve real map-panel space instead of overlapping the map.
+- Roadmap filters show counts, and Roadmap search has a live result-count pill.
+- Scrollable map zoom, map pan center, Fit/Scroll view mode, panel visibility, and Notes view/filter state now persist in localStorage and JSON backups.
+- Title-bar Edit/Rename is bottom-aligned with the map name for a tighter header.
 
 ## Persistence and Migration
 
@@ -150,5 +165,3 @@ For every completed change:
 <comment name="BrightCompassGold" fill="#F2C14E" />
 
 ## Future Prompts
-
-
