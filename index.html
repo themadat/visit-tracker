@@ -237,7 +237,7 @@
       border-radius: 999px;
       background: transparent;
       color: #a9b0ba;
-      font-size: .62rem;
+      font-size: .55rem;
       font-weight: 900;
       line-height: 1;
       letter-spacing: 0;
@@ -606,6 +606,12 @@
       width: .86rem;
       height: .86rem;
       transform: translate(-50%, -50%);
+    }
+
+    @media (min-width: 621px) {
+      .release-dismiss .sf-symbol {
+        transform: translate(calc(-50% + 1px), calc(-55% + 1px));
+      }
     }
 
     .has-release-dot {
@@ -1520,13 +1526,16 @@
       max-width: calc(48px + .16rem);
       opacity: 1;
       pointer-events: auto;
+      margin-right: calc(24px + .16rem);
       transform: translateX(0);
     }
 
     .legend-swipe-dismiss {
       display: none;
-      grid-column: 3;
-      justify-self: end;
+      position: absolute;
+      right: .42rem;
+      top: 50%;
+      transform: translateY(-50%);
       width: 24px;
       min-width: 24px;
       height: 24px;
@@ -2560,6 +2569,10 @@
       font-size: .86rem;
     }
 
+    .notes-search input::placeholder {
+      font-size: .75rem;
+    }
+
     .notes-controls .segmented {
       flex: 1 1 0;
       justify-content: stretch;
@@ -2731,40 +2744,31 @@
     }
 
     .notes-filter-summary {
-      color: var(--muted);
-      font-size: .72rem;
-      line-height: 1.28;
-      padding: .18rem 0 .22rem;
-      margin-bottom: .12rem;
+      font-size: .7rem;
+      line-height: 1.1;
     }
 
     .notes-filter-summary strong {
       display: flex;
       align-items: baseline;
-      gap: .34rem;
+      gap: .25rem;
       flex-wrap: wrap;
       color: var(--text);
-      font-size: .76rem;
-      line-height: 1.18;
+      font-size: .8rem;
+      line-height: 1.2;
     }
 
     .notes-filter-summary .mode-bracket {
       color: var(--muted);
       font-size: .6rem;
-      font-weight: 800;
-      letter-spacing: .035em;
+      line-height: 1.1;
       text-transform: uppercase;
     }
 
     .notes-filter-summary em {
-      display: block;
-      margin-top: .04rem;
-      font-style: normal;
-      font-weight: 750;
-      font-size: .62rem;
-      line-height: 1.25;
-      letter-spacing: .045em;
-      text-transform: uppercase;
+      color: var(--muted);
+      font-size: .7rem;
+      line-height: 1.1;
     }
 
     #notesPanel[data-note-hints="hidden"] {
@@ -2772,11 +2776,6 @@
     }
 
     #notesPanel[data-note-hints="hidden"] .notes-icon-filters {
-      margin-bottom: .02rem;
-    }
-
-    #notesPanel[data-note-hints="hidden"] .notes-filter-summary {
-      padding: .02rem 0 .04rem;
       margin-bottom: .02rem;
     }
 
@@ -2958,7 +2957,7 @@
 
     .tag-more-grid {
       display: grid;
-      grid-template-columns: repeat(8, minmax(0, 1fr));
+      grid-template-columns: repeat(6, minmax(0, 1fr));
       gap: .34rem;
       align-items: start;
     }
@@ -3974,6 +3973,10 @@
     }
 
     @media (max-width: 620px) {
+      .notes-search input::placeholder {
+        font-size: .6rem;
+      }
+
       .topbar {
         align-items: center;
         flex-direction: row;
@@ -4342,7 +4345,7 @@
       }
 
       .tag-more-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
 
       #legendPanel {
@@ -4412,6 +4415,15 @@
       .legend-item.is-swiped .legend-actions {
         grid-template-columns: repeat(2, 20px);
         max-width: calc(40px + .1rem);
+        margin-right: calc(20px + .1rem);
+      }
+
+      .legend-swipe-dismiss {
+        right: .2rem;
+        width: 20px;
+        min-width: 20px;
+        height: 20px;
+        min-height: 20px;
       }
 
       [data-legend-editing="true"] .legend-item.is-swiped .legend-actions {
@@ -4503,7 +4515,7 @@
             <h1 id="mapTitle">Your Visit Tracker</h1>
             <button id="renameBtn" class="ghost title-edit-btn" type="button" data-shortcut="M">Rename</button>
           </div>
-          <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v2.4.0.14</span>
+          <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v2.4.0.16</span>
         </div>
         <div class="topbar-hints" aria-label="Title bar tips">
           <small id="topbarPanelHint" data-hint data-hint-key="topbar-panel-controls">
@@ -4523,7 +4535,8 @@
         <button id="releaseNoticeDismissBtn" class="release-dismiss ghost" type="button" aria-label="Dismiss update"
           title="Dismiss"><svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
             viewBox="0 0 20.1197 19.7779">
-            <path d="M18.1262 0.303967L0.27467 18.1555C-0.0866577 18.5169-0.0964233 19.1321 0.27467 19.5032C0.65553 19.8645 1.261 19.8645 1.63209 19.5032L19.4739 1.65162C19.845 1.2903 19.8547 0.675061 19.4739 0.303967C19.1028-0.0573608 18.4973-0.0671265 18.1262 0.303967ZM19.4739 18.1555L1.63209 0.303967C1.261-0.0573608 0.645764-0.0671265 0.27467 0.303967C-0.0866577 0.684827-0.0866577 1.2903 0.27467 1.65162L18.1262 19.5032C18.4876 19.8645 19.1126 19.8743 19.4739 19.5032C19.845 19.1223 19.845 18.5169 19.4739 18.1555Z" />
+            <path
+              d="M18.1262 0.303967L0.27467 18.1555C-0.0866577 18.5169-0.0964233 19.1321 0.27467 19.5032C0.65553 19.8645 1.261 19.8645 1.63209 19.5032L19.4739 1.65162C19.845 1.2903 19.8547 0.675061 19.4739 0.303967C19.1028-0.0573608 18.4973-0.0671265 18.1262 0.303967ZM19.4739 18.1555L1.63209 0.303967C1.261-0.0573608 0.645764-0.0671265 0.27467 0.303967C-0.0866577 0.684827-0.0866577 1.2903 0.27467 1.65162L18.1262 19.5032C18.4876 19.8645 19.1126 19.8743 19.4739 19.5032C19.845 19.1223 19.845 18.5169 19.4739 18.1555Z" />
           </svg></button>
       </div>
       <nav class="toolbar" aria-label="App actions">
@@ -5727,7 +5740,7 @@
 
   <script>
     const APP_NAME = "Visit Tracker";
-    const APP_VERSION = "2.4.0.14";
+    const APP_VERSION = "2.4.0.16";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -6834,7 +6847,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "2.4.0.14",
+        version: "2.4.0.16",
         date: "2026-05-22",
         title: "Legend Gets Legs",
         summary: "A 2.4 development build that makes the Legend movable, draggable, more compact, and calmer until edit mode is needed.",
@@ -6846,6 +6859,8 @@
         ],
         updates: [
           "Map, Legend, and Notes visibility now restore across reloads.",
+          "Location Tag settings now show More Icons in a 6-column grid on wider screens and a 3-column grid on mobile.",
+          "Desktop Legend swipe actions no longer add a layout column, the banner close icon is nudged to the visual center, Notes search placeholders are smaller, and the Notes summary now uses the requested count-plus-bracket format.",
           "Notes summary now keeps the view/sort/grouping bracket beside the location count, filters stay on their own compact line, the ellipsis shortcut is smaller, and Legend swipe close controls only appear while swiped.",
           "The What's New dismiss control now uses a centered SVG close icon, Notes filter summaries split filter and mode details across two compact lines, and Legend quick actions stay vertically centered in desktop rows.",
           "The hidden H H test shortcut and a quad-tap on the app name now restore dismissed hints and the What's New banner highlight together.",
@@ -9084,7 +9099,7 @@
       const levels = [...noteLevelFilters].map(id => levelById(id)?.name).filter(Boolean);
       const icons = allNoteIconFiltersSelected()
         ? []
-        : [...noteVisitTypeFilters].map(id => id === NOTE_FILTER_NO_ICON ? "No icon" : visitTypeMeta(id)?.label).filter(Boolean);
+        : [...noteVisitTypeFilters].map(id => id === NOTE_FILTER_NO_ICON ? "No Icon" : visitTypeMeta(id)?.label).filter(Boolean);
       return [...levels, ...icons];
     }
 
@@ -9093,17 +9108,17 @@
       const levels = [...noteLevelFilters].map(id => levelById(id)?.name).filter(Boolean);
       const icons = allNoteIconFiltersSelected()
         ? []
-        : [...noteVisitTypeFilters].map(id => id === NOTE_FILTER_NO_ICON ? "No icon" : visitTypeMeta(id)?.label).filter(Boolean);
+        : [...noteVisitTypeFilters].map(id => id === NOTE_FILTER_NO_ICON ? "No Icon" : visitTypeMeta(id)?.label).filter(Boolean);
       const filterParts = [
-        search ? `"${search}"` : "",
+        notesHideExcludedOnly ? "⊘ Hidden" : "⊘ Shown",
         levels.length ? `${levels.join(", ")}` : "All Levels",
-        icons.length ? `${icons.join(", ")}` : "All Icons"
+        icons.length ? `${icons.join(", ")}` : "All Icons",
+        search ? `"${search}"` : "",
       ].filter(Boolean);
       const modeParts = [
         `${notesViewMode === "compact" ? "Condensed" : notesViewMode === "text" ? "Text Only" : "Expanded"}`,
         notesSortMode === "alpha" ? "Alphabetical" : "Chronological",
-        notesCategoricalMode ? "Grouped" : "Ungrouped",
-        notesHideExcludedOnly ? "Excluded Hidden" : "Excluded Visible"
+        notesCategoricalMode ? "Grouped" : "Ungrouped"
       ].filter(Boolean);
       const countLabel = `${markedCount} Location${markedCount === 1 ? "" : "s"}`;
       return `<strong><span>${escapeHtml(countLabel)}</span><span class="mode-bracket">[${escapeHtml(modeParts.join(" | "))}]</span></strong><em>${escapeHtml(filterParts.join(" | "))}</em>`;
@@ -9507,7 +9522,7 @@
       const active = activeVisitTypes();
       ensureNoteIconFilters();
       const items = [
-        { id: NOTE_FILTER_NO_ICON, label: "No icon", icon: __CIRCLE },
+        { id: NOTE_FILTER_NO_ICON, label: "No Icon", icon: __CIRCLE },
         ...active.map(type => ({ id: type.id, label: type.label, icon: visitTypeIcon(type.id) }))
       ];
       const hideFilters = Boolean(notesPanelState) || !items.length;
