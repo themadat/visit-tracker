@@ -237,7 +237,7 @@
       border-radius: 999px;
       background: transparent;
       color: #a9b0ba;
-      font-size: .78rem;
+      font-size: .62rem;
       font-weight: 900;
       line-height: 1;
       letter-spacing: 0;
@@ -268,7 +268,7 @@
     .hint-dot-btn span {
       position: relative;
       z-index: 1;
-      transform: translateY(-.03rem);
+      transform: translateY(-.02rem);
     }
 
     .sr-only {
@@ -587,7 +587,8 @@
     }
 
     .release-dismiss {
-      display: grid;
+      position: relative;
+      display: inline-grid;
       place-items: center;
       width: 28px;
       min-width: 28px;
@@ -600,8 +601,11 @@
     }
 
     .release-dismiss .sf-symbol {
-      width: .92rem;
-      height: .92rem;
+      position: absolute;
+      inset: 50% auto auto 50%;
+      width: .86rem;
+      height: .86rem;
+      transform: translate(-50%, -50%);
     }
 
     .has-release-dot {
@@ -1531,7 +1535,11 @@
       color: var(--muted);
     }
 
-    html:not([data-legend-editing="true"]) .legend-item.is-swiped .legend-swipe-dismiss {
+    .legend-swipe-dismiss.icon-btn {
+      display: none;
+    }
+
+    html:not([data-legend-editing="true"]) .legend-item.is-swiped .legend-swipe-dismiss.icon-btn {
       display: inline-grid;
       place-items: center;
     }
@@ -2731,10 +2739,21 @@
     }
 
     .notes-filter-summary strong {
-      display: block;
+      display: flex;
+      align-items: baseline;
+      gap: .34rem;
+      flex-wrap: wrap;
       color: var(--text);
       font-size: .76rem;
       line-height: 1.18;
+    }
+
+    .notes-filter-summary .mode-bracket {
+      color: var(--muted);
+      font-size: .6rem;
+      font-weight: 800;
+      letter-spacing: .035em;
+      text-transform: uppercase;
     }
 
     .notes-filter-summary em {
@@ -2746,10 +2765,6 @@
       line-height: 1.25;
       letter-spacing: .045em;
       text-transform: uppercase;
-    }
-
-    .notes-filter-summary em+em {
-      margin-top: .02rem;
     }
 
     #notesPanel[data-note-hints="hidden"] {
@@ -4488,7 +4503,7 @@
             <h1 id="mapTitle">Your Visit Tracker</h1>
             <button id="renameBtn" class="ghost title-edit-btn" type="button" data-shortcut="M">Rename</button>
           </div>
-          <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v2.4.0.13</span>
+          <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v2.4.0.14</span>
         </div>
         <div class="topbar-hints" aria-label="Title bar tips">
           <small id="topbarPanelHint" data-hint data-hint-key="topbar-panel-controls">
@@ -4507,8 +4522,8 @@
         <span id="releaseNoticeCta" class="release-cta">Learn<br>More</span>
         <button id="releaseNoticeDismissBtn" class="release-dismiss ghost" type="button" aria-label="Dismiss update"
           title="Dismiss"><svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
-            viewBox="0 0 16 16">
-            <path d="M3.3 2.2 8 6.9l4.7-4.7 1.1 1.1L9.1 8l4.7 4.7-1.1 1.1L8 9.1l-4.7 4.7-1.1-1.1L6.9 8 2.2 3.3z" />
+            viewBox="0 0 20.1197 19.7779">
+            <path d="M18.1262 0.303967L0.27467 18.1555C-0.0866577 18.5169-0.0964233 19.1321 0.27467 19.5032C0.65553 19.8645 1.261 19.8645 1.63209 19.5032L19.4739 1.65162C19.845 1.2903 19.8547 0.675061 19.4739 0.303967C19.1028-0.0573608 18.4973-0.0671265 18.1262 0.303967ZM19.4739 18.1555L1.63209 0.303967C1.261-0.0573608 0.645764-0.0671265 0.27467 0.303967C-0.0866577 0.684827-0.0866577 1.2903 0.27467 1.65162L18.1262 19.5032C18.4876 19.8645 19.1126 19.8743 19.4739 19.5032C19.845 19.1223 19.845 18.5169 19.4739 18.1555Z" />
           </svg></button>
       </div>
       <nav class="toolbar" aria-label="App actions">
@@ -5712,7 +5727,7 @@
 
   <script>
     const APP_NAME = "Visit Tracker";
-    const APP_VERSION = "2.4.0.13";
+    const APP_VERSION = "2.4.0.14";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -6819,7 +6834,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "2.4.0.13",
+        version: "2.4.0.14",
         date: "2026-05-22",
         title: "Legend Gets Legs",
         summary: "A 2.4 development build that makes the Legend movable, draggable, more compact, and calmer until edit mode is needed.",
@@ -6831,6 +6846,7 @@
         ],
         updates: [
           "Map, Legend, and Notes visibility now restore across reloads.",
+          "Notes summary now keeps the view/sort/grouping bracket beside the location count, filters stay on their own compact line, the ellipsis shortcut is smaller, and Legend swipe close controls only appear while swiped.",
           "The What's New dismiss control now uses a centered SVG close icon, Notes filter summaries split filter and mode details across two compact lines, and Legend quick actions stay vertically centered in desktop rows.",
           "The hidden H H test shortcut and a quad-tap on the app name now restore dismissed hints and the What's New banner highlight together.",
           "Condensed Notes now colors the location-type icon by the highest visit level instead of spending a separate column on level text.",
@@ -9090,7 +9106,7 @@
         notesHideExcludedOnly ? "Excluded Hidden" : "Excluded Visible"
       ].filter(Boolean);
       const countLabel = `${markedCount} Location${markedCount === 1 ? "" : "s"}`;
-      return `<strong>${escapeHtml(countLabel)}</strong><em>${escapeHtml(filterParts.join(" | "))}</em><em>${escapeHtml(modeParts.join(" | "))}</em>`;
+      return `<strong><span>${escapeHtml(countLabel)}</span><span class="mode-bracket">[${escapeHtml(modeParts.join(" | "))}]</span></strong><em>${escapeHtml(filterParts.join(" | "))}</em>`;
     }
 
     function renderNotesFilterSummary(markedCount = 0) {
