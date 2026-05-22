@@ -4,7 +4,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>US State Visit Map</title>
+  <title>Visit Tracker</title>
+  <!-- title is overwritten by APP_NAME at startup -->
   <style>
     :root {
       color-scheme: light;
@@ -329,6 +330,38 @@
       flex: 1 1 auto;
     }
 
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .title-edit-btn {
+      flex: 0 0 auto;
+      align-self: flex-end;
+      font-size: clamp(.5rem, .85vw, .72rem);
+      line-height: 1;
+      padding: 0;
+      min-height: 0;
+      display: grid;
+      place-items: center;
+    }
+
+    [data-button-style="symbols"] .title-edit-btn {
+      width: 1.5rem;
+      min-width: 1.5rem;
+      height: 1.5rem;
+      min-height: 1.5rem;
+      aspect-ratio: 1;
+      padding: 0;
+    }
+
+    .title-edit-btn .sf-symbol {
+      width: .85rem;
+      height: .85rem;
+    }
+
     .dev-mode-pill {
       justify-self: start;
       width: fit-content;
@@ -362,7 +395,7 @@
 
     h1 {
       min-width: 0;
-      flex: 1 1 auto;
+      flex: 0 1 auto;
       margin: 0;
       font-size: clamp(1.2rem, 2.2vw, 1.8rem);
       line-height: 1.1;
@@ -552,6 +585,10 @@
       grid-template-columns: 1fr;
     }
 
+    [data-side-panel="closed"] .main {
+      grid-template-columns: 1fr;
+    }
+
     [data-map-panel="closed"] .main {
       grid-template-columns: minmax(0, 1fr);
     }
@@ -596,7 +633,8 @@
     }
 
     [data-map-panel="closed"] .main-resize-handle,
-    [data-legend="closed"][data-notes="closed"] .main-resize-handle {
+    [data-legend="closed"][data-notes="closed"] .main-resize-handle,
+    [data-side-panel="closed"] .main-resize-handle {
       display: none;
     }
 
@@ -625,6 +663,62 @@
       border-bottom: 1px solid var(--line);
     }
 
+    .legend-slot {
+      display: grid;
+      gap: .4rem;
+      padding: .52rem .62rem;
+      background: color-mix(in srgb, var(--surface-2) 42%, transparent);
+      min-height: 0;
+    }
+
+    .legend-slot:empty {
+      display: none;
+    }
+
+    .legend-slot-top {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .legend-slot-bottom {
+      border-top: 1px solid var(--line);
+    }
+
+    .legend-slot #legendPanel {
+      box-shadow: none;
+      max-height: none;
+      overflow: visible;
+    }
+
+    #legendPanel.is-position-dragging {
+      position: fixed;
+      inset: -10000px auto auto -10000px;
+      width: 360px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .legend-placement-preview {
+      display: grid;
+      place-items: center;
+      border: 1px dashed color-mix(in srgb, var(--accent) 72%, var(--line));
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--accent) 8%, var(--surface-2));
+      color: var(--muted);
+      font-weight: 850;
+      font-size: .78rem;
+      min-height: 4rem;
+    }
+
+    .legend-placement-preview.is-current {
+      border: 2px solid var(--accent);
+      background: color-mix(in srgb, var(--accent) 12%, var(--surface-2));
+      color: var(--accent-2);
+    }
+
+    .side-panel-wrap>.legend-placement-preview {
+      padding: .7rem;
+    }
+
     .map-head-title {
       min-width: 0;
       flex: 0 0 auto;
@@ -645,6 +739,22 @@
       justify-content: flex-end;
       font-size: .75rem;
       text-align: right;
+    }
+
+    .map-head-hints small[data-hint-key="map-controls"] {
+      gap: .12rem;
+    }
+
+    .map-head-hints small[data-hint-key="map-controls"] .hint-dismiss-btn {
+      margin-left: 0;
+      width: .95rem;
+      min-width: .95rem;
+      min-height: .95rem;
+    }
+
+    .map-head-hints small[data-hint-key="map-controls"] .hint-dismiss-btn .sf-symbol {
+      width: .8rem;
+      height: .8rem;
     }
 
     .map-head-actions {
@@ -968,6 +1078,10 @@
       display: none;
     }
 
+    [data-side-panel="closed"] .side-panel-wrap {
+      display: none;
+    }
+
     [data-legend="closed"] #legendPanel,
     [data-notes="closed"] #notesPanel {
       display: none;
@@ -1064,53 +1178,136 @@
 
     .legend-total-pills {
       display: inline-flex;
-      grid-column: 2;
       align-items: center;
       justify-content: center;
-      justify-self: center;
-      gap: .18rem;
+      justify-self: start;
+      gap: .24rem;
       white-space: nowrap;
+      min-width: 5.4rem;
+      height: 24px;
+      padding: .18rem .32rem;
+      margin-left: .42rem;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--surface-2) 78%, var(--line) 22%);
+    }
+
+    .legend-total-pills .percent-pill,
+    .legend-total-pills .count-pill {
+      border: 0;
+      min-width: 2rem;
+      padding: .06rem .26rem;
+      font-size: .76rem;
+      line-height: 1.15;
     }
 
     #legendPanel {
-      --legend-action-lane: calc(144px + .64rem);
-      --legend-stat-spacer: minmax(.9rem, .38fr);
+      --legend-action-lane: calc(108px + .48rem);
     }
 
     [data-button-style="text"] #legendPanel,
     [data-button-style="both"] #legendPanel {
-      --legend-action-lane: calc(260px + .64rem);
+      --legend-action-lane: calc(220px + .64rem);
     }
 
     .legend-title-row {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto var(--legend-stat-spacer) var(--legend-action-lane);
+      grid-template-columns: minmax(0, 1fr) auto;
       gap: .38rem;
       align-items: center;
       margin-bottom: .45rem;
     }
 
     .legend-title-main {
-      display: contents;
+      display: grid;
+      gap: .5rem;
+      min-width: 0;
+      cursor: grab;
+      touch-action: none;
     }
 
     .legend-title-main h2 {
-      grid-column: 1;
+      line-height: 1;
+    }
+
+    #legendPanel.is-position-dragging .legend-title-main {
+      cursor: grabbing;
+    }
+
+    #legendPanel.is-position-dragging {
+      outline: 2px solid color-mix(in srgb, var(--accent) 68%, transparent);
+      outline-offset: 2px;
     }
 
     .legend-title-actions {
       display: flex;
-      grid-column: 4;
+      grid-column: 2;
       align-items: center;
       gap: .32rem;
       flex-wrap: nowrap;
       justify-content: flex-end;
       justify-self: end;
-      min-width: var(--legend-action-lane);
+      min-width: 0;
     }
 
     [data-button-style="text"] .legend-title-actions {
-      min-width: var(--legend-action-lane);
+      flex-wrap: wrap;
+    }
+
+    .legend-position-picker {
+      position: relative;
+      display: inline-flex;
+    }
+
+    #legendPositionBtn:disabled {
+      display: none;
+    }
+
+    .legend-position-menu {
+      position: absolute;
+      top: calc(100% + .32rem);
+      right: 0;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: repeat(2, 34px);
+      gap: .2rem;
+      padding: .28rem;
+      border: 1px solid var(--line);
+      border-radius: .62rem;
+      background: color-mix(in srgb, var(--surface) 94%, var(--accent) 6%);
+      box-shadow: 0 12px 28px rgba(15, 23, 42, .18);
+      transform-origin: top right;
+      animation: miniPop .12s ease-out;
+    }
+
+    .legend-position-menu button {
+      width: 34px;
+      min-width: 34px;
+      height: 34px;
+      min-height: 34px;
+      padding: .08rem;
+    }
+
+    .legend-position-menu .sf-symbol {
+      width: 100%;
+      height: 100%;
+    }
+
+    .legend-position-menu button[aria-pressed="true"] {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+
+    @keyframes miniPop {
+      from {
+        opacity: 0;
+        transform: scale(.72) translateY(-.2rem);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
     }
 
     .legend-list,
@@ -1125,7 +1322,7 @@
 
     .legend-item {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto var(--legend-stat-spacer) var(--legend-action-lane);
+      grid-template-columns: minmax(0, 1fr) auto;
       gap: .38rem;
       align-items: center;
       width: 100%;
@@ -1135,6 +1332,34 @@
       border-radius: var(--radius);
       background: var(--surface);
       position: relative;
+      touch-action: none;
+      transition: border-color .16s ease, background .16s ease, opacity .16s ease, transform .16s ease;
+    }
+
+    .legend-item {
+      cursor: grab;
+    }
+
+    .legend-item:active {
+      cursor: grabbing;
+    }
+
+    .legend-item.is-dragging {
+      opacity: .96;
+      pointer-events: none;
+      transition: none;
+      transform: translate3d(var(--legend-drag-x, 0px), var(--legend-drag-y, 0px), 0);
+      z-index: 80;
+      box-shadow: var(--shadow);
+      cursor: grabbing;
+    }
+
+    .legend-drag-placeholder {
+      width: 100%;
+      border: 2px solid var(--accent);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--accent) 10%, var(--surface-2));
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 24%, transparent);
     }
 
     .legend-item.is-filtered {
@@ -1182,11 +1407,41 @@
 
     .legend-actions {
       display: grid;
-      grid-column: 4;
+      grid-column: 2;
       justify-self: end;
       grid-template-columns: repeat(4, 24px);
       gap: .16rem;
       align-items: center;
+      max-width: 0;
+      opacity: 0;
+      overflow: hidden;
+      pointer-events: none;
+      transform: translateX(.4rem);
+      transition: max-width .18s ease, opacity .16s ease, transform .18s ease;
+    }
+
+    [data-legend-editing="true"] .legend-actions {
+      max-width: var(--legend-action-lane);
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0);
+    }
+
+    .legend-item.is-swiped .legend-actions {
+      grid-template-columns: repeat(2, 24px);
+      max-width: calc(48px + .16rem);
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0);
+    }
+
+    html:not([data-legend-editing="true"]) .legend-item.is-swiped .order-buttons {
+      display: none;
+    }
+
+    [data-legend-editing="true"] .legend-item.is-swiped .legend-actions {
+      grid-template-columns: repeat(4, 24px);
+      max-width: var(--legend-action-lane);
     }
 
     .order-buttons {
@@ -1205,12 +1460,25 @@
       grid-template-columns: repeat(4, minmax(44px, auto));
     }
 
+    [data-button-style="text"] .legend-item.is-swiped .legend-actions,
+    [data-button-style="both"] .legend-item.is-swiped .legend-actions {
+      grid-template-columns: repeat(2, minmax(44px, auto));
+      max-width: calc(88px + .24rem);
+    }
+
+    [data-button-style="text"][data-legend-editing="true"] .legend-item.is-swiped .legend-actions,
+    [data-button-style="both"][data-legend-editing="true"] .legend-item.is-swiped .legend-actions {
+      grid-template-columns: repeat(4, minmax(44px, auto));
+      max-width: var(--legend-action-lane);
+    }
+
     [data-button-style="text"] .icon-btn {
       min-width: 44px;
       padding: .12rem .3rem;
       font-size: .74rem;
     }
 
+    .stat-color-pill,
     .swatch,
     .dot {
       width: 22px;
@@ -1219,6 +1487,48 @@
       border: 1px solid rgba(0, 0, 0, .18);
       display: inline-block;
       flex: 0 0 auto;
+    }
+
+    .stat-color-pill {
+      --level-color: var(--accent);
+      width: auto;
+      min-width: 5.4rem;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .24rem;
+      padding: .18rem .32rem;
+      background:
+        linear-gradient(90deg, color-mix(in srgb, var(--level-color) 92%, #000 8%), color-mix(in srgb, var(--level-color) 66%, var(--surface) 34%));
+      border: 0;
+      box-shadow: none;
+    }
+
+    .stat-color-pill .percent-pill,
+    .stat-color-pill .count-pill,
+    .legend-total-pills .percent-pill,
+    .legend-total-pills .count-pill {
+      width: 2.4rem;
+      min-width: 2.4rem;
+      box-sizing: border-box;
+      padding: .06rem .26rem;
+      text-align: center;
+      font-size: .76rem;
+      line-height: 1.15;
+    }
+
+    .stat-color-pill .percent-pill,
+    .stat-color-pill .count-pill {
+      border-color: color-mix(in srgb, var(--surface) 54%, transparent);
+      background: color-mix(in srgb, var(--surface) 86%, transparent);
+      color: color-mix(in srgb, var(--text) 84%, var(--accent-2) 16%);
+    }
+
+    .stat-color-pill .no-stat-pill {
+      min-width: 1.62rem;
+      color: var(--muted);
+      background: color-mix(in srgb, var(--surface) 82%, transparent);
     }
 
     .dot {
@@ -1237,33 +1547,26 @@
 
     .level-copy {
       min-width: 0;
+      display: flex;
+      align-items: baseline;
+      gap: .42rem;
       line-height: 1.1;
       position: relative;
     }
 
-    .level-copy br,
-    .level-copy small {
+    .level-copy br {
       display: none;
     }
 
-    .legend-item:hover .level-copy small,
-    .legend-item:focus-within .level-copy small {
-      position: absolute;
-      z-index: 12;
-      top: calc(100% + .35rem);
-      left: 0;
+    .level-copy small {
       display: block;
-      width: max-content;
-      max-width: min(24rem, 72vw);
-      padding: .38rem .5rem;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--surface);
-      box-shadow: var(--shadow);
-      color: var(--text);
-      line-height: 1.25;
-      white-space: normal;
-      pointer-events: none;
+      min-width: 0;
+      color: var(--muted);
+      font-size: .72rem;
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .level-stats {
@@ -3190,6 +3493,29 @@
       gap: .38rem;
     }
 
+    .roadmap-search-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: .38rem;
+      align-items: center;
+    }
+
+    .roadmap-count-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 4.25rem;
+      min-height: 2.35rem;
+      padding: .35rem .7rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--surface-2);
+      color: var(--text);
+      font-weight: 850;
+      font-size: .82rem;
+      white-space: nowrap;
+    }
+
     .roadmap-filters {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -3278,8 +3604,25 @@
         top: auto;
         align-self: stretch;
         display: grid;
-        grid-template-rows: auto minmax(0, 1fr);
+        grid-template-rows: auto auto minmax(0, 1fr) auto;
         height: 100%;
+      }
+
+      .map-panel>.map-head {
+        grid-row: 1;
+      }
+
+      .map-panel>.legend-slot-top {
+        grid-row: 2;
+      }
+
+      .map-viewport {
+        grid-row: 3;
+        min-height: 0;
+      }
+
+      .map-panel>.legend-slot-bottom {
+        grid-row: 4;
       }
 
       .map-viewport,
@@ -3330,8 +3673,24 @@
         scroll-padding-bottom: 0;
       }
 
+      [data-legend-position="right-bottom"] .side-panel-wrap {
+        grid-template-rows: minmax(0, 1fr) auto;
+      }
+
+      [data-legend-preview-position="right-top"] .side-panel-wrap {
+        grid-template-rows: auto minmax(0, 1fr);
+      }
+
+      [data-legend-preview-position="right-bottom"] .side-panel-wrap {
+        grid-template-rows: minmax(0, 1fr) auto;
+      }
+
       [data-legend="closed"] .side-panel-wrap,
       [data-notes="closed"] .side-panel-wrap {
+        grid-template-rows: minmax(0, 1fr);
+      }
+
+      [data-legend-area="left"]:not([data-legend-preview-position]) .side-panel-wrap {
         grid-template-rows: minmax(0, 1fr);
       }
 
@@ -3341,7 +3700,7 @@
       }
 
       #legendPanel {
-        overflow-y: auto;
+        overflow: visible;
         overscroll-behavior: contain;
       }
 
@@ -3396,9 +3755,10 @@
 
     @media (max-width: 620px) {
       .topbar {
-        align-items: flex-start;
+        align-items: center;
         flex-direction: row;
         flex-wrap: wrap;
+        justify-content: center;
         gap: .38rem .48rem;
         padding: .42rem .65rem;
       }
@@ -3411,40 +3771,34 @@
         order: 1;
         flex: 1 1 100%;
         width: 100%;
+        justify-items: center;
+      }
+
+      .dev-mode-pill {
+        justify-self: center;
+      }
+
+      .title-row {
+        width: 100%;
+        justify-content: center;
       }
 
       #mapTitle {
-        order: 1;
-        flex: 1 1 100%;
-        width: 100%;
+        flex: 0 1 auto;
+        min-width: 0;
+        width: auto;
+        text-align: center;
         white-space: normal;
         overflow: visible;
         text-overflow: clip;
       }
 
-      #renameBtn {
-        order: 2;
-      }
-
       .topbar-hints {
-        order: 4;
-        flex: 1 1 100%;
-        max-width: 100%;
-        justify-items: start;
-      }
-
-      .topbar-hints small {
-        text-align: left;
-        justify-content: flex-start;
+        display: none;
       }
 
       .release-notice {
-        position: static;
-        order: 3;
-        transform: none;
-        width: 100%;
-        flex: 0 0 100%;
-        padding: .5rem .55rem;
+        display: none;
       }
 
       .release-copy small {
@@ -3453,10 +3807,10 @@
 
       .toolbar {
         order: 2;
-        flex: 1 1 auto;
-        margin-left: auto;
-        justify-content: flex-end;
-        width: auto;
+        flex: 1 1 100%;
+        margin-left: 0;
+        justify-content: center;
+        width: 100%;
         gap: .34rem;
       }
 
@@ -3471,7 +3825,8 @@
       }
 
       .map-head {
-        align-items: flex-start;
+        align-items: center;
+        justify-content: center;
         flex-direction: row;
         gap: .28rem .4rem;
         padding: .42rem .56rem;
@@ -3481,13 +3836,15 @@
         flex: 1 1 100%;
         display: flex;
         align-items: baseline;
+        justify-content: center;
+        text-align: center;
         flex-wrap: wrap;
         gap: .18rem .48rem;
       }
 
       .map-head-actions {
         width: 100%;
-        justify-content: flex-end;
+        justify-content: center;
         flex: 1 1 100%;
         flex-wrap: wrap;
         flex-direction: row;
@@ -3500,8 +3857,16 @@
       }
 
       .map-action-group {
-        justify-content: flex-end;
+        justify-content: center;
         gap: .22rem;
+      }
+
+      [data-map-mode="scroll"] .map-wrap {
+        text-align: center;
+      }
+
+      [data-map-mode="scroll"] #stateMap {
+        display: inline-block;
       }
 
       .map-head-actions button {
@@ -3717,8 +4082,7 @@
       }
 
       #legendPanel {
-        --legend-action-lane: calc(120px + .36rem);
-        --legend-stat-spacer: minmax(.55rem, .24fr);
+        --legend-action-lane: calc(92px + .28rem);
         padding: .5rem;
         gap: .42rem;
       }
@@ -3738,7 +4102,12 @@
 
       .legend-title-actions {
         gap: .18rem;
-        min-width: var(--legend-action-lane);
+        min-width: 0;
+        flex-wrap: wrap;
+      }
+
+      .legend-position-picker {
+        display: none;
       }
 
       .legend-list {
@@ -3762,15 +4131,27 @@
       }
 
       .legend-actions {
-        grid-column: 4;
+        grid-column: 2;
         grid-row: auto;
         grid-template-columns: repeat(4, 20px);
         gap: .1rem;
       }
 
-      .legend-item .swatch {
-        width: 16px;
-        height: 16px;
+      .legend-item.is-swiped .legend-actions {
+        grid-template-columns: repeat(2, 20px);
+        max-width: calc(40px + .1rem);
+      }
+
+      [data-legend-editing="true"] .legend-item.is-swiped .legend-actions {
+        grid-template-columns: repeat(4, 20px);
+        max-width: var(--legend-action-lane);
+      }
+
+      .legend-item .stat-color-pill {
+        min-width: 4.2rem;
+        height: 22px;
+        gap: .24rem;
+        padding: .14rem .32rem;
       }
 
       .legend-item .level-copy {
@@ -3778,7 +4159,8 @@
       }
 
       .legend-item .level-copy small {
-        display: none;
+        max-width: 9rem;
+        font-size: .62rem;
       }
 
       .legend-item .level-name {
@@ -3795,6 +4177,14 @@
         line-height: 1.1;
       }
 
+      .legend-total-pills {
+        min-width: 4.2rem;
+        height: 22px;
+        gap: .24rem;
+        padding: .14rem .32rem;
+        margin-left: .2rem;
+      }
+
       .legend-item .icon-btn {
         min-width: 20px;
         min-height: 20px;
@@ -3807,7 +4197,7 @@
       }
 
       [data-button-style="text"] .legend-title-actions {
-        min-width: var(--legend-action-lane);
+        min-width: 0;
       }
 
       [data-button-style="text"] #legendPanel,
@@ -3845,8 +4235,11 @@
     <header class="topbar">
       <div class="title-wrap">
         <div class="title-stack">
-          <h1 id="mapTitle">Your State Map</h1>
-          <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v2.3.0</span>
+          <div class="title-row">
+            <h1 id="mapTitle">Your Visit Tracker</h1>
+            <button id="renameBtn" class="ghost title-edit-btn" type="button" data-shortcut="M">Rename</button>
+          </div>
+          <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v2.4.0.10</span>
         </div>
         <div class="topbar-hints" aria-label="Title bar tips">
           <small id="topbarPanelHint" data-hint data-hint-key="topbar-panel-controls">
@@ -3854,7 +4247,6 @@
           <small id="mapResizeHint" class="topbar-resize-hint" data-hint data-hint-key="map-resize">
             Looks wonky? Resize the map and cards to fit your needs.</small>
         </div>
-        <button id="renameBtn" class="ghost" type="button" data-shortcut="M">Rename</button>
       </div>
       <div id="whatsNewNotice" class="release-notice hidden" role="button" tabindex="0" aria-label="Open release notes">
         <span id="releaseNoticePill" class="release-pill">v2.0.0</span>
@@ -3884,14 +4276,14 @@
       <section class="panel map-panel" aria-labelledby="mapHeading">
         <div class="map-head">
           <div class="map-head-title">
-            <h2 id="mapHeading">State Map</h2>
-            <small id="tapHint" data-hint>Tap a state to cycle its visit level.</small>
+            <h2 id="mapHeading">US Map</h2>
+            <small id="tapHint" data-hint>Tap a location to select and cycle its visit level.</small>
           </div>
           <div class="map-head-actions">
             <div class="map-head-hints">
               <small data-hint data-hint-key="map-controls">
-                Choose map labels text: none, abbr, full name.<br />
-                Switch map views, type an exact zoom percent, or pan the scrollable map.</small>
+                Switch map views (zoom/pan/scroll | fit).<br />
+                Choose map labels text: none, abbr, full name.</small>
             </div>
             <div class="map-zoom-controls" aria-label="Scrollable map zoom controls">
               <button id="mapZoomOutBtn" type="button" aria-label="Zoom map out" data-shortcut="-">Zoom Out</button>
@@ -3914,10 +4306,11 @@
             </div>
           </div>
         </div>
+        <div id="legendSlotTop" class="legend-slot legend-slot-top" aria-label="Legend above map"></div>
         <div class="map-viewport">
           <div class="map-wrap">
             <svg id="stateMap" viewBox="0 0 934 593" role="img" aria-labelledby="svgTitle svgDesc">
-              <title id="svgTitle">Clickable US state visit map</title>
+              <title id="svgTitle">Clickable US Map</title>
               <desc id="svgDesc">Outline map of all 50 United States, Washington DC, and US territories.</desc>
               <g class="map-states">
                 <path class="al"
@@ -4370,6 +4763,7 @@
             </svg>
           </div>
         </div>
+        <div id="legendSlotBottom" class="legend-slot legend-slot-bottom" aria-label="Legend below map"></div>
       </section>
 
       <button id="mainResizeHandle" class="main-resize-handle" type="button" aria-label="Resize map and cards"
@@ -4384,15 +4778,26 @@
                 <span id="legendTotals" class="legend-total-pills" aria-label="Overall completion"></span>
               </div>
               <div class="legend-title-actions">
+                <span class="legend-position-picker">
+                  <button id="legendPositionBtn" type="button" data-shortcut="P" aria-haspopup="true"
+                    aria-expanded="false">Position</button>
+                  <div id="legendPositionMenu" class="legend-position-menu hidden" role="menu"
+                    aria-label="Legend position options"></div>
+                </span>
                 <button id="smartColorsBtn" type="button" data-shortcut="C">Auto Colors</button>
                 <button id="suggestionsToggleBtn" class="toggle-btn" type="button" aria-pressed="false"
                   data-shortcut="H">Hide Suggestions</button>
                 <button id="addLevelBtn" type="button" data-shortcut="A">Add Level</button>
+                <button id="legendEditBtn" class="toggle-btn" type="button" aria-pressed="false"
+                  data-shortcut="I">Edit</button>
               </div>
             </div>
             <small data-hint data-hint-key="legend-help">
-              Top level color applies in multiple level cases. Removing levels demote locations.<br />
-              Auto Colors for featured palettes | Show/Hide auto-suggestions | Make your own.
+              Drag Legend or Position Button to choose preferred corner.<br />
+              Top level color applies in multiple level cases.<br />
+              Removing levels demotes locations.<br />
+              Drag to reorder | Swipe right-to-left for Quick Actions.<br />
+              Featured Palettes | Auto-Suggestions | Add/Edit your Own.
             </small>
             <div id="legendList" class="legend-list"></div>
             <div id="builtinLevels" class="chips" style="margin-top: .75rem;"></div>
@@ -4821,15 +5226,22 @@
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-docs"></span>Documentation
           </h3>
           <ol>
-            <li>Tap a state to mark it. In cycle mode, a first tap on an already marked state shows it in Notes; the
+            <li>Tap a location to mark it. In cycle mode, a first tap on an already marked location shows it in Notes; the
               next tap cycles levels.</li>
-            <li>Use the app header to show or hide Map, Legend, and Notes. Use the State Map header to switch labels,
+            <li>Use the app header to show or hide Map, Legend, and Notes. Use the Location Map header to switch labels,
               fit the map for screenshots, or return to scrollable mode with pan and zoom controls.</li>
             <li>In scrollable map mode, drag the map to pan, type an exact zoom percentage, use the zoom controls to
               move in or out, and reset to 100% when you want the full map again. Drag the divider on desktop to resize
-              the map and cards.</li>
+              the map and cards. Your zoom level and fit/scroll map view are saved with the rest of your settings.</li>
+            <li>The app restores your last visible panels, selected Notes location, Notes sort/view/grouping/filter
+              choices, collapsed note categories, and scrollable map pan position.</li>
             <li>Use the Legend to edit level names, definitions, colors, order, and whether a level counts toward stats.
-            </li>
+              Drag levels anytime to reorder, turn Edit on to reveal all row controls, or swipe a row right-to-left for
+              quick Edit/Delete.</li>
+            <li>On desktop, use the Legend Position button to pick a placement, or drag the Legend title between
+              upper/lower right and upper/lower left map placements.</li>
+            <li>When Notes are open, the app header Legend button tucks the Legend under Notes before hiding it on a
+              second press.</li>
             <li>Click a Legend level to filter Notes by that level. Click it again to clear the filter.</li>
             <li>Use Notes search to find locations by name, type, level, dates, visit tags, or note details.</li>
             <li>Sort Notes chronologically or alphabetically, and turn on Categorical to group City, State, and
@@ -4851,7 +5263,7 @@
           <p><b>Default levels:</b> Visited and Not Interested. Not Interested is a excluded level and doesn't count towards
             total completion.</p>
           <p><b>Color tools:</b> Auto Colors can apply a smart palette to your current levels. Suggested categories can
-            be shown or hidden from the Legend.</p>
+            be shown or hidden from the Legend. Palette order follows the current Legend priority.</p>
           <p><b>Structured notes:</b> Notes can include Where Specifically, What For, Who With, Additional Details, and
             multiple icon labels. Use the Tags button in the note editor or Settings to choose, rename, sort, shortcut,
             and search optional labels from the circle icon catalog.</p>
@@ -4873,6 +5285,10 @@
             backend or external service.</p>
           <p><b>Can I move data to another device?</b><br>Export a JSON backup in Settings, then import it in the app on
             the other device.</p>
+          <p><b>Will my map zoom come back?</b><br>Yes. The app saves your scrollable-map zoom level and whether you
+            were using Fit Map or Scroll Map, plus your last pan position in scrollable mode.</p>
+          <p><b>Will my Notes filters come back?</b><br>Yes. Notes view, sort, grouping, excluded visibility, Legend
+            filters, icon filters, collapsed categories, and selected location restore with your local settings.</p>
           <p><b>Can I undo a reset?</b><br>No. Export a JSON backup first if you want a safety net.</p>
           <p><b>What does Categorical do in Notes?</b><br>It groups locations by City, State, and Territory, keeps your
             Alphabetical or Chronological sort inside each group, and keeps the current group header sticky while you
@@ -4926,7 +5342,10 @@
           <summary><span class="summary-label"><span class="doc-section-icon"
                 data-section-icon="roadmap"></span>Roadmap</span></summary>
           <div class="roadmap-sticky-controls">
-            <input id="wishSearch" placeholder="Search roadmap" aria-label="Search roadmap">
+            <div class="roadmap-search-row">
+              <input id="wishSearch" placeholder="Search roadmap" aria-label="Search roadmap">
+              <span id="wishResultCount" class="roadmap-count-pill" aria-live="polite">0 items</span>
+            </div>
             <div class="roadmap-filters">
               <select id="wishCategoryFilter" aria-label="Filter by category">
                 <option value="">All categories</option>
@@ -5020,7 +5439,7 @@
       </section>
     </div>
     <footer class="dialog-bottom-bar">
-      <b>Visit Tracker</b>
+      <b id="appNameLabel">Visit Tracker</b>
       <span class="version-pill" id="versionLabel"></span>
       <span class="spacer"></span>
       <span>Made with <button id="coffeeKeyBtn" class="secret-emoji" type="button" aria-label="Coffee">☕️</button> and
@@ -5030,7 +5449,8 @@
   </dialog>
 
   <script>
-    const APP_VERSION = "2.3.0";
+    const APP_NAME = "Visit Tracker";
+    const APP_VERSION = "2.4.0.10";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -5978,24 +6398,12 @@
 
     const WISHLIST_SEEDS = [
       {
-        title: "Settable Legend Position",
-        ticketId: "WISH-034",
-        description: "Let users choose which map corner hosts the Legend overlay or card position when layout supports it. Scope includes corner choices, local persistence, responsive behavior, and sensible collision handling with map controls.",
-        priority: "P2",
-        effort: "medium",
-        targetKind: "minor",
-        targetVersion: "",
-        tokenCostPct: 22,
-        prompt: "Add a setting for Legend position with corner choices. Persist locally, avoid collisions with map controls, and keep desktop/mobile layouts usable.",
-        category: "UI"
-      },
-      {
         title: "Rename App",
         ticketId: "WISH-033",
         description: "Evaluate a broader app name that fits a personal visual travel journal centered on seeing where someone has been and what is left to visit. Top choice: Travel Log. Other candidates: PlaceMark, Waypoint Journal, Travel Ledger, MapLog, Memory Map, Placebook, and Map Notes.",
-        priority: "P2",
+        priority: "P1",
         effort: "medium",
-        targetKind: "major",
+        targetKind: "exact",
         targetVersion: "3.0.0",
         tokenCostPct: 18,
         prompt: "Explore and implement an app rename. Treat Travel Log as the top candidate, then compare PlaceMark, Waypoint Journal, Travel Ledger, MapLog, Memory Map, Placebook, and Map Notes against the app's visual travel journal direction, current features, and future roadmap. Update title, visible app name, docs, exports, install metadata, and release notes without changing user data.",
@@ -6005,7 +6413,7 @@
         title: "Cleanup Modal Dialog Pop-Ups",
         ticketId: "WISH-032",
         description: "Normalize modal headers, button layout, symbols, text labels, shortcut hints, and destructive confirmations across the app.",
-        priority: "P2",
+        priority: "P3",
         effort: "medium",
         targetKind: "minor",
         targetVersion: "",
@@ -6020,7 +6428,7 @@
         priority: "P1",
         effort: "x-large",
         targetKind: "exact",
-        targetVersion: "2.3.0",
+        targetVersion: "3.0.0",
         tokenCostPct: 58,
         prompt: "Add latitude/longitude-backed saved locations on the map. Persist locally, include import/export, and connect location markers to notes without adding backend services.",
         category: "Maps"
@@ -6031,32 +6439,32 @@
         description: "Improve the installed app experience with a better home-screen icon, app name, and related metadata while keeping the single-file/offline setup intact.",
         priority: "P1",
         effort: "small",
-        targetKind: "patch",
-        targetVersion: "",
+        targetKind: "exact",
+        targetVersion: "3.0.0",
         tokenCostPct: 12,
         prompt: "Improve Add to Home Screen polish: app icon, app name, and install metadata. Keep the app single-file/offline and verify mobile behavior.",
         category: "Mobile"
       },
       {
-        title: "Better Legend Layout",
-        ticketId: "WISH-027",
-        description: "Rework the Legend for a cleaner compact layout with edit controls hidden until needed, drag-and-drop priority ordering, and stats aligned on the right.",
-        priority: "P2",
-        effort: "medium",
-        targetKind: "minor",
-        targetVersion: "",
-        tokenCostPct: 24,
-        prompt: "Improve the Legend layout with hidden edit controls, drag-and-drop level priority ordering, and right-aligned stats. Preserve existing level data and keyboard accessibility.",
-        category: "UI"
+        title: "Add New Light and Dark Icons",
+        ticketId: "WISH-035",
+        description: "Add polished light-mode and dark-mode app icons for future install and homescreen improvements while keeping the single-file/offline packaging intact.",
+        priority: "P1",
+        effort: "small",
+        targetKind: "exact",
+        targetVersion: "3.0.0",
+        tokenCostPct: 10,
+        prompt: "Add polished light and dark app icon variants. Keep the app single-file/offline and coordinate with install metadata work.",
+        category: "Branding"
       },
       {
         title: "Add Tip Jar",
         ticketId: "WISH-023",
         description: "Add an optional local tip-jar/support link area without adding trackers, payments SDKs, or external dependencies to the core app. Scope includes Settings or Help Center placement, graceful hiding when unused, and export-safe copy.",
-        priority: "P0",
+        priority: "P1",
         effort: "small",
-        targetKind: "patch",
-        targetVersion: "",
+        targetKind: "exact",
+        targetVersion: "3.0.0",
         tokenCostPct: 9,
         prompt: "Add an optional tip jar/support link area with no trackers, no payment SDK, and no dependency bloat. Keep it easy to hide and place it in Settings or Help Center.",
         category: "Support"
@@ -6077,10 +6485,10 @@
         title: "Add Drive Radius",
         ticketId: "WISH-010",
         description: "Show a planning radius from home or saved locations. Scope includes distance input, visual radius overlay where map geometry supports it, saved settings, and clear limitations for non-road distance.",
-        priority: "P1",
+        priority: "P2",
         effort: "large",
-        targetKind: "minor",
-        targetVersion: "",
+        targetKind: "exact",
+        targetVersion: "3.1.0",
         tokenCostPct: 36,
         prompt: "Add saved-place radius planning. Persist distance/settings and show clear non-road-distance limits.",
         category: "Maps"
@@ -6089,10 +6497,10 @@
         title: "National Park Overlay Layer",
         ticketId: "WISH-004",
         description: "Add an optional national parks layer that can be viewed with state progress. Scope includes park data, visible markers or outlines, visit status, filtering, and exports that remain readable.",
-        priority: "P1",
+        priority: "P2",
         effort: "large",
-        targetKind: "minor",
-        targetVersion: "",
+        targetKind: "exact",
+        targetVersion: "4.0.0",
         tokenCostPct: 46,
         prompt: "Add optional national parks overlay with visit state, filters, and export support. Keep state map behavior unchanged.",
         category: "Maps"
@@ -6103,8 +6511,8 @@
         description: "Add a country-map mode alongside the US map. Scope includes a world SVG/data source, visit levels, notes, exports/imports, map mode switching, and a strategy for historical countries without breaking existing state data.",
         priority: "P2",
         effort: "x-large",
-        targetKind: "major",
-        targetVersion: "",
+        targetKind: "exact",
+        targetVersion: "5.0.0",
         tokenCostPct: 80,
         prompt: "Add world-country map mode without breaking US state data. Reuse levels/notes/export paths. Include migration and historical-country handling.",
         category: "Maps"
@@ -6137,7 +6545,7 @@
         title: "Optimize iPhone UI",
         ticketId: "WISH-011",
         description: "Tune the app for iPhone-sized screens. Scope includes map sizing, tabs, controls, dialogs, touch targets, safe areas, and avoiding cramped or clipped text.",
-        priority: "P2",
+        priority: "P3",
         effort: "medium",
         targetKind: "minor",
         targetVersion: "",
@@ -6147,6 +6555,46 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "2.4.0.10",
+        date: "2026-05-22",
+        title: "Legend Gets Legs",
+        summary: "A 2.4 development build that makes the Legend movable, draggable, more compact, and calmer until edit mode is needed.",
+        highlights: [
+          "Legend edit controls now hide behind an active Edit toggle and slide into view only when editing.",
+          "Legend levels can be dragged to reorder priority with live row movement.",
+          "Legend position can be picked from a mini corner menu or changed by dragging the Legend title between upper/lower right and upper/lower left map placements.",
+          "Scrollable map zoom level, pan position, fit/scroll view mode, panels, Notes filters, and Notes view preferences now persist in Settings and JSON backups."
+        ],
+        updates: [
+          "Map, Legend, and Notes visibility now restore across reloads.",
+          "Notes sort, view, category grouping, excluded visibility, Legend level filters, icon filters, selected location, and collapsed note categories now persist.",
+          "Scrollable map pan center now saves with zoom, so high-zoom map views come back where you left them.",
+          "Dragging the Legend back over its original placement now restores a blue current-position outline instead of making the target disappear.",
+          "Legend level sorting now uses a placeholder drop slot and commits order once on release, reducing row jitter while dragging.",
+          "The title-bar Edit/Rename control now bottom-aligns with the map name for a cleaner header.",
+          "Map view mode and exact zoom level now save to localStorage, export in JSON, import from backups, and restore on reload.",
+          "Legend stat ovals and total pills keep the user's tighter 24px height for denser rows.",
+          "Legend placement preview now hides in the current corner, owns the candidate layout while dragging, and uses right-column row rules for top/bottom previews.",
+          "Legend quick actions now reveal with a right-to-left swipe.",
+          "Legend row dragging captures the pointer immediately so click-and-move sorting is more reliable.",
+          "The Legend Position pop-up keeps each icon centered and fills the button space.",
+          "Top-left and lower-left Legend placements now reserve real map-panel space so the map scrolls below them instead of sliding underneath.",
+          "Legend drag now previews placement with a lightweight spacer and commits only on release, making diagonal moves and corner hopping smoother.",
+          "Legend row sorting now uses pointer position against row midpoints for steadier drag-to-reorder behavior.",
+          "The Legend Position pop-up now lays out the four options by actual corner placement.",
+          "Legend Position now opens a tiny in-place picker with all four desktop placements, and the control hides in single-column layouts.",
+          "Right-side Legend placements now give the Legend its natural height while Notes takes the scrollable space above or below it.",
+          "Legend title positioning and level row reordering now use pointer-driven drag so they work reliably in normal browsers.",
+          "Legend rows remain draggable outside edit mode, and a right-to-left swipe reveals quick Edit/Delete controls.",
+          "The top Legend toggle now stashes the Legend under Notes before hiding it, so the panel does not vanish when you meant to move it out of the way.",
+          "Per-level stats now live inside the color oval, while total completion sits directly under the Legend title.",
+          "Level definitions are visible inline beside names in subtle text.",
+          "Roadmap search now has a live count pill beside the search field that updates with search and filters.",
+          "Roadmap filter drop-down options and the Roadmap search placeholder now include item counts, future target priorities were reorganized, and completed Legend roadmap items were retired.",
+          "Help Center, Release Notes, README, and Legend hints were refreshed for the post-2.3 map and Legend controls."
+        ]
+      },
       {
         version: "2.3.0",
         date: "2026-05-21",
@@ -6341,7 +6789,7 @@
         title: "Visitor's Center",
         summary: "The app got a new name, a new layout, four ways out, and a Help Center that actually helps.",
         highlights: [
-          "Visit Tracker. That's the name now.",
+          `${APP_NAME}. That's the name now.`,
           "Settings, Help Center, and What's New are a top navigation bar — always visible, never buried.",
           "App name and version live in a tidy footer pill at the bottom of the panel.",
           "Four export formats: JSON for backups, Markdown for docs, Rich Text for word processors, and Simple Text for anywhere else. Equal buttons, clear labels, file extensions included.",
@@ -6571,6 +7019,14 @@
     const MAP_ZOOM_MIN = 1;
     const MAP_ZOOM_MAX = 10;
     const MAP_ZOOM_STEP = .5;
+    const LEGEND_POSITION_ORDER = ["right-top", "right-bottom", "left-bottom", "left-top"];
+    const LEGEND_POSITION_MENU_ORDER = ["left-top", "right-top", "left-bottom", "right-bottom"];
+    const LEGEND_POSITION_META = {
+      "right-top": { label: "Upper Right", next: "right-bottom", icon: __INSET_FILLED_TOPRIGHT_RECTANGLE },
+      "right-bottom": { label: "Lower Right", next: "left-bottom", icon: __INSET_FILLED_BOTTOMRIGHT_RECTANGLE },
+      "left-bottom": { label: "Lower Left", next: "left-top", icon: __INSET_FILLED_BOTTOMLEFT_RECTANGLE },
+      "left-top": { label: "Upper Left", next: "right-top", icon: __INSET_FILLED_TOPLEFT_RECTANGLE }
+    };
     const DESKTOP_LAYOUT_QUERY = window.matchMedia("(min-width: 981px)");
     let selectedState = null;
     let drawerMode = "state";
@@ -6586,6 +7042,8 @@
     let mapFitMode = false;
     let mapZoom = 1;
     let mapPanState = null;
+    let mapPanRestoreActive = false;
+    let mapPanSaveTimer = 0;
     let centerMapAfterRender = true;
     let noteLevelFilters = new Set();
     let noteVisitTypeFilters = new Set();
@@ -6604,18 +7062,26 @@
     let visitTagSearchQuery = "";
     let visitTagReturnTarget = "settings";
     let mainResizeActive = false;
+    let legendEditMode = false;
+    let legendPositionDragActive = false;
+    let legendPositionPointerId = null;
+    let legendPositionMenuOpen = false;
+    let draggedLegendLevelId = "";
+    let legendDragCommitted = false;
+    let legendSwipeSuppressClickUntil = 0;
     let levelAutoSaveTimer = null;
     let layoutSyncFrame = 0;
     let pendingConfirm = null;
     let noteDialogBaseline = "";
     let state = loadState();
+    syncRuntimeUiFromSettings();
 
     function defaultState() {
       const levels = DEFAULT_LEVEL_IDS.map(id => clone(BUILT_INS.find(level => level.id === id)));
       return {
         appVersion: APP_VERSION,
-        mapName: "Your State Map",
-        settings: { theme: "light", tapBehavior: "cycle", buttonStyle: "symbols", uiHints: true, textScale: 1, dateOrder: "mdy", dateStyle: "alpha", mapLabels: "none", mapSplitRatio: .66, hideSuggestedCategories: false, developerMode: false, shortcutMode: false },
+        mapName: "Your Visit Tracker",
+        settings: { theme: "light", tapBehavior: "cycle", buttonStyle: "symbols", uiHints: true, textScale: 1, dateOrder: "mdy", dateStyle: "alpha", mapLabels: "none", mapSplitRatio: .66, mapViewMode: "scroll", mapZoom: 1, mapPanCenter: { x: .5, y: .5 }, mapPanelOpen: true, legendPanelOpen: true, notesPanelOpen: true, notesSortMode: "chrono", notesViewMode: "compact", notesCategoricalMode: true, notesHideExcludedOnly: true, noteLevelFilters: [], noteVisitTypeFilters: [], selectedState: "", notesPanelState: "", collapsedNoteCategories: [], legendPosition: "right-top", hideSuggestedCategories: false, developerMode: false, shortcutMode: false },
         levels,
         states: defaultTerritoryStates(levels),
         notes: {},
@@ -6834,6 +7300,15 @@
       return Math.max(.85, Math.min(1.2, Math.round(numeric * 20) / 20));
     }
 
+    function normalizeMapPanCenter(value) {
+      const x = Number(value?.x);
+      const y = Number(value?.y);
+      return {
+        x: Number.isFinite(x) ? Math.max(0, Math.min(1, x)) : .5,
+        y: Number.isFinite(y) ? Math.max(0, Math.min(1, y)) : .5
+      };
+    }
+
     function normalizeState(input) {
       const base = defaultState();
       const next = { ...base, ...input };
@@ -6845,6 +7320,24 @@
       if (!["mdy", "dmy", "ymd"].includes(next.settings.dateOrder)) next.settings.dateOrder = "mdy";
       if (!["numeric", "alpha"].includes(next.settings.dateStyle)) next.settings.dateStyle = "alpha";
       if (!["none", "abbr", "name"].includes(next.settings.mapLabels)) next.settings.mapLabels = "none";
+      if (!LEGEND_POSITION_ORDER.includes(next.settings.legendPosition)) next.settings.legendPosition = "right-top";
+      if (!["scroll", "fit"].includes(next.settings.mapViewMode)) next.settings.mapViewMode = next.settings.mapFitMode === true ? "fit" : "scroll";
+      next.settings.mapZoom = clampMapZoom(next.settings.mapZoom);
+      next.settings.mapPanCenter = normalizeMapPanCenter(next.settings.mapPanCenter);
+      ["mapPanelOpen", "legendPanelOpen", "notesPanelOpen"].forEach(key => {
+        if (typeof next.settings[key] !== "boolean") next.settings[key] = base.settings[key];
+      });
+      if (!next.settings.mapPanelOpen && !next.settings.legendPanelOpen && !next.settings.notesPanelOpen) next.settings.mapPanelOpen = true;
+      if (!["alpha", "chrono"].includes(next.settings.notesSortMode)) next.settings.notesSortMode = "chrono";
+      if (!["expanded", "compact", "text"].includes(next.settings.notesViewMode)) next.settings.notesViewMode = "compact";
+      if (typeof next.settings.notesCategoricalMode !== "boolean") next.settings.notesCategoricalMode = true;
+      if (typeof next.settings.notesHideExcludedOnly !== "boolean") next.settings.notesHideExcludedOnly = true;
+      next.settings.selectedState = STATE_NAMES[next.settings.selectedState] ? next.settings.selectedState : "";
+      next.settings.notesPanelState = STATE_NAMES[next.settings.notesPanelState] ? next.settings.notesPanelState : "";
+      next.settings.collapsedNoteCategories = Array.isArray(next.settings.collapsedNoteCategories)
+        ? [...new Set(next.settings.collapsedNoteCategories.filter(type => LOCATION_TYPES[type]))]
+        : [];
+      delete next.settings.mapFitMode;
       const savedSplitRatio = next.settings.mapSplitRatio;
       next.settings.mapSplitRatio = savedSplitRatio === null || savedSplitRatio === undefined || savedSplitRatio === ""
         ? .66
@@ -6878,6 +7371,14 @@
       }));
       next.visitTypes = normalizeVisitTypeConfig(input.visitTypes, base.visitTypes);
       const validLevelIds = new Set(next.levels.map(l => l.id));
+      next.settings.noteLevelFilters = Array.isArray(next.settings.noteLevelFilters)
+        ? [...new Set(next.settings.noteLevelFilters.filter(id => validLevelIds.has(id)))]
+        : [];
+      const validVisitFilterIds = new Set([NOTE_FILTER_NO_ICON, ...next.visitTypes.filter(type => type.enabled).map(type => type.id)]);
+      next.settings.noteVisitTypeFilters = Array.isArray(next.settings.noteVisitTypeFilters)
+        ? [...new Set(next.settings.noteVisitTypeFilters.filter(id => validVisitFilterIds.has(id)))]
+        : [];
+      if (!next.settings.noteVisitTypeFilters.length) next.settings.noteVisitTypeFilters = [...validVisitFilterIds];
       next.states = {};
       Object.entries(input.states || {}).forEach(([abbr, raw]) => {
         if (!STATE_NAMES[abbr]) return;
@@ -6936,8 +7437,61 @@
       return [...new Set(ids)].slice(0, 5);
     }
 
+    function captureMapPanSetting() {
+      const wrap = $(".map-wrap");
+      if (!wrap || mapFitMode || mapPanRestoreActive) return;
+      const maxX = Math.max(1, wrap.scrollWidth);
+      const maxY = Math.max(1, wrap.scrollHeight);
+      state.settings.mapPanCenter = normalizeMapPanCenter({
+        x: (wrap.scrollLeft + wrap.clientWidth / 2) / maxX,
+        y: (wrap.scrollTop + wrap.clientHeight / 2) / maxY
+      });
+    }
+
+    function syncRuntimeUiSettingsToState({ captureMapPan = true } = {}) {
+      if (!state?.settings) return;
+      if (captureMapPan) captureMapPanSetting();
+      state.settings.mapPanelOpen = mapPanelOpen !== false;
+      state.settings.legendPanelOpen = legendPanelOpen !== false;
+      state.settings.notesPanelOpen = notesPanelOpen !== false;
+      state.settings.notesSortMode = ["alpha", "chrono"].includes(notesSortMode) ? notesSortMode : "chrono";
+      state.settings.notesViewMode = ["expanded", "compact", "text"].includes(notesViewMode) ? notesViewMode : "compact";
+      state.settings.notesCategoricalMode = notesCategoricalMode === true;
+      state.settings.notesHideExcludedOnly = notesHideExcludedOnly === true;
+      ensureNoteIconFilters();
+      state.settings.noteLevelFilters = [...noteLevelFilters].filter(id => levelById(id));
+      state.settings.noteVisitTypeFilters = [...noteVisitTypeFilters].filter(id => id === NOTE_FILTER_NO_ICON || visitTypeMeta(id));
+      state.settings.selectedState = selectedState && STATE_NAMES[selectedState] ? selectedState : "";
+      state.settings.notesPanelState = notesPanelState && STATE_NAMES[notesPanelState] ? notesPanelState : "";
+      state.settings.collapsedNoteCategories = [...collapsedNoteCategories].filter(type => LOCATION_TYPES[type]);
+      state.settings.mapViewMode = mapFitMode ? "fit" : "scroll";
+      state.settings.mapZoom = clampMapZoom(mapZoom);
+      state.settings.mapPanCenter = normalizeMapPanCenter(state.settings.mapPanCenter);
+    }
+
+    function syncRuntimeUiFromSettings() {
+      syncRuntimeMapViewFromSettings();
+      mapPanelOpen = state.settings.mapPanelOpen !== false;
+      legendPanelOpen = state.settings.legendPanelOpen !== false;
+      notesPanelOpen = state.settings.notesPanelOpen !== false;
+      notesSortMode = ["alpha", "chrono"].includes(state.settings.notesSortMode) ? state.settings.notesSortMode : "chrono";
+      notesViewMode = ["expanded", "compact", "text"].includes(state.settings.notesViewMode) ? state.settings.notesViewMode : "compact";
+      notesCategoricalMode = state.settings.notesCategoricalMode !== false;
+      notesHideExcludedOnly = state.settings.notesHideExcludedOnly !== false;
+      selectedState = STATE_NAMES[state.settings.selectedState] ? state.settings.selectedState : null;
+      notesPanelState = STATE_NAMES[state.settings.notesPanelState] ? state.settings.notesPanelState : null;
+      if (notesPanelState) selectedState = notesPanelState;
+      noteLevelFilters = new Set((state.settings.noteLevelFilters || []).filter(id => levelById(id)));
+      noteVisitTypeFilters = new Set(Array.isArray(state.settings.noteVisitTypeFilters) ? state.settings.noteVisitTypeFilters : []);
+      ensureNoteIconFilters();
+      collapsedNoteCategories = new Set((state.settings.collapsedNoteCategories || []).filter(type => LOCATION_TYPES[type]));
+      ensurePanelVisible("map");
+      syncRuntimeUiSettingsToState({ captureMapPan: false });
+    }
+
     function save() {
       pruneObsoleteBackupKeys(state);
+      syncRuntimeUiSettingsToState();
       state.appVersion = APP_VERSION;
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       renderDeveloperJson();
@@ -7268,8 +7822,8 @@
       setButtonLabel("#notesToggleBtn", ICON_MAP_MODAL_NOTES_LIST_BULLET_CLIPBOARD_FILL, "Notes", "Toggle Notes Panel", "Toggle Notes Panel");
       $("#labelsToggleLabel").innerHTML = prefersSymbols() ? ICON_MAP_LABELS_TAG_FILL : "Labels";
       setButtonLabel("#labelsNoneBtn", ICON_MAP_LABELS_NONE_CIRCLE_SLASH, "None", "No map labels");
-      setButtonLabel("#labelsAbbrBtn", ICON_MAP_LABELS_ABBR_CHARACTER, "Abbr", "Show state abbreviations");
-      setButtonLabel("#labelsNameBtn", ICON_MAP_LABELS_NAME_TEXTFORMAT, "Name", "Show state names");
+      setButtonLabel("#labelsAbbrBtn", ICON_MAP_LABELS_ABBR_CHARACTER, "Abbr", "Show location abbreviations");
+      setButtonLabel("#labelsNameBtn", ICON_MAP_LABELS_NAME_TEXTFORMAT, "Name", "Show location names");
       const fitTitle = mapFitMode ? "Switch to scrollable map" : "Switch to fit map";
       setButtonLabel("#mapFitBtn", mapFitMode ? __SQUARE_ARROWTRIANGLE_4_OUTWARD : __DOT_ARROWTRIANGLES_UP_RIGHT_DOWN_LEFT_CIRCLE, mapFitMode ? "Fit Map" : "Scroll Map", mapFitMode ? "Fit map mode" : "Scrollable map mode", fitTitle);
       setButtonLabel("#mapZoomOutBtn", __MINUS_CIRCLE, "Zoom Out", "Zoom map out", "Zoom map out");
@@ -7309,7 +7863,7 @@
       setButtonLabelBoth("#iconTextButtonsBtn", ICON_SETTINGS_BUTTON_ICONTEXT__CHARACTER_SQUARE, "Icons + Text");
       setButtonLabelBoth("#hintsOnBtn", ICON_SETTINGS_HINT_ON__LIGHTBULB_MAX_FILL, "On", "Hints on");
       setButtonLabelBoth("#hintsOffBtn", ICON_SETTINGS_HINT_OFF__LIGHTBULB, "Off", "Hints off");
-      setButtonLabelBoth("#cycleModeBtn", ICON_SETTINGS_MAP_CYCLE__ARROW_TRIANGLEHEAD_2_CLOCKWISE, "Cycle", "Tap to cycle");
+      setButtonLabelBoth("#cycleModeBtn", ICON_SETTINGS_MAP_CYCLE__ARROW_TRIANGLEHEAD_2_CLOCKWISE, "Cycle", "Tap to select then cycle");
       setButtonLabelBoth("#selectModeBtn", ICON_SETTINGS_MAP_SELECT__SCOPE, "Select", "Tap to select");
       setButtonLabelBoth("#visitTagSettingsBtn", __CIRCLE_CIRCLE, "Choose, Reorder, Rename, Assign Hotkeys");
       setExportBtnLabel("#exportJsonBtn", ICON_SETTINGS_EXPORT_JSON__CURLYBRACES, "JSON", ".json");
@@ -7327,9 +7881,16 @@
       setButtonLabelBoth("#shortcutModeOffBtn", ICON_SETTINGS_SHORTCUTSOFF__TAG_SLASH_FILL, "Off", "Shortcut Mode off");
       setDocSectionIcons();
       syncVisitTypeIcons();
+      const legendMeta = LEGEND_POSITION_META[legendPosition()];
+      setButtonLabel("#legendPositionBtn", legendMeta.icon, legendMeta.label, `Legend position: ${legendMeta.label}`, "Choose Legend position");
+      setButtonLabel("#legendEditBtn", ICON_GLOABL_ACTION_EDIT__PENCIL, "Edit", legendEditMode ? "Hide Legend edit controls" : "Show Legend edit controls");
+      $("#legendPositionBtn").setAttribute("aria-expanded", String(legendPositionMenuOpen));
+      $("#legendPositionBtn").disabled = !legendPositionControlAvailable();
+      renderLegendPositionMenu();
       $("#mapToggleBtn").setAttribute("aria-pressed", String(mapPanelOpen));
       $("#legendToggleBtn").setAttribute("aria-pressed", String(legendPanelOpen));
       $("#notesToggleBtn").setAttribute("aria-pressed", String(notesPanelOpen));
+      $("#legendEditBtn").setAttribute("aria-pressed", String(legendEditMode));
       $("#mapFitBtn").setAttribute("aria-pressed", String(mapFitMode));
       $("#mapZoomOutBtn").disabled = mapFitMode || mapZoom <= MAP_ZOOM_MIN + .001;
       $("#mapZoomResetBtn").disabled = mapFitMode;
@@ -7342,12 +7903,106 @@
       return Number.parseFloat(value) || 0;
     }
 
+    function legendPosition() {
+      return LEGEND_POSITION_ORDER.includes(state.settings.legendPosition) ? state.settings.legendPosition : "right-top";
+    }
+
+    function legendInSideColumn() {
+      return legendPosition().startsWith("right");
+    }
+
+    function legendPositionControlAvailable() {
+      return DESKTOP_LAYOUT_QUERY.matches && legendPanelOpen;
+    }
+
+    function closeLegendPositionMenu() {
+      legendPositionMenuOpen = false;
+      $("#legendPositionMenu")?.classList.add("hidden");
+      $("#legendPositionBtn")?.setAttribute("aria-expanded", "false");
+    }
+
+    function renderLegendPositionMenu() {
+      const menu = $("#legendPositionMenu");
+      if (!menu) return;
+      menu.innerHTML = LEGEND_POSITION_MENU_ORDER.map(position => {
+        const meta = LEGEND_POSITION_META[position];
+        return `<button type="button" role="menuitemradio" aria-pressed="${position === legendPosition()}" data-legend-position-option="${position}" aria-label="${meta.label}" title="${meta.label}">${meta.icon}</button>`;
+      }).join("");
+      menu.classList.toggle("hidden", !legendPositionMenuOpen || !legendPositionControlAvailable());
+      $$("[data-legend-position-option]", menu).forEach(button => {
+        button.addEventListener("click", event => {
+          event.stopPropagation();
+          setLegendPosition(button.dataset.legendPositionOption);
+          closeLegendPositionMenu();
+          render();
+        });
+      });
+    }
+
+    function toggleLegendPositionMenu(event) {
+      event?.stopPropagation();
+      if (!legendPositionControlAvailable()) return;
+      legendPositionMenuOpen = !legendPositionMenuOpen;
+      renderLegendPositionMenu();
+      $("#legendPositionBtn")?.setAttribute("aria-expanded", String(legendPositionMenuOpen));
+    }
+
+    function sideColumnOpen() {
+      return notesPanelOpen || (legendPanelOpen && legendInSideColumn());
+    }
+
+    function placeLegendPanel() {
+      const panel = $("#legendPanel");
+      if (!panel) return;
+      const position = legendPosition();
+      let target = $("#sidePanel");
+      if (position === "left-top") target = $("#legendSlotTop");
+      if (position === "left-bottom") target = $("#legendSlotBottom");
+      if (!target) return;
+      if (position === "right-top" && $("#notesPanel")?.parentElement === target) target.insertBefore(panel, $("#notesPanel"));
+      else target.append(panel);
+      panel.classList.toggle("is-position-dragging", legendPositionDragActive);
+    }
+
+    function legendPlacementPreview() {
+      let preview = $("#legendPlacementPreview");
+      if (!preview) {
+        preview = document.createElement("div");
+        preview.id = "legendPlacementPreview";
+        preview.className = "legend-placement-preview";
+        preview.textContent = "Legend here";
+        preview.setAttribute("aria-hidden", "true");
+      }
+      return preview;
+    }
+
+    function placeLegendPreview(position) {
+      if (!LEGEND_POSITION_ORDER.includes(position)) return;
+      const panel = $("#legendPanel");
+      const preview = legendPlacementPreview();
+      const height = Math.max(64, Math.ceil(panel?.getBoundingClientRect().height || 0));
+      preview.style.minHeight = `${height}px`;
+      preview.classList.toggle("is-current", position === legendPosition());
+      document.documentElement.dataset.legendPreviewPosition = position;
+      let target = $("#sidePanel");
+      if (position === "left-top") target = $("#legendSlotTop");
+      if (position === "left-bottom") target = $("#legendSlotBottom");
+      if (!target) return;
+      if (position === "right-top") target.insertBefore(preview, $("#notesPanel")?.parentElement === target ? $("#notesPanel") : target.firstElementChild);
+      else target.append(preview);
+    }
+
+    function clearLegendPreview() {
+      $("#legendPlacementPreview")?.remove();
+      delete document.documentElement.dataset.legendPreviewPosition;
+    }
+
     function mainLayoutMetrics() {
       const main = $(".main");
       if (!main) return null;
       const mainStyle = getComputedStyle(main);
       const rect = main.getBoundingClientRect();
-      const sideOpen = legendPanelOpen || notesPanelOpen;
+      const sideOpen = sideColumnOpen();
       const splitOpen = mapPanelOpen && sideOpen;
       const columnGap = cssPx(mainStyle.columnGap || mainStyle.gap);
       const paddingLeft = cssPx(mainStyle.paddingLeft);
@@ -7371,7 +8026,7 @@
     }
 
     function setMainSplitFromClientX(clientX, persist = false) {
-      if (!mapPanelOpen || !(legendPanelOpen || notesPanelOpen)) return;
+      if (!mapPanelOpen || !sideColumnOpen()) return;
       const metrics = mainLayoutMetrics();
       if (!metrics) return;
       const mapColumn = clampMapColumn(clientX - metrics.contentLeft, metrics);
@@ -7382,7 +8037,7 @@
     }
 
     function nudgeMainSplit(delta) {
-      if (!mapPanelOpen || !(legendPanelOpen || notesPanelOpen)) return;
+      if (!mapPanelOpen || !sideColumnOpen()) return;
       const metrics = mainLayoutMetrics();
       if (!metrics) return;
       const current = Number.isFinite(Number(state.settings.mapSplitRatio))
@@ -7412,7 +8067,7 @@
       const wrapY = cssPx(wrapStyle.paddingTop) + cssPx(wrapStyle.paddingBottom);
       const mapBodyHeight = Math.max(220, mainHeight - mapHead.getBoundingClientRect().height - wrapY - 2);
       const heightBoundColumn = Math.ceil(mapBodyHeight * MAP_ASPECT_RATIO + wrapX + 2);
-      const sideOpen = legendPanelOpen || notesPanelOpen;
+      const sideOpen = sideColumnOpen();
       if (!mapPanelOpen || !sideOpen) {
         main.style.removeProperty("--map-column-width");
         return;
@@ -7441,8 +8096,28 @@
       if (mapFitMode) return;
       const wrap = $(".map-wrap");
       if (!wrap) return;
-      wrap.scrollLeft = Math.max(0, (wrap.scrollWidth - wrap.clientWidth) / 2);
-      wrap.scrollTop = Math.max(0, (wrap.scrollHeight - wrap.clientHeight) / 2);
+      const center = normalizeMapPanCenter(state.settings.mapPanCenter);
+      mapPanRestoreActive = true;
+      wrap.scrollLeft = Math.max(0, center.x * wrap.scrollWidth - wrap.clientWidth / 2);
+      wrap.scrollTop = Math.max(0, center.y * wrap.scrollHeight - wrap.clientHeight / 2);
+      requestAnimationFrame(() => { mapPanRestoreActive = false; });
+    }
+
+    function saveMapPanSoon(immediate = false) {
+      if (mapFitMode || mapPanRestoreActive) return;
+      captureMapPanSetting();
+      renderDeveloperJson();
+      if (immediate) {
+        if (mapPanSaveTimer) clearTimeout(mapPanSaveTimer);
+        mapPanSaveTimer = 0;
+        save();
+        return;
+      }
+      if (mapPanSaveTimer) clearTimeout(mapPanSaveTimer);
+      mapPanSaveTimer = window.setTimeout(() => {
+        mapPanSaveTimer = 0;
+        save();
+      }, 220);
     }
 
     function scheduleMainLayoutSync() {
@@ -7467,7 +8142,12 @@
       document.documentElement.dataset.mapPanel = mapPanelOpen ? "open" : "closed";
       document.documentElement.dataset.legend = legendPanelOpen ? "open" : "closed";
       document.documentElement.dataset.notes = notesPanelOpen ? "open" : "closed";
+      document.documentElement.dataset.legendArea = legendInSideColumn() ? "right" : "left";
+      document.documentElement.dataset.legendPosition = legendPosition();
+      document.documentElement.dataset.sidePanel = sideColumnOpen() ? "open" : "closed";
+      document.documentElement.dataset.legendEditing = legendEditMode ? "true" : "false";
       document.documentElement.dataset.mapMode = mapFitMode ? "fit" : "scroll";
+      if (!legendPositionControlAvailable()) legendPositionMenuOpen = false;
       document.documentElement.style.setProperty("--app-text-scale", String(normalizeTextScale(state.settings.textScale)));
       document.documentElement.style.setProperty("--map-zoom", String(mapZoom));
       document.documentElement.style.setProperty("--map-zoom-width", `${Math.round(mapZoom * 100)}%`);
@@ -7475,8 +8155,9 @@
       $("#devModePill").textContent = `Dev Mode v${APP_VERSION}`;
       $("#devModePill").classList.toggle("hidden", state.settings.developerMode !== true);
       $("#tapHint").textContent = state.settings.tapBehavior === "cycle"
-        ? "Tap a state to cycle its visit level."
-        : "Tap a state to choose a level and add a note.";
+        ? "Tap a location to select then cycle its visit level."
+        : "Tap a location to choose a level and add a note.";
+      placeLegendPanel();
       syncButtonLabels();
       renderMap();
       renderLegend();
@@ -7711,18 +8392,17 @@
       const completionPct = Math.round((counted / completionTotal) * 100);
       $("#legendTotals").innerHTML = `<span class="percent-pill">${completionPct}%</span><span class="count-pill">${counted}/${completionTotal}</span>`;
       $("#legendList").innerHTML = state.levels.map((level, index) => `
-        <div class="legend-item ${noteLevelFilters.has(level.id) ? "is-filtered" : ""} ${level.countsTowardStats === false ? "is-nonstat" : ""}">
+        <div class="legend-item ${noteLevelFilters.has(level.id) ? "is-filtered" : ""} ${level.countsTowardStats === false ? "is-nonstat" : ""}" data-legend-item="${level.id}">
           <button class="legend-filter" type="button" aria-pressed="${noteLevelFilters.has(level.id)}" data-filter-level="${level.id}" title="${escapeHtml(level.definition)}">
-            <span class="swatch" style="background:${level.color}"></span>
+            <span class="stat-color-pill ${level.countsTowardStats === false ? "is-nonstat" : ""}" style="--level-color:${level.color}" aria-label="${escapeHtml(level.name)} stats">
+              ${level.countsTowardStats === false ? `<span class="percent-pill no-stat-pill" title="Excluded from stats">⊘</span>` : `<span class="percent-pill">${Math.round(((counts[level.id] || 0) / totalRegions) * 100)}%</span>`}
+              <span class="count-pill">${counts[level.id] || 0}</span>
+            </span>
             <span class="level-copy">
               <span class="level-name">${escapeHtml(level.name)}</span><br>
               <small>${escapeHtml(level.definition)}</small>
             </span>
           </button>
-          <span class="level-stats" aria-label="${escapeHtml(level.name)} stats">
-            ${level.countsTowardStats === false ? `<span class="percent-pill no-stat-pill" title="Excluded from stats">⊘</span>` : `<span class="percent-pill">${Math.round(((counts[level.id] || 0) / totalRegions) * 100)}%</span>`}
-            <span class="count-pill">${counts[level.id] || 0}</span>
-          </span>
           <span class="legend-actions">
             <span class="order-buttons" aria-label="Move ${escapeHtml(level.name)}">
               ${actionButtonHtml({ symbol: ICON_GLOBAL_ACTION_UP__ARROWSHAPE_UP_FILL, text: "Up", aria: `Move ${level.name} up`, attrs: `data-move-level="${level.id}" data-direction="-1" ${index === 0 ? "disabled" : ""}` })}
@@ -7733,10 +8413,19 @@
           </span>
         </div>
       `).join("");
-      $$("[data-filter-level]").forEach(button => button.addEventListener("click", () => toggleNoteLevelFilter(button.dataset.filterLevel)));
+      $$("[data-filter-level]").forEach(button => button.addEventListener("click", event => {
+        const item = event.currentTarget.closest("[data-legend-item]");
+        if (Date.now() < legendSwipeSuppressClickUntil || item?.dataset.swipeSuppress === "true") {
+          if (item) item.dataset.swipeSuppress = "";
+          return;
+        }
+        toggleNoteLevelFilter(button.dataset.filterLevel);
+      }));
       $$("[data-level-edit]").forEach(button => button.addEventListener("click", () => openLevelDialog(button.dataset.levelEdit)));
       $$("[data-move-level]").forEach(button => button.addEventListener("click", () => moveLevel(button.dataset.moveLevel, Number(button.dataset.direction))));
       $$("[data-level-delete]").forEach(button => button.addEventListener("click", () => deleteLevel(button.dataset.levelDelete)));
+      bindLegendLevelDrag();
+      bindLegendLevelSwipe();
       const atMax = state.levels.length >= 5;
       $("#addLevelBtn").disabled = atMax;
 
@@ -7747,8 +8436,279 @@
       if (!levelById(levelId)) return;
       if (noteLevelFilters.has(levelId)) noteLevelFilters.delete(levelId);
       else noteLevelFilters.add(levelId);
+      save();
       renderLegend();
       renderNotesPanel();
+    }
+
+    function setLegendPosition(position, persist = true) {
+      if (!LEGEND_POSITION_ORDER.includes(position) || state.settings.legendPosition === position) return;
+      state.settings.legendPosition = position;
+      document.documentElement.dataset.legendArea = legendInSideColumn() ? "right" : "left";
+      document.documentElement.dataset.legendPosition = legendPosition();
+      document.documentElement.dataset.sidePanel = sideColumnOpen() ? "open" : "closed";
+      placeLegendPanel();
+      syncButtonLabels();
+      syncMainLayout();
+      if (persist) save();
+    }
+
+    function cycleLegendPosition() {
+      const current = legendPosition();
+      const next = LEGEND_POSITION_META[current].next;
+      setLegendPosition(next);
+      render();
+      if (next === "right-bottom") revealLegendPanelSoon();
+    }
+
+    function toggleLegendEditMode() {
+      legendEditMode = !legendEditMode;
+      render();
+    }
+
+    function revealLegendPanelSoon() {
+      requestAnimationFrame(() => {
+        $("#legendPanel")?.scrollIntoView({ block: "nearest" });
+      });
+    }
+
+    function legendPositionFromPoint(clientX, clientY) {
+      const mainRect = $(".main")?.getBoundingClientRect();
+      if (!mainRect) return legendPosition();
+      const leftSide = clientX < mainRect.left + mainRect.width / 2;
+      const mapRect = $(".map-panel")?.getBoundingClientRect();
+      const sideRect = $("#sidePanel")?.getBoundingClientRect();
+      const verticalRect = leftSide
+        ? (mapRect && mapRect.height ? mapRect : mainRect)
+        : (sideRect && sideRect.height ? sideRect : mainRect);
+      const topSide = clientY < verticalRect.top + verticalRect.height / 2;
+      if (leftSide) return topSide ? "left-top" : "left-bottom";
+      return topSide ? "right-top" : "right-bottom";
+    }
+
+    function bindLegendPositionDrag() {
+      const panel = $("#legendPanel");
+      if (!panel) return;
+      const title = $(".legend-title-main", panel);
+      if (!title) return;
+      let startX = 0;
+      let startY = 0;
+      let previewPosition = "";
+      title.addEventListener("pointerdown", event => {
+        if (!legendPositionControlAvailable() || event.button && event.button !== 0) return;
+        startX = event.clientX;
+        startY = event.clientY;
+        previewPosition = "";
+        legendPositionPointerId = event.pointerId;
+        title.setPointerCapture?.(event.pointerId);
+      });
+      title.addEventListener("pointermove", event => {
+        if (legendPositionPointerId !== event.pointerId) return;
+        const moved = Math.hypot(event.clientX - startX, event.clientY - startY);
+        if (!legendPositionDragActive && moved < 8) return;
+        event.preventDefault();
+        closeLegendPositionMenu();
+        legendPositionDragActive = true;
+        panel.classList.add("is-position-dragging");
+        const position = legendPositionFromPoint(event.clientX, event.clientY);
+        if (position !== previewPosition) {
+          previewPosition = position;
+          placeLegendPreview(position);
+        }
+      });
+      const finish = event => {
+        if (legendPositionPointerId !== event.pointerId) return;
+        title.releasePointerCapture?.(event.pointerId);
+        legendPositionPointerId = null;
+        if (!legendPositionDragActive) return;
+        legendPositionDragActive = false;
+        panel.classList.remove("is-position-dragging");
+        const position = legendPositionFromPoint(event.clientX, event.clientY);
+        clearLegendPreview();
+        previewPosition = "";
+        setLegendPosition(position, true);
+        render();
+      };
+      title.addEventListener("pointerup", finish);
+      title.addEventListener("pointercancel", event => {
+        if (legendPositionPointerId !== event.pointerId) return;
+        legendPositionPointerId = null;
+        legendPositionDragActive = false;
+        panel.classList.remove("is-position-dragging");
+        clearLegendPreview();
+        previewPosition = "";
+        render();
+      });
+    }
+
+    function reorderLevelByIndex(levelId, toIndex) {
+      const from = state.levels.findIndex(level => level.id === levelId);
+      if (from < 0 || toIndex < 0 || toIndex >= state.levels.length || from === toIndex) return false;
+      const [level] = state.levels.splice(from, 1);
+      state.levels.splice(toIndex, 0, level);
+      return true;
+    }
+
+    function legendDragOrderFromPlaceholder(list, draggedItem, placeholder) {
+      const byId = new Map(state.levels.map(level => [level.id, level]));
+      const ids = Array.from(list.children)
+        .filter(el => el === placeholder || (el.matches?.("[data-legend-item]") && el !== draggedItem))
+        .map(el => el === placeholder ? draggedItem.dataset.legendItem : el.dataset.legendItem)
+        .filter(id => byId.has(id));
+      const seen = new Set(ids);
+      state.levels.forEach(level => {
+        if (!seen.has(level.id)) ids.push(level.id);
+      });
+      return ids.map(id => byId.get(id)).filter(Boolean);
+    }
+
+    function commitLegendPlaceholderOrder(list, draggedItem, placeholder) {
+      if (!placeholder || !draggedItem) return false;
+      const nextLevels = legendDragOrderFromPlaceholder(list, draggedItem, placeholder);
+      const changed = nextLevels.some((level, index) => level.id !== state.levels[index]?.id);
+      if (changed) state.levels = nextLevels;
+      return changed;
+    }
+
+    function moveLegendPlaceholder(list, draggedItem, placeholder, clientY) {
+      if (!placeholder) return;
+      const rows = $$("[data-legend-item]", list).filter(row => row !== draggedItem);
+      if (!rows.length) return;
+      for (const row of rows) {
+        const rect = row.getBoundingClientRect();
+        if (clientY < rect.top + rect.height / 2) {
+          if (placeholder.nextElementSibling !== row) row.before(placeholder);
+          return;
+        }
+      }
+      const last = rows.at(-1);
+      if (last && placeholder.previousElementSibling !== last) last.after(placeholder);
+    }
+
+    function bindLegendLevelDrag() {
+      const list = $("#legendList");
+      if (!list) return;
+      if (list.dataset.dragBound === "true") return;
+      list.dataset.dragBound = "true";
+      let startX = 0;
+      let startY = 0;
+      let pointerId = null;
+      let mode = "";
+      let activeItem = null;
+      let placeholder = null;
+      let dragRect = null;
+      const beginDrag = () => {
+        if (!activeItem || placeholder) return;
+        dragRect = activeItem.getBoundingClientRect();
+        placeholder = document.createElement("div");
+        placeholder.className = "legend-drag-placeholder";
+        placeholder.style.height = `${dragRect.height}px`;
+        placeholder.style.minHeight = `${dragRect.height}px`;
+        placeholder.setAttribute("aria-hidden", "true");
+        activeItem.after(placeholder);
+        activeItem.classList.add("is-dragging");
+        activeItem.style.position = "fixed";
+        activeItem.style.left = `${dragRect.left}px`;
+        activeItem.style.top = `${dragRect.top}px`;
+        activeItem.style.width = `${dragRect.width}px`;
+        activeItem.style.height = `${dragRect.height}px`;
+        activeItem.style.setProperty("--legend-drag-x", "0px");
+        activeItem.style.setProperty("--legend-drag-y", "0px");
+        closeLegendSwipes();
+      };
+      const cleanupDrag = () => {
+        placeholder?.remove();
+        placeholder = null;
+        dragRect = null;
+        if (!activeItem) return;
+        activeItem.classList.remove("is-dragging");
+        ["position", "left", "top", "width", "height"].forEach(prop => activeItem.style.removeProperty(prop));
+        activeItem.style.removeProperty("--legend-drag-x");
+        activeItem.style.removeProperty("--legend-drag-y");
+      };
+      const onMove = event => {
+        if (pointerId !== event.pointerId || !activeItem || !draggedLegendLevelId) return;
+        const dx = event.clientX - startX;
+        const dy = event.clientY - startY;
+        if (!mode) {
+          if (dx < -38 && Math.abs(dx) > Math.abs(dy) * 1.35) mode = "swipe";
+          else if (Math.abs(dy) > 8 && Math.abs(dy) > Math.abs(dx) * .9) {
+            mode = "drag";
+            beginDrag();
+          } else return;
+        }
+        event.preventDefault();
+        legendSwipeSuppressClickUntil = Date.now() + 500;
+        activeItem.dataset.swipeSuppress = "true";
+        if (mode === "swipe") {
+          const swipedItem = activeItem;
+          closeLegendSwipes(swipedItem);
+          swipedItem.classList.add("is-swiped");
+          detachDocListeners();
+          setTimeout(() => {
+            swipedItem.dataset.swipeSuppress = "";
+          }, 520);
+          return;
+        }
+        activeItem.style.setProperty("--legend-drag-x", `${dx}px`);
+        activeItem.style.setProperty("--legend-drag-y", `${dy}px`);
+        moveLegendPlaceholder(list, activeItem, placeholder, event.clientY);
+      };
+      const onFinish = event => {
+        if (pointerId !== event.pointerId) return;
+        const wasDrag = mode === "drag";
+        const shouldCommit = wasDrag && event.type === "pointerup";
+        legendDragCommitted = shouldCommit ? commitLegendPlaceholderOrder(list, activeItem, placeholder) : false;
+        cleanupDrag();
+        if (legendDragCommitted) save();
+        detachDocListeners();
+        if (wasDrag) render();
+      };
+      const detachDocListeners = () => {
+        document.removeEventListener("pointermove", onMove);
+        document.removeEventListener("pointerup", onFinish);
+        document.removeEventListener("pointercancel", onFinish);
+        draggedLegendLevelId = "";
+        pointerId = null;
+        activeItem = null;
+        mode = "";
+      };
+      list.addEventListener("pointerdown", event => {
+        const item = event.target.closest("[data-legend-item]");
+        if (!item || !list.contains(item)) return;
+        if (event.target.closest(".legend-actions button, input, select, textarea, a")) return;
+        if (event.button && event.button !== 0) return;
+        startX = event.clientX;
+        startY = event.clientY;
+        pointerId = event.pointerId;
+        mode = "";
+        activeItem = item;
+        draggedLegendLevelId = item.dataset.legendItem;
+        legendDragCommitted = false;
+        document.addEventListener("pointermove", onMove);
+        document.addEventListener("pointerup", onFinish);
+        document.addEventListener("pointercancel", onFinish);
+      });
+    }
+
+    function closeLegendSwipes(except = null) {
+      $$("[data-legend-item].is-swiped").forEach(item => {
+        if (item !== except) {
+          item.classList.remove("is-swiped");
+          item.dataset.swipeSuppress = "";
+        }
+      });
+    }
+
+    function bindLegendLevelSwipe() {
+      const list = $("#legendList");
+      if (!list) return;
+      if (list.dataset.swipeBound === "true") return;
+      list.dataset.swipeBound = "true";
+      list.addEventListener("click", event => {
+        if (Date.now() < legendSwipeSuppressClickUntil) return;
+        if (!event.target.closest("[data-legend-item].is-swiped")) closeLegendSwipes();
+      });
     }
 
     function noteMatchesLevelFilter(note) {
@@ -7934,6 +8894,7 @@
       notesPanelOpen = true;
       notesPanelState = abbr;
       closeDrawer();
+      save();
     }
 
     function openStateDrawer(abbr) {
@@ -7984,6 +8945,7 @@
       notesPanelOpen = true;
       notesPanelState = null;
       closeDrawer();
+      save();
       render();
     }
 
@@ -7996,7 +8958,7 @@
 
     function renderMarkedStatesDrawer() {
       $("#drawerTitle").textContent = "Notes";
-      $("#drawerSubtitle").textContent = "Select a state to view details or add notes.";
+      $("#drawerSubtitle").textContent = "Select a location to view details or add notes.";
       $("#markedStatesSection").classList.remove("hidden");
       $("#levelsSection").classList.add("hidden");
       $("#notesSection").classList.add("hidden");
@@ -8014,9 +8976,16 @@
       $$("[data-open-marked]").forEach(button => button.addEventListener("click", () => openStateDrawer(button.dataset.openMarked)));
     }
 
+    function anyVisiblePanel() {
+      return mapPanelOpen || notesPanelOpen || (legendPanelOpen && (legendInSideColumn() || mapPanelOpen));
+    }
+
     function ensurePanelVisible(preferred = "map") {
-      if (mapPanelOpen || legendPanelOpen || notesPanelOpen) return;
-      if (preferred === "legend") legendPanelOpen = true;
+      if (anyVisiblePanel()) return;
+      if (preferred === "legend") {
+        legendPanelOpen = true;
+        if (!legendInSideColumn()) mapPanelOpen = true;
+      }
       else if (preferred === "notes") notesPanelOpen = true;
       else mapPanelOpen = true;
     }
@@ -8024,12 +8993,20 @@
     function toggleMapPanel() {
       mapPanelOpen = !mapPanelOpen;
       ensurePanelVisible("legend");
+      save();
       render();
     }
 
     function toggleLegendPanel() {
+      if (legendPanelOpen && notesPanelOpen && legendPosition() !== "right-bottom") {
+        setLegendPosition("right-bottom");
+        render();
+        revealLegendPanelSoon();
+        return;
+      }
       legendPanelOpen = !legendPanelOpen;
       ensurePanelVisible("map");
+      save();
       render();
     }
 
@@ -8040,12 +9017,16 @@
         notesPanelState = selectedState;
       }
       ensurePanelVisible("map");
+      save();
       render();
     }
 
     function toggleMapFitMode() {
-      mapFitMode = !mapFitMode;
+      const nextFit = !mapFitMode;
+      if (nextFit) captureMapPanSetting();
+      mapFitMode = nextFit;
       if (!mapFitMode) centerMapAfterRender = true;
+      persistMapViewSettings();
       render();
     }
 
@@ -8061,6 +9042,20 @@
       const numeric = Number.parseFloat(String(value || "").replace(/%/g, "").trim());
       if (!Number.isFinite(numeric)) return null;
       return clampMapZoom(numeric / 100);
+    }
+
+    function syncRuntimeMapViewFromSettings() {
+      mapFitMode = state.settings.mapViewMode === "fit";
+      mapZoom = clampMapZoom(state.settings.mapZoom);
+      state.settings.mapViewMode = mapFitMode ? "fit" : "scroll";
+      state.settings.mapZoom = mapZoom;
+      centerMapAfterRender = !mapFitMode;
+    }
+
+    function persistMapViewSettings() {
+      state.settings.mapViewMode = mapFitMode ? "fit" : "scroll";
+      state.settings.mapZoom = clampMapZoom(mapZoom);
+      save();
     }
 
     function commitMapZoomReadout() {
@@ -8087,6 +9082,7 @@
       if (mapFitMode) mapFitMode = false;
       const previous = mapZoom;
       mapZoom = clampMapZoom(value);
+      persistMapViewSettings();
       const wrap = $(".map-wrap");
       const ratio = previous ? mapZoom / previous : 1;
       if (wrap && anchor) {
@@ -8096,6 +9092,7 @@
         requestAnimationFrame(() => {
           wrap.scrollLeft = Math.max(0, beforeLeft * ratio - anchor.x);
           wrap.scrollTop = Math.max(0, beforeTop * ratio - anchor.y);
+          saveMapPanSoon(true);
         });
         return;
       }
@@ -8111,7 +9108,9 @@
 
     function resetMapZoom() {
       mapZoom = 1;
+      state.settings.mapPanCenter = { x: .5, y: .5 };
       centerMapAfterRender = true;
+      persistMapViewSettings();
       render();
     }
 
@@ -8219,6 +9218,7 @@
       ensureNoteIconFilters();
       if (noteVisitTypeFilters.has(typeId)) noteVisitTypeFilters.delete(typeId);
       else noteVisitTypeFilters.add(typeId);
+      save();
       renderNotesPanel();
     }
 
@@ -8230,6 +9230,7 @@
       } else {
         noteVisitTypeFilters = new Set([typeId]);
       }
+      save();
       renderNotesPanel();
     }
 
@@ -8526,11 +9527,13 @@
         const type = button.dataset.toggleNoteCategory;
         if (collapsedNoteCategories.has(type)) collapsedNoteCategories.delete(type);
         else collapsedNoteCategories.add(type);
+        save();
         renderNotesPanel();
       }));
       $$("[data-open-notes-state]").forEach(button => button.addEventListener("click", () => {
         selectedState = button.dataset.openNotesState;
         notesPanelState = selectedState;
+        save();
         renderMap();
         renderNotesPanel();
       }));
@@ -9080,7 +10083,7 @@
       if (!abbr || !STATE_NAMES[abbr]) return;
       requestConfirm({
         title: `Clear ${STATE_NAMES[abbr]}?`,
-        message: "All applied visit levels for this state will be removed. Existing notes will stay, but their level label will be cleared.",
+        message: "All applied visit levels for this location will be removed. Existing notes will stay, but their level label will be cleared.",
         actionLabel: "Clear State",
         onConfirm: () => {
           setStateLevelIds(abbr, []);
@@ -9244,6 +10247,8 @@
 
     function renderSettingsControls() {
       $("#versionLabel").textContent = `v${APP_VERSION}`;
+      $("#appNameLabel").textContent = APP_NAME;
+      if (document.title !== APP_NAME) document.title = APP_NAME;
       const developerEnabled = state.settings.developerMode === true;
       $$("[data-dev-only]").forEach(element => element.classList.toggle("hidden", !developerEnabled));
       if (!developerEnabled && $("#tab-developer")?.classList.contains("active")) switchTab("settings");
@@ -9342,14 +10347,41 @@
       const category = $("#wishCategoryFilter").value;
       const target = $("#wishTargetFilter").value;
       const effort = $("#wishEffortFilter").value;
+      const scopedSeeds = WISHLIST_SEEDS.filter(wish =>
+        (!priority || wish.priority === priority) &&
+        (!category || wish.category === category) &&
+        (!target || wish.targetKind === target) &&
+        (!effort || wish.effort === effort)
+      );
+      $("#wishSearch").placeholder = `Search through ${scopedSeeds.length} current roadmap items`;
+      const countFor = key => WISHLIST_SEEDS.reduce((totals, wish) => {
+        const value = String(wish[key] || "");
+        totals[value] = (totals[value] || 0) + 1;
+        return totals;
+      }, {});
+      const priorityCounts = countFor("priority");
+      const targetCounts = countFor("targetKind");
+      const effortCounts = countFor("effort");
       const categories = [...new Set(WISHLIST_SEEDS.map(w => w.category).filter(Boolean))].sort();
+      const categoryCounts = countFor("category");
       $("#wishCategoryFilter").innerHTML = `<option value="">All categories</option>` + categories.map(cat =>
-        `<option ${category === cat ? "selected" : ""}>${escapeHtml(cat)}</option>`
+        `<option value="${escapeHtml(cat)}" ${category === cat ? "selected" : ""}>${escapeHtml(cat)} (${categoryCounts[cat] || 0})</option>`
       ).join("");
-      let items = WISHLIST_SEEDS.map((wish, index) => ({ ...wish, _index: index })).filter(wish => {
+      $("#wishPriorityFilter").innerHTML = `<option value="">All priorities</option>` + ["P0", "P1", "P2", "P3"].map(value =>
+        `<option value="${value}" ${priority === value ? "selected" : ""}>${value} (${priorityCounts[value] || 0})</option>`
+      ).join("");
+      $("#wishTargetFilter").innerHTML = `<option value="">All targets</option>` + ["exact", "major", "minor", "patch"].map(value =>
+        `<option value="${value}" ${target === value ? "selected" : ""}>${value} (${targetCounts[value] || 0})</option>`
+      ).join("");
+      $("#wishEffortFilter").innerHTML = `<option value="">All effort</option>` + ["small", "medium", "large", "x-large"].map(value =>
+        `<option value="${value}" ${effort === value ? "selected" : ""}>${value} (${effortCounts[value] || 0})</option>`
+      ).join("");
+      let items = scopedSeeds.map(wish => ({ ...wish, _index: WISHLIST_SEEDS.indexOf(wish) })).filter(wish => {
         const blob = `${wish.ticketId} ${wish.title} ${wish.description} ${wish.category} ${wish.priority} ${wish.effort} ${wish.targetKind} ${wish.targetVersion} ${wish.prompt}`.toLowerCase();
-        return (!search || blob.includes(search)) && (!priority || wish.priority === priority) && (!category || wish.category === category) && (!target || wish.targetKind === target) && (!effort || wish.effort === effort);
+        return !search || blob.includes(search);
       });
+      $("#wishResultCount").textContent = `${items.length} item${items.length === 1 ? "" : "s"}`;
+      $("#wishResultCount").title = `${items.length} of ${WISHLIST_SEEDS.length} current roadmap items`;
       const rank = { P0: 0, P1: 1, P2: 2, P3: 3 };
       const targetRank = { exact: 0, major: 1, minor: 2, patch: 3 };
       const effortRank = { small: 0, medium: 1, large: 2, "x-large": 3 };
@@ -9415,7 +10447,7 @@
       const counts = levelCounts();
       const counted = countedStateTotal();
       const completionTotal = completionRegionTotal();
-      const lines = [`# ${state.mapName}`, "", `Generated by US State Visit Map ${APP_VERSION}`, "", "## Overall Stats"];
+      const lines = [`# ${state.mapName}`, "", `Generated by ${APP_NAME} ${APP_VERSION}`, "", "## Overall Stats"];
       lines.push(`- Total counted regions: ${counted} of ${completionTotal}`, `- Completion: ${Math.round((counted / completionTotal) * 100)}%`, "", "## Summary by Level");
       state.levels.forEach(level => lines.push(`- ${level.name}: ${counts[level.id] || 0} regions`));
       lines.push(`- Unvisited: ${STATES.length - Object.keys(state.states).length} regions`, "", "## Region-by-Region");
@@ -9457,7 +10489,7 @@
       STATES.slice().sort((a, b) => a[1].localeCompare(b[1])).forEach(([abbr, name]) => {
         lines.push(`${name} | ${stateLevelNames(abbr).join(", ") || "Unvisited"} | ${notesFor(abbr)}`);
       });
-      lines.push("", "Chronological", "Date | State | Level | Notes");
+      lines.push("", "Chronological", "Date | Location | Level | Notes");
       if (chronological.length) chronological.forEach(note => {
         lines.push(`${formatDateDisplay(note.date)} | ${note.name} | ${levelById(note.levelId)?.name || "No level"} | ${noteExportText(note)}`);
       });
@@ -9478,7 +10510,7 @@
         .join("; ") || "None";
       const lines = [
         state.mapName,
-        `Generated by US State Visit Map ${APP_VERSION}`,
+        `Generated by ${APP_NAME} ${APP_VERSION}`,
         "",
         "Overall Stats",
         `Total counted regions: ${counted} of ${completionTotal}`,
@@ -9611,6 +10643,7 @@
     function focusNotesSearchShortcut() {
       notesPanelOpen = true;
       notesPanelState = null;
+      save();
       render();
       requestAnimationFrame(() => {
         const input = $("#notesStateSearch");
@@ -9690,7 +10723,7 @@
       const handle = $("#mainResizeHandle");
       if (!handle) return;
       handle.addEventListener("pointerdown", event => {
-        if (!DESKTOP_LAYOUT_QUERY.matches || !mapPanelOpen || !(legendPanelOpen || notesPanelOpen)) return;
+        if (!DESKTOP_LAYOUT_QUERY.matches || !mapPanelOpen || !sideColumnOpen()) return;
         event.preventDefault();
         mainResizeActive = true;
         document.documentElement.dataset.resizingMain = "true";
@@ -9712,7 +10745,7 @@
       });
       handle.addEventListener("keydown", event => {
         if (!["ArrowLeft", "ArrowRight", "Home"].includes(event.key)) return;
-        if (!mapPanelOpen || !(legendPanelOpen || notesPanelOpen)) return;
+        if (!mapPanelOpen || !sideColumnOpen()) return;
         event.preventDefault();
         if (event.key === "Home") {
           state.settings.mapSplitRatio = .66;
@@ -9754,14 +10787,16 @@
           scrollTop: wrap.scrollTop,
           moved: false
         };
-        wrap.classList.add("is-panning");
-        wrap.setPointerCapture?.(event.pointerId);
       });
       wrap.addEventListener("pointermove", event => {
         if (!mapPanState || mapPanState.pointerId !== event.pointerId) return;
         const dx = event.clientX - mapPanState.x;
         const dy = event.clientY - mapPanState.y;
-        if (Math.abs(dx) > 3 || Math.abs(dy) > 3) mapPanState.moved = true;
+        if (!mapPanState.moved && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) {
+          mapPanState.moved = true;
+          wrap.classList.add("is-panning");
+          wrap.setPointerCapture?.(event.pointerId);
+        }
         if (!mapPanState.moved) return;
         event.preventDefault();
         wrap.scrollLeft = mapPanState.scrollLeft - dx;
@@ -9772,14 +10807,16 @@
         const moved = mapPanState.moved;
         mapPanState = null;
         wrap.classList.remove("is-panning");
-        try { wrap.releasePointerCapture(event.pointerId); } catch { }
         if (moved) {
+          try { wrap.releasePointerCapture(event.pointerId); } catch { }
           wrap.dataset.blockClick = "true";
           setTimeout(() => delete wrap.dataset.blockClick, 0);
+          saveMapPanSoon(true);
         }
       };
       wrap.addEventListener("pointerup", endPan);
       wrap.addEventListener("pointercancel", endPan);
+      wrap.addEventListener("scroll", () => saveMapPanSoon());
       wrap.addEventListener("click", event => {
         if (wrap.dataset.blockClick !== "true") return;
         event.preventDefault();
@@ -9929,6 +10966,8 @@
         s: () => $("#settingsBtn").click(),
         m: () => $("#renameBtn").click(),
         c: () => $("#smartColorsBtn").click(),
+        i: () => legendPanelOpen && toggleLegendEditMode(),
+        p: () => legendPanelOpen && legendPositionControlAvailable() ? toggleLegendPositionMenu() : notesPanelOpen && $("#copyNotesTextBtn").click(),
         h: () => $("#suggestionsToggleBtn").click(),
         a: () => {
           const addNote = $("#notesPanelAddNoteBtn");
@@ -9943,7 +10982,6 @@
         o: () => notesPanelOpen && !notesPanelState && $("#notesViewTextBtn").click(),
         y: () => notesPanelOpen && !notesPanelState && $("#notesCategoryToggleBtn").click(),
         v: () => notesPanelOpen && !notesPanelState && $("#notesExcludedToggleBtn").click(),
-        p: () => notesPanelOpen && $("#copyNotesTextBtn").click(),
         0: () => updateSetting("mapLabels", "none"),
         1: () => updateSetting("mapLabels", "abbr"),
         2: () => updateSetting("mapLabels", "name"),
@@ -9998,7 +11036,7 @@
       });
       $("#renameForm").addEventListener("submit", event => {
         event.preventDefault();
-        state.mapName = $("#mapNameInput").value.trim() || "Your State Map";
+        state.mapName = $("#mapNameInput").value.trim() || "Your ${APP_NAME}";
         save();
         $("#renameDialog").close();
         render();
@@ -10044,6 +11082,7 @@
       $("#mapFitBtn").addEventListener("click", toggleMapFitMode);
       $("#notesPanelBackBtn").addEventListener("click", () => {
         notesPanelState = null;
+        save();
         renderNotesPanel();
       });
       $("#notesStateSearch").addEventListener("input", event => {
@@ -10052,31 +11091,38 @@
       });
       $("#notesSortAlphaBtn").addEventListener("click", () => {
         notesSortMode = "alpha";
+        save();
         renderNotesPanel();
       });
       $("#notesSortChronoBtn").addEventListener("click", () => {
         notesSortMode = "chrono";
+        save();
         renderNotesPanel();
       });
       $("#notesCategoryToggleBtn").addEventListener("click", () => {
         notesCategoricalMode = !notesCategoricalMode;
+        save();
         renderNotesPanel();
       });
       $("#notesExcludedToggleBtn").addEventListener("click", () => {
         notesHideExcludedOnly = !notesHideExcludedOnly;
+        save();
         syncButtonLabels();
         renderNotesPanel();
       });
       $("#notesViewExpandedBtn").addEventListener("click", () => {
         notesViewMode = "expanded";
+        save();
         renderNotesPanel();
       });
       $("#notesViewCompactBtn").addEventListener("click", () => {
         notesViewMode = "compact";
+        save();
         renderNotesPanel();
       });
       $("#notesViewTextBtn").addEventListener("click", () => {
         notesViewMode = "text";
+        save();
         renderNotesPanel();
       });
       $("#copyNotesTextBtn").addEventListener("click", () => copyNotesText());
@@ -10147,6 +11193,9 @@
         render();
       });
       $("#addLevelBtn").addEventListener("click", () => openLevelDialog());
+      $("#legendPositionBtn").addEventListener("click", toggleLegendPositionMenu);
+      $("#legendEditBtn").addEventListener("click", toggleLegendEditMode);
+      bindLegendPositionDrag();
       $("#smartColorsBtn").addEventListener("click", () => {
         renderPaletteDialog();
         $("#paletteDialog").showModal();
@@ -10194,8 +11243,8 @@
           onConfirm: () => {
             state = defaultState();
             selectedState = null;
-            mapZoom = 1;
-            mapFitMode = false;
+            legendEditMode = false;
+            syncRuntimeUiFromSettings();
             centerMapAfterRender = true;
             save();
             closeDrawer();
@@ -10234,8 +11283,8 @@
             notesCategoricalMode = true;
             notesHideExcludedOnly = true;
             notesSearchQuery = "";
-            mapFitMode = false;
-            mapZoom = 1;
+            legendEditMode = false;
+            syncRuntimeMapViewFromSettings();
             centerMapAfterRender = true;
             save();
             closeDrawer();
@@ -10271,9 +11320,22 @@
       document.addEventListener("keydown", handlePowerShortcut);
       document.addEventListener("keyup", updatePowerOverlay);
       window.addEventListener("blur", () => setPowerOverlay(false));
-      window.addEventListener("resize", scheduleMainLayoutSync);
-      if (DESKTOP_LAYOUT_QUERY.addEventListener) DESKTOP_LAYOUT_QUERY.addEventListener("change", scheduleMainLayoutSync);
-      else DESKTOP_LAYOUT_QUERY.addListener(scheduleMainLayoutSync);
+      window.addEventListener("resize", () => {
+        if (!legendPositionControlAvailable()) closeLegendPositionMenu();
+        syncButtonLabels();
+        scheduleMainLayoutSync();
+      });
+      document.addEventListener("click", event => {
+        if (!legendPositionMenuOpen || event.target.closest(".legend-position-picker")) return;
+        closeLegendPositionMenu();
+      });
+      const handleLayoutModeChange = () => {
+        if (!legendPositionControlAvailable()) closeLegendPositionMenu();
+        syncButtonLabels();
+        scheduleMainLayoutSync();
+      };
+      if (DESKTOP_LAYOUT_QUERY.addEventListener) DESKTOP_LAYOUT_QUERY.addEventListener("change", handleLayoutModeChange);
+      else DESKTOP_LAYOUT_QUERY.addListener(handleLayoutModeChange);
     }
 
     function updateSetting(key, value) {
@@ -10337,7 +11399,7 @@
             actionLabel: "Import Backup",
             onConfirm: () => {
               state = imported;
-              selectedState = null;
+              syncRuntimeUiFromSettings();
               save();
               closeDrawer();
               render();
@@ -10345,7 +11407,7 @@
             }
           });
         } catch {
-          showMessage("Import Failed", "That file does not look like a valid US State Visit Map JSON backup.");
+          showMessage("Import Failed", `That file does not look like a valid ${APP_NAME} JSON backup.`);
         } finally {
           event.target.value = "";
         }
