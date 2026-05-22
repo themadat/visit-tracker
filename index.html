@@ -1172,16 +1172,25 @@
     .legend-total-pills {
       display: inline-flex;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: center;
       justify-self: start;
-      gap: .18rem;
+      gap: .24rem;
       white-space: nowrap;
-      padding-left: .42rem;
+      min-width: 5.4rem;
+      height: 30px;
+      padding: .18rem .32rem;
+      margin-left: .42rem;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--surface-2) 78%, var(--line) 22%);
     }
 
     .legend-total-pills .percent-pill,
     .legend-total-pills .count-pill {
       border: 0;
+      min-width: 2rem;
+      padding: .06rem .26rem;
+      font-size: .76rem;
+      line-height: 1.15;
     }
 
     #legendPanel {
@@ -1203,7 +1212,7 @@
 
     .legend-title-main {
       display: grid;
-      gap: .18rem;
+      gap: .5rem;
       min-width: 0;
       cursor: grab;
       touch-action: none;
@@ -1477,14 +1486,23 @@
     }
 
     .stat-color-pill .percent-pill,
-    .stat-color-pill .count-pill {
-      min-width: 2rem;
+    .stat-color-pill .count-pill,
+    .legend-total-pills .percent-pill,
+    .legend-total-pills .count-pill {
+      width: 2.4rem;
+      min-width: 2.4rem;
+      box-sizing: border-box;
       padding: .06rem .26rem;
+      text-align: center;
+      font-size: .76rem;
+      line-height: 1.15;
+    }
+
+    .stat-color-pill .percent-pill,
+    .stat-color-pill .count-pill {
       border-color: color-mix(in srgb, var(--surface) 54%, transparent);
       background: color-mix(in srgb, var(--surface) 86%, transparent);
       color: color-mix(in srgb, var(--text) 84%, var(--accent-2) 16%);
-      font-size: .76rem;
-      line-height: 1.15;
     }
 
     .stat-color-pill .no-stat-pill {
@@ -4140,8 +4158,11 @@
       }
 
       .legend-total-pills {
-        gap: .32rem;
-        padding-left: .2rem;
+        min-width: 4.2rem;
+        height: 22px;
+        gap: .24rem;
+        padding: .14rem .32rem;
+        margin-left: .2rem;
       }
 
       .legend-item .icon-btn {
@@ -4195,7 +4216,7 @@
       <div class="title-wrap">
         <div class="title-stack">
           <div class="title-row">
-            <h1 id="mapTitle">Your State Map</h1>
+            <h1 id="mapTitle">Your Visit Tracker</h1>
             <button id="renameBtn" class="ghost title-edit-btn" type="button" data-shortcut="M">Rename</button>
           </div>
           <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v2.4.0.6</span>
@@ -4236,7 +4257,7 @@
         <div class="map-head">
           <div class="map-head-title">
             <h2 id="mapHeading">State Map</h2>
-            <small id="tapHint" data-hint>Tap a state to cycle its visit level.</small>
+            <small id="tapHint" data-hint>Tap a location to select and cycle its visit level.</small>
           </div>
           <div class="map-head-actions">
             <div class="map-head-hints">
@@ -4269,7 +4290,7 @@
         <div class="map-viewport">
           <div class="map-wrap">
             <svg id="stateMap" viewBox="0 0 934 593" role="img" aria-labelledby="svgTitle svgDesc">
-              <title id="svgTitle">Clickable US state visit map</title>
+              <title id="svgTitle">Clickable US Map</title>
               <desc id="svgDesc">Outline map of all 50 United States, Washington DC, and US territories.</desc>
               <g class="map-states">
                 <path class="al"
@@ -5185,9 +5206,9 @@
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-docs"></span>Documentation
           </h3>
           <ol>
-            <li>Tap a state to mark it. In cycle mode, a first tap on an already marked state shows it in Notes; the
+            <li>Tap a location to mark it. In cycle mode, a first tap on an already marked location shows it in Notes; the
               next tap cycles levels.</li>
-            <li>Use the app header to show or hide Map, Legend, and Notes. Use the State Map header to switch labels,
+            <li>Use the app header to show or hide Map, Legend, and Notes. Use the Location Map header to switch labels,
               fit the map for screenshots, or return to scrollable mode with pan and zoom controls.</li>
             <li>In scrollable map mode, drag the map to pan, type an exact zoom percentage, use the zoom controls to
               move in or out, and reset to 100% when you want the full map again. Drag the divider on desktop to resize
@@ -7021,7 +7042,7 @@
       const levels = DEFAULT_LEVEL_IDS.map(id => clone(BUILT_INS.find(level => level.id === id)));
       return {
         appVersion: APP_VERSION,
-        mapName: "Your State Map",
+        mapName: "Your Visit Tracker",
         settings: { theme: "light", tapBehavior: "cycle", buttonStyle: "symbols", uiHints: true, textScale: 1, dateOrder: "mdy", dateStyle: "alpha", mapLabels: "none", mapSplitRatio: .66, legendPosition: "right-top", hideSuggestedCategories: false, developerMode: false, shortcutMode: false },
         levels,
         states: defaultTerritoryStates(levels),
@@ -7676,8 +7697,8 @@
       setButtonLabel("#notesToggleBtn", ICON_MAP_MODAL_NOTES_LIST_BULLET_CLIPBOARD_FILL, "Notes", "Toggle Notes Panel", "Toggle Notes Panel");
       $("#labelsToggleLabel").innerHTML = prefersSymbols() ? ICON_MAP_LABELS_TAG_FILL : "Labels";
       setButtonLabel("#labelsNoneBtn", ICON_MAP_LABELS_NONE_CIRCLE_SLASH, "None", "No map labels");
-      setButtonLabel("#labelsAbbrBtn", ICON_MAP_LABELS_ABBR_CHARACTER, "Abbr", "Show state abbreviations");
-      setButtonLabel("#labelsNameBtn", ICON_MAP_LABELS_NAME_TEXTFORMAT, "Name", "Show state names");
+      setButtonLabel("#labelsAbbrBtn", ICON_MAP_LABELS_ABBR_CHARACTER, "Abbr", "Show location abbreviations");
+      setButtonLabel("#labelsNameBtn", ICON_MAP_LABELS_NAME_TEXTFORMAT, "Name", "Show location names");
       const fitTitle = mapFitMode ? "Switch to scrollable map" : "Switch to fit map";
       setButtonLabel("#mapFitBtn", mapFitMode ? __SQUARE_ARROWTRIANGLE_4_OUTWARD : __DOT_ARROWTRIANGLES_UP_RIGHT_DOWN_LEFT_CIRCLE, mapFitMode ? "Fit Map" : "Scroll Map", mapFitMode ? "Fit map mode" : "Scrollable map mode", fitTitle);
       setButtonLabel("#mapZoomOutBtn", __MINUS_CIRCLE, "Zoom Out", "Zoom map out", "Zoom map out");
@@ -7717,7 +7738,7 @@
       setButtonLabelBoth("#iconTextButtonsBtn", ICON_SETTINGS_BUTTON_ICONTEXT__CHARACTER_SQUARE, "Icons + Text");
       setButtonLabelBoth("#hintsOnBtn", ICON_SETTINGS_HINT_ON__LIGHTBULB_MAX_FILL, "On", "Hints on");
       setButtonLabelBoth("#hintsOffBtn", ICON_SETTINGS_HINT_OFF__LIGHTBULB, "Off", "Hints off");
-      setButtonLabelBoth("#cycleModeBtn", ICON_SETTINGS_MAP_CYCLE__ARROW_TRIANGLEHEAD_2_CLOCKWISE, "Cycle", "Tap to cycle");
+      setButtonLabelBoth("#cycleModeBtn", ICON_SETTINGS_MAP_CYCLE__ARROW_TRIANGLEHEAD_2_CLOCKWISE, "Cycle", "Tap to select then cycle");
       setButtonLabelBoth("#selectModeBtn", ICON_SETTINGS_MAP_SELECT__SCOPE, "Select", "Tap to select");
       setButtonLabelBoth("#visitTagSettingsBtn", __CIRCLE_CIRCLE, "Choose, Reorder, Rename, Assign Hotkeys");
       setExportBtnLabel("#exportJsonBtn", ICON_SETTINGS_EXPORT_JSON__CURLYBRACES, "JSON", ".json");
@@ -7992,8 +8013,8 @@
       $("#devModePill").textContent = `Dev Mode v${APP_VERSION}`;
       $("#devModePill").classList.toggle("hidden", state.settings.developerMode !== true);
       $("#tapHint").textContent = state.settings.tapBehavior === "cycle"
-        ? "Tap a state to cycle its visit level."
-        : "Tap a state to choose a level and add a note.";
+        ? "Tap a location to select then cycle its visit level."
+        : "Tap a location to choose a level and add a note.";
       placeLegendPanel();
       syncButtonLabels();
       renderMap();
@@ -8778,7 +8799,7 @@
 
     function renderMarkedStatesDrawer() {
       $("#drawerTitle").textContent = "Notes";
-      $("#drawerSubtitle").textContent = "Select a state to view details or add notes.";
+      $("#drawerSubtitle").textContent = "Select a location to view details or add notes.";
       $("#markedStatesSection").classList.remove("hidden");
       $("#levelsSection").classList.add("hidden");
       $("#notesSection").classList.add("hidden");
@@ -9875,7 +9896,7 @@
       if (!abbr || !STATE_NAMES[abbr]) return;
       requestConfirm({
         title: `Clear ${STATE_NAMES[abbr]}?`,
-        message: "All applied visit levels for this state will be removed. Existing notes will stay, but their level label will be cleared.",
+        message: "All applied visit levels for this location will be removed. Existing notes will stay, but their level label will be cleared.",
         actionLabel: "Clear State",
         onConfirm: () => {
           setStateLevelIds(abbr, []);
@@ -10281,7 +10302,7 @@
       STATES.slice().sort((a, b) => a[1].localeCompare(b[1])).forEach(([abbr, name]) => {
         lines.push(`${name} | ${stateLevelNames(abbr).join(", ") || "Unvisited"} | ${notesFor(abbr)}`);
       });
-      lines.push("", "Chronological", "Date | State | Level | Notes");
+      lines.push("", "Chronological", "Date | Location | Level | Notes");
       if (chronological.length) chronological.forEach(note => {
         lines.push(`${formatDateDisplay(note.date)} | ${note.name} | ${levelById(note.levelId)?.name || "No level"} | ${noteExportText(note)}`);
       });
@@ -10825,7 +10846,7 @@
       });
       $("#renameForm").addEventListener("submit", event => {
         event.preventDefault();
-        state.mapName = $("#mapNameInput").value.trim() || "Your State Map";
+        state.mapName = $("#mapNameInput").value.trim() || "Your ${APP_NAME}";
         save();
         $("#renameDialog").close();
         render();
