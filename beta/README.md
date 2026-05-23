@@ -1,8 +1,10 @@
 # Trail Log
 
-Single-file, offline-capable HTML app for tracking US state visits and mapped visit notes. The app is intentionally plain HTML, CSS, and JavaScript with no build step or backend. Optional coordinate lookup uses an online geocode request only when the user taps Locate; saved data and manual coordinates work offline.
+Single-file, offline-capable HTML app for tracking US state visits and mapped visit notes. The app itself is plain HTML, CSS, and JavaScript with no required build step or backend. An optional macOS-only build script regenerates the PNG and SVG icon assets from the two source SVGs in `icon/`. Optional coordinate lookup uses an online geocode request only when the user taps Locate; saved data and manual coordinates work offline.
 
 ## Quick Start
+
+### Run the app
 
 Open the app directly:
 
@@ -24,12 +26,45 @@ Then visit:
 http://127.0.0.1:8018/index.html
 ```
 
+### Build the icon assets (optional, macOS only)
+
+The repo ships with the generated PNG icons and the dual-theme `favicon.svg` already committed at the root, so day-to-day work needs no build. Run the build script only after editing the two source SVGs in `icon/`:
+
+```sh
+./build/generate-icons.sh
+```
+
+Inputs:
+
+- `icon/trail-log-light.svg` — light variant of the brand icon (mint background, brown book, gold globe ring).
+- `icon/trail-log-dark.svg` — dark variant (pine background, tan book, forest globe ring).
+
+The script writes ten PNGs at the repo root (`apple-touch-icon[-dark].png`, `icon-{192,512}[-dark].png`, `favicon-{16,32}[-dark].png`) using `qlmanage` from QuickLook. It then invokes `build/generate-favicon.py` (Python 3, no third-party deps) to combine both palettes into a single `favicon.svg` that swaps fills via `@media (prefers-color-scheme: dark)`.
+
+If `qlmanage` hangs (the QuickLook daemon occasionally wedges), reset it with:
+
+```sh
+killall -9 QuickLookUIService quicklookd
+./build/generate-icons.sh
+```
+
+Commit the regenerated PNGs and `favicon.svg` alongside any SVG source edits.
+
 ## Repo Layout
 
 ```text
-index.html   Complete app: markup, styles, inline SVG map, app state, and UI logic.
-readme.md    Developer notes.
-context/     LLM handoff context for future development sessions.
+index.html             Complete app: markup, styles, inline SVG map, app state, and UI logic.
+README.md              Developer notes (this file).
+manifest.webmanifest   PWA manifest (light icon set).
+manifest-dark.webmanifest  PWA manifest (dark icon set).
+favicon.svg            Browser-tab favicon, light + dark via @media.
+apple-touch-icon*.png  iOS / macOS home-screen and dock icons (light + dark).
+icon-*.png             Manifest icons at 192 and 512, light and dark.
+favicon-*.png          Legacy 16 / 32 favicon fallbacks, light and dark.
+build/                 Optional macOS icon build pipeline (generate-icons.sh + generate-favicon.py). Excluded from deploys.
+icon/                  Source SVGs the build pipeline consumes. `trail-log-{light,dark}.svg` are also fetched at runtime by the Install dialog's icon-picker thumbnails, so this folder ships with the deploy.
+context/               LLM handoff context for future development sessions. Excluded from deploys.
+.github/workflows/     GitHub Actions; deploys main to /visit-tracker/ and 3-0-0-Trail-Log to /visit-tracker/beta/. Excluded from deploys.
 ```
 
 ## App Architecture
@@ -143,6 +178,7 @@ For every completed change:
 - Keep the current major/minor release entry updated unless intentionally opening a new release line.
 - Preserve the localStorage schema where possible.
 - Mention any known manual QA gaps in the handoff.
+- Give me a push commit summary and description in two distinct containers that make copy and paste very easy.
 
 
 ## Notes
