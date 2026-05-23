@@ -4,8 +4,33 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Visit Tracker</title>
+  <title>Trail Log</title>
   <!-- title is overwritten by APP_NAME at startup -->
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="favicon-16.png" sizes="16x16" type="image/png">
+  <script>
+    // Set apple-touch-icon + manifest before they're fetched so macOS Safari
+    // "Add to Dock" picks the right variant. The choice persists across reloads.
+    (function () {
+      var variant = "light";
+      try { if (localStorage.getItem("tlInstallIconVariant") === "dark") variant = "dark"; } catch (e) {}
+      var touch = document.createElement("link");
+      touch.rel = "apple-touch-icon";
+      touch.href = variant === "dark" ? "apple-touch-icon-dark.png" : "apple-touch-icon.png";
+      document.head.appendChild(touch);
+      var mf = document.createElement("link");
+      mf.rel = "manifest";
+      mf.href = variant === "dark" ? "manifest-dark.webmanifest" : "manifest.webmanifest";
+      document.head.appendChild(mf);
+    })();
+  </script>
+  <meta name="apple-mobile-web-app-title" content="Trail Log">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
+  <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
   <style>
     :root {
       color-scheme: light;
@@ -377,6 +402,7 @@
       min-width: 0;
       display: flex;
       align-items: center;
+      justify-content: flex-start;
       gap: .52rem;
       flex: 1 1 auto;
     }
@@ -395,9 +421,59 @@
       min-width: 0;
     }
 
+    .app-icon {
+      flex: 0 0 auto;
+      width: clamp(40px, 5vw, 52px);
+      height: clamp(40px, 5vw, 52px);
+      display: block;
+      margin-right: 8px;
+      cursor: pointer;
+      border-radius: 22%;
+    }
+
+    .app-icon .ai-bg {
+      fill: #D6E7D8;
+    }
+
+    .app-icon .ai-book {
+      fill: #E8DCC8;
+    }
+
+    .app-icon .ai-book-stroke {
+      fill: #8B5E3C;
+    }
+
+    .app-icon .ai-globe-ring {
+      fill: #F2C14E;
+    }
+
+    .app-icon .ai-globe-core {
+      fill: #6B8F4E;
+    }
+
+    [data-theme="dark"] .app-icon .ai-bg {
+      fill: #243127;
+    }
+
+    [data-theme="dark"] .app-icon .ai-book {
+      fill: #B79B7A;
+    }
+
+    [data-theme="dark"] .app-icon .ai-book-stroke {
+      fill: #5A3E2B;
+    }
+
+    [data-theme="dark"] .app-icon .ai-globe-ring {
+      fill: #E3A93B;
+    }
+
+    [data-theme="dark"] .app-icon .ai-globe-core {
+      fill: #355E3B;
+    }
+
     .title-edit-btn {
       flex: 0 0 auto;
-      align-self: flex-end;
+      align-self: center;
       font-size: clamp(.5rem, .85vw, .72rem);
       line-height: 1;
       padding: 0;
@@ -420,8 +496,20 @@
       height: .85rem;
     }
 
+    .title-name {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 0;
+      flex: 0 1 auto;
+    }
+
+    .title-name h1 {
+      align-self: stretch;
+      text-align: left;
+    }
+
     .dev-mode-pill {
-      justify-self: start;
       width: fit-content;
       padding: .18rem .48rem;
       border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--line) 66%);
@@ -484,6 +572,7 @@
 
     .toolbar-panel-toggle-group button {
       width: 40px;
+      height: 40px;
       min-width: 40px;
       min-height: 40px;
       aspect-ratio: 1;
@@ -493,9 +582,25 @@
       flex: 0 0 40px;
     }
 
-    .toolbar-panel-toggle-group .sf-symbol {
-      width: 1.08em;
-      height: 1.08em;
+    #tipJarBtn,
+    #addToHomeBtn,
+    #settingsBtn {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      aspect-ratio: 1;
+      height: 40px;
+      min-height: 40px;
+      width: 40px;
+      min-width: 40px;
+      flex: 0 0 40px;
+    }
+
+    .toolbar-panel-toggle-group .sf-symbol,
+    .toolbar .sf-symbol {
+      width: 24px;
+      height: 24px;
     }
 
     [data-button-style="text"] .toolbar-panel-toggle-group button,
@@ -505,15 +610,6 @@
       aspect-ratio: auto;
       padding: 0 .45rem;
       flex-basis: auto;
-    }
-
-    #settingsBtn {
-      position: relative;
-      width: 40px;
-      min-width: 40px;
-      aspect-ratio: 1;
-      padding: 0;
-      flex: 0 0 40px;
     }
 
     .release-notice {
@@ -1094,7 +1190,7 @@
       max-height: calc(100svh - 10.5rem - env(safe-area-inset-bottom, 0px));
     }
 
-    svg {
+    #stateMap {
       display: block;
       width: 100%;
       min-width: 680px;
@@ -1130,6 +1226,62 @@
       stroke: var(--surface);
       stroke-width: 2.5px;
       stroke-linejoin: round;
+    }
+
+    .map-location-markers {
+      pointer-events: auto;
+    }
+
+    .map-location-marker {
+      cursor: pointer;
+      color: white;
+      filter: drop-shadow(0 2px 4px rgba(15, 23, 42, .28));
+    }
+
+    [data-theme="dark"] .map-location-marker {
+      color: #07111f;
+    }
+
+    .map-location-marker .marker-ring {
+      fill: var(--surface);
+      stroke: color-mix(in srgb, var(--marker-color, var(--accent)) 84%, var(--text));
+      stroke-width: 1.8;
+    }
+
+    .map-location-marker .marker-core {
+      fill: var(--marker-color, var(--accent));
+    }
+
+    .map-location-marker text {
+      fill: white;
+      font-size: 8px;
+      font-weight: 900;
+      pointer-events: none;
+      text-anchor: middle;
+      dominant-baseline: central;
+    }
+
+    [data-theme="dark"] .map-location-marker text {
+      fill: #07111f;
+    }
+
+    .map-marker-icon {
+      width: 12px;
+      height: 12px;
+      color: white;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+    }
+
+    [data-theme="dark"] .map-marker-icon {
+      color: #07111f;
+    }
+
+    .map-marker-icon .sf-symbol {
+      width: 12px;
+      height: 12px;
+      display: block;
     }
 
     .state-tile:hover,
@@ -2280,6 +2432,68 @@
       font-size: .82rem;
     }
 
+    .marker-dialog-summary {
+      margin: 0;
+      color: var(--muted);
+      font-size: .86rem;
+      line-height: 1.35;
+    }
+
+    .marker-note-list {
+      display: grid;
+      gap: .34rem;
+    }
+
+    .marker-note-row {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1.6rem minmax(4.5rem, auto) minmax(0, 1fr) auto;
+      align-items: center;
+      gap: .48rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: .48rem .56rem;
+      background: var(--surface);
+      text-align: left;
+      min-height: 0;
+    }
+
+    .marker-note-row:hover,
+    .marker-note-row:focus-visible {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--surface) 88%, var(--accent) 12%);
+    }
+
+    .marker-note-icon {
+      width: 1.4rem;
+      height: 1.4rem;
+      display: grid;
+      place-items: center;
+      color: var(--marker-row-color, var(--accent));
+    }
+
+    .marker-note-main {
+      min-width: 0;
+      display: grid;
+      gap: .08rem;
+    }
+
+    .marker-note-title {
+      font-weight: 820;
+      line-height: 1.15;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .marker-note-meta,
+    .marker-note-date {
+      color: var(--muted);
+      font-size: .78rem;
+      line-height: 1.15;
+      white-space: nowrap;
+    }
+
     dialog {
       width: min(720px, calc(100vw - 1.6rem));
       max-height: min(860px, calc(100vh - 1.6rem));
@@ -2364,6 +2578,258 @@
 
     .secret-emoji:hover {
       background: color-mix(in srgb, var(--surface-2) 78%, var(--accent) 10%);
+    }
+
+    #addToHomeDialog .dialog-body {
+      display: grid;
+      gap: .8rem;
+      padding: 1rem 1.1rem 1.1rem;
+      max-width: 480px;
+    }
+
+    .install-intro {
+      margin: 0;
+      color: var(--muted);
+      font-size: .92rem;
+    }
+
+    .install-section-label {
+      font-weight: 750;
+      color: var(--text);
+      font-size: .92rem;
+      margin: 0 0 .35rem;
+      padding: 0;
+    }
+
+    .install-icon-picker {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .55rem;
+      border: 0;
+      margin: 0;
+      padding: 0;
+    }
+
+    .install-icon-option {
+      position: relative;
+      display: grid;
+      justify-items: center;
+      gap: .45rem;
+      padding: .7rem .7rem .65rem;
+      border: 2px solid var(--line);
+      border-radius: calc(var(--radius) + 2px);
+      background: var(--surface);
+      cursor: pointer;
+      transition: border-color .12s ease, background .12s ease;
+    }
+
+    .install-icon-option:hover {
+      border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+    }
+
+    .install-icon-option:has(input:checked) {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--surface) 88%, var(--accent) 12%);
+    }
+
+    .install-icon-option:focus-within {
+      box-shadow: var(--focus);
+    }
+
+    .install-icon-option input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      width: 0;
+      height: 0;
+    }
+
+    .install-icon-label {
+      font-weight: 700;
+      color: var(--text);
+      font-size: .92rem;
+    }
+
+    .install-icon-thumb {
+      width: 100%;
+      aspect-ratio: 1;
+      max-width: 110px;
+      border-radius: 22%;
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .18);
+    }
+
+    .install-icon-thumb-light {
+      background-color: #D6E7D8;
+      background-image: url("icon/trail-log-light.svg");
+    }
+
+    .install-icon-thumb-dark {
+      background-color: #243127;
+      background-image: url("icon/trail-log-dark.svg");
+    }
+
+    .install-section {
+      display: grid;
+      gap: .35rem;
+    }
+
+    .install-steps {
+      margin: 0;
+      padding-left: 1.2rem;
+      display: grid;
+      gap: .45rem;
+      color: var(--text);
+      font-size: .92rem;
+      line-height: 1.4;
+    }
+
+    .install-steps li small {
+      display: block;
+      color: var(--muted);
+      font-size: .78rem;
+      margin-top: .1rem;
+    }
+
+    .install-android {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: .45rem .65rem;
+      background: var(--surface-2);
+    }
+
+    .install-android summary {
+      cursor: pointer;
+      font-weight: 650;
+      color: var(--text);
+    }
+
+    .install-android .install-steps {
+      margin-top: .5rem;
+      padding-left: 1.2rem;
+      font-size: .88rem;
+    }
+
+    .install-mini-note {
+      margin: .45rem 0 0;
+      color: var(--muted);
+      font-size: .78rem;
+      line-height: 1.35;
+    }
+
+    .install-reload-notice {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: .55rem;
+      align-items: center;
+      padding: .55rem .7rem;
+      border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--line));
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--surface) 85%, var(--accent) 15%);
+      color: var(--text);
+      font-size: .85rem;
+      line-height: 1.3;
+    }
+
+    .install-foot {
+      color: var(--muted);
+      font-size: .8rem;
+      margin: 0;
+      line-height: 1.35;
+    }
+
+    #tipJarDialog .dialog-body {
+      display: grid;
+      gap: .55rem;
+      padding: 1rem 1.1rem 1.1rem;
+      max-width: 540px;
+    }
+
+    .tip-intro {
+      margin: 0;
+      color: var(--muted);
+      font-size: .92rem;
+    }
+
+    .tip-tier-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: .5rem;
+      margin: .25rem 0 .15rem;
+    }
+
+    .tip-tier {
+      display: grid;
+      gap: .15rem;
+      padding: .65rem .65rem;
+      text-align: left;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      min-height: 0;
+    }
+
+    .tip-tier:hover {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--surface) 88%, var(--accent) 12%);
+    }
+
+    .tip-amount {
+      font-weight: 800;
+      color: var(--accent-2);
+      font-size: 1.05rem;
+      line-height: 1.15;
+    }
+
+    .tip-label {
+      color: var(--muted);
+      font-size: .82rem;
+      line-height: 1.25;
+    }
+
+    .tip-other {
+      display: grid;
+      gap: .35rem;
+      margin-top: .25rem;
+    }
+
+    .tip-other-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: .35rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: .15rem .15rem .15rem .55rem;
+      background: var(--surface);
+    }
+
+    .tip-other-row:focus-within {
+      border-color: var(--accent);
+      box-shadow: var(--focus);
+    }
+
+    .tip-other-prefix {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .tip-other-row input {
+      min-height: 36px;
+      border: 0;
+      background: transparent;
+      outline: none;
+      padding: 0 .25rem;
+    }
+
+    .tip-privacy {
+      color: var(--muted);
+      font-size: .78rem;
+      margin: .25rem 0 0;
+      line-height: 1.35;
     }
 
     .version-pill {
@@ -2752,7 +3218,7 @@
     }
 
     .notes-filter-summary {
-      font-size: .7rem;
+      font-size: 1.0rem;
       line-height: 1.1;
     }
 
@@ -2762,20 +3228,32 @@
       gap: .25rem;
       flex-wrap: wrap;
       color: var(--text);
-      font-size: .8rem;
+      font-size: 1rem;
       line-height: 1.2;
+    }
+
+    .notes-filter-summary .summary-count {
+      display: inline-flex;
+      align-items: center;
+      gap: .1rem;
+      margin-right: .25rem;
+    }
+
+    .notes-filter-summary .summary-count .sf-symbol {
+      width: .8em;
+      height: .8em;
     }
 
     .notes-filter-summary .mode-bracket {
       color: var(--muted);
-      font-size: .6rem;
+      font-size: .7rem;
       line-height: 1.1;
       text-transform: uppercase;
     }
 
     .notes-filter-summary em {
       color: var(--muted);
-      font-size: .7rem;
+      font-size: .85rem;
       line-height: 1.1;
     }
 
@@ -2836,6 +3314,7 @@
     }
 
     .visit-type-row,
+    .note-place-grid,
     .note-field-grid,
     .note-level-radios,
     .smart-convert-row {
@@ -2848,8 +3327,57 @@
       gap: .3rem;
     }
 
+    .note-place-grid {
+      grid-template-columns: minmax(0, 1.35fr) minmax(16rem, .9fr);
+      align-items: start;
+    }
+
     .note-field-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .note-location-field {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 38px;
+      gap: .32rem;
+      align-items: end;
+    }
+
+    .note-location-field label {
+      min-width: 0;
+    }
+
+    .note-location-field button {
+      min-width: 38px;
+      width: 38px;
+      min-height: 38px;
+      height: 38px;
+      padding: 0;
+      display: inline-grid;
+      place-items: center;
+    }
+
+    .note-coordinate-grid {
+      display: grid;
+      gap: .18rem;
+    }
+
+    .note-coordinate-inputs {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .32rem;
+    }
+
+    .note-coordinate-inputs input {
+      min-height: 38px;
+    }
+
+    .note-geocode-status {
+      display: flex;
+      align-items: center;
+      color: var(--muted);
+      font-size: .76rem;
+      line-height: 1.15;
     }
 
     .note-level-radios {
@@ -3602,6 +4130,30 @@
       opacity: .8;
     }
 
+    .developer-readout {
+      color: var(--text);
+      font-size: .85rem;
+      text-align: right;
+      line-height: 1.2;
+    }
+
+    .developer-readout-mono {
+      font: 11px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      word-break: break-all;
+      max-width: 60%;
+    }
+
+    .developer-readout-icon {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+    }
+
+    .developer-readout-icon .sf-symbol {
+      width: 22px;
+      height: 22px;
+    }
+
     .developer-json {
       max-height: 220px;
       overflow: auto;
@@ -4025,6 +4577,7 @@
       .title-stack {
         order: 1;
         flex: 1 1 100%;
+        max-width: none;
         width: 100%;
         justify-items: center;
       }
@@ -4041,7 +4594,8 @@
       #mapTitle {
         flex: 0 1 auto;
         min-width: 0;
-        width: auto;
+        width: fit-content;
+        max-width: calc(100vw - 8.5rem);
         text-align: center;
         white-space: normal;
         overflow: visible;
@@ -4103,12 +4657,6 @@
 
       .toolbar button {
         flex: 0 0 auto;
-      }
-
-      #settingsBtn {
-        width: 40px;
-        min-width: 40px;
-        flex: 0 0 40px;
       }
 
       .map-head {
@@ -4209,7 +4757,7 @@
         font-size: .72rem;
       }
 
-      svg {
+      #stateMap {
         min-width: 560px;
       }
 
@@ -4218,7 +4766,9 @@
       .filters,
       .level-editor-grid,
       .date-builder,
+      .note-place-grid,
       .note-field-grid,
+      .note-coordinate-grid,
       .note-level-radios,
       .smart-convert-row {
         grid-template-columns: 1fr;
@@ -4540,16 +5090,34 @@
       <div class="title-wrap">
         <div class="title-stack">
           <div class="title-row">
-            <h1 id="mapTitle">Your Visit Tracker</h1>
+            <svg id="appIcon" class="app-icon" viewBox="0 0 1024 1024" role="img" aria-label="Trail Log icon">
+              <rect class="ai-bg" width="1024" height="1024" rx="224" />
+              <g transform="translate(152 85) scale(26.3)">
+                <g>
+                  <rect class="ai-book" height="27" width="20" x="3" y="3" />
+                  <path class="ai-book-stroke"
+                    d="M5.08008 33.0703L24.8906 33.0703C25.793 33.0703 26.4492 32.4141 26.4492 31.5059C26.4492 30.6973 25.8984 30.2051 25.2539 29.8418C23.4258 28.8867 23.0625 26.1973 24.9961 24.4395C25.9453 23.6484 26.4258 22.875 26.4258 21.3398L26.4258 5.16797C26.4258 1.82812 24.6328 0.0234375 21.3105 0.0234375L5.11523 0.0234375C1.79297 0.0234375 0 1.82227 0 5.16797L0 27.9844C0 31.2715 1.79883 33.0703 5.08008 33.0703ZM3.46875 22.3945L3.46875 5.51953C3.46875 4.18945 4.125 3.48633 5.50781 3.48633L20.9121 3.48633C22.3008 3.48633 22.9629 4.18945 22.9629 5.51953L22.9629 20.7832C22.9629 21.5098 22.5527 21.9141 21.7969 21.9141L5.60156 21.9141C4.76367 21.9141 4.06055 22.084 3.46875 22.3945ZM5.74219 29.9531C4.01953 29.9531 3.13477 28.9277 3.13477 27.4746C3.13477 26.0801 4.10742 25.0254 5.81836 25.0254L20.5605 25.0254C20.748 25.0254 20.9062 25.0078 21.0645 24.9785C20.2559 26.6426 20.332 28.5 21.2109 29.9531ZM5.24414 23.3496L7.4707 23.3496L7.4707 2.56641L5.24414 2.56641Z" />
+                </g>
+                <g transform="scale(0.4) translate(22 16)">
+                  <path class="ai-globe-ring"
+                    d="M15.7969 31.5996C24.5215 31.5996 31.5996 24.5215 31.5996 15.8027C31.5996 7.07812 24.5215 0 15.7969 0C7.07227 0 0 7.07812 0 15.8027C0 24.5215 7.07227 31.5996 15.7969 31.5996ZM15.7969 28.0547C9.02344 28.0547 3.54492 22.5762 3.54492 15.8027C3.54492 9.0293 9.02344 3.54492 15.7969 3.54492C22.5703 3.54492 28.0488 9.0293 28.0488 15.8027C28.0488 22.5762 22.5703 28.0547 15.7969 28.0547Z" />
+                  <path class="ai-globe-core"
+                    d="M8.05664 21.8145C8.05664 22.5234 8.50781 22.8867 9.10547 22.8867C9.33984 22.8867 9.58008 22.8105 9.81445 22.6816L12.6738 21.123L12.6738 8.56641C12.4863 8.61914 12.2695 8.71875 12.0117 8.85938L8.8125 10.6816C8.2793 10.9746 8.05664 11.373 8.05664 11.9707ZM13.7637 20.9062L17.1035 22.8047C17.3145 22.9277 17.5078 23.0039 17.7363 23.0449L17.7363 10.7988L14.4844 8.86523C14.2031 8.70703 14.1094 8.67188 13.7637 8.53125ZM18.8086 22.998C18.9023 22.9746 19.0078 22.9336 19.1133 22.8809L22.7227 20.8359C23.2969 20.5137 23.5078 20.1445 23.5078 19.5352L23.5078 9.7793C23.5078 9.04102 23.0449 8.69531 22.377 8.69531C22.125 8.69531 21.8555 8.78906 21.5977 8.92969L18.8086 10.459Z" />
+                </g>
+              </g>
+            </svg>
+            <div class="title-name">
+              <h1 id="mapTitle">Your Trail Log</h1>
+              <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.11</span>
+            </div>
             <button id="renameBtn" class="ghost title-edit-btn" type="button" data-shortcut="M">Rename</button>
           </div>
-          <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v2.5.0</span>
         </div>
         <div class="topbar-hints" aria-label="Title bar tips">
           <small id="topbarPanelHint" data-hint data-hint-key="topbar-panel-controls">
-            Edit the Map Name | Toggle Cards Shown: Map, Legend, Notes.</small>
+            Toggle Cards Shown: Map, Legend, Notes<br />Tip the Dev! | Add as App | Settings</small>
           <small id="mapResizeHint" class="topbar-resize-hint" data-hint data-hint-key="map-resize">
-            Looks wonky? Resize the map and cards to fit your needs.</small>
+            Looks wonky? Resize the map and cards.</small>
         </div>
       </div>
       <div id="whatsNewNotice" class="release-notice hidden" role="button" tabindex="0" aria-label="Open release notes">
@@ -4575,6 +5143,8 @@
           <button id="notesToggleBtn" class="toggle-btn" type="button" aria-pressed="true"
             data-shortcut="N">Notes</button>
         </div>
+        <button id="tipJarBtn" type="button" data-shortcut="T" aria-label="Send a tip">Tip</button>
+        <button id="addToHomeBtn" type="button" data-shortcut="J" aria-label="Add to Home Screen">Install</button>
         <button id="settingsBtn" type="button" data-shortcut="S">Settings</button>
       </nav>
     </header>
@@ -5067,6 +5637,7 @@
               </g>
               <path class="map-separator"
                 d="m 215,493 v 55 l 36,45 m -251,-168 h 147 l 68,68 h 85 l 54,54 v 46 m 206,0 v -78 h 122 v 78 m -47,-78 v 78 m -75,-37 h 122 m -84,0 v 37" />
+              <g id="mapLocationMarkers" class="map-location-markers"></g>
 
             </svg>
           </div>
@@ -5208,6 +5779,115 @@
     </form>
   </dialog>
 
+  <dialog id="addToHomeDialog">
+    <header>
+      <h2>Add Trail Log to Home Screen</h2>
+      <button class="dialog-close" type="button" data-close="addToHomeDialog" data-shortcut="Q">Close</button>
+    </header>
+    <div class="dialog-body">
+      <p class="install-intro">Pick the icon you want, then follow the three steps below.</p>
+
+      <fieldset class="install-icon-picker">
+        <legend class="install-section-label">1. Choose your icon</legend>
+        <label class="install-icon-option" data-variant="light">
+          <input type="radio" name="installIconVariant" value="light">
+          <span class="install-icon-thumb install-icon-thumb-light" aria-hidden="true"></span>
+          <span class="install-icon-label">Light</span>
+        </label>
+        <label class="install-icon-option" data-variant="dark">
+          <input type="radio" name="installIconVariant" value="dark">
+          <span class="install-icon-thumb install-icon-thumb-dark" aria-hidden="true"></span>
+          <span class="install-icon-label">Dark</span>
+        </label>
+      </fieldset>
+
+      <div id="installReloadNotice" class="install-reload-notice hidden" role="status">
+        <span><b>Reload required on Mac.</b> Safari caches the icon manifest at page load. Reload so "Add to Dock" picks up the new icon.</span>
+        <button id="installReloadBtn" class="primary" type="button">Reload now</button>
+      </div>
+
+      <div class="install-section">
+        <p class="install-section-label">2. On your iPhone or iPad</p>
+        <ol class="install-steps">
+          <li>Open this page in <b>Safari</b>. <small>(Must be Safari — Chrome on iOS can't add web apps to the home
+              screen.)</small></li>
+          <li>Tap the <b>Share</b> button — the square with an arrow pointing up, at the bottom of the screen.</li>
+          <li>Scroll down and tap <b>Add to Home Screen</b>. The name will say <b>Trail Log</b>. Tap <b>Add</b> in the
+            top right.</li>
+        </ol>
+      </div>
+
+      <details class="install-android">
+        <summary>On a Mac?</summary>
+        <ol class="install-steps">
+          <li>Open this page in <b>Safari</b> on macOS 14 Sonoma or newer.</li>
+          <li>From the <b>File</b> menu, choose <b>Add to Dock…</b></li>
+          <li>Confirm the name <b>Trail Log</b> and click <b>Add</b>. The icon lands in your Dock and opens Trail Log in
+            its own window.</li>
+        </ol>
+        <p class="install-mini-note">On older macOS, drag the URL bar's site favicon to your Dock or Desktop instead.
+        </p>
+      </details>
+
+      <details class="install-android">
+        <summary>On Android?</summary>
+        <ol class="install-steps">
+          <li>Open this page in <b>Chrome</b>.</li>
+          <li>Tap the <b>three-dot menu</b> in the top right.</li>
+          <li>Tap <b>Install app</b> (or <b>Add to Home screen</b>).</li>
+        </ol>
+      </details>
+
+      <p class="install-foot">Once installed, tapping the icon opens Trail Log full-screen — no browser chrome.</p>
+    </div>
+  </dialog>
+
+  <dialog id="tipJarDialog">
+    <header>
+      <h2>Buy me a Drink!</h2>
+      <button class="dialog-close" type="button" data-close="tipJarDialog" data-shortcut="Q">Close</button>
+    </header>
+    <div class="dialog-body">
+      <p class="tip-intro">Saddle up to the bar with me</p>
+      <div class="tip-tier-grid">
+        <button class="tip-tier" type="button" data-amount="1" data-note="Trail Log :: A water for your troubles">
+          <span class="tip-amount">$1 💧</span>
+          <span class="tip-label">Plain Water</span>
+        </button>
+        <button class="tip-tier" type="button" data-amount="5" data-note="Trail Log :: Fuel for the road ahead">
+          <span class="tip-amount">$5 ☕️</span>
+          <span class="tip-label">Fancy Coffee</span>
+        </button>
+        <button class="tip-tier" type="button" data-amount="10" data-note="Trail Log :: A pint at the trailhead">
+          <span class="tip-amount">$10 🍺</span>
+          <span class="tip-label">Beer Pint</span>
+        </button>
+        <button class="tip-tier" type="button" data-amount="20" data-note="Trail Log :: Enjoy a drink on me">
+          <span class="tip-amount">$20 🥃</span>
+          <span class="tip-label">Sipping Cocktail</span>
+        </button>
+        <button class="tip-tier" type="button" data-amount="50" data-note="Trail Log :: A nice bottle of wine">
+          <span class="tip-amount">$50 🍷</span>
+          <span class="tip-label">Wine Bottle</span>
+        </button>
+        <button class="tip-tier" type="button" data-amount="100" data-note="Trail Log :: Celebrate the Wins">
+          <span class="tip-amount">$100 🍾</span>
+          <span class="tip-label">Something Nice</span>
+        </button>
+      </div>
+      <form id="tipOtherForm" class="tip-other">
+        <label for="tipOtherInput">Or pick your own number</label>
+        <div class="tip-other-row">
+          <span class="tip-other-prefix">$</span>
+          <input id="tipOtherInput" type="number" min="1" max="2000" step="1" placeholder="Other amount"
+            inputmode="decimal">
+          <button class="primary" type="submit">Send</button>
+        </div>
+      </form>
+      <p class="tip-privacy">You'll leave Trail Log and land on Venmo. I never see anything you don't send.</p>
+    </div>
+  </dialog>
+
   <dialog id="selectDialog">
     <header>
       <h2 id="selectTitle">Update State</h2>
@@ -5231,6 +5911,24 @@
         <button type="button" data-close="selectDialog">Cancel</button>
       </div>
     </form>
+  </dialog>
+
+  <dialog id="markerDialog">
+    <header>
+      <div>
+        <h2 id="markerDialogTitle">Mapped Notes</h2>
+        <small id="markerDialogSubtitle"></small>
+      </div>
+      <button id="markerDialogCloseBtn" class="dialog-close" type="button" data-close="markerDialog"
+        data-shortcut="Q">Close</button>
+    </header>
+    <div class="dialog-body">
+      <p id="markerDialogSummary" class="marker-dialog-summary"></p>
+      <div id="markerDialogList" class="marker-note-list"></div>
+      <div class="actions">
+        <button id="markerAddNoteBtn" type="button" data-shortcut="A">Add Note Here</button>
+      </div>
+    </div>
   </dialog>
 
   <dialog id="noteDialog">
@@ -5302,10 +6000,30 @@
         <input id="noteLevel" type="hidden">
         <div id="noteLevelRadios" class="note-level-radios"></div>
       </section>
+      <div class="note-place-grid">
+        <div class="note-location-field">
+          <label>Where Specifically
+            <input id="noteWhere" maxlength="120" placeholder="City, venue, park, route">
+          </label>
+          <button id="noteGeocodeBtn" type="button" data-shortcut="G">Locate</button>
+        </div>
+        <div class="note-coordinate-grid">
+          <div class="note-coordinate-inputs">
+            <label>Latitude
+              <input id="noteLat" type="number" inputmode="decimal" step="any" min="-90" max="90"
+                placeholder="Manual override">
+            </label>
+            <label>Longitude
+              <input id="noteLng" type="number" inputmode="decimal" step="any" min="-180" max="180"
+                placeholder="Manual override">
+            </label>
+          </div>
+          <small id="noteGeocodeStatus" class="note-geocode-status" data-hint data-hint-key="note-location-help">
+            Use Locate to place this note on the map, or enter latitude/longitude manually. Nearby markers cluster and
+            use the first note icon.</small>
+        </div>
+      </div>
       <div class="note-field-grid">
-        <label>Where Specifically
-          <input id="noteWhere" maxlength="120" placeholder="City, venue, park, route">
-        </label>
         <label>What For
           <input id="noteWhat" maxlength="120" placeholder="Trip, event, meal, work">
         </label>
@@ -5563,6 +6281,9 @@
             </li>
             <li>Use Smart Convert in the note editor to turn a quick note into dates, levels, location specifics,
               people, purpose, and details.</li>
+            <li>Use the Locate button beside Where Specifically to look up latitude/longitude for a note. You can edit
+              or enter coordinates manually, and mapped notes appear as markers on the map. Single markers open the
+              note; grouped markers zoom in first or open a picker when multiple notes share a place.</li>
             <li>Use Location Tags to add icon labels to notes. Settings lets you rename, reorder, shortcut, and search
               the optional circle icon catalog.</li>
             <li>Use the eye button in Notes to show or hide locations that only have levels excluded from stats.</li>
@@ -5578,8 +6299,10 @@
           <p><b>Color tools:</b> Auto Colors can apply a smart palette to your current levels. Suggested categories can
             be shown or hidden from the Legend. Palette order follows the current Legend priority.</p>
           <p><b>Structured notes:</b> Notes can include Where Specifically, What For, Who With, Additional Details, and
-            multiple icon labels. Use the Tags button in the note editor or Settings to choose, rename, sort, shortcut,
-            and search optional labels from the circle icon catalog.</p>
+            multiple icon labels. Use Locate to save latitude/longitude and show the note on the map; nearby markers
+            cluster, and the first saved location/icon represents the cluster. Multi-note marker lists can open any note
+            or add a new note at the first mapped location. Use the Tags button in the note editor or Settings to
+            choose, rename, sort, shortcut, and search optional labels from the circle icon catalog.</p>
           <p><b>What's New:</b> Returning users may see a compact banner and red dots when a major feature release is
             available. Open What's New or dismiss the banner to clear it.</p>
           <p><b>Export formats:</b> JSON (.json) is a full backup, re-importable into this app. Markdown (.md) renders
@@ -5624,7 +6347,8 @@
           <p><b>Why do some levels show a no symbol instead of a percentage?</b><br>Those levels are excluded from
             completion stats.</p>
           <p><b>Can I use this offline?</b><br>Yes. It is a single local HTML app with no backend and no external
-            services.</p>
+            services required. The optional Locate button needs internet access for lookup, but manual coordinates and
+            saved markers work offline.</p>
         </section>
         <section class="help-section">
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-feedback"></span>Feedback
@@ -5632,6 +6356,9 @@
           <p class="help-feedback">
             No form. No inbox. No bot. If you know me you can ping me.
             <a href="https://github.com/themadat/visit-tracker/issues" target="_blank" rel="noopener">↗</a>
+          </p>
+          <p class="help-feedback">
+            <button id="tipJarHelpBtn" class="ghost" type="button">🎁 Buy me a Drink to fuel Development!</button>
           </p>
           <p class="help-feedback">
             P.S. This is a labor of love and learning experience custom tailored to my usage;
@@ -5721,6 +6448,21 @@
           </div>
         </section>
         <section class="settings-category">
+          <h3>Device Detection</h3>
+          <div class="setting-row">
+            <div class="setting-label">Detected type</div>
+            <div id="detectedDeviceType" class="developer-readout">—</div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-label">Install icon</div>
+            <div id="detectedDeviceIcon" class="developer-readout developer-readout-icon">—</div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-label">User agent</div>
+            <div id="detectedUserAgent" class="developer-readout developer-readout-mono">—</div>
+          </div>
+        </section>
+        <section class="settings-category">
           <h3>Developer JSON</h3>
           <div id="developerSettingsJson" class="developer-json" aria-label="Current export JSON"></div>
         </section>
@@ -5749,6 +6491,8 @@
                 actions.</span></div>
             <div class="shortcut-row"><kbd>B T E K Y V O P</kbd><span>Notes Back, Chronological Sort, Expanded,
                 Condensed, Categorical, Excluded Visibility, Text Only, and Copy.</span></div>
+            <div class="shortcut-row"><kbd>G</kbd><span>Note editor: look up coordinates from Where Specifically.</span>
+            </div>
             <div class="shortcut-row"><kbd>W</kbd><span>Developer: reset the What's New banner and badges.</span></div>
             <div class="shortcut-row"><kbd>F</kbd><span>Developer: reset local app data to defaults.</span></div>
             <div class="shortcut-row"><kbd>Q X</kbd><span>Close dialogs or cancel confirm actions.</span></div>
@@ -5757,18 +6501,26 @@
       </section>
     </div>
     <footer class="dialog-bottom-bar">
-      <b id="appNameLabel">Visit Tracker</b>
+      <b id="appNameLabel">Trail Log</b>
       <span class="version-pill" id="versionLabel"></span>
       <span class="spacer"></span>
-      <span>Made with <button id="coffeeKeyBtn" class="secret-emoji" type="button" aria-label="Coffee">☕️</button> and
-        <button id="liquorKeyBtn" class="secret-emoji" type="button" aria-label="Cheers">🥃</button> by Adam
-        Lauer</span>
+      <span>
+        Made with
+        <button id="coffeeKeyBtn" class="secret-emoji" type="button" aria-label="Coffee">☕️</button>
+        &
+        <button id="liquorKeyBtn" class="secret-emoji" type="button" aria-label="Liquor">🥃</button>
+        by Adam Lauer | Tap to Tip ->
+        <button id="tipJarFooterBtn" class="secret-emoji" type="button" aria-label="Give a Tip"
+          title="Buy me a Drink!">🎁</button>
+      </span>
     </footer>
   </dialog>
 
   <script>
-    const APP_NAME = "Visit Tracker";
-    const APP_VERSION = "2.5.0";
+    const APP_NAME = "Trail Log";
+    const APP_VERSION = "3.0.0.11";
+    const VENMO_HANDLE = "themadat";
+    const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -5786,6 +6538,27 @@
     ];
     const STATE_NAMES = Object.fromEntries(STATES.map(([abbr, name]) => [abbr, name]));
     const TERRITORY_IDS = ["PR", "VI", "GU", "MP", "AS"];
+    const LOCATION_GEO_BOUNDS = {
+      AL: [30.1, 35.0, -88.5, -84.9], AK: [51.2, 71.4, -179.2, -129.9], AZ: [31.3, 37.0, -114.8, -109.0],
+      AR: [33.0, 36.5, -94.6, -89.6], CA: [32.5, 42.0, -124.5, -114.1], CO: [37.0, 41.0, -109.1, -102.0],
+      CT: [40.9, 42.1, -73.8, -71.8], DE: [38.4, 39.8, -75.8, -75.0], FL: [24.4, 31.0, -87.6, -80.0],
+      GA: [30.4, 35.0, -85.7, -80.8], HI: [18.9, 22.3, -160.3, -154.8], ID: [42.0, 49.0, -117.2, -111.0],
+      IL: [37.0, 42.5, -91.6, -87.5], IN: [37.8, 41.8, -88.1, -84.8], IA: [40.4, 43.5, -96.7, -90.1],
+      KS: [37.0, 40.0, -102.1, -94.6], KY: [36.5, 39.2, -89.6, -81.9], LA: [28.9, 33.0, -94.1, -88.8],
+      ME: [43.1, 47.5, -71.1, -66.9], MD: [37.9, 39.8, -79.5, -75.0], MA: [41.2, 42.9, -73.5, -69.9],
+      MI: [41.7, 48.3, -90.4, -82.4], MN: [43.5, 49.4, -97.2, -89.5], MS: [30.2, 35.0, -91.7, -88.1],
+      MO: [36.0, 40.6, -95.8, -89.1], MT: [44.4, 49.0, -116.1, -104.0], NE: [40.0, 43.0, -104.1, -95.3],
+      NV: [35.0, 42.0, -120.0, -114.0], NH: [42.7, 45.3, -72.6, -70.6], NJ: [38.9, 41.4, -75.6, -73.9],
+      NM: [31.3, 37.0, -109.1, -103.0], NY: [40.5, 45.1, -79.8, -71.8], NC: [33.8, 36.6, -84.3, -75.5],
+      ND: [45.9, 49.0, -104.1, -96.5], OH: [38.4, 42.3, -84.9, -80.5], OK: [33.6, 37.0, -103.0, -94.4],
+      OR: [42.0, 46.3, -124.6, -116.5], PA: [39.7, 42.5, -80.6, -74.7], RI: [41.1, 42.0, -71.9, -71.1],
+      SC: [32.0, 35.2, -83.4, -78.5], SD: [42.5, 45.9, -104.1, -96.4], TN: [35.0, 36.7, -90.4, -81.6],
+      TX: [25.8, 36.5, -106.7, -93.5], UT: [37.0, 42.0, -114.1, -109.0], VT: [42.7, 45.1, -73.5, -71.5],
+      VA: [36.5, 39.5, -83.7, -75.2], WA: [45.5, 49.0, -124.8, -116.9], WV: [37.2, 40.6, -82.7, -77.7],
+      WI: [42.5, 47.1, -92.9, -86.8], WY: [41.0, 45.0, -111.1, -104.0], DC: [38.79, 39.0, -77.12, -76.91],
+      PR: [17.9, 18.6, -67.3, -65.2], VI: [17.6, 18.5, -65.2, -64.5], GU: [13.2, 13.7, 144.6, 145.0],
+      MP: [14.0, 20.7, 144.8, 146.2], AS: [-14.6, -11.0, -171.1, -168.0]
+    };
     const MAP_LABEL_OVERRIDES = {
       // dx/dy nudge bbox center (SVG units). x/y overrides to absolute position.
       AK: { x: 121, y: 493 },
@@ -5843,6 +6616,17 @@
       Ocean: ["#064273", "#1da2d8", "#7fcdff", "#def3f6", "#001a33"],
     };
 
+    const __DOT_SCOPE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 30.6445 30.3027"><g><rect height="30.3027" opacity="0" width="30.6445" x="0" y="0"/><path d="M14.375 25.2052L14.375 26.9433C8.47302 26.5736 3.73495 21.844 3.3511 15.9375L5.08921 15.9375C5.46892 20.894 9.42256 24.8395 14.375 25.2052ZM15.9277 26.9429L15.9277 25.2047C20.8842 24.835 24.834 20.8912 25.2135 15.9375L26.9516 15.9375C26.568 21.8411 21.834 26.569 15.9277 26.9429ZM26.9541 14.3848L25.2159 14.3848C24.8591 9.41667 20.9 5.44934 15.9277 5.07846L15.9277 3.34034C21.8498 3.7152 26.5934 8.46721 26.9541 14.3848ZM14.375 5.07803C9.40683 5.44486 5.44381 9.41386 5.08681 14.3848L3.34868 14.3848C3.70951 8.46433 8.45718 3.71058 14.375 3.3399Z"/><path d="M15.1465 10.0391C15.5859 10.0391 15.9277 9.6875 15.9277 9.25781L15.9277 0.800781C15.9277 0.361328 15.5859 0.0195312 15.1465 0.0195312C14.707 0.0195312 14.375 0.361328 14.375 0.800781L14.375 9.25781C14.375 9.6875 14.707 10.0391 15.1465 10.0391ZM0.78125 15.9375L9.23828 15.9375C9.67773 15.9375 10.0293 15.5957 10.0293 15.166C10.0293 14.7168 9.67773 14.3848 9.23828 14.3848L0.78125 14.3848C0.351562 14.3848 0 14.7168 0 15.166C0 15.5957 0.351562 15.9375 0.78125 15.9375ZM15.1465 30.3027C15.5859 30.3027 15.9277 29.9512 15.9277 29.5215L15.9277 21.0645C15.9277 20.625 15.5859 20.2832 15.1465 20.2832C14.707 20.2832 14.375 20.625 14.375 21.0645L14.375 29.5215C14.375 29.9512 14.707 30.3027 15.1465 30.3027ZM21.0449 15.9375L29.502 15.9375C29.9414 15.9375 30.2832 15.5957 30.2832 15.166C30.2832 14.7168 29.9414 14.3848 29.502 14.3848L21.0449 14.3848C20.6152 14.3848 20.2637 14.7168 20.2637 15.166C20.2637 15.5957 20.6152 15.9375 21.0449 15.9375Z"/><path d="M15.1465 17.2559C16.3086 17.2559 17.2363 16.3184 17.2363 15.1562C17.2363 14.0039 16.3086 13.0664 15.1465 13.0664C13.9844 13.0664 13.0566 14.0039 13.0566 15.1562C13.0566 16.3184 13.9844 17.2559 15.1465 17.2559Z"/></g></svg>`;
+    const __APPS_IPHONE_BADGE_PLUS = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 29.3457 32.7246"><g><rect height="32.7246" opacity="0" width="29.3457" x="0" y="0"/><path d="M22.3242 6.46484L22.3242 17.0308C22.0455 16.9981 21.7618 16.9824 21.4746 16.9824C21.174 16.9824 20.877 16.9997 20.5859 17.0371L20.5859 6.71875C20.5859 5.57617 19.9609 4.9707 18.7793 4.9707L10.2051 4.9707C9.01367 4.9707 8.38867 5.57617 8.38867 6.71875L8.38867 25.9863C8.38867 27.1289 9.01367 27.7344 10.2051 27.7344L14.1594 27.7344C14.3985 28.3562 14.7204 28.937 15.1133 29.4629L9.99023 29.4629C7.94922 29.4629 6.66016 28.2129 6.66016 26.2402L6.66016 6.46484C6.66016 4.49219 7.94922 3.24219 9.99023 3.24219L18.9844 3.24219C21.0254 3.24219 22.3242 4.49219 22.3242 6.46484ZM12.3535 14.1309L12.3535 15.3223C12.3535 15.6055 12.1484 15.791 11.8652 15.791L10.7031 15.791C10.4297 15.791 10.2441 15.6055 10.2441 15.3223L10.2441 14.1309C10.2441 13.8574 10.4297 13.6719 10.7031 13.6719L11.8652 13.6719C12.1484 13.6719 12.3535 13.8574 12.3535 14.1309ZM15.5371 14.1309L15.5371 15.3223C15.5371 15.6055 15.3418 15.791 15.0586 15.791L13.8867 15.791C13.6133 15.791 13.4277 15.6055 13.4277 15.3223L13.4277 14.1309C13.4277 13.8574 13.6133 13.6719 13.8867 13.6719L15.0586 13.6719C15.3418 13.6719 15.5371 13.8574 15.5371 14.1309ZM12.3535 10.752L12.3535 11.9531C12.3535 12.2168 12.1484 12.4023 11.8652 12.4023L10.7031 12.4023C10.4297 12.4023 10.2441 12.2168 10.2441 11.9531L10.2441 10.752C10.2441 10.4785 10.4297 10.293 10.7031 10.293L11.8652 10.293C12.1484 10.293 12.3535 10.4785 12.3535 10.752ZM15.5371 10.752L15.5371 11.9531C15.5371 12.2168 15.3418 12.4023 15.0586 12.4023L13.8867 12.4023C13.6133 12.4023 13.4277 12.2168 13.4277 11.9531L13.4277 10.752C13.4277 10.4785 13.6133 10.293 13.8867 10.293L15.0586 10.293C15.3418 10.293 15.5371 10.4785 15.5371 10.752ZM18.7305 10.752L18.7305 11.9531C18.7305 12.2168 18.5254 12.4023 18.2422 12.4023L17.0703 12.4023C16.8066 12.4023 16.6211 12.2168 16.6211 11.9531L16.6211 10.752C16.6211 10.4785 16.8066 10.293 17.0703 10.293L18.2422 10.293C18.5254 10.293 18.7305 10.4785 18.7305 10.752ZM12.3535 7.37305L12.3535 8.57422C12.3535 8.83789 12.1484 9.02344 11.8652 9.02344L10.7031 9.02344C10.4297 9.02344 10.2441 8.83789 10.2441 8.57422L10.2441 7.37305C10.2441 7.10938 10.4297 6.91406 10.7031 6.91406L11.8652 6.91406C12.1484 6.91406 12.3535 7.10938 12.3535 7.37305ZM15.5371 7.37305L15.5371 8.57422C15.5371 8.83789 15.3418 9.02344 15.0586 9.02344L13.8867 9.02344C13.6133 9.02344 13.4277 8.83789 13.4277 8.57422L13.4277 7.37305C13.4277 7.10938 13.6133 6.91406 13.8867 6.91406L15.0586 6.91406C15.3418 6.91406 15.5371 7.10938 15.5371 7.37305ZM18.7305 7.37305L18.7305 8.57422C18.7305 8.83789 18.5254 9.02344 18.2422 9.02344L17.0703 9.02344C16.8066 9.02344 16.6211 8.83789 16.6211 8.57422L16.6211 7.37305C16.6211 7.10938 16.8066 6.91406 17.0703 6.91406L18.2422 6.91406C18.5254 6.91406 18.7305 7.10938 18.7305 7.37305Z"/><path d="M27.793 24.8535C27.793 28.3105 24.9023 31.1719 21.4746 31.1719C18.0176 31.1719 15.1562 28.3301 15.1562 24.8535C15.1562 21.3965 18.0176 18.5352 21.4746 18.5352C24.9414 18.5352 27.793 21.3867 27.793 24.8535ZM20.7617 21.582L20.7617 24.1406L18.1934 24.1406C17.7832 24.1406 17.4902 24.4238 17.4902 24.8535C17.4902 25.293 17.7832 25.5664 18.1934 25.5664L20.7617 25.5664L20.7617 28.1348C20.7617 28.5547 21.0449 28.8379 21.4746 28.8379C21.9043 28.8379 22.1875 28.5547 22.1875 28.1348L22.1875 25.5664L24.7461 25.5664C25.166 25.5664 25.459 25.293 25.459 24.8535C25.459 24.4238 25.166 24.1406 24.7461 24.1406L22.1875 24.1406L22.1875 21.582C22.1875 21.1719 21.9043 20.8691 21.4746 20.8691C21.0449 20.8691 20.7617 21.1719 20.7617 21.582Z"/></g></svg>`;
+    const __APPS_IPAD_BADGE_PLUS = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 34.4238 34.5215"><g><rect height="34.5215" opacity="0" width="34.4238" x="0" y="0"/><path d="M27.3926 6.58203L27.3926 18.8276C27.1138 18.7949 26.8301 18.7793 26.543 18.7793C26.2423 18.7793 25.9454 18.7965 25.6543 18.834L25.6543 6.85547C25.6543 5.66406 24.9609 4.99023 23.7402 4.99023L10.3125 4.99023C9.0918 4.99023 8.39844 5.66406 8.39844 6.85547L8.39844 27.666C8.39844 28.8477 9.0918 29.5215 10.3125 29.5215L19.2242 29.5215C19.4635 30.1471 19.7867 30.7311 20.1816 31.2598L10.1074 31.2598C8.01758 31.2598 6.66992 29.9609 6.66992 27.9395L6.66992 6.58203C6.66992 4.56055 8.01758 3.26172 10.1074 3.26172L23.9551 3.26172C26.0449 3.26172 27.3926 4.56055 27.3926 6.58203ZM12.8418 14.7266L12.8418 15.8887C12.8418 16.1914 12.5977 16.416 12.2754 16.416L11.1426 16.416C10.8496 16.416 10.625 16.1816 10.625 15.8887L10.625 14.7266C10.625 14.4141 10.8496 14.1895 11.1426 14.1895L12.2754 14.1895C12.5977 14.1895 12.8418 14.4141 12.8418 14.7266ZM16.377 14.7266L16.377 15.8887C16.377 16.1914 16.1426 16.416 15.8301 16.416L14.6875 16.416C14.3945 16.416 14.1602 16.1816 14.1602 15.8887L14.1602 14.7266C14.1602 14.4141 14.3945 14.1895 14.6875 14.1895L15.8301 14.1895C16.1426 14.1895 16.377 14.4141 16.377 14.7266ZM12.8418 11.2793L12.8418 12.4414C12.8418 12.7441 12.5977 12.9785 12.2754 12.9785L11.1426 12.9785C10.8496 12.9785 10.625 12.7441 10.625 12.4414L10.625 11.2793C10.625 10.9863 10.8496 10.752 11.1426 10.752L12.2754 10.752C12.5977 10.752 12.8418 10.9766 12.8418 11.2793ZM16.377 11.2793L16.377 12.4414C16.377 12.7441 16.1426 12.9785 15.8301 12.9785L14.6875 12.9785C14.3945 12.9785 14.1602 12.7441 14.1602 12.4414L14.1602 11.2793C14.1602 10.9863 14.3945 10.752 14.6875 10.752L15.8301 10.752C16.1426 10.752 16.377 10.9766 16.377 11.2793ZM19.9316 11.2793L19.9316 12.4512C19.9316 12.7441 19.6875 12.9785 19.3652 12.9785L18.2324 12.9785C17.9395 12.9785 17.7148 12.7441 17.7148 12.4512L17.7148 11.2793C17.7148 10.9863 17.9395 10.752 18.2324 10.752L19.3652 10.752C19.6875 10.752 19.9316 10.9766 19.9316 11.2793ZM23.4668 11.2793L23.4668 12.4512C23.4668 12.7441 23.2422 12.9785 22.9199 12.9785L21.7871 12.9785C21.4746 12.9785 21.25 12.7441 21.25 12.4512L21.25 11.2793C21.25 10.9863 21.4746 10.752 21.7871 10.752L22.9199 10.752C23.2422 10.752 23.4668 10.9766 23.4668 11.2793ZM12.8418 7.8418L12.8418 9.01367C12.8418 9.31641 12.5977 9.54102 12.2754 9.54102L11.1426 9.54102C10.8496 9.54102 10.625 9.30664 10.625 9.01367L10.625 7.8418C10.625 7.53906 10.8496 7.32422 11.1426 7.32422L12.2754 7.32422C12.5977 7.32422 12.8418 7.5293 12.8418 7.8418ZM16.377 7.8418L16.377 9.01367C16.377 9.31641 16.1426 9.54102 15.8301 9.54102L14.6875 9.54102C14.3945 9.54102 14.1699 9.30664 14.1699 9.01367L14.1699 7.8418C14.1699 7.53906 14.3945 7.32422 14.6875 7.32422L15.8301 7.32422C16.1426 7.32422 16.377 7.5293 16.377 7.8418ZM19.9316 7.8418L19.9316 9.01367C19.9316 9.31641 19.6875 9.54102 19.3652 9.54102L18.2324 9.54102C17.9395 9.54102 17.7148 9.30664 17.7148 9.01367L17.7148 7.8418C17.7148 7.53906 17.9395 7.32422 18.2324 7.32422L19.3652 7.32422C19.6875 7.32422 19.9316 7.5293 19.9316 7.8418ZM23.4668 7.8418L23.4668 9.01367C23.4668 9.31641 23.2422 9.54102 22.9199 9.54102L21.7871 9.54102C21.4746 9.54102 21.25 9.30664 21.25 9.01367L21.25 7.8418C21.25 7.53906 21.4746 7.32422 21.7871 7.32422L22.9199 7.32422C23.2422 7.32422 23.4668 7.5293 23.4668 7.8418Z"/><path d="M32.8613 26.6504C32.8613 30.1074 29.9805 32.9688 26.543 32.9688C23.0859 32.9688 20.2344 30.127 20.2344 26.6504C20.2344 23.1934 23.0859 20.332 26.543 20.332C30.0098 20.332 32.8613 23.1836 32.8613 26.6504ZM25.8398 23.3789L25.8398 25.9375L23.2715 25.9375C22.8516 25.9375 22.5586 26.2207 22.5586 26.6504C22.5586 27.0801 22.8516 27.3633 23.2715 27.3633L25.8398 27.3633L25.8398 29.9316C25.8398 30.3516 26.1133 30.6348 26.543 30.6348C26.9824 30.6348 27.2559 30.3516 27.2559 29.9316L27.2559 27.3633L29.8145 27.3633C30.2441 27.3633 30.5273 27.0801 30.5273 26.6504C30.5273 26.2207 30.2441 25.9375 29.8145 25.9375L27.2559 25.9375L27.2559 23.3789C27.2559 22.959 26.9824 22.666 26.543 22.666C26.1133 22.666 25.8398 22.959 25.8398 23.3789Z"/></g></svg>`;
+    const __LAPTOPCOMPUTER_BADGE_CHECKMARK = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 41.2695 26.2793"><g><rect height="26.2793" opacity="0" width="41.2695" x="0" y="0"/><path d="M34.248 5.71289L34.248 10.587C33.9662 10.5531 33.6792 10.5371 33.3887 10.5371C33.0948 10.5371 32.8045 10.5536 32.5195 10.5888L32.5195 6.17188C32.5195 5.27344 32.0703 4.83398 31.1816 4.83398L9.7168 4.83398C8.82812 4.83398 8.37891 5.27344 8.37891 6.17188L8.37891 20.5957L25.8347 20.5957C26.1066 21.5512 26.5606 22.4306 27.1591 23.1934L3.88672 23.1934C3.17383 23.1934 2.60742 22.6172 2.60742 21.8945C2.60742 21.1719 3.17383 20.5957 3.88672 20.5957L6.65039 20.5957L6.65039 5.71289C6.65039 3.99414 7.63672 3.10547 9.27734 3.10547L31.6211 3.10547C33.3398 3.10547 34.248 3.99414 34.248 5.71289Z"/><path d="M39.707 18.4082C39.707 21.8652 36.8164 24.7266 33.3887 24.7266C29.9316 24.7266 27.0801 21.8848 27.0801 18.4082C27.0801 14.9512 29.9316 12.0898 33.3887 12.0898C36.8555 12.0898 39.707 14.9414 39.707 18.4082ZM35.6641 15.6543L32.5879 19.9023L31.0254 18.2227C30.8984 18.0859 30.7227 17.959 30.4688 17.959C30.0684 17.959 29.7461 18.2715 29.7461 18.6816C29.7461 18.8477 29.8047 19.0625 29.9414 19.209L32.041 21.5137C32.1973 21.6895 32.4316 21.7676 32.627 21.7676C32.8809 21.7676 33.1055 21.6602 33.2227 21.4941L36.8359 16.4844C36.9336 16.3379 36.9922 16.1816 36.9922 16.0449C36.9922 15.6445 36.6602 15.332 36.2695 15.332C36.0156 15.332 35.8008 15.4688 35.6641 15.6543Z"/></g></svg>`;
+    const __DESKTOPCOMPUTER_BADGE_CHECKMARK = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 44.082 30.2441"><g><rect height="30.2441" opacity="0" width="44.082" x="0" y="0"/><path d="M36.6699 5.63477L36.6699 14.5157C36.5196 14.4968 36.3658 14.4922 36.2109 14.4922C35.7783 14.4922 35.3532 14.5279 34.9414 14.6057L34.9414 5.67383C34.9414 5.12695 34.5996 4.78516 34.0527 4.78516L9.6582 4.78516C9.11133 4.78516 8.76953 5.12695 8.76953 5.67383L8.76953 17.7148C8.76953 18.1348 8.95508 18.3008 9.3457 18.3008L29.4868 18.3008C28.7512 19.486 28.3301 20.8796 28.3301 22.3633C28.3301 22.803 28.3666 23.2346 28.4459 23.6523L25.7617 23.6523L25.7617 26.2793L25.8887 26.2793C26.3672 26.2793 26.7578 26.6699 26.7578 27.1582C26.7578 27.6367 26.3672 28.0176 25.8887 28.0176L17.8223 28.0176C17.3438 28.0176 16.9531 27.6367 16.9531 27.1582C16.9531 26.6699 17.3438 26.2793 17.8223 26.2793L17.9492 26.2793L17.9492 23.6523L9.61914 23.6523C8.01758 23.6523 7.04102 22.6758 7.04102 21.0742L7.04102 5.63477C7.04102 4.0332 8.01758 3.05664 9.61914 3.05664L34.0918 3.05664C35.6934 3.05664 36.6699 4.0332 36.6699 5.63477Z"/><path d="M42.5195 22.3633C42.5195 25.8203 39.6387 28.6816 36.2109 28.6816C32.7441 28.6816 29.8926 25.8398 29.8926 22.3633C29.8926 18.9062 32.7441 16.0547 36.2109 16.0547C39.668 16.0547 42.5195 18.8965 42.5195 22.3633ZM38.4766 19.6094L35.4102 23.8574L33.8379 22.1777C33.7109 22.041 33.5352 21.9141 33.2812 21.9141C32.8809 21.9141 32.5586 22.2266 32.5586 22.6367C32.5586 22.8027 32.6172 23.0176 32.7539 23.1641L34.8633 25.4688C35.0098 25.6445 35.2441 25.7227 35.4395 25.7227C35.6934 25.7227 35.918 25.6152 36.0449 25.4492L39.6484 20.4492C39.7559 20.3027 39.8145 20.1465 39.8145 20C39.8145 19.5996 39.4727 19.2871 39.0918 19.2871C38.8281 19.2871 38.6133 19.4238 38.4766 19.6094Z"/></g></svg>`;
+
+    const __TEXT_PAD_HEADER_BADGE_PLUS = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 38.7012 30.9082"><g><rect height="30.9082" opacity="0" width="38.7012" x="0" y="0"/><path d="M31.6797 7.75391L31.6797 15.2062C31.3978 15.1723 31.1108 15.1562 30.8203 15.1562C30.5231 15.1562 30.2294 15.1731 29.9414 15.2095L29.9414 11.6113C29.9414 10.3125 29.2383 9.6582 27.998 9.6582L10.3223 9.6582C9.07227 9.6582 8.38867 10.3125 8.38867 11.6113L8.38867 23.2617C8.38867 24.5508 9.07227 25.2148 10.3223 25.2148L23.2661 25.2148C23.4379 25.8271 23.6875 26.4072 24.005 26.9434L10.459 26.9434C7.93945 26.9434 6.66016 25.6836 6.66016 23.1836L6.66016 7.75391C6.66016 5.25391 7.93945 3.99414 10.459 3.99414L27.8711 3.99414C30.4004 3.99414 31.6797 5.26367 31.6797 7.75391Z"/><path d="M26.6406 13.5742C26.6406 13.9648 26.3477 14.2676 25.957 14.2676L12.4023 14.2676C12.002 14.2676 11.709 13.9648 11.709 13.5742C11.709 13.2031 12.002 12.9102 12.4023 12.9102L25.957 12.9102C26.3477 12.9102 26.6406 13.2031 26.6406 13.5742Z"/><path d="M26.085 16.7696C25.5642 17.1548 25.0978 17.6086 24.6951 18.1152L12.4023 18.1152C12.002 18.1152 11.709 17.8223 11.709 17.4414C11.709 17.0605 12.002 16.7578 12.4023 16.7578L25.957 16.7578C26.0011 16.7578 26.0439 16.7617 26.085 16.7696Z"/><path d="M21.8164 21.2988C21.8164 21.6699 21.5234 21.9629 21.1328 21.9629L12.4023 21.9629C12.002 21.9629 11.709 21.6699 11.709 21.2988C11.709 20.9082 12.002 20.6055 12.4023 20.6055L21.1328 20.6055C21.5234 20.6055 21.8164 20.9082 21.8164 21.2988Z"/><path d="M37.1387 23.0273C37.1387 26.4844 34.2578 29.3457 30.8203 29.3457C27.3633 29.3457 24.5117 26.5039 24.5117 23.0273C24.5117 19.5703 27.3633 16.7188 30.8203 16.7188C34.2871 16.7188 37.1387 19.5703 37.1387 23.0273ZM30.1172 19.7559L30.1172 22.3242L27.5488 22.3242C27.1289 22.3242 26.8359 22.5977 26.8359 23.0273C26.8359 23.4668 27.1289 23.7402 27.5488 23.7402L30.1172 23.7402L30.1172 26.3086C30.1172 26.7285 30.3906 27.0215 30.8203 27.0215C31.2598 27.0215 31.5332 26.7285 31.5332 26.3086L31.5332 23.7402L34.0918 23.7402C34.5215 23.7402 34.8047 23.4668 34.8047 23.0273C34.8047 22.5977 34.5215 22.3242 34.0918 22.3242L31.5332 22.3242L31.5332 19.7559C31.5332 19.3457 31.2598 19.0527 30.8203 19.0527C30.3906 19.0527 30.1172 19.3457 30.1172 19.7559Z"/></g></svg>`;
+    const __CHECKMARK_CIRCLE_BADGE_PLUS_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 37.666 28.8574"><g><rect height="28.8574" opacity="0" width="37.666" x="0" y="0"/><path d="M31.3183 13.2677C30.8254 13.1668 30.3157 13.1152 29.7949 13.1152C25.4785 13.1152 21.9141 16.6699 21.9141 20.9863C21.9141 22.9101 22.617 24.6794 23.7808 26.0487C22.2138 26.7518 20.4771 27.1387 18.6523 27.1387C11.6504 27.1387 5.9375 21.4258 5.9375 14.4238C5.9375 7.41211 11.6504 1.69922 18.6523 1.69922C25.2738 1.69922 30.737 6.79392 31.3183 13.2677ZM22.8613 9.4043L17.2168 18.3789L14.4043 14.8633C14.1406 14.5215 13.8965 14.4141 13.5938 14.4141C13.1055 14.4141 12.7246 14.8145 12.7246 15.3027C12.7246 15.5469 12.8223 15.791 12.9883 16.0059L16.3184 20.0293C16.6016 20.3906 16.8848 20.5469 17.2559 20.5469C17.627 20.5469 17.9297 20.3711 18.1543 20.0293L24.2773 10.4297C24.4043 10.2246 24.5312 9.9707 24.5312 9.73633C24.5312 9.23828 24.1016 8.90625 23.6328 8.90625C23.3398 8.90625 23.0566 9.08203 22.8613 9.4043Z"/><path d="M36.1035 20.9863C36.1035 24.4434 33.2227 27.3047 29.7949 27.3047C26.3281 27.3047 23.4766 24.4629 23.4766 20.9863C23.4766 17.5293 26.3281 14.668 29.7949 14.668C33.252 14.668 36.1035 17.5195 36.1035 20.9863ZM29.082 17.7148L29.082 20.2734L26.5137 20.2734C26.0938 20.2734 25.8008 20.5469 25.8008 20.9863C25.8008 21.416 26.0938 21.6992 26.5137 21.6992L29.082 21.6992L29.082 24.2676C29.082 24.6875 29.3555 24.9707 29.7949 24.9707C30.2246 24.9707 30.498 24.6875 30.498 24.2676L30.498 21.6992L33.0664 21.6992C33.4863 21.6992 33.7695 21.416 33.7695 20.9863C33.7695 20.5469 33.4863 20.2734 33.0664 20.2734L30.498 20.2734L30.498 17.7148C30.498 17.2949 30.2246 17.002 29.7949 17.002C29.3555 17.002 29.082 17.2949 29.082 17.7148Z"/></g></svg>`;
+
+    const __LOCATION_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8012 23.6879"><g><rect height="23.6879" opacity="0" width="25.8012" x="0" y="0"/><path d="M1.46505 12.4836L11.0158 12.5227C11.1818 12.5227 11.2404 12.591 11.2404 12.7571L11.2697 22.2395C11.2697 23.8899 13.2619 24.2512 13.9943 22.6887L23.5158 2.27854C24.2678 0.637911 22.9787-0.426543 21.426 0.296114L0.908411 9.83713C-0.517371 10.4914-0.214636 12.4738 1.46505 12.4836Z"/></g></svg>`;
+    const __LIST_BULLET_CLIPBOARD_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 21.3281 34.3262"><g><rect height="34.3262" opacity="0" width="21.3281" x="0" y="0"/><path d="M4.16016 4.9707L4.16016 6.2793C4.16016 7.74414 5.18555 8.7793 6.62109 8.7793L14.3457 8.7793C15.7812 8.7793 16.8066 7.74414 16.8066 6.2793L16.8066 4.9707C16.8066 4.87429 16.8021 4.77973 16.7927 4.6875L17.207 4.6875C19.707 4.6875 20.9668 5.9668 20.9668 8.49609L20.9668 27.8125C20.9668 30.3418 19.707 31.6113 17.207 31.6113L3.75977 31.6113C1.25977 31.6113 0 30.3418 0 27.8125L0 8.49609C0 5.9668 1.25977 4.6875 3.75977 4.6875L4.17413 4.6875C4.16466 4.77973 4.16016 4.87429 4.16016 4.9707ZM4.0332 23.584C4.0332 24.1406 4.49219 24.5996 5.03906 24.5996C5.5957 24.5996 6.05469 24.1504 6.05469 23.584C6.05469 23.0371 5.5957 22.5781 5.03906 22.5781C4.49219 22.5781 4.0332 23.0469 4.0332 23.584ZM8.32031 22.8906C7.91992 22.8906 7.60742 23.2031 7.60742 23.584C7.60742 23.9746 7.92969 24.3066 8.32031 24.3066L16.2305 24.3066C16.6113 24.3066 16.9434 23.9746 16.9434 23.584C16.9434 23.2031 16.6211 22.8906 16.2305 22.8906ZM4.0332 18.7012C4.0332 19.2578 4.48242 19.7168 5.03906 19.7168C5.5957 19.7168 6.05469 19.2578 6.05469 18.7012C6.05469 18.1445 5.5957 17.7051 5.03906 17.7051C4.48242 17.7051 4.0332 18.1543 4.0332 18.7012ZM8.32031 17.998C7.91992 17.998 7.60742 18.3105 7.60742 18.7012C7.60742 19.1016 7.91992 19.4141 8.32031 19.4141L16.2305 19.4141C16.6211 19.4141 16.9434 19.1016 16.9434 18.7012C16.9434 18.3105 16.6211 17.998 16.2305 17.998ZM4.0332 14.082C4.0332 14.6289 4.49219 15.0977 5.03906 15.0977C5.5957 15.0977 6.05469 14.6387 6.05469 14.082C6.05469 13.5254 5.5957 13.0762 5.03906 13.0762C4.49219 13.0762 4.0332 13.5352 4.0332 14.082ZM8.32031 13.3691C7.92969 13.3691 7.60742 13.7012 7.60742 14.082C7.60742 14.4727 7.92969 14.7949 8.32031 14.7949L16.2305 14.7949C16.6113 14.7949 16.9434 14.4727 16.9434 14.082C16.9434 13.7012 16.6113 13.3691 16.2305 13.3691Z"/><path d="M13.0859 3.83789L14.3457 3.83789C15.0293 3.83789 15.4492 4.25781 15.4492 4.9707L15.4492 6.2793C15.4492 6.99219 15.0293 7.41211 14.3457 7.41211L6.62109 7.41211C5.9375 7.41211 5.51758 6.99219 5.51758 6.2793L5.51758 4.9707C5.51758 4.25781 5.9375 3.83789 6.62109 3.83789L7.88086 3.83789C7.94922 2.4707 9.0918 1.35742 10.4883 1.35742C11.875 1.35742 13.0176 2.4707 13.0859 3.83789ZM9.36523 3.91602C9.36523 4.51172 9.86328 5.0293 10.4883 5.0293C11.1035 5.0293 11.6016 4.51172 11.6016 3.91602C11.6016 3.29102 11.1035 2.79297 10.4883 2.79297C9.86328 2.79297 9.36523 3.29102 9.36523 3.91602Z"/></g></svg>`;
     const __RECTANGLE_GRID_1X2_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 27.4609 22.9785"><g><rect height="22.9785" opacity="0" width="27.4609" x="0" y="0"/><path d="M2.62695 22.9785L24.4727 22.9785C26.2109 22.9785 27.0996 22.1387 27.0996 20.3711L27.0996 15.1758C27.0996 13.4082 26.2109 12.5684 24.4727 12.5684L2.62695 12.5684C0.888672 12.5684 0 13.4082 0 15.1758L0 20.3711C0 22.1387 0.888672 22.9785 2.62695 22.9785Z"/><path d="M2.62695 10.4297L24.4727 10.4297C26.2109 10.4297 27.0996 9.59961 27.0996 7.82227L27.0996 2.62695C27.0996 0.859375 26.2109 0.0292969 24.4727 0.0292969L2.62695 0.0292969C0.888672 0.0292969 0 0.859375 0 2.62695L0 7.82227C0 9.59961 0.888672 10.4297 2.62695 10.4297Z"/></g></svg>`;
     const __RECTANGLE_GRID_1X3_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 27.8418 24.0527"><g><rect height="24.0527" opacity="0" width="27.8418" x="0" y="0"/><path d="M2.07031 24.0332L25.4102 24.0332C26.7188 24.0332 27.4805 23.291 27.4805 21.9238L27.4805 19.0918C27.4805 17.7246 26.7188 16.9824 25.4102 16.9824L2.07031 16.9824C0.761719 16.9824 0 17.7246 0 19.0918L0 21.9238C0 23.291 0.761719 24.0332 2.07031 24.0332Z"/><path d="M2.07031 15.5371L25.4102 15.5371C26.7188 15.5371 27.4805 14.8047 27.4805 13.4375L27.4805 10.5957C27.4805 9.22852 26.7188 8.49609 25.4102 8.49609L2.07031 8.49609C0.761719 8.49609 0 9.22852 0 10.5957L0 13.4375C0 14.8047 0.761719 15.5371 2.07031 15.5371Z"/><path d="M2.07031 7.05078L25.4102 7.05078C26.7188 7.05078 27.4805 6.30859 27.4805 4.94141L27.4805 2.10938C27.4805 0.742188 26.7188 0 25.4102 0L2.07031 0C0.761719 0 0 0.742188 0 2.10938L0 4.94141C0 6.30859 0.761719 7.05078 2.07031 7.05078Z"/></g></svg>`;
 
@@ -5872,6 +6656,8 @@
     const __ROAD_LANES = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 36.0298 18.623"><g><rect height="18.623" opacity="0" width="36.0298" x="0" y="0"/><path d="M0.876251 18.623L2.42899 18.623C3.08328 18.623 3.41531 18.3105 3.60086 17.8223C5.91531 12.1094 8.23953 6.38672 10.554 0.673828C10.7005 0.3125 10.5247 0.0195312 10.1634 0.0195312L9.43094 0.0195312C9.05985 0.0195312 8.82547 0.185547 8.66922 0.507812C5.81766 6.14258 2.97586 11.7773 0.124298 17.4121C-0.168671 17.9785 0.0461732 18.623 0.876251 18.623ZM33.2395 18.623L34.7923 18.623C35.6321 18.623 35.847 17.9785 35.5442 17.4121C32.7024 11.7773 29.8606 6.14258 27.0188 0.507812C26.843 0.185547 26.6087 0.0195312 26.2473 0.0195312L25.5149 0.0195312C25.1438 0.0195312 24.968 0.3125 25.1243 0.673828C27.429 6.38672 29.7532 12.1094 32.0677 17.8223C32.2532 18.3105 32.5852 18.623 33.2395 18.623ZM17.5852 3.28125L18.0638 3.28125C18.5032 3.28125 18.8548 2.93945 18.8548 2.49023C18.8548 1.93359 18.8548 1.36719 18.8548 0.800781C18.8548 0.351562 18.5032 0.0195312 18.0638 0.0195312L17.5852 0.0195312C17.1458 0.0195312 16.804 0.351562 16.804 0.800781C16.804 1.36719 16.804 1.93359 16.804 2.49023C16.804 2.93945 17.1458 3.28125 17.5852 3.28125ZM17.5852 10.4297L18.0638 10.4297C18.5032 10.4297 18.8548 10.0977 18.8548 9.63867C18.8548 8.73047 18.8548 7.8125 18.8548 6.9043C18.8548 6.44531 18.5032 6.11328 18.0638 6.11328L17.5852 6.11328C17.1458 6.11328 16.804 6.44531 16.804 6.9043C16.804 7.8125 16.804 8.73047 16.804 9.63867C16.804 10.0977 17.1458 10.4297 17.5852 10.4297ZM17.5852 18.623L18.0638 18.623C18.5032 18.623 18.8548 18.291 18.8548 17.8418C18.8548 16.6309 18.8548 15.4297 18.8548 14.2285C18.8548 13.7695 18.5032 13.4375 18.0638 13.4375L17.5852 13.4375C17.1458 13.4375 16.804 13.7695 16.804 14.2285C16.804 15.4297 16.804 16.6309 16.804 17.8418C16.804 18.291 17.1458 18.623 17.5852 18.623Z"/></g></svg>`;
     const __LIST_BULLET_CLIPBOARD = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 21.3281 34.3262"><g><rect height="34.3262" opacity="0" width="21.3281" x="0" y="0"/><path d="M20.9668 8.50586L20.9668 27.8125C20.9668 30.3418 19.707 31.6113 17.207 31.6113L3.75977 31.6113C1.25977 31.6113 0 30.3418 0 27.8125L0 8.50586C0 5.97656 1.25977 4.69727 3.75977 4.69727L4.1728 4.69727C4.16434 4.78651 4.16016 4.87775 4.16016 4.9707L4.16016 6.2793C4.16016 6.33238 4.1615 6.3849 4.16704 6.43555L3.85742 6.43555C2.45117 6.43555 1.72852 7.17773 1.72852 8.53516L1.72852 27.7832C1.72852 29.1406 2.45117 29.8828 3.85742 29.8828L17.1094 29.8828C18.5156 29.8828 19.2383 29.1406 19.2383 27.7832L19.2383 8.53516C19.2383 7.17773 18.5156 6.43555 17.1094 6.43555L16.7998 6.43555C16.8053 6.3849 16.8066 6.33238 16.8066 6.2793L16.8066 4.9707C16.8066 4.87775 16.8025 4.78651 16.794 4.69727L17.207 4.69727C19.707 4.69727 20.9668 5.97656 20.9668 8.50586Z"/><path d="M6.62109 7.41211L14.3457 7.41211C15.0293 7.41211 15.4492 6.99219 15.4492 6.2793L15.4492 4.9707C15.4492 4.25781 15.0293 3.83789 14.3457 3.83789L13.0859 3.83789C13.0176 2.4707 11.875 1.35742 10.4883 1.35742C9.0918 1.35742 7.94922 2.4707 7.88086 3.83789L6.62109 3.83789C5.9375 3.83789 5.51758 4.25781 5.51758 4.9707L5.51758 6.2793C5.51758 6.99219 5.9375 7.41211 6.62109 7.41211ZM10.4883 5.0293C9.86328 5.0293 9.36523 4.51172 9.36523 3.91602C9.36523 3.29102 9.86328 2.79297 10.4883 2.79297C11.1035 2.79297 11.6016 3.29102 11.6016 3.91602C11.6016 4.51172 11.1035 5.0293 10.4883 5.0293Z"/><path d="M5.17578 14.7461C5.71289 14.7461 6.15234 14.3066 6.15234 13.7695C6.15234 13.2227 5.71289 12.793 5.17578 12.793C4.63867 12.793 4.18945 13.2324 4.18945 13.7695C4.18945 14.2969 4.63867 14.7461 5.17578 14.7461ZM5.17578 19.2578C5.71289 19.2578 6.15234 18.8184 6.15234 18.2812C6.15234 17.7441 5.71289 17.3145 5.17578 17.3145C4.62891 17.3145 4.18945 17.7539 4.18945 18.2812C4.18945 18.8184 4.62891 19.2578 5.17578 19.2578ZM5.17578 24.0332C5.71289 24.0332 6.15234 23.5938 6.15234 23.0566C6.15234 22.5098 5.71289 22.0703 5.17578 22.0703C4.63867 22.0703 4.18945 22.5195 4.18945 23.0566C4.18945 23.584 4.63867 24.0332 5.17578 24.0332ZM8.36914 14.4531L16.0938 14.4531C16.4648 14.4531 16.7773 14.1406 16.7773 13.7695C16.7773 13.3984 16.4648 13.0859 16.0938 13.0859L8.36914 13.0859C7.98828 13.0859 7.67578 13.3984 7.67578 13.7695C7.67578 14.1406 7.98828 14.4531 8.36914 14.4531ZM8.36914 18.9648L16.0938 18.9648C16.4746 18.9648 16.7773 18.6621 16.7773 18.2812C16.7773 17.9102 16.4746 17.6074 16.0938 17.6074L8.36914 17.6074C7.97852 17.6074 7.67578 17.9102 7.67578 18.2812C7.67578 18.6621 7.97852 18.9648 8.36914 18.9648ZM8.36914 23.7402L16.0938 23.7402C16.4648 23.7402 16.7773 23.4277 16.7773 23.0566C16.7773 22.6758 16.4746 22.373 16.0938 22.373L8.36914 22.373C7.97852 22.373 7.67578 22.6758 7.67578 23.0566C7.67578 23.4277 7.98828 23.7402 8.36914 23.7402Z"/></g></svg>`;
     const __QUESTIONMARK_TEXT_PAGE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 21.3281 26.9238"><g><rect height="26.9238" opacity="0" width="21.3281" x="0" y="0"/><path d="M5.54688 17.3438L15.459 17.3438C15.8496 17.3438 16.1426 17.041 16.1426 16.6602C16.1426 16.2793 15.8496 15.9863 15.459 15.9863L5.54688 15.9863C5.14648 15.9863 4.85352 16.2793 4.85352 16.6602C4.85352 17.041 5.14648 17.3438 5.54688 17.3438ZM5.54688 21.1719L10.2832 21.1719C10.6738 21.1719 10.9668 20.8789 10.9668 20.5078C10.9668 20.127 10.6738 19.8242 10.2832 19.8242L5.54688 19.8242C5.14648 19.8242 4.85352 20.127 4.85352 20.5078C4.85352 20.8789 5.14648 21.1719 5.54688 21.1719ZM10.2148 11.1816C10.6738 11.1816 10.9668 10.8887 10.9668 10.5078C10.9668 10.4395 10.9668 10.3809 10.9668 10.3125C10.9668 9.73633 11.2695 9.39453 12.0117 8.88672C13.0469 8.20312 13.7012 7.55859 13.7012 6.38672C13.7012 4.75586 12.2461 3.79883 10.5078 3.79883C8.95508 3.79883 7.57812 4.61914 7.32422 5.78125C7.29492 5.91797 7.28516 6.04492 7.28516 6.20117C7.28516 6.63086 7.61719 6.86523 7.93945 6.86523C8.27148 6.86523 8.47656 6.70898 8.63281 6.46484L8.76953 6.25C9.02344 5.57617 9.61914 5.09766 10.4395 5.09766C11.4746 5.09766 12.0996 5.64453 12.0996 6.45508C12.0996 7.12891 11.6992 7.48047 10.7715 8.13477C9.98047 8.68164 9.47266 9.24805 9.47266 10.2441C9.47266 10.3125 9.47266 10.3711 9.47266 10.4492C9.47266 10.9277 9.74609 11.1816 10.2148 11.1816ZM10.2051 14.1797C10.7617 14.1797 11.2598 13.7207 11.2598 13.1543C11.2598 12.5684 10.7812 12.1094 10.2051 12.1094C9.60938 12.1094 9.13086 12.5781 9.13086 13.1543C9.13086 13.7109 9.61914 14.1797 10.2051 14.1797ZM0 23.125C0 25.6445 1.25977 26.9238 3.75977 26.9238L17.207 26.9238C19.707 26.9238 20.9668 25.6445 20.9668 23.125L20.9668 3.80859C20.9668 1.28906 19.707 0.00976562 17.207 0.00976562L3.75977 0.00976562C1.25977 0.00976562 0 1.28906 0 3.80859ZM1.72852 23.0859L1.72852 3.84766C1.72852 2.48047 2.45117 1.73828 3.85742 1.73828L17.1094 1.73828C18.5156 1.73828 19.2383 2.48047 19.2383 3.84766L19.2383 23.0859C19.2383 24.4531 18.5156 25.1953 17.1094 25.1953L3.85742 25.1953C2.45117 25.1953 1.72852 24.4531 1.72852 23.0859Z"/></g></svg>`;
+
+    const ICON_GLOBAL_TIP__GIFT_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24 24"><g><rect height="24" opacity="0" width="24" x="0" y="0"/><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 12 7.4l3.38 4.6L17 10.83 14.92 8H20v6z"/></g></svg>`;
 
     const ICON_GLOBAL_ACTION_ADD__PLUS_APP_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24.0576 23.7305"><g><rect height="23.7305" opacity="0" width="24.0576" x="0" y="0"/><path d="M21.8799 1.81152C23.0664 2.9834 23.6963 4.7168 23.6963 6.92383L23.6963 16.7822C23.6963 18.9893 23.0615 20.7275 21.8799 21.8994C20.7227 23.0615 18.9844 23.7061 16.7725 23.7061L6.92383 23.7061C4.7168 23.7061 2.97852 23.0664 1.81641 21.8994C0.629883 20.7227 0 18.9893 0 16.7822L0 6.92383C0 4.7168 0.634766 2.97852 1.81641 1.81152C2.97363 0.649414 4.7168 0 6.92383 0L16.7725 0C18.9844 0 20.7178 0.634766 21.8799 1.81152ZM10.4932 7.12891L10.4932 10.498L7.12402 10.498C6.35254 10.498 5.79102 11.0645 5.79102 11.8506C5.79102 12.6221 6.35742 13.1836 7.12402 13.1836L10.4932 13.1836L10.4932 16.5625C10.4932 17.3291 11.0596 17.8955 11.8311 17.8955C12.6123 17.8955 13.1836 17.334 13.1836 16.5625L13.1836 13.1836L16.5625 13.1836C17.3291 13.1836 17.8955 12.6221 17.8955 11.8506C17.8955 11.0645 17.3291 10.498 16.5625 10.498L13.1836 10.498L13.1836 7.12891C13.1836 6.35254 12.6123 5.78613 11.8311 5.78613C11.0596 5.78613 10.4932 6.35742 10.4932 7.12891Z" /></g></svg>`;
     const ICON_GLOABL_ACTION_EDIT__PENCIL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 22.3366 21.9615"><g><rect height="21.9615" opacity="0" width="22.3366" x="0" y="0"/><path d="M3.90513 20.6975L18.6854 5.91726L16.0829 3.31472L1.30747 18.0901L0.0379412 21.1907C-0.13784 21.6399 0.33091 22.0891 0.750832 21.928ZM19.9891 4.63796L21.4247 3.21218C22.1278 2.50417 22.162 1.71316 21.5126 1.05398L20.9706 0.507102C20.3211-0.147195 19.5106-0.0837187 18.8075 0.604758L17.367 2.02566Z" /></g></svg>`;
@@ -6717,16 +7503,16 @@
 
     const WISHLIST_SEEDS = [
       {
-        title: "Rename App",
-        ticketId: "WISH-033",
-        description: "Evaluate a broader app name that fits a personal visual travel journal centered on seeing where someone has been and what is left to visit. Top choice: Travel Log. Other candidates: PlaceMark, Waypoint Journal, Travel Ledger, MapLog, Memory Map, Placebook, and Map Notes.",
-        priority: "P1",
-        effort: "medium",
-        targetKind: "exact",
-        targetVersion: "3.0.0",
-        tokenCostPct: 18,
-        prompt: "Explore and implement an app rename. Treat Travel Log as the top candidate, then compare PlaceMark, Waypoint Journal, Travel Ledger, MapLog, Memory Map, Placebook, and Map Notes against the app's visual travel journal direction, current features, and future roadmap. Update title, visible app name, docs, exports, install metadata, and release notes without changing user data.",
-        category: "Branding"
+        title: "Better Tip / Gift Prompt and Popup",
+        ticketId: "WISH-037",
+        description: "Polish the Tip Jar entry points and the Buy-Adam-a-Drink modal. Possible work: clearer copy/CTA in the modal, friendlier tier card visuals, optional thank-you/return state after launching Venmo, smarter mobile-vs-desktop framing, and a consistent gift-button look across the topbar, settings footer, and Help Center.",
+        priority: "P2",
+        effort: "small",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 10,
+        prompt: "Improve the Tip Jar UX. Polish the three gift entry points (topbar, settings footer, Help Center), tighten the modal's copy and tier cards, and add a small return/thank-you affordance after the Venmo handoff. Keep the implementation single-file and offline-friendly.",
+        category: "UI"
       },
       {
         title: "Cleanup Modal Dialog Pop-Ups",
@@ -6741,18 +7527,6 @@
         category: "UI"
       },
       {
-        title: "Map Locations With Latitude/Longitude",
-        ticketId: "WISH-030",
-        description: "Allow saved locations to appear on the map using latitude and longitude, including local persistence, import/export support, and note/location linking without adding a backend.",
-        priority: "P1",
-        effort: "x-large",
-        targetKind: "exact",
-        targetVersion: "3.0.0",
-        tokenCostPct: 58,
-        prompt: "Add latitude/longitude-backed saved locations on the map. Persist locally, include import/export, and connect location markers to notes without adding backend services.",
-        category: "Maps"
-      },
-      {
         title: "Improve Add to Home Screen",
         ticketId: "WISH-028",
         description: "Improve the installed app experience with a better home-screen icon, app name, and related metadata while keeping the single-file/offline setup intact.",
@@ -6765,28 +7539,16 @@
         category: "Mobile"
       },
       {
-        title: "Add New Light and Dark Icons",
-        ticketId: "WISH-035",
-        description: "Add polished light-mode and dark-mode app icons for future install and homescreen improvements while keeping the single-file/offline packaging intact.",
-        priority: "P1",
-        effort: "small",
-        targetKind: "exact",
-        targetVersion: "3.0.0",
-        tokenCostPct: 10,
-        prompt: "Add polished light and dark app icon variants. Keep the app single-file/offline and coordinate with install metadata work.",
-        category: "Branding"
-      },
-      {
-        title: "Add Tip Jar",
-        ticketId: "WISH-023",
-        description: "Add an optional local tip-jar/support link area without adding trackers, payments SDKs, or external dependencies to the core app. Scope includes Settings or Help Center placement, graceful hiding when unused, and export-safe copy.",
-        priority: "P1",
-        effort: "small",
-        targetKind: "exact",
-        targetVersion: "3.0.0",
-        tokenCostPct: 9,
-        prompt: "Add an optional tip jar/support link area with no trackers, no payment SDK, and no dependency bloat. Keep it easy to hide and place it in Settings or Help Center.",
-        category: "Support"
+        title: "Bucket List Feature",
+        ticketId: "WISH-036",
+        description: "Add a dedicated bucket-list layer for places someone wants to visit next, separate from completed visits and ordinary notes. Scope includes local persistence, filtering, export support, and a clear way to promote a bucket-list item into a real visit note.",
+        priority: "P2",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 28,
+        prompt: "Add a Bucket List feature for planned future places. Keep it local/offline, connect it to map locations and notes, include filtering/export support, and let users convert a bucket-list item into a visit note.",
+        category: "Planning"
       },
       {
         title: "Choose Condensed Notes Date Summary",
@@ -6875,6 +7637,47 @@
     ];
     const CHANGELOG = [
       {
+        version: "3.0.0.11",
+        date: "2026-05-23",
+        title: "3.0 Development Begins",
+        summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, and mapped note locations.",
+        highlights: [
+          "The app version is now on the 3.0.0 development track.",
+          "Trail Log branding now reaches the document title, app name, default map name, Settings footer, README, and mobile web app metadata.",
+          "Added favicon, Apple touch icon, install manifest, and generated app-icon assets for Add to Home Screen polish.",
+          "Added an optional Tip Jar flow with preset drink tiers, a custom amount, and Venmo app/web handoff.",
+          "Notes can now store latitude/longitude and render as clustered map markers.",
+          "The note editor gained a Locate control beside Where Specifically, plus manual coordinate override fields.",
+          "Blank map names now fall back to the correct app-branded title.",
+          "The app icon and name stay pinned left on desktop and centered on mobile without collapsing the title text.",
+          "Global map SVG sizing no longer leaks into the app icon or button symbols."
+        ],
+        updates: [
+          "Opened the 3.0.0 release track with build 3.0.0.1.",
+          "Renamed the visible app shell from Visit Tracker to Trail Log while preserving the existing localStorage key for compatibility.",
+          "Added linked favicon, Apple touch icon, standalone manifest, theme-color metadata, and generated icon files for browser tabs and home-screen installs.",
+          "Updated the README title to Trail Log.",
+          "Added a title-bar app icon and moved the hidden quad-tap reset gesture from the map title to that icon.",
+          "Fixed the map-title fallback so a blank rename restores \"Your Trail Log\" instead of saving literal template text.",
+          "Adjusted the title stack so the brand group stays left on desktop while the title keeps a real readable column.",
+          "Rebalanced the mobile title width so the app name remains visible between the app icon and rename control.",
+          "Scoped the large minimum SVG width to the state map only, fixing the oversized app icon that hid the title.",
+          "Reviewed the pending 3.0 changes and refreshed the active release notes so manual branding and icon assets are represented.",
+          "Removed completed/obsolete roadmap tickets WISH-033 and WISH-035, and added WISH-036 for a future Bucket List feature.",
+          "Added a Tip button in the top toolbar, gift entry points in Settings footer and Help Center, and a compact tip dialog with preset drink tiers.",
+          "Added Venmo app/web launch helpers for tip links without adding a payment SDK or tracker dependency.",
+          "Added a gift symbol for the Tip control, tightened toolbar symbol sizing, and removed completed roadmap ticket WISH-023 from seeded wishlist data.",
+          "Added note latitude/longitude fields, safe migration for older notes, JSON import/export compatibility, text-export coordinate lines, and broader Notes search coverage.",
+          "Added map marker rendering for coordinate-backed notes, with nearby marker clustering where the first saved location and icon represent the group.",
+          "Added an online coordinate lookup from Where Specifically plus location name, with manual latitude/longitude fallback for offline use or override.",
+          "Reworked the note location fields so coordinates sit beside Where Specifically, geocode status sits under latitude/longitude, and What For/Who With get their own row.",
+          "Improved mapped marker clicks: single-note markers open the note, multi-note same-location markers open a picker, and nearby clusters zoom in before falling back to the picker.",
+          "Added an Add Note Here action that pre-fills the first marker location's coordinates, level, location name, and note icons.",
+          "Updated Help Center guidance and note hints for coordinate lookup, manual overrides, and clustered map markers.",
+          "Removed completed roadmap ticket WISH-030 from seeded wishlist data."
+        ]
+      },
+      {
         version: "2.5.0",
         date: "2026-05-23",
         title: "Legend Gets Legs",
@@ -6885,6 +7688,12 @@
           "Legend position can be picked from a mini corner menu or changed by dragging the Legend title between desktop placements.",
           "Legend stats and definitions are denser, with per-level stats inside color ovals and total completion under the title."
         ],
+        notice: {
+          version: "2.5.0",
+          title: "Legend Gets Legs",
+          summary: "A Legend-focused release that makes levels easier to edit, reorder, position, and scan.",
+          cta: "Learn More"
+        },
         updates: [
           "Legend Edit reveals row controls only when needed, while levels stay draggable outside edit mode.",
           "Legend rows support right-to-left swipe quick actions for Edit/Delete with a far-right dismiss control that does not shift row alignment.",
@@ -6910,7 +7719,7 @@
         title: "Polish, Memory, and Mobile Flow",
         summary: "A cleanup release for saved layout state, Notes filtering and summaries, Location Tag settings, Roadmap counts, and What's New polish.",
         notice: {
-          version: "2.5.0",
+          version: "2.4.0",
           title: "Polish, Memory, and Mobile Flow",
           summary: "Saved map and Notes preferences, cleaner summaries, mobile polish, and a calmer What's New banner.",
           cta: "Learn More"
@@ -7418,6 +8227,8 @@
     let levelAutoSaveTimer = null;
     let layoutSyncFrame = 0;
     let pendingConfirm = null;
+    let markerDialogItems = [];
+    let pendingNoteDefaults = null;
     let noteDialogBaseline = "";
     let state = loadState();
     syncRuntimeUiFromSettings();
@@ -7426,7 +8237,7 @@
       const levels = DEFAULT_LEVEL_IDS.map(id => clone(BUILT_INS.find(level => level.id === id)));
       return {
         appVersion: APP_VERSION,
-        mapName: "Your Visit Tracker",
+        mapName: DEFAULT_MAP_NAME,
         settings: {
           theme: "light",
           tapBehavior: "cycle",
@@ -7773,9 +8584,20 @@
         next.notes[abbr] = notes.map(note => normalizeNote(note, abbr, next, validLevelIds))
           .filter(note => noteHasContent(note) || note.date);
       });
-      next.mapName = String(next.mapName || base.mapName).slice(0, 80);
+      const savedMapName = String(next.mapName || base.mapName).trim();
+      next.mapName = (savedMapName === "Your ${APP_NAME}" ? DEFAULT_MAP_NAME : savedMapName || base.mapName).slice(0, 80);
       pruneObsoleteBackupKeys(next);
       return next;
+    }
+
+    function normalizeLatitude(value) {
+      const numeric = Number(value);
+      return Number.isFinite(numeric) && numeric >= -90 && numeric <= 90 ? Number(numeric.toFixed(6)) : "";
+    }
+
+    function normalizeLongitude(value) {
+      const numeric = Number(value);
+      return Number.isFinite(numeric) && numeric >= -180 && numeric <= 180 ? Number(numeric.toFixed(6)) : "";
     }
 
     function normalizeNote(note, abbr, next, validLevelIds) {
@@ -7791,6 +8613,9 @@
         where: String(note.where || note.whereSpecifically || "").slice(0, 120),
         what: String(note.what || note.whatFor || "").slice(0, 120),
         who: String(note.who || note.whoWith || "").slice(0, 120),
+        lat: normalizeLatitude(note.lat ?? note.latitude),
+        lng: normalizeLongitude(note.lng ?? note.lon ?? note.longitude),
+        geocodeLabel: String(note.geocodeLabel || note.locationLabel || "").slice(0, 180),
         details,
         text: details,
         visitTypes
@@ -7798,7 +8623,8 @@
     }
 
     function noteHasContent(note) {
-      return Boolean(note.text || note.details || note.where || note.what || note.who || (note.visitTypes || []).length);
+      const hasLatLng = note.lat !== "" && note.lat !== undefined && note.lng !== "" && note.lng !== undefined;
+      return Boolean(note.text || note.details || note.where || note.what || note.who || hasLatLng || (note.visitTypes || []).length);
     }
 
     function isExcludedLevel(level) {
@@ -7870,6 +8696,7 @@
       state.appVersion = APP_VERSION;
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       renderDeveloperJson();
+      renderDeviceDetectionReadout();
     }
 
     function pruneObsoleteBackupKeys(target) {
@@ -8210,6 +9037,8 @@
 
     function syncButtonLabels() {
       setButtonLabel("#renameBtn", ICON_GLOABL_ACTION_EDIT__PENCIL, "Rename");
+      setButtonLabel("#tipJarBtn", ICON_GLOBAL_TIP__GIFT_FILL, "Tip", "Send a tip", "Buy me a Drink!");
+      setButtonLabel("#addToHomeBtn", deviceInstallIconConstant(detectDeviceType().type), "Install", "Add to Home Screen", "Install Trail Log");
       setButtonLabel("#settingsBtn", ICON_GLOBAL_SETTINGS__GEARSHAPE_FILL, "Settings");
       setButtonLabel("#mapToggleBtn", __MAP_FILL, "Map", "Toggle Map Panel", "Toggle Map Panel");
       setButtonLabel("#legendToggleBtn", ICON_MAP_MODAL_LEGEND_CHECKLIST_UNCHECKED, "Legend", "Toggle Legend Panel", "Toggle Legend Panel");
@@ -8239,9 +9068,12 @@
       setButtonLabel("#notesViewCompactBtn", __RECTANGLE_COMPRESS_VERTICAL, "Condensed", "Condensed View");
       setButtonLabel("#notesViewTextBtn", __LIST_BULLET_RECTANGLE_PORTRAIT, "Text Only");
       setButtonLabel("#copyNotesTextBtn", notesCopyActive ? ICON_GLOBAL_ACTION_APPLY__CHECKMARK : __DOCUMENT_ON_DOCUMENT, notesCopyActive ? "Copied" : "Copy");
+      setButtonLabel("#markerDialogCloseBtn", ICON_GLOBAL_CLOSE__XMARK, "Close");
+      setButtonLabel("#markerAddNoteBtn", ICON_GLOBAL_ACTION_ADD__PLUS_APP_FILL, "Add Note Here", "Add note at this mapped location");
       setButtonLabel("#noteDialogCloseBtn", ICON_GLOBAL_CLOSE__XMARK, "Close");
       setButtonLabel("#saveNoteBtn", ICON_GLOBAL_ACTION_APPLY__CHECKMARK, "Save Note");
       setButtonLabel("#deleteNoteFromDialogBtn", ICON_GLOBAL_ACTION_DELETE__DELETE_LEFT_FILL, "Delete Note");
+      setButtonLabel("#noteGeocodeBtn", __DOT_SCOPE, "Locate", "Look up latitude and longitude", "Look up latitude and longitude");
       setButtonLabel("#noteSmartConvertBtn", __WAND_AND_SPARKLES_INVERSE, "Auto Convert", "Smart convert note text");
       setButtonLabel("#noteTagSettingsBtn", __GEAR_CIRCLE, "Tags", "Choose note tags");
       setButtonLabel("#levelDialogCloseBtn", ICON_GLOBAL_CLOSE__XMARK, "Close");
@@ -8427,6 +9259,7 @@
       state.settings.mapSplitRatio = Math.max(.34, Math.min(.78, mapColumn / metrics.available));
       metrics.main.style.setProperty("--map-column-width", `${Math.floor(mapColumn)}px`);
       renderDeveloperJson();
+      renderDeviceDetectionReadout();
       if (persist) save();
     }
 
@@ -8501,6 +9334,7 @@
       if (mapFitMode || mapPanRestoreActive) return;
       captureMapPanSetting();
       renderDeveloperJson();
+      renderDeviceDetectionReadout();
       if (immediate) {
         if (mapPanSaveTimer) clearTimeout(mapPanSaveTimer);
         mapPanSaveTimer = 0;
@@ -8570,6 +9404,250 @@
         tile.setAttribute("aria-label", `${tile.dataset.name}: ${names.length ? names.join(", ") : "Unvisited"}`);
       });
       renderMapLabels();
+      renderLocationMarkers();
+    }
+
+    function validNoteCoordinates(note) {
+      const lat = normalizeLatitude(note?.lat);
+      const lng = normalizeLongitude(note?.lng);
+      return lat === "" || lng === "" ? null : { lat, lng };
+    }
+
+    function projectNoteLocation(abbr, note) {
+      const coords = validNoteCoordinates(note);
+      const tile = $(`.state-tile[data-abbr="${abbr}"]`);
+      if (!coords || !tile) return null;
+      const box = tile.getBBox();
+      const bounds = LOCATION_GEO_BOUNDS[abbr];
+      if (!bounds) return { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+      const [minLat, maxLat, minLng, maxLng] = bounds;
+      const xRatio = (coords.lng - minLng) / Math.max(.0001, maxLng - minLng);
+      const yRatio = (maxLat - coords.lat) / Math.max(.0001, maxLat - minLat);
+      const padX = Math.min(4, box.width / 3);
+      const padY = Math.min(4, box.height / 3);
+      return {
+        x: Math.max(box.x + padX, Math.min(box.x + box.width - padX, box.x + box.width * xRatio)),
+        y: Math.max(box.y + padY, Math.min(box.y + box.height - padY, box.y + box.height * yRatio))
+      };
+    }
+
+    function locationMarkerItems() {
+      return STATES.flatMap(([abbr]) => (state.notes[abbr] || []).map(note => {
+        const point = projectNoteLocation(abbr, note);
+        if (!point) return null;
+        const coords = validNoteCoordinates(note);
+        const level = levelById(note.levelId) || dominantLevel(abbr);
+        const firstType = (note.visitTypes || []).find(id => visitTypeMeta(id));
+        return {
+          abbr,
+          note,
+          x: point.x,
+          y: point.y,
+          lat: coords.lat,
+          lng: coords.lng,
+          locationKey: markerLocationKey(abbr, coords),
+          color: level?.color || "var(--accent)",
+          iconId: firstType,
+          label: `${STATE_NAMES[abbr]}: ${note.where || note.geocodeLabel || noteSummary(note)}`
+        };
+      }).filter(Boolean));
+    }
+
+    function markerLocationKey(abbr, coords) {
+      return `${abbr}:${Number(coords.lat).toFixed(4)},${Number(coords.lng).toFixed(4)}`;
+    }
+
+    function markerClusterThreshold() {
+      return mapFitMode ? 14 : Math.max(2.5, 14 / Math.max(1, mapZoom));
+    }
+
+    function clusteredLocationMarkers(items) {
+      const clusters = [];
+      const threshold = markerClusterThreshold();
+      items.forEach(item => {
+        const cluster = clusters.find(group => Math.hypot(group.x - item.x, group.y - item.y) < threshold);
+        if (cluster) cluster.items.push(item);
+        else clusters.push({ x: item.x, y: item.y, items: [item] });
+      });
+      return clusters;
+    }
+
+    function clusterLocationKeys(cluster) {
+      return new Set(cluster.items.map(item => item.locationKey));
+    }
+
+    function canZoomMarkerCluster(cluster) {
+      return cluster.items.length > 1 && clusterLocationKeys(cluster).size > 1 && (mapFitMode || mapZoom < MAP_ZOOM_MAX - .001);
+    }
+
+    function renderLocationMarkers() {
+      const markers = $("#mapLocationMarkers");
+      if (!markers) return;
+      markers.innerHTML = "";
+      const svgNS = "http://www.w3.org/2000/svg";
+      clusteredLocationMarkers(locationMarkerItems()).forEach(cluster => {
+        const first = cluster.items[0];
+        const count = cluster.items.length;
+        const group = document.createElementNS(svgNS, "g");
+        group.classList.add("map-location-marker");
+        group.dataset.markerState = first.abbr;
+        group.dataset.markerNote = first.note.id;
+        group.style.setProperty("--marker-color", first.color);
+        group.setAttribute("transform", `translate(${cluster.x.toFixed(1)} ${cluster.y.toFixed(1)})`);
+        group.setAttribute("role", "button");
+        group.setAttribute("tabindex", "0");
+        group.setAttribute("aria-label", count > 1 ? `${count} nearby locations. First: ${first.label}` : first.label);
+        group.innerHTML = `
+          <title>${escapeHtml(count > 1 ? `${count} nearby locations. First: ${first.label}` : first.label)}</title>
+          <circle class="marker-ring" r="9"></circle>
+          <circle class="marker-core" r="6.3"></circle>
+        `;
+        if (first.iconId) {
+          const foreign = document.createElementNS(svgNS, "foreignObject");
+          foreign.setAttribute("x", "-6");
+          foreign.setAttribute("y", "-6");
+          foreign.setAttribute("width", "12");
+          foreign.setAttribute("height", "12");
+          const icon = document.createElement("div");
+          icon.className = "map-marker-icon";
+          icon.innerHTML = visitTypeIcon(first.iconId);
+          foreign.append(icon);
+          group.append(foreign);
+        } else {
+          const dot = document.createElementNS(svgNS, "circle");
+          dot.setAttribute("r", "2.1");
+          dot.setAttribute("fill", "currentColor");
+          group.append(dot);
+        }
+        if (count > 1) {
+          const countCircle = document.createElementNS(svgNS, "circle");
+          countCircle.setAttribute("cx", "8");
+          countCircle.setAttribute("cy", "-8");
+          countCircle.setAttribute("r", "5.2");
+          countCircle.setAttribute("fill", "var(--accent)");
+          group.append(countCircle);
+          const countText = document.createElementNS(svgNS, "text");
+          countText.setAttribute("x", "8");
+          countText.setAttribute("y", "-8");
+          countText.textContent = String(Math.min(count, 9));
+          group.append(countText);
+        }
+        const open = event => {
+          event.preventDefault();
+          event.stopPropagation();
+          handleLocationMarker(cluster);
+        };
+        group.addEventListener("click", open);
+        group.addEventListener("keydown", event => {
+          if (event.key !== "Enter" && event.key !== " ") return;
+          open(event);
+        });
+        markers.append(group);
+      });
+    }
+
+    function handleLocationMarker(cluster) {
+      if (cluster.items.length === 1) {
+        openMappedNote(cluster.items[0]);
+        return;
+      }
+      if (canZoomMarkerCluster(cluster)) {
+        zoomToMarkerCluster(cluster);
+        return;
+      }
+      openMarkerDialog(cluster);
+    }
+
+    function scrollMapToSvgPoint(x, y) {
+      const wrap = $(".map-wrap");
+      const svg = $("#stateMap");
+      if (!wrap || !svg) return;
+      const viewBox = svg.viewBox.baseVal;
+      const svgRect = svg.getBoundingClientRect();
+      const px = ((x - viewBox.x) / viewBox.width) * svgRect.width;
+      const py = ((y - viewBox.y) / viewBox.height) * svgRect.height;
+      mapPanRestoreActive = true;
+      wrap.scrollLeft = Math.max(0, px - wrap.clientWidth / 2);
+      wrap.scrollTop = Math.max(0, py - wrap.clientHeight / 2);
+      requestAnimationFrame(() => {
+        mapPanRestoreActive = false;
+        saveMapPanSoon(true);
+      });
+    }
+
+    function zoomToMarkerCluster(cluster) {
+      const nextZoom = clampMapZoom(mapFitMode ? Math.max(1.5, mapZoom + MAP_ZOOM_STEP) : mapZoom + MAP_ZOOM_STEP);
+      mapFitMode = false;
+      mapZoom = nextZoom;
+      centerMapAfterRender = false;
+      persistMapViewSettings();
+      render();
+      requestAnimationFrame(() => requestAnimationFrame(() => scrollMapToSvgPoint(cluster.x, cluster.y)));
+    }
+
+    function markerDialogSummary(cluster) {
+      const count = cluster.items.length;
+      const samePlace = clusterLocationKeys(cluster).size === 1;
+      const first = cluster.items[0];
+      return samePlace
+        ? `${count} note${count === 1 ? "" : "s"} mapped to ${first.note.where || first.note.geocodeLabel || STATE_NAMES[first.abbr]}.`
+        : `${count} nearby mapped notes. Zoom in to split close locations, or pick one below.`;
+    }
+
+    function markerRowHtml(item, index) {
+      const level = levelById(item.note.levelId);
+      const title = item.note.where || item.note.geocodeLabel || noteSummary(item.note);
+      const types = noteVisitTypeLabels(item.note).map(type => type.label).join(", ");
+      const meta = [STATE_NAMES[item.abbr], level?.name, types].filter(Boolean).join(" :: ");
+      return `
+        <button class="marker-note-row" type="button" data-marker-item="${index}" style="--marker-row-color:${escapeHtml(item.color)}">
+          <span class="marker-note-icon">${visitTypeIconStack(item.note, { color: item.color })}</span>
+          <time class="marker-note-date" datetime="${escapeHtml(item.note.date)}">${escapeHtml(formatDateDisplay(item.note.date))}</time>
+          <span class="marker-note-main">
+            <span class="marker-note-title">${escapeHtml(title)}</span>
+            <span class="marker-note-meta">${escapeHtml(meta || noteSummary(item.note))}</span>
+          </span>
+          <span class="marker-note-meta">${escapeHtml(noteCoordinateText(item.note))}</span>
+        </button>
+      `;
+    }
+
+    function openMarkerDialog(cluster) {
+      markerDialogItems = cluster.items.slice();
+      const count = markerDialogItems.length;
+      $("#markerDialogTitle").textContent = count === 1 ? "Mapped Note" : "Mapped Notes";
+      $("#markerDialogSubtitle").textContent = clusterLocationKeys(cluster).size === 1 ? "Same location" : "Nearby cluster";
+      $("#markerDialogSummary").textContent = markerDialogSummary(cluster);
+      $("#markerDialogList").innerHTML = markerDialogItems.map(markerRowHtml).join("");
+      $("#markerDialog").showModal();
+    }
+
+    function openMappedNote(item) {
+      selectedState = item.abbr;
+      notesPanelState = item.abbr;
+      notesPanelOpen = true;
+      save();
+      render();
+      if ($("#markerDialog").open) $("#markerDialog").close();
+      openNoteDialog(item.note.id);
+    }
+
+    function addNoteAtMappedLocation(item) {
+      selectedState = item.abbr;
+      notesPanelState = item.abbr;
+      notesPanelOpen = true;
+      pendingNoteDefaults = {
+        where: item.note.where || "",
+        lat: item.lat,
+        lng: item.lng,
+        geocodeLabel: item.note.geocodeLabel || item.note.where || "",
+        levelId: item.note.levelId || "",
+        visitTypes: item.note.visitTypes || []
+      };
+      save();
+      render();
+      if ($("#markerDialog").open) $("#markerDialog").close();
+      openNoteDialog();
     }
 
     function renderMapLabels() {
@@ -8722,6 +9800,11 @@
       return note.details ?? note.text ?? "";
     }
 
+    function noteCoordinateText(note) {
+      const coords = validNoteCoordinates(note);
+      return coords ? `${coords.lat}, ${coords.lng}` : "";
+    }
+
     function noteFieldValues(note) {
       return [note.where, note.what, note.who, noteDetails(note)].filter(Boolean);
     }
@@ -8736,6 +9819,7 @@
       return [
         includeTypes && visitTypes.length ? `${indent}Types: ${visitTypes.map(type => type.label).join(", ")}` : "",
         note.where ? `${indent}Where: ${note.where}` : "",
+        noteCoordinateText(note) ? `${indent}Coordinates: ${noteCoordinateText(note)}` : "",
         note.what ? `${indent}What: ${note.what}` : "",
         note.who ? `${indent}Who: ${note.who}` : "",
         noteDetails(note) ? `${indent}Details: ${noteDetails(note)}` : ""
@@ -9146,7 +10230,7 @@
       return [...levels, ...icons];
     }
 
-    function notesModeSummaryHtml(markedCount) {
+    function notesModeSummaryHtml(markedCount, notesCount = 0) {
       const search = notesSearchQuery.trim();
       const levels = [...noteLevelFilters].map(id => levelById(id)?.name).filter(Boolean);
       const icons = allNoteIconFiltersSelected()
@@ -9163,16 +10247,16 @@
         notesSortMode === "alpha" ? "Alphabetical" : "Chronological",
         notesCategoricalMode ? "Grouped" : "Ungrouped"
       ].filter(Boolean);
-      const countLabel = `${markedCount} Location${markedCount === 1 ? "" : "s"}`;
-      return `<strong><span>${escapeHtml(countLabel)}</span><span class="mode-bracket">[${escapeHtml(modeParts.join(" | "))}]</span></strong><em>${escapeHtml(filterParts.join(" | "))}</em>`;
+      const countLabel = `<span class="summary-count" aria-label="${markedCount} location${markedCount === 1 ? "" : "s"}"><span>${markedCount}</span>${__LOCATION_FILL}</span> <span class="summary-count" aria-label="${notesCount} note${notesCount === 1 ? "" : "s"}"><span>${notesCount}</span>${__LIST_BULLET_CLIPBOARD_FILL}</span>`;
+      return `<strong>${countLabel}<span class="mode-bracket">[${escapeHtml(modeParts.join(" | "))}]</span></strong><em>${escapeHtml(filterParts.join(" | "))}</em>`;
     }
 
-    function renderNotesFilterSummary(markedCount = 0) {
+    function renderNotesFilterSummary(markedCount = 0, notesCount = 0) {
       const summary = $("#notesFilterSummary");
       if (!summary) return;
       const hidden = Boolean(notesPanelState);
       summary.classList.toggle("hidden", hidden);
-      summary.innerHTML = hidden ? "" : notesModeSummaryHtml(markedCount);
+      summary.innerHTML = hidden ? "" : notesModeSummaryHtml(markedCount, notesCount);
     }
 
     function stateMatchesLevelFilter(abbr) {
@@ -9208,6 +10292,8 @@
         formatDateDisplay(note.date),
         levelById(note.levelId)?.name || "",
         note.where,
+        note.geocodeLabel,
+        noteCoordinateText(note),
         note.what,
         note.who,
         noteDetails(note),
@@ -9787,15 +10873,16 @@
           <span></span><span></span><span></span>
         </button>
         ${notes.map(note => {
-          const noteLevel = levelById(note.levelId);
-          return `
+        const noteLevel = levelById(note.levelId);
+        return `
           <button class="compact-note-row is-expanded is-expanded-child" type="button" data-note-state="${abbr}" data-edit-note="${note.id}">
             <span class="compact-note-icon">${visitTypeIconStack(note, { color: noteLevel?.color })}</span>
             <span>${escapeHtml(formatDateDisplay(note.date))}</span>
             <span class="compact-note-text">${escapeHtml(noteSummary(note))}</span>
             <span></span>
           </button>
-        `;}).join("")}
+        `;
+      }).join("")}
       `;
     }
 
@@ -9808,8 +10895,8 @@
         return `
           <div class="compact-notes compact-notes-notes selected-note-list">
             ${notes.map(note => {
-              const noteLevel = levelById(note.levelId);
-              return `
+          const noteLevel = levelById(note.levelId);
+          return `
               <article class="compact-note-row" role="button" tabindex="0" data-edit-note-row="${note.id}">
                 <span class="compact-note-icon">${visitTypeIconStack(note, { color: noteLevel?.color })}</span>
                 <time datetime="${escapeHtml(note.date)}">${escapeHtml(formatDateDisplay(note.date))}</time>
@@ -9819,15 +10906,16 @@
                   ${actionButtonHtml({ symbol: ICON_GLOBAL_ACTION_DELETE__DELETE_LEFT_FILL, text: "Delete", className: "icon-btn danger", attrs: `data-delete-note="${note.id}"` })}
                 </span>
               </article>
-            `;}).join("")}
+            `;
+        }).join("")}
           </div>
         `;
       }
       return `
           <div class="compact-notes compact-notes-notes selected-note-list">
           ${notes.map(note => {
-            const noteLevel = levelById(note.levelId);
-            return `
+        const noteLevel = levelById(note.levelId);
+        return `
             <article class="compact-note-row is-expanded" role="button" tabindex="0" data-edit-note-row="${note.id}">
               <span class="compact-note-icon">${visitTypeIconStack(note, { color: noteLevel?.color })}</span>
               <time datetime="${escapeHtml(note.date)}">${escapeHtml(formatDateDisplay(note.date))}</time>
@@ -9837,7 +10925,8 @@
                 ${actionButtonHtml({ symbol: ICON_GLOBAL_ACTION_DELETE__DELETE_LEFT_FILL, text: "Delete", className: "icon-btn danger", attrs: `data-delete-note="${note.id}"` })}
               </span>
             </article>
-          `;}).join("")}
+          `;
+      }).join("")}
         </div>
       `;
     }
@@ -9928,7 +11017,8 @@
       $("#notesPanelTitle").textContent = "Notes";
       const filterNames = activeFilterNames();
       const marked = sortedMarkedStateAbbrs();
-      renderNotesFilterSummary(marked.length);
+      const totalNotes = marked.reduce((sum, abbr) => sum + filteredNotesFor(abbr).length, 0);
+      renderNotesFilterSummary(marked.length, totalNotes);
       if (!marked.length) {
         const emptyText = notesSearchQuery.trim()
           ? "No states match that search."
@@ -10397,21 +11487,71 @@
       $("#noteSmartConvert").value = "";
     }
 
+    function setNoteGeocodeStatus(message, label = "") {
+      const status = $("#noteGeocodeStatus");
+      if (!status) return;
+      status.textContent = message;
+      status.dataset.geocodeLabel = label;
+    }
+
+    function noteGeocodeQuery() {
+      const where = $("#noteWhere").value.trim();
+      if (!where || !selectedState) return "";
+      return [where, STATE_NAMES[selectedState], "United States"].filter(Boolean).join(", ");
+    }
+
+    async function lookupNoteCoordinates() {
+      const query = noteGeocodeQuery();
+      if (!query) {
+        setNoteGeocodeStatus("Enter a place in Where Specifically first, or type coordinates manually.");
+        $("#noteWhere").focus();
+        return;
+      }
+      const button = $("#noteGeocodeBtn");
+      button.disabled = true;
+      setNoteGeocodeStatus("Looking up location...");
+      try {
+        const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=${encodeURIComponent(query)}`;
+        const response = await fetch(url, { headers: { "Accept": "application/json" } });
+        if (!response.ok) throw new Error("Lookup failed");
+        const results = await response.json();
+        const best = Array.isArray(results) ? results[0] : null;
+        const lat = normalizeLatitude(best?.lat);
+        const lng = normalizeLongitude(best?.lon);
+        if (lat === "" || lng === "") throw new Error("No match");
+        $("#noteLat").value = lat;
+        $("#noteLng").value = lng;
+        const label = String(best.display_name || query).slice(0, 180);
+        setNoteGeocodeStatus(`Mapped: ${label}`, label);
+      } catch {
+        setNoteGeocodeStatus("Could not look that up. Enter latitude/longitude manually or tweak Where.");
+      } finally {
+        button.disabled = false;
+      }
+    }
+
     function openNoteDialog(noteId = "") {
       if (!selectedState) return;
       const note = (state.notes[selectedState] || []).find(item => item.id === noteId);
+      const defaults = note ? null : pendingNoteDefaults;
+      pendingNoteDefaults = null;
       $("#noteDialogTitle").textContent = note ? "Edit Note" : `Add Note for ${STATE_NAMES[selectedState]}`;
       $("#noteId").value = note ? note.id : "";
-      const fallbackLevel = note?.levelId || dominantLevel(selectedState)?.id || state.levels[0]?.id || "";
+      const fallbackLevel = note?.levelId || defaults?.levelId || dominantLevel(selectedState)?.id || state.levels[0]?.id || "";
       renderNoteLevelRadios(fallbackLevel);
       $("#deleteNoteFromDialogBtn").classList.toggle("hidden", !note);
       $("#deleteNoteFromDialogBtn").dataset.noteId = note ? note.id : "";
       setNoteDateBuilder(note ? note.date : today().slice(0, 4));
-      $("#noteWhere").value = note ? note.where || "" : "";
+      $("#noteWhere").value = note ? note.where || "" : defaults?.where || "";
       $("#noteWhat").value = note ? note.what || "" : "";
       $("#noteWho").value = note ? note.who || "" : "";
+      $("#noteLat").value = note?.lat ?? defaults?.lat ?? "";
+      $("#noteLng").value = note?.lng ?? defaults?.lng ?? "";
+      const geocodeLabel = note?.geocodeLabel || defaults?.geocodeLabel || "";
+      const hasCoordinates = $("#noteLat").value !== "" && $("#noteLng").value !== "";
+      setNoteGeocodeStatus(hasCoordinates ? `Mapped${geocodeLabel ? `: ${geocodeLabel}` : "."}` : "Use Locate to place this note on the map, or enter latitude/longitude manually.", geocodeLabel);
       $("#noteSmartConvert").value = "";
-      setNoteVisitTypes(note?.visitTypes || []);
+      setNoteVisitTypes(note?.visitTypes || defaults?.visitTypes || []);
       $("#noteText").value = note ? noteDetails(note) : "";
       $("#noteDialog").showModal();
       $("#noteSmartConvert").focus();
@@ -10431,6 +11571,9 @@
         where: $("#noteWhere").value,
         what: $("#noteWhat").value,
         who: $("#noteWho").value,
+        lat: $("#noteLat").value,
+        lng: $("#noteLng").value,
+        geocodeLabel: $("#noteGeocodeStatus").dataset.geocodeLabel || "",
         details: $("#noteText").value,
         smart: $("#noteSmartConvert").value,
         visitTypes: selectedNoteVisitTypes().slice().sort()
@@ -10470,6 +11613,14 @@
         return false;
       }
       const details = $("#noteText").value.trim();
+      const lat = normalizeLatitude($("#noteLat").value);
+      const lng = normalizeLongitude($("#noteLng").value);
+      if (($("#noteLat").value.trim() || $("#noteLng").value.trim()) && (lat === "" || lng === "")) {
+        $("#noteLat").setCustomValidity("Enter both latitude and longitude, or leave both blank.");
+        $("#noteLat").reportValidity();
+        $("#noteLat").setCustomValidity("");
+        return false;
+      }
       const note = {
         id: id || uid(),
         date: parsedDate,
@@ -10477,6 +11628,9 @@
         where: $("#noteWhere").value.trim(),
         what: $("#noteWhat").value.trim(),
         who: $("#noteWho").value.trim(),
+        lat,
+        lng,
+        geocodeLabel: $("#noteGeocodeStatus").dataset.geocodeLabel || "",
         details,
         text: details,
         visitTypes: selectedNoteVisitTypes()
@@ -10706,6 +11860,7 @@
       $("#shortcutModeOnBtn").setAttribute("aria-pressed", state.settings.shortcutMode === true);
       $("#shortcutModeOffBtn").setAttribute("aria-pressed", state.settings.shortcutMode !== true);
       renderDeveloperJson();
+      renderDeviceDetectionReadout();
       const sample = "2026-06-01";
       setDateButtonLabel("#dateMdyBtn", "", "MDY", formatDateDisplay(sample, "mdy", state.settings.dateStyle));
       setDateButtonLabel("#dateDmyBtn", "", "DMY", formatDateDisplay(sample, "dmy", state.settings.dateStyle));
@@ -11122,11 +12277,210 @@
       return true;
     }
 
+    let darkTouchIconBlobUrl = null;
+
+    function detectDeviceType() {
+      const ua = navigator.userAgent || "";
+      const touch = (navigator.maxTouchPoints || 0) > 1;
+      const longestEdge = Math.max(screen.width || 0, screen.height || 0);
+      if (/iPhone|iPod/i.test(ua)) return { type: "iphone", certain: true };
+      if (/iPad/i.test(ua)) return { type: "ipad", certain: true };
+      if (/Android/i.test(ua)) {
+        return { type: longestEdge >= 900 ? "ipad" : "iphone", certain: false };
+      }
+      if (/Macintosh/i.test(ua)) {
+        // iPadOS 13+ Safari reports as Mac. Touch points > 1 = iPad.
+        if (touch) return { type: "ipad", certain: false };
+        return { type: "laptop", certain: false };
+      }
+      if (/Windows/i.test(ua)) {
+        return { type: longestEdge >= 1600 ? "desktop" : "laptop", certain: false };
+      }
+      if (/Linux/i.test(ua)) return { type: "laptop", certain: false };
+      // Final fallback by touch capability.
+      return { type: touch ? "iphone" : "laptop", certain: false };
+    }
+
+    function deviceInstallIconConstant(type) {
+      switch (type) {
+        case "iphone": return __APPS_IPHONE_BADGE_PLUS;
+        case "ipad": return __APPS_IPAD_BADGE_PLUS;
+        case "desktop": return __DESKTOPCOMPUTER_BADGE_CHECKMARK;
+        case "laptop":
+        default: return __LAPTOPCOMPUTER_BADGE_CHECKMARK;
+      }
+    }
+
+    function detectedDeviceLabel() {
+      const det = detectDeviceType();
+      const labels = { iphone: "iPhone", ipad: "iPad", laptop: "Laptop", desktop: "Desktop" };
+      return `${labels[det.type] || det.type}${det.certain ? "" : " (guessed)"}`;
+    }
+
+    function renderDeviceDetectionReadout() {
+      const det = detectDeviceType();
+      const typeEl = $("#detectedDeviceType");
+      const iconEl = $("#detectedDeviceIcon");
+      const uaEl = $("#detectedUserAgent");
+      if (typeEl) typeEl.textContent = detectedDeviceLabel();
+      if (iconEl) iconEl.innerHTML = `${deviceInstallIconConstant(det.type)} <code>${det.type}</code>`;
+      if (uaEl) uaEl.textContent = navigator.userAgent || "(unknown)";
+    }
+
+    function currentTouchIconLink() {
+      return document.querySelector('link[rel="apple-touch-icon"]');
+    }
+
+    async function darkTouchIconFromCanvas() {
+      if (darkTouchIconBlobUrl) return darkTouchIconBlobUrl;
+      try {
+        const res = await fetch("icon/trail-log-dark.svg");
+        if (!res.ok) throw new Error("fetch failed");
+        const svgText = await res.text();
+        const svgBlob = new Blob([svgText], { type: "image/svg+xml" });
+        const svgUrl = URL.createObjectURL(svgBlob);
+        const img = new Image();
+        await new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = reject;
+          img.src = svgUrl;
+        });
+        const canvas = document.createElement("canvas");
+        canvas.width = 180;
+        canvas.height = 180;
+        canvas.getContext("2d").drawImage(img, 0, 0, 180, 180);
+        URL.revokeObjectURL(svgUrl);
+        const pngBlob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+        if (!pngBlob) throw new Error("toBlob returned null");
+        darkTouchIconBlobUrl = URL.createObjectURL(pngBlob);
+        return darkTouchIconBlobUrl;
+      } catch (err) {
+        console.warn("dark touch icon canvas fallback failed", err);
+        return null;
+      }
+    }
+
+    async function applyTouchIconVariant(variant) {
+      const link = currentTouchIconLink();
+      const manifestLink = document.querySelector('link[rel="manifest"]');
+      const storedBefore = (() => { try { return localStorage.getItem("tlInstallIconVariant") || "light"; } catch (_) { return "light"; } })();
+      try { localStorage.setItem("tlInstallIconVariant", variant); } catch (_) {}
+
+      if (variant === "dark") {
+        if (link) {
+          try {
+            const head = await fetch("apple-touch-icon-dark.png", { method: "HEAD" });
+            if (head.ok) {
+              link.href = "apple-touch-icon-dark.png";
+            } else {
+              const blob = await darkTouchIconFromCanvas();
+              link.href = blob || "apple-touch-icon.png";
+            }
+          } catch (_) {
+            const blob = await darkTouchIconFromCanvas();
+            link.href = blob || "apple-touch-icon.png";
+          }
+        }
+        if (manifestLink) manifestLink.href = "manifest-dark.webmanifest";
+      } else {
+        if (link) link.href = "apple-touch-icon.png";
+        if (manifestLink) manifestLink.href = "manifest.webmanifest";
+      }
+
+      // macOS Safari caches the manifest at page-load. If the variant changed,
+      // surface a reload prompt so Add-to-Dock picks up the new icons.
+      const reloadNotice = $("#installReloadNotice");
+      if (reloadNotice) {
+        reloadNotice.classList.toggle("hidden", storedBefore === variant);
+      }
+    }
+
+    function openAddToHomeDialog() {
+      let stored = null;
+      try { stored = localStorage.getItem("tlInstallIconVariant"); } catch (_) {}
+      const variant = stored || (state.settings.theme === "dark" ? "dark" : "light");
+      const radios = $("#addToHomeDialog").querySelectorAll('input[name="installIconVariant"]');
+      radios.forEach(r => { r.checked = (r.value === variant); });
+      // Hide the reload notice — applyTouchIconVariant will surface it only if the
+      // user picks a different value than what's already persisted.
+      $("#installReloadNotice")?.classList.add("hidden");
+      applyTouchIconVariant(variant);
+      $("#addToHomeDialog").showModal();
+    }
+
+    function bindAddToHome() {
+      $("#addToHomeBtn")?.addEventListener("click", openAddToHomeDialog);
+      $("#addToHomeDialog").querySelectorAll('input[name="installIconVariant"]').forEach(radio => {
+        radio.addEventListener("change", () => {
+          if (radio.checked) applyTouchIconVariant(radio.value);
+        });
+      });
+      $("#installReloadBtn")?.addEventListener("click", () => {
+        location.reload();
+      });
+    }
+
+    function buildVenmoUrls(amount, note) {
+      const qs = new URLSearchParams({
+        txn: "pay",
+        audience: "private",
+        recipients: VENMO_HANDLE,
+        amount: String(amount),
+        note,
+      });
+      return { app: `venmo://paycharge?${qs}`, web: `https://venmo.com/?${qs}` };
+    }
+
+    function launchTip(amount, note) {
+      const amt = Number(amount);
+      if (!Number.isFinite(amt) || amt <= 0) return;
+      const { app, web } = buildVenmoUrls(amt, note);
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (!isMobile) {
+        window.open(web, "_blank", "noopener");
+        return;
+      }
+      const fallback = window.setTimeout(() => window.open(web, "_blank", "noopener"), 900);
+      const cancelOnHide = () => {
+        if (document.hidden) {
+          clearTimeout(fallback);
+          document.removeEventListener("visibilitychange", cancelOnHide);
+        }
+      };
+      document.addEventListener("visibilitychange", cancelOnHide);
+      window.location.href = app;
+    }
+
+    function openTipJar() {
+      const input = $("#tipOtherInput");
+      if (input) input.value = "";
+      $("#tipJarDialog").showModal();
+    }
+
+    function bindTipJar() {
+      $("#tipJarBtn")?.addEventListener("click", openTipJar);
+      $("#tipJarFooterBtn")?.addEventListener("click", openTipJar);
+      $("#tipJarHelpBtn")?.addEventListener("click", openTipJar);
+      $("#tipJarDialog").querySelectorAll(".tip-tier").forEach(btn => {
+        btn.addEventListener("click", () => {
+          launchTip(btn.dataset.amount, btn.dataset.note);
+          $("#tipJarDialog").close();
+        });
+      });
+      $("#tipOtherForm").addEventListener("submit", event => {
+        event.preventDefault();
+        const amt = Number($("#tipOtherInput").value);
+        if (!Number.isFinite(amt) || amt <= 0) return;
+        launchTip(amt, "A drink for the Trail Log dev");
+        $("#tipJarDialog").close();
+      });
+    }
+
     function handleTitleQuadTap(event) {
       const now = performance.now();
       if (titleQuadTapTimer) clearTimeout(titleQuadTapTimer);
-      titleQuadTapCount = now - (Number($("#mapTitle").dataset.lastTap || 0)) < 900 ? titleQuadTapCount + 1 : 1;
-      $("#mapTitle").dataset.lastTap = String(now);
+      titleQuadTapCount = now - (Number($("#appIcon").dataset.lastTap || 0)) < 900 ? titleQuadTapCount + 1 : 1;
+      $("#appIcon").dataset.lastTap = String(now);
       titleQuadTapTimer = window.setTimeout(() => {
         titleQuadTapCount = 0;
         titleQuadTapTimer = 0;
@@ -11311,7 +12665,8 @@
           s: () => $("#noteForm").requestSubmit(),
           d: () => !$("#deleteNoteFromDialogBtn").classList.contains("hidden") && $("#deleteNoteFromDialogBtn").click(),
           w: applySmartNoteConvert,
-          y: () => openVisitTagSettings("note")
+          y: () => openVisitTagSettings("note"),
+          g: lookupNoteCoordinates
         };
         activeVisitTypes().forEach(type => {
           if (type.shortcut) noteActions[type.shortcut] = () => toggleNoteVisitType(type.id);
@@ -11319,6 +12674,17 @@
         if (!noteActions[key]) return;
         event.preventDefault();
         noteActions[key]();
+        return;
+      }
+      if ($("#markerDialog").open) {
+        const markerActions = {
+          q: () => $("#markerDialog").close(),
+          x: () => $("#markerDialog").close(),
+          a: () => markerDialogItems[0] && addNoteAtMappedLocation(markerDialogItems[0])
+        };
+        if (!markerActions[key]) return;
+        event.preventDefault();
+        markerActions[key]();
         return;
       }
       if ($("#tagDialog").open) {
@@ -11419,7 +12785,11 @@
           else if (!$("#addLevelBtn").disabled) $("#addLevelBtn").click();
         },
         b: () => notesPanelState && $("#notesPanelBackBtn").click(),
-        t: () => notesPanelOpen && !notesPanelState && $("#notesSortChronoBtn").click(),
+        t: () => {
+          if (notesPanelOpen && !notesPanelState) $("#notesSortChronoBtn").click();
+          else $("#tipJarBtn").click();
+        },
+        j: () => $("#addToHomeBtn").click(),
         e: () => notesPanelOpen && !notesPanelState && $("#notesViewExpandedBtn").click(),
         k: () => notesPanelOpen && !notesPanelState && $("#notesViewCompactBtn").click(),
         o: () => notesPanelOpen && !notesPanelState && $("#notesViewTextBtn").click(),
@@ -11479,12 +12849,14 @@
       });
       $("#renameForm").addEventListener("submit", event => {
         event.preventDefault();
-        state.mapName = $("#mapNameInput").value.trim() || "Your ${APP_NAME}";
+        state.mapName = $("#mapNameInput").value.trim() || DEFAULT_MAP_NAME;
         save();
         $("#renameDialog").close();
         render();
       });
-      $("#mapTitle").addEventListener("click", handleTitleQuadTap);
+      bindTipJar();
+      bindAddToHome();
+      $("#appIcon").addEventListener("click", handleTitleQuadTap);
       $("#settingsBtn").addEventListener("click", () => {
         renderChangelog();
         renderWishlist();
@@ -11510,6 +12882,15 @@
         if (button.dataset.close === "noteDialog") closeNoteDialog();
         else $(`#${button.dataset.close}`).close();
       }));
+      $("#markerDialogList").addEventListener("click", event => {
+        const row = event.target.closest("[data-marker-item]");
+        if (!row) return;
+        const item = markerDialogItems[Number(row.dataset.markerItem)];
+        if (item) openMappedNote(item);
+      });
+      $("#markerAddNoteBtn").addEventListener("click", () => {
+        if (markerDialogItems[0]) addNoteAtMappedLocation(markerDialogItems[0]);
+      });
       $("#confirmActionBtn").addEventListener("click", () => {
         const action = pendingConfirm;
         pendingConfirm = null;
@@ -11597,6 +12978,10 @@
         $("#noteDay").value = "";
         syncNoteDateBuilder();
       });
+      $("#noteGeocodeBtn").addEventListener("click", lookupNoteCoordinates);
+      ["#noteLat", "#noteLng"].forEach(selector => $(selector).addEventListener("input", () => {
+        setNoteGeocodeStatus("Manual coordinates will be used for the map marker.");
+      }));
       $("#noteSmartConvertBtn").addEventListener("click", applySmartNoteConvert);
       $("#noteTagSettingsBtn").addEventListener("click", () => openVisitTagSettings("note"));
       $("#noteDialog").addEventListener("keydown", handleNoteDialogKeydown);
