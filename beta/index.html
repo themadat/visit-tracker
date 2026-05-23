@@ -7,22 +7,24 @@
   <title>Trail Log</title>
   <!-- title is overwritten by APP_NAME at startup -->
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
-  <link rel="icon" href="favicon-16.png" sizes="16x16" type="image/png">
   <script>
-    // Set apple-touch-icon + manifest before they're fetched so macOS Safari
-    // "Add to Dock" picks the right variant. The choice persists across reloads.
+    // Set apple-touch-icon, manifest, and PNG favicons before they're fetched so
+    // macOS Safari "Add to Dock" picks the right variant. The choice persists.
     (function () {
       var variant = "light";
       try { if (localStorage.getItem("tlInstallIconVariant") === "dark") variant = "dark"; } catch (e) {}
-      var touch = document.createElement("link");
-      touch.rel = "apple-touch-icon";
-      touch.href = variant === "dark" ? "apple-touch-icon-dark.png" : "apple-touch-icon.png";
-      document.head.appendChild(touch);
-      var mf = document.createElement("link");
-      mf.rel = "manifest";
-      mf.href = variant === "dark" ? "manifest-dark.webmanifest" : "manifest.webmanifest";
-      document.head.appendChild(mf);
+      var isDark = variant === "dark";
+      function add(rel, href, attrs) {
+        var l = document.createElement("link");
+        l.rel = rel;
+        l.href = href;
+        for (var k in attrs || {}) l.setAttribute(k, attrs[k]);
+        document.head.appendChild(l);
+      }
+      add("apple-touch-icon", isDark ? "apple-touch-icon-dark.png" : "apple-touch-icon.png");
+      add("manifest", isDark ? "manifest-dark.webmanifest" : "manifest.webmanifest");
+      add("icon", isDark ? "favicon-32-dark.png" : "favicon-32.png", { sizes: "32x32", type: "image/png" });
+      add("icon", isDark ? "favicon-16-dark.png" : "favicon-16.png", { sizes: "16x16", type: "image/png" });
     })();
   </script>
   <meta name="apple-mobile-web-app-title" content="Trail Log">
@@ -5170,7 +5172,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.12</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.15</span>
                 <span id="betaPill" class="beta-pill hidden" title="This is the beta deploy">BETA</span>
               </div>
             </div>
@@ -6578,7 +6580,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.0.0.12";
+    const APP_VERSION = "3.0.0.15";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7697,7 +7699,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.0.0.12",
+        version: "3.0.0.15",
         date: "2026-05-23",
         title: "3.0 Development Begins",
         summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, mapped note locations, a guided install flow, and a beta environment indicator.",
@@ -7747,7 +7749,13 @@
           "Added a build/ directory with generate-icons.sh and generate-favicon.py that regenerate every PNG icon and the dual-theme favicon SVG from the two source SVGs in icon/.",
           "Switched the Notes summary line to icon-prefixed counters, with the location count beside a location pin and the notes count beside a clipboard glyph.",
           "Refined the title bar so the app icon, name, and the dev/beta pill row share one centered column under the name with consistent left alignment on desktop.",
-          "Added a P2 wishlist item for further polish on the Tip / Gift prompt and popup."
+          "Added a P2 wishlist item for further polish on the Tip / Gift prompt and popup.",
+          "Added dark variants of the 16px and 32px legacy favicons (favicon-16-dark.png, favicon-32-dark.png) so the browser tab fallback now tracks the chosen install icon for older or PNG-preferring browsers.",
+          "The boot script now sets all icon link tags (favicon PNG, apple-touch-icon, and manifest) in one place before any fetch happens, so the chosen variant is consistent across browser tab and home-screen install paths.",
+          "Fixed the favicon SVG generator to emit the generated-by comment after the XML declaration so the file is valid XML and not silently rejected by stricter renderers.",
+          "Fixed the apple-touch-icon-source-dark SVG so its background is the dark pine color instead of the light mint.",
+          "Updated the README with a Quick Start subsection covering the optional macOS-only icon build script and a refreshed Repo Layout listing the source SVGs, manifest files, and deploy-excluded folders.",
+          "Added a Release Notes rule that, for every completed change, a push commit summary and description must be provided in two distinct copy-paste-friendly containers."
         ]
       },
       {
@@ -12436,8 +12444,13 @@
     async function applyTouchIconVariant(variant) {
       const link = currentTouchIconLink();
       const manifestLink = document.querySelector('link[rel="manifest"]');
+      const fav32 = document.querySelector('link[rel="icon"][sizes="32x32"]');
+      const fav16 = document.querySelector('link[rel="icon"][sizes="16x16"]');
       const storedBefore = (() => { try { return localStorage.getItem("tlInstallIconVariant") || "light"; } catch (_) { return "light"; } })();
       try { localStorage.setItem("tlInstallIconVariant", variant); } catch (_) {}
+
+      if (fav32) fav32.href = variant === "dark" ? "favicon-32-dark.png" : "favicon-32.png";
+      if (fav16) fav16.href = variant === "dark" ? "favicon-16-dark.png" : "favicon-16.png";
 
       if (variant === "dark") {
         if (link) {
