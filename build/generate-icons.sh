@@ -9,8 +9,10 @@
 # Outputs at repo root (overwrites in place):
 #   apple-touch-icon.png       180x180  (iOS home screen, light)
 #   apple-touch-icon-dark.png  180x180  (iOS home screen, dark)
-#   favicon-16.png              16x16   (legacy favicon)
-#   favicon-32.png              32x32   (legacy favicon)
+#   favicon-16.png              16x16   (legacy favicon, light)
+#   favicon-32.png              32x32   (legacy favicon, light)
+#   favicon-16-dark.png         16x16   (legacy favicon, dark variant)
+#   favicon-32-dark.png         32x32   (legacy favicon, dark variant)
 #   icon-192.png               192x192  (web app manifest, light)
 #   icon-512.png               512x512  (web app manifest, light)
 #   icon-192-dark.png          192x192  (web app manifest, dark — used by manifest-dark.webmanifest)
@@ -90,6 +92,8 @@ render "$DARK_SVG"  192 "icon-192-dark.png"
 render "$DARK_SVG"  512 "icon-512-dark.png"
 render "$LIGHT_SVG"  32 "favicon-32.png"
 render "$LIGHT_SVG"  16 "favicon-16.png"
+render "$DARK_SVG"   32 "favicon-32-dark.png"
+render "$DARK_SVG"   16 "favicon-16-dark.png"
 
 # favicon.svg combines both palettes via @media (prefers-color-scheme) — needs Python
 if command -v python3 >/dev/null 2>&1; then
