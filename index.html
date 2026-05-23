@@ -4543,7 +4543,7 @@
             <h1 id="mapTitle">Your Visit Tracker</h1>
             <button id="renameBtn" class="ghost title-edit-btn" type="button" data-shortcut="M">Rename</button>
           </div>
-          <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v2.4.0.16</span>
+          <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v2.5.0</span>
         </div>
         <div class="topbar-hints" aria-label="Title bar tips">
           <small id="topbarPanelHint" data-hint data-hint-key="topbar-panel-controls">
@@ -5768,7 +5768,7 @@
 
   <script>
     const APP_NAME = "Visit Tracker";
-    const APP_VERSION = "2.4.0.16";
+    const APP_VERSION = "2.5.0";
     const STORAGE_KEY = "usStateVisitMap.v1";
     const STATES = [
       ["AK", "Alaska", 0, 5], ["WA", "Washington", 1, 0], ["OR", "Oregon", 1, 1], ["CA", "California", 1, 2], ["ID", "Idaho", 2, 1],
@@ -6875,52 +6875,67 @@
     ];
     const CHANGELOG = [
       {
-        version: "2.4.0.16",
-        date: "2026-05-22",
+        version: "2.5.0",
+        date: "2026-05-23",
         title: "Legend Gets Legs",
-        summary: "A 2.4 development build that makes the Legend movable, draggable, more compact, and calmer until edit mode is needed.",
+        summary: "A Legend-focused release that makes levels easier to edit, reorder, position, and scan.",
         highlights: [
-          "Legend edit controls now hide behind an active Edit toggle and slide into view only when editing.",
-          "Legend levels can be dragged to reorder priority with live row movement.",
-          "Legend position can be picked from a mini corner menu or changed by dragging the Legend title between upper/lower right and upper/lower left map placements.",
-          "Scrollable map zoom level, pan position, fit/scroll view mode, panels, Notes filters, and Notes view preferences now persist in Settings and JSON backups."
+          "Legend edit controls now hide behind an active Edit toggle, while level rows remain draggable for priority sorting.",
+          "Legend levels can be reordered with steadier drag behavior, placeholder drop slots, and live row feedback.",
+          "Legend position can be picked from a mini corner menu or changed by dragging the Legend title between desktop placements.",
+          "Legend stats and definitions are denser, with per-level stats inside color ovals and total completion under the title."
+        ],
+        updates: [
+          "Legend Edit reveals row controls only when needed, while levels stay draggable outside edit mode.",
+          "Legend rows support right-to-left swipe quick actions for Edit/Delete with a far-right dismiss control that does not shift row alignment.",
+          "Legend level sorting now uses a placeholder drop slot and commits order once on release, reducing row jitter while dragging.",
+          "Legend row dragging captures the pointer immediately so click-and-move sorting is more reliable.",
+          "Legend row sorting now uses pointer position against row midpoints for steadier drag-to-reorder behavior.",
+          "Legend placement can be chosen from a desktop-only mini corner picker with full-size centered icons.",
+          "Dragging the Legend title shows live placement previews across all desktop targets, including the current/original position with a blue outline.",
+          "Legend placement preview now hides in the current corner, owns the candidate layout while dragging, and uses right-column row rules for top/bottom previews.",
+          "Top-left and lower-left Legend placements now reserve real map-panel space so the map scrolls below them instead of sliding underneath.",
+          "Right-side Legend placements give the Legend its natural height while Notes takes the scrollable space above or below it.",
+          "The top Legend toggle now stashes the Legend under Notes before hiding it, so the panel does not vanish when you meant to move it out of the way.",
+          "Per-level stats now live inside the color oval, while total completion sits directly under the Legend title.",
+          "Legend stat ovals and total pills keep the user's tighter 24px height for denser rows.",
+          "Level definitions are visible inline beside names in subtle text.",
+          "Legend quick actions, row controls, and close buttons were centered and refined across icon/text button modes.",
+          "Help Center, Release Notes, README, and Legend hints were refreshed for the post-2.3 map and Legend controls."
+        ]
+      },
+      {
+        version: "2.4.0",
+        date: "2026-05-22",
+        title: "Polish, Memory, and Mobile Flow",
+        summary: "A cleanup release for saved layout state, Notes filtering and summaries, Location Tag settings, Roadmap counts, and What's New polish.",
+        notice: {
+          version: "2.5.0",
+          title: "Polish, Memory, and Mobile Flow",
+          summary: "Saved map and Notes preferences, cleaner summaries, mobile polish, and a calmer What's New banner.",
+          cta: "Learn More"
+        },
+        highlights: [
+          "Map view mode, zoom level, pan center, panel visibility, Notes filters, selected location, and Notes view preferences now persist in Settings and JSON backups.",
+          "Notes summaries are denser and clearer, with color-coded location icons, compact filter lines, smaller search placeholder text, and steadier long-press icon filtering.",
+          "Location Tag settings now show More Icons in a 6-column grid on wider screens and a 3-column grid on mobile.",
+          "What's New, title-bar hints, mobile map hints, the hidden H H shortcut, app-name quad-tap reset, and Roadmap counts were polished."
         ],
         updates: [
           "Map, Legend, and Notes visibility now restore across reloads.",
+          "Map view mode, exact zoom level, scrollable-map pan center, and fit/scroll state now save to localStorage, export in JSON, import from backups, and restore on reload.",
+          "Notes sort, view, category grouping, excluded visibility, level filters, icon filters, selected location, and collapsed note categories now persist.",
+          "Condensed Notes now color the location-type icon by the highest visit level, show compact clipboard note counts, and avoid spending a separate column on level text.",
+          "Notes summary now renders the location count with a compact view/sort/grouping bracket, then places active level/icon/search filters on their own smaller small-caps line.",
+          "Notes search placeholder text is smaller, and long-press note icon filters are steadier on touch screens.",
           "Location Tag settings now show More Icons in a 6-column grid on wider screens and a 3-column grid on mobile.",
-          "Desktop Legend swipe actions no longer add a layout column, the banner close icon is nudged to the visual center, Notes search placeholders are smaller, and the Notes summary now uses the requested count-plus-bracket format.",
-          "Notes summary now keeps the view/sort/grouping bracket beside the location count, filters stay on their own compact line, the ellipsis shortcut is smaller, and Legend swipe close controls only appear while swiped.",
-          "The What's New dismiss control now uses a centered SVG close icon, Notes filter summaries split filter and mode details across two compact lines, and Legend quick actions stay vertically centered in desktop rows.",
-          "The hidden H H test shortcut and a quad-tap on the app name now restore dismissed hints and the What's New banner highlight together.",
-          "Condensed Notes now colors the location-type icon by the highest visit level instead of spending a separate column on level text.",
-          "What's New and swipe quick-action close buttons are centered, the tag-settings ellipsis got a ghost-style circular hover target, and Notes filter summary details are smaller small-caps text.",
-          "Mobile hints now sit above their controls, What's New can overlay the mobile toolbar, Notes filters gained a tiny tag-settings shortcut, and condensed Notes rows use level color dots with clipboard note counts.",
-          "Long-press note icon filters are steadier on touch screens, swiped Legend quick actions gained a far-right dismiss button, and the Notes filter summary now emphasizes the location count on its own line.",
-          "Notes sort, view, category grouping, excluded visibility, Legend level filters, icon filters, selected location, and collapsed note categories now persist.",
-          "Scrollable map pan center now saves with zoom, so high-zoom map views come back where you left them.",
-          "Dragging the Legend back over its original placement now restores a blue current-position outline instead of making the target disappear.",
-          "Legend level sorting now uses a placeholder drop slot and commits order once on release, reducing row jitter while dragging.",
+          "The tag-settings ellipsis shortcut gained a smaller ghost-style circular target.",
+          "Mobile title-bar and map-control hints now sit above their controls, and the What's New banner can overlay the mobile toolbar.",
+          "The What's New dismiss control uses a centered SVG close icon with a small desktop optical nudge.",
+          "The hidden H H shortcut and app-name quad-tap now restore dismissed hints and the What's New banner highlight together.",
           "The title-bar Edit/Rename control now bottom-aligns with the map name for a cleaner header.",
-          "Map view mode and exact zoom level now save to localStorage, export in JSON, import from backups, and restore on reload.",
-          "Legend stat ovals and total pills keep the user's tighter 24px height for denser rows.",
-          "Legend placement preview now hides in the current corner, owns the candidate layout while dragging, and uses right-column row rules for top/bottom previews.",
-          "Legend quick actions now reveal with a right-to-left swipe.",
-          "Legend row dragging captures the pointer immediately so click-and-move sorting is more reliable.",
-          "The Legend Position pop-up keeps each icon centered and fills the button space.",
-          "Top-left and lower-left Legend placements now reserve real map-panel space so the map scrolls below them instead of sliding underneath.",
-          "Legend drag now previews placement with a lightweight spacer and commits only on release, making diagonal moves and corner hopping smoother.",
-          "Legend row sorting now uses pointer position against row midpoints for steadier drag-to-reorder behavior.",
-          "The Legend Position pop-up now lays out the four options by actual corner placement.",
-          "Legend Position now opens a tiny in-place picker with all four desktop placements, and the control hides in single-column layouts.",
-          "Right-side Legend placements now give the Legend its natural height while Notes takes the scrollable space above or below it.",
-          "Legend title positioning and level row reordering now use pointer-driven drag so they work reliably in normal browsers.",
-          "Legend rows remain draggable outside edit mode, and a right-to-left swipe reveals quick Edit/Delete controls.",
-          "The top Legend toggle now stashes the Legend under Notes before hiding it, so the panel does not vanish when you meant to move it out of the way.",
-          "Per-level stats now live inside the color oval, while total completion sits directly under the Legend title.",
-          "Level definitions are visible inline beside names in subtle text.",
           "Roadmap search now has a live count pill beside the search field that updates with search and filters.",
-          "Roadmap filter drop-down options and the Roadmap search placeholder now include item counts, future target priorities were reorganized, and completed Legend roadmap items were retired.",
-          "Help Center, Release Notes, README, and Legend hints were refreshed for the post-2.3 map and Legend controls."
+          "Roadmap filter drop-down options and the Roadmap search placeholder now include item counts, future target priorities were reorganized, and completed Legend roadmap items were retired."
         ]
       },
       {
