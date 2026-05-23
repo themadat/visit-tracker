@@ -669,6 +669,10 @@
       grid-template-columns: 1fr;
     }
 
+    html[data-legend-preview-position^="right"][data-side-panel="closed"] .main {
+      grid-template-columns: minmax(0, var(--map-column-width, 2fr)) 10px minmax(320px, 1fr);
+    }
+
     [data-map-panel="closed"] .main {
       grid-template-columns: minmax(0, 1fr);
     }
@@ -1172,6 +1176,10 @@
 
     [data-side-panel="closed"] .side-panel-wrap {
       display: none;
+    }
+
+    html[data-legend-preview-position^="right"][data-side-panel="closed"] .side-panel-wrap {
+      display: grid;
     }
 
     [data-legend="closed"] #legendPanel,
