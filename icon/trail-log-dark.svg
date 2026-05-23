@@ -2,7 +2,7 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
        <rect fill="#243127" width="1024" height="1024" rx="224" />
-       <g transform="translate(152 85) scale(26.3)">
+       <g transform="translate(177 112) scale(24.77)" comment="80%">
               <g>
                      <rect fill="#B79B7A" height="27" width="20" x="3" y="3" />
                      <path fill="#5A3E2B"

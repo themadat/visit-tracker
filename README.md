@@ -1,6 +1,6 @@
-# Visit Tracker
+# Trail Log
 
-Single-file, offline-capable HTML app for tracking US state visits. The app is intentionally plain HTML, CSS, and JavaScript with no build step, backend, or external services.
+Single-file, offline-capable HTML app for tracking US state visits and mapped visit notes. The app is intentionally plain HTML, CSS, and JavaScript with no build step or backend. Optional coordinate lookup uses an online geocode request only when the user taps Locate; saved data and manual coordinates work offline.
 
 ## Quick Start
 
@@ -46,25 +46,23 @@ Useful code regions in `index.html`:
 
 - Constants: `APP_VERSION`, `STORAGE_KEY`, `STATES`, `BUILT_INS`, `THEMES`, `WISHLIST_SEEDS`, `CHANGELOG`
 - Persistence: `defaultState`, `loadState`, `normalizeState`, `save`
-- Map behavior: `initMap`, `handleStateTap`, `cycleState`, `renderMap`, `bindMapPanZoom`, `setMapZoom`, `toggleMapFitMode`
+- Map behavior: `initMap`, `handleStateTap`, `cycleState`, `renderMap`, `renderLocationMarkers`, `bindMapPanZoom`, `setMapZoom`, `toggleMapFitMode`
 - Legend: `renderLegend`, `moveLevel`, `deleteLevel`, `smartApplyPalette`, `setLegendPosition`
-- Notes: `renderNotesPanel`, `openNoteDialog`, `saveNoteFromForm`, note sorting/filter helpers
+- Notes: `renderNotesPanel`, `openNoteDialog`, `lookupNoteCoordinates`, `saveNoteFromForm`, note sorting/filter helpers
 - Settings/import/export: `renderSettingsControls`, `exportMarkdown`, `exportRichText`, `importJson`
 
 Current persisted settings include map layout state such as `mapSplitRatio`, `legendPosition`, `mapViewMode`, `mapZoom`, `mapPanCenter`, visible panels, selected Notes location, Notes sort/view/grouping/filter choices, and collapsed Notes categories.
 
-## Current 2.4 Development Surface
+## Current 3.0 Development Surface
 
-Since `2.3.0`, the active work has focused on the Legend and map layout:
+Since `2.5.0`, the active work has focused on branding, app install polish, tips, and mapped note locations:
 
-- Legend editing is calmer by default: Edit reveals row controls, while levels remain draggable for priority sorting.
-- Legend rows support right-to-left swipe quick actions for Edit/Delete.
-- Legend position can be chosen from a desktop corner picker or by dragging the Legend title, with live placement previews.
-- Legend stats are embedded into compact color ovals, with total completion under the Legend title.
-- Left-side Legend positions reserve real map-panel space instead of overlapping the map.
-- Roadmap filters show counts, and Roadmap search has a live result-count pill.
-- Scrollable map zoom, map pan center, Fit/Scroll view mode, panel visibility, and Notes view/filter state now persist in localStorage and JSON backups.
-- Title-bar Edit/Rename is bottom-aligned with the map name for a tighter header.
+- Trail Log branding now reaches the title, default map name, README, Settings footer, app icon, favicon, and manifest.
+- The title-bar app icon owns the hidden quad-tap hint/banner reset gesture.
+- Optional Tip Jar controls use a compact local dialog and Venmo handoff without SDKs or trackers.
+- Notes can store latitude/longitude, use an optional online Locate lookup, and accept manual coordinate overrides.
+- Coordinate-backed notes render as clustered markers on the map; the first saved location/icon represents each cluster, and grouped markers can zoom in or open a note picker.
+- Location coordinates persist in localStorage and JSON backups and appear in text exports/search.
 
 ## Persistence and Migration
 
@@ -126,6 +124,7 @@ git diff --check
 - Mark a state, open Notes, add/edit/delete a note.
 - Try year-only, month/year, and full-date note entries.
 - Toggle Notes sort/view controls.
+- Add a note with Where Specifically, use Locate when online, confirm latitude/longitude fields save, then reload and confirm a map marker appears.
 - Toggle Settings date format options.
 - Apply a smart color palette.
 - Export JSON, Markdown, and Simple Rich Text.
@@ -165,3 +164,5 @@ For every completed change:
 <comment name="BrightCompassGold" fill="#F2C14E" />
 
 ## Future Prompts
+
+
