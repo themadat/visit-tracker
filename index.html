@@ -4135,23 +4135,57 @@
       font-size: .85rem;
       text-align: right;
       line-height: 1.2;
+      min-width: 0;
     }
 
     .developer-readout-mono {
-      font: 11px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font: 11px/1.35 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       word-break: break-all;
-      max-width: 60%;
+      text-align: left;
+      color: var(--muted);
     }
 
-    .developer-readout-icon {
+    .developer-device-row {
+      min-height: 0;
+      align-items: baseline;
+    }
+
+    .developer-device-row .setting-label {
+      white-space: nowrap;
+    }
+
+    .developer-device-typeicon {
       display: inline-flex;
       align-items: center;
-      gap: .35rem;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      gap: .3rem;
+      column-gap: .35rem;
+      row-gap: .15rem;
+      text-align: left;
     }
 
-    .developer-readout-icon .sf-symbol {
-      width: 22px;
-      height: 22px;
+    .developer-device-typeicon .device-sep {
+      color: var(--muted);
+      opacity: .6;
+    }
+
+    .developer-device-typeicon .device-type-text {
+      font-weight: 700;
+    }
+
+    .developer-device-typeicon .sf-symbol {
+      width: 20px;
+      height: 20px;
+      vertical-align: -4px;
+    }
+
+    .developer-device-typeicon code {
+      font-size: .78rem;
+      color: var(--muted);
+      background: var(--surface-2);
+      padding: .05rem .3rem;
+      border-radius: 6px;
     }
 
     .developer-json {
@@ -6449,16 +6483,12 @@
         </section>
         <section class="settings-category">
           <h3>Device Detection</h3>
-          <div class="setting-row">
-            <div class="setting-label">Detected type</div>
-            <div id="detectedDeviceType" class="developer-readout">—</div>
+          <div class="setting-row developer-device-row">
+            <div class="setting-label">Detected Type/Icon</div>
+            <div id="detectedDeviceTypeIcon" class="developer-readout developer-device-typeicon">—</div>
           </div>
-          <div class="setting-row">
-            <div class="setting-label">Install icon</div>
-            <div id="detectedDeviceIcon" class="developer-readout developer-readout-icon">—</div>
-          </div>
-          <div class="setting-row">
-            <div class="setting-label">User agent</div>
+          <div class="setting-row developer-device-row">
+            <div class="setting-label">User Agent</div>
             <div id="detectedUserAgent" class="developer-readout developer-readout-mono">—</div>
           </div>
         </section>
@@ -12319,11 +12349,11 @@
 
     function renderDeviceDetectionReadout() {
       const det = detectDeviceType();
-      const typeEl = $("#detectedDeviceType");
-      const iconEl = $("#detectedDeviceIcon");
+      const typeIconEl = $("#detectedDeviceTypeIcon");
       const uaEl = $("#detectedUserAgent");
-      if (typeEl) typeEl.textContent = detectedDeviceLabel();
-      if (iconEl) iconEl.innerHTML = `${deviceInstallIconConstant(det.type)} <code>${det.type}</code>`;
+      if (typeIconEl) {
+        typeIconEl.innerHTML = `<span class="device-type-text">${escapeHtml(detectedDeviceLabel())}</span> <span class="device-sep">/</span> ${deviceInstallIconConstant(det.type)} <code>${escapeHtml(det.type)}</code>`;
+      }
       if (uaEl) uaEl.textContent = navigator.userAgent || "(unknown)";
     }
 
