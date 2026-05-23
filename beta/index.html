@@ -3850,15 +3850,13 @@
       min-width: 0;
     }
 
-    .visit-icon-empty-dot {
-      display: inline-block;
+    .visit-icon-stack.is-empty .sf-symbol {
       width: 1em;
       height: 1em;
-      border-radius: 999px;
-      background: var(--state-empty);
+      vertical-align: -.15em;
     }
 
-    .compact-note-row.is-expanded .visit-icon-empty-dot {
+    .compact-note-row.is-expanded .visit-icon-stack.is-empty .sf-symbol {
       width: 1.25em;
       height: 1.25em;
     }
@@ -5172,7 +5170,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.15</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.16</span>
                 <span id="betaPill" class="beta-pill hidden" title="This is the beta deploy">BETA</span>
               </div>
             </div>
@@ -6580,7 +6578,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.0.0.15";
+    const APP_VERSION = "3.0.0.16";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7699,7 +7697,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.0.0.15",
+        version: "3.0.0.16",
         date: "2026-05-23",
         title: "3.0 Development Begins",
         summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, mapped note locations, a guided install flow, and a beta environment indicator.",
@@ -7755,7 +7753,8 @@
           "Fixed the favicon SVG generator to emit the generated-by comment after the XML declaration so the file is valid XML and not silently rejected by stricter renderers.",
           "Fixed the apple-touch-icon-source-dark SVG so its background is the dark pine color instead of the light mint.",
           "Updated the README with a Quick Start subsection covering the optional macOS-only icon build script and a refreshed Repo Layout listing the source SVGs, manifest files, and deploy-excluded folders.",
-          "Added a Release Notes rule that, for every completed change, a push commit summary and description must be provided in two distinct copy-paste-friendly containers."
+          "Added a Release Notes rule that, for every completed change, a push commit summary and description must be provided in two distinct copy-paste-friendly containers.",
+          "Switched the no-icon indicator in visit notes and expanded rows to the outline circle symbol, colored by the note's level, instead of a solid filled dot."
         ]
       },
       {
@@ -10827,7 +10826,7 @@
         return `<span class="visit-icon-stack" ${styleAttr} aria-label="${escapeHtml(labels.map(type => type.label).join(", "))}">${icons}</span>`;
       }
       if (color) {
-        return `<span class="visit-icon-stack is-empty" aria-hidden="true"><span class="visit-icon-empty-dot" style="background:${escapeHtml(color)}"></span></span>`;
+        return `<span class="visit-icon-stack is-empty" style="color:${escapeHtml(color)}" aria-hidden="true">${__CIRCLE}</span>`;
       }
       return "";
     }
