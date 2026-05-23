@@ -522,6 +522,33 @@
       letter-spacing: 0;
     }
 
+    .title-pill-row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: .35rem;
+      flex-wrap: wrap;
+    }
+
+    .title-pill-row:empty,
+    .title-pill-row:has(:not(.hidden)) {
+      /* keep visible only when at least one pill is shown — :has handles the rest */
+    }
+
+    .beta-pill {
+      width: fit-content;
+      padding: .18rem .5rem;
+      border: 1px solid color-mix(in srgb, var(--danger) 50%, var(--line) 50%);
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--danger) 14%, var(--surface) 86%);
+      color: var(--danger);
+      font-size: .68rem;
+      font-weight: 850;
+      line-height: 1;
+      letter-spacing: .06em;
+    }
+
     .topbar-hints {
       flex: 0 1 30rem;
       max-width: min(40vw, 30rem);
@@ -5142,7 +5169,10 @@
             </svg>
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
-              <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.11</span>
+              <div class="title-pill-row">
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.12</span>
+                <span id="betaPill" class="beta-pill hidden" title="This is the beta deploy">BETA</span>
+              </div>
             </div>
             <button id="renameBtn" class="ghost title-edit-btn" type="button" data-shortcut="M">Rename</button>
           </div>
@@ -6548,7 +6578,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.0.0.11";
+    const APP_VERSION = "3.0.0.12";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7667,17 +7697,20 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.0.0.11",
+        version: "3.0.0.12",
         date: "2026-05-23",
         title: "3.0 Development Begins",
-        summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, and mapped note locations.",
+        summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, mapped note locations, a guided install flow, and a beta environment indicator.",
         highlights: [
           "The app version is now on the 3.0.0 development track.",
           "Trail Log branding now reaches the document title, app name, default map name, Settings footer, README, and mobile web app metadata.",
           "Added favicon, Apple touch icon, install manifest, and generated app-icon assets for Add to Home Screen polish.",
+          "Added an Install Trail Log control with a guided pick-your-icon dialog, dark-icon variants, and clear step-by-step instructions for iPhone, iPad, Mac, and Android.",
           "Added an optional Tip Jar flow with preset drink tiers, a custom amount, and Venmo app/web handoff.",
           "Notes can now store latitude/longitude and render as clustered map markers.",
           "The note editor gained a Locate control beside Where Specifically, plus manual coordinate override fields.",
+          "Developer Tools now shows a Device Detection readout with the detected iPhone, iPad, Laptop, or Desktop type plus the matching install icon and user agent.",
+          "Beta deploys now show a BETA pill in the title bar beside the existing Dev Mode pill so the active environment is obvious.",
           "Blank map names now fall back to the correct app-branded title.",
           "The app icon and name stay pinned left on desktop and centered on mobile without collapsing the title text.",
           "Global map SVG sizing no longer leaks into the app icon or button symbols."
@@ -7704,7 +7737,17 @@
           "Improved mapped marker clicks: single-note markers open the note, multi-note same-location markers open a picker, and nearby clusters zoom in before falling back to the picker.",
           "Added an Add Note Here action that pre-fills the first marker location's coordinates, level, location name, and note icons.",
           "Updated Help Center guidance and note hints for coordinate lookup, manual overrides, and clustered map markers.",
-          "Removed completed roadmap ticket WISH-030 from seeded wishlist data."
+          "Removed completed roadmap ticket WISH-030 from seeded wishlist data.",
+          "Added an Install Trail Log button between Tip and Settings with a guided dialog that pairs a sleek light/dark icon picker, step-by-step Add to Home Screen instructions for iPhone and iPad, Add to Dock instructions for Mac, and Install app instructions for Android.",
+          "Added dark home-screen icon variants (apple-touch-icon-dark.png, icon-192-dark.png, icon-512-dark.png) and a paired dark web app manifest so the chosen icon survives reloads and macOS Add to Dock picks it up after a one-tap reload prompt.",
+          "Persisted the chosen install-icon variant so it survives reloads and is applied before the manifest is fetched.",
+          "Auto-detected device drives the toolbar Install button glyph: iPhone, iPad, Laptop, or Desktop symbol with a fallback when detection isn't certain.",
+          "Added a Device Detection section under Developer Tools that lists the detected type and install icon on one line and the user agent string below, both left-aligned for tight horizontal use.",
+          "Added a runtime BETA pill in the title bar that appears when the page is served from a /beta/ path or with ?beta=1 in the query string, sitting beside the Dev Mode pill.",
+          "Added a build/ directory with generate-icons.sh and generate-favicon.py that regenerate every PNG icon and the dual-theme favicon SVG from the two source SVGs in icon/.",
+          "Switched the Notes summary line to icon-prefixed counters, with the location count beside a location pin and the notes count beside a clipboard glyph.",
+          "Refined the title bar so the app icon, name, and the dev/beta pill row share one centered column under the name with consistent left alignment on desktop.",
+          "Added a P2 wishlist item for further polish on the Tip / Gift prompt and popup."
         ]
       },
       {
@@ -12438,6 +12481,20 @@
       $("#addToHomeDialog").showModal();
     }
 
+    function isBetaDeploy() {
+      const path = (location.pathname || "").toLowerCase();
+      if (/\/beta(\/|$)/.test(path)) return true;
+      const params = new URLSearchParams(location.search || "");
+      if (params.get("beta") === "1" || params.get("beta") === "true") return true;
+      return false;
+    }
+
+    function applyBetaIndicator() {
+      const pill = $("#betaPill");
+      if (!pill) return;
+      pill.classList.toggle("hidden", !isBetaDeploy());
+    }
+
     function bindAddToHome() {
       $("#addToHomeBtn")?.addEventListener("click", openAddToHomeDialog);
       $("#addToHomeDialog").querySelectorAll('input[name="installIconVariant"]').forEach(radio => {
@@ -12886,6 +12943,7 @@
       });
       bindTipJar();
       bindAddToHome();
+      applyBetaIndicator();
       $("#appIcon").addEventListener("click", handleTitleQuadTap);
       $("#settingsBtn").addEventListener("click", () => {
         renderChangelog();
