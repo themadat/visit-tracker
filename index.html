@@ -5968,7 +5968,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.48</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.49</span>
                 <span id="betaPill" class="beta-pill hidden" title="This is the beta deploy">BETA</span>
               </div>
             </div>
@@ -7419,7 +7419,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.0.0.48";
+    const APP_VERSION = "3.0.0.49";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -8571,6 +8571,18 @@
         category: "Legend"
       },
       {
+        title: "Dramatically Improve Auto Convert",
+        ticketId: "WISH-042",
+        description: "Make Smart Convert feel much more intelligent and interactive. Scope includes richer parsing, Enter triggering Auto Convert while the Smart Convert field is active instead of saving the note, and lightweight recognition popups as dates, places, people, purposes, levels, and tags are detected.",
+        priority: "P1",
+        effort: "large",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 42,
+        prompt: "Dramatically improve Smart Convert in the note editor. Expand parsing coverage, make Enter in the Smart Convert input run Auto Convert instead of saving, and explore lightweight inline recognition popups for parsed dates, places, people, purposes, levels, and tags.",
+        category: "Notes"
+      },
+      {
         title: "Optimize iPhone UI",
         ticketId: "WISH-011",
         description: "Tune the app for iPhone-sized screens. Scope includes map sizing, tabs, controls, dialogs, touch targets, safe areas, and avoiding cramped or clipped text.",
@@ -8585,7 +8597,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.0.0.48",
+        version: "3.0.0.49",
         date: "2026-05-24",
         title: "3.0 Development Begins",
         summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, mapped note locations, a guided install flow, and a beta environment indicator.",
@@ -8716,7 +8728,9 @@
           "Moved the Notes panel tag-settings ellipsis into the icon filter chip flow so it sits directly after the last visible chip.",
           "Reorganized Help Center documentation and FAQ into focused Toolbar, Map, Legend, Notes, and Other sections, with refreshed hints for the current toolbar, map, legend, and notes controls.",
           "Added roadmap ticket WISH-041 for supporting more Legend levels beyond the current five-level cap.",
-          "Add as App button now applies a per-platform iconScale via the same CSS-variable technique used for the tip-jar tiers. Laptop and Desktop SVGs (wide aspect ratios) scale up to 1.55x and 1.45x so their visual mass in the 40px toolbar button is comparable to the squarer iPhone/iPad and Android glyphs at 1.15x."
+          "Add as App button now applies a per-platform iconScale via the same CSS-variable technique used for the tip-jar tiers. Laptop and Desktop SVGs (wide aspect ratios) scale up to 1.55x and 1.45x so their visual mass in the 40px toolbar button is comparable to the squarer iPhone/iPad and Android glyphs at 1.15x.",
+          "Match Notes map filtering now stays active while viewing or editing a single location, so closing or saving a note no longer resets the map back to an unfiltered view.",
+          "Added roadmap ticket WISH-042 for a larger Smart Convert upgrade with richer parsing, Enter-to-convert behavior, and lightweight recognition popups."
         ]
       },
       {
@@ -10523,7 +10537,7 @@
     }
 
     function renderMap() {
-      const filterMode = state.settings.mapFollowsNotesFilters === true && !notesPanelState;
+      const filterMode = state.settings.mapFollowsNotesFilters === true;
       $$(".state-tile").forEach(tile => {
         const abbr = tile.dataset.abbr;
         const level = dominantLevel(abbr);
@@ -10573,7 +10587,7 @@
     }
 
     function locationMarkerItems() {
-      const filterMode = state.settings.mapFollowsNotesFilters === true && !notesPanelState;
+      const filterMode = state.settings.mapFollowsNotesFilters === true;
       return STATES.flatMap(([abbr]) => (state.notes[abbr] || []).map(note => {
         if (filterMode && !(stateMatchesActiveNotesFilters(abbr) && noteMatchesAllFilters(note) && noteMatchesCoordinateFilter(note))) return null;
         const point = projectNoteLocation(abbr, note);

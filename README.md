@@ -189,3 +189,5 @@ Contains Color Notes, rejected/backup svgs, amongst other stuff.
 
 Cut Version 3.0.0
 This is a MAJOR RELEASE so highlights and Full Update List can be much more verbose. Full Update List is going to need organzied sub-sections
+Meet Trail Log
+A little place to track and store your Travel Firsts and Memories with a slight Outdoorsy Geeky Vibe
