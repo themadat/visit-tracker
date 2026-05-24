@@ -2459,17 +2459,18 @@
     }
 
     .note-dialog-head {
+      display: grid !important;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
       align-items: center;
-      justify-content: space-between;
+      gap: .55rem;
     }
 
     .note-dialog-title-wrap {
+      justify-self: start;
       display: flex;
       align-items: center;
-      justify-content: flex-start;
       gap: .5rem;
       min-width: 0;
-      flex: 0 1 auto;
     }
 
     .note-dialog-title-wrap h2 {
@@ -2478,11 +2479,10 @@
     }
 
     .note-location-select {
-      flex: 0 1 18rem;
+      justify-self: center;
       width: 18rem;
       min-width: 10rem;
-      max-width: 100%;
-      margin: 0 auto;
+      max-width: min(100%, 22rem);
     }
 
     .note-location-select input {
@@ -2494,6 +2494,10 @@
 
     .note-location-select.hidden {
       display: none;
+    }
+
+    .note-dialog-head .dialog-head-actions {
+      justify-self: end;
     }
 
     .drawer-body {
@@ -5339,7 +5343,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.25</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.26</span>
                 <span id="betaPill" class="beta-pill hidden" title="This is the beta deploy">BETA</span>
               </div>
             </div>
@@ -6789,7 +6793,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.0.0.25";
+    const APP_VERSION = "3.0.0.26";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7850,7 +7854,7 @@
         title: "Bucket List Feature",
         ticketId: "WISH-036",
         description: "Add a dedicated bucket-list layer for places someone wants to visit next, separate from completed visits and ordinary notes. Scope includes local persistence, filtering, export support, and a clear way to promote a bucket-list item into a real visit note.",
-        priority: "P2",
+        priority: "P0",
         effort: "medium",
         targetKind: "minor",
         targetVersion: "",
@@ -7874,7 +7878,7 @@
         title: "Add Drive Radius",
         ticketId: "WISH-010",
         description: "Show a planning radius from home or saved locations. Scope includes distance input, visual radius overlay where map geometry supports it, saved settings, and clear limitations for non-road distance.",
-        priority: "P2",
+        priority: "P0",
         effort: "large",
         targetKind: "exact",
         targetVersion: "3.1.0",
@@ -7886,7 +7890,7 @@
         title: "National Park Overlay Layer",
         ticketId: "WISH-004",
         description: "Add an optional national parks layer that can be viewed with state progress. Scope includes park data, visible markers or outlines, visit status, filtering, and exports that remain readable.",
-        priority: "P2",
+        priority: "P0",
         effort: "large",
         targetKind: "exact",
         targetVersion: "4.0.0",
@@ -7898,7 +7902,7 @@
         title: "Country Map",
         ticketId: "WISH-001",
         description: "Add a country-map mode alongside the US map. Scope includes a world SVG/data source, visit levels, notes, exports/imports, map mode switching, and a strategy for historical countries without breaking existing state data.",
-        priority: "P2",
+        priority: "P0",
         effort: "x-large",
         targetKind: "exact",
         targetVersion: "5.0.0",
@@ -7945,7 +7949,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.0.0.25",
+        version: "3.0.0.26",
         date: "2026-05-23",
         title: "3.0 Development Begins",
         summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, mapped note locations, a guided install flow, and a beta environment indicator.",
@@ -8031,7 +8035,11 @@
           "Edit Note dialog header now keeps its title left-aligned while the centered location picker sits in the middle of the header and the action buttons stay on the right.",
           "Quick Add Note location dropdown sits beneath its centered input field so the typed-search suggestion list anchors directly under the search box.",
           "Quick Add Note location dropdown options are now sorted alphabetically by state and territory name for predictable scanning.",
-          "Notes with exact coordinates now lead their icon row with a small scope dot symbol across the Notes panel, expanded view, and condensed view, so mapped notes stand out at a glance."
+          "Notes with exact coordinates now lead their icon row with a small scope dot symbol across the Notes panel, expanded view, and condensed view, so mapped notes stand out at a glance.",
+          "Duplicate Location Tag hotkey attempts now surface the warning as a native browser validity bubble anchored to the offending hotkey input, so the message is visible even when the Location Tags settings is on top of every other dialog.",
+          "Note dialog header now uses a three-column grid layout that pins the title to the left, holds the Quick Add location picker exactly centered, and pins the action buttons to the right, so the searchable dropdown drops directly beneath its centered input.",
+          "Fixed a latitude/longitude save bug where empty coordinate fields were normalized to 0 instead of empty, which made notes appear mapped to the equator/prime meridian. Empty fields now stay empty; the scope-dot indicator also guards against legacy 0,0 notes so they no longer display as having an exact location.",
+          "Promoted the Country Map, National Park Overlay, Add Drive Radius, and Bucket List roadmap items to P0 priority."
         ]
       },
       {
@@ -8961,12 +8969,20 @@
     }
 
     function normalizeLatitude(value) {
-      const numeric = Number(value);
+      // Empty / null / undefined / whitespace → stay empty. Number("") coerces
+      // to 0, which would otherwise look like a valid coordinate.
+      if (value === undefined || value === null) return "";
+      const trimmed = typeof value === "string" ? value.trim() : value;
+      if (trimmed === "") return "";
+      const numeric = Number(trimmed);
       return Number.isFinite(numeric) && numeric >= -90 && numeric <= 90 ? Number(numeric.toFixed(6)) : "";
     }
 
     function normalizeLongitude(value) {
-      const numeric = Number(value);
+      if (value === undefined || value === null) return "";
+      const trimmed = typeof value === "string" ? value.trim() : value;
+      if (trimmed === "") return "";
+      const numeric = Number(trimmed);
       return Number.isFinite(numeric) && numeric >= -180 && numeric <= 180 ? Number(numeric.toFixed(6)) : "";
     }
 
@@ -11211,9 +11227,22 @@
       const icons = labels.map(type => visitTypeIcon(type.id)).join("");
       const color = options.color;
       const styleAttr = color ? `style="color:${escapeHtml(color)}"` : "";
-      const hasLocation = note && note.lat !== undefined && note.lng !== undefined
-        && note.lat !== null && note.lng !== null
-        && String(note.lat).trim() !== "" && String(note.lng).trim() !== "";
+      const hasLocation = (() => {
+        if (!note) return false;
+        const lat = note.lat;
+        const lng = note.lng;
+        if (lat === undefined || lat === null || String(lat).trim() === "") return false;
+        if (lng === undefined || lng === null || String(lng).trim() === "") return false;
+        const latNum = Number(lat);
+        const lngNum = Number(lng);
+        if (!Number.isFinite(latNum) || !Number.isFinite(lngNum)) return false;
+        // Treat a literal 0,0 pair as "no location" — that's the legacy default
+        // bug-state where empty lat/lng got coerced to 0 on save. Real notes
+        // pinned to exactly 0,0 (Atlantic Ocean equator/prime meridian) are
+        // not a realistic Trail Log use case.
+        if (latNum === 0 && lngNum === 0) return false;
+        return true;
+      })();
       const scope = hasLocation
         ? `<span class="visit-icon-scope" aria-label="Has exact location" title="Mapped to coordinates">${__DOT_SCOPE}</span>`
         : "";
@@ -11752,6 +11781,23 @@
       const input = $(`[data-tag-shortcut="${CSS.escape(id)}"]`);
       const current = visitTypeMeta(id);
       if (input) input.value = normalizeVisitTypeShortcut(current?.shortcut).toUpperCase();
+      // Use the browser's native validity bubble so the warning appears anchored
+      // to the offending input — visible even when the tag-settings modal is on
+      // top of everything else.
+      if (input) {
+        const message = `${shortcut.toUpperCase()} is already used by ${duplicate.label}.\nKeeping the previous shortcut.`;
+        input.setCustomValidity(message);
+        try { input.reportValidity(); } catch (_) { /* some browsers throw if input is detached */ }
+        const clear = () => {
+          input.setCustomValidity("");
+          input.removeEventListener("input", clear);
+          input.removeEventListener("blur", clear);
+        };
+        input.addEventListener("input", clear);
+        input.addEventListener("blur", clear);
+        return;
+      }
+      // Fallback if the input is gone — keep the centered overlay as a last resort.
       showOverlayWarning("Hotkey already used", `${shortcut.toUpperCase()} is already assigned to ${duplicate.label}. It will not be applied.`);
     }
 
