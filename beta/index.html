@@ -2969,70 +2969,168 @@
       line-height: 1.35;
     }
 
+    #tipJarDialog {
+      width: min(780px, calc(100vw - 1.6rem));
+    }
+
+    #tipJarDialog .tip-jar-head {
+      padding-bottom: .85rem;
+    }
+
     #tipJarDialog .dialog-body {
       display: grid;
-      gap: .55rem;
-      padding: 1rem 1.1rem 1.1rem;
-      max-width: 540px;
+      gap: .85rem;
+      padding: 1.1rem 1.25rem 1.25rem;
+      max-width: none;
     }
 
     .tip-intro {
       margin: 0;
       color: var(--muted);
-      font-size: .92rem;
+      font-size: .95rem;
+      line-height: 1.4;
+      text-align: center;
     }
 
     .tip-tier-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: .5rem;
-      margin: .25rem 0 .15rem;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: .65rem;
+      margin: .3rem 0 .15rem;
     }
 
     .tip-tier {
       display: grid;
-      gap: .15rem;
-      padding: .65rem .65rem;
+      grid-template-columns: auto minmax(0, 1fr);
+      grid-template-rows: auto auto;
+      column-gap: .7rem;
+      row-gap: .35rem;
+      align-items: center;
+      padding: .75rem .8rem;
       text-align: left;
       border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--surface);
+      border-radius: 14px;
+      background: linear-gradient(180deg, var(--surface) 0%, color-mix(in srgb, var(--surface) 92%, var(--surface-2) 8%) 100%);
       cursor: pointer;
       min-height: 0;
+      color: var(--text);
+      transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease, background .12s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tip-tier::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at 18% 8%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 55%);
+      opacity: 0;
+      transition: opacity .14s ease;
     }
 
     .tip-tier:hover {
       border-color: var(--accent);
-      background: color-mix(in srgb, var(--surface) 88%, var(--accent) 12%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(20, 25, 40, .12);
     }
 
-    .tip-amount {
-      font-weight: 800;
+    .tip-tier:hover::before { opacity: 1; }
+
+    .tip-tier:focus-visible {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: var(--focus);
+    }
+
+    .tip-tier-icon {
+      grid-column: 1;
+      grid-row: 1 / span 2;
+      width: 38px;
+      height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--accent) 14%, var(--surface-2) 86%);
       color: var(--accent-2);
-      font-size: 1.05rem;
-      line-height: 1.15;
+      flex: 0 0 auto;
     }
 
-    .tip-label {
+    .tip-tier-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .tip-tier-text {
+      grid-column: 2;
+      grid-row: 1;
+      display: grid;
+      gap: .08rem;
+      min-width: 0;
+    }
+
+    .tip-tier-amount {
+      font-weight: 850;
+      color: var(--accent-2);
+      font-size: 1.1rem;
+      line-height: 1.1;
+      letter-spacing: -.01em;
+    }
+
+    .tip-tier-label {
       color: var(--muted);
       font-size: .82rem;
-      line-height: 1.25;
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    .tip-tier-hotkey {
+      grid-column: 2;
+      grid-row: 2;
+      display: inline-flex;
+      align-items: center;
+      gap: .1rem;
+    }
+
+    .tip-tier-hotkey kbd {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 16px;
+      height: 18px;
+      padding: 0 .25rem;
+      border: 1px solid color-mix(in srgb, var(--line) 65%, var(--muted) 35%);
+      border-radius: 5px;
+      background: color-mix(in srgb, var(--surface-2) 88%, var(--text) 4%);
+      color: var(--muted);
+      font: 600 .68rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     }
 
     .tip-other {
       display: grid;
-      gap: .35rem;
-      margin-top: .25rem;
+      gap: .4rem;
+      margin-top: .5rem;
+      padding: .85rem 1rem;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+
+    .tip-other label {
+      color: var(--text);
+      font-weight: 700;
+      font-size: .92rem;
     }
 
     .tip-other-row {
       display: grid;
-      grid-template-columns: auto 1fr auto;
+      grid-template-columns: auto minmax(0, 1fr) auto;
       align-items: center;
-      gap: .35rem;
+      gap: .45rem;
       border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: .15rem .15rem .15rem .55rem;
+      border-radius: 10px;
+      padding: .25rem .25rem .25rem .7rem;
       background: var(--surface);
     }
 
@@ -3042,23 +3140,56 @@
     }
 
     .tip-other-prefix {
-      color: var(--muted);
-      font-weight: 700;
+      color: var(--accent-2);
+      font-weight: 800;
+      font-size: 1.05rem;
     }
 
     .tip-other-row input {
-      min-height: 36px;
+      min-height: 40px;
       border: 0;
       background: transparent;
       outline: none;
-      padding: 0 .25rem;
+      padding: 0 .35rem;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    #tipOtherSendBtn {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      min-height: 40px;
+      padding: 0 1rem;
+      font-weight: 800;
+      letter-spacing: .01em;
+    }
+
+    #tipOtherSendBtn .sf-symbol {
+      width: 18px;
+      height: 18px;
     }
 
     .tip-privacy {
       color: var(--muted);
       font-size: .78rem;
       margin: .25rem 0 0;
-      line-height: 1.35;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    @media (max-width: 620px) {
+      .tip-tier-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .tip-tier-hotkey { display: none; }
+    }
+
+    @media (max-width: 420px) {
+      .tip-tier-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     .version-pill {
@@ -5400,7 +5531,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.29</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.30</span>
                 <span id="betaPill" class="beta-pill hidden" title="This is the beta deploy">BETA</span>
               </div>
             </div>
@@ -6148,57 +6279,93 @@
   </dialog>
 
   <dialog id="tipJarDialog">
-    <header>
+    <header class="tip-jar-head">
       <h2>Buy me a Drink!</h2>
       <button class="dialog-close" type="button" data-close="tipJarDialog" data-shortcut="Q">Close</button>
     </header>
     <div class="dialog-body">
-      <p class="tip-intro">Saddle up to the bar with me</p>
+      <p class="tip-intro">Saddle up to the bar with me — every round keeps Trail Log moving.</p>
       <div class="tip-tier-grid">
-        <button class="tip-tier" type="button" data-amount="1" data-note="Trail Log :: Keep the tokens hydrated">
-          <span class="tip-amount">$1 💧</span>
-          <span class="tip-label">Plain Water</span>
+        <button class="tip-tier" type="button" data-amount="1" data-hotkey="1" data-note="Trail Log :: Keep the tokens hydrated" aria-label="$1 — Plain Water (Shift Command Option 1)">
+          <span class="tip-tier-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.5C10 5 5.5 10 5.5 14a6.5 6.5 0 0 0 13 0c0-4-4.5-9-6.5-11.5z"/></svg></span>
+          <span class="tip-tier-text">
+            <span class="tip-tier-amount">$1</span>
+            <span class="tip-tier-label">Plain Water</span>
+          </span>
+          <span class="tip-tier-hotkey"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>⌥</kbd><kbd>1</kbd></span>
         </button>
-        <button class="tip-tier" type="button" data-amount="3" data-note="Trail Log :: Fuel for the roadmap ahead">
-          <span class="tip-amount">$3 ☕️</span>
-          <span class="tip-label">Plain Coffee</span>
+        <button class="tip-tier" type="button" data-amount="3" data-hotkey="2" data-note="Trail Log :: Fuel for the roadmap ahead" aria-label="$3 — Plain Coffee (Shift Command Option 2)">
+          <span class="tip-tier-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M5 9h11v8a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3zM16 11h2.5a2.5 2.5 0 0 1 0 5H16M8 3c.5 1 .5 1.5 0 2.5M11 3c.5 1 .5 1.5 0 2.5M14 3c.5 1 .5 1.5 0 2.5"/></svg></span>
+          <span class="tip-tier-text">
+            <span class="tip-tier-amount">$3</span>
+            <span class="tip-tier-label">Plain Coffee</span>
+          </span>
+          <span class="tip-tier-hotkey"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>⌥</kbd><kbd>2</kbd></span>
         </button>
-        <button class="tip-tier" type="button" data-amount="5" data-note="Trail Log :: A cold one for hot patches">
-          <span class="tip-amount">$5 🍺</span>
-          <span class="tip-label">Beer Pint</span>
+        <button class="tip-tier" type="button" data-amount="5" data-hotkey="3" data-note="Trail Log :: A cold one for hot patches" aria-label="$5 — Beer Pint (Shift Command Option 3)">
+          <span class="tip-tier-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M7 8h8l-1 12H8zM15 10h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2M7 8c.5-1 1.5-1.5 2.5-1s2-.5 2.5-1 1.5-.5 2 0 1.5 1.5 1 2"/></svg></span>
+          <span class="tip-tier-text">
+            <span class="tip-tier-amount">$5</span>
+            <span class="tip-tier-label">Beer Pint</span>
+          </span>
+          <span class="tip-tier-hotkey"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>⌥</kbd><kbd>3</kbd></span>
         </button>
-        <button class="tip-tier" type="button" data-amount="10" data-note="Trail Log :: Not top shelf, but neither is this app">
-          <span class="tip-amount">$10 🍹</span>
-          <span class="tip-label">House Rail</span>
+        <button class="tip-tier" type="button" data-amount="10" data-hotkey="4" data-note="Trail Log :: Not top shelf, but neither is this app" aria-label="$10 — House Rail (Shift Command Option 4)">
+          <span class="tip-tier-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M6 7h12l-1 13H7zM9 10h4v4H9zM9 10l-1 1M13 10l1 1"/></svg></span>
+          <span class="tip-tier-text">
+            <span class="tip-tier-amount">$10</span>
+            <span class="tip-tier-label">House Rail</span>
+          </span>
+          <span class="tip-tier-hotkey"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>⌥</kbd><kbd>4</kbd></span>
         </button>
-        <button class="tip-tier" type="button" data-amount="15" data-note="Trail Log :: Shaken, stirred, and slightly overpriced">
-          <span class="tip-amount">$15 🍸</span>
-          <span class="tip-label">Fancy Cocktail</span>
+        <button class="tip-tier" type="button" data-amount="15" data-hotkey="5" data-note="Trail Log :: Shaken, stirred, and slightly overpriced" aria-label="$15 — Fancy Cocktail (Shift Command Option 5)">
+          <span class="tip-tier-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M4 5h16L12 14zM12 14v6M8 21h8M15 5l1-2 3 1"/></svg></span>
+          <span class="tip-tier-text">
+            <span class="tip-tier-amount">$15</span>
+            <span class="tip-tier-label">Fancy Cocktail</span>
+          </span>
+          <span class="tip-tier-hotkey"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>⌥</kbd><kbd>5</kbd></span>
         </button>
-        <button class="tip-tier" type="button" data-amount="20" data-note="Trail Log :: For the premium debugging experience">
-          <span class="tip-amount">$20 🥃</span>
-          <span class="tip-label">Neat Pour</span>
+        <button class="tip-tier" type="button" data-amount="20" data-hotkey="6" data-note="Trail Log :: For the premium debugging experience" aria-label="$20 — Neat Pour (Shift Command Option 6)">
+          <span class="tip-tier-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M6 6h12l-1 14H7zM7.5 13h9"/></svg></span>
+          <span class="tip-tier-text">
+            <span class="tip-tier-amount">$20</span>
+            <span class="tip-tier-label">Neat Pour</span>
+          </span>
+          <span class="tip-tier-hotkey"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>⌥</kbd><kbd>6</kbd></span>
         </button>
-        <button class="tip-tier" type="button" data-amount="25" data-note="Trail Log :: Cover the next round and keep the ideas flowing">
-          <span class="tip-amount">$25 🍻</span>
-          <span class="tip-label">Next Round</span>
+        <button class="tip-tier" type="button" data-amount="25" data-hotkey="7" data-note="Trail Log :: Cover the next round and keep the ideas flowing" aria-label="$25 — Next Round (Shift Command Option 7)">
+          <span class="tip-tier-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M4 8l3-2 1 13-3 1zM20 8l-3-2-1 13 3 1M11 11l2-2M13 6l1 1M15 8l1 1"/></svg></span>
+          <span class="tip-tier-text">
+            <span class="tip-tier-amount">$25</span>
+            <span class="tip-tier-label">Next Round</span>
+          </span>
+          <span class="tip-tier-hotkey"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>⌥</kbd><kbd>7</kbd></span>
         </button>
-        <button class="tip-tier" type="button" data-amount="50" data-note="Trail Log :: For bugs so bad they require multiple glasses">
-          <span class="tip-amount">$50 🍷</span>
-          <span class="tip-label">Wine Bottle</span>
+        <button class="tip-tier" type="button" data-amount="50" data-hotkey="8" data-note="Trail Log :: For bugs so bad they require multiple glasses" aria-label="$50 — Wine Bottle (Shift Command Option 8)">
+          <span class="tip-tier-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M10 3h4v5l2 3v8a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-8l2-3zM10 8h4"/></svg></span>
+          <span class="tip-tier-text">
+            <span class="tip-tier-amount">$50</span>
+            <span class="tip-tier-label">Wine Bottle</span>
+          </span>
+          <span class="tip-tier-hotkey"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>⌥</kbd><kbd>8</kbd></span>
         </button>
-        <button class="tip-tier" type="button" data-amount="100" data-note="Trail Log :: Celebrate the Wins">
-          <span class="tip-amount">$100 🍾</span>
-          <span class="tip-label">Something Nice</span>
+        <button class="tip-tier" type="button" data-amount="100" data-hotkey="9" data-note="Trail Log :: Celebrate the Wins" aria-label="$100 — Something Nice (Shift Command Option 9)">
+          <span class="tip-tier-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M8 3h8l-1 11a3 3 0 0 1-6 0zM12 17v4M9 21h6"/><circle cx="11" cy="8" r=".75" fill="currentColor"/><circle cx="13" cy="10" r=".75" fill="currentColor"/></svg></span>
+          <span class="tip-tier-text">
+            <span class="tip-tier-amount">$100</span>
+            <span class="tip-tier-label">Something Nice</span>
+          </span>
+          <span class="tip-tier-hotkey"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>⌥</kbd><kbd>9</kbd></span>
         </button>
       </div>
       <form id="tipOtherForm" class="tip-other">
-        <label for="tipOtherInput">Or pick your own number</label>
+        <label for="tipOtherInput">Pick your own number</label>
         <div class="tip-other-row">
           <span class="tip-other-prefix">$</span>
           <input id="tipOtherInput" type="number" min="1" max="2000" step="1" placeholder="Other amount"
             inputmode="decimal">
-          <button class="primary" type="submit">Send</button>
+          <button class="primary" type="submit" id="tipOtherSendBtn">Send Tip</button>
         </div>
       </form>
       <p class="tip-privacy">You'll leave Trail Log and land on Venmo. I never see anything you don't send.</p>
@@ -6851,7 +7018,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.0.0.29";
+    const APP_VERSION = "3.0.0.30";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7871,18 +8038,6 @@
         category: "Infra"
       },
       {
-        title: "Better Tip / Gift Prompt and Popup",
-        ticketId: "WISH-037",
-        description: "Polish the Tip Jar entry points and the Buy-Adam-a-Drink modal. Possible work: clearer copy/CTA in the modal, friendlier tier card visuals, optional thank-you/return state after launching Venmo, smarter mobile-vs-desktop framing, and a consistent gift-button look across the topbar, settings footer, and Help Center.",
-        priority: "P2",
-        effort: "small",
-        targetKind: "minor",
-        targetVersion: "",
-        tokenCostPct: 10,
-        prompt: "Improve the Tip Jar UX. Polish the three gift entry points (topbar, settings footer, Help Center), tighten the modal's copy and tier cards, and add a small return/thank-you affordance after the Venmo handoff. Keep the implementation single-file and offline-friendly.",
-        category: "UI"
-      },
-      {
         title: "Cleanup Modal Dialog Pop-Ups",
         ticketId: "WISH-032",
         description: "Normalize modal headers, button layout, symbols, text labels, shortcut hints, and destructive confirmations across the app.",
@@ -8005,7 +8160,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.0.0.29",
+        version: "3.0.0.30",
         date: "2026-05-23",
         title: "3.0 Development Begins",
         summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, mapped note locations, a guided install flow, and a beta environment indicator.",
@@ -8103,7 +8258,10 @@
           "Map state labels now support separate hand-tuned anchor positions for abbreviation and full-name modes. Each state override may now define abbrX/abbrY/abbrDx/abbrDy/abbrAnchor and nameX/nameY/nameDx/nameDy/nameAnchor in addition to the existing shared x/y/dx/dy/anchor fallbacks, so compact abbreviations and longer names can each sit at their own optimal spot.",
           "Developer-mode label drag readout now shows the mode-aware key names (abbrX/abbrY or nameX/nameY) and emits a copy-paste snippet keyed to the active label mode.",
           "Removed wishlist item WISH-039 (Separate State Label Positions) after shipping the feature.",
-          "Save and Add Another now closes and reopens the note dialog cleanly so the new note's header layout fully re-renders with the title left-justified instead of stuck mid-transition."
+          "Save and Add Another now closes and reopens the note dialog cleanly so the new note's header layout fully re-renders with the title left-justified instead of stuck mid-transition.",
+          "Refreshed the Tip Jar modal: wider 780px footprint, three-column tier grid (collapsing to two on mobile, one on narrow phones), inline drink SVG glyphs in tinted icon chips, friendlier intro copy, gift symbol on the Send Tip button, and a polished Pick-your-own-number block.",
+          "Each Tip Jar tier now shows a ⇧⌘⌥ keyboard hint and accepts ⇧⌘⌥+1 through ⇧⌘⌥+9 to fire the matching tier directly from the keyboard.",
+          "Removed wishlist item WISH-037 (Better Tip / Gift Prompt and Popup) after shipping the redesign."
         ]
       },
       {
@@ -13295,7 +13453,28 @@
     function openTipJar() {
       const input = $("#tipOtherInput");
       if (input) input.value = "";
+      const sendBtn = $("#tipOtherSendBtn");
+      if (sendBtn && !sendBtn.dataset.iconReady) {
+        sendBtn.innerHTML = `${__GIFT_FILL}<span>Send Tip</span>`;
+        sendBtn.dataset.iconReady = "1";
+      }
       $("#tipJarDialog").showModal();
+    }
+
+    function handleTipJarHotkey(event) {
+      if (!$("#tipJarDialog").open) return;
+      // ⇧⌘⌥ + digit (1-9) fires the matching tier. Cmd is the meta key on
+      // macOS; on Windows/Linux this also triggers if Ctrl+Shift+Alt is held,
+      // which is fine — the modifier glyphs in the UI hint at the macOS combo.
+      if (!event.shiftKey || !event.altKey) return;
+      if (!(event.metaKey || event.ctrlKey)) return;
+      const digit = parseInt(event.key, 10);
+      if (!Number.isFinite(digit) || digit < 1 || digit > 9) return;
+      const tier = $(`#tipJarDialog .tip-tier[data-hotkey="${digit}"]`);
+      if (!tier) return;
+      event.preventDefault();
+      event.stopPropagation();
+      tier.click();
     }
 
     function bindTipJar() {
@@ -13315,6 +13494,7 @@
         launchTip(amt, "A drink for the Trail Log dev");
         $("#tipJarDialog").close();
       });
+      document.addEventListener("keydown", handleTipJarHotkey);
     }
 
     function handleTitleQuadTap(event) {
