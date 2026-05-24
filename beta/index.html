@@ -3217,6 +3217,18 @@
     }
 
     @media (max-width: 620px) {
+      #tipJarDialog .dialog-body {
+        max-height: calc(100dvh - 5.25rem);
+        scroll-padding-bottom: calc(7rem + env(safe-area-inset-bottom, 0px));
+      }
+
+      #tipJarDialog .tip-other {
+        position: sticky;
+        bottom: calc(.45rem + env(safe-area-inset-bottom, 0px));
+        z-index: 3;
+        box-shadow: 0 -10px 28px color-mix(in srgb, var(--bg) 82%, transparent);
+      }
+
       .tip-tier-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
@@ -6917,8 +6929,9 @@
             <li>Use Smart Convert in the note editor to turn a quick note into dates, levels, location specifics,
               people, purpose, and details.</li>
             <li>Use the Locate button beside Where Specifically to look up latitude/longitude for a note. You can edit
-              or enter coordinates manually, and mapped notes appear as markers on the map. Single markers open the
-              note; grouped markers use a cluster icon, zoom when they can split, or open a
+              or enter coordinates manually. Notes without coordinates use the center of the state or territory shape;
+              exact coordinates place the marker more precisely. Single markers open the note; grouped markers use a
+              cluster icon, zoom when they can split, or open a
               picker when they are too close.</li>
             <li>Use Location Tags to add icon labels to notes. Settings lets you remove defaults, rename tags, reorder
               them, set unique hotkeys, and search the optional circle icon catalog. Added tags land at the end of your
@@ -6938,7 +6951,8 @@
           <p><b>Color tools:</b> Auto Colors can apply a smart palette to your current levels. Suggested categories can
             be shown or hidden from the Legend. Palette order follows the current Legend priority.</p>
           <p><b>Structured notes:</b> Notes can include Where Specifically, What For, Who With, Additional Details, and
-            multiple icon labels. Use Locate to save latitude/longitude and show the note on the map; nearby markers
+            multiple icon labels. Use Locate to save latitude/longitude for precise map placement; notes without
+            coordinates sit at the center of their state or territory shape. Nearby markers
             cluster, with the highest-priority earliest note setting the color and title. Multi-note marker lists can
             open any note or add a new note at the top mapped location. Use the tag-row ellipsis in the note editor or
             Settings to
@@ -7160,7 +7174,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.0.0.31";
+    const APP_VERSION = "3.0.0.32";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -8322,8 +8336,8 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.0.0.31",
-        date: "2026-05-23",
+        version: "3.0.0.32",
+        date: "2026-05-24",
         title: "3.0 Development Begins",
         summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, mapped note locations, a guided install flow, and a beta environment indicator.",
         highlights: [
@@ -8428,7 +8442,10 @@
           "Send Tip button now renders the paperplane glyph in icon button mode, and carries a ⇧⌘⌥S keyboard shortcut that submits the Other amount from anywhere in the dialog.",
           "Removed the per-tier ⇧⌘⌥+digit shortcut hints. The single ⇧⌘⌥S shortcut on Send Tip is the only modifier-key combo surfaced in the dialog.",
           "Each Tip Jar tier now shows its cheeky data-note tagline as a subtitle under the drink label so the playful copy lands in the UI, not just the Venmo memo.",
-          "Added wishlist item WISH-040 to refine the inline drink SVGs in the Tip Jar dialog into a polished, consistent set."
+          "Added wishlist item WISH-040 to refine the inline drink SVGs in the Tip Jar dialog into a polished, consistent set.",
+          "On mobile, the Tip Jar's Pick your own number form now sticks near the bottom of the dialog while browsing the preset tiers.",
+          "Location notes without latitude/longitude now render at the center of their state or territory map shape instead of falling back to an edge placement.",
+          "Help Center copy now explains that exact coordinates make map note pins more precise while notes without coordinates use the map shape center."
         ]
       },
       {
@@ -10211,13 +10228,21 @@
       return lat === "" || lng === "" ? null : { lat, lng };
     }
 
+    function stateTileCenter(abbr) {
+      const tile = $(`.state-tile[data-abbr="${abbr}"]`);
+      if (!tile) return null;
+      const box = tile.getBBox();
+      return { x: box.x + box.width / 2, y: box.y + box.height / 2, box };
+    }
+
     function projectNoteLocation(abbr, note) {
       const coords = validNoteCoordinates(note);
-      const tile = $(`.state-tile[data-abbr="${abbr}"]`);
-      if (!coords || !tile) return null;
-      const box = tile.getBBox();
+      const center = stateTileCenter(abbr);
+      if (!center) return null;
+      if (!coords) return { x: center.x, y: center.y };
+      const { box } = center;
       const bounds = LOCATION_GEO_BOUNDS[abbr];
-      if (!bounds) return { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+      if (!bounds) return { x: center.x, y: center.y };
       const [minLat, maxLat, minLng, maxLng] = bounds;
       const xRatio = (coords.lng - minLng) / Math.max(.0001, maxLng - minLng);
       const yRatio = (maxLat - coords.lat) / Math.max(.0001, maxLat - minLat);
@@ -10241,9 +10266,9 @@
           note,
           x: point.x,
           y: point.y,
-          lat: coords.lat,
-          lng: coords.lng,
-          locationKey: markerLocationKey(abbr, coords),
+          lat: coords?.lat ?? "",
+          lng: coords?.lng ?? "",
+          locationKey: coords ? markerLocationKey(abbr, coords) : `${abbr}:state-center`,
           levelId: level?.id || "",
           color: level?.color || "var(--accent)",
           iconId: firstType,
