@@ -623,6 +623,7 @@
     #saveAddNoteBtn,
     #deleteNoteFromDialogBtn,
     #noteDialogCloseBtn,
+    #installReloadBtn,
     #tipJarBtn,
     #addToHomeBtn,
     #settingsBtn {
@@ -644,6 +645,7 @@
       height: 20px;
     }
 
+    #installReloadBtn .sf-symbol,
     #deleteNoteFromDialogBtn .sf-symbol,
     .toolbar-panel-toggle-group .sf-symbol,
     .toolbar .sf-symbol {
@@ -2809,30 +2811,75 @@
       background: color-mix(in srgb, var(--surface-2) 78%, var(--accent) 10%);
     }
 
+    #addToHomeDialog {
+      width: min(760px, calc(100vw - 1.2rem));
+    }
+
     #addToHomeDialog .dialog-body {
       display: grid;
-      gap: .8rem;
+      gap: .72rem;
       padding: 1rem 1.1rem 1.1rem;
-      max-width: 480px;
+      max-width: none;
+    }
+
+    .install-top {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: .75rem;
+      align-items: center;
+      padding: .76rem .82rem;
+      border: 1px solid var(--line);
+      border-radius: calc(var(--radius) + 2px);
+      background: color-mix(in srgb, var(--surface-2) 88%, var(--accent) 8%);
+    }
+
+    .install-device-icon,
+    .install-step-icon {
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+      color: var(--accent-2);
+    }
+
+    .install-device-icon {
+      width: 3.15rem;
+      height: 3.15rem;
+      border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line));
+    }
+
+    .install-device-icon .sf-symbol {
+      width: 2rem;
+      height: 2rem;
+    }
+
+    .install-kicker {
+      margin: 0 0 .12rem;
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: 750;
+      letter-spacing: .02em;
+      text-transform: uppercase;
     }
 
     .install-intro {
       margin: 0;
-      color: var(--muted);
-      font-size: .92rem;
+      color: var(--text);
+      font-size: .93rem;
+      line-height: 1.35;
     }
 
     .install-section-label {
-      font-weight: 750;
+      font-weight: 800;
       color: var(--text);
-      font-size: .92rem;
-      margin: 0 0 .35rem;
+      font-size: .86rem;
+      margin: 0 0 .4rem;
       padding: 0;
     }
 
     .install-icon-picker {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: .55rem;
       border: 0;
       margin: 0;
@@ -2842,18 +2889,21 @@
     .install-icon-option {
       position: relative;
       display: grid;
-      justify-items: center;
-      gap: .45rem;
-      padding: .7rem .7rem .65rem;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: .65rem;
+      min-height: 74px;
+      padding: .58rem .68rem;
       border: 2px solid var(--line);
       border-radius: calc(var(--radius) + 2px);
       background: var(--surface);
       cursor: pointer;
-      transition: border-color .12s ease, background .12s ease;
+      transition: border-color .12s ease, background .12s ease, transform .12s ease;
     }
 
     .install-icon-option:hover {
       border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+      transform: translateY(-1px);
     }
 
     .install-icon-option:has(input:checked) {
@@ -2873,16 +2923,40 @@
       height: 0;
     }
 
+    .install-icon-copy {
+      display: grid;
+      gap: .08rem;
+      min-width: 0;
+    }
+
     .install-icon-label {
-      font-weight: 700;
+      font-weight: 800;
       color: var(--text);
       font-size: .92rem;
     }
 
+    .install-icon-caption {
+      color: var(--muted);
+      font-size: .76rem;
+      line-height: 1.2;
+    }
+
+    .install-icon-check {
+      display: grid;
+      place-items: center;
+      width: 1.4rem;
+      height: 1.4rem;
+      color: var(--accent-2);
+      opacity: 0;
+    }
+
+    .install-icon-option:has(input:checked) .install-icon-check {
+      opacity: 1;
+    }
+
     .install-icon-thumb {
-      width: 100%;
-      aspect-ratio: 1;
-      max-width: 110px;
+      width: 3.6rem;
+      height: 3.6rem;
       border-radius: 22%;
       background-position: center;
       background-size: cover;
@@ -2900,52 +2974,181 @@
       background-image: url("icon/trail-log-dark.svg");
     }
 
-    .install-section {
+    .install-directions-grid {
       display: grid;
-      gap: .35rem;
+      grid-template-columns: minmax(0, 1.16fr) minmax(13rem, .84fr);
+      gap: .7rem;
+      align-items: start;
+    }
+
+    .install-guide-card,
+    .install-device-details {
+      border: 1px solid var(--line);
+      border-radius: calc(var(--radius) + 2px);
+      background: var(--surface);
+    }
+
+    .install-guide-card {
+      display: grid;
+      gap: .62rem;
+      padding: .72rem;
+    }
+
+    .install-guide-head {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: .58rem;
+      align-items: center;
+    }
+
+    .install-guide-icon {
+      width: 2.35rem;
+      height: 2.35rem;
+    }
+
+    .install-guide-icon .sf-symbol {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+
+    .install-guide-title {
+      display: grid;
+      gap: .08rem;
+      min-width: 0;
+    }
+
+    .install-guide-title b {
+      font-size: 1rem;
+      line-height: 1.15;
+    }
+
+    .install-guide-title span {
+      color: var(--muted);
+      font-size: .78rem;
+      line-height: 1.25;
     }
 
     .install-steps {
       margin: 0;
-      padding-left: 1.2rem;
+      padding: 0;
       display: grid;
-      gap: .45rem;
+      gap: .42rem;
       color: var(--text);
-      font-size: .92rem;
-      line-height: 1.4;
+      font-size: .91rem;
+      line-height: 1.36;
+      list-style: none;
+    }
+
+    .install-steps li {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: .52rem;
+      align-items: start;
+    }
+
+    .install-step-icon {
+      width: 1.9rem;
+      height: 1.9rem;
+      margin-top: -.05rem;
+    }
+
+    .install-step-icon .sf-symbol {
+      width: 1.08rem;
+      height: 1.08rem;
     }
 
     .install-steps li small {
       display: block;
       color: var(--muted);
-      font-size: .78rem;
-      margin-top: .1rem;
+      font-size: .76rem;
+      margin-top: .08rem;
     }
 
-    .install-android {
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: .45rem .65rem;
-      background: var(--surface-2);
+    .install-other-guides {
+      display: grid;
+      gap: .42rem;
     }
 
-    .install-android summary {
+    .install-other-heading {
+      margin: 0;
+      color: var(--muted);
+      font-size: .74rem;
+      font-weight: 800;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+    }
+
+    .install-device-details {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .install-device-details summary {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: .5rem;
+      align-items: center;
+      min-height: 2.85rem;
+      padding: .48rem .58rem;
       cursor: pointer;
-      font-weight: 650;
+      list-style: none;
+      font-weight: 750;
       color: var(--text);
     }
 
-    .install-android .install-steps {
-      margin-top: .5rem;
-      padding-left: 1.2rem;
-      font-size: .88rem;
+    .install-device-details summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .install-expand-mark {
+      display: grid;
+      place-items: center;
+      width: 1.35rem;
+      height: 1.35rem;
+      border-radius: 999px;
+      background: var(--surface-2);
+      color: var(--muted);
+      font-weight: 850;
+    }
+
+    .install-expand-mark::before {
+      content: "+";
+    }
+
+    .install-device-details[open] .install-expand-mark::before {
+      content: "−";
+    }
+
+    .install-device-details[open] .install-expand-mark {
+      color: var(--accent-2);
+    }
+
+    .install-details-icon {
+      display: grid;
+      place-items: center;
+      width: 1.9rem;
+      height: 1.9rem;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--accent) 12%, var(--surface-2));
+      color: var(--accent-2);
+    }
+
+    .install-details-icon .sf-symbol {
+      width: 1.12rem;
+      height: 1.12rem;
+    }
+
+    .install-device-details .install-steps {
+      padding: .05rem .62rem .62rem;
+      font-size: .83rem;
+      gap: .34rem;
     }
 
     .install-mini-note {
-      margin: .45rem 0 0;
+      margin: -.15rem .62rem .62rem;
       color: var(--muted);
-      font-size: .78rem;
-      line-height: 1.35;
+      font-size: .74rem;
+      line-height: 1.32;
     }
 
     .install-reload-notice {
@@ -3057,8 +3260,13 @@
     }
 
     .tip-tier-icon svg {
-      width: 32px;
-      height: 32px;
+      display: block;
+      width: 75%;
+      height: 75%;
+      max-width: 75%;
+      max-height: 75%;
+      fill: currentColor;
+      overflow: visible;
     }
 
     .tip-tier-text {
@@ -3217,6 +3425,30 @@
     }
 
     @media (max-width: 620px) {
+      #addToHomeDialog .dialog-body {
+        gap: .58rem;
+        padding: .8rem;
+      }
+
+      .install-top,
+      .install-directions-grid,
+      .install-icon-picker {
+        grid-template-columns: 1fr;
+      }
+
+      .install-top {
+        justify-items: center;
+        text-align: center;
+      }
+
+      .install-icon-option {
+        min-height: 68px;
+      }
+
+      .install-device-details summary {
+        min-height: 2.7rem;
+      }
+
       #tipJarDialog .dialog-body {
         max-height: calc(100dvh - 5.25rem);
         scroll-padding-bottom: calc(7rem + env(safe-area-inset-bottom, 0px));
@@ -6270,62 +6502,51 @@
   <dialog id="addToHomeDialog">
     <header>
       <h2>Add Trail Log to Home Screen</h2>
-      <button class="dialog-close" type="button" data-close="addToHomeDialog" data-shortcut="Q">Close</button>
+      <button id="installDialogCloseBtn" class="dialog-close" type="button" data-close="addToHomeDialog"
+        data-shortcut="Q">Close</button>
     </header>
     <div class="dialog-body">
-      <p class="install-intro">Pick the icon you want, then follow the three steps below.</p>
+      <section class="install-top" aria-live="polite">
+        <span id="installDeviceIcon" class="install-device-icon" aria-hidden="true"></span>
+        <div>
+          <p class="install-kicker">Detected: <span id="installDetectedDevice">Device</span></p>
+          <p class="install-intro">Pick an icon, then follow the matching directions. The app opens full-screen once it
+            is added.</p>
+        </div>
+      </section>
 
       <fieldset class="install-icon-picker">
-        <legend class="install-section-label">1. Choose your icon</legend>
-        <label class="install-icon-option" data-variant="light">
+        <legend class="install-section-label">Choose your icon</legend>
+        <label class="install-icon-option shortcut-target" data-variant="light" data-shortcut="L">
           <input type="radio" name="installIconVariant" value="light">
           <span class="install-icon-thumb install-icon-thumb-light" aria-hidden="true"></span>
-          <span class="install-icon-label">Light</span>
+          <span class="install-icon-copy">
+            <span class="install-icon-label">Light</span>
+            <span class="install-icon-caption">Clean mint map badge</span>
+          </span>
+          <span class="install-icon-check" aria-hidden="true"></span>
         </label>
-        <label class="install-icon-option" data-variant="dark">
+        <label class="install-icon-option shortcut-target" data-variant="dark" data-shortcut="D">
           <input type="radio" name="installIconVariant" value="dark">
           <span class="install-icon-thumb install-icon-thumb-dark" aria-hidden="true"></span>
-          <span class="install-icon-label">Dark</span>
+          <span class="install-icon-copy">
+            <span class="install-icon-label">Dark</span>
+            <span class="install-icon-caption">Pine badge for dark mode people</span>
+          </span>
+          <span class="install-icon-check" aria-hidden="true"></span>
         </label>
       </fieldset>
 
       <div id="installReloadNotice" class="install-reload-notice hidden" role="status">
         <span><b>Reload required on Mac.</b> Safari caches the icon manifest at page load. Reload so "Add to Dock" picks
           up the new icon.</span>
-        <button id="installReloadBtn" class="primary" type="button">Reload now</button>
+        <button id="installReloadBtn" class="primary" type="button" data-shortcut="R">Reload now</button>
       </div>
 
-      <div class="install-section">
-        <p class="install-section-label">2. On your iPhone or iPad</p>
-        <ol class="install-steps">
-          <li>Open this page in <b>Safari</b>. <small>(Must be Safari — Chrome on iOS can't add web apps to the home
-              screen.)</small></li>
-          <li>Tap the <b>Share</b> button — the square with an arrow pointing up, at the bottom of the screen.</li>
-          <li>Scroll down and tap <b>Add to Home Screen</b>. The name will say <b>Trail Log</b>. Tap <b>Add</b> in the
-            top right.</li>
-        </ol>
+      <div class="install-directions-grid">
+        <section id="installPrimaryGuide" class="install-guide-card"></section>
+        <div id="installOtherGuides" class="install-other-guides"></div>
       </div>
-
-      <details class="install-android">
-        <summary>On a Mac?</summary>
-        <ol class="install-steps">
-          <li>Open this page in <b>Safari</b> on macOS 14 Sonoma or newer.</li>
-          <li>From the <b>File</b> menu, choose <b>Add to Dock…</b></li>
-          <li>Confirm the name <b>Trail Log</b> and click <b>Add</b>. The icon lands in your Dock and opens Trail Log in
-            its own window.</li>
-        </ol>
-        <p class="install-mini-note">On older macOS, drag the URL bar's site favicon to your Dock or Desktop instead.
-        </p>
-      </details>
-
-      <details class="install-android">
-        <summary>On Android?</summary>
-        <ol class="install-steps">
-          <li>Open this page in <b>Chrome</b>.</li>
-          <li>Tap the <b>three-dot menu</b> in the top right.</li>
-          <li>Tap <b>Install app</b> (or <b>Add to Home screen</b>).</li>
-        </ol>
-      </details>
 
       <p class="install-foot">Once installed, tapping the icon opens Trail Log full-screen — no browser chrome.</p>
     </div>
@@ -6358,7 +6579,7 @@
           </span>
         </button>
         <button class="tip-tier" type="button" data-amount="3" data-note="Trail Log :: Fuel for the roadmap"
-          aria-label="$3 — Plain Coffee. Fuel for the roadmap ahead">
+          aria-label="$3 — Simple Coffee. Fuel for the roadmap ahead">
           <span class="tip-tier-icon" aria-hidden="true">
             <svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 32.4219 23.9355">
               <g>
@@ -6370,18 +6591,28 @@
           </span>
           <span class="tip-tier-text">
             <span class="tip-tier-amount">$3</span>
-            <span class="tip-tier-label">Plain Coffee</span>
+            <span class="tip-tier-label">Simple Coffee</span>
             <span class="tip-tier-tagline">Fuel for the roadmap</span>
           </span>
         </button>
         <button class="tip-tier" type="button" data-amount="5" data-note="Trail Log :: Cold one for hot patches"
           aria-label="$5 — Beer Pint. A cold one for hot patches">
           <span class="tip-tier-icon" aria-hidden="true">
-            <svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 23.6328 26.0645">
+            <svg class="sf-symbol" height="800px" width="800px" version="1.1" id="Layer_1"
+              xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"
+              xml:space="preserve">
               <g>
-                <rect height="26.0645" opacity="0" width="23.6328" x="0" y="0" />
-                <path
-                  d="M8.36914 26.0547L10.6738 26.0547C15.8203 26.0547 19.0527 23.3398 19.0527 19.0039L19.0527 3.23242C19.0527 1.13281 14.9805 0 9.52148 0C4.07227 0 0 1.13281 0 3.23242L0 19.0039C0 23.3398 3.22266 26.0547 8.36914 26.0547ZM9.52148 4.13086C5.12695 4.13086 2.03125 3.58398 2.03125 2.83203C2.03125 2.08008 5.12695 1.5332 9.52148 1.5332C13.916 1.5332 17.0215 2.08008 17.0215 2.83203C17.0215 3.58398 13.916 4.13086 9.52148 4.13086ZM17.9395 18.7109L19.8633 18.7109C21.9531 18.7109 23.2715 17.334 23.2715 15.2148L23.2715 10C23.2715 7.87109 21.9531 6.49414 19.8633 6.49414L17.9395 6.49414L17.9395 8.125L19.8633 8.125C21.1133 8.125 21.6406 8.68164 21.6406 10L21.6406 15.2148C21.6406 16.5234 21.1133 17.0801 19.8633 17.0801L17.9395 17.0801Z" />
+                <g>
+                  <path d="M352.231,10.687L350.195,0h-188.39l-2.036,10.689c-7.109,37.339-7.765,75.314-1.948,112.872l2.676,17.276h187.625
+			c1.155,0,2.261,0.2,3.296,0.55l2.761-17.828C359.996,85.997,359.34,48.022,352.231,10.687z" />
+                </g>
+              </g>
+              <g>
+                <g>
+                  <path d="M306.977,428.453c0.015-0.135,0.032-0.27,0.053-0.403l41.294-266.685c-0.069,0.001-0.135,0.01-0.204,0.01H163.677
+			l41.294,266.674c0.021,0.135,0.038,0.27,0.054,0.403c3.509,30.674-6.065,60.802-25.613,83.547h153.175
+			C313.039,489.256,303.465,459.128,306.977,428.453z" />
+                </g>
               </g>
             </svg>
           </span>
@@ -6394,9 +6625,26 @@
         <button class="tip-tier" type="button" data-amount="10" data-note="Trail Log :: Not top shelf like this app"
           aria-label="$10 — House Rail. Not top shelf, but neither is this app">
           <span class="tip-tier-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
+            <!--<svg viewBox="0 0 24 24">
               <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
                 d="M6 7h12l-1 13H7zM9 10h4v4H9zM9 10l-1 1M13 10l1 1" />
+            </svg>
+            <svg version="1.1" class="sf-symbol" xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink" width="800px" height="800px" viewBox="0 0 32 32"
+              xml:space="preserve">
+              <g>
+                <path d="M23,18H9l-0.984-4.69C7.899,12.624,8.436,12,9.141,12h13.718c0.705,0,1.242,0.624,1.125,1.309L23,18z
+		 M17.913,11l0.888-4H24c1.323,0,1.325-2,0-2h-6.802l-1.334,6H17.913z" />
+                <path d="M22.84,19l-1.26,8.06C21.49,27.604,21.023,28,20.471,28h-8.941c-0.553,0-1.02-0.396-1.109-0.941
+		L9.16,19H22.84z M7.142,13.475C6.925,12.181,7.924,11,9.237,11h3.003c-0.807-1.205-2.18-2-3.74-2C6.015,9,4,11.015,4,13.5
+		c0,2.305,1.739,4.183,3.973,4.447L7.142,13.475z" />
+              </g>
+            </svg>-->
+            <svg class="sf-symbol" width="800px" height="800px" viewBox="0 0 512 512"
+              enable-background="new 0 0 512 512" id="Layer_1" version="1.1" xml:space="preserve"
+              xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+              <path
+                d="M427.6,81.1H304.3c-3.8,0-7.1,2.4-8.2,6l-15.7,48.5h-74.5c-4.2-32-31.6-56.7-64.7-56.7  c-36,0-65.4,29.3-65.4,65.4s29.3,65.4,65.4,65.4c4,0,8-0.4,12-1.1l5.1,30.6c0,0,0,0.1,0,0.2L187.5,415c1.8,10.6,10.8,18.2,21.5,18.2  h110.1c10.7,0,19.7-7.7,21.5-18.2l42.3-254.1c1.1-6.4-0.7-12.8-4.8-17.7c-4.2-4.9-10.2-7.7-16.6-7.7h-62.9l12.1-37.2h117  c4.8,0,8.7-3.9,8.7-8.7S432.4,81.1,427.6,81.1z M249.6,230.2c-18.1,7-41.2,11.8-75.2,1l-12.2-73.1c-0.3-1.8,0.5-3,1-3.6  c0.5-0.6,1.6-1.6,3.4-1.6h108.1L249.6,230.2z M141.1,192.2c-26.5,0-48.1-21.6-48.1-48.1s21.6-48.1,48.1-48.1  c23.6,0,43.2,17,47.2,39.4h-21.7c-6.4,0-12.5,2.8-16.6,7.7c-4.2,4.9-5.9,11.3-4.9,17.7l5.1,30.4  C147.2,191.9,144.2,192.2,141.1,192.2z M361.5,152.8c1.8,0,2.9,1,3.4,1.6c0.5,0.6,1.3,1.9,1,3.6l-9,54.3  c-36.3-16.1-61.2-3.9-85.4,7.9c-0.2,0.1-0.4,0.2-0.5,0.3l22-67.7H361.5z" />
             </svg>
           </span>
           <span class="tip-tier-text">
@@ -6408,9 +6656,36 @@
         <button class="tip-tier" type="button" data-amount="15" data-note="Trail Log :: Favorite feature polish"
           aria-label="$15 — Fancy Cocktail. Shaken, stirred, and slightly overpriced">
           <span class="tip-tier-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
+            <!--<svg viewBox="0 0 24 24">
               <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
                 d="M4 5h16L12 14zM12 14v6M8 21h8M15 5l1-2 3 1" />
+            </svg>
+            <svg class="sf-symbol" width="800px" height="800px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <g>
+                <path fill="none" d="M0 0h24v24H0z" />
+                <path d="M11 19v-5.111L3 5V3h18v2l-8 8.889V19h5v2H6v-2h5zM7.49 7h9.02l1.8-2H5.69l1.8 2z" />
+              </g>
+            </svg>-->
+            <svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+              width="800px" height="800px" viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve">
+              <g>
+                <path d="M8.136,9.966l0.399-0.965c0.708-1.23,2.018-2,3.465-2h9.235c-1.6-4.096-5.573-7-10.235-7
+		c-6.075,0-11,4.924-11,11c0,6.075,4.925,11,11,11c1.838,0,3.563-0.461,5.085-1.259l-6.913-6.913
+		C8.148,12.806,7.767,11.335,8.136,9.966z" />
+                <path d="M10.152,10.235c-0.31,0.748-0.139,1.607,0.434,2.18l2.586,2.586h33.413l6-6H12
+		C11.191,9.001,10.462,9.488,10.152,10.235z" />
+                <path d="M63.84,10.217C63.525,9.479,62.802,9.001,62,9.001h-6.585l-6,6h11.412l2.615-2.615
+		C63.998,11.808,64.154,10.954,63.84,10.217z" />
+                <path d="M44.104,20.312c0.447,1.211,0.006,2.822-1.246,4.074s-2.863,1.693-4.076,1.246l-2.289,2.289
+		c-0.391,0.391-1.023,0.391-1.414,0s-0.391-1.023,0-1.414l2.289-2.289c-0.447-1.213-0.005-2.823,1.247-4.075
+		s2.862-1.694,4.074-1.246l1.896-1.896H15.172l20.414,20.414c0.375,0.375,0.884,0.586,1.414,0.586c0.007,0,0.014,0,0.021,0
+		c0.537-0.006,1.05-0.228,1.422-0.615l20.385-20.385H47.415L44.104,20.312z" />
+                <path d="M40.028,21.558c-0.863,0.863-0.995,1.833-0.706,2.122c0.288,0.288,1.258,0.157,2.121-0.707
+		c0.863-0.863,0.995-1.833,0.707-2.121C41.861,20.562,40.892,20.694,40.028,21.558z" />
+                <path
+                  d="M48,58.001h-8V38.656L39.856,38.8c-0.71,0.741-1.746,1.189-2.814,1.201h-0.011H37
+		c-1.068,0-2.072-0.416-2.828-1.172L34,38.657v19.344h-8c-1.104,0-2,0.896-2,2v4h26v-4C50,58.896,49.104,58.001,48,58.001z" />
+              </g>
             </svg>
           </span>
           <span class="tip-tier-text">
@@ -6422,9 +6697,32 @@
         <button class="tip-tier" type="button" data-amount="20" data-note="Trail Log :: Premium debug support"
           aria-label="$20 — Neat Pour. For the premium debugging experience">
           <span class="tip-tier-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
+            <!--<svg viewBox="0 0 24 24">
               <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
                 d="M6 6h12l-1 14H7zM7.5 13h9" />
+            </svg>-->
+            <svg class="sf-symbol" height="800px" width="800px" version="1.1" xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512.001 512.001" xml:space="preserve">
+              <g>
+                <g>
+                  <path d="M331.167,469.453h-53.895v-86.515h-42.548v86.515h-53.895c-11.749,0-21.274,9.525-21.274,21.274
+			c0,11.749,9.525,21.274,21.274,21.274h150.338c11.749,0,21.274-9.525,21.274-21.274
+			C352.441,478.978,342.916,469.453,331.167,469.453z" />
+                </g>
+              </g>
+              <g>
+                <g>
+                  <path d="M403.662,266.997c-8.857-38.818-29.882-131.278-40.787-181.899H149.154c-10.907,50.623-31.941,143.048-40.811,181.883
+			c-10.895,47.707,23.926,94.468,72.836,96.056c0.908,0.03,1.82,0.044,2.734,0.044h144.166c0.918,0,1.832-0.014,2.743-0.044
+			C379.726,361.444,414.546,314.7,403.662,266.997z" />
+                </g>
+              </g>
+              <g>
+                <g>
+                  <path d="M366.609,0H145.387c9.097,15.591,12.786,33.752,10.509,51.661c-0.264,2.078-1.164,6.822-2.547,13.581h205.332
+			c-1.384-6.758-2.286-11.498-2.55-13.567c-2.293-17.907,1.388-36.074,10.478-51.674V0z" />
+                </g>
+              </g>
             </svg>
           </span>
           <span class="tip-tier-text">
@@ -6436,21 +6734,30 @@
         <button class="tip-tier" type="button" data-amount="25" data-note="Trail Log :: Keep the ideas flowing"
           aria-label="$25 — Next Round. Cover the next round and keep the ideas flowing">
           <span class="tip-tier-icon" aria-hidden="true">
-            <svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 26.8945 24.6387">
+            <svg class="sf-symbol" width="800px" height="800px" viewBox="0 0 512 512"
+              enable-background="new 0 0 512 512" id="Layer_1" version="1.1" xml:space="preserve"
+              xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
               <g>
-                <rect height="24.6387" opacity="0" width="26.8945" x="0" y="0" />
                 <path
-                  d="M17.832 24.6289C20.127 24.6289 21.9727 22.7832 21.9727 20.4883C21.9727 18.2031 20.127 16.3574 17.832 16.3574C15.5469 16.3574 13.7012 18.2031 13.7012 20.4883C13.7012 22.7832 15.5469 24.6289 17.832 24.6289Z" />
+                  d="M232.6,239.9c-1.5-4.8-4.9-8.8-9.6-10.9l-104.3-46c-2.2-1-4.5-1.5-7-1.5c-7.8,0-14.7,5.3-16.7,12.9   l-10.6,41.2c0,0,0,0.1,0,0.2l-27,105.4c-2.1,8.2,2,16.6,9.7,20l58.7,25.9c2.2,1,4.5,1.5,6.9,1.5c5.8,0,11.2-2.9,14.4-7.7l60.1-91.4   c0,0,0-0.1,0-0.1l23.1-35.2C233.2,250,234,244.8,232.6,239.9z M196.8,274l-93.7-41.3l8.6-33.8L216,244.8L196.8,274z" />
                 <path
-                  d="M8.70117 24.6289C10.9863 24.6289 12.832 22.7832 12.832 20.4883C12.832 18.2031 10.9863 16.3574 8.70117 16.3574C6.40625 16.3574 4.56055 18.2031 4.56055 20.4883C4.56055 22.7832 6.40625 24.6289 8.70117 24.6289Z" />
+                  d="M454.5,341.3l-27-105.4c0-0.1,0-0.1,0-0.2l-10.6-41.2c-1.9-7.6-8.8-12.9-16.7-12.9c-2.4,0-4.8,0.5-7,1.5   L289,229c-4.6,2.1-8.1,6-9.6,10.9c-1.4,4.9-0.6,10.1,2.1,14.3l23.1,35.2c0,0,0,0,0,0.1l60.1,91.4c3.2,4.8,8.6,7.7,14.4,7.7   c2.4,0,4.7-0.5,6.9-1.5l58.7-25.9C452.5,357.9,456.6,349.5,454.5,341.3z M315.2,274L296,244.8l104.3-45.9l8.6,33.8L315.2,274z" />
                 <path
-                  d="M22.3926 16.4453C24.6875 16.4453 26.5332 14.5996 26.5332 12.3145C26.5332 10.0195 24.6875 8.17383 22.3926 8.17383C20.1074 8.17383 18.2617 10.0195 18.2617 12.3145C18.2617 14.5996 20.1074 16.4453 22.3926 16.4453Z" />
+                  d="M223.4,138.8c4.8,0,8.7-3.9,8.7-8.7v-15.7c0-4.8-3.9-8.7-8.7-8.7c-4.8,0-8.7,3.9-8.7,8.7v15.7   C214.7,134.9,218.6,138.8,223.4,138.8z" />
                 <path
-                  d="M4.14062 16.4453C6.42578 16.4453 8.27148 14.5996 8.27148 12.3145C8.27148 10.0195 6.42578 8.17383 4.14062 8.17383C1.8457 8.17383 0 10.0195 0 12.3145C0 14.5996 1.8457 16.4453 4.14062 16.4453Z" />
+                  d="M223.4,190.2c4.8,0,8.7-3.9,8.7-8.7v-15.7c0-4.8-3.9-8.7-8.7-8.7c-4.8,0-8.7,3.9-8.7,8.7v15.7   C214.7,186.3,218.6,190.2,223.4,190.2z" />
                 <path
-                  d="M17.832 8.28125C20.127 8.28125 21.9727 6.42578 21.9727 4.14062C21.9727 1.85547 20.127 0 17.832 0C15.5469 0 13.7012 1.85547 13.7012 4.14062C13.7012 6.42578 15.5469 8.28125 17.832 8.28125Z" />
+                  d="M189.9,156.7h15.7c4.8,0,8.7-3.9,8.7-8.7s-3.9-8.7-8.7-8.7h-15.7c-4.8,0-8.7,3.9-8.7,8.7   S185.1,156.7,189.9,156.7z" />
                 <path
-                  d="M8.70117 8.28125C10.9863 8.28125 12.832 6.42578 12.832 4.14062C12.832 1.85547 10.9863 0 8.70117 0C6.40625 0 4.56055 1.85547 4.56055 4.14062C4.56055 6.42578 6.40625 8.28125 8.70117 8.28125Z" />
+                  d="M241.2,156.7h15.7c4.8,0,8.7-3.9,8.7-8.7s-3.9-8.7-8.7-8.7h-15.7c-4.8,0-8.7,3.9-8.7,8.7   S236.5,156.7,241.2,156.7z" />
+                <path
+                  d="M273.1,321.8c-4.8,0-8.7,3.9-8.7,8.7v15.7c0,4.8,3.9,8.7,8.7,8.7s8.7-3.9,8.7-8.7v-15.7   C281.8,325.7,277.9,321.8,273.1,321.8z" />
+                <path
+                  d="M273.1,373.2c-4.8,0-8.7,3.9-8.7,8.7v15.7c0,4.8,3.9,8.7,8.7,8.7s8.7-3.9,8.7-8.7v-15.7   C281.8,377.1,277.9,373.2,273.1,373.2z" />
+                <path
+                  d="M255.3,355.3h-15.7c-4.8,0-8.7,3.9-8.7,8.7s3.9,8.7,8.7,8.7h15.7c4.8,0,8.7-3.9,8.7-8.7   S260.1,355.3,255.3,355.3z" />
+                <path
+                  d="M306.7,355.3H291c-4.8,0-8.7,3.9-8.7,8.7s3.9,8.7,8.7,8.7h15.7c4.8,0,8.7-3.9,8.7-8.7   S311.5,355.3,306.7,355.3z" />
               </g>
             </svg>
           </span>
@@ -6484,12 +6791,10 @@
         <button class="tip-tier" type="button" data-amount="100" data-note="Trail Log :: Celebrate the Wins"
           aria-label="$100 — Something Nice. Celebrate the Wins">
           <span class="tip-tier-icon" aria-hidden="true">
-            <svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 14.0234 29.5801">
-              <g>
-                <rect height="29.5801" opacity="0" width="14.0234" x="0" y="0" />
-                <path
-                  d="M3.39844 3.18359L10.2734 3.18359C10.8887 3.18359 11.3379 2.75391 11.3379 2.11914L11.3379 1.06445C11.3379 0.439453 10.8887 0 10.2734 0L3.39844 0C2.76367 0 2.33398 0.439453 2.33398 1.06445L2.33398 2.11914C2.33398 2.75391 2.76367 3.18359 3.39844 3.18359ZM0.00976562 9.30664L13.6523 9.30664C13.6133 7.82227 13.3887 6.78711 12.5586 5.67383L12.207 5.19531C11.8848 4.74609 11.3672 4.45312 10.8105 4.45312L2.85156 4.45312C2.29492 4.45312 1.77734 4.74609 1.44531 5.19531L1.10352 5.67383C0.273438 6.78711 0.0488281 7.82227 0.00976562 9.30664ZM0 10.8203L0 23.6426L13.6621 23.6426L13.6621 10.8203ZM6.82617 21.5234C5.00977 21.5234 3.81836 20.3613 3.81836 18.6133C3.81836 17.7148 4.22852 16.9922 4.43359 16.5234C4.91211 15.498 5.69336 14.1699 6.36719 13.1543C6.49414 12.9492 6.66992 12.8418 6.82617 12.8418C7.00195 12.8418 7.1582 12.9492 7.28516 13.1543C7.95898 14.1699 8.75977 15.498 9.21875 16.5234C9.44336 16.9922 9.83398 17.7148 9.83398 18.6133C9.83398 20.3613 8.64258 21.5234 6.82617 21.5234ZM0 25.1562L0 25.4785C0 28.1445 1.31836 29.5605 3.75977 29.5605L9.89258 29.5605C12.3438 29.5605 13.6621 28.1445 13.6621 25.4785L13.6621 25.1562Z" />
-              </g>
+            <svg class="sf-symbol" width="800px" height="800px" viewBox="0 0 512 512"
+              xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M67.5 34v59h64V34h-64zm-1.75 77c-14.22 25.4-13.64 56.2 1.75 87-16 0-48 16-48 32v224c0 32 160 32 160 0V230c0-16-32-32-48-32 15.5-31 16-61.9 1.5-87H65.75zM99.5 245c10.7 0 20.5 3.2 28 8.8 7.6 5.7 13 14.3 13 24.2h23v112h-128V278h23c0-9.9 5.42-18.5 12.97-24.2 7.55-5.6 17.37-8.8 28.03-8.8zm169 79c-32 0-64 4-64 12l16 128c16 16 80 16 96 0l16-128c0-8-32-12-64-12zm160 0c-32 0-64 4-64 12l16 128c16 16 80 16 96 0l16-128c0-8-32-12-64-12zm0 55.5c5.7 0 11.4.8 16.5 2.4.2 19 .3 39.8.3 39.8l12.2-33.2c4 3.4 6.6 8 7 13.5l-4 46c0 16-64 16-64 0l-4-46c1-15 18.5-22.5 36-22.5zm-160 30c5.8 0 11.5.9 16.6 2.7.1 12 .2 25.5.2 25.5l7.8-21.4c5.4 3.7 8.9 8.9 9.4 15.7l-2 16c0 16-64 16-64 0l-2-16c1-15 17.5-22.5 34-22.5z" />
             </svg>
             <!--<svg viewBox="0 0 24 24">
               <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
@@ -6905,6 +7210,8 @@
               next tap cycles levels.</li>
             <li>Use the app header to show or hide Map, Legend, and Notes. Use the Location Map header to switch labels,
               fit the map for screenshots, or return to scrollable mode with pan and zoom controls.</li>
+            <li>Use Add as App in the top toolbar to choose a light or dark icon and get install directions matched to
+              your current device. The other device guides stay collapsed in the same dialog.</li>
             <li>In scrollable map mode, drag the map to pan, type an exact zoom percentage, use the zoom controls to
               move in or out, and reset to 100% when you want the full map again. Drag the divider on desktop to resize
               the map and cards. Your zoom level and fit/scroll map view are saved with the rest of your settings.</li>
@@ -6978,6 +7285,8 @@
             backend or external service.</p>
           <p><b>Can I move data to another device?</b><br>Export a JSON backup in Settings, then import it in the app on
             the other device.</p>
+          <p><b>How do I add it like an app?</b><br>Use Add as App in the top toolbar. Trail Log detects iPhone/iPad,
+            Android, Mac, or PC, expands the matching directions, and keeps the other three install paths collapsed.</p>
           <p><b>Will my map zoom come back?</b><br>Yes. The app saves your scrollable-map zoom level and whether you
             were using Fit Map or Scroll Map, plus your last pan position in scrollable mode.</p>
           <p><b>Will my Notes filters come back?</b><br>Yes. Notes view, sort, grouping, excluded visibility, Legend
@@ -7134,6 +7443,7 @@
                 banner reset.</span></div>
             <div class="shortcut-row"><kbd>M</kbd><span>Rename the map from the main screen.</span></div>
             <div class="shortcut-row"><kbd>S</kbd><span>Open Settings.</span></div>
+            <div class="shortcut-row"><kbd>J</kbd><span>Open Add as App install directions.</span></div>
             <div class="shortcut-row"><kbd>G</kbd><span>Toggle the Map panel.</span></div>
             <div class="shortcut-row"><kbd>L</kbd><span>Toggle the Legend panel.</span></div>
             <div class="shortcut-row"><kbd>N</kbd><span>Toggle the Notes panel.</span></div>
@@ -7147,6 +7457,8 @@
                 actions.</span></div>
             <div class="shortcut-row"><kbd>B T E K Y V O P</kbd><span>Notes Back, Chronological Sort, Expanded,
                 Condensed, Categorical, Excluded Visibility, Text Only, and Copy.</span></div>
+            <div class="shortcut-row"><kbd>L D R 1-4</kbd><span>Add as App: choose light/dark icon, reload after a Mac
+                icon change, or open device directions.</span></div>
             <div class="shortcut-row"><kbd>G</kbd><span>Note editor: look up coordinates from Where Specifically.</span>
             </div>
             <div class="shortcut-row"><kbd>W</kbd><span>Developer: reset the What's New banner and badges.</span></div>
@@ -7174,7 +7486,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.0.0.32";
+    const APP_VERSION = "3.0.0.34";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7281,6 +7593,8 @@
       Earth: ["#36563e", "#5a8b5d", "#81b14f", "#907350", "#351b04"],
       Ocean: ["#064273", "#1da2d8", "#7fcdff", "#def3f6", "#001a33"],
     };
+
+    // https://www.svgrepo.com
 
     const __DROP_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 17.5293 25.2051"><g><rect height="25.2051" opacity="0" width="17.5293" x="0" y="0"/><path d="M8.58398 25.2051C13.7402 25.2051 17.168 21.8555 17.168 16.8359C17.168 14.4434 16.2207 11.9434 15.3809 10.0684C14.043 7.08008 11.8359 3.80859 9.90234 0.839844C9.55078 0.283203 9.0918 0 8.58398 0C8.07617 0 7.62695 0.283203 7.26562 0.839844C5.33203 3.80859 3.125 7.08008 1.78711 10.0684C0.947266 11.9434 0 14.4434 0 16.8359C0 21.8555 3.4375 25.2051 8.58398 25.2051Z"/></g></svg>`;
     const __CUP_AND_SAUCER_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 32.4219 23.9355"><g><rect height="23.9355" opacity="0" width="32.4219" x="0" y="0"/><path d="M15.5664 18.1348L16.5918 18.1348C22.9492 18.1348 27.041 13.9062 27.041 7.45117L27.041 4.94141C27.041 2.06055 22.5879 0.0488281 16.0742 0.0488281C9.56055 0.0488281 5.10742 2.06055 5.10742 4.94141L5.10742 7.45117C5.10742 13.7305 9.19922 18.1348 15.5664 18.1348ZM16.0742 8.16406C10.7031 8.16406 6.78711 6.75781 6.78711 4.94141C6.78711 3.13477 10.7031 1.72852 16.0742 1.72852C21.4551 1.72852 25.3711 3.13477 25.3711 4.94141C25.3711 6.75781 21.4551 8.16406 16.0742 8.16406ZM25.752 12.5586L26.7578 12.5586C29.4238 12.5586 31.0645 11.1133 31.0645 8.7793C31.0645 6.44531 29.4141 5.00977 26.7578 5.00977L26.1035 5.00977L26.1035 6.66992L26.7578 6.66992C28.3984 6.66992 29.3945 7.4707 29.3945 8.7793C29.3945 10.0781 28.3984 10.8887 26.7578 10.8887L25.752 10.8887ZM16.0254 23.9355C25.3809 23.9355 32.0605 21.2891 32.0605 17.4609C32.0605 15.9375 30.9473 14.5703 28.9844 13.5059C28.3301 13.7598 27.6367 13.8965 26.8359 13.916C24.8828 17.4414 21.2402 19.502 16.5918 19.502L15.5664 19.502C10.4492 19.502 6.51367 16.875 4.74609 12.7051C1.72852 13.8574 0 15.5176 0 17.4609C0 21.2891 6.68945 23.9355 16.0254 23.9355Z"/></g></svg>`;
@@ -8190,18 +8504,6 @@
 
     const WISHLIST_SEEDS = [
       {
-        title: "Polished Drink SVGs for the Gift Screen",
-        ticketId: "WISH-040",
-        description: "Replace the hand-rolled minimalist drink glyphs in the Buy-me-a-Drink modal with a polished, consistent set: cleaner stroke weights, better proportions for each glass, recognizable garnishes (cherry, lime wedge, ice cubes), and a unified visual language with the rest of the SF Symbols icon set.",
-        priority: "P2",
-        effort: "small",
-        targetKind: "minor",
-        targetVersion: "",
-        tokenCostPct: 8,
-        prompt: "Refine the inline drink SVGs in the Tip Jar dialog so the icons read clearly at 24px, share consistent stroke weights and proportions, and match the existing SF Symbols-style sketches used elsewhere. Keep them single-path or simple-path, monochrome, currentColor-friendly, and well-balanced inside their accent-tinted chip.",
-        category: "UI"
-      },
-      {
         title: "Split App into /src Folder with Build Step",
         ticketId: "WISH-038",
         description: "Move from a single-file app to a /src layout with separate HTML, CSS, JS, icon constants, release notes (markdown), and wishlist (markdown). Add a build script that concatenates and minifies into the deployable index.html so the runtime still ships as one file. Goal: easier diffs, scoped edits, and tooling without sacrificing the offline single-file deploy story.",
@@ -8224,18 +8526,6 @@
         tokenCostPct: 24,
         prompt: "Polish all modal dialog pop-ups: align headers, close/save/delete controls, icon/text rendering, shortcut badges, confirmations, and mobile spacing while preserving behavior.",
         category: "UI"
-      },
-      {
-        title: "Improve Add to Home Screen",
-        ticketId: "WISH-028",
-        description: "Improve the installed app experience with a better home-screen icon, app name, and related metadata while keeping the single-file/offline setup intact.",
-        priority: "P1",
-        effort: "small",
-        targetKind: "exact",
-        targetVersion: "3.0.0",
-        tokenCostPct: 12,
-        prompt: "Improve Add to Home Screen polish: app icon, app name, and install metadata. Keep the app single-file/offline and verify mobile behavior.",
-        category: "Mobile"
       },
       {
         title: "Bucket List Feature",
@@ -8336,7 +8626,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.0.0.32",
+        version: "3.0.0.34",
         date: "2026-05-24",
         title: "3.0 Development Begins",
         summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, mapped note locations, a guided install flow, and a beta environment indicator.",
@@ -8344,12 +8634,13 @@
           "The app version is now on the 3.0.0 development track.",
           "Trail Log branding now reaches the document title, app name, default map name, Settings footer, README, and mobile web app metadata.",
           "Added favicon, Apple touch icon, install manifest, and generated app-icon assets for Add to Home Screen polish.",
-          "Added an Install Trail Log control with a guided pick-your-icon dialog, dark-icon variants, and clear step-by-step instructions for iPhone, iPad, Mac, and Android.",
+          "Added an Install Trail Log control with a guided pick-your-icon dialog, dark-icon variants, and clear step-by-step instructions for iPhone/iPad, Android, Mac, and PC.",
           "Added an optional Tip Jar flow with preset drink tiers, a custom amount, and Venmo app/web handoff.",
           "Notes can now store latitude/longitude and render as clustered map markers.",
           "Notes can now be created from the main Notes header with a Quick Add flow and a searchable target location.",
           "The note editor gained a Locate control beside Where Specifically, plus manual coordinate override fields.",
           "Developer Tools now shows a Device Detection readout with the detected iPhone, iPad, Laptop, or Desktop type plus the matching install icon and user agent.",
+          "Add as App now detects iPhone/iPad, Android, Mac, or PC and expands the right install directions automatically.",
           "Beta deploys now show a BETA pill in the title bar beside the existing Dev Mode pill so the active environment is obvious.",
           "Blank map names now fall back to the correct app-branded title.",
           "The app icon and name stay pinned left on desktop and centered on mobile without collapsing the title text.",
@@ -8378,7 +8669,7 @@
           "Added an Add Note Here action that pre-fills the top marker location's coordinates, level, location name, and note icons.",
           "Updated Help Center guidance and note hints for coordinate lookup, manual overrides, and clustered map markers.",
           "Removed completed roadmap ticket WISH-030 from seeded wishlist data.",
-          "Added an Install Trail Log button between Tip and Settings with a guided dialog that pairs a sleek light/dark icon picker, step-by-step Add to Home Screen instructions for iPhone and iPad, Add to Dock instructions for Mac, and Install app instructions for Android.",
+          "Added an Install Trail Log button between Tip and Settings with a guided dialog that pairs a sleek light/dark icon picker, step-by-step Add to Home Screen instructions for iPhone and iPad, Add to Dock instructions for Mac, and Install app instructions for Android and PC browsers.",
           "Added dark home-screen icon variants (apple-touch-icon-dark.png, icon-192-dark.png, icon-512-dark.png) and a paired dark web app manifest so the chosen icon survives reloads and macOS Add to Dock picks it up after a one-tap reload prompt.",
           "Persisted the chosen install-icon variant so it survives reloads and is applied before the manifest is fetched.",
           "Auto-detected device drives the toolbar Install button glyph: iPhone, iPad, Laptop, or Desktop symbol with a fallback when detection isn't certain.",
@@ -8445,7 +8736,11 @@
           "Added wishlist item WISH-040 to refine the inline drink SVGs in the Tip Jar dialog into a polished, consistent set.",
           "On mobile, the Tip Jar's Pick your own number form now sticks near the bottom of the dialog while browsing the preset tiers.",
           "Location notes without latitude/longitude now render at the center of their state or territory map shape instead of falling back to an edge placement.",
-          "Help Center copy now explains that exact coordinates make map note pins more precise while notes without coordinates use the map shape center."
+          "Help Center copy now explains that exact coordinates make map note pins more precise while notes without coordinates use the map shape center.",
+          "Tip Jar drink labels and SVG artwork were refreshed, and tier glyphs now scale to about 75% of their icon chip for more consistent visual weight.",
+          "Add as App now detects the install platform, expands the matching iPhone/iPad, Android, Mac, or PC directions, and keeps the other three guides collapsed.",
+          "The Add as App dialog now uses a wider, denser layout with SVG icon controls, checked icon previews, shortcut badges for icon choice/device guides/reload, and a Help Center refresh.",
+          "Removed the completed Add as App roadmap item after shipping the polished install flow."
         ]
       },
       {
@@ -9843,7 +10138,9 @@
     function syncButtonLabels() {
       setButtonLabel("#renameBtn", __PENCIL, "Rename");
       setButtonLabel("#tipJarBtn", __GIFT_FILL, "Tip", "Send a tip", "Buy me a Drink!");
-      setButtonLabel("#addToHomeBtn", deviceInstallIconConstant(detectDeviceType().type), "Install", "Add to Home Screen", "Install Trail Log");
+      setButtonLabel("#addToHomeBtn", installPlatformIcon(detectInstallPlatform()), "Add as App", "Add as App", "Add as App");
+      setButtonLabel("#installDialogCloseBtn", __XMARK, "Close");
+      setButtonLabel("#installReloadBtn", __ARROW_CLOCKWISE_CIRCLE, "Reload");
       setButtonLabel("#settingsBtn", __GEARSHAPE_FILL, "Settings");
       setButtonLabel("#mapToggleBtn", __MAP_FILL, "Map", "Toggle Map Panel", "Toggle Map Panel");
       setButtonLabel("#legendToggleBtn", __CHECKLIST_UNCHECKED, "Legend", "Toggle Legend Panel", "Toggle Legend Panel");
@@ -13495,6 +13792,128 @@
       return `${labels[det.type] || det.type}${det.certain ? "" : " (guessed)"}`;
     }
 
+    function detectInstallPlatform() {
+      const ua = navigator.userAgent || "";
+      const touch = (navigator.maxTouchPoints || 0) > 1;
+      if (/iPhone|iPad|iPod/i.test(ua)) return "idevice";
+      if (/Android/i.test(ua)) return "android";
+      if (/Macintosh|Mac OS X/i.test(ua)) return touch ? "idevice" : "mac";
+      return "pc";
+    }
+
+    function installPlatformIcon(platform) {
+      const det = detectDeviceType();
+      if (platform === "idevice") return deviceInstallIconConstant(det.type === "ipad" ? "ipad" : "iphone");
+      if (platform === "android") return __PHONE_ARROW_UP_RIGHT_CIRCLE;
+      if (platform === "mac") return __LAPTOPCOMPUTER_BADGE_CHECKMARK;
+      return __DESKTOPCOMPUTER_BADGE_CHECKMARK;
+    }
+
+    function installGuideDefinitions() {
+      return [
+        {
+          id: "idevice",
+          shortcut: "1",
+          label: "iPhone / iPad",
+          subtitle: "Safari is the reliable path on iOS and iPadOS.",
+          icon: installPlatformIcon("idevice"),
+          note: "Chrome and Firefox on iPhone still use Apple's browser engine, but Safari is the one that exposes Add to Home Screen consistently.",
+          steps: [
+            { icon: __SQUARE_AND_ARROW_UP_FILL, text: "Open this page in <b>Safari</b>." },
+            { icon: __SQUARE_AND_ARROW_UP_FILL, text: "Tap <b>Share</b>, the square with the arrow. It is usually in the bottom bar on iPhone and the top bar on iPad." },
+            { icon: __PLUS_APP_FILL, text: "Choose <b>Add to Home Screen</b>, keep the name <b>Trail Log</b>, then tap <b>Add</b>." }
+          ]
+        },
+        {
+          id: "android",
+          shortcut: "2",
+          label: "Android",
+          subtitle: "Chrome gives the cleanest install prompt.",
+          icon: installPlatformIcon("android"),
+          note: "If you do not see Install app, look for Add to Home screen in the same menu.",
+          steps: [
+            { icon: __PHONE_ARROW_UP_RIGHT_CIRCLE, text: "Open this page in <b>Chrome</b>." },
+            { icon: __ELLIPSIS_CIRCLE, text: "Tap the <b>three-dot menu</b> in the top right." },
+            { icon: __PLUS_APP_FILL, text: "Tap <b>Install app</b> or <b>Add to Home screen</b>, then confirm." }
+          ]
+        },
+        {
+          id: "mac",
+          shortcut: "3",
+          label: "Mac",
+          subtitle: "Safari on macOS Sonoma or newer can add Trail Log to the Dock.",
+          icon: installPlatformIcon("mac"),
+          note: "Older macOS versions can still keep a quick shortcut by dragging the site icon from the address bar to the Dock or Desktop.",
+          steps: [
+            { icon: __LAPTOPCOMPUTER_BADGE_CHECKMARK, text: "Open this page in <b>Safari</b> on macOS 14 Sonoma or newer." },
+            { icon: __PLUS_APP_FILL, text: "Choose <b>File</b> then <b>Add to Dock</b>." },
+            { icon: __CHECKMARK, text: "Confirm the name <b>Trail Log</b> and click <b>Add</b>." }
+          ]
+        },
+        {
+          id: "pc",
+          shortcut: "4",
+          label: "PC",
+          subtitle: "Chrome and Edge can install this as a standalone web app.",
+          icon: installPlatformIcon("pc"),
+          note: "On shared or locked-down computers, the browser may hide install controls. A normal bookmark still works offline after the file has loaded.",
+          steps: [
+            { icon: __DESKTOPCOMPUTER_BADGE_CHECKMARK, text: "Open this page in <b>Chrome</b> or <b>Edge</b>." },
+            { icon: __ELLIPSIS_CIRCLE, text: "Open the browser menu, or click the install icon if it appears in the address bar." },
+            { icon: __PLUS_APP_FILL, text: "Choose <b>Install Trail Log</b> or <b>Install app</b>, then pin it if your browser offers to." }
+          ]
+        }
+      ];
+    }
+
+    function installGuideStepsHtml(guide) {
+      return `<ol class="install-steps">
+        ${guide.steps.map(step => `
+          <li><span class="install-step-icon" aria-hidden="true">${step.icon}</span><span>${step.text}</span></li>
+        `).join("")}
+      </ol>`;
+    }
+
+    function renderInstallDialogContent() {
+      const platform = detectInstallPlatform();
+      const guides = installGuideDefinitions();
+      const primary = guides.find(guide => guide.id === platform) || guides[0];
+      const otherGuides = guides.filter(guide => guide.id !== primary.id);
+      const deviceIcon = $("#installDeviceIcon");
+      const detected = $("#installDetectedDevice");
+      const primaryGuide = $("#installPrimaryGuide");
+      const otherGuidesEl = $("#installOtherGuides");
+      if (deviceIcon) deviceIcon.innerHTML = primary.icon;
+      if (detected) detected.textContent = primary.label;
+      if (primaryGuide) {
+        primaryGuide.innerHTML = `
+          <div class="install-guide-head shortcut-target" data-shortcut="${primary.shortcut}">
+            <span class="install-device-icon install-guide-icon" aria-hidden="true">${primary.icon}</span>
+            <span class="install-guide-title"><b>${escapeHtml(primary.label)}</b><span>${escapeHtml(primary.subtitle)}</span></span>
+          </div>
+          ${installGuideStepsHtml(primary)}
+          <p class="install-mini-note">${escapeHtml(primary.note)}</p>
+        `;
+      }
+      if (otherGuidesEl) {
+        otherGuidesEl.innerHTML = `
+          <p class="install-other-heading">Other devices</p>
+          ${otherGuides.map(guide => `
+            <details class="install-device-details">
+              <summary class="shortcut-target" data-shortcut="${guide.shortcut}">
+                <span class="install-details-icon" aria-hidden="true">${guide.icon}</span>
+                <span>${escapeHtml(guide.label)}</span>
+                <span class="install-expand-mark" aria-hidden="true"></span>
+              </summary>
+              ${installGuideStepsHtml(guide)}
+              <p class="install-mini-note">${escapeHtml(guide.note)}</p>
+            </details>
+          `).join("")}
+        `;
+      }
+      $$(".install-icon-check").forEach(check => { check.innerHTML = __CHECKMARK; });
+    }
+
     function renderDeviceDetectionReadout() {
       const det = detectDeviceType();
       const typeIconEl = $("#detectedDeviceTypeIcon");
@@ -13584,11 +14003,19 @@
       const variant = stored || (state.settings.theme === "dark" ? "dark" : "light");
       const radios = $("#addToHomeDialog").querySelectorAll('input[name="installIconVariant"]');
       radios.forEach(r => { r.checked = (r.value === variant); });
+      renderInstallDialogContent();
       // Hide the reload notice — applyTouchIconVariant will surface it only if the
       // user picks a different value than what's already persisted.
       $("#installReloadNotice")?.classList.add("hidden");
       applyTouchIconVariant(variant);
       $("#addToHomeDialog").showModal();
+    }
+
+    function selectInstallIconVariant(variant) {
+      const radio = $(`#addToHomeDialog input[name="installIconVariant"][value="${variant}"]`);
+      if (!radio) return;
+      radio.checked = true;
+      applyTouchIconVariant(variant);
     }
 
     function isBetaDeploy() {
@@ -13609,7 +14036,7 @@
       $("#addToHomeBtn")?.addEventListener("click", openAddToHomeDialog);
       $("#addToHomeDialog").querySelectorAll('input[name="installIconVariant"]').forEach(radio => {
         radio.addEventListener("change", () => {
-          if (radio.checked) applyTouchIconVariant(radio.value);
+          if (radio.checked) selectInstallIconVariant(radio.value);
         });
       });
       $("#installReloadBtn")?.addEventListener("click", () => {
@@ -13857,6 +14284,26 @@
         if (!renameActions[key]) return;
         event.preventDefault();
         renameActions[key]();
+        return;
+      }
+      if ($("#addToHomeDialog").open) {
+        const installActions = {
+          q: () => $("#addToHomeDialog").close(),
+          x: () => $("#addToHomeDialog").close(),
+          l: () => selectInstallIconVariant("light"),
+          d: () => selectInstallIconVariant("dark"),
+          r: () => !$("#installReloadNotice")?.classList.contains("hidden") && $("#installReloadBtn")?.click()
+        };
+        installGuideDefinitions().forEach(guide => {
+          installActions[guide.shortcut] = () => {
+            const target = $(`.install-device-details summary[data-shortcut="${guide.shortcut}"]`);
+            if (target) target.parentElement.open = !target.parentElement.open;
+            else $("#installPrimaryGuide")?.scrollIntoView({ block: "nearest" });
+          };
+        });
+        if (!installActions[key]) return;
+        event.preventDefault();
+        installActions[key]();
         return;
       }
       if ($("#paletteDialog").open) {
