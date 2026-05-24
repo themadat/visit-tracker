@@ -637,6 +637,22 @@
       height: 24px;
     }
 
+    #noteSmartConvertBtn,
+    #noteTagSettingsBtn,
+    #noteGeocodeBtn {
+      height: 36px;
+      min-height: 36px;
+      width: 36px;
+      min-width: 36px;
+    }
+
+    #noteSmartConvertBtn .sf-symbol,
+    #noteTagSettingsBtn .sf-symbol,
+    #noteGeocodeBtn .sf-symbol {
+      height: 24px;
+      width: 24px;
+    }
+
     [data-button-style="text"] .toolbar-panel-toggle-group button,
     [data-button-style="both"] .toolbar-panel-toggle-group button {
       width: auto;
@@ -3144,7 +3160,6 @@
       width: 1.18em;
       height: 1.18em;
       margin-block: -.03em;
-      vertical-align: middle;
     }
 
     .notes-controls button .btn-symbol,
@@ -5933,23 +5948,35 @@
     <div class="dialog-body">
       <p class="tip-intro">Saddle up to the bar with me</p>
       <div class="tip-tier-grid">
-        <button class="tip-tier" type="button" data-amount="1" data-note="Trail Log :: A water for your troubles">
+        <button class="tip-tier" type="button" data-amount="1" data-note="Trail Log :: Keep the tokens hydrated">
           <span class="tip-amount">$1 💧</span>
           <span class="tip-label">Plain Water</span>
         </button>
-        <button class="tip-tier" type="button" data-amount="5" data-note="Trail Log :: Fuel for the road ahead">
-          <span class="tip-amount">$5 ☕️</span>
-          <span class="tip-label">Fancy Coffee</span>
+        <button class="tip-tier" type="button" data-amount="3" data-note="Trail Log :: Fuel for the roadmap ahead">
+          <span class="tip-amount">$3 ☕️</span>
+          <span class="tip-label">Plain Coffee</span>
         </button>
-        <button class="tip-tier" type="button" data-amount="10" data-note="Trail Log :: A pint at the trailhead">
-          <span class="tip-amount">$10 🍺</span>
+        <button class="tip-tier" type="button" data-amount="5" data-note="Trail Log :: A cold one for hot patches">
+          <span class="tip-amount">$5 🍺</span>
           <span class="tip-label">Beer Pint</span>
         </button>
-        <button class="tip-tier" type="button" data-amount="20" data-note="Trail Log :: Enjoy a drink on me">
-          <span class="tip-amount">$20 🥃</span>
-          <span class="tip-label">Sipping Cocktail</span>
+        <button class="tip-tier" type="button" data-amount="10" data-note="Trail Log :: Not top shelf, but neither is this app">
+          <span class="tip-amount">$10 🍹</span>
+          <span class="tip-label">House Rail</span>
         </button>
-        <button class="tip-tier" type="button" data-amount="50" data-note="Trail Log :: A nice bottle of wine">
+        <button class="tip-tier" type="button" data-amount="15" data-note="Trail Log :: Shaken, stirred, and slightly overpriced">
+          <span class="tip-amount">$15 🍸</span>
+          <span class="tip-label">Fancy Cocktail</span>
+        </button>
+        <button class="tip-tier" type="button" data-amount="20" data-note="Trail Log :: For the premium debugging experience">
+          <span class="tip-amount">$20 🥃</span>
+          <span class="tip-label">Neat Pour</span>
+        </button>
+        <button class="tip-tier" type="button" data-amount="25" data-note="Trail Log :: Cover the next round and keep the ideas flowing">
+          <span class="tip-amount">$25 🍻</span>
+          <span class="tip-label">Next Round</span>
+        </button>
+        <button class="tip-tier" type="button" data-amount="50" data-note="Trail Log :: For bugs so bad they require multiple glasses">
           <span class="tip-amount">$50 🍷</span>
           <span class="tip-label">Wine Bottle</span>
         </button>
