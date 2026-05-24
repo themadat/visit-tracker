@@ -1479,30 +1479,32 @@
       display: none;
     }
 
-    .app-toast {
+    dialog.app-toast {
       position: fixed;
       top: 50%;
       left: 50%;
-      z-index: 10001;
-      display: grid;
-      gap: .15rem;
-      width: min(24rem, calc(100vw - 2rem));
-      padding: .85rem 1rem;
-      border: 1px solid color-mix(in srgb, var(--warning) 48%, var(--line));
-      border-radius: .85rem;
-      background: color-mix(in srgb, var(--surface) 94%, var(--warning) 12%);
-      color: var(--text);
-      box-shadow: var(--shadow);
-      pointer-events: none;
-      opacity: 1;
+      margin: 0;
       transform: translate(-50%, -50%);
-      transition: opacity .16s ease, transform .16s ease;
+      width: min(24rem, calc(100vw - 2rem));
+      max-width: none;
+      max-height: none;
+      padding: .9rem 1.1rem;
+      gap: .2rem;
+      border: 2px solid color-mix(in srgb, var(--warning) 70%, var(--line));
+      border-radius: .9rem;
+      background: color-mix(in srgb, var(--surface) 94%, var(--warning) 14%);
+      color: var(--text);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, .35);
       text-align: center;
+      z-index: 10001;
     }
 
-    .app-toast.hidden {
-      opacity: 0;
-      transform: translate(-50%, calc(-50% + .35rem));
+    dialog.app-toast[open] {
+      display: grid;
+    }
+
+    dialog.app-toast::backdrop {
+      background: transparent;
     }
 
     .app-toast strong {
@@ -2458,16 +2460,16 @@
 
     .note-dialog-head {
       align-items: center;
+      justify-content: space-between;
     }
 
     .note-dialog-title-wrap {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: .65rem;
+      justify-content: flex-start;
+      gap: .5rem;
       min-width: 0;
-      flex: 1 1 auto;
-      position: relative;
+      flex: 0 1 auto;
     }
 
     .note-dialog-title-wrap h2 {
@@ -2478,17 +2480,16 @@
     .note-location-select {
       flex: 0 1 18rem;
       width: 18rem;
-      max-width: min(18rem, 100%);
       min-width: 10rem;
+      max-width: 100%;
       margin: 0 auto;
     }
 
     .note-location-select input {
       width: 100%;
       min-height: 34px;
-      padding: .34rem .5rem;
+      padding: .34rem .55rem;
       font-size: .86rem;
-      text-align: center;
     }
 
     .note-location-select.hidden {
@@ -5338,7 +5339,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.24</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.25</span>
                 <span id="betaPill" class="beta-pill hidden" title="This is the beta deploy">BETA</span>
               </div>
             </div>
@@ -5968,10 +5969,10 @@
   </div>
 
   <div id="labelDragReadout" class="hidden" aria-live="polite"></div>
-  <div id="appToast" class="app-toast hidden" role="status" aria-live="polite">
+  <dialog id="appToast" class="app-toast" role="status" aria-live="polite">
     <strong></strong>
     <span></span>
-  </div>
+  </dialog>
 
   <aside id="stateDrawer" class="drawer" aria-labelledby="drawerTitle" aria-hidden="true">
     <header>
@@ -6190,13 +6191,13 @@
     <header class="note-dialog-head">
       <div class="note-dialog-title-wrap">
         <h2 id="noteDialogTitle">Add Note</h2>
-        <label id="noteLocationSelectWrap" class="note-location-select hidden">
-          <span class="sr-only">Location</span>
-          <input id="noteLocationSearch" type="search" list="noteLocationOptions" autocomplete="off"
-            placeholder="Choose location">
-          <datalist id="noteLocationOptions"></datalist>
-        </label>
       </div>
+      <label id="noteLocationSelectWrap" class="note-location-select hidden">
+        <span class="sr-only">Location</span>
+        <input id="noteLocationSearch" type="search" list="noteLocationOptions" autocomplete="off"
+          placeholder="Choose location">
+        <datalist id="noteLocationOptions"></datalist>
+      </label>
       <div class="dialog-head-actions">
         <button id="saveNoteBtn" class="primary" type="submit" form="noteForm" data-shortcut="S">Save Note</button>
         <button id="saveAddNoteBtn" class="primary" type="button" data-shortcut="A">Save + Add</button>
@@ -6788,7 +6789,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.0.0.24";
+    const APP_VERSION = "3.0.0.25";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7944,7 +7945,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.0.0.24",
+        version: "3.0.0.25",
         date: "2026-05-23",
         title: "3.0 Development Begins",
         summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, mapped note locations, a guided install flow, and a beta environment indicator.",
@@ -8025,7 +8026,12 @@
           "The Quick Add Note location picker is now centered in the dialog header so its searchable suggestion dropdown drops straight beneath the search input instead of off to the right.",
           "Editing a note from the all-locations expanded notes view now returns to the expanded notes view after save, instead of dropping into the per-location panel.",
           "Returning from the Location Tags settings to an open note dialog now re-renders the visit-type chip row so newly enabled, renamed, or reordered tags appear without reopening the note.",
-          "Location Tag chips now make full use of the dialog width with a four-column grid on desktop and a two-column grid on mobile, so the available space is used evenly."
+          "Location Tag chips now make full use of the dialog width with a four-column grid on desktop and a two-column grid on mobile, so the available space is used evenly.",
+          "The hotkey-already-used overlay warning is now rendered through a native dialog element so it appears in the browser's top layer above any open modal, including the note dialog.",
+          "Edit Note dialog header now keeps its title left-aligned while the centered location picker sits in the middle of the header and the action buttons stay on the right.",
+          "Quick Add Note location dropdown sits beneath its centered input field so the typed-search suggestion list anchors directly under the search box.",
+          "Quick Add Note location dropdown options are now sorted alphabetically by state and territory name for predictable scanning.",
+          "Notes with exact coordinates now lead their icon row with a small scope dot symbol across the Notes panel, expanded view, and condensed view, so mapped notes stand out at a glance."
         ]
       },
       {
@@ -9320,8 +9326,11 @@
       $("strong", toast).textContent = title;
       $("span", toast).textContent = message;
       clearTimeout(toastTimer);
-      toast.classList.remove("hidden");
-      toastTimer = window.setTimeout(() => toast.classList.add("hidden"), 3200);
+      // Use show() (not showModal) so the warning lands in the top-layer
+      // above any open modal dialog without locking interaction with it.
+      if (toast.open) toast.close();
+      toast.show();
+      toastTimer = window.setTimeout(() => toast.close(), 3200);
     }
 
     function closeOpenDialogs(exceptId = "") {
@@ -11202,8 +11211,15 @@
       const icons = labels.map(type => visitTypeIcon(type.id)).join("");
       const color = options.color;
       const styleAttr = color ? `style="color:${escapeHtml(color)}"` : "";
-      if (icons) {
-        return `<span class="visit-icon-stack" ${styleAttr} aria-label="${escapeHtml(labels.map(type => type.label).join(", "))}">${icons}</span>`;
+      const hasLocation = note && note.lat !== undefined && note.lng !== undefined
+        && note.lat !== null && note.lng !== null
+        && String(note.lat).trim() !== "" && String(note.lng).trim() !== "";
+      const scope = hasLocation
+        ? `<span class="visit-icon-scope" aria-label="Has exact location" title="Mapped to coordinates">${__DOT_SCOPE}</span>`
+        : "";
+      if (scope || icons) {
+        const labelText = [hasLocation ? "Mapped location" : "", labels.map(type => type.label).join(", ")].filter(Boolean).join(", ");
+        return `<span class="visit-icon-stack" ${styleAttr} aria-label="${escapeHtml(labelText)}">${scope}${icons}</span>`;
       }
       if (color) {
         return `<span class="visit-icon-stack is-empty" style="color:${escapeHtml(color)}" aria-hidden="true">${__CIRCLE}</span>`;
@@ -12050,7 +12066,10 @@
     function renderNoteLocationOptions() {
       const list = $("#noteLocationOptions");
       if (!list) return;
-      list.innerHTML = STATES.map(([abbr]) =>
+      const sorted = STATES.slice().sort(([abbrA], [abbrB]) =>
+        noteLocationLabel(abbrA).localeCompare(noteLocationLabel(abbrB), undefined, { sensitivity: "base" })
+      );
+      list.innerHTML = sorted.map(([abbr]) =>
         `<option value="${escapeHtml(noteLocationLabel(abbr))}"></option>`
       ).join("");
     }
