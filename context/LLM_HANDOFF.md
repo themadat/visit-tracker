@@ -8,7 +8,7 @@ Trail Log is a single-file, offline HTML/CSS/JS app for tracking visits to US st
 
 Current anchors:
 
-- `APP_VERSION`: `3.0.0.22`
+- `APP_VERSION`: `3.0.0.23`
 - storage key: `usStateVisitMap.v1`
 - roadmap/wishlist is developer-facing seed data only; do not persist user roadmap data in backups.
 
