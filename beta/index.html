@@ -2466,6 +2466,7 @@
     }
 
     .note-dialog-title-wrap {
+      grid-column: 1;
       justify-self: start;
       display: flex;
       align-items: center;
@@ -2479,7 +2480,9 @@
     }
 
     .note-location-select {
+      grid-column: 2;
       justify-self: center;
+      position: relative;
       width: 18rem;
       min-width: 10rem;
       max-width: min(100%, 22rem);
@@ -2496,7 +2499,55 @@
       display: none;
     }
 
+    .note-location-dropdown {
+      position: absolute;
+      top: calc(100% + .3rem);
+      left: 0;
+      right: 0;
+      max-height: min(60vh, 32rem);
+      overflow-y: auto;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: .25rem;
+      z-index: 50;
+    }
+
+    .note-location-dropdown[hidden] {
+      display: none;
+    }
+
+    .note-location-option {
+      display: block;
+      width: 100%;
+      padding: .42rem .6rem;
+      background: transparent;
+      border: 0;
+      border-radius: calc(var(--radius) - 2px);
+      text-align: left;
+      cursor: pointer;
+      font-size: .9rem;
+      color: var(--text);
+      min-height: 0;
+      font-weight: 500;
+    }
+
+    .note-location-option:hover,
+    .note-location-option.is-active {
+      background: color-mix(in srgb, var(--surface) 84%, var(--accent) 16%);
+      color: var(--accent-2);
+    }
+
+    .note-location-option-empty {
+      padding: .55rem .6rem;
+      color: var(--muted);
+      font-size: .82rem;
+      font-style: italic;
+    }
+
     .note-dialog-head .dialog-head-actions {
+      grid-column: 3;
       justify-self: end;
     }
 
@@ -5343,7 +5394,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.26</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.27</span>
                 <span id="betaPill" class="beta-pill hidden" title="This is the beta deploy">BETA</span>
               </div>
             </div>
@@ -5722,7 +5773,6 @@
 
 
                 </g>
-                <g id="mapLabels" class="map-labels"></g>
 
               </g>
               <g class="map-borders" fill="none">
@@ -5880,6 +5930,7 @@
               <path class="map-separator"
                 d="m 215,493 v 55 l 36,45 m -251,-168 h 147 l 68,68 h 85 l 54,54 v 46 m 206,0 v -78 h 122 v 78 m -47,-78 v 78 m -75,-37 h 122 m -84,0 v 37" />
               <g id="mapLocationMarkers" class="map-location-markers"></g>
+              <g id="mapLabels" class="map-labels"></g>
 
             </svg>
           </div>
@@ -6198,9 +6249,10 @@
       </div>
       <label id="noteLocationSelectWrap" class="note-location-select hidden">
         <span class="sr-only">Location</span>
-        <input id="noteLocationSearch" type="search" list="noteLocationOptions" autocomplete="off"
-          placeholder="Choose location">
-        <datalist id="noteLocationOptions"></datalist>
+        <input id="noteLocationSearch" type="text" autocomplete="off" role="combobox"
+          aria-controls="noteLocationDropdown" aria-expanded="false"
+          aria-autocomplete="list" placeholder="Choose location">
+        <div id="noteLocationDropdown" class="note-location-dropdown" role="listbox" hidden></div>
       </label>
       <div class="dialog-head-actions">
         <button id="saveNoteBtn" class="primary" type="submit" form="noteForm" data-shortcut="S">Save Note</button>
@@ -6793,7 +6845,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.0.0.26";
+    const APP_VERSION = "3.0.0.27";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7803,6 +7855,18 @@
         category: "Maps"
       },
       {
+        title: "Map Labels Render Above Location Pins",
+        ticketId: "WISH-039",
+        description: "Layer the map state-name and abbreviation labels above location note pins so the labels stay readable when pins are dense. Includes preserving the labels group in front of the marker layer in SVG document order so it does not regress when the map markup is refactored.",
+        priority: "P2",
+        effort: "small",
+        targetKind: "patch",
+        targetVersion: "",
+        tokenCostPct: 4,
+        prompt: "Ensure the map label layer is rendered on top of the location marker layer. Move the <g id=\"mapLabels\"> group to be a later sibling of <g id=\"mapLocationMarkers\"> inside the state map SVG, and verify hover/click on markers still works through the labels.",
+        category: "Maps"
+      },
+      {
         title: "Split App into /src Folder with Build Step",
         ticketId: "WISH-038",
         description: "Move from a single-file app to a /src layout with separate HTML, CSS, JS, icon constants, release notes (markdown), and wishlist (markdown). Add a build script that concatenates and minifies into the deployable index.html so the runtime still ships as one file. Goal: easier diffs, scoped edits, and tooling without sacrificing the offline single-file deploy story.",
@@ -7949,7 +8013,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.0.0.26",
+        version: "3.0.0.27",
         date: "2026-05-23",
         title: "3.0 Development Begins",
         summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, mapped note locations, a guided install flow, and a beta environment indicator.",
@@ -8039,7 +8103,11 @@
           "Duplicate Location Tag hotkey attempts now surface the warning as a native browser validity bubble anchored to the offending hotkey input, so the message is visible even when the Location Tags settings is on top of every other dialog.",
           "Note dialog header now uses a three-column grid layout that pins the title to the left, holds the Quick Add location picker exactly centered, and pins the action buttons to the right, so the searchable dropdown drops directly beneath its centered input.",
           "Fixed a latitude/longitude save bug where empty coordinate fields were normalized to 0 instead of empty, which made notes appear mapped to the equator/prime meridian. Empty fields now stay empty; the scope-dot indicator also guards against legacy 0,0 notes so they no longer display as having an exact location.",
-          "Promoted the Country Map, National Park Overlay, Add Drive Radius, and Bucket List roadmap items to P0 priority."
+          "Promoted the Country Map, National Park Overlay, Add Drive Radius, and Bucket List roadmap items to P0 priority.",
+          "Note dialog header now uses explicit grid columns (title in column 1, picker in column 2, actions in column 3) so the action buttons stay pinned to the right even when the Quick Add location picker is hidden in Edit Note mode.",
+          "Replaced the native datalist suggestion popup with a custom keyboard-navigable Choose Location dropdown so the suggestion list anchors directly under its centered input, supports a taller scrollable area, and styles consistently with the rest of the app.",
+          "Map state-name and abbreviation labels now render above the location pin layer so labels stay readable when pins are dense. Marker clicks still pass through the labels.",
+          "Added wishlist item WISH-039 capturing the labels-above-pins behavior as a low-effort patch-level entry."
         ]
       },
       {
@@ -12109,15 +12177,106 @@
       return STATE_NAMES[abbr] ? `${STATE_NAMES[abbr]} (${abbr})` : "";
     }
 
-    function renderNoteLocationOptions() {
-      const list = $("#noteLocationOptions");
-      if (!list) return;
-      const sorted = STATES.slice().sort(([abbrA], [abbrB]) =>
-        noteLocationLabel(abbrA).localeCompare(noteLocationLabel(abbrB), undefined, { sensitivity: "base" })
+    function noteLocationDropdownItems() {
+      return STATES.slice()
+        .sort(([abbrA], [abbrB]) =>
+          noteLocationLabel(abbrA).localeCompare(noteLocationLabel(abbrB), undefined, { sensitivity: "base" })
+        )
+        .map(([abbr]) => ({ abbr, label: noteLocationLabel(abbr) }));
+    }
+
+    function renderNoteLocationDropdown(filter = "") {
+      const dropdown = $("#noteLocationDropdown");
+      if (!dropdown) return 0;
+      const query = filter.trim().toLowerCase();
+      const items = noteLocationDropdownItems().filter(item =>
+        !query || item.label.toLowerCase().includes(query)
       );
-      list.innerHTML = sorted.map(([abbr]) =>
-        `<option value="${escapeHtml(noteLocationLabel(abbr))}"></option>`
-      ).join("");
+      if (items.length === 0) {
+        dropdown.innerHTML = `<div class="note-location-option-empty">No matching locations.</div>`;
+        return 0;
+      }
+      dropdown.innerHTML = items.map(item => `
+        <button type="button" class="note-location-option" role="option"
+          data-abbr="${escapeHtml(item.abbr)}" data-label="${escapeHtml(item.label)}">
+          ${escapeHtml(item.label)}
+        </button>
+      `).join("");
+      return items.length;
+    }
+
+    // Compatibility shim: legacy callers pre-render the option list. The custom
+    // dropdown rebuilds on focus/input now, so this is a no-op.
+    function renderNoteLocationOptions() { /* handled by renderNoteLocationDropdown */ }
+
+    function bindNoteLocationDropdown() {
+      const input = $("#noteLocationSearch");
+      const dropdown = $("#noteLocationDropdown");
+      if (!input || !dropdown || input.dataset.dropdownBound === "1") return;
+      input.dataset.dropdownBound = "1";
+
+      let activeIndex = -1;
+
+      const optionButtons = () => Array.from(dropdown.querySelectorAll(".note-location-option"));
+
+      const setActive = i => {
+        const buttons = optionButtons();
+        if (!buttons.length) { activeIndex = -1; return; }
+        activeIndex = (i + buttons.length) % buttons.length;
+        buttons.forEach(btn => btn.classList.remove("is-active"));
+        buttons[activeIndex].classList.add("is-active");
+        buttons[activeIndex].scrollIntoView({ block: "nearest" });
+      };
+
+      const open = () => {
+        const count = renderNoteLocationDropdown(input.value);
+        dropdown.hidden = false;
+        input.setAttribute("aria-expanded", count > 0 ? "true" : "false");
+        activeIndex = -1;
+      };
+
+      const close = () => {
+        dropdown.hidden = true;
+        input.setAttribute("aria-expanded", "false");
+        activeIndex = -1;
+      };
+
+      input.addEventListener("focus", open);
+      input.addEventListener("input", open);
+      input.addEventListener("blur", () => setTimeout(close, 140));
+      input.addEventListener("keydown", event => {
+        if (event.key === "ArrowDown") {
+          event.preventDefault();
+          if (dropdown.hidden) open();
+          setActive(activeIndex + 1);
+        } else if (event.key === "ArrowUp") {
+          event.preventDefault();
+          if (dropdown.hidden) open();
+          setActive(activeIndex - 1);
+        } else if (event.key === "Enter") {
+          const buttons = optionButtons();
+          if (!dropdown.hidden && activeIndex >= 0 && buttons[activeIndex]) {
+            event.preventDefault();
+            buttons[activeIndex].click();
+          }
+        } else if (event.key === "Escape") {
+          if (!dropdown.hidden) {
+            event.preventDefault();
+            close();
+          }
+        }
+      });
+
+      // Prevent the input from blurring before the click on an option fires.
+      dropdown.addEventListener("mousedown", event => event.preventDefault());
+      dropdown.addEventListener("click", event => {
+        const btn = event.target.closest(".note-location-option");
+        if (!btn) return;
+        input.value = btn.dataset.label || "";
+        close();
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+        input.focus();
+      });
     }
 
     function abbrFromNoteLocationValue(value) {
@@ -13661,6 +13820,7 @@
       $("#quickAddNoteBtn").addEventListener("click", openQuickAddNoteDialog);
       $("#noteSmartConvertBtn").addEventListener("click", applySmartNoteConvert);
       $("#saveAddNoteBtn").addEventListener("click", saveNoteAndAddAnother);
+      bindNoteLocationDropdown();
       $("#noteLocationSearch").addEventListener("change", () => {
         const abbr = currentNoteTargetAbbr();
         if (!abbr || $("#noteId").value) return;
