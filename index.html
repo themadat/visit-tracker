@@ -3011,7 +3011,7 @@
 
     .install-icon-caption {
       color: var(--muted);
-      font-size: .76rem;
+      font-size: .75rem;
       line-height: 1.2;
     }
 
@@ -6624,7 +6624,7 @@
 
   <dialog id="addToHomeDialog">
     <header>
-      <h2>Add Trail Log to Home Screen</h2>
+      <h2>Add Trail Log as an App!</h2>
       <button id="installDialogCloseBtn" class="dialog-close" type="button" data-close="addToHomeDialog"
         data-shortcut="Q">Close</button>
     </header>
@@ -6667,7 +6667,7 @@
         <div id="installOtherGuides" class="install-other-guides"></div>
       </div>
 
-      <p class="install-foot">Once installed, tapping the icon opens Trail Log full-screen — no browser chrome.</p>
+      <p class="install-foot"></p>
     </div>
   </dialog>
 
@@ -7200,9 +7200,6 @@
           <p class="help-feedback">
             No form. No inbox. No bot. If you know me you can ping me.
             <a href="https://github.com/themadat/visit-tracker/issues" target="_blank" rel="noopener">↗</a>
-          </p>
-          <p class="help-feedback">
-            <button id="tipJarHelpBtn" class="ghost" type="button">🎁 Buy me a Drink to fuel Development!</button>
           </p>
           <p class="help-feedback">
             P.S. This is a labor of love and learning experience custom tailored to my usage;
@@ -13820,8 +13817,8 @@
           note: "Chrome and Firefox on iPhone still use Apple's browser engine, but Safari is the one that exposes Add to Home Screen consistently.",
           steps: [
             { icon: __SAFARI_FILL, text: "Open this page in <b>Safari</b>." },
-            { icon: __SQUARE_AND_ARROW_UP_FILL, text: "Tap <b>Share</b>, the square with the arrow. It is usually in the bottom bar on iPhone and the top bar on iPad." },
-            { icon: __PLUS_APP_FILL, text: "Choose <b>Add to Home Screen</b>, keep the name <b>Trail Log</b>, then tap <b>Add</b>." }
+            { icon: __SQUARE_AND_ARROW_UP_FILL, text: "Tap <b>Share</b>." },
+            { icon: __PLUS_APP_FILL, text: "Choose <b>Add to Home Screen</b><br/>(You might need to scroll down or tap <b>View More</b>)." }
           ]
         },
         {
@@ -13841,13 +13838,13 @@
           id: "mac",
           shortcut: "3",
           label: "Mac",
-          subtitle: "Safari on macOS Sonoma or newer can Add to Dock.",
+          subtitle: "macOS Sonoma or newer can Add to Dock.",
           icon: installPlatformIcon("mac"),
-          note: "Older macOS versions can still keep a quick shortcut by dragging the site icon from the address bar to the Dock or Desktop.",
+          note: "Older macOS versions can create a quick shortcut by dragging the site icon from the address bar to the Dock or Desktop.",
           steps: [
             { icon: __SAFARI_FILL, text: "Open this page in <b>Safari</b>." },
-            { icon: __MENUBAR_DOCK_RECTANGLE, text: "Choose <b>File</b> then <b>Add to Dock</b>." },
-            { icon: __PLUS_APP_FILL, text: "Confirm the name <b>Trail Log</b> and click <b>Add</b>." }
+            { icon: __MENUBAR_DOCK_RECTANGLE, text: "Choose <b>File</b> -> <b>Add to Dock</b>." },
+            { icon: __PLUS_APP_FILL, text: "Confirm name/icon and <b>Add</b>." }
           ]
         },
         {
