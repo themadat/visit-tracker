@@ -47,6 +47,7 @@
       --accent-2: #0f4f9f;
       --danger: #b42318;
       --success: #157347;
+      --warning: #d97706;
       --state-empty: #d7dce3;
       --shadow: 0 18px 50px rgba(16, 24, 40, .14);
       --radius: 8px;
@@ -68,6 +69,7 @@
       --accent-2: #9cc5ff;
       --danger: #ff8a7a;
       --success: #72d69a;
+      --warning: #fbbf24;
       --state-empty: #3b4553;
       --shadow: 0 22px 60px rgba(0, 0, 0, .38);
       --focus: 0 0 0 3px rgba(106, 168, 255, .32);
@@ -541,6 +543,7 @@
     .title-pill-row:empty,
     .title-pill-row:has(:not(.hidden)) {
       /* keep visible only when at least one pill is shown — :has handles the rest */
+      --placeholder: 0;
     }
 
     .beta-pill {
@@ -616,6 +619,10 @@
       flex: 0 0 40px;
     }
 
+    #saveNoteBtn,
+    #saveAddNoteBtn,
+    #deleteNoteFromDialogBtn,
+    #noteDialogCloseBtn,
     #tipJarBtn,
     #addToHomeBtn,
     #settingsBtn {
@@ -631,10 +638,23 @@
       flex: 0 0 40px;
     }
 
+    #saveNoteBtn .sf-symbol,
+    #noteDialogCloseBtn .sf-symbol {
+      width: 20px;
+      height: 20px;
+    }
+    
+    #deleteNoteFromDialogBtn .sf-symbol,
     .toolbar-panel-toggle-group .sf-symbol,
     .toolbar .sf-symbol {
       width: 24px;
       height: 24px;
+    }
+
+    /* Renders way smaller than other ones */
+    #saveAddNoteBtn .sf-symbol {
+      width: 32px;
+      height: 32px;
     }
 
     #noteSmartConvertBtn,
@@ -649,6 +669,22 @@
     #noteGeocodeBtn .sf-symbol {
       height: 24px;
       width: 24px;
+    }
+
+    #quickAddNoteBtn {
+      flex: 0 0 32px;
+      width: 32px;
+      min-width: 32px;
+      height: 32px;
+      min-height: 32px;
+      padding: 0;
+      display: inline-grid;
+      place-items: center;
+    }
+
+    #quickAddNoteBtn .sf-symbol {
+      width: 21px;
+      height: 21px;
     }
 
     [data-button-style="text"] .toolbar-panel-toggle-group button,
@@ -1441,6 +1477,41 @@
 
     html:not([data-developer="on"]) #labelDragReadout {
       display: none;
+    }
+
+    .app-toast {
+      position: fixed;
+      right: 1rem;
+      bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+      z-index: 10001;
+      display: grid;
+      gap: .12rem;
+      width: min(22rem, calc(100vw - 2rem));
+      padding: .62rem .78rem;
+      border: 1px solid color-mix(in srgb, var(--warning) 48%, var(--line));
+      border-radius: .75rem;
+      background: color-mix(in srgb, var(--surface) 90%, var(--warning) 10%);
+      color: var(--text);
+      box-shadow: var(--shadow);
+      pointer-events: none;
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity .16s ease, transform .16s ease;
+    }
+
+    .app-toast.hidden {
+      opacity: 0;
+      transform: translateY(.35rem);
+    }
+
+    .app-toast strong {
+      font-size: .84rem;
+    }
+
+    .app-toast span {
+      font-size: .77rem;
+      color: var(--muted);
+      line-height: 1.3;
     }
 
     html[data-developer="on"] #mapLabels text {
@@ -2384,6 +2455,40 @@
       flex: 0 0 auto;
     }
 
+    .note-dialog-head {
+      align-items: center;
+    }
+
+    .note-dialog-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    .note-dialog-title-wrap h2 {
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+
+    .note-location-select {
+      flex: 1 1 13rem;
+      min-width: 9rem;
+      max-width: 22rem;
+    }
+
+    .note-location-select input {
+      width: 100%;
+      min-height: 34px;
+      padding: .34rem .5rem;
+      font-size: .86rem;
+    }
+
+    .note-location-select.hidden {
+      display: none;
+    }
+
     .drawer-body {
       padding: 1rem;
       overflow: auto;
@@ -3090,10 +3195,15 @@
     .notes-search {
       flex: 1 1 10rem;
       min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: .32rem;
     }
 
     .notes-search input {
+      flex: 1 1 auto;
       width: 100%;
+      min-width: 0;
       min-height: 30px;
       padding: .32rem .48rem;
       font-size: .86rem;
@@ -5810,6 +5920,7 @@
               <h2 id="notesPanelTitle">Notes</h2>
             </div>
             <div id="notesPanelSearchWrap" class="notes-search">
+              <button id="quickAddNoteBtn" type="button" data-shortcut="N" aria-label="Quick add note">Quick Add</button>
               <input id="notesStateSearch" type="search"
                 placeholder="Search groups, names, levels, dates, notes, tags, etc..." aria-label="Search notes">
             </div>
@@ -5853,6 +5964,10 @@
   </div>
 
   <div id="labelDragReadout" class="hidden" aria-live="polite"></div>
+  <div id="appToast" class="app-toast hidden" role="status" aria-live="polite">
+    <strong></strong>
+    <span></span>
+  </div>
 
   <aside id="stateDrawer" class="drawer" aria-labelledby="drawerTitle" aria-hidden="true">
     <header>
@@ -6068,10 +6183,19 @@
   </dialog>
 
   <dialog id="noteDialog">
-    <header>
-      <h2 id="noteDialogTitle">Add Note</h2>
+    <header class="note-dialog-head">
+      <div class="note-dialog-title-wrap">
+        <h2 id="noteDialogTitle">Add Note</h2>
+        <label id="noteLocationSelectWrap" class="note-location-select hidden">
+          <span class="sr-only">Location</span>
+          <input id="noteLocationSearch" type="search" list="noteLocationOptions" autocomplete="off"
+            placeholder="Choose location">
+          <datalist id="noteLocationOptions"></datalist>
+        </label>
+      </div>
       <div class="dialog-head-actions">
         <button id="saveNoteBtn" class="primary" type="submit" form="noteForm" data-shortcut="S">Save Note</button>
+        <button id="saveAddNoteBtn" class="primary" type="button" data-shortcut="A">Save + Add</button>
         <button id="deleteNoteFromDialogBtn" class="danger hidden" type="button" data-shortcut="D">Delete</button>
         <button id="noteDialogCloseBtn" class="dialog-close" type="button" data-close="noteDialog"
           data-shortcut="Q">Close</button>
@@ -6093,8 +6217,8 @@
       </div>
       <section id="visitTypeRow" class="visit-type-row" aria-label="Visit labels">
       </section>
-      <small data-hint data-hint-key="note-tag-settings-help">Use the ellipsis above to open Location Tags, choose
-        which tags appear here, rename them, sort them, and set shortcuts.</small>
+      <small data-hint data-hint-key="note-tag-settings-help">
+        Open Location Tags, choose which tags appear here, rename them, sort them, and set shortcuts.</small>
       <small data-hint data-hint-key="note-label-help">
         Select Location Tags. Recommend no more than 4 for a cleaner UI/UX.<br />
         When the cursor is outside a text field, use the letter hotkeys to toggle Location Tags on/off.</small>
@@ -6410,6 +6534,8 @@
               second press.</li>
             <li>Click a Legend level to filter Notes by that level. Click it again to clear the filter.</li>
             <li>Use Notes search to find locations by name, type, level, dates, visit tags, or note details.</li>
+            <li>Use the Quick Add note button beside Notes search to add a note from the main list without first opening
+              a location. Choose the target location in the note header, then save or save and add another.</li>
             <li>Sort Notes chronologically or alphabetically, and turn on Categorical to group City, State, and
               Territory locations with sticky section headers.</li>
             <li>Use Expanded, Condensed, or Text Only view. Condensed is column-balanced for quick scanning, and Text
@@ -6442,7 +6568,8 @@
             multiple icon labels. Use Locate to save latitude/longitude and show the note on the map; nearby markers
             cluster, with the highest-priority earliest note setting the color and title. Multi-note marker lists can
             open any note or add a new note at the top mapped location. Use the tag-row ellipsis in the note editor or Settings to
-            choose, rename, sort, shortcut, and search optional labels from the circle icon catalog.</p>
+            choose, rename, sort, shortcut, and search optional labels from the circle icon catalog. Duplicate tag hotkeys
+            show a warning and are not applied.</p>
           <p><b>What's New:</b> Returning users may see a compact banner and red dots when a major feature release is
             available. Open What's New or dismiss the banner to clear it.</p>
           <p><b>Export formats:</b> JSON (.json) is a full backup, re-importable into this app. Markdown (.md) renders
@@ -6481,6 +6608,8 @@
             Notes rows easier to scan.</p>
           <p><b>Where do the extra Location Tags come from?</b><br>More Icons is built from the circle symbols bundled
             into this file. Search by icon name, label, or related terms, then add the ones you want.</p>
+          <p><b>Can two Location Tags use the same hotkey?</b><br>No. If a key is already assigned to another active tag,
+            the app warns you and keeps the existing shortcut setup unchanged.</p>
           <p><b>What's the difference between cycle and select mode?</b><br>Cycle taps rotate through your active levels
             automatically. Select mode opens a picker so you can choose a level and add a note in one step.</p>
           <p><b>Can I have more than five levels?</b><br>No. Five is the cap — enough for any reasonable visit taxonomy
@@ -6655,7 +6784,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.0.0.22";
+    const APP_VERSION = "3.0.0.23";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7811,7 +7940,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.0.0.22",
+        version: "3.0.0.23",
         date: "2026-05-23",
         title: "3.0 Development Begins",
         summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, mapped note locations, a guided install flow, and a beta environment indicator.",
@@ -7822,6 +7951,7 @@
           "Added an Install Trail Log control with a guided pick-your-icon dialog, dark-icon variants, and clear step-by-step instructions for iPhone, iPad, Mac, and Android.",
           "Added an optional Tip Jar flow with preset drink tiers, a custom amount, and Venmo app/web handoff.",
           "Notes can now store latitude/longitude and render as clustered map markers.",
+          "Notes can now be created from the main Notes header with a Quick Add flow and a searchable target location.",
           "The note editor gained a Locate control beside Where Specifically, plus manual coordinate override fields.",
           "Developer Tools now shows a Device Detection readout with the detected iPhone, iPad, Laptop, or Desktop type plus the matching install icon and user agent.",
           "Beta deploys now show a BETA pill in the title bar beside the existing Dev Mode pill so the active environment is obvious.",
@@ -7883,7 +8013,10 @@
           "Adding a Location Tag now appends it to the end of the active tag list instead of reappearing in its original catalog order.",
           "Default Location Tags can be disabled, renamed, reordered, and assigned custom or blank hotkeys.",
           "Location Tag chips in the note editor now keep a consistent compact width instead of stretching to fill the row.",
-          "Mapped note markers now scale down as map zoom increases, making declustered nearby notes easier to inspect."
+          "Mapped note markers now scale down as map zoom increases, making declustered nearby notes easier to inspect.",
+          "Added a Quick Add Note button beside Notes search with a location picker, plus Save and Add Another controls for new and edited notes.",
+          "Location Tag hotkey duplicates now show a lightweight overlay warning and leave the existing shortcut assignment unchanged.",
+          "Updated the Help Center for Quick Add notes and duplicate Location Tag hotkey behavior."
         ]
       },
       {
@@ -8439,6 +8572,8 @@
     let markerDialogItems = [];
     let pendingNoteDefaults = null;
     let noteDialogBaseline = "";
+    let noteDialogMode = "state";
+    let toastTimer = 0;
     let state = loadState();
     syncRuntimeUiFromSettings();
 
@@ -9170,6 +9305,16 @@
       });
     }
 
+    function showOverlayWarning(title, message) {
+      const toast = $("#appToast");
+      if (!toast) return;
+      $("strong", toast).textContent = title;
+      $("span", toast).textContent = message;
+      clearTimeout(toastTimer);
+      toast.classList.remove("hidden");
+      toastTimer = window.setTimeout(() => toast.classList.add("hidden"), 3200);
+    }
+
     function closeOpenDialogs(exceptId = "") {
       $$("dialog").forEach(dialog => {
         if (dialog.id !== exceptId && dialog.open) dialog.close();
@@ -9291,10 +9436,12 @@
       setButtonLabel("#notesViewCompactBtn", __RECTANGLE_COMPRESS_VERTICAL, "Condensed", "Condensed View");
       setButtonLabel("#notesViewTextBtn", __LIST_BULLET_RECTANGLE_PORTRAIT, "Text Only");
       setButtonLabel("#copyNotesTextBtn", notesCopyActive ? __CHECKMARK : __DOCUMENT_ON_DOCUMENT, notesCopyActive ? "Copied" : "Copy");
+      setButtonLabel("#quickAddNoteBtn", __TEXT_PAD_HEADER_BADGE_PLUS, "Quick Add", "Quick add note");
       setButtonLabel("#markerDialogCloseBtn", __XMARK, "Close");
       setButtonLabel("#markerAddNoteBtn", __PLUS_APP_FILL, "Add Note Here", "Add note at this mapped location");
       setButtonLabel("#noteDialogCloseBtn", __XMARK, "Close");
       setButtonLabel("#saveNoteBtn", __CHECKMARK, "Save Note");
+      setButtonLabel("#saveAddNoteBtn", __CHECKMARK_CIRCLE_BADGE_PLUS_FILL, "Save + Add", "Save and add another note");
       setButtonLabel("#deleteNoteFromDialogBtn", __DELETE_LEFT_FILL, "Delete Note");
       setButtonLabel("#noteGeocodeBtn", __DOT_SCOPE, "Locate", "Look up latitude and longitude", "Look up latitude and longitude");
       setButtonLabel("#noteSmartConvertBtn", __WAND_AND_SPARKLES_INVERSE, "Auto Convert", "Smart convert note text");
@@ -11566,24 +11713,29 @@
       if ($("#tagDialog").open) renderVisitTagSettings();
     }
 
+    function duplicateVisitTagShortcut(id, shortcut) {
+      return shortcut ? activeVisitTypes().find(type =>
+        type.id !== id && normalizeVisitTypeShortcut(type.shortcut) === shortcut
+      ) : null;
+    }
+
+    function rejectDuplicateVisitTagShortcut(id, shortcut, duplicate) {
+      const input = $(`[data-tag-shortcut="${CSS.escape(id)}"]`);
+      const current = visitTypeMeta(id);
+      if (input) input.value = normalizeVisitTypeShortcut(current?.shortcut).toUpperCase();
+      showOverlayWarning("Hotkey already used", `${shortcut.toUpperCase()} is already assigned to ${duplicate.label}. It will not be applied.`);
+    }
+
     function updateVisitTagShortcut(id, value) {
       const shortcut = normalizeVisitTypeShortcut(value);
-      let changed = false;
-      state.visitTypes = state.visitTypes.map(type => {
-        if (type.id === id) {
-          changed = changed || type.shortcut !== shortcut;
-          return { ...type, shortcut };
-        }
-        if (shortcut && type.enabled !== false && normalizeVisitTypeShortcut(type.shortcut) === shortcut) {
-          changed = true;
-          return { ...type, shortcut: "" };
-        }
-        return type;
-      });
-      if (!changed) return;
-      save();
-      render();
-      if ($("#tagDialog").open) renderVisitTagSettings();
+      const current = visitTypeMeta(id);
+      const duplicate = duplicateVisitTagShortcut(id, shortcut);
+      if (duplicate) {
+        rejectDuplicateVisitTagShortcut(id, shortcut, duplicate);
+        return;
+      }
+      if (current?.shortcut === shortcut) return;
+      updateVisitTag(id, { shortcut });
     }
 
     function suggestedVisitTypeShortcut(type) {
@@ -11640,7 +11792,10 @@
         input.addEventListener("click", event => event.stopPropagation());
         input.addEventListener("keydown", event => event.stopPropagation());
         input.addEventListener("input", () => {
-          input.value = normalizeVisitTypeShortcut(input.value).toUpperCase();
+          const shortcut = normalizeVisitTypeShortcut(input.value);
+          input.value = shortcut.toUpperCase();
+          const duplicate = duplicateVisitTagShortcut(input.dataset.tagShortcut, shortcut);
+          if (duplicate) rejectDuplicateVisitTagShortcut(input.dataset.tagShortcut, shortcut, duplicate);
         });
         input.addEventListener("change", () => {
           updateVisitTagShortcut(input.dataset.tagShortcut, input.value);
@@ -11875,14 +12030,59 @@
       }
     }
 
-    function openNoteDialog(noteId = "") {
-      if (!selectedState) return;
-      const note = (state.notes[selectedState] || []).find(item => item.id === noteId);
+    function noteLocationLabel(abbr) {
+      return STATE_NAMES[abbr] ? `${STATE_NAMES[abbr]} (${abbr})` : "";
+    }
+
+    function renderNoteLocationOptions() {
+      const list = $("#noteLocationOptions");
+      if (!list) return;
+      list.innerHTML = STATES.map(([abbr]) =>
+        `<option value="${escapeHtml(noteLocationLabel(abbr))}"></option>`
+      ).join("");
+    }
+
+    function abbrFromNoteLocationValue(value) {
+      const clean = String(value || "").trim();
+      if (!clean) return "";
+      const paren = clean.match(/\(([A-Z]{2})\)\s*$/i)?.[1]?.toUpperCase();
+      if (paren && STATE_NAMES[paren]) return paren;
+      const match = STATES.find(([abbr, name]) =>
+        abbr.toLowerCase() === clean.toLowerCase()
+        || name.toLowerCase() === clean.toLowerCase()
+        || noteLocationLabel(abbr).toLowerCase() === clean.toLowerCase()
+      );
+      return match ? match[0] : "";
+    }
+
+    function currentNoteTargetAbbr() {
+      return noteDialogMode === "quick" ? abbrFromNoteLocationValue($("#noteLocationSearch")?.value) : selectedState;
+    }
+
+    function setNoteLocationInput(abbr) {
+      const input = $("#noteLocationSearch");
+      if (input) input.value = abbr ? noteLocationLabel(abbr) : "";
+    }
+
+    function openNoteDialog(noteId = "", options = {}) {
+      const isQuick = options.mode === "quick";
+      const explicitTarget = Object.prototype.hasOwnProperty.call(options, "locationAbbr");
+      const targetAbbr = explicitTarget ? options.locationAbbr : isQuick ? "" : selectedState || notesPanelState || "";
+      if (!targetAbbr && !isQuick) return;
+      if (targetAbbr && STATE_NAMES[targetAbbr]) selectedState = targetAbbr;
+      noteDialogMode = isQuick ? "quick" : "state";
+      renderNoteLocationOptions();
+      const noteTarget = targetAbbr && STATE_NAMES[targetAbbr] ? targetAbbr : "";
+      const note = noteTarget ? (state.notes[noteTarget] || []).find(item => item.id === noteId) : null;
       const defaults = note ? null : pendingNoteDefaults;
       pendingNoteDefaults = null;
-      $("#noteDialogTitle").textContent = note ? "Edit Note" : `Add Note for ${STATE_NAMES[selectedState]}`;
+      $("#noteDialogTitle").textContent = note ? "Edit Note" : isQuick ? "Add Note" : `Add Note for ${STATE_NAMES[noteTarget]}`;
       $("#noteId").value = note ? note.id : "";
-      const fallbackLevel = note?.levelId || defaults?.levelId || dominantLevel(selectedState)?.id || state.levels[0]?.id || "";
+      const locationWrap = $("#noteLocationSelectWrap");
+      locationWrap?.classList.toggle("hidden", !isQuick);
+      $("#noteLocationSearch").required = isQuick;
+      setNoteLocationInput(isQuick ? noteTarget : "");
+      const fallbackLevel = note?.levelId || defaults?.levelId || dominantLevel(noteTarget)?.id || state.levels[0]?.id || "";
       renderNoteLevelRadios(fallbackLevel);
       $("#deleteNoteFromDialogBtn").classList.toggle("hidden", !note);
       $("#deleteNoteFromDialogBtn").dataset.noteId = note ? note.id : "";
@@ -11899,14 +12099,18 @@
       setNoteVisitTypes(note?.visitTypes || defaults?.visitTypes || []);
       $("#noteText").value = note ? noteDetails(note) : "";
       $("#noteDialog").showModal();
-      $("#noteSmartConvert").focus();
-      $("#noteSmartConvert").select();
+      const focusTarget = isQuick && !noteTarget ? $("#noteLocationSearch") : $("#noteSmartConvert");
+      focusTarget?.focus();
+      focusTarget?.select?.();
       noteDialogBaseline = noteFormSnapshot();
     }
 
     function noteFormSnapshot() {
       if (!$("#noteForm")) return "";
       return JSON.stringify({
+        mode: noteDialogMode,
+        targetAbbr: currentNoteTargetAbbr(),
+        targetText: $("#noteLocationSearch")?.value || "",
         id: $("#noteId").value,
         year: $("#noteYear").value,
         month: $("#noteMonth").value,
@@ -11930,6 +12134,11 @@
     }
 
     function closeNoteDialog({ force = false } = {}) {
+      if (!force && noteDialogMode === "quick" && !$("#noteId").value) {
+        noteDialogBaseline = noteFormSnapshot();
+        $("#noteDialog").close();
+        return;
+      }
       if (force || !noteDialogHasUnsavedChanges()) {
         $("#noteDialog").close();
         return;
@@ -11947,6 +12156,14 @@
     }
 
     function saveNoteFromForm() {
+      const targetAbbr = currentNoteTargetAbbr();
+      if (!targetAbbr || !STATE_NAMES[targetAbbr]) {
+        const input = $("#noteLocationSearch");
+        input?.setCustomValidity("Choose a location for this note.");
+        input?.reportValidity();
+        input?.setCustomValidity("");
+        return false;
+      }
       const id = $("#noteId").value;
       const levelId = $("#noteLevel").value;
       const rawDate = syncNoteDateBuilder();
@@ -11980,15 +12197,28 @@
         text: details,
         visitTypes: selectedNoteVisitTypes()
       };
-      state.notes[selectedState] ||= [];
-      const index = state.notes[selectedState].findIndex(item => item.id === id);
-      if (index >= 0) state.notes[selectedState][index] = note;
-      else state.notes[selectedState].push(note);
-      addStateLevel(selectedState, levelId);
+      selectedState = targetAbbr;
+      state.notes[targetAbbr] ||= [];
+      const index = state.notes[targetAbbr].findIndex(item => item.id === id);
+      if (index >= 0) state.notes[targetAbbr][index] = note;
+      else state.notes[targetAbbr].push(note);
+      addStateLevel(targetAbbr, levelId);
       save();
       render();
       noteDialogBaseline = noteFormSnapshot();
       return true;
+    }
+
+    function saveNoteAndAddAnother() {
+      const mode = noteDialogMode;
+      const targetAbbr = currentNoteTargetAbbr();
+      if (!saveNoteFromForm()) return;
+      openNoteDialog("", { mode, locationAbbr: targetAbbr });
+    }
+
+    function openQuickAddNoteDialog() {
+      pendingNoteDefaults = null;
+      openNoteDialog("", { mode: "quick" });
     }
 
     function deleteNote(noteId) {
@@ -13027,13 +13257,14 @@
           q: () => closeNoteDialog(),
           x: () => closeNoteDialog(),
           s: () => $("#noteForm").requestSubmit(),
+          a: saveNoteAndAddAnother,
           d: () => !$("#deleteNoteFromDialogBtn").classList.contains("hidden") && $("#deleteNoteFromDialogBtn").click(),
           w: applySmartNoteConvert,
           y: () => openVisitTagSettings("note"),
           g: lookupNoteCoordinates
         };
         activeVisitTypes().forEach(type => {
-          if (type.shortcut) noteActions[type.shortcut] = () => toggleNoteVisitType(type.id);
+          if (type.shortcut && !noteActions[type.shortcut]) noteActions[type.shortcut] = () => toggleNoteVisitType(type.id);
         });
         if (!noteActions[key]) return;
         event.preventDefault();
@@ -13349,7 +13580,14 @@
       ["#noteLat", "#noteLng"].forEach(selector => $(selector).addEventListener("input", () => {
         setNoteGeocodeStatus("Manual coordinates will be used for the map marker.");
       }));
+      $("#quickAddNoteBtn").addEventListener("click", openQuickAddNoteDialog);
       $("#noteSmartConvertBtn").addEventListener("click", applySmartNoteConvert);
+      $("#saveAddNoteBtn").addEventListener("click", saveNoteAndAddAnother);
+      $("#noteLocationSearch").addEventListener("change", () => {
+        const abbr = currentNoteTargetAbbr();
+        if (!abbr || $("#noteId").value) return;
+        renderNoteLevelRadios(dominantLevel(abbr)?.id || state.levels[0]?.id || "");
+      });
       $("#noteDialog").addEventListener("keydown", handleNoteDialogKeydown);
       $("#noteDialog").addEventListener("cancel", event => {
         event.preventDefault();
