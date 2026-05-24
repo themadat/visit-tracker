@@ -12,7 +12,7 @@
     // macOS Safari "Add to Dock" picks the right variant. The choice persists.
     (function () {
       var variant = "light";
-      try { if (localStorage.getItem("tlInstallIconVariant") === "dark") variant = "dark"; } catch (e) {}
+      try { if (localStorage.getItem("tlInstallIconVariant") === "dark") variant = "dark"; } catch (e) { }
       var isDark = variant === "dark";
       function add(rel, href, attrs) {
         var l = document.createElement("link");
@@ -186,17 +186,22 @@
       color: #07111f;
     }
 
-    #mapFitBtn[aria-pressed="true"].toggle-btn {
+    #mapFitBtn[aria-pressed="true"].toggle-btn,
+    #mapLocationPinsBtn[aria-pressed="true"].toggle-btn,
+    #mapLocationPinsBtn[aria-pressed="false"].toggle-btn {
       background: var(--surface);
       border-color: var(--line);
       color: inherit;
     }
 
-    #mapFitBtn[aria-pressed="true"].toggle-btn:hover {
+    #mapFitBtn[aria-pressed="true"].toggle-btn:hover,
+    #mapLocationPinsBtn.toggle-btn:hover {
       border-color: var(--accent);
     }
 
-    [data-theme="dark"] #mapFitBtn[aria-pressed="true"].toggle-btn {
+    [data-theme="dark"] #mapFitBtn[aria-pressed="true"].toggle-btn,
+    [data-theme="dark"] #mapLocationPinsBtn[aria-pressed="true"].toggle-btn,
+    [data-theme="dark"] #mapLocationPinsBtn[aria-pressed="false"].toggle-btn {
       color: inherit;
     }
 
@@ -1044,6 +1049,14 @@
     .map-label-toggle button[aria-pressed="false"]:hover {
       border-color: color-mix(in srgb, var(--line) 74%, var(--text) 14%);
       background: color-mix(in srgb, var(--surface) 54%, var(--surface-2) 46%);
+    }
+
+
+    #mapLocationPinsBtn .sf-symbol,
+    #mapFitBtn .sf-symbol {
+      width: 20px;
+      height: 20px;
+      overflow: visible;
     }
 
     #labelsNoneBtn .sf-symbol,
@@ -5170,7 +5183,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.16</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.18</span>
                 <span id="betaPill" class="beta-pill hidden" title="This is the beta deploy">BETA</span>
               </div>
             </div>
@@ -5224,7 +5237,8 @@
             <div class="map-head-hints">
               <small data-hint data-hint-key="map-controls">
                 Switch Map Views: Zoom/Pan/Scroll | Fit<br />
-                Choose Map Labels: NONE | ABBR | Full Name</small>
+                Toggle Location Notes Visibility<br />
+                Choose Map Labels: none | ABBR | Full Name</small>
             </div>
             <div class="map-zoom-controls" aria-label="Scrollable map zoom controls">
               <button id="mapZoomOutBtn" type="button" aria-label="Zoom map out" data-shortcut="-">Zoom Out</button>
@@ -5237,6 +5251,10 @@
             <div class="map-action-group map-toggle-group">
               <button id="mapFitBtn" class="toggle-btn" type="button" aria-pressed="false"
                 aria-label="Fit map on screen" data-shortcut="F">Fit Map</button>
+            </div>
+            <div class="map-action-group map-toggle-group">
+              <button id="mapLocationPinsBtn" class="toggle-btn" type="button" aria-pressed="true"
+                aria-label="Show location note pins" data-shortcut="3">View Locations</button>
             </div>
             <div class="map-action-group map-label-group">
               <div class="segmented map-label-toggle" aria-label="Map labels">
@@ -5866,7 +5884,8 @@
       </fieldset>
 
       <div id="installReloadNotice" class="install-reload-notice hidden" role="status">
-        <span><b>Reload required on Mac.</b> Safari caches the icon manifest at page load. Reload so "Add to Dock" picks up the new icon.</span>
+        <span><b>Reload required on Mac.</b> Safari caches the icon manifest at page load. Reload so "Add to Dock" picks
+          up the new icon.</span>
         <button id="installReloadBtn" class="primary" type="button">Reload now</button>
       </div>
 
@@ -6578,7 +6597,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.0.0.16";
+    const APP_VERSION = "3.0.0.18";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7563,6 +7582,18 @@
 
     const WISHLIST_SEEDS = [
       {
+        title: "Split App into /src Folder with Build Step",
+        ticketId: "WISH-038",
+        description: "Move from a single-file app to a /src layout with separate HTML, CSS, JS, icon constants, release notes (markdown), and wishlist (markdown). Add a build script that concatenates and minifies into the deployable index.html so the runtime still ships as one file. Goal: easier diffs, scoped edits, and tooling without sacrificing the offline single-file deploy story.",
+        priority: "P3",
+        effort: "large",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 35,
+        prompt: "Restructure the app source into /src with split HTML, CSS, JS, icon constants, release notes markdown, and wishlist markdown. Add a Node-free build step (Python or bash) that emits the existing single-file index.html for deploys. Preserve offline-only/no-backend semantics, the existing localStorage schema, and all current behaviors.",
+        category: "Infra"
+      },
+      {
         title: "Better Tip / Gift Prompt and Popup",
         ticketId: "WISH-037",
         description: "Polish the Tip Jar entry points and the Buy-Adam-a-Drink modal. Possible work: clearer copy/CTA in the modal, friendlier tier card visuals, optional thank-you/return state after launching Venmo, smarter mobile-vs-desktop framing, and a consistent gift-button look across the topbar, settings footer, and Help Center.",
@@ -7697,7 +7728,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.0.0.16",
+        version: "3.0.0.18",
         date: "2026-05-23",
         title: "3.0 Development Begins",
         summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, mapped note locations, a guided install flow, and a beta environment indicator.",
@@ -7754,7 +7785,10 @@
           "Fixed the apple-touch-icon-source-dark SVG so its background is the dark pine color instead of the light mint.",
           "Updated the README with a Quick Start subsection covering the optional macOS-only icon build script and a refreshed Repo Layout listing the source SVGs, manifest files, and deploy-excluded folders.",
           "Added a Release Notes rule that, for every completed change, a push commit summary and description must be provided in two distinct copy-paste-friendly containers.",
-          "Switched the no-icon indicator in visit notes and expanded rows to the outline circle symbol, colored by the note's level, instead of a solid filled dot."
+          "Switched the no-icon indicator in visit notes and expanded rows to the outline circle symbol, colored by the note's level, instead of a solid filled dot.",
+          "Added a View Locations toggle to the map header to the right of the Labels segmented group, defaulting to on. When off, location note pins are hidden on the map. Persists in the saved settings.",
+          "Added a P3 wishlist item to split the app source into /src with separate HTML, CSS, JS, icon constants, release notes markdown, and wishlist markdown, plus a build step that emits the existing single-file deploy.",
+          "Moved the View Locations toggle between Fit Map and the Labels segmented group, and dropped the blue pressed-state highlight since the pin and pin-slash icons already communicate on/off state."
         ]
       },
       {
@@ -8327,6 +8361,7 @@
           dateOrder: "mdy",
           dateStyle: "alpha",
           mapLabels: "none",
+          mapLocationPinsVisible: true,
           mapSplitRatio: .66,
           mapViewMode: "fit",
           mapZoom: 1,
@@ -8586,6 +8621,7 @@
       if (!["mdy", "dmy", "ymd"].includes(next.settings.dateOrder)) next.settings.dateOrder = "mdy";
       if (!["numeric", "alpha"].includes(next.settings.dateStyle)) next.settings.dateStyle = "alpha";
       if (!["none", "abbr", "name"].includes(next.settings.mapLabels)) next.settings.mapLabels = "none";
+      if (typeof next.settings.mapLocationPinsVisible !== "boolean") next.settings.mapLocationPinsVisible = true;
       if (!LEGEND_POSITION_ORDER.includes(next.settings.legendPosition)) next.settings.legendPosition = "right-top";
       if (!["scroll", "fit"].includes(next.settings.mapViewMode)) next.settings.mapViewMode = next.settings.mapFitMode === true ? "fit" : "scroll";
       next.settings.mapZoom = clampMapZoom(next.settings.mapZoom);
@@ -9129,6 +9165,9 @@
       setButtonLabel("#labelsNameBtn", ICON_MAP_LABELS_NAME_TEXTFORMAT, "Name", "Show location names");
       const fitTitle = mapFitMode ? "Switch to scrollable map" : "Switch to fit map";
       setButtonLabel("#mapFitBtn", mapFitMode ? __SQUARE_ARROWTRIANGLE_4_OUTWARD : __DOT_ARROWTRIANGLES_UP_RIGHT_DOWN_LEFT_CIRCLE, mapFitMode ? "Fit Map" : "Scroll Map", mapFitMode ? "Fit map mode" : "Scrollable map mode", fitTitle);
+      const pinsOn = state.settings.mapLocationPinsVisible !== false;
+      setButtonLabel("#mapLocationPinsBtn", pinsOn ? __MAPPIN_CIRCLE : __MAPPIN_SLASH_CIRCLE, pinsOn ? "View Locations" : "Hide Locations", pinsOn ? "Hide location note pins" : "Show location note pins", pinsOn ? "Hide location note pins" : "Show location note pins");
+      $("#mapLocationPinsBtn").setAttribute("aria-pressed", pinsOn ? "true" : "false");
       setButtonLabel("#mapZoomOutBtn", __MINUS_CIRCLE, "Zoom Out", "Zoom map out", "Zoom map out");
       setButtonLabel("#mapZoomResetBtn", __ARROW_COUNTERCLOCKWISE_CIRCLE, "Reset", "Reset map zoom", "Reset map zoom");
       setButtonLabel("#mapZoomInBtn", __PLUS_CIRCLE, "Zoom In", "Zoom map in", "Zoom map in");
@@ -9564,6 +9603,7 @@
       const markers = $("#mapLocationMarkers");
       if (!markers) return;
       markers.innerHTML = "";
+      if (state.settings.mapLocationPinsVisible === false) return;
       const svgNS = "http://www.w3.org/2000/svg";
       clusteredLocationMarkers(locationMarkerItems()).forEach(cluster => {
         const first = cluster.items[0];
@@ -12446,7 +12486,7 @@
       const fav32 = document.querySelector('link[rel="icon"][sizes="32x32"]');
       const fav16 = document.querySelector('link[rel="icon"][sizes="16x16"]');
       const storedBefore = (() => { try { return localStorage.getItem("tlInstallIconVariant") || "light"; } catch (_) { return "light"; } })();
-      try { localStorage.setItem("tlInstallIconVariant", variant); } catch (_) {}
+      try { localStorage.setItem("tlInstallIconVariant", variant); } catch (_) { }
 
       if (fav32) fav32.href = variant === "dark" ? "favicon-32-dark.png" : "favicon-32.png";
       if (fav16) fav16.href = variant === "dark" ? "favicon-16-dark.png" : "favicon-16.png";
@@ -12482,7 +12522,7 @@
 
     function openAddToHomeDialog() {
       let stored = null;
-      try { stored = localStorage.getItem("tlInstallIconVariant"); } catch (_) {}
+      try { stored = localStorage.getItem("tlInstallIconVariant"); } catch (_) { }
       const variant = stored || (state.settings.theme === "dark" ? "dark" : "light");
       const radios = $("#addToHomeDialog").querySelectorAll('input[name="installIconVariant"]');
       radios.forEach(r => { r.checked = (r.value === variant); });
@@ -12897,6 +12937,7 @@
         0: () => updateSetting("mapLabels", "none"),
         1: () => updateSetting("mapLabels", "abbr"),
         2: () => updateSetting("mapLabels", "name"),
+        3: () => $("#mapLocationPinsBtn").click(),
         x: () => {
           const clearState = $("#notesPanelClearBtn");
           if (notesPanelOpen && notesPanelState && clearState) clearState.click();
@@ -13001,6 +13042,7 @@
       $("#labelsNoneBtn").addEventListener("click", () => updateSetting("mapLabels", "none"));
       $("#labelsAbbrBtn").addEventListener("click", () => updateSetting("mapLabels", "abbr"));
       $("#labelsNameBtn").addEventListener("click", () => updateSetting("mapLabels", "name"));
+      $("#mapLocationPinsBtn").addEventListener("click", () => updateSetting("mapLocationPinsVisible", state.settings.mapLocationPinsVisible === false));
       $("#mapToggleBtn").addEventListener("click", toggleMapPanel);
       $("#legendToggleBtn").addEventListener("click", toggleLegendPanel);
       $("#notesToggleBtn").addEventListener("click", toggleNotesPanel);
