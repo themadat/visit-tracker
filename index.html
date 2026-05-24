@@ -2468,14 +2468,20 @@
     .note-dialog-title-wrap {
       grid-column: 1;
       justify-self: start;
+      align-self: center;
       display: flex;
       align-items: center;
+      justify-content: flex-start;
       gap: .5rem;
       min-width: 0;
+      width: 100%;
+      text-align: left;
     }
 
     .note-dialog-title-wrap h2 {
       flex: 0 0 auto;
+      margin: 0;
+      text-align: left;
       white-space: nowrap;
     }
 
@@ -5394,7 +5400,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.27</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.29</span>
                 <span id="betaPill" class="beta-pill hidden" title="This is the beta deploy">BETA</span>
               </div>
             </div>
@@ -6845,7 +6851,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.0.0.27";
+    const APP_VERSION = "3.0.0.29";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7843,18 +7849,6 @@
 
     const WISHLIST_SEEDS = [
       {
-        title: "Separate State Label Positions",
-        ticketId: "WISH-039",
-        description: "Let abbreviation labels and full-name labels use separate hand-tuned anchor positions so compact labels and readable names can both sit closer to the visual center of each map shape.",
-        priority: "P2",
-        effort: "medium",
-        targetKind: "minor",
-        targetVersion: "",
-        tokenCostPct: 18,
-        prompt: "Add separate map label anchor positions for abbreviation and full-name label modes. Preserve existing label settings, support multiline names, and keep the map responsive.",
-        category: "Maps"
-      },
-      {
         title: "Split App into /src Folder with Build Step",
         ticketId: "WISH-038",
         description: "Move from a single-file app to a /src layout with separate HTML, CSS, JS, icon constants, release notes (markdown), and wishlist (markdown). Add a build script that concatenates and minifies into the deployable index.html so the runtime still ships as one file. Goal: easier diffs, scoped edits, and tooling without sacrificing the offline single-file deploy story.",
@@ -8001,7 +7995,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.0.0.27",
+        version: "3.0.0.29",
         date: "2026-05-23",
         title: "3.0 Development Begins",
         summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, mapped note locations, a guided install flow, and a beta environment indicator.",
@@ -8095,7 +8089,11 @@
           "Note dialog header now uses explicit grid columns (title in column 1, picker in column 2, actions in column 3) so the action buttons stay pinned to the right even when the Quick Add location picker is hidden in Edit Note mode.",
           "Replaced the native datalist suggestion popup with a custom keyboard-navigable Choose Location dropdown so the suggestion list anchors directly under its centered input, supports a taller scrollable area, and styles consistently with the rest of the app.",
           "Map state-name and abbreviation labels now render above the location pin layer so labels stay readable when pins are dense. Marker clicks still pass through the labels.",
-          "Added wishlist item WISH-039 capturing the labels-above-pins behavior as a low-effort patch-level entry."
+          "Added wishlist item WISH-039 capturing the labels-above-pins behavior as a low-effort patch-level entry.",
+          "Map state labels now support separate hand-tuned anchor positions for abbreviation and full-name modes. Each state override may now define abbrX/abbrY/abbrDx/abbrDy/abbrAnchor and nameX/nameY/nameDx/nameDy/nameAnchor in addition to the existing shared x/y/dx/dy/anchor fallbacks, so compact abbreviations and longer names can each sit at their own optimal spot.",
+          "Developer-mode label drag readout now shows the mode-aware key names (abbrX/abbrY or nameX/nameY) and emits a copy-paste snippet keyed to the active label mode.",
+          "Removed wishlist item WISH-039 (Separate State Label Positions) after shipping the feature.",
+          "Save and Add Another now closes and reopens the note dialog cleanly so the new note's header layout fully re-renders with the title left-justified instead of stuck mid-transition."
         ]
       },
       {
@@ -10199,24 +10197,32 @@
         const tile = $(`.state-tile[data-abbr="${abbr}"]`);
         if (!tile) return;
         const override = MAP_LABEL_OVERRIDES[abbr] || {};
+        // Per-mode override resolution: prefer abbr*/name* keys, then fall back
+        // to the generic key. Lets each mode have its own hand-tuned anchor.
+        const modeX = override[`${mode}X`] ?? override.x;
+        const modeY = override[`${mode}Y`] ?? override.y;
+        const modeDx = override[`${mode}Dx`] ?? override.dx;
+        const modeDy = override[`${mode}Dy`] ?? override.dy;
+        const modeAnchor = override[`${mode}Anchor`] || override.anchor;
         const rawLabel = mode === "name" ? String(override.label || name).replace(/\\n/g, "\n") : abbr;
         const label = mode === "name" ? rawLabel.replace(/\s+/g, " ").trim() : rawLabel;
         const stackWords = mode === "name" && (override.lineBreak === "newline");
         const box = tile.getBBox();
-        const cx = override.x ?? (box.x + box.width / 2 + (override.dx ?? 0));
-        const cy = override.y ?? (box.y + box.height / 2 + (override.dy ?? 0) + 3);
+        const cx = modeX ?? (box.x + box.width / 2 + (modeDx ?? 0));
+        const cy = modeY ?? (box.y + box.height / 2 + (modeDy ?? 0) + 3);
         const fontSize = override[`${mode}Size`] || (mode === "name" ? 10 : 12);
         const labelLines = stackWords ? label.split(/\s+/).filter(Boolean) : [label];
         const lineHeight = parseFloat(fontSize) * .95;
         const yOffset = labelLines.length > 1 ? (lineHeight * (labelLines.length - 1)) / 2 : 0;
         const text = document.createElementNS(svgNS, "text");
         text.dataset.abbr = abbr;
+        text.dataset.mode = mode;
         text.dataset.cx = cx;
         text.dataset.cy = cy;
         text.dataset.yOffset = yOffset;
         text.setAttribute("x", cx);
         text.setAttribute("y", cy - yOffset);
-        text.setAttribute("text-anchor", override.anchor || "middle");
+        text.setAttribute("text-anchor", modeAnchor || "middle");
         text.setAttribute("font-size", fontSize);
         if (labelLines.length > 1) {
           labelLines.forEach((line, index) => {
@@ -10274,7 +10280,7 @@
         const nx = Math.round(origCx + (p.x - startX));
         const ny = Math.round(origCy + (p.y - startY));
         apply(nx, ny);
-        updateLabelDragReadout(textEl.dataset.abbr, nx, ny);
+        updateLabelDragReadout(textEl.dataset.abbr, nx, ny, textEl.dataset.mode);
       });
 
       const end = event => {
@@ -10286,14 +10292,16 @@
       textEl.addEventListener("pointercancel", end);
     }
 
-    function updateLabelDragReadout(abbr, x, y) {
+    function updateLabelDragReadout(abbr, x, y, mode = "abbr") {
       const readout = $("#labelDragReadout");
       if (!readout) return;
+      const xKey = `${mode}X`;
+      const yKey = `${mode}Y`;
       readout.classList.remove("hidden");
       readout.innerHTML = `
-        <div style="font-weight:600;margin-bottom:.15rem;">${escapeHtml(abbr)} label</div>
-        <div>x: ${x} · y: ${y}</div>
-        <div style="opacity:.7;margin-top:.3rem;user-select:all;">${escapeHtml(abbr)}: { x: ${x}, y: ${y} },</div>
+        <div style="font-weight:600;margin-bottom:.15rem;">${escapeHtml(abbr)} ${escapeHtml(mode)} label</div>
+        <div>${escapeHtml(xKey)}: ${x} · ${escapeHtml(yKey)}: ${y}</div>
+        <div style="opacity:.7;margin-top:.3rem;user-select:all;">${escapeHtml(abbr)}: { ${escapeHtml(xKey)}: ${x}, ${escapeHtml(yKey)}: ${y} },</div>
       `;
     }
 
@@ -12438,6 +12446,10 @@
       const mode = noteDialogMode;
       const targetAbbr = currentNoteTargetAbbr();
       if (!saveNoteFromForm()) return;
+      // Close before reopening — calling showModal() on an already-open dialog
+      // is a no-op in some browsers but throws in others, and either way it
+      // can leave header layout in a half-applied state on rerender.
+      if ($("#noteDialog").open) $("#noteDialog").close();
       openNoteDialog("", { mode, locationAbbr: targetAbbr });
     }
 
