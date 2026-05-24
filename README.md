@@ -182,22 +182,10 @@ For every completed change:
 
 
 ## Notes
-
-<!-- 70% <g transform="translate(228 164) scale(21)"> -->
-<!-- 80% <g transform="translate(177 112) scale(24.77)"> -->
-<comment name="PineShadow" fill="#243127" />
-<comment name="PineMist" fill="#D6E7D8" />
-<comment name="DeepLeatherBrown" fill="#5A3E2B" />
-<comment name="WarmSaddleBrown" fill="#8B5E3C" />
-<comment name="TrailDustTan" fill="#B79B7A" />
-<comment name="AgedPaperCream" fill="#E8DCC8" />
-<comment name="ForestGreene" fill="#355E3B" />
-<comment name="MossGreen" fill="#6B8F4E" />
-<comment name="CompassGold" fill="#C2A15A" />
-<comment name="BrightAdventureGold" fill="#D4AF37" />
-<comment name="SunlitGold" fill="#E0B84F" />
-<comment name="AmberGold" fill="#E3A93B" />
-<comment name="BrightCompassGold" fill="#F2C14E" />
+SEE SCRATCHPAD
+Contains Color Notes, rejected/backup svgs, amongst other stuff.
 
 ## Future Prompts
 
+Cut Version 3.0.0
+This is a MAJOR RELEASE so highlights and Full Update List can be much more verbose. Full Update List is going to need organzied sub-sections
