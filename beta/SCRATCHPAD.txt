@@ -1,0 +1,48 @@
+            <!--<svg viewBox="0 0 24 24">
+              <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                d="M8 3h8l-1 11a3 3 0 0 1-6 0zM12 17v4M9 21h6" />
+              <circle cx="11" cy="8" r=".75" fill="currentColor" />
+              <circle cx="13" cy="10" r=".75" fill="currentColor" />
+            </svg>-->
+
+            <!--<svg viewBox="0 0 24 24">
+              <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                d="M6 7h12l-1 13H7zM9 10h4v4H9zM9 10l-1 1M13 10l1 1" />
+            </svg>
+            <svg version="1.1" class="sf-symbol" xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink" width="800px" height="800px" viewBox="0 0 32 32"
+              xml:space="preserve">
+              <g>
+                <path d="M23,18H9l-0.984-4.69C7.899,12.624,8.436,12,9.141,12h13.718c0.705,0,1.242,0.624,1.125,1.309L23,18z
+		 M17.913,11l0.888-4H24c1.323,0,1.325-2,0-2h-6.802l-1.334,6H17.913z" />
+                <path d="M22.84,19l-1.26,8.06C21.49,27.604,21.023,28,20.471,28h-8.941c-0.553,0-1.02-0.396-1.109-0.941
+		L9.16,19H22.84z M7.142,13.475C6.925,12.181,7.924,11,9.237,11h3.003c-0.807-1.205-2.18-2-3.74-2C6.015,9,4,11.015,4,13.5
+		c0,2.305,1.739,4.183,3.973,4.447L7.142,13.475z" />
+
+        <!--<svg viewBox="0 0 24 24">
+              <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                d="M4 5h16L12 14zM12 14v6M8 21h8M15 5l1-2 3 1" />
+            </svg>
+            <svg class="sf-symbol" width="800px" height="800px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <g>
+                <path fill="none" d="M0 0h24v24H0z" />
+                <path d="M11 19v-5.111L3 5V3h18v2l-8 8.889V19h5v2H6v-2h5zM7.49 7h9.02l1.8-2H5.69l1.8 2z" />
+              </g>
+            </svg>-->
+
+            <!--<svg viewBox="0 0 24 24">
+              <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                d="M6 6h12l-1 14H7zM7.5 13h9" />
+            </svg>-->
+
+            <!--<svg viewBox="0 0 24 24">
+              <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                d="M10 3h4v5l2 3v8a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-8l2-3zM10 8h4" />
+            </svg>-->
+
+            <!--<svg viewBox="0 0 24 24">
+              <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                d="M8 3h8l-1 11a3 3 0 0 1-6 0zM12 17v4M9 21h6" />
+              <circle cx="11" cy="8" r=".75" fill="currentColor" />
+              <circle cx="13" cy="10" r=".75" fill="currentColor" />
+            </svg>-->
