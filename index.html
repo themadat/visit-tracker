@@ -3499,8 +3499,9 @@
       align-items: center;
       justify-content: flex-start;
       gap: .28rem;
-      flex: 1 1 calc(25% - .3rem);
-      min-width: 7rem;
+      flex: 0 1 8.65rem;
+      width: 8.65rem;
+      min-width: 0;
       min-height: 32px;
       padding: .3rem .38rem;
       border: 1px solid var(--line);
@@ -3508,6 +3509,12 @@
       background: var(--surface-2);
       font-weight: 800;
       cursor: pointer;
+    }
+
+    .visit-type-chip>span:nth-of-type(2) {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .visit-type-chip input {
@@ -4882,7 +4889,8 @@
       }
 
       .visit-type-chip {
-        flex-basis: calc(50% - .3rem);
+        flex: 0 1 calc(50% - .3rem);
+        width: calc(50% - .3rem);
       }
 
       .date-picker-head {
@@ -5216,7 +5224,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.21</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.22</span>
                 <span id="betaPill" class="beta-pill hidden" title="This is the beta deploy">BETA</span>
               </div>
             </div>
@@ -6647,7 +6655,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.0.0.21";
+    const APP_VERSION = "3.0.0.22";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7803,7 +7811,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.0.0.21",
+        version: "3.0.0.22",
         date: "2026-05-23",
         title: "3.0 Development Begins",
         summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, mapped note locations, a guided install flow, and a beta environment indicator.",
@@ -7873,7 +7881,9 @@
           "Single-location Notes now ignore the main Notes search, level, icon, and visibility filters so every note for that location remains visible.",
           "Location Tag hotkey edits now enforce one active tag per key, and clearing a default tag hotkey stays cleared.",
           "Adding a Location Tag now appends it to the end of the active tag list instead of reappearing in its original catalog order.",
-          "Default Location Tags can be disabled, renamed, reordered, and assigned custom or blank hotkeys."
+          "Default Location Tags can be disabled, renamed, reordered, and assigned custom or blank hotkeys.",
+          "Location Tag chips in the note editor now keep a consistent compact width instead of stretching to fill the row.",
+          "Mapped note markers now scale down as map zoom increases, making declustered nearby notes easier to inspect."
         ]
       },
       {
@@ -9755,12 +9765,17 @@
         && (mapFitMode || mapZoom < MAP_ZOOM_MAX - .001);
     }
 
+    function markerZoomScale() {
+      return mapFitMode ? 1 : Math.max(.38, Math.min(1, 1 / Math.sqrt(Math.max(1, mapZoom))));
+    }
+
     function renderLocationMarkers() {
       const markers = $("#mapLocationMarkers");
       if (!markers) return;
       markers.innerHTML = "";
       if (state.settings.mapLocationPinsVisible === false) return;
       const svgNS = "http://www.w3.org/2000/svg";
+      const markerScale = markerZoomScale();
       clusteredLocationMarkers(locationMarkerItems()).forEach(cluster => {
         const first = markerClusterRepresentative(cluster);
         const count = cluster.items.length;
@@ -9770,7 +9785,7 @@
         group.dataset.markerState = first.abbr;
         group.dataset.markerNote = first.note.id;
         group.style.setProperty("--marker-color", first.color);
-        group.setAttribute("transform", `translate(${first.x.toFixed(1)} ${first.y.toFixed(1)})`);
+        group.setAttribute("transform", `matrix(${markerScale.toFixed(3)} 0 0 ${markerScale.toFixed(3)} ${first.x.toFixed(1)} ${first.y.toFixed(1)})`);
         group.setAttribute("role", "button");
         group.setAttribute("tabindex", "0");
         group.setAttribute("aria-label", label);
