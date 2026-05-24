@@ -5216,7 +5216,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.20</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.21</span>
                 <span id="betaPill" class="beta-pill hidden" title="This is the beta deploy">BETA</span>
               </div>
             </div>
@@ -6413,8 +6413,11 @@
               or enter coordinates manually, and mapped notes appear as markers on the map. Single markers open the
               note; grouped markers use a cluster icon, zoom when they can split, or open a
               picker when they are too close.</li>
-            <li>Use Location Tags to add icon labels to notes. Settings lets you rename, reorder, shortcut, and search
-              the optional circle icon catalog.</li>
+            <li>Use Location Tags to add icon labels to notes. Settings lets you remove defaults, rename tags, reorder
+              them, set unique hotkeys, and search the optional circle icon catalog. Added tags land at the end of your
+              active list.</li>
+            <li>When you open one location, Notes shows all notes for that location. Search, level, and icon filters
+              only affect the main Notes list.</li>
             <li>Use the eye button in Notes to show or hide locations that only have levels excluded from stats.</li>
             <li>Add dates as a year, month and year, or full date. Settings controls the display order and month-name vs
               numeric formatting.</li>
@@ -6454,7 +6457,8 @@
           <p><b>Will my map zoom come back?</b><br>Yes. The app saves your scrollable-map zoom level and whether you
             were using Fit Map or Scroll Map, plus your last pan position in scrollable mode.</p>
           <p><b>Will my Notes filters come back?</b><br>Yes. Notes view, sort, grouping, excluded visibility, Legend
-            filters, icon filters, collapsed categories, and selected location restore with your local settings.</p>
+            filters, icon filters, collapsed categories, and selected location restore with your local settings. Filters
+            apply to the main Notes list; a selected location always shows all of its own notes.</p>
           <p><b>Can I undo a reset?</b><br>No. Export a JSON backup first if you want a safety net.</p>
           <p><b>What does Categorical do in Notes?</b><br>It groups locations by City, State, and Territory, keeps your
             Alphabetical or Chronological sort inside each group, and keeps the current group header sticky while you
@@ -6643,7 +6647,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.0.0.20";
+    const APP_VERSION = "3.0.0.21";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7799,7 +7803,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.0.0.20",
+        version: "3.0.0.21",
         date: "2026-05-23",
         title: "3.0 Development Begins",
         summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, mapped note locations, a guided install flow, and a beta environment indicator.",
@@ -7865,7 +7869,11 @@
           "Clustered map pins now use the hex-grid circle symbol while preserving the highest-priority note title and color.",
           "Smart Convert now keeps its input and Auto Convert action on the same row for faster note entry.",
           "The note editor's Location Tags settings shortcut moved out of the Smart Convert row and into the tag chip row as the compact ellipsis control.",
-          "Added a P2 roadmap item for separate map-label positions for abbreviations and full state names."
+          "Added a P2 roadmap item for separate map-label positions for abbreviations and full state names.",
+          "Single-location Notes now ignore the main Notes search, level, icon, and visibility filters so every note for that location remains visible.",
+          "Location Tag hotkey edits now enforce one active tag per key, and clearing a default tag hotkey stays cleared.",
+          "Adding a Location Tag now appends it to the end of the active tag list instead of reappearing in its original catalog order.",
+          "Default Location Tags can be disabled, renamed, reordered, and assigned custom or blank hotkeys."
         ]
       },
       {
@@ -8507,7 +8515,7 @@
         ...defaults.map(type => type.id)
       ];
       const seen = new Set();
-      return orderedIds.filter(id => {
+      const normalized = orderedIds.filter(id => {
         if (seen.has(id)) return false;
         seen.add(id);
         return true;
@@ -8515,14 +8523,23 @@
         const base = defaultById[id];
         const custom = savedById[id] || {};
         const hasSavedType = Object.prototype.hasOwnProperty.call(savedById, id);
+        const hasCustomShortcut = Object.prototype.hasOwnProperty.call(custom, "shortcut");
         return {
           id,
           label: String(custom.label || base.label).slice(0, 24),
           icon: base.icon,
-          shortcut: normalizeVisitTypeShortcut(custom.shortcut) || normalizeVisitTypeShortcut(base.shortcut),
+          shortcut: hasCustomShortcut ? normalizeVisitTypeShortcut(custom.shortcut) : normalizeVisitTypeShortcut(base.shortcut),
           searchTags: normalizeVisitTypeSearchTags(custom.searchTags || base.searchTags),
           enabled: typeof custom.enabled === "boolean" ? custom.enabled : hasSavedType ? custom.enabled !== false : base.enabled !== false
         };
+      });
+      const usedShortcuts = new Set();
+      return normalized.map(type => {
+        const shortcut = normalizeVisitTypeShortcut(type.shortcut);
+        if (type.enabled === false || !shortcut) return { ...type, shortcut };
+        if (usedShortcuts.has(shortcut)) return { ...type, shortcut: "" };
+        usedShortcuts.add(shortcut);
+        return { ...type, shortcut };
       });
     }
 
@@ -10569,6 +10586,14 @@
         .includes(query);
     }
 
+    function notesForDisplay(abbr, options = {}) {
+      return options.ignoreFilters ? sortedNotesFor(abbr) : filteredNotesFor(abbr);
+    }
+
+    function stateLevelNamesForDisplay(abbr, options = {}) {
+      return options.ignoreFilters ? stateLevelNames(abbr) : filteredStateLevelNames(abbr);
+    }
+
     function filteredNotesFor(abbr) {
       return sortedNotesFor(abbr).filter(noteMatchesAllFilters);
     }
@@ -11049,9 +11074,9 @@
       return [match[1], month, match[3]].filter(Boolean).join(" ");
     }
 
-    function notesTextForAbbr(abbr) {
-      const names = filteredStateLevelNames(abbr);
-      const notes = filteredNotesFor(abbr);
+    function notesTextForAbbr(abbr, options = {}) {
+      const names = stateLevelNamesForDisplay(abbr, options);
+      const notes = notesForDisplay(abbr, options);
       const type = locationTypeMeta(abbr);
       const checked = stateCountsTowardStats(abbr) ? "X" : " ";
       const levelText = names.join(", ");
@@ -11153,7 +11178,7 @@
     function renderSelectedNoteList(notes) {
       if (!notes.length) return `<div class="empty">No visit notes yet.</div>`;
       if (notesViewMode === "text") {
-        return `<pre class="notes-text-only" tabindex="0">${escapeHtml(notesTextForAbbr(notesPanelState))}</pre>`;
+        return `<pre class="notes-text-only" tabindex="0">${escapeHtml(notesTextForAbbr(notesPanelState, { ignoreFilters: true }))}</pre>`;
       }
       if (notesViewMode === "compact") {
         return `
@@ -11209,7 +11234,7 @@
         selectedState = notesPanelState;
         const names = stateLevelNames(notesPanelState);
         const activeIds = new Set(getStateLevelIds(notesPanelState));
-        const notes = filteredNotesFor(notesPanelState);
+        const notes = notesForDisplay(notesPanelState, { ignoreFilters: true });
         const filterNames = activeFilterNames();
         const type = locationTypeMeta(notesPanelState);
         $("#notesPanelTitle").textContent = STATE_NAMES[notesPanelState];
@@ -11508,10 +11533,39 @@
       syncButtonLabels();
     }
 
-    function updateVisitTag(id, patch) {
+    function updateVisitTag(id, patch, options = {}) {
       const index = state.visitTypes.findIndex(type => type.id === id);
       if (index < 0) return;
-      state.visitTypes[index] = { ...state.visitTypes[index], ...patch };
+      const nextType = { ...state.visitTypes[index], ...patch };
+      state.visitTypes[index] = nextType;
+      if (options.moveToActiveEnd) {
+        const rest = state.visitTypes.filter(type => type.id !== id);
+        state.visitTypes = [
+          ...rest.filter(type => type.enabled !== false),
+          nextType,
+          ...rest.filter(type => type.enabled === false)
+        ];
+      }
+      save();
+      render();
+      if ($("#tagDialog").open) renderVisitTagSettings();
+    }
+
+    function updateVisitTagShortcut(id, value) {
+      const shortcut = normalizeVisitTypeShortcut(value);
+      let changed = false;
+      state.visitTypes = state.visitTypes.map(type => {
+        if (type.id === id) {
+          changed = changed || type.shortcut !== shortcut;
+          return { ...type, shortcut };
+        }
+        if (shortcut && type.enabled !== false && normalizeVisitTypeShortcut(type.shortcut) === shortcut) {
+          changed = true;
+          return { ...type, shortcut: "" };
+        }
+        return type;
+      });
+      if (!changed) return;
       save();
       render();
       if ($("#tagDialog").open) renderVisitTagSettings();
@@ -11530,10 +11584,15 @@
     function enableVisitTag(id) {
       const current = visitTypeMeta(id);
       if (!current) return;
+      const used = new Set(activeVisitTypes()
+        .filter(type => type.id !== id)
+        .map(type => normalizeVisitTypeShortcut(type.shortcut))
+        .filter(Boolean));
+      const preferred = normalizeVisitTypeShortcut(current.shortcut);
       updateVisitTag(id, {
         enabled: true,
-        shortcut: normalizeVisitTypeShortcut(current.shortcut) || suggestedVisitTypeShortcut(current)
-      });
+        shortcut: preferred && !used.has(preferred) ? preferred : suggestedVisitTypeShortcut(current)
+      }, { moveToActiveEnd: true });
     }
 
     function toggleVisitTag(id) {
@@ -11569,8 +11628,7 @@
           input.value = normalizeVisitTypeShortcut(input.value).toUpperCase();
         });
         input.addEventListener("change", () => {
-          const current = visitTypeMeta(input.dataset.tagShortcut);
-          updateVisitTag(input.dataset.tagShortcut, { shortcut: normalizeVisitTypeShortcut(input.value) || current?.shortcut || "" });
+          updateVisitTagShortcut(input.dataset.tagShortcut, input.value);
         });
       });
       $$("[data-tag-toggle-button]").forEach(button => {
