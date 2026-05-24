@@ -638,7 +638,6 @@
     }
 
     #noteSmartConvertBtn,
-    #noteTagSettingsBtn,
     #noteGeocodeBtn {
       height: 36px;
       min-height: 36px;
@@ -647,7 +646,6 @@
     }
 
     #noteSmartConvertBtn .sf-symbol,
-    #noteTagSettingsBtn .sf-symbol,
     #noteGeocodeBtn .sf-symbol {
       height: 24px;
       width: 24px;
@@ -3380,7 +3378,9 @@
     }
 
     .visit-type-row {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
       gap: .3rem;
     }
 
@@ -3468,8 +3468,16 @@
     }
 
     .smart-convert-row {
-      grid-template-columns: minmax(0, 1fr) auto auto;
-      align-items: end;
+      grid-template-columns: minmax(0, 1fr);
+      align-items: stretch;
+      gap: .22rem;
+    }
+
+    .smart-convert-input-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: .32rem;
+      align-items: stretch;
     }
 
     .smart-convert-row button {
@@ -3491,6 +3499,8 @@
       align-items: center;
       justify-content: flex-start;
       gap: .28rem;
+      flex: 1 1 calc(25% - .3rem);
+      min-width: 7rem;
       min-height: 32px;
       padding: .3rem .38rem;
       border: 1px solid var(--line);
@@ -3530,6 +3540,10 @@
       line-height: 1;
       text-align: center;
       text-transform: uppercase;
+    }
+
+    .note-tag-settings-inline {
+      align-self: center;
     }
 
     .tag-editor-list {
@@ -4864,7 +4878,11 @@
       }
 
       .visit-type-row {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        display: flex;
+      }
+
+      .visit-type-chip {
+        flex-basis: calc(50% - .3rem);
       }
 
       .date-picker-head {
@@ -5198,7 +5216,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.19</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.20</span>
                 <span id="betaPill" class="beta-pill hidden" title="This is the beta deploy">BETA</span>
               </div>
             </div>
@@ -6054,21 +6072,21 @@
     <form id="noteForm" class="dialog-body" method="dialog">
       <input id="noteId" type="hidden">
       <section class="smart-convert-row">
-        <label>Smart Convert
+        <label for="noteSmartConvert">Smart Convert</label>
+        <div class="smart-convert-input-row">
           <input id="noteSmartConvert" maxlength="420" placeholder="Type a quick note to auto-fill the fields below">
-        </label>
-        <button id="noteSmartConvertBtn" type="button" data-shortcut="W">Auto Convert</button>
-        <button id="noteTagSettingsBtn" type="button" data-shortcut="Y">Tags</button>
+          <button id="noteSmartConvertBtn" type="button" data-shortcut="W">Auto Convert</button>
+        </div>
       </section>
       <div class="note-inline-hints">
         <small data-hint data-hint-key="note-smart-convert-help">
           Type a quick note, then Auto Convert looks for items like “at”, “for”, and “with”.<br />
           Leftover text goes to Additional Details.</small>
-        <small data-hint data-hint-key="note-tag-settings-help">Quick link to Location Tags to choose which appear
-          below, rename, sort, and set shortcuts.</small>
       </div>
       <section id="visitTypeRow" class="visit-type-row" aria-label="Visit labels">
       </section>
+      <small data-hint data-hint-key="note-tag-settings-help">Use the ellipsis above to open Location Tags, choose
+        which tags appear here, rename them, sort them, and set shortcuts.</small>
       <small data-hint data-hint-key="note-label-help">
         Select Location Tags. Recommend no more than 4 for a cleaner UI/UX.<br />
         When the cursor is outside a text field, use the letter hotkeys to toggle Location Tags on/off.</small>
@@ -6130,7 +6148,7 @@
           </div>
           <small id="noteGeocodeStatus" class="note-geocode-status" data-hint data-hint-key="note-location-help">
             Use Locate to place this note on the map, or enter latitude/longitude manually. Nearby markers cluster and
-            use the highest-priority earliest note icon.</small>
+            use a hex-grid cluster icon.</small>
         </div>
       </div>
       <div class="note-field-grid">
@@ -6393,7 +6411,7 @@
               people, purpose, and details.</li>
             <li>Use the Locate button beside Where Specifically to look up latitude/longitude for a note. You can edit
               or enter coordinates manually, and mapped notes appear as markers on the map. Single markers open the
-              note; grouped markers use the highest-priority earliest note icon, zoom when they can split, or open a
+              note; grouped markers use a cluster icon, zoom when they can split, or open a
               picker when they are too close.</li>
             <li>Use Location Tags to add icon labels to notes. Settings lets you rename, reorder, shortcut, and search
               the optional circle icon catalog.</li>
@@ -6411,8 +6429,8 @@
             be shown or hidden from the Legend. Palette order follows the current Legend priority.</p>
           <p><b>Structured notes:</b> Notes can include Where Specifically, What For, Who With, Additional Details, and
             multiple icon labels. Use Locate to save latitude/longitude and show the note on the map; nearby markers
-            cluster, and the highest-priority earliest note represents the cluster. Multi-note marker lists can open any
-            note or add a new note at the top mapped location. Use the Tags button in the note editor or Settings to
+            cluster, with the highest-priority earliest note setting the color and title. Multi-note marker lists can
+            open any note or add a new note at the top mapped location. Use the tag-row ellipsis in the note editor or Settings to
             choose, rename, sort, shortcut, and search optional labels from the circle icon catalog.</p>
           <p><b>What's New:</b> Returning users may see a compact banner and red dots when a major feature release is
             available. Open What's New or dismiss the banner to clear it.</p>
@@ -6625,7 +6643,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.0.0.19";
+    const APP_VERSION = "3.0.0.20";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7623,6 +7641,18 @@
 
     const WISHLIST_SEEDS = [
       {
+        title: "Separate State Label Positions",
+        ticketId: "WISH-039",
+        description: "Let abbreviation labels and full-name labels use separate hand-tuned anchor positions so compact labels and readable names can both sit closer to the visual center of each map shape.",
+        priority: "P2",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 18,
+        prompt: "Add separate map label anchor positions for abbreviation and full-name label modes. Preserve existing label settings, support multiline names, and keep the map responsive.",
+        category: "Maps"
+      },
+      {
         title: "Split App into /src Folder with Build Step",
         ticketId: "WISH-038",
         description: "Move from a single-file app to a /src layout with separate HTML, CSS, JS, icon constants, release notes (markdown), and wishlist (markdown). Add a build script that concatenates and minifies into the deployable index.html so the runtime still ships as one file. Goal: easier diffs, scoped edits, and tooling without sacrificing the offline single-file deploy story.",
@@ -7769,7 +7799,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.0.0.19",
+        version: "3.0.0.20",
         date: "2026-05-23",
         title: "3.0 Development Begins",
         summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, mapped note locations, a guided install flow, and a beta environment indicator.",
@@ -7831,7 +7861,11 @@
           "Added a P3 wishlist item to split the app source into /src with separate HTML, CSS, JS, icon constants, release notes markdown, and wishlist markdown, plus a build step that emits the existing single-file deploy.",
           "Moved the View Locations toggle between Fit Map and the Labels segmented group, and dropped the blue pressed-state highlight since the pin and pin-slash icons already communicate on/off state.",
           "Clustered map pins now use the highest-priority level, then earliest note date, to choose the visible color, icon, and title.",
-          "Nearby mapped pins that are too close to split cleanly at max zoom now open the picker instead of continuing a dead-end zoom path."
+          "Nearby mapped pins that are too close to split cleanly at max zoom now open the picker instead of continuing a dead-end zoom path.",
+          "Clustered map pins now use the hex-grid circle symbol while preserving the highest-priority note title and color.",
+          "Smart Convert now keeps its input and Auto Convert action on the same row for faster note entry.",
+          "The note editor's Location Tags settings shortcut moved out of the Smart Convert row and into the tag chip row as the compact ellipsis control.",
+          "Added a P2 roadmap item for separate map-label positions for abbreviations and full state names."
         ]
       },
       {
@@ -9237,7 +9271,6 @@
       setButtonLabel("#deleteNoteFromDialogBtn", __DELETE_LEFT_FILL, "Delete Note");
       setButtonLabel("#noteGeocodeBtn", __DOT_SCOPE, "Locate", "Look up latitude and longitude", "Look up latitude and longitude");
       setButtonLabel("#noteSmartConvertBtn", __WAND_AND_SPARKLES_INVERSE, "Auto Convert", "Smart convert note text");
-      setButtonLabel("#noteTagSettingsBtn", __GEAR_CIRCLE, "Tags", "Choose note tags");
       setButtonLabel("#levelDialogCloseBtn", __XMARK, "Close");
       setButtonLabel("#paletteCloseBtn", __XMARK, "Close");
       setButtonLabelBoth("#tagDialogBackBtn", __CHEVRON_BACKWARD, visitTagReturnTarget === "note" ? "Back to Note" : "Back to Settings");
@@ -9729,7 +9762,8 @@
           <circle class="marker-ring" r="9"></circle>
           <circle class="marker-core" r="6.3"></circle>
         `;
-        if (first.iconId) {
+        const markerIcon = count > 1 ? __CIRCLE_HEXAGONGRID_CIRCLE : first.iconId ? visitTypeIcon(first.iconId) : "";
+        if (markerIcon) {
           const foreign = document.createElementNS(svgNS, "foreignObject");
           foreign.setAttribute("x", "-6");
           foreign.setAttribute("y", "-6");
@@ -9737,7 +9771,7 @@
           foreign.setAttribute("height", "12");
           const icon = document.createElement("div");
           icon.className = "map-marker-icon";
-          icon.innerHTML = visitTypeIcon(first.iconId);
+          icon.innerHTML = markerIcon;
           foreign.append(icon);
           group.append(foreign);
         } else {
@@ -11350,12 +11384,19 @@
 
     function renderVisitTypeChips(selectedIds = []) {
       const selected = new Set(selectedIds);
-      $("#visitTypeRow").innerHTML = activeVisitTypes().map(type => `
+      const tagSettingsButton = `
+        <button id="noteTagSettingsInlineBtn" class="hint-dot-btn note-tag-settings-inline" type="button" data-shortcut="Y"
+          aria-label="Open location tag settings" title="Open location tag settings"><span>•••</span></button>
+      `;
+      const chips = activeVisitTypes().map(type => `
         <label class="visit-type-chip" role="checkbox" tabindex="0" aria-checked="${selected.has(type.id)}" title="${escapeHtml(type.label)} (${type.shortcut.toUpperCase()})">
           <input type="checkbox" name="visitType" value="${type.id}" ${selected.has(type.id) ? "checked" : ""}>
           <span>${visitTypeIcon(type.id)}</span><span>${escapeHtml(type.label)}</span><span class="visit-type-key">${escapeHtml(type.shortcut)}</span>
         </label>
-      `).join("") || `<div class="empty">No note tags enabled. Choose tags in Settings.</div>`;
+      `).join("");
+      $("#visitTypeRow").innerHTML = chips
+        ? `${chips}${tagSettingsButton}`
+        : `<div class="empty">No note tags enabled. Choose tags in Settings.</div>${tagSettingsButton}`;
       bindVisitTypeChips();
     }
 
@@ -11372,6 +11413,7 @@
           activate(event);
         });
       });
+      $("#noteTagSettingsInlineBtn")?.addEventListener("click", () => openVisitTagSettings("note"));
     }
 
     function setNoteVisitTypes(typeIds = []) {
@@ -13235,7 +13277,6 @@
         setNoteGeocodeStatus("Manual coordinates will be used for the map marker.");
       }));
       $("#noteSmartConvertBtn").addEventListener("click", applySmartNoteConvert);
-      $("#noteTagSettingsBtn").addEventListener("click", () => openVisitTagSettings("note"));
       $("#noteDialog").addEventListener("keydown", handleNoteDialogKeydown);
       $("#noteDialog").addEventListener("cancel", event => {
         event.preventDefault();

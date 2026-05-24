@@ -96,7 +96,7 @@ Since `2.5.0`, the active work has focused on branding, app install polish, tips
 - The title-bar app icon owns the hidden quad-tap hint/banner reset gesture.
 - Optional Tip Jar controls use a compact local dialog and Venmo handoff without SDKs or trackers.
 - Notes can store latitude/longitude, use an optional online Locate lookup, and accept manual coordinate overrides.
-- Coordinate-backed notes render as clustered markers on the map; the highest-priority earliest note represents each cluster, and grouped markers zoom while they can split or open a picker when they are too close.
+- Coordinate-backed notes render as clustered markers on the map; the highest-priority earliest note colors/titles each hex-grid cluster, and grouped markers zoom while they can split or open a picker when they are too close.
 - Location coordinates persist in localStorage and JSON backups and appear in text exports/search.
 
 ## Persistence and Migration
