@@ -7855,18 +7855,6 @@
         category: "Maps"
       },
       {
-        title: "Map Labels Render Above Location Pins",
-        ticketId: "WISH-039",
-        description: "Layer the map state-name and abbreviation labels above location note pins so the labels stay readable when pins are dense. Includes preserving the labels group in front of the marker layer in SVG document order so it does not regress when the map markup is refactored.",
-        priority: "P2",
-        effort: "small",
-        targetKind: "patch",
-        targetVersion: "",
-        tokenCostPct: 4,
-        prompt: "Ensure the map label layer is rendered on top of the location marker layer. Move the <g id=\"mapLabels\"> group to be a later sibling of <g id=\"mapLocationMarkers\"> inside the state map SVG, and verify hover/click on markers still works through the labels.",
-        category: "Maps"
-      },
-      {
         title: "Split App into /src Folder with Build Step",
         ticketId: "WISH-038",
         description: "Move from a single-file app to a /src layout with separate HTML, CSS, JS, icon constants, release notes (markdown), and wishlist (markdown). Add a build script that concatenates and minifies into the deployable index.html so the runtime still ships as one file. Goal: easier diffs, scoped edits, and tooling without sacrificing the offline single-file deploy story.",
