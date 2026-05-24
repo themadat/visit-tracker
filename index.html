@@ -623,7 +623,6 @@
     #saveAddNoteBtn,
     #deleteNoteFromDialogBtn,
     #noteDialogCloseBtn,
-    #installReloadBtn,
     #tipJarBtn,
     #addToHomeBtn,
     #settingsBtn {
@@ -645,7 +644,6 @@
       height: 20px;
     }
 
-    #installReloadBtn .sf-symbol,
     #deleteNoteFromDialogBtn .sf-symbol,
     .toolbar-panel-toggle-group .sf-symbol,
     .toolbar .sf-symbol {
@@ -3163,6 +3161,23 @@
       color: var(--text);
       font-size: .85rem;
       line-height: 1.3;
+    }
+
+    .install-mac-reload-notice {
+      margin-top: -.08rem;
+    }
+
+    .install-reload-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .3rem;
+      white-space: nowrap;
+    }
+
+    .install-reload-btn .sf-symbol {
+      width: 1.05em;
+      height: 1.05em;
     }
 
     .install-foot {
@@ -6510,8 +6525,8 @@
         <span id="installDeviceIcon" class="install-device-icon" aria-hidden="true"></span>
         <div>
           <p class="install-kicker">Detected: <span id="installDetectedDevice">Device</span></p>
-          <p class="install-intro">Pick an icon, then follow the matching directions. The app opens full-screen once it
-            is added.</p>
+          <p class="install-intro">Pick an icon, then follow the directions.<br />The app opens full-screen once it is
+            added.</p>
         </div>
       </section>
 
@@ -6522,7 +6537,8 @@
           <span class="install-icon-thumb install-icon-thumb-light" aria-hidden="true"></span>
           <span class="install-icon-copy">
             <span class="install-icon-label">Light</span>
-            <span class="install-icon-caption">Clean mint map badge</span>
+            <span class="install-icon-caption">Pine Mist,<br />Saddle Brown, Aged Paper Cream,<br />Copmass Gold, Moss
+              Green</span>
           </span>
           <span class="install-icon-check" aria-hidden="true"></span>
         </label>
@@ -6531,17 +6547,12 @@
           <span class="install-icon-thumb install-icon-thumb-dark" aria-hidden="true"></span>
           <span class="install-icon-copy">
             <span class="install-icon-label">Dark</span>
-            <span class="install-icon-caption">Pine badge for dark mode people</span>
+            <span class="install-icon-caption">Pine Shadow,<br />Leather Brown, Trail Dust Tan, <br />Amber Gold, Forest
+              Green</span>
           </span>
           <span class="install-icon-check" aria-hidden="true"></span>
         </label>
       </fieldset>
-
-      <div id="installReloadNotice" class="install-reload-notice hidden" role="status">
-        <span><b>Reload required on Mac.</b> Safari caches the icon manifest at page load. Reload so "Add to Dock" picks
-          up the new icon.</span>
-        <button id="installReloadBtn" class="primary" type="button" data-shortcut="R">Reload now</button>
-      </div>
 
       <div class="install-directions-grid">
         <section id="installPrimaryGuide" class="install-guide-card"></section>
@@ -7211,7 +7222,8 @@
             <li>Use the app header to show or hide Map, Legend, and Notes. Use the Location Map header to switch labels,
               fit the map for screenshots, or return to scrollable mode with pan and zoom controls.</li>
             <li>Use Add as App in the top toolbar to choose a light or dark icon and get install directions matched to
-              your current device. The other device guides stay collapsed in the same dialog.</li>
+              your current device. The other device guides stay collapsed in the same dialog, and Mac icon reload
+              guidance stays tucked into the Mac guide.</li>
             <li>In scrollable map mode, drag the map to pan, type an exact zoom percentage, use the zoom controls to
               move in or out, and reset to 100% when you want the full map again. Drag the divider on desktop to resize
               the map and cards. Your zoom level and fit/scroll map view are saved with the rest of your settings.</li>
@@ -7286,7 +7298,8 @@
           <p><b>Can I move data to another device?</b><br>Export a JSON backup in Settings, then import it in the app on
             the other device.</p>
           <p><b>How do I add it like an app?</b><br>Use Add as App in the top toolbar. Trail Log detects iPhone/iPad,
-            Android, Mac, or PC, expands the matching directions, and keeps the other three install paths collapsed.</p>
+            Android, Mac, or PC, expands the matching directions, and keeps the other three install paths collapsed. Mac
+            icon reload guidance appears inside the Mac instructions when needed.</p>
           <p><b>Will my map zoom come back?</b><br>Yes. The app saves your scrollable-map zoom level and whether you
             were using Fit Map or Scroll Map, plus your last pan position in scrollable mode.</p>
           <p><b>Will my Notes filters come back?</b><br>Yes. Notes view, sort, grouping, excluded visibility, Legend
@@ -7457,8 +7470,8 @@
                 actions.</span></div>
             <div class="shortcut-row"><kbd>B T E K Y V O P</kbd><span>Notes Back, Chronological Sort, Expanded,
                 Condensed, Categorical, Excluded Visibility, Text Only, and Copy.</span></div>
-            <div class="shortcut-row"><kbd>L D R 1-4</kbd><span>Add as App: choose light/dark icon, reload after a Mac
-                icon change, or open device directions.</span></div>
+            <div class="shortcut-row"><kbd>L D R 1-4</kbd><span>Add as App: choose light/dark icon, use the Mac-guide
+                reload action when shown, or open device directions.</span></div>
             <div class="shortcut-row"><kbd>G</kbd><span>Note editor: look up coordinates from Where Specifically.</span>
             </div>
             <div class="shortcut-row"><kbd>W</kbd><span>Developer: reset the What's New banner and badges.</span></div>
@@ -7486,7 +7499,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.0.0.34";
+    const APP_VERSION = "3.0.0.35";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7603,6 +7616,9 @@
     const __WINEGLASS_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 18.3789 29.4824"><g><rect height="29.4824" opacity="0" width="18.3789" x="0" y="0"/><path d="M8.99414 29.4629C13.3984 29.4629 16.0742 28.3887 16.0742 26.6016C16.0742 24.9414 13.7207 23.8965 9.82422 23.75L9.82422 18.0859C14.7852 17.7832 18.0176 14.6582 18.0176 10.0391C18.0176 7.49023 16.9531 4.15039 15.3906 1.74805C14.668 0.634766 12.3145 0 9.01367 0C5.69336 0 3.33984 0.634766 2.61719 1.74805C1.05469 4.15039 0 7.49023 0 10.0391C0 14.668 3.23242 17.7832 8.20312 18.0859L8.20312 23.75C4.29688 23.8867 1.95312 24.9414 1.95312 26.6016C1.95312 28.3887 4.59961 29.4629 8.99414 29.4629ZM9.01367 3.04688C6.21094 3.04688 4.12109 2.64648 4.12109 2.26562C4.12109 1.88477 6.2207 1.49414 9.01367 1.49414C11.7969 1.49414 13.8965 1.88477 13.8965 2.26562C13.8965 2.64648 11.8066 3.04688 9.01367 3.04688Z"/></g></svg>`;
     const __WATERBOTTLE_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 14.0234 29.5801"><g><rect height="29.5801" opacity="0" width="14.0234" x="0" y="0"/><path d="M3.39844 3.18359L10.2734 3.18359C10.8887 3.18359 11.3379 2.75391 11.3379 2.11914L11.3379 1.06445C11.3379 0.439453 10.8887 0 10.2734 0L3.39844 0C2.76367 0 2.33398 0.439453 2.33398 1.06445L2.33398 2.11914C2.33398 2.75391 2.76367 3.18359 3.39844 3.18359ZM0.00976562 9.30664L13.6523 9.30664C13.6133 7.82227 13.3887 6.78711 12.5586 5.67383L12.207 5.19531C11.8848 4.74609 11.3672 4.45312 10.8105 4.45312L2.85156 4.45312C2.29492 4.45312 1.77734 4.74609 1.44531 5.19531L1.10352 5.67383C0.273438 6.78711 0.0488281 7.82227 0.00976562 9.30664ZM0 10.8203L0 23.6426L13.6621 23.6426L13.6621 10.8203ZM6.82617 21.5234C5.00977 21.5234 3.81836 20.3613 3.81836 18.6133C3.81836 17.7148 4.22852 16.9922 4.43359 16.5234C4.91211 15.498 5.69336 14.1699 6.36719 13.1543C6.49414 12.9492 6.66992 12.8418 6.82617 12.8418C7.00195 12.8418 7.1582 12.9492 7.28516 13.1543C7.95898 14.1699 8.75977 15.498 9.21875 16.5234C9.44336 16.9922 9.83398 17.7148 9.83398 18.6133C9.83398 20.3613 8.64258 21.5234 6.82617 21.5234ZM0 25.1562L0 25.4785C0 28.1445 1.31836 29.5605 3.75977 29.5605L9.89258 29.5605C12.3438 29.5605 13.6621 28.1445 13.6621 25.4785L13.6621 25.1562Z"/></g></svg>`;
     const __PAPERPLANE_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 27.7539 27.373"><g><rect height="27.373" opacity="0" width="27.7539" x="0" y="0"/><path d="M15.625 27.373C16.4551 27.373 17.041 26.6895 17.4609 25.5762L25.8008 3.78906C25.9961 3.28125 26.1035 2.83203 26.1035 2.46094C26.1035 1.71875 25.6543 1.25977 24.9121 1.25977C24.5312 1.25977 24.0918 1.37695 23.584 1.57227L1.69922 9.94141C0.712891 10.3223 0 10.9082 0 11.748C0 12.7734 0.761719 13.1445 1.91406 13.4863L9.11133 15.6836C9.81445 15.8984 10.2441 15.8594 10.7324 15.4102L24.4141 2.5293C24.5703 2.39258 24.7363 2.40234 24.8535 2.50977C24.9805 2.61719 24.9707 2.80273 24.8438 2.95898L11.9922 16.6699C11.5625 17.1387 11.5039 17.5586 11.7188 18.291L13.8574 25.3711C14.209 26.5625 14.5801 27.373 15.625 27.373Z"/></g></svg>`;
+    const __SAFARI_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M25.4395 12.7246C25.4395 19.7266 19.7266 25.4395 12.7148 25.4395C5.71289 25.4395 0 19.7266 0 12.7246C0 5.71289 5.71289 0 12.7148 0C19.7266 0 25.4395 5.71289 25.4395 12.7246ZM18.2422 6.18164L10.752 9.90234C10.3809 10.0684 10.1172 10.332 9.90234 10.752L6.17188 18.2617C5.79102 19.0527 6.38672 19.668 7.1875 19.2773L14.6973 15.5469C15.0879 15.3613 15.3613 15.0781 15.5566 14.6973L19.2676 7.19727C19.6582 6.38672 19.0918 5.77148 18.2422 6.18164ZM14.3164 12.7344C14.3164 13.6133 13.6035 14.3164 12.7246 14.3164C11.8555 14.3164 11.1426 13.6133 11.1426 12.7344C11.1426 11.8652 11.8555 11.1523 12.7246 11.1523C13.6035 11.1523 14.3164 11.8652 14.3164 12.7344Z"/></g></svg>`;
+    const __MENUBAR_DOCK_RECTANGLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 29.9512 22.959"><g><rect height="22.959" opacity="0" width="29.9512" x="0" y="0"/><path d="M1.14258 4.0625L1.14258 5.5957L28.4473 5.5957L28.4473 4.0625ZM5.08789 22.959L24.7461 22.959C27.8027 22.959 29.5898 21.0938 29.5898 17.8809L29.5898 5.08789C29.5898 1.86523 27.8027 0 24.7461 0L5.08789 0C1.86523 0 0 1.86523 0 5.08789L0 17.8809C0 21.0938 1.86523 22.959 5.08789 22.959ZM5.09766 21.2305C2.97852 21.2305 1.72852 19.9805 1.72852 17.8613L1.72852 5.09766C1.72852 2.97852 2.97852 1.72852 5.09766 1.72852L24.4922 1.72852C26.6113 1.72852 27.8516 2.97852 27.8516 5.09766L27.8516 17.8613C27.8516 19.9805 26.6113 21.2305 24.4922 21.2305Z"/><path d="M5.27344 18.0762C5.27344 18.7305 5.72266 19.1699 6.39648 19.1699L23.2227 19.1699C23.8965 19.1699 24.3457 18.7305 24.3457 18.0762L24.3457 16.2598C24.3457 15.6055 23.8965 15.166 23.2227 15.166L6.39648 15.166C5.72266 15.166 5.27344 15.6055 5.27344 16.2598Z"/></g></svg>`;
+    const __WINDOW_CEILING_CLOSED = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 27.444 24.4629"><g><rect height="24.4629" opacity="0" width="27.444" x="0" y="0"/><path d="M2.25718 24.4629L19.0443 24.4629C20.2552 24.4629 21.0365 23.7891 21.3587 22.666L26.9447 2.80273C27.4232 1.11328 26.5834 0.0195312 24.8255 0.0195312L8.03843 0.0195312C6.82749 0.0195312 6.04624 0.693359 5.72398 1.81641L0.128272 21.6699C-0.340478 23.3594 0.499366 24.4629 2.25718 24.4629ZM1.84702 21.8555L4.36655 12.959L12.4427 12.959L9.66929 22.7246L2.54038 22.7246C1.94468 22.7246 1.69077 22.4121 1.84702 21.8555ZM4.84507 11.25L7.25718 2.69531C7.43296 2.08984 7.78452 1.75781 8.38023 1.75781L15.597 1.75781L12.9115 11.25ZM11.4466 22.7246L14.2103 12.959L22.306 12.959L19.8158 21.7871C19.6498 22.3828 19.2982 22.7246 18.7025 22.7246ZM14.6791 11.25L17.3841 1.75781L24.5326 1.75781C25.1283 1.75781 25.3919 2.06055 25.2259 2.62695L22.7845 11.25Z"/></g></svg>`;
 
     // Common Resused
     const __PENCIL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 22.3366 21.9615"><g><rect height="21.9615" opacity="0" width="22.3366" x="0" y="0"/><path d="M3.90513 20.6975L18.6854 5.91726L16.0829 3.31472L1.30747 18.0901L0.0379412 21.1907C-0.13784 21.6399 0.33091 22.0891 0.750832 21.928ZM19.9891 4.63796L21.4247 3.21218C22.1278 2.50417 22.162 1.71316 21.5126 1.05398L20.9706 0.507102C20.3211-0.147195 19.5106-0.0837187 18.8075 0.604758L17.367 2.02566Z" /></g></svg>`;
@@ -8626,7 +8642,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.0.0.34",
+        version: "3.0.0.35",
         date: "2026-05-24",
         title: "3.0 Development Begins",
         summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, mapped note locations, a guided install flow, and a beta environment indicator.",
@@ -8682,6 +8698,7 @@
           "Added dark variants of the 16px and 32px legacy favicons (favicon-16-dark.png, favicon-32-dark.png) so the browser tab fallback now tracks the chosen install icon for older or PNG-preferring browsers.",
           "The boot script now sets all icon link tags (favicon PNG, apple-touch-icon, and manifest) in one place before any fetch happens, so the chosen variant is consistent across browser tab and home-screen install paths.",
           "Fixed the favicon SVG generator to emit the generated-by comment after the XML declaration so the file is valid XML and not silently rejected by stricter renderers.",
+          "The Mac icon reload prompt now lives inside the Mac Add as App guide instead of appearing as a standalone install-dialog banner.",
           "Fixed the apple-touch-icon-source-dark SVG so its background is the dark pine color instead of the light mint.",
           "Updated the README with a Quick Start subsection covering the optional macOS-only icon build script and a refreshed Repo Layout listing the source SVGs, manifest files, and deploy-excluded folders.",
           "Added a Release Notes rule that, for every completed change, a push commit summary and description must be provided in two distinct copy-paste-friendly containers.",
@@ -9275,6 +9292,7 @@
     let collapsedNoteCategories = new Set();
     let notesCopyTimer = 0;
     let notesCopyActive = false;
+    let installReloadNeeded = false;
     let powerOverlayActive = false;
     let developerGesture = [];
     let releaseShortcutPrimed = false;
@@ -10140,7 +10158,6 @@
       setButtonLabel("#tipJarBtn", __GIFT_FILL, "Tip", "Send a tip", "Buy me a Drink!");
       setButtonLabel("#addToHomeBtn", installPlatformIcon(detectInstallPlatform()), "Add as App", "Add as App", "Add as App");
       setButtonLabel("#installDialogCloseBtn", __XMARK, "Close");
-      setButtonLabel("#installReloadBtn", __ARROW_CLOCKWISE_CIRCLE, "Reload");
       setButtonLabel("#settingsBtn", __GEARSHAPE_FILL, "Settings");
       setButtonLabel("#mapToggleBtn", __MAP_FILL, "Map", "Toggle Map Panel", "Toggle Map Panel");
       setButtonLabel("#legendToggleBtn", __CHECKLIST_UNCHECKED, "Legend", "Toggle Legend Panel", "Toggle Legend Panel");
@@ -13815,11 +13832,11 @@
           id: "idevice",
           shortcut: "1",
           label: "iPhone / iPad",
-          subtitle: "Safari is the reliable path on iOS and iPadOS.",
+          subtitle: "Safari on iOS/iPadOS can Add to Home Screen.",
           icon: installPlatformIcon("idevice"),
           note: "Chrome and Firefox on iPhone still use Apple's browser engine, but Safari is the one that exposes Add to Home Screen consistently.",
           steps: [
-            { icon: __SQUARE_AND_ARROW_UP_FILL, text: "Open this page in <b>Safari</b>." },
+            { icon: __SAFARI_FILL, text: "Open this page in <b>Safari</b>." },
             { icon: __SQUARE_AND_ARROW_UP_FILL, text: "Tap <b>Share</b>, the square with the arrow. It is usually in the bottom bar on iPhone and the top bar on iPad." },
             { icon: __PLUS_APP_FILL, text: "Choose <b>Add to Home Screen</b>, keep the name <b>Trail Log</b>, then tap <b>Add</b>." }
           ]
@@ -13841,13 +13858,13 @@
           id: "mac",
           shortcut: "3",
           label: "Mac",
-          subtitle: "Safari on macOS Sonoma or newer can add Trail Log to the Dock.",
+          subtitle: "Safari on macOS Sonoma or newer can Add to Dock.",
           icon: installPlatformIcon("mac"),
           note: "Older macOS versions can still keep a quick shortcut by dragging the site icon from the address bar to the Dock or Desktop.",
           steps: [
-            { icon: __LAPTOPCOMPUTER_BADGE_CHECKMARK, text: "Open this page in <b>Safari</b> on macOS 14 Sonoma or newer." },
-            { icon: __PLUS_APP_FILL, text: "Choose <b>File</b> then <b>Add to Dock</b>." },
-            { icon: __CHECKMARK, text: "Confirm the name <b>Trail Log</b> and click <b>Add</b>." }
+            { icon: __SAFARI_FILL, text: "Open this page in <b>Safari</b>." },
+            { icon: __MENUBAR_DOCK_RECTANGLE, text: "Choose <b>File</b> then <b>Add to Dock</b>." },
+            { icon: __PLUS_APP_FILL, text: "Confirm the name <b>Trail Log</b> and click <b>Add</b>." }
           ]
         },
         {
@@ -13858,7 +13875,7 @@
           icon: installPlatformIcon("pc"),
           note: "On shared or locked-down computers, the browser may hide install controls. A normal bookmark still works offline after the file has loaded.",
           steps: [
-            { icon: __DESKTOPCOMPUTER_BADGE_CHECKMARK, text: "Open this page in <b>Chrome</b> or <b>Edge</b>." },
+            { icon: __WINDOW_CEILING_CLOSED, text: "Open this page in <b>Chrome</b> or <b>Edge</b>." },
             { icon: __ELLIPSIS_CIRCLE, text: "Open the browser menu, or click the install icon if it appears in the address bar." },
             { icon: __PLUS_APP_FILL, text: "Choose <b>Install Trail Log</b> or <b>Install app</b>, then pin it if your browser offers to." }
           ]
@@ -13872,6 +13889,22 @@
           <li><span class="install-step-icon" aria-hidden="true">${step.icon}</span><span>${step.text}</span></li>
         `).join("")}
       </ol>`;
+    }
+
+    function installMacReloadHtml() {
+      return `
+        <div class="install-reload-notice install-mac-reload-notice${installReloadNeeded ? "" : " hidden"}" role="status">
+          <span><b>Changed the icon?</b> Safari on Mac caches the install icon at page load. Reload before Add to Dock so it picks up the new icon.</span>
+          <button class="primary install-reload-btn" type="button" data-shortcut="R" aria-label="Reload page">${buttonMarkup(__ARROW_CLOCKWISE_CIRCLE, "Reload")}</button>
+        </div>
+      `;
+    }
+
+    function syncInstallReloadNotice(needed = installReloadNeeded) {
+      installReloadNeeded = Boolean(needed);
+      $$(".install-mac-reload-notice").forEach(notice => {
+        notice.classList.toggle("hidden", !installReloadNeeded);
+      });
     }
 
     function renderInstallDialogContent() {
@@ -13893,6 +13926,7 @@
           </div>
           ${installGuideStepsHtml(primary)}
           <p class="install-mini-note">${escapeHtml(primary.note)}</p>
+          ${primary.id === "mac" ? installMacReloadHtml() : ""}
         `;
       }
       if (otherGuidesEl) {
@@ -13907,6 +13941,7 @@
               </summary>
               ${installGuideStepsHtml(guide)}
               <p class="install-mini-note">${escapeHtml(guide.note)}</p>
+              ${guide.id === "mac" ? installMacReloadHtml() : ""}
             </details>
           `).join("")}
         `;
@@ -13964,6 +13999,7 @@
       const fav16 = document.querySelector('link[rel="icon"][sizes="16x16"]');
       const storedBefore = (() => { try { return localStorage.getItem("tlInstallIconVariant") || "light"; } catch (_) { return "light"; } })();
       try { localStorage.setItem("tlInstallIconVariant", variant); } catch (_) { }
+      syncInstallReloadNotice(storedBefore !== variant);
 
       if (fav32) fav32.href = variant === "dark" ? "favicon-32-dark.png" : "favicon-32.png";
       if (fav16) fav16.href = variant === "dark" ? "favicon-16-dark.png" : "favicon-16.png";
@@ -13988,13 +14024,6 @@
         if (link) link.href = "apple-touch-icon.png";
         if (manifestLink) manifestLink.href = "manifest.webmanifest";
       }
-
-      // macOS Safari caches the manifest at page-load. If the variant changed,
-      // surface a reload prompt so Add-to-Dock picks up the new icons.
-      const reloadNotice = $("#installReloadNotice");
-      if (reloadNotice) {
-        reloadNotice.classList.toggle("hidden", storedBefore === variant);
-      }
     }
 
     function openAddToHomeDialog() {
@@ -14003,10 +14032,8 @@
       const variant = stored || (state.settings.theme === "dark" ? "dark" : "light");
       const radios = $("#addToHomeDialog").querySelectorAll('input[name="installIconVariant"]');
       radios.forEach(r => { r.checked = (r.value === variant); });
+      installReloadNeeded = false;
       renderInstallDialogContent();
-      // Hide the reload notice — applyTouchIconVariant will surface it only if the
-      // user picks a different value than what's already persisted.
-      $("#installReloadNotice")?.classList.add("hidden");
       applyTouchIconVariant(variant);
       $("#addToHomeDialog").showModal();
     }
@@ -14039,8 +14066,8 @@
           if (radio.checked) selectInstallIconVariant(radio.value);
         });
       });
-      $("#installReloadBtn")?.addEventListener("click", () => {
-        location.reload();
+      $("#addToHomeDialog")?.addEventListener("click", event => {
+        if (event.target?.closest?.(".install-reload-btn")) location.reload();
       });
     }
 
@@ -14292,7 +14319,7 @@
           x: () => $("#addToHomeDialog").close(),
           l: () => selectInstallIconVariant("light"),
           d: () => selectInstallIconVariant("dark"),
-          r: () => !$("#installReloadNotice")?.classList.contains("hidden") && $("#installReloadBtn")?.click()
+          r: () => $("#addToHomeDialog .install-mac-reload-notice:not(.hidden) .install-reload-btn")?.click()
         };
         installGuideDefinitions().forEach(guide => {
           installActions[guide.shortcut] = () => {

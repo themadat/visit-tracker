@@ -190,7 +190,7 @@ For every completed change:
 <comment name="DeepLeatherBrown" fill="#5A3E2B" />
 <comment name="WarmSaddleBrown" fill="#8B5E3C" />
 <comment name="TrailDustTan" fill="#B79B7A" />
-<comment name="Aged PaperCream" fill="#E8DCC8" />
+<comment name="AgedPaperCream" fill="#E8DCC8" />
 <comment name="ForestGreene" fill="#355E3B" />
 <comment name="MossGreen" fill="#6B8F4E" />
 <comment name="CompassGold" fill="#C2A15A" />
