@@ -1105,6 +1105,7 @@
 
 
     #mapLocationPinsBtn .sf-symbol,
+    #mapMatchNotesBtn .sf-symbol,
     #mapFitBtn .sf-symbol {
       width: 20px;
       height: 20px;
@@ -1303,7 +1304,14 @@
     .map-states .state-tile {
       cursor: pointer;
       fill: var(--state-fill, var(--state-empty));
+      transition: opacity .15s ease;
     }
+
+    .map-states .state-tile.is-filter-dimmed {
+      opacity: .35;
+    }
+
+    .map-location-marker.is-filter-dimmed { display: none; }
 
     .map-states .inset-frame {
       fill: none;
@@ -5858,7 +5866,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.39</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.43</span>
                 <span id="betaPill" class="beta-pill hidden" title="This is the beta deploy">BETA</span>
               </div>
             </div>
@@ -5930,6 +5938,10 @@
             <div class="map-action-group map-toggle-group">
               <button id="mapLocationPinsBtn" class="toggle-btn" type="button" aria-pressed="true"
                 aria-label="Show location note pins" data-shortcut="3">View Locations</button>
+            </div>
+            <div class="map-action-group map-toggle-group">
+              <button id="mapMatchNotesBtn" class="toggle-btn" type="button" aria-pressed="true"
+                aria-label="Apply note filters to the map" data-shortcut="4">Match Notes</button>
             </div>
             <div class="map-action-group map-label-group">
               <div class="segmented map-label-toggle" aria-label="Map labels">
@@ -7283,7 +7295,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.0.0.39";
+    const APP_VERSION = "3.0.0.43";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -8443,7 +8455,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.0.0.39",
+        version: "3.0.0.43",
         date: "2026-05-24",
         title: "3.0 Development Begins",
         summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, mapped note locations, a guided install flow, and a beta environment indicator.",
@@ -8564,7 +8576,11 @@
           "Refactored the Tip Jar to a data-driven tier list: a single TIP_TIERS array of {amount, label, tagline, icon, note, iconScale} feeds renderTipJarTiers() into #tipTierGrid at init, with each drink SVG kept as its own __DRINK_* constant. Editing or reordering tiers is now one line per change.",
           "Tier click handling switched to event delegation on #tipTierGrid so future re-renders of the tier list can't lose their click bindings.",
           "House Rail ($10) and Next Round ($25) glyphs now render at 1.3x scale via a per-tier iconScale, so their visually-padded source SVGs read at a comparable size to the rest of the drink set.",
-          "Fixed the Tip Jar tier SVG max-width and max-height caps so they multiply by the per-tier iconScale variable instead of clamping to a fixed 75% of the chip; the House Rail and Next Round 1.3x scale now actually grows the rendered glyph."
+          "Fixed the Tip Jar tier SVG max-width and max-height caps so they multiply by the per-tier iconScale variable instead of clamping to a fixed 75% of the chip; the House Rail and Next Round 1.3x scale now actually grows the rendered glyph.",
+          "Added a Match Notes toggle to the map header (right of View Locations) that applies the active notes filters — search query, level filter, icon filter, coordinate filter, and excluded-visibility — to the map view. Non-matching states dim to 35% opacity and location pins for non-matching notes are hidden. Off by default; persisted in saved settings; keyboard shortcut 4.",
+          "Notes filter mutations — search input, level chip toggle, icon chip toggle, coordinate-filter cycle, and excluded-visibility toggle — now refresh the map live when Match Notes is on, so the map view stays in sync with the notes panel as you change filters.",
+          "Match Notes now honors the coordinate filter (All / Mapped / Missing) alongside the other filters. State dimming uses the existing stateMatchesCoordinateFilter helper; location pins respect the per-note variant so Mapped keeps pins, Missing hides them, and All shows everything.",
+          "Match Notes now defaults to on so the map reflects the active notes filters out of the box. Existing users without a saved preference for this setting get migrated to on; explicit off choices are preserved."
         ]
       },
       {
@@ -9142,6 +9158,7 @@
           dateStyle: "alpha",
           mapLabels: "none",
           mapLocationPinsVisible: true,
+          mapFollowsNotesFilters: true,
           mapSplitRatio: .66,
           mapViewMode: "fit",
           mapZoom: 1,
@@ -9412,6 +9429,7 @@
       if (!["numeric", "alpha"].includes(next.settings.dateStyle)) next.settings.dateStyle = "alpha";
       if (!["none", "abbr", "name"].includes(next.settings.mapLabels)) next.settings.mapLabels = "none";
       if (typeof next.settings.mapLocationPinsVisible !== "boolean") next.settings.mapLocationPinsVisible = true;
+      if (typeof next.settings.mapFollowsNotesFilters !== "boolean") next.settings.mapFollowsNotesFilters = true;
       if (!LEGEND_POSITION_ORDER.includes(next.settings.legendPosition)) next.settings.legendPosition = "right-top";
       if (!["scroll", "fit"].includes(next.settings.mapViewMode)) next.settings.mapViewMode = next.settings.mapFitMode === true ? "fit" : "scroll";
       next.settings.mapZoom = clampMapZoom(next.settings.mapZoom);
@@ -9983,6 +10001,9 @@
       const pinsOn = state.settings.mapLocationPinsVisible !== false;
       setButtonLabel("#mapLocationPinsBtn", pinsOn ? __MAPPIN_CIRCLE : __MAPPIN_SLASH_CIRCLE, pinsOn ? "View Locations" : "Hide Locations", pinsOn ? "Hide location note pins" : "Show location note pins", pinsOn ? "Hide location note pins" : "Show location note pins");
       $("#mapLocationPinsBtn").setAttribute("aria-pressed", pinsOn ? "true" : "false");
+      const matchOn = state.settings.mapFollowsNotesFilters === true;
+      setButtonLabel("#mapMatchNotesBtn", matchOn ? __LINE_3_HORIZONTAL_DECREASE_CIRCLE : __LINE_3_HORIZONTAL_CIRCLE, matchOn ? "Filtered" : "Match Notes", matchOn ? "Stop applying note filters to the map" : "Apply note filters to the map", matchOn ? "Stop applying note filters to the map" : "Apply note filters to the map");
+      $("#mapMatchNotesBtn").setAttribute("aria-pressed", matchOn ? "true" : "false");
       setButtonLabel("#mapZoomOutBtn", __MINUS_CIRCLE, "Zoom Out", "Zoom map out", "Zoom map out");
       setButtonLabel("#mapZoomResetBtn", __ARROW_COUNTERCLOCKWISE_CIRCLE, "Reset", "Reset map zoom", "Reset map zoom");
       setButtonLabel("#mapZoomInBtn", __PLUS_CIRCLE, "Zoom In", "Zoom map in", "Zoom map in");
@@ -10338,13 +10359,41 @@
       scheduleMainLayoutSync();
     }
 
+    function stateMatchesActiveNotesFilters(abbr) {
+      return stateMatchesLevelFilter(abbr)
+        && stateMatchesVisitTypeFilter(abbr)
+        && stateMatchesExcludedVisibility(abbr)
+        && stateMatchesCoordinateFilter(abbr)
+        && stateMatchesNotesSearch(abbr);
+    }
+
+    function noteMatchesCoordinateFilter(note) {
+      if (notesCoordinateFilter === "mapped") return Boolean(validNoteCoordinates(note));
+      if (notesCoordinateFilter === "missing") return !validNoteCoordinates(note);
+      return true;
+    }
+
+    // Called from every notes-filter mutation site. Always refreshes the
+    // notes panel; also refreshes the map when the Match Notes toggle is on
+    // so dimming + pin filtering stay in sync with the active filters.
+    function refreshAfterNotesFilterChange() {
+      renderNotesPanel();
+      if (state.settings.mapFollowsNotesFilters === true) renderMap();
+    }
+
     function renderMap() {
+      const filterMode = state.settings.mapFollowsNotesFilters === true && !notesPanelState;
       $$(".state-tile").forEach(tile => {
         const abbr = tile.dataset.abbr;
         const level = dominantLevel(abbr);
         const names = stateLevelNames(abbr);
         tile.style.setProperty("--state-fill", level ? level.color : "var(--state-empty)");
         tile.setAttribute("aria-label", `${tile.dataset.name}: ${names.length ? names.join(", ") : "Unvisited"}`);
+        if (filterMode && level && !stateMatchesActiveNotesFilters(abbr)) {
+          tile.classList.add("is-filter-dimmed");
+        } else {
+          tile.classList.remove("is-filter-dimmed");
+        }
       });
       renderMapLabels();
       renderLocationMarkers();
@@ -10383,7 +10432,9 @@
     }
 
     function locationMarkerItems() {
+      const filterMode = state.settings.mapFollowsNotesFilters === true && !notesPanelState;
       return STATES.flatMap(([abbr]) => (state.notes[abbr] || []).map(note => {
+        if (filterMode && !(stateMatchesActiveNotesFilters(abbr) && noteMatchesAllFilters(note) && noteMatchesCoordinateFilter(note))) return null;
         const point = projectNoteLocation(abbr, note);
         if (!point) return null;
         const coords = validNoteCoordinates(note);
@@ -10953,7 +11004,7 @@
       else noteLevelFilters.add(levelId);
       save();
       renderLegend();
-      renderNotesPanel();
+      refreshAfterNotesFilterChange();
     }
 
     function setLegendPosition(position, persist = true) {
@@ -11286,7 +11337,7 @@
       notesCoordinateFilter = order[(index + 1) % order.length] || "all";
       save();
       syncButtonLabels();
-      renderNotesPanel();
+      refreshAfterNotesFilterChange();
     }
 
     function noteMatchesAllFilters(note) {
@@ -11803,7 +11854,7 @@
       if (noteVisitTypeFilters.has(typeId)) noteVisitTypeFilters.delete(typeId);
       else noteVisitTypeFilters.add(typeId);
       save();
-      renderNotesPanel();
+      refreshAfterNotesFilterChange();
     }
 
     function soloNoteVisitTypeFilter(typeId) {
@@ -11815,7 +11866,7 @@
         noteVisitTypeFilters = new Set([typeId]);
       }
       save();
-      renderNotesPanel();
+      refreshAfterNotesFilterChange();
     }
 
     function locationTypeTag(abbr) {
@@ -14393,6 +14444,7 @@
         1: () => updateSetting("mapLabels", "abbr"),
         2: () => updateSetting("mapLabels", "name"),
         3: () => $("#mapLocationPinsBtn").click(),
+        4: () => $("#mapMatchNotesBtn").click(),
         x: () => {
           const clearState = $("#notesPanelClearBtn");
           if (notesPanelOpen && notesPanelState && clearState) clearState.click();
@@ -14498,6 +14550,7 @@
       $("#labelsAbbrBtn").addEventListener("click", () => updateSetting("mapLabels", "abbr"));
       $("#labelsNameBtn").addEventListener("click", () => updateSetting("mapLabels", "name"));
       $("#mapLocationPinsBtn").addEventListener("click", () => updateSetting("mapLocationPinsVisible", state.settings.mapLocationPinsVisible === false));
+      $("#mapMatchNotesBtn").addEventListener("click", () => updateSetting("mapFollowsNotesFilters", state.settings.mapFollowsNotesFilters !== true));
       $("#mapToggleBtn").addEventListener("click", toggleMapPanel);
       $("#legendToggleBtn").addEventListener("click", toggleLegendPanel);
       $("#notesToggleBtn").addEventListener("click", toggleNotesPanel);
@@ -14509,7 +14562,7 @@
       });
       $("#notesStateSearch").addEventListener("input", event => {
         notesSearchQuery = event.target.value;
-        renderNotesPanel();
+        refreshAfterNotesFilterChange();
       });
       $("#notesSortAlphaBtn").addEventListener("click", () => {
         notesSortMode = "alpha";
@@ -14530,7 +14583,7 @@
         notesHideExcludedOnly = !notesHideExcludedOnly;
         save();
         syncButtonLabels();
-        renderNotesPanel();
+        refreshAfterNotesFilterChange();
       });
       $("#notesCoordinateFilterBtn").addEventListener("click", () => cycleNotesCoordinateFilter());
       $("#notesViewExpandedBtn").addEventListener("click", () => {
