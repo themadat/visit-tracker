@@ -3931,6 +3931,11 @@
       padding: 0;
     }
 
+    .notes-icon-settings-item {
+      display: flex;
+      align-items: center;
+    }
+
     .notes-icon-filter {
       display: inline-grid;
       place-items: center;
@@ -4272,6 +4277,10 @@
     }
 
     .note-tag-settings-inline {
+      align-self: center;
+    }
+
+    .notes-tag-settings-inline {
       align-self: center;
     }
 
@@ -5959,7 +5968,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.45</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.46</span>
                 <span id="betaPill" class="beta-pill hidden" title="This is the beta deploy">BETA</span>
               </div>
             </div>
@@ -6581,8 +6590,6 @@
             Category Grouping | Color-Coded Excluded and Coordinate Filters.</small>
           <div id="notesIconFilterRow" class="notes-icon-filter-row">
             <ol id="notesIconFilters" class="notes-icon-filters" aria-label="Filter notes by icon"></ol>
-            <button id="notesTagSettingsMiniBtn" class="hint-dot-btn" type="button"
-              aria-label="Open location tag settings" title="Open location tag settings"><span>•••</span></button>
           </div>
           <small id="notesIconFilterHint" class="notes-icon-filter-hint" data-hint
             data-hint-key="notes-icon-filter-help">
@@ -7393,7 +7400,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.0.0.45";
+    const APP_VERSION = "3.0.0.46";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -8547,7 +8554,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.0.0.45",
+        version: "3.0.0.46",
         date: "2026-05-24",
         title: "3.0 Development Begins",
         summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, mapped note locations, a guided install flow, and a beta environment indicator.",
@@ -8674,7 +8681,8 @@
           "Match Notes now honors the coordinate filter (All / Mapped / Missing) alongside the other filters. State dimming uses the existing stateMatchesCoordinateFilter helper; location pins respect the per-note variant so Mapped keeps pins, Missing hides them, and All shows everything.",
           "Match Notes now defaults to on so the map reflects the active notes filters out of the box. Existing users without a saved preference for this setting get migrated to on; explicit off choices are preserved.",
           "Roadmap cards now use subtle priority coloring with a small colored pill and left-edge accent for P0 through P3.",
-          "Polished Add as App with cleaner icon cards, matched two-column guide widths, centered step rows, top-positioned Mac icon reload notice, one-open other-device guides, and Developer Mode install-device simulation."
+          "Polished Add as App with cleaner icon cards, matched two-column guide widths, centered step rows, top-positioned Mac icon reload notice, one-open other-device guides, and Developer Mode install-device simulation.",
+          "Moved the Notes panel tag-settings ellipsis into the icon filter chip flow so it sits directly after the last visible chip."
         ]
       },
       {
@@ -11905,7 +11913,12 @@
             ${type.icon}
           </button>
         </li>
-      `).join("");
+      `).join("") + `
+        <li class="notes-icon-settings-item">
+          <button id="notesTagSettingsMiniBtn" class="hint-dot-btn notes-tag-settings-inline" type="button"
+            aria-label="Open location tag settings" title="Open location tag settings"><span>•••</span></button>
+        </li>
+      `;
       $$("[data-filter-visit-type]", list).forEach(button => {
         let pressTimer = 0;
         button.addEventListener("click", event => {
@@ -11942,6 +11955,7 @@
           });
         });
       });
+      $("#notesTagSettingsMiniBtn", list)?.addEventListener("click", () => openVisitTagSettings("settings"));
     }
 
     function toggleNoteVisitTypeFilter(typeId) {
@@ -14742,7 +14756,7 @@
         renderNotesPanel();
       });
       $("#copyNotesTextBtn").addEventListener("click", () => copyNotesText());
-      $("#notesTagSettingsMiniBtn").addEventListener("click", () => openVisitTagSettings("settings"));
+      $("#notesTagSettingsMiniBtn")?.addEventListener("click", () => openVisitTagSettings("settings"));
       $("#closeDrawerBtn").addEventListener("click", closeDrawer);
       $("#clearStateLevelsBtn").addEventListener("click", clearSelectedStateLevels);
       $("#addNoteBtn").addEventListener("click", () => openNoteDialog());
