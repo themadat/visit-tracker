@@ -5198,7 +5198,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.18</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.19</span>
                 <span id="betaPill" class="beta-pill hidden" title="This is the beta deploy">BETA</span>
               </div>
             </div>
@@ -6130,7 +6130,7 @@
           </div>
           <small id="noteGeocodeStatus" class="note-geocode-status" data-hint data-hint-key="note-location-help">
             Use Locate to place this note on the map, or enter latitude/longitude manually. Nearby markers cluster and
-            use the first note icon.</small>
+            use the highest-priority earliest note icon.</small>
         </div>
       </div>
       <div class="note-field-grid">
@@ -6393,7 +6393,8 @@
               people, purpose, and details.</li>
             <li>Use the Locate button beside Where Specifically to look up latitude/longitude for a note. You can edit
               or enter coordinates manually, and mapped notes appear as markers on the map. Single markers open the
-              note; grouped markers zoom in first or open a picker when multiple notes share a place.</li>
+              note; grouped markers use the highest-priority earliest note icon, zoom when they can split, or open a
+              picker when they are too close.</li>
             <li>Use Location Tags to add icon labels to notes. Settings lets you rename, reorder, shortcut, and search
               the optional circle icon catalog.</li>
             <li>Use the eye button in Notes to show or hide locations that only have levels excluded from stats.</li>
@@ -6410,8 +6411,8 @@
             be shown or hidden from the Legend. Palette order follows the current Legend priority.</p>
           <p><b>Structured notes:</b> Notes can include Where Specifically, What For, Who With, Additional Details, and
             multiple icon labels. Use Locate to save latitude/longitude and show the note on the map; nearby markers
-            cluster, and the first saved location/icon represents the cluster. Multi-note marker lists can open any note
-            or add a new note at the first mapped location. Use the Tags button in the note editor or Settings to
+            cluster, and the highest-priority earliest note represents the cluster. Multi-note marker lists can open any
+            note or add a new note at the top mapped location. Use the Tags button in the note editor or Settings to
             choose, rename, sort, shortcut, and search optional labels from the circle icon catalog.</p>
           <p><b>What's New:</b> Returning users may see a compact banner and red dots when a major feature release is
             available. Open What's New or dismiss the banner to clear it.</p>
@@ -6624,7 +6625,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.0.0.18";
+    const APP_VERSION = "3.0.0.19";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7768,7 +7769,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.0.0.18",
+        version: "3.0.0.19",
         date: "2026-05-23",
         title: "3.0 Development Begins",
         summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, mapped note locations, a guided install flow, and a beta environment indicator.",
@@ -7802,11 +7803,11 @@
           "Added Venmo app/web launch helpers for tip links without adding a payment SDK or tracker dependency.",
           "Added a gift symbol for the Tip control, tightened toolbar symbol sizing, and removed completed roadmap ticket WISH-023 from seeded wishlist data.",
           "Added note latitude/longitude fields, safe migration for older notes, JSON import/export compatibility, text-export coordinate lines, and broader Notes search coverage.",
-          "Added map marker rendering for coordinate-backed notes, with nearby marker clustering where the first saved location and icon represent the group.",
+          "Added map marker rendering for coordinate-backed notes, with nearby marker clustering represented by a visible marker color and icon.",
           "Added an online coordinate lookup from Where Specifically plus location name, with manual latitude/longitude fallback for offline use or override.",
           "Reworked the note location fields so coordinates sit beside Where Specifically, geocode status sits under latitude/longitude, and What For/Who With get their own row.",
           "Improved mapped marker clicks: single-note markers open the note, multi-note same-location markers open a picker, and nearby clusters zoom in before falling back to the picker.",
-          "Added an Add Note Here action that pre-fills the first marker location's coordinates, level, location name, and note icons.",
+          "Added an Add Note Here action that pre-fills the top marker location's coordinates, level, location name, and note icons.",
           "Updated Help Center guidance and note hints for coordinate lookup, manual overrides, and clustered map markers.",
           "Removed completed roadmap ticket WISH-030 from seeded wishlist data.",
           "Added an Install Trail Log button between Tip and Settings with a guided dialog that pairs a sleek light/dark icon picker, step-by-step Add to Home Screen instructions for iPhone and iPad, Add to Dock instructions for Mac, and Install app instructions for Android.",
@@ -7828,7 +7829,9 @@
           "Switched the no-icon indicator in visit notes and expanded rows to the outline circle symbol, colored by the note's level, instead of a solid filled dot.",
           "Added a View Locations toggle to the map header to the right of the Labels segmented group, defaulting to on. When off, location note pins are hidden on the map. Persists in the saved settings.",
           "Added a P3 wishlist item to split the app source into /src with separate HTML, CSS, JS, icon constants, release notes markdown, and wishlist markdown, plus a build step that emits the existing single-file deploy.",
-          "Moved the View Locations toggle between Fit Map and the Labels segmented group, and dropped the blue pressed-state highlight since the pin and pin-slash icons already communicate on/off state."
+          "Moved the View Locations toggle between Fit Map and the Labels segmented group, and dropped the blue pressed-state highlight since the pin and pin-slash icons already communicate on/off state.",
+          "Clustered map pins now use the highest-priority level, then earliest note date, to choose the visible color, icon, and title.",
+          "Nearby mapped pins that are too close to split cleanly at max zoom now open the picker instead of continuing a dead-end zoom path."
         ]
       },
       {
@@ -9596,7 +9599,7 @@
         if (!point) return null;
         const coords = validNoteCoordinates(note);
         const level = levelById(note.levelId) || dominantLevel(abbr);
-        const firstType = (note.visitTypes || []).find(id => visitTypeMeta(id));
+        const firstType = markerVisitTypeId(note);
         return {
           abbr,
           note,
@@ -9605,6 +9608,7 @@
           lat: coords.lat,
           lng: coords.lng,
           locationKey: markerLocationKey(abbr, coords),
+          levelId: level?.id || "",
           color: level?.color || "var(--accent)",
           iconId: firstType,
           label: `${STATE_NAMES[abbr]}: ${note.where || note.geocodeLabel || noteSummary(note)}`
@@ -9616,8 +9620,48 @@
       return `${abbr}:${Number(coords.lat).toFixed(4)},${Number(coords.lng).toFixed(4)}`;
     }
 
+    function markerVisitTypeRank(id) {
+      const index = state.visitTypes.findIndex(type => type.id === id);
+      return index === -1 ? Number.MAX_SAFE_INTEGER : index;
+    }
+
+    function markerVisitTypeId(note) {
+      const ids = (note.visitTypes || []).filter(id => visitTypeMeta(id));
+      return ids.sort((a, b) => markerVisitTypeRank(a) - markerVisitTypeRank(b) || a.localeCompare(b))[0] || "";
+    }
+
+    function markerLevelRank(item) {
+      const index = state.levels.findIndex(level => level.id === item.levelId);
+      return index === -1 ? Number.MAX_SAFE_INTEGER : index;
+    }
+
+    function markerDateRank(item) {
+      return item.note.date || "9999-99-99";
+    }
+
+    function compareMarkerItems(a, b) {
+      return markerLevelRank(a) - markerLevelRank(b)
+        || markerDateRank(a).localeCompare(markerDateRank(b))
+        || markerVisitTypeRank(a.iconId) - markerVisitTypeRank(b.iconId)
+        || STATE_NAMES[a.abbr].localeCompare(STATE_NAMES[b.abbr])
+        || noteSummary(a.note).localeCompare(noteSummary(b.note))
+        || String(a.note.id || "").localeCompare(String(b.note.id || ""));
+    }
+
+    function sortedMarkerItems(items) {
+      return items.slice().sort(compareMarkerItems);
+    }
+
+    function markerClusterRepresentative(cluster) {
+      return sortedMarkerItems(cluster.items)[0] || cluster.items[0];
+    }
+
+    function markerClusterThresholdForZoom(zoom) {
+      return Math.max(2.5, 14 / Math.max(1, zoom));
+    }
+
     function markerClusterThreshold() {
-      return mapFitMode ? 14 : Math.max(2.5, 14 / Math.max(1, mapZoom));
+      return mapFitMode ? 14 : markerClusterThresholdForZoom(mapZoom);
     }
 
     function clusteredLocationMarkers(items) {
@@ -9635,8 +9679,30 @@
       return new Set(cluster.items.map(item => item.locationKey));
     }
 
+    function markerMaxZoomThreshold() {
+      return markerClusterThresholdForZoom(MAP_ZOOM_MAX);
+    }
+
+    function markerClusterMinDistinctDistance(cluster) {
+      let min = Infinity;
+      cluster.items.forEach((item, index) => {
+        cluster.items.slice(index + 1).forEach(other => {
+          if (item.locationKey === other.locationKey) return;
+          min = Math.min(min, Math.hypot(item.x - other.x, item.y - other.y));
+        });
+      });
+      return Number.isFinite(min) ? min : 0;
+    }
+
+    function markerClusterCanSeparateAtMaxZoom(cluster) {
+      return markerClusterMinDistinctDistance(cluster) >= markerMaxZoomThreshold();
+    }
+
     function canZoomMarkerCluster(cluster) {
-      return cluster.items.length > 1 && clusterLocationKeys(cluster).size > 1 && (mapFitMode || mapZoom < MAP_ZOOM_MAX - .001);
+      return cluster.items.length > 1
+        && clusterLocationKeys(cluster).size > 1
+        && markerClusterCanSeparateAtMaxZoom(cluster)
+        && (mapFitMode || mapZoom < MAP_ZOOM_MAX - .001);
     }
 
     function renderLocationMarkers() {
@@ -9646,19 +9712,20 @@
       if (state.settings.mapLocationPinsVisible === false) return;
       const svgNS = "http://www.w3.org/2000/svg";
       clusteredLocationMarkers(locationMarkerItems()).forEach(cluster => {
-        const first = cluster.items[0];
+        const first = markerClusterRepresentative(cluster);
         const count = cluster.items.length;
+        const label = count > 1 ? `${count} nearby locations. Top: ${first.label}` : first.label;
         const group = document.createElementNS(svgNS, "g");
         group.classList.add("map-location-marker");
         group.dataset.markerState = first.abbr;
         group.dataset.markerNote = first.note.id;
         group.style.setProperty("--marker-color", first.color);
-        group.setAttribute("transform", `translate(${cluster.x.toFixed(1)} ${cluster.y.toFixed(1)})`);
+        group.setAttribute("transform", `translate(${first.x.toFixed(1)} ${first.y.toFixed(1)})`);
         group.setAttribute("role", "button");
         group.setAttribute("tabindex", "0");
-        group.setAttribute("aria-label", count > 1 ? `${count} nearby locations. First: ${first.label}` : first.label);
+        group.setAttribute("aria-label", label);
         group.innerHTML = `
-          <title>${escapeHtml(count > 1 ? `${count} nearby locations. First: ${first.label}` : first.label)}</title>
+          <title>${escapeHtml(label)}</title>
           <circle class="marker-ring" r="9"></circle>
           <circle class="marker-core" r="6.3"></circle>
         `;
@@ -9742,15 +9809,18 @@
       centerMapAfterRender = false;
       persistMapViewSettings();
       render();
-      requestAnimationFrame(() => requestAnimationFrame(() => scrollMapToSvgPoint(cluster.x, cluster.y)));
+      const target = markerClusterRepresentative(cluster);
+      requestAnimationFrame(() => requestAnimationFrame(() => scrollMapToSvgPoint(target.x, target.y)));
     }
 
     function markerDialogSummary(cluster) {
       const count = cluster.items.length;
       const samePlace = clusterLocationKeys(cluster).size === 1;
-      const first = cluster.items[0];
+      const first = markerClusterRepresentative(cluster);
       return samePlace
         ? `${count} note${count === 1 ? "" : "s"} mapped to ${first.note.where || first.note.geocodeLabel || STATE_NAMES[first.abbr]}.`
+        : !markerClusterCanSeparateAtMaxZoom(cluster)
+          ? `${count} mapped notes are too close to split cleanly. Pick one below.`
         : `${count} nearby mapped notes. Zoom in to split close locations, or pick one below.`;
     }
 
@@ -9773,7 +9843,7 @@
     }
 
     function openMarkerDialog(cluster) {
-      markerDialogItems = cluster.items.slice();
+      markerDialogItems = sortedMarkerItems(cluster.items);
       const count = markerDialogItems.length;
       $("#markerDialogTitle").textContent = count === 1 ? "Mapped Note" : "Mapped Notes";
       $("#markerDialogSubtitle").textContent = clusterLocationKeys(cluster).size === 1 ? "Same location" : "Nearby cluster";
