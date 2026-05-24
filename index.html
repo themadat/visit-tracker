@@ -5968,7 +5968,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.47</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.48</span>
                 <span id="betaPill" class="beta-pill hidden" title="This is the beta deploy">BETA</span>
               </div>
             </div>
@@ -7419,7 +7419,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.0.0.47";
+    const APP_VERSION = "3.0.0.48";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -8585,7 +8585,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.0.0.47",
+        version: "3.0.0.48",
         date: "2026-05-24",
         title: "3.0 Development Begins",
         summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, mapped note locations, a guided install flow, and a beta environment indicator.",
@@ -8715,7 +8715,8 @@
           "Polished Add as App with cleaner icon cards, matched two-column guide widths, centered step rows, top-positioned Mac icon reload notice, one-open other-device guides, and Developer Mode install-device simulation.",
           "Moved the Notes panel tag-settings ellipsis into the icon filter chip flow so it sits directly after the last visible chip.",
           "Reorganized Help Center documentation and FAQ into focused Toolbar, Map, Legend, Notes, and Other sections, with refreshed hints for the current toolbar, map, legend, and notes controls.",
-          "Added roadmap ticket WISH-041 for supporting more Legend levels beyond the current five-level cap."
+          "Added roadmap ticket WISH-041 for supporting more Legend levels beyond the current five-level cap.",
+          "Add as App button now applies a per-platform iconScale via the same CSS-variable technique used for the tip-jar tiers. Laptop and Desktop SVGs (wide aspect ratios) scale up to 1.55x and 1.45x so their visual mass in the 40px toolbar button is comparable to the squarer iPhone/iPad and Android glyphs at 1.15x."
         ]
       },
       {
@@ -10123,7 +10124,10 @@
     function syncButtonLabels() {
       setButtonLabel("#renameBtn", __PENCIL, "Rename");
       setButtonLabel("#tipJarBtn", __GIFT_FILL, "Tip", "Send a tip", "Buy me a Drink!");
-      setButtonLabel("#addToHomeBtn", installPlatformIcon(activeInstallPlatform()), "Add as App", "Add as App", "Add as App");
+      const installPlatform = activeInstallPlatform();
+      const installIconScale = INSTALL_BUTTON_ICON_SCALE[installPlatform] || 1;
+      $("#addToHomeBtn")?.style.setProperty("--install-icon-scale", installIconScale);
+      setButtonLabel("#addToHomeBtn", installPlatformIcon(installPlatform), "Add as App", "Add as App", "Add as App");
       setButtonLabel("#installDialogCloseBtn", __XMARK, "Close");
       setButtonLabel("#settingsBtn", __GEARSHAPE_FILL, "Settings");
       setButtonLabel("#mapToggleBtn", __MAP_FILL, "Map", "Toggle Map Panel", "Toggle Map Panel");
@@ -13867,6 +13871,18 @@
       const labels = { iphone: "iPhone", ipad: "iPad", laptop: "Laptop", desktop: "Desktop" };
       return `${labels[det.type] || det.type}${det.certain ? "" : " (guessed)"}`;
     }
+
+    // Per-platform iconScale for the Add as App button. The four platform
+    // icons have very different viewBox aspect ratios; tall/square ones paint
+    // at full 24px in the 40px button, but the wide laptop/desktop SVGs paint
+    // at only 15-17px tall, looking visually small. Scaling those up via a
+    // CSS variable on the button mirrors the tip-tier iconScale technique.
+    const INSTALL_BUTTON_ICON_SCALE = {
+      idevice: 1.15,
+      android: 1.15,
+      mac: 1.55,
+      pc: 1.45,
+    };
 
     function detectInstallPlatform() {
       const ua = navigator.userAgent || "";
