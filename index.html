@@ -2590,6 +2590,58 @@
       margin: 0;
     }
 
+    .wishlist-card {
+      border-left: 4px solid var(--priority-color, var(--line));
+      box-shadow: inset 1px 0 0 color-mix(in srgb, var(--priority-color, var(--line)) 28%, transparent);
+    }
+
+    .wishlist-card[data-priority="P0"] {
+      --priority-color: #16a34a;
+      --priority-bg: color-mix(in srgb, #16a34a 14%, var(--surface));
+      --priority-text: #166534;
+    }
+
+    .wishlist-card[data-priority="P1"] {
+      --priority-color: #eab308;
+      --priority-bg: color-mix(in srgb, #eab308 18%, var(--surface));
+      --priority-text: #854d0e;
+    }
+
+    .wishlist-card[data-priority="P2"] {
+      --priority-color: #f97316;
+      --priority-bg: color-mix(in srgb, #f97316 16%, var(--surface));
+      --priority-text: #9a3412;
+    }
+
+    .wishlist-card[data-priority="P3"] {
+      --priority-color: #ef4444;
+      --priority-bg: color-mix(in srgb, #ef4444 14%, var(--surface));
+      --priority-text: #991b1b;
+    }
+
+    [data-theme="dark"] .wishlist-card[data-priority="P0"] {
+      --priority-text: #86efac;
+    }
+
+    [data-theme="dark"] .wishlist-card[data-priority="P1"] {
+      --priority-text: #fde68a;
+    }
+
+    [data-theme="dark"] .wishlist-card[data-priority="P2"] {
+      --priority-text: #fdba74;
+    }
+
+    [data-theme="dark"] .wishlist-card[data-priority="P3"] {
+      --priority-text: #fca5a5;
+    }
+
+    .priority-pill {
+      border-color: color-mix(in srgb, var(--priority-color, var(--line)) 58%, var(--line));
+      background: var(--priority-bg, var(--surface-2));
+      color: var(--priority-text, var(--text));
+      font-weight: 900;
+    }
+
     #tab-whatsnew .roadmap-sticky-controls,
     #tab-whatsnew .wishlist-list,
     #tab-whatsnew .wishlist-card,
@@ -2669,6 +2721,10 @@
     .tag {
       color: var(--muted);
       font-size: .82rem;
+    }
+
+    .tag.priority-pill {
+      color: var(--priority-text, var(--text));
     }
 
     .marker-dialog-summary {
@@ -5866,7 +5922,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.43</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.44</span>
                 <span id="betaPill" class="beta-pill hidden" title="This is the beta deploy">BETA</span>
               </div>
             </div>
@@ -7295,7 +7351,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.0.0.43";
+    const APP_VERSION = "3.0.0.44";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -8455,7 +8511,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.0.0.43",
+        version: "3.0.0.44",
         date: "2026-05-24",
         title: "3.0 Development Begins",
         summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, mapped note locations, a guided install flow, and a beta environment indicator.",
@@ -8580,7 +8636,8 @@
           "Added a Match Notes toggle to the map header (right of View Locations) that applies the active notes filters — search query, level filter, icon filter, coordinate filter, and excluded-visibility — to the map view. Non-matching states dim to 35% opacity and location pins for non-matching notes are hidden. Off by default; persisted in saved settings; keyboard shortcut 4.",
           "Notes filter mutations — search input, level chip toggle, icon chip toggle, coordinate-filter cycle, and excluded-visibility toggle — now refresh the map live when Match Notes is on, so the map view stays in sync with the notes panel as you change filters.",
           "Match Notes now honors the coordinate filter (All / Mapped / Missing) alongside the other filters. State dimming uses the existing stateMatchesCoordinateFilter helper; location pins respect the per-note variant so Mapped keeps pins, Missing hides them, and All shows everything.",
-          "Match Notes now defaults to on so the map reflects the active notes filters out of the box. Existing users without a saved preference for this setting get migrated to on; explicit off choices are preserved."
+          "Match Notes now defaults to on so the map reflects the active notes filters out of the box. Existing users without a saved preference for this setting get migrated to on; explicit off choices are preserved.",
+          "Roadmap cards now use subtle priority coloring with a small colored pill and left-edge accent for P0 through P3."
         ]
       },
       {
@@ -13386,14 +13443,14 @@
         return b._index - a._index;
       });
       $("#wishlistList").innerHTML = items.length ? items.map(wish => `
-        <article class="wishlist-card">
+        <article class="wishlist-card" data-priority="${escapeHtml(wish.priority || "")}">
           <div class="roadmap-card-title">
             <span class="tag">${escapeHtml(wish.ticketId)}</span><b>${escapeHtml(wish.title)}</b>
           </div>
           <p>${escapeHtml(wish.description || "No description")}</p>
           <div class="chips">
             <span class="tag">Category: ${escapeHtml(wish.category || "General")}</span>
-            <span class="tag">Priority: ${escapeHtml(wish.priority)}</span>
+            <span class="tag priority-pill">Priority: ${escapeHtml(wish.priority)}</span>
             <span class="tag">Target: ${escapeHtml(wishlistTargetLabel(wish))}</span>
             <span class="tag">Effort: ${escapeHtml(wish.effort)}</span>
           </div>
