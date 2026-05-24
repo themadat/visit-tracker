@@ -3002,11 +3002,9 @@
     .tip-tier {
       display: grid;
       grid-template-columns: auto minmax(0, 1fr);
-      grid-template-rows: auto auto;
-      column-gap: .7rem;
-      row-gap: .35rem;
+      column-gap: .75rem;
       align-items: center;
-      padding: .75rem .8rem;
+      padding: .75rem .85rem;
       text-align: left;
       border: 1px solid var(--line);
       border-radius: 14px;
@@ -3045,26 +3043,24 @@
 
     .tip-tier-icon {
       grid-column: 1;
-      grid-row: 1 / span 2;
-      width: 38px;
-      height: 38px;
+      width: 42px;
+      height: 42px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      border-radius: 10px;
+      border-radius: 11px;
       background: color-mix(in srgb, var(--accent) 14%, var(--surface-2) 86%);
       color: var(--accent-2);
       flex: 0 0 auto;
     }
 
     .tip-tier-icon svg {
-      width: 22px;
-      height: 22px;
+      width: 24px;
+      height: 24px;
     }
 
     .tip-tier-text {
       grid-column: 2;
-      grid-row: 1;
       display: grid;
       gap: .08rem;
       min-width: 0;
@@ -3079,32 +3075,22 @@
     }
 
     .tip-tier-label {
-      color: var(--muted);
-      font-size: .82rem;
+      color: var(--text);
+      font-size: .86rem;
       line-height: 1.2;
-      font-weight: 600;
+      font-weight: 700;
     }
 
-    .tip-tier-hotkey {
-      grid-column: 2;
-      grid-row: 2;
-      display: inline-flex;
-      align-items: center;
-      gap: .1rem;
-    }
-
-    .tip-tier-hotkey kbd {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 16px;
-      height: 18px;
-      padding: 0 .25rem;
-      border: 1px solid color-mix(in srgb, var(--line) 65%, var(--muted) 35%);
-      border-radius: 5px;
-      background: color-mix(in srgb, var(--surface-2) 88%, var(--text) 4%);
+    .tip-tier-tagline {
       color: var(--muted);
-      font: 600 .68rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .74rem;
+      line-height: 1.3;
+      font-weight: 500;
+      font-style: italic;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .tip-other {
@@ -3159,9 +3145,9 @@
     #tipOtherSendBtn {
       display: inline-flex;
       align-items: center;
-      gap: .4rem;
+      gap: .5rem;
       min-height: 40px;
-      padding: 0 1rem;
+      padding: 0 .85rem;
       font-weight: 800;
       letter-spacing: .01em;
     }
@@ -3170,6 +3156,47 @@
       width: 18px;
       height: 18px;
     }
+
+    .tip-send-icon {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      line-height: 0;
+    }
+
+    .tip-send-icon:empty {
+      display: none !important;
+    }
+
+    .tip-send-hotkey {
+      display: inline-flex;
+      align-items: center;
+      gap: .1rem;
+      margin-left: .15rem;
+      opacity: .9;
+    }
+
+    .tip-send-hotkey kbd {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 16px;
+      height: 18px;
+      padding: 0 .25rem;
+      border: 1px solid color-mix(in srgb, currentColor 38%, transparent);
+      border-radius: 5px;
+      background: color-mix(in srgb, currentColor 18%, transparent);
+      color: inherit;
+      font: 700 .68rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    /* symbols mode: only the paperplane glyph, no text, no hotkey hint. */
+    [data-button-style="symbols"] #tipOtherSendBtn .tip-send-icon { display: inline-flex; }
+    [data-button-style="symbols"] #tipOtherSendBtn .tip-send-text,
+    [data-button-style="symbols"] #tipOtherSendBtn .tip-send-hotkey { display: none; }
+
+    /* both mode: paperplane + label + hotkey */
+    [data-button-style="both"] #tipOtherSendBtn .tip-send-icon { display: inline-flex; }
 
     .tip-privacy {
       color: var(--muted);
@@ -3183,7 +3210,7 @@
       .tip-tier-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
-      .tip-tier-hotkey { display: none; }
+      .tip-tier-tagline { font-size: .72rem; }
     }
 
     @media (max-width: 420px) {
@@ -5531,7 +5558,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.30</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.31</span>
                 <span id="betaPill" class="beta-pill hidden" title="This is the beta deploy">BETA</span>
               </div>
             </div>
@@ -6281,82 +6308,82 @@
   <dialog id="tipJarDialog">
     <header class="tip-jar-head">
       <h2>Buy me a Drink!</h2>
-      <button class="dialog-close" type="button" data-close="tipJarDialog" data-shortcut="Q">Close</button>
+      <button id="tipJarCloseBtn" class="dialog-close" type="button" data-close="tipJarDialog" data-shortcut="Q">Close</button>
     </header>
     <div class="dialog-body">
-      <p class="tip-intro">Saddle up to the bar with me — every round keeps Trail Log moving.</p>
+      <p class="tip-intro">Saddle up to the bar with me —<br />every round keeps Trail Log moving.</p>
       <div class="tip-tier-grid">
-        <button class="tip-tier" type="button" data-amount="1" data-hotkey="1" data-note="Trail Log :: Keep the tokens hydrated" aria-label="$1 — Plain Water (Shift Command Option 1)">
+        <button class="tip-tier" type="button" data-amount="1" data-note="Trail Log :: Keep the tokens hydrated" aria-label="$1 — Plain Water. Keep the tokens hydrated">
           <span class="tip-tier-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.5C10 5 5.5 10 5.5 14a6.5 6.5 0 0 0 13 0c0-4-4.5-9-6.5-11.5z"/></svg></span>
           <span class="tip-tier-text">
             <span class="tip-tier-amount">$1</span>
             <span class="tip-tier-label">Plain Water</span>
+            <span class="tip-tier-tagline">Keep the tokens hydrated</span>
           </span>
-          <span class="tip-tier-hotkey"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>⌥</kbd><kbd>1</kbd></span>
         </button>
-        <button class="tip-tier" type="button" data-amount="3" data-hotkey="2" data-note="Trail Log :: Fuel for the roadmap ahead" aria-label="$3 — Plain Coffee (Shift Command Option 2)">
+        <button class="tip-tier" type="button" data-amount="3" data-note="Trail Log :: Fuel for the roadmap" aria-label="$3 — Plain Coffee. Fuel for the roadmap ahead">
           <span class="tip-tier-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M5 9h11v8a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3zM16 11h2.5a2.5 2.5 0 0 1 0 5H16M8 3c.5 1 .5 1.5 0 2.5M11 3c.5 1 .5 1.5 0 2.5M14 3c.5 1 .5 1.5 0 2.5"/></svg></span>
           <span class="tip-tier-text">
             <span class="tip-tier-amount">$3</span>
             <span class="tip-tier-label">Plain Coffee</span>
+            <span class="tip-tier-tagline">Fuel for the roadmap</span>
           </span>
-          <span class="tip-tier-hotkey"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>⌥</kbd><kbd>2</kbd></span>
         </button>
-        <button class="tip-tier" type="button" data-amount="5" data-hotkey="3" data-note="Trail Log :: A cold one for hot patches" aria-label="$5 — Beer Pint (Shift Command Option 3)">
+        <button class="tip-tier" type="button" data-amount="5" data-note="Trail Log :: A cold one for hot patches" aria-label="$5 — Beer Pint. A cold one for hot patches">
           <span class="tip-tier-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M7 8h8l-1 12H8zM15 10h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2M7 8c.5-1 1.5-1.5 2.5-1s2-.5 2.5-1 1.5-.5 2 0 1.5 1.5 1 2"/></svg></span>
           <span class="tip-tier-text">
             <span class="tip-tier-amount">$5</span>
             <span class="tip-tier-label">Beer Pint</span>
+            <span class="tip-tier-tagline">A cold one for hot patches</span>
           </span>
-          <span class="tip-tier-hotkey"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>⌥</kbd><kbd>3</kbd></span>
         </button>
-        <button class="tip-tier" type="button" data-amount="10" data-hotkey="4" data-note="Trail Log :: Not top shelf, but neither is this app" aria-label="$10 — House Rail (Shift Command Option 4)">
+        <button class="tip-tier" type="button" data-amount="10" data-note="Trail Log :: Not top shelf, but neither is this app" aria-label="$10 — House Rail. Not top shelf, but neither is this app">
           <span class="tip-tier-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M6 7h12l-1 13H7zM9 10h4v4H9zM9 10l-1 1M13 10l1 1"/></svg></span>
           <span class="tip-tier-text">
             <span class="tip-tier-amount">$10</span>
             <span class="tip-tier-label">House Rail</span>
+            <span class="tip-tier-tagline">Not top shelf, but neither is this app</span>
           </span>
-          <span class="tip-tier-hotkey"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>⌥</kbd><kbd>4</kbd></span>
         </button>
-        <button class="tip-tier" type="button" data-amount="15" data-hotkey="5" data-note="Trail Log :: Shaken, stirred, and slightly overpriced" aria-label="$15 — Fancy Cocktail (Shift Command Option 5)">
+        <button class="tip-tier" type="button" data-amount="15" data-note="Trail Log :: Shaken, stirred, and slightly overpriced" aria-label="$15 — Fancy Cocktail. Shaken, stirred, and slightly overpriced">
           <span class="tip-tier-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M4 5h16L12 14zM12 14v6M8 21h8M15 5l1-2 3 1"/></svg></span>
           <span class="tip-tier-text">
             <span class="tip-tier-amount">$15</span>
             <span class="tip-tier-label">Fancy Cocktail</span>
+            <span class="tip-tier-tagline">Shaken, stirred, and slightly overpriced</span>
           </span>
-          <span class="tip-tier-hotkey"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>⌥</kbd><kbd>5</kbd></span>
         </button>
-        <button class="tip-tier" type="button" data-amount="20" data-hotkey="6" data-note="Trail Log :: For the premium debugging experience" aria-label="$20 — Neat Pour (Shift Command Option 6)">
+        <button class="tip-tier" type="button" data-amount="20" data-note="Trail Log :: For the premium debugging experience" aria-label="$20 — Neat Pour. For the premium debugging experience">
           <span class="tip-tier-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M6 6h12l-1 14H7zM7.5 13h9"/></svg></span>
           <span class="tip-tier-text">
             <span class="tip-tier-amount">$20</span>
             <span class="tip-tier-label">Neat Pour</span>
+            <span class="tip-tier-tagline">For the premium debugging experience</span>
           </span>
-          <span class="tip-tier-hotkey"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>⌥</kbd><kbd>6</kbd></span>
         </button>
-        <button class="tip-tier" type="button" data-amount="25" data-hotkey="7" data-note="Trail Log :: Cover the next round and keep the ideas flowing" aria-label="$25 — Next Round (Shift Command Option 7)">
+        <button class="tip-tier" type="button" data-amount="25" data-note="Trail Log :: Keep the ideas flowing" aria-label="$25 — Next Round. Cover the next round and keep the ideas flowing">
           <span class="tip-tier-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M4 8l3-2 1 13-3 1zM20 8l-3-2-1 13 3 1M11 11l2-2M13 6l1 1M15 8l1 1"/></svg></span>
           <span class="tip-tier-text">
             <span class="tip-tier-amount">$25</span>
             <span class="tip-tier-label">Next Round</span>
+            <span class="tip-tier-tagline">Keep the ideas flowing</span>
           </span>
-          <span class="tip-tier-hotkey"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>⌥</kbd><kbd>7</kbd></span>
         </button>
-        <button class="tip-tier" type="button" data-amount="50" data-hotkey="8" data-note="Trail Log :: For bugs so bad they require multiple glasses" aria-label="$50 — Wine Bottle (Shift Command Option 8)">
+        <button class="tip-tier" type="button" data-amount="50" data-note="Trail Log :: For the really bad bugs" aria-label="$50 — Wine Bottle. For bugs so bad they require multiple glasses">
           <span class="tip-tier-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M10 3h4v5l2 3v8a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-8l2-3zM10 8h4"/></svg></span>
           <span class="tip-tier-text">
             <span class="tip-tier-amount">$50</span>
             <span class="tip-tier-label">Wine Bottle</span>
+            <span class="tip-tier-tagline">For the really bad bugs</span>
           </span>
-          <span class="tip-tier-hotkey"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>⌥</kbd><kbd>8</kbd></span>
         </button>
-        <button class="tip-tier" type="button" data-amount="100" data-hotkey="9" data-note="Trail Log :: Celebrate the Wins" aria-label="$100 — Something Nice (Shift Command Option 9)">
+        <button class="tip-tier" type="button" data-amount="100" data-note="Trail Log :: Celebrate the Wins" aria-label="$100 — Something Nice. Celebrate the Wins">
           <span class="tip-tier-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M8 3h8l-1 11a3 3 0 0 1-6 0zM12 17v4M9 21h6"/><circle cx="11" cy="8" r=".75" fill="currentColor"/><circle cx="13" cy="10" r=".75" fill="currentColor"/></svg></span>
           <span class="tip-tier-text">
             <span class="tip-tier-amount">$100</span>
             <span class="tip-tier-label">Something Nice</span>
+            <span class="tip-tier-tagline">Celebrate the Wins</span>
           </span>
-          <span class="tip-tier-hotkey"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>⌥</kbd><kbd>9</kbd></span>
         </button>
       </div>
       <form id="tipOtherForm" class="tip-other">
@@ -6365,7 +6392,12 @@
           <span class="tip-other-prefix">$</span>
           <input id="tipOtherInput" type="number" min="1" max="2000" step="1" placeholder="Other amount"
             inputmode="decimal">
-          <button class="primary" type="submit" id="tipOtherSendBtn">Send Tip</button>
+          <button class="primary" type="submit" id="tipOtherSendBtn" data-shortcut="S"
+            aria-label="Send Tip (Shift Command Option S)">
+            <span class="tip-send-icon" aria-hidden="true"></span>
+            <span class="tip-send-text">Send Tip</span>
+            <span class="tip-send-hotkey" aria-hidden="true"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>⌥</kbd><kbd>S</kbd></span>
+          </button>
         </div>
       </form>
       <p class="tip-privacy">You'll leave Trail Log and land on Venmo. I never see anything you don't send.</p>
@@ -7018,7 +7050,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.0.0.30";
+    const APP_VERSION = "3.0.0.31";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7125,6 +7157,15 @@
       Earth: ["#36563e", "#5a8b5d", "#81b14f", "#907350", "#351b04"],
       Ocean: ["#064273", "#1da2d8", "#7fcdff", "#def3f6", "#001a33"],
     };
+
+    const __WATERBOTTLE_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 14.0234 29.5801"><g><rect height="29.5801" opacity="0" width="14.0234" x="0" y="0"/><path d="M3.39844 3.18359L10.2734 3.18359C10.8887 3.18359 11.3379 2.75391 11.3379 2.11914L11.3379 1.06445C11.3379 0.439453 10.8887 0 10.2734 0L3.39844 0C2.76367 0 2.33398 0.439453 2.33398 1.06445L2.33398 2.11914C2.33398 2.75391 2.76367 3.18359 3.39844 3.18359ZM0.00976562 9.30664L13.6523 9.30664C13.6133 7.82227 13.3887 6.78711 12.5586 5.67383L12.207 5.19531C11.8848 4.74609 11.3672 4.45312 10.8105 4.45312L2.85156 4.45312C2.29492 4.45312 1.77734 4.74609 1.44531 5.19531L1.10352 5.67383C0.273438 6.78711 0.0488281 7.82227 0.00976562 9.30664ZM0 10.8203L0 23.6426L13.6621 23.6426L13.6621 10.8203ZM6.82617 21.5234C5.00977 21.5234 3.81836 20.3613 3.81836 18.6133C3.81836 17.7148 4.22852 16.9922 4.43359 16.5234C4.91211 15.498 5.69336 14.1699 6.36719 13.1543C6.49414 12.9492 6.66992 12.8418 6.82617 12.8418C7.00195 12.8418 7.1582 12.9492 7.28516 13.1543C7.95898 14.1699 8.75977 15.498 9.21875 16.5234C9.44336 16.9922 9.83398 17.7148 9.83398 18.6133C9.83398 20.3613 8.64258 21.5234 6.82617 21.5234ZM0 25.1562L0 25.4785C0 28.1445 1.31836 29.5605 3.75977 29.5605L9.89258 29.5605C12.3438 29.5605 13.6621 28.1445 13.6621 25.4785L13.6621 25.1562Z"/></g></svg>`;
+    const __CUP_AND_SAUCER_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 32.4219 23.9355"><g><rect height="23.9355" opacity="0" width="32.4219" x="0" y="0"/><path d="M15.5664 18.1348L16.5918 18.1348C22.9492 18.1348 27.041 13.9062 27.041 7.45117L27.041 4.94141C27.041 2.06055 22.5879 0.0488281 16.0742 0.0488281C9.56055 0.0488281 5.10742 2.06055 5.10742 4.94141L5.10742 7.45117C5.10742 13.7305 9.19922 18.1348 15.5664 18.1348ZM16.0742 8.16406C10.7031 8.16406 6.78711 6.75781 6.78711 4.94141C6.78711 3.13477 10.7031 1.72852 16.0742 1.72852C21.4551 1.72852 25.3711 3.13477 25.3711 4.94141C25.3711 6.75781 21.4551 8.16406 16.0742 8.16406ZM25.752 12.5586L26.7578 12.5586C29.4238 12.5586 31.0645 11.1133 31.0645 8.7793C31.0645 6.44531 29.4141 5.00977 26.7578 5.00977L26.1035 5.00977L26.1035 6.66992L26.7578 6.66992C28.3984 6.66992 29.3945 7.4707 29.3945 8.7793C29.3945 10.0781 28.3984 10.8887 26.7578 10.8887L25.752 10.8887ZM16.0254 23.9355C25.3809 23.9355 32.0605 21.2891 32.0605 17.4609C32.0605 15.9375 30.9473 14.5703 28.9844 13.5059C28.3301 13.7598 27.6367 13.8965 26.8359 13.916C24.8828 17.4414 21.2402 19.502 16.5918 19.502L15.5664 19.502C10.4492 19.502 6.51367 16.875 4.74609 12.7051C1.72852 13.8574 0 15.5176 0 17.4609C0 21.2891 6.68945 23.9355 16.0254 23.9355Z"/></g></svg>`;
+    const __MUG_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 23.6328 26.0645"><g><rect height="26.0645" opacity="0" width="23.6328" x="0" y="0"/><path d="M8.36914 26.0547L10.6738 26.0547C15.8203 26.0547 19.0527 23.3398 19.0527 19.0039L19.0527 3.23242C19.0527 1.13281 14.9805 0 9.52148 0C4.07227 0 0 1.13281 0 3.23242L0 19.0039C0 23.3398 3.22266 26.0547 8.36914 26.0547ZM9.52148 4.13086C5.12695 4.13086 2.03125 3.58398 2.03125 2.83203C2.03125 2.08008 5.12695 1.5332 9.52148 1.5332C13.916 1.5332 17.0215 2.08008 17.0215 2.83203C17.0215 3.58398 13.916 4.13086 9.52148 4.13086ZM17.9395 18.7109L19.8633 18.7109C21.9531 18.7109 23.2715 17.334 23.2715 15.2148L23.2715 10C23.2715 7.87109 21.9531 6.49414 19.8633 6.49414L17.9395 6.49414L17.9395 8.125L19.8633 8.125C21.1133 8.125 21.6406 8.68164 21.6406 10L21.6406 15.2148C21.6406 16.5234 21.1133 17.0801 19.8633 17.0801L17.9395 17.0801Z"/></g></svg>`;
+    const __DROP_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 17.5293 25.2051"><g><rect height="25.2051" opacity="0" width="17.5293" x="0" y="0"/><path d="M8.58398 25.2051C13.7402 25.2051 17.168 21.8555 17.168 16.8359C17.168 14.4434 16.2207 11.9434 15.3809 10.0684C14.043 7.08008 11.8359 3.80859 9.90234 0.839844C9.55078 0.283203 9.0918 0 8.58398 0C8.07617 0 7.62695 0.283203 7.26562 0.839844C5.33203 3.80859 3.125 7.08008 1.78711 10.0684C0.947266 11.9434 0 14.4434 0 16.8359C0 21.8555 3.4375 25.2051 8.58398 25.2051Z"/></g></svg>`;
+    const __CIRCLE_HEXAGONPATH_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 26.8945 24.6387"><g><rect height="24.6387" opacity="0" width="26.8945" x="0" y="0"/><path d="M17.832 24.6289C20.127 24.6289 21.9727 22.7832 21.9727 20.4883C21.9727 18.2031 20.127 16.3574 17.832 16.3574C15.5469 16.3574 13.7012 18.2031 13.7012 20.4883C13.7012 22.7832 15.5469 24.6289 17.832 24.6289Z"/><path d="M8.70117 24.6289C10.9863 24.6289 12.832 22.7832 12.832 20.4883C12.832 18.2031 10.9863 16.3574 8.70117 16.3574C6.40625 16.3574 4.56055 18.2031 4.56055 20.4883C4.56055 22.7832 6.40625 24.6289 8.70117 24.6289Z"/><path d="M22.3926 16.4453C24.6875 16.4453 26.5332 14.5996 26.5332 12.3145C26.5332 10.0195 24.6875 8.17383 22.3926 8.17383C20.1074 8.17383 18.2617 10.0195 18.2617 12.3145C18.2617 14.5996 20.1074 16.4453 22.3926 16.4453Z"/><path d="M4.14062 16.4453C6.42578 16.4453 8.27148 14.5996 8.27148 12.3145C8.27148 10.0195 6.42578 8.17383 4.14062 8.17383C1.8457 8.17383 0 10.0195 0 12.3145C0 14.5996 1.8457 16.4453 4.14062 16.4453Z"/><path d="M17.832 8.28125C20.127 8.28125 21.9727 6.42578 21.9727 4.14062C21.9727 1.85547 20.127 0 17.832 0C15.5469 0 13.7012 1.85547 13.7012 4.14062C13.7012 6.42578 15.5469 8.28125 17.832 8.28125Z"/><path d="M8.70117 8.28125C10.9863 8.28125 12.832 6.42578 12.832 4.14062C12.832 1.85547 10.9863 0 8.70117 0C6.40625 0 4.56055 1.85547 4.56055 4.14062C4.56055 6.42578 6.40625 8.28125 8.70117 8.28125Z"/></g></svg>`;
+const __PAPERPLANE_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 27.7539 27.373"><g><rect height="27.373" opacity="0" width="27.7539" x="0" y="0"/><path d="M15.625 27.373C16.4551 27.373 17.041 26.6895 17.4609 25.5762L25.8008 3.78906C25.9961 3.28125 26.1035 2.83203 26.1035 2.46094C26.1035 1.71875 25.6543 1.25977 24.9121 1.25977C24.5312 1.25977 24.0918 1.37695 23.584 1.57227L1.69922 9.94141C0.712891 10.3223 0 10.9082 0 11.748C0 12.7734 0.761719 13.1445 1.91406 13.4863L9.11133 15.6836C9.81445 15.8984 10.2441 15.8594 10.7324 15.4102L24.4141 2.5293C24.5703 2.39258 24.7363 2.40234 24.8535 2.50977C24.9805 2.61719 24.9707 2.80273 24.8438 2.95898L11.9922 16.6699C11.5625 17.1387 11.5039 17.5586 11.7188 18.291L13.8574 25.3711C14.209 26.5625 14.5801 27.373 15.625 27.373Z"/></g></svg>`;
+const __WINEGLASS_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 18.3789 29.4824"><g><rect height="29.4824" opacity="0" width="18.3789" x="0" y="0"/><path d="M8.99414 29.4629C13.3984 29.4629 16.0742 28.3887 16.0742 26.6016C16.0742 24.9414 13.7207 23.8965 9.82422 23.75L9.82422 18.0859C14.7852 17.7832 18.0176 14.6582 18.0176 10.0391C18.0176 7.49023 16.9531 4.15039 15.3906 1.74805C14.668 0.634766 12.3145 0 9.01367 0C5.69336 0 3.33984 0.634766 2.61719 1.74805C1.05469 4.15039 0 7.49023 0 10.0391C0 14.668 3.23242 17.7832 8.20312 18.0859L8.20312 23.75C4.29688 23.8867 1.95312 24.9414 1.95312 26.6016C1.95312 28.3887 4.59961 29.4629 8.99414 29.4629ZM9.01367 3.04688C6.21094 3.04688 4.12109 2.64648 4.12109 2.26562C4.12109 1.88477 6.2207 1.49414 9.01367 1.49414C11.7969 1.49414 13.8965 1.88477 13.8965 2.26562C13.8965 2.64648 11.8066 3.04688 9.01367 3.04688Z"/></g></svg>`;
+
 
     // Common Resused
     const __PENCIL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 22.3366 21.9615"><g><rect height="21.9615" opacity="0" width="22.3366" x="0" y="0"/><path d="M3.90513 20.6975L18.6854 5.91726L16.0829 3.31472L1.30747 18.0901L0.0379412 21.1907C-0.13784 21.6399 0.33091 22.0891 0.750832 21.928ZM19.9891 4.63796L21.4247 3.21218C22.1278 2.50417 22.162 1.71316 21.5126 1.05398L20.9706 0.507102C20.3211-0.147195 19.5106-0.0837187 18.8075 0.604758L17.367 2.02566Z" /></g></svg>`;
@@ -8026,6 +8067,18 @@
 
     const WISHLIST_SEEDS = [
       {
+        title: "Polished Drink SVGs for the Gift Screen",
+        ticketId: "WISH-040",
+        description: "Replace the hand-rolled minimalist drink glyphs in the Buy-me-a-Drink modal with a polished, consistent set: cleaner stroke weights, better proportions for each glass, recognizable garnishes (cherry, lime wedge, ice cubes), and a unified visual language with the rest of the SF Symbols icon set.",
+        priority: "P2",
+        effort: "small",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 8,
+        prompt: "Refine the inline drink SVGs in the Tip Jar dialog so the icons read clearly at 24px, share consistent stroke weights and proportions, and match the existing SF Symbols-style sketches used elsewhere. Keep them single-path or simple-path, monochrome, currentColor-friendly, and well-balanced inside their accent-tinted chip.",
+        category: "UI"
+      },
+      {
         title: "Split App into /src Folder with Build Step",
         ticketId: "WISH-038",
         description: "Move from a single-file app to a /src layout with separate HTML, CSS, JS, icon constants, release notes (markdown), and wishlist (markdown). Add a build script that concatenates and minifies into the deployable index.html so the runtime still ships as one file. Goal: easier diffs, scoped edits, and tooling without sacrificing the offline single-file deploy story.",
@@ -8160,7 +8213,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.0.0.30",
+        version: "3.0.0.31",
         date: "2026-05-23",
         title: "3.0 Development Begins",
         summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, mapped note locations, a guided install flow, and a beta environment indicator.",
@@ -8261,7 +8314,12 @@
           "Save and Add Another now closes and reopens the note dialog cleanly so the new note's header layout fully re-renders with the title left-justified instead of stuck mid-transition.",
           "Refreshed the Tip Jar modal: wider 780px footprint, three-column tier grid (collapsing to two on mobile, one on narrow phones), inline drink SVG glyphs in tinted icon chips, friendlier intro copy, gift symbol on the Send Tip button, and a polished Pick-your-own-number block.",
           "Each Tip Jar tier now shows a ⇧⌘⌥ keyboard hint and accepts ⇧⌘⌥+1 through ⇧⌘⌥+9 to fire the matching tier directly from the keyboard.",
-          "Removed wishlist item WISH-037 (Better Tip / Gift Prompt and Popup) after shipping the redesign."
+          "Removed wishlist item WISH-037 (Better Tip / Gift Prompt and Popup) after shipping the redesign.",
+          "Tip Jar Close button now renders the X glyph in icon button mode, matching the rest of the close-button family.",
+          "Send Tip button now renders the paperplane glyph in icon button mode, and carries a ⇧⌘⌥S keyboard shortcut that submits the Other amount from anywhere in the dialog.",
+          "Removed the per-tier ⇧⌘⌥+digit shortcut hints. The single ⇧⌘⌥S shortcut on Send Tip is the only modifier-key combo surfaced in the dialog.",
+          "Each Tip Jar tier now shows its cheeky data-note tagline as a subtitle under the drink label so the playful copy lands in the UI, not just the Venmo memo.",
+          "Added wishlist item WISH-040 to refine the inline drink SVGs in the Tip Jar dialog into a polished, consistent set."
         ]
       },
       {
@@ -9698,6 +9756,12 @@
       setButtonLabel("#noteDialogCloseBtn", __XMARK, "Close");
       setButtonLabel("#saveNoteBtn", __CHECKMARK, "Save Note");
       setButtonLabel("#saveAddNoteBtn", __CHECKMARK_CIRCLE_BADGE_PLUS_FILL, "Save + Add", "Save and add another note");
+      setButtonLabel("#tipJarCloseBtn", __XMARK, "Close");
+      const tipSendIcon = $("#tipOtherSendBtn .tip-send-icon");
+      if (tipSendIcon && !tipSendIcon.dataset.iconReady) {
+        tipSendIcon.innerHTML = __PAPERPLANE_FILL;
+        tipSendIcon.dataset.iconReady = "1";
+      }
       setButtonLabel("#deleteNoteFromDialogBtn", __DELETE_LEFT_FILL, "Delete Note");
       setButtonLabel("#noteGeocodeBtn", __DOT_SCOPE, "Locate", "Look up latitude and longitude", "Look up latitude and longitude");
       setButtonLabel("#noteSmartConvertBtn", __WAND_AND_SPARKLES_INVERSE, "Auto Convert", "Smart convert note text");
@@ -13453,28 +13517,22 @@
     function openTipJar() {
       const input = $("#tipOtherInput");
       if (input) input.value = "";
-      const sendBtn = $("#tipOtherSendBtn");
-      if (sendBtn && !sendBtn.dataset.iconReady) {
-        sendBtn.innerHTML = `${__GIFT_FILL}<span>Send Tip</span>`;
-        sendBtn.dataset.iconReady = "1";
-      }
       $("#tipJarDialog").showModal();
     }
 
     function handleTipJarHotkey(event) {
       if (!$("#tipJarDialog").open) return;
-      // ⇧⌘⌥ + digit (1-9) fires the matching tier. Cmd is the meta key on
-      // macOS; on Windows/Linux this also triggers if Ctrl+Shift+Alt is held,
-      // which is fine — the modifier glyphs in the UI hint at the macOS combo.
+      // ⇧⌘⌥ + S submits the Send Tip button. Cmd on macOS; Ctrl on
+      // Windows/Linux so the same hand position works everywhere.
       if (!event.shiftKey || !event.altKey) return;
       if (!(event.metaKey || event.ctrlKey)) return;
-      const digit = parseInt(event.key, 10);
-      if (!Number.isFinite(digit) || digit < 1 || digit > 9) return;
-      const tier = $(`#tipJarDialog .tip-tier[data-hotkey="${digit}"]`);
-      if (!tier) return;
+      const key = (event.key || "").toLowerCase();
+      if (key !== "s") return;
+      const sendBtn = $("#tipOtherSendBtn");
+      if (!sendBtn) return;
       event.preventDefault();
       event.stopPropagation();
-      tier.click();
+      sendBtn.click();
     }
 
     function bindTipJar() {
