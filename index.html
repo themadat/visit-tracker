@@ -651,6 +651,16 @@
       height: 24px;
     }
 
+    /* Per-platform icon scaling for the Add as App button.
+       Wide laptop/desktop SVGs render much smaller in a 24px box than
+       the squarer phone/tablet ones; bumping them via a CSS variable
+       brings the visual mass closer together. Mirrors the tip-tier
+       iconScale technique. */
+    #addToHomeBtn .sf-symbol {
+      width: calc(24px * var(--install-icon-scale, 1));
+      height: calc(24px * var(--install-icon-scale, 1));
+    }
+
     /* Renders way smaller than other ones */
     #saveAddNoteBtn .sf-symbol {
       width: 32px;
