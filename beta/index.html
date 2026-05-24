@@ -3278,8 +3278,8 @@
       display: block;
       width: calc(75% * var(--tip-tier-icon-scale, 1));
       height: calc(75% * var(--tip-tier-icon-scale, 1));
-      max-width: 75%;
-      max-height: 75%;
+      max-width: calc(75% * var(--tip-tier-icon-scale, 1));
+      max-height: calc(75% * var(--tip-tier-icon-scale, 1));
       fill: currentColor;
       overflow: visible;
     }
@@ -5830,7 +5830,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.36</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.37</span>
                 <span id="betaPill" class="beta-pill hidden" title="This is the beta deploy">BETA</span>
               </div>
             </div>
@@ -7250,7 +7250,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.0.0.36";
+    const APP_VERSION = "3.0.0.37";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7373,22 +7373,15 @@
     // these and the renderTipJarTiers() function injects them into the
     // dialog's grid container at init time.
     const __DRINK_WATER = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 17.5293 25.2051"><g><rect height="25.2051" opacity="0" width="17.5293" x="0" y="0"/><path d="M8.58398 25.2051C13.7402 25.2051 17.168 21.8555 17.168 16.8359C17.168 14.4434 16.2207 11.9434 15.3809 10.0684C14.043 7.08008 11.8359 3.80859 9.90234 0.839844C9.55078 0.283203 9.0918 0 8.58398 0C8.07617 0 7.62695 0.283203 7.26562 0.839844C5.33203 3.80859 3.125 7.08008 1.78711 10.0684C0.947266 11.9434 0 14.4434 0 16.8359C0 21.8555 3.4375 25.2051 8.58398 25.2051Z"/></g></svg>`;
-
     const __DRINK_COFFEE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 32.4219 23.9355"><g><rect height="23.9355" opacity="0" width="32.4219" x="0" y="0"/><path d="M15.5664 18.1348L16.5918 18.1348C22.9492 18.1348 27.041 13.9062 27.041 7.45117L27.041 4.94141C27.041 2.06055 22.5879 0.0488281 16.0742 0.0488281C9.56055 0.0488281 5.10742 2.06055 5.10742 4.94141L5.10742 7.45117C5.10742 13.7305 9.19922 18.1348 15.5664 18.1348ZM16.0742 8.16406C10.7031 8.16406 6.78711 6.75781 6.78711 4.94141C6.78711 3.13477 10.7031 1.72852 16.0742 1.72852C21.4551 1.72852 25.3711 3.13477 25.3711 4.94141C25.3711 6.75781 21.4551 8.16406 16.0742 8.16406ZM25.752 12.5586L26.7578 12.5586C29.4238 12.5586 31.0645 11.1133 31.0645 8.7793C31.0645 6.44531 29.4141 5.00977 26.7578 5.00977L26.1035 5.00977L26.1035 6.66992L26.7578 6.66992C28.3984 6.66992 29.3945 7.4707 29.3945 8.7793C29.3945 10.0781 28.3984 10.8887 26.7578 10.8887L25.752 10.8887ZM16.0254 23.9355C25.3809 23.9355 32.0605 21.2891 32.0605 17.4609C32.0605 15.9375 30.9473 14.5703 28.9844 13.5059C28.3301 13.7598 27.6367 13.8965 26.8359 13.916C24.8828 17.4414 21.2402 19.502 16.5918 19.502L15.5664 19.502C10.4492 19.502 6.51367 16.875 4.74609 12.7051C1.72852 13.8574 0 15.5176 0 17.4609C0 21.2891 6.68945 23.9355 16.0254 23.9355Z"/></g></svg>`;
-
     const __DRINK_BEER = `<svg class="sf-symbol" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve" aria-hidden="true"><g><g><path d="M352.231,10.687L350.195,0h-188.39l-2.036,10.689c-7.109,37.339-7.765,75.314-1.948,112.872l2.676,17.276h187.625c1.155,0,2.261,0.2,3.296,0.55l2.761-17.828C359.996,85.997,359.34,48.022,352.231,10.687z"/></g></g><g><g><path d="M306.977,428.453c0.015-0.135,0.032-0.27,0.053-0.403l41.294-266.685c-0.069,0.001-0.135,0.01-0.204,0.01H163.677l41.294,266.674c0.021,0.135,0.038,0.27,0.054,0.403c3.509,30.674-6.065,60.802-25.613,83.547h153.175C313.039,489.256,303.465,459.128,306.977,428.453z"/></g></g></svg>`;
-
     const __DRINK_HOUSE_RAIL = `<svg class="sf-symbol" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" enable-background="new 0 0 512 512" aria-hidden="true"><path d="M427.6,81.1H304.3c-3.8,0-7.1,2.4-8.2,6l-15.7,48.5h-74.5c-4.2-32-31.6-56.7-64.7-56.7c-36,0-65.4,29.3-65.4,65.4s29.3,65.4,65.4,65.4c4,0,8-0.4,12-1.1l5.1,30.6c0,0,0,0.1,0,0.2L187.5,415c1.8,10.6,10.8,18.2,21.5,18.2h110.1c10.7,0,19.7-7.7,21.5-18.2l42.3-254.1c1.1-6.4-0.7-12.8-4.8-17.7c-4.2-4.9-10.2-7.7-16.6-7.7h-62.9l12.1-37.2h117c4.8,0,8.7-3.9,8.7-8.7S432.4,81.1,427.6,81.1z M249.6,230.2c-18.1,7-41.2,11.8-75.2,1l-12.2-73.1c-0.3-1.8,0.5-3,1-3.6c0.5-0.6,1.6-1.6,3.4-1.6h108.1L249.6,230.2z M141.1,192.2c-26.5,0-48.1-21.6-48.1-48.1s21.6-48.1,48.1-48.1c23.6,0,43.2,17,47.2,39.4h-21.7c-6.4,0-12.5,2.8-16.6,7.7c-4.2,4.9-5.9,11.3-4.9,17.7l5.1,30.4C147.2,191.9,144.2,192.2,141.1,192.2z M361.5,152.8c1.8,0,2.9,1,3.4,1.6c0.5,0.6,1.3,1.9,1,3.6l-9,54.3c-36.3-16.1-61.2-3.9-85.4,7.9c-0.2,0.1-0.4,0.2-0.5,0.3l22-67.7H361.5z"/></svg>`;
-
     const __DRINK_FANCY_COCKTAIL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 64 64" enable-background="new 0 0 64 64" aria-hidden="true"><g><path d="M8.136,9.966l0.399-0.965c0.708-1.23,2.018-2,3.465-2h9.235c-1.6-4.096-5.573-7-10.235-7c-6.075,0-11,4.924-11,11c0,6.075,4.925,11,11,11c1.838,0,3.563-0.461,5.085-1.259l-6.913-6.913C8.148,12.806,7.767,11.335,8.136,9.966z"/><path d="M10.152,10.235c-0.31,0.748-0.139,1.607,0.434,2.18l2.586,2.586h33.413l6-6H12C11.191,9.001,10.462,9.488,10.152,10.235z"/><path d="M63.84,10.217C63.525,9.479,62.802,9.001,62,9.001h-6.585l-6,6h11.412l2.615-2.615C63.998,11.808,64.154,10.954,63.84,10.217z"/><path d="M44.104,20.312c0.447,1.211,0.006,2.822-1.246,4.074s-2.863,1.693-4.076,1.246l-2.289,2.289c-0.391,0.391-1.023,0.391-1.414,0s-0.391-1.023,0-1.414l2.289-2.289c-0.447-1.213-0.005-2.823,1.247-4.075s2.862-1.694,4.074-1.246l1.896-1.896H15.172l20.414,20.414c0.375,0.375,0.884,0.586,1.414,0.586c0.007,0,0.014,0,0.021,0c0.537-0.006,1.05-0.228,1.422-0.615l20.385-20.385H47.415L44.104,20.312z"/><path d="M40.028,21.558c-0.863,0.863-0.995,1.833-0.706,2.122c0.288,0.288,1.258,0.157,2.121-0.707c0.863-0.863,0.995-1.833,0.707-2.121C41.861,20.562,40.892,20.694,40.028,21.558z"/><path d="M48,58.001h-8V38.656L39.856,38.8c-0.71,0.741-1.746,1.189-2.814,1.201h-0.011H37c-1.068,0-2.072-0.416-2.828-1.172L34,38.657v19.344h-8c-1.104,0-2,0.896-2,2v4h26v-4C50,58.896,49.104,58.001,48,58.001z"/></g></svg>`;
-
     const __DRINK_NEAT_POUR = `<svg class="sf-symbol" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512.001 512.001" aria-hidden="true"><g><g><path d="M331.167,469.453h-53.895v-86.515h-42.548v86.515h-53.895c-11.749,0-21.274,9.525-21.274,21.274c0,11.749,9.525,21.274,21.274,21.274h150.338c11.749,0,21.274-9.525,21.274-21.274C352.441,478.978,342.916,469.453,331.167,469.453z"/></g></g><g><g><path d="M403.662,266.997c-8.857-38.818-29.882-131.278-40.787-181.899H149.154c-10.907,50.623-31.941,143.048-40.811,181.883c-10.895,47.707,23.926,94.468,72.836,96.056c0.908,0.03,1.82,0.044,2.734,0.044h144.166c0.918,0,1.832-0.014,2.743-0.044C379.726,361.444,414.546,314.7,403.662,266.997z"/></g></g><g><g><path d="M366.609,0H145.387c9.097,15.591,12.786,33.752,10.509,51.661c-0.264,2.078-1.164,6.822-2.547,13.581h205.332c-1.384-6.758-2.286-11.498-2.55-13.567c-2.293-17.907,1.388-36.074,10.478-51.674V0z"/></g></g></svg>`;
-
     const __DRINK_NEXT_ROUND = `<svg class="sf-symbol" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" enable-background="new 0 0 512 512" aria-hidden="true"><g><path d="M232.6,239.9c-1.5-4.8-4.9-8.8-9.6-10.9l-104.3-46c-2.2-1-4.5-1.5-7-1.5c-7.8,0-14.7,5.3-16.7,12.9l-10.6,41.2c0,0,0,0.1,0,0.2l-27,105.4c-2.1,8.2,2,16.6,9.7,20l58.7,25.9c2.2,1,4.5,1.5,6.9,1.5c5.8,0,11.2-2.9,14.4-7.7l60.1-91.4c0,0,0-0.1,0-0.1l23.1-35.2C233.2,250,234,244.8,232.6,239.9z M196.8,274l-93.7-41.3l8.6-33.8L216,244.8L196.8,274z"/><path d="M454.5,341.3l-27-105.4c0-0.1,0-0.1,0-0.2l-10.6-41.2c-1.9-7.6-8.8-12.9-16.7-12.9c-2.4,0-4.8,0.5-7,1.5L289,229c-4.6,2.1-8.1,6-9.6,10.9c-1.4,4.9-0.6,10.1,2.1,14.3l23.1,35.2c0,0,0,0,0,0.1l60.1,91.4c3.2,4.8,8.6,7.7,14.4,7.7c2.4,0,4.7-0.5,6.9-1.5l58.7-25.9C452.5,357.9,456.6,349.5,454.5,341.3z M315.2,274L296,244.8l104.3-45.9l8.6,33.8L315.2,274z"/><path d="M223.4,138.8c4.8,0,8.7-3.9,8.7-8.7v-15.7c0-4.8-3.9-8.7-8.7-8.7c-4.8,0-8.7,3.9-8.7,8.7v15.7C214.7,134.9,218.6,138.8,223.4,138.8z"/><path d="M223.4,190.2c4.8,0,8.7-3.9,8.7-8.7v-15.7c0-4.8-3.9-8.7-8.7-8.7c-4.8,0-8.7,3.9-8.7,8.7v15.7C214.7,186.3,218.6,190.2,223.4,190.2z"/><path d="M189.9,156.7h15.7c4.8,0,8.7-3.9,8.7-8.7s-3.9-8.7-8.7-8.7h-15.7c-4.8,0-8.7,3.9-8.7,8.7S185.1,156.7,189.9,156.7z"/><path d="M241.2,156.7h15.7c4.8,0,8.7-3.9,8.7-8.7s-3.9-8.7-8.7-8.7h-15.7c-4.8,0-8.7,3.9-8.7,8.7S236.5,156.7,241.2,156.7z"/><path d="M273.1,321.8c-4.8,0-8.7,3.9-8.7,8.7v15.7c0,4.8,3.9,8.7,8.7,8.7s8.7-3.9,8.7-8.7v-15.7C281.8,325.7,277.9,321.8,273.1,321.8z"/><path d="M273.1,373.2c-4.8,0-8.7,3.9-8.7,8.7v15.7c0,4.8,3.9,8.7,8.7,8.7s8.7-3.9,8.7-8.7v-15.7C281.8,377.1,277.9,373.2,273.1,373.2z"/><path d="M255.3,355.3h-15.7c-4.8,0-8.7,3.9-8.7,8.7s3.9,8.7,8.7,8.7h15.7c4.8,0,8.7-3.9,8.7-8.7S260.1,355.3,255.3,355.3z"/><path d="M306.7,355.3H291c-4.8,0-8.7,3.9-8.7,8.7s3.9,8.7,8.7,8.7h15.7c4.8,0,8.7-3.9,8.7-8.7S311.5,355.3,306.7,355.3z"/></g></svg>`;
-
     const __DRINK_WINE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 18.3789 29.4824"><g><rect height="29.4824" opacity="0" width="18.3789" x="0" y="0"/><path d="M8.99414 29.4629C13.3984 29.4629 16.0742 28.3887 16.0742 26.6016C16.0742 24.9414 13.7207 23.8965 9.82422 23.75L9.82422 18.0859C14.7852 17.7832 18.0176 14.6582 18.0176 10.0391C18.0176 7.49023 16.9531 4.15039 15.3906 1.74805C14.668 0.634766 12.3145 0 9.01367 0C5.69336 0 3.33984 0.634766 2.61719 1.74805C1.05469 4.15039 0 7.49023 0 10.0391C0 14.668 3.23242 17.7832 8.20312 18.0859L8.20312 23.75C4.29688 23.8867 1.95312 24.9414 1.95312 26.6016C1.95312 28.3887 4.59961 29.4629 8.99414 29.4629ZM9.01367 3.04688C6.21094 3.04688 4.12109 2.64648 4.12109 2.26562C4.12109 1.88477 6.2207 1.49414 9.01367 1.49414C11.7969 1.49414 13.8965 1.88477 13.8965 2.26562C13.8965 2.64648 11.8066 3.04688 9.01367 3.04688Z"/></g></svg>`;
-
     const __DRINK_SOMETHING_NICE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true"><path d="M67.5 34v59h64V34h-64zm-1.75 77c-14.22 25.4-13.64 56.2 1.75 87-16 0-48 16-48 32v224c0 32 160 32 160 0V230c0-16-32-32-48-32 15.5-31 16-61.9 1.5-87H65.75zM99.5 245c10.7 0 20.5 3.2 28 8.8 7.6 5.7 13 14.3 13 24.2h23v112h-128V278h23c0-9.9 5.42-18.5 12.97-24.2 7.55-5.6 17.37-8.8 28.03-8.8zm169 79c-32 0-64 4-64 12l16 128c16 16 80 16 96 0l16-128c0-8-32-12-64-12zm160 0c-32 0-64 4-64 12l16 128c16 16 80 16 96 0l16-128c0-8-32-12-64-12zm0 55.5c5.7 0 11.4.8 16.5 2.4.2 19 .3 39.8.3 39.8l12.2-33.2c4 3.4 6.6 8 7 13.5l-4 46c0 16-64 16-64 0l-4-46c1-15 18.5-22.5 36-22.5zm-160 30c5.8 0 11.5.9 16.6 2.7.1 12 .2 25.5.2 25.5l7.8-21.4c5.4 3.7 8.9 8.9 9.4 15.7l-2 16c0 16-64 16-64 0l-2-16c1-15 17.5-22.5 34-22.5z"/></svg>`;
+
     const __SAFARI_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M25.4395 12.7246C25.4395 19.7266 19.7266 25.4395 12.7148 25.4395C5.71289 25.4395 0 19.7266 0 12.7246C0 5.71289 5.71289 0 12.7148 0C19.7266 0 25.4395 5.71289 25.4395 12.7246ZM18.2422 6.18164L10.752 9.90234C10.3809 10.0684 10.1172 10.332 9.90234 10.752L6.17188 18.2617C5.79102 19.0527 6.38672 19.668 7.1875 19.2773L14.6973 15.5469C15.0879 15.3613 15.3613 15.0781 15.5566 14.6973L19.2676 7.19727C19.6582 6.38672 19.0918 5.77148 18.2422 6.18164ZM14.3164 12.7344C14.3164 13.6133 13.6035 14.3164 12.7246 14.3164C11.8555 14.3164 11.1426 13.6133 11.1426 12.7344C11.1426 11.8652 11.8555 11.1523 12.7246 11.1523C13.6035 11.1523 14.3164 11.8652 14.3164 12.7344Z"/></g></svg>`;
     const __MENUBAR_DOCK_RECTANGLE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 29.9512 22.959"><g><rect height="22.959" opacity="0" width="29.9512" x="0" y="0"/><path d="M1.14258 4.0625L1.14258 5.5957L28.4473 5.5957L28.4473 4.0625ZM5.08789 22.959L24.7461 22.959C27.8027 22.959 29.5898 21.0938 29.5898 17.8809L29.5898 5.08789C29.5898 1.86523 27.8027 0 24.7461 0L5.08789 0C1.86523 0 0 1.86523 0 5.08789L0 17.8809C0 21.0938 1.86523 22.959 5.08789 22.959ZM5.09766 21.2305C2.97852 21.2305 1.72852 19.9805 1.72852 17.8613L1.72852 5.09766C1.72852 2.97852 2.97852 1.72852 5.09766 1.72852L24.4922 1.72852C26.6113 1.72852 27.8516 2.97852 27.8516 5.09766L27.8516 17.8613C27.8516 19.9805 26.6113 21.2305 24.4922 21.2305Z"/><path d="M5.27344 18.0762C5.27344 18.7305 5.72266 19.1699 6.39648 19.1699L23.2227 19.1699C23.8965 19.1699 24.3457 18.7305 24.3457 18.0762L24.3457 16.2598C24.3457 15.6055 23.8965 15.166 23.2227 15.166L6.39648 15.166C5.72266 15.166 5.27344 15.6055 5.27344 16.2598Z"/></g></svg>`;
     const __WINDOW_CEILING_CLOSED = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 27.444 24.4629"><g><rect height="24.4629" opacity="0" width="27.444" x="0" y="0"/><path d="M2.25718 24.4629L19.0443 24.4629C20.2552 24.4629 21.0365 23.7891 21.3587 22.666L26.9447 2.80273C27.4232 1.11328 26.5834 0.0195312 24.8255 0.0195312L8.03843 0.0195312C6.82749 0.0195312 6.04624 0.693359 5.72398 1.81641L0.128272 21.6699C-0.340478 23.3594 0.499366 24.4629 2.25718 24.4629ZM1.84702 21.8555L4.36655 12.959L12.4427 12.959L9.66929 22.7246L2.54038 22.7246C1.94468 22.7246 1.69077 22.4121 1.84702 21.8555ZM4.84507 11.25L7.25718 2.69531C7.43296 2.08984 7.78452 1.75781 8.38023 1.75781L15.597 1.75781L12.9115 11.25ZM11.4466 22.7246L14.2103 12.959L22.306 12.959L19.8158 21.7871C19.6498 22.3828 19.2982 22.7246 18.7025 22.7246ZM14.6791 11.25L17.3841 1.75781L24.5326 1.75781C25.1283 1.75781 25.3919 2.06055 25.2259 2.62695L22.7845 11.25Z"/></g></svg>`;
@@ -8416,7 +8409,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.0.0.36",
+        version: "3.0.0.37",
         date: "2026-05-24",
         title: "3.0 Development Begins",
         summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, mapped note locations, a guided install flow, and a beta environment indicator.",
@@ -8534,7 +8527,8 @@
           "Removed the completed Add as App roadmap item after shipping the polished install flow.",
           "Refactored the Tip Jar to a data-driven tier list: a single TIP_TIERS array of {amount, label, tagline, icon, note, iconScale} feeds renderTipJarTiers() into #tipTierGrid at init, with each drink SVG kept as its own __DRINK_* constant. Editing or reordering tiers is now one line per change.",
           "Tier click handling switched to event delegation on #tipTierGrid so future re-renders of the tier list can't lose their click bindings.",
-          "House Rail ($10) and Next Round ($25) glyphs now render at 1.3x scale via a per-tier iconScale, so their visually-padded source SVGs read at a comparable size to the rest of the drink set."
+          "House Rail ($10) and Next Round ($25) glyphs now render at 1.3x scale via a per-tier iconScale, so their visually-padded source SVGs read at a comparable size to the rest of the drink set.",
+          "Fixed the Tip Jar tier SVG max-width and max-height caps so they multiply by the per-tier iconScale variable instead of clamping to a fixed 75% of the chip; the House Rail and Next Round 1.3x scale now actually grows the rendered glyph."
         ]
       },
       {
@@ -11235,7 +11229,7 @@
         ? []
         : [...noteVisitTypeFilters].map(id => id === NOTE_FILTER_NO_ICON ? "No Icon" : visitTypeMeta(id)?.label).filter(Boolean);
       const filterParts = [
-        notesHideExcludedOnly ? "⊘ Hidden" : "⊘ Shown",
+        notesHideExcludedOnly ? "Ø Hidden" : "Ø Shown",
         levels.length ? `${levels.join(", ")}` : "All Levels",
         icons.length ? `${icons.join(", ")}` : "All Icons",
         search ? `"${search}"` : "",
@@ -13882,15 +13876,15 @@
     // Single source of truth for the Buy-Adam-a-Drink tier ladder.
     // Edit/reorder this array to change the dialog. iconScale defaults to 1.
     const TIP_TIERS = [
-      { amount: 1,   label: "Plain Water",      tagline: "Keep the tokens hydrated",            icon: __DRINK_WATER,           note: "Trail Log :: Keep the tokens hydrated" },
-      { amount: 3,   label: "Simple Coffee",    tagline: "Fuel for the roadmap",                icon: __DRINK_COFFEE,          note: "Trail Log :: Fuel for the roadmap" },
-      { amount: 5,   label: "Beer Pint",        tagline: "Cold one for hot patches",            icon: __DRINK_BEER,            note: "Trail Log :: Cold one for hot patches" },
-      { amount: 10,  label: "House Rail",       tagline: "Not top shelf like this app",         icon: __DRINK_HOUSE_RAIL,      note: "Trail Log :: Not top shelf like this app",   iconScale: 1.3 },
-      { amount: 15,  label: "Fancy Cocktail",   tagline: "Favorite feature polish",             icon: __DRINK_FANCY_COCKTAIL,  note: "Trail Log :: Favorite feature polish" },
-      { amount: 20,  label: "Neat Pour",        tagline: "Premium debug support",               icon: __DRINK_NEAT_POUR,       note: "Trail Log :: Premium debug support" },
-      { amount: 25,  label: "Next Round",       tagline: "Keep the ideas flowing",              icon: __DRINK_NEXT_ROUND,      note: "Trail Log :: Keep the ideas flowing",        iconScale: 1.3 },
-      { amount: 50,  label: "Wine Bottle",      tagline: "For the really bad bugs",             icon: __DRINK_WINE,            note: "Trail Log :: For the really bad bugs" },
-      { amount: 100, label: "Something Nice",   tagline: "Celebrate the Wins",                  icon: __DRINK_SOMETHING_NICE,  note: "Trail Log :: Celebrate the Wins" },
+      { amount: 1,   label: "Plain Water",      tagline: "Keep the tokens hydrated",            icon: __DRINK_WATER,           note: "Trail Log :: Keep the tokens hydrated",     iconScale: 1.00 },
+      { amount: 3,   label: "Simple Coffee",    tagline: "Fuel for the roadmap",                icon: __DRINK_COFFEE,          note: "Trail Log :: Fuel for the roadmap",         iconScale: 1.00 },
+      { amount: 5,   label: "Beer Pint",        tagline: "Cold one for hot patches",            icon: __DRINK_BEER,            note: "Trail Log :: Cold one for hot patches",     iconScale: 1.00 },
+      { amount: 10,  label: "House Rail",       tagline: "Not top shelf like this app",         icon: __DRINK_HOUSE_RAIL,      note: "Trail Log :: Not top shelf like this app",  iconScale: 1.49 },
+      { amount: 15,  label: "Fancy Cocktail",   tagline: "Favorite feature polish",             icon: __DRINK_FANCY_COCKTAIL,  note: "Trail Log :: Favorite feature polish",      iconScale: 1.00 },
+      { amount: 20,  label: "Neat Pour",        tagline: "Premium debug support",               icon: __DRINK_NEAT_POUR,       note: "Trail Log :: Premium debug support",        iconScale: 1.00 },
+      { amount: 25,  label: "Next Round",       tagline: "Keep the ideas flowing",              icon: __DRINK_NEXT_ROUND,      note: "Trail Log :: Keep the ideas flowing",       iconScale: 1.32 },
+      { amount: 50,  label: "Wine Bottle",      tagline: "For the really bad bugs",             icon: __DRINK_WINE,            note: "Trail Log :: For the really bad bugs",      iconScale: 1.00 },
+      { amount: 100, label: "Something Nice",   tagline: "Celebrate the Wins",                  icon: __DRINK_SOMETHING_NICE,  note: "Trail Log :: Celebrate the Wins",           iconScale: 1.09 },
     ];
 
     function renderTipJarTiers() {
