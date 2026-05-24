@@ -5968,7 +5968,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.46</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.47</span>
                 <span id="betaPill" class="beta-pill hidden" title="This is the beta deploy">BETA</span>
               </div>
             </div>
@@ -6022,9 +6022,8 @@
             <div class="map-head-hints">
               <small data-hint data-hint-key="map-controls">
                 Switch Map Views: Zoom/Pan/Scroll | Fit<br />
-                Toggle Location Notes Visibility<br />
-                Choose Map Labels: none | ABBR | Full Name</small>
-            </div>
+                Toggle Location Notes Visibility and Filter<br />
+                Choose Map Labels: none | ABBR | Full Name</small>            </div>
             <div class="map-zoom-controls" aria-label="Scrollable map zoom controls">
               <button id="mapZoomOutBtn" type="button" aria-label="Zoom map out" data-shortcut="-">Zoom Out</button>
               <input id="mapZoomReadout" class="map-zoom-readout" type="text" inputmode="numeric"
@@ -6587,7 +6586,7 @@
               data-shortcut="D">Coordinates</button>
           </div>
           <small id="notesPanelSubtitle" class="notes-toggle-hint" data-hint data-hint-key="notesPanelSubtitle">
-            Category Grouping | Color-Coded Excluded and Coordinate Filters.</small>
+            Category Grouping | Excluded and Mapped Filters.</small>
           <div id="notesIconFilterRow" class="notes-icon-filter-row">
             <ol id="notesIconFilters" class="notes-icon-filters" aria-label="Filter notes by icon"></ol>
           </div>
@@ -7111,127 +7110,147 @@
           <input id="helpSearch" type="search" placeholder="Search help…" aria-label="Search Help Center">
         </div>
         <section class="help-section">
-          <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-docs"></span>Documentation
-          </h3>
+          <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-docs"></span>Toolbar</h3>
           <ol>
-            <li>Tap a location to mark it. In cycle mode, a first tap on an already marked location shows it in Notes;
-              the
-              next tap cycles levels.</li>
-            <li>Use the app header to show or hide Map, Legend, and Notes. Use the Location Map header to switch labels,
-              fit the map for screenshots, or return to scrollable mode with pan and zoom controls.</li>
-            <li>Use Add as App in the top toolbar to choose a light or dark icon and get install directions matched to
-              your current device. The other device guides stay collapsed in the same dialog, and Mac icon reload
-              guidance stays tucked into the Mac guide.</li>
-            <li>In scrollable map mode, drag the map to pan, type an exact zoom percentage, use the zoom controls to
-              move in or out, and reset to 100% when you want the full map again. Drag the divider on desktop to resize
-              the map and cards. Your zoom level and fit/scroll map view are saved with the rest of your settings.</li>
-            <li>The app restores your last visible panels, selected Notes location, Notes sort/view/grouping/filter
-              choices, collapsed note categories, and scrollable map pan position.</li>
-            <li>Use the Legend to edit level names, definitions, colors, order, and whether a level counts toward stats.
-              Drag levels anytime to reorder, turn Edit on to reveal all row controls, or swipe a row right-to-left for
-              quick Edit/Delete.</li>
-            <li>On desktop, use the Legend Position button to pick a placement, or drag the Legend title between
-              upper/lower right and upper/lower left map placements.</li>
-            <li>When Notes are open, the app header Legend button tucks the Legend under Notes before hiding it on a
-              second press.</li>
-            <li>Click a Legend level to filter Notes by that level. Click it again to clear the filter.</li>
-            <li>Use Notes search to find locations by name, type, level, dates, visit tags, or note details.</li>
-            <li>Use the Quick Add note button beside Notes search to add a note from the main list without first opening
-              a location. Choose the target location in the note header, then save or save and add another.</li>
-            <li>Sort Notes chronologically or alphabetically, and turn on Categorical to group City, State, and
-              Territory locations with sticky section headers.</li>
-            <li>Use Expanded, Condensed, or Text Only view. Condensed is column-balanced for quick scanning, and Text
-              Only is selectable with a copy button for Apple Notes.
-            </li>
-            <li>Use Smart Convert in the note editor to turn a quick note into dates, levels, location specifics,
-              people, purpose, and details.</li>
-            <li>Use the Locate button beside Where Specifically to look up latitude/longitude for a note. You can edit
-              or enter coordinates manually. Notes without coordinates use the center of the state or territory shape;
-              exact coordinates place the marker more precisely. Single markers open the note; grouped markers use a
-              cluster icon, zoom when they can split, or open a
-              picker when they are too close.</li>
-            <li>Use the Notes coordinate filter to cycle between § All, § Mapped, and § Missing when you want to review
-              locations with or without precise latitude/longitude notes.</li>
-            <li>Use Location Tags to add icon labels to notes. Settings lets you remove defaults, rename tags, reorder
-              them, set unique hotkeys, and search the optional circle icon catalog. Added tags land at the end of your
-              active list.</li>
-            <li>When you open one location, Notes shows all notes for that location. Search, level, and icon filters
-              only affect the main Notes list.</li>
-            <li>Use the circle-slash button in Notes to show or hide locations that only have levels excluded from
-              stats. Amber means excluded locations are visible.</li>
-            <li>Add dates as a year, month and year, or full date. Settings controls the display order and month-name vs
-              numeric formatting.</li>
-            <li>Use Settings > Appearance > Text Size to tune readability without changing map zoom.</li>
-            <li>Use JSON Import/Export in Settings to back up data or move it to another device. Text exports are for
-              sharing or saving elsewhere.</li>
+            <li>Use the app header buttons to show or hide Map, Legend, and Notes.</li>
+            <li>Use Rename to change the map title. Blank names fall back to Your Trail Log.</li>
+            <li>Use Tip for the optional drink prompt, Add as App for device-matched install directions, and Settings
+              for appearance, dates, note tags, imports, and exports.</li>
+            <li>Returning users may see a What's New banner and red dots for feature releases. Open What's New or
+              dismiss the banner to clear them.</li>
+            <li>Hold Shift + Control + Option to temporarily show shortcut badges. Developer Tools lists hidden commands
+              such as H H for restoring dismissed hints and the update banner while testing.</li>
           </ol>
-          <p><b>Default levels:</b> Visited and Not Interested. Not Interested is a excluded level and doesn't count
-            towards
-            total completion.</p>
-          <p><b>Color tools:</b> Auto Colors can apply a smart palette to your current levels. Suggested categories can
-            be shown or hidden from the Legend. Palette order follows the current Legend priority.</p>
-          <p><b>Structured notes:</b> Notes can include Where Specifically, What For, Who With, Additional Details, and
-            multiple icon labels. Use Locate to save latitude/longitude for precise map placement; notes without
-            coordinates sit at the center of their state or territory shape. Nearby markers
-            cluster, with the highest-priority earliest note setting the color and title. Multi-note marker lists can
-            open any note or add a new note at the top mapped location. Use the tag-row ellipsis in the note editor or
-            Settings to
-            choose, rename, sort, shortcut, and search optional labels from the circle icon catalog. Duplicate tag
-            hotkeys
-            show a warning and are not applied.</p>
-          <p><b>What's New:</b> Returning users may see a compact banner and red dots when a major feature release is
-            available. Open What's New or dismiss the banner to clear it.</p>
-          <p><b>Export formats:</b> JSON (.json) is a full backup, re-importable into this app. Markdown (.md) renders
-            in Obsidian, Notion, or any Markdown viewer. Rich Text (.rtf) opens in Word or Pages. Simple Text (.txt)
-            pastes anywhere.</p>
-          <p><b>Shortcut overlays:</b> Hold Shift + Control + Option to show temporary hint badges on actionable
-            controls. Developer Tools lists hidden commands, including H H to restore dismissed hints and the update
-            banner while testing.</p>
         </section>
         <section class="help-section">
-          <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ</h3>
+          <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-docs"></span>Map</h3>
+          <ol>
+            <li>Tap a location to mark it. In cycle mode, the first tap on an already marked location shows it in Notes;
+              the next tap cycles levels.</li>
+            <li>Use the US Map header to switch labels between none, abbreviations, and full names.</li>
+            <li>Use Scroll Map to pan and zoom. Type an exact zoom percentage, use the zoom buttons, or reset to 100%.
+              Your zoom, pan center, and fit/scroll mode are saved.</li>
+            <li>Use Fit Map when you want the map framed cleanly for screenshots or sharing.</li>
+            <li>Use View Locations to show or hide note pins. Notes without coordinates sit at the center of their
+              state or territory shape; exact coordinates place markers more precisely.</li>
+            <li>Use Match Notes to dim map locations and pins that do not match the active Notes filters.</li>
+            <li>Mapped markers open the note when there is one note. Nearby markers cluster, zoom when they can split,
+              or open a picker when they are too close.</li>
+            <li>On desktop, drag the divider between the map and cards to resize the working area.</li>
+          </ol>
+        </section>
+        <section class="help-section">
+          <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-docs"></span>Legend</h3>
+          <ol>
+            <li>The top Legend level is the highest priority and wins the map color when a location has multiple levels.
+            </li>
+            <li>Use the Legend to edit level names, definitions, colors, order, and whether a level is excluded from
+              stats.</li>
+            <li>Drag levels anytime to reorder them. Turn Edit on to reveal row controls, or swipe a row right-to-left
+              for quick Edit/Delete.</li>
+            <li>Deleting a level moves affected locations down to the next lowest level.</li>
+            <li>Click a Legend level to filter Notes by that level. Click it again to clear the filter.</li>
+            <li>Use Auto Colors to apply a palette to the current level order. Suggested categories can be shown or
+              hidden, or you can make your own levels.</li>
+            <li>On desktop, use the Legend Position button or drag the Legend title to place it around the map.</li>
+            <li>Default levels are Visited and Not Interested. Not Interested is excluded from completion stats.</li>
+          </ol>
+        </section>
+        <section class="help-section">
+          <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-docs"></span>Notes</h3>
+          <ol>
+            <li>Use Notes search to find locations by name, type, level, date, coordinate status, tag, or note details.
+            </li>
+            <li>Use Quick Add beside search to add a note from the main list. Pick the target location in the note
+              header, then Save or Save and Add Another.</li>
+            <li>Sort Notes chronologically or alphabetically. Categorical groups City, State, and Territory locations
+              with sticky headers.</li>
+            <li>Use Expanded, Condensed, or Text Only view. Text Only is copy-ready for Apple Notes.</li>
+            <li>Use the icon chips to filter by Location Tags. Empty circle means notes without an icon; the ellipsis
+              opens Location Tag settings.</li>
+            <li>Right-click or long-press an icon chip to show only that icon. Do it again when one icon is selected to
+              restore all icons.</li>
+            <li>Use the coordinate filter to cycle between § All, § Mapped, and § Missing.</li>
+            <li>Use the circle-slash excluded toggle to show or hide locations that only have excluded-from-stats
+              levels. Amber means excluded locations are visible.</li>
+            <li>Use Smart Convert in the note editor to turn quick text into dates, levels, location specifics, people,
+              purpose, and details.</li>
+            <li>Use Locate beside Where Specifically to look up latitude/longitude. You can manually edit or clear
+              coordinates.</li>
+            <li>Notes support Where Specifically, What For, Who With, Additional Details, partial dates, and multiple
+              icon labels. Four or fewer labels keeps rows easier to scan.</li>
+            <li>When one location is open, Notes shows every note for that location. Main-list search, level, icon, and
+              visibility filters do not hide that selected location's notes.</li>
+          </ol>
+        </section>
+        <section class="help-section">
+          <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-docs"></span>Other</h3>
+          <ol>
+            <li>Add dates as a year, month and year, or full date. Settings controls date order and month-name vs
+              numeric formatting.</li>
+            <li>Use Settings > Appearance > Text Size to tune readability without changing map zoom.</li>
+            <li>Use JSON Import/Export in Settings to back up data or move it between browsers or devices.</li>
+            <li>Export formats: JSON is a full backup; Markdown is structured text; Rich Text opens in Word or Pages;
+              Plain Text pastes anywhere.</li>
+            <li>Use Add as App to choose a light or dark icon and get install directions for iPhone/iPad, Android, Mac,
+              or PC. Mac icon reload guidance appears at the top of the Mac instructions when needed.</li>
+            <li>The app restores your visible panels, selected Notes location, Notes sort/view/grouping/filter choices,
+              collapsed categories, map zoom, map pan, and map mode.</li>
+          </ol>
+        </section>
+        <section class="help-section">
+          <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ: Data</h3>
           <p><b>Where is my data saved?</b><br>In your browser localStorage on this device only. Nothing leaves your
             machine.</p>
           <p><b>Can someone else use the same app link?</b><br>Yes. Each browser keeps its own separate local copy of
             the data.</p>
-          <p><b>Does it work offline?</b><br>Yes. Once the file is open, no network connection is needed — there's no
-            backend or external service.</p>
+          <p><b>Does it work offline?</b><br>Yes. Once the file is open, no network connection is needed. The optional
+            Locate button needs internet access for lookup, but manual coordinates and saved markers work offline.</p>
           <p><b>Can I move data to another device?</b><br>Export a JSON backup in Settings, then import it in the app on
             the other device.</p>
-          <p><b>How do I add it like an app?</b><br>Use Add as App in the top toolbar. Trail Log detects iPhone/iPad,
-            Android, Mac, or PC, expands the matching directions, and keeps the other device guides collapsed until you
-            open one. Mac icon reload guidance appears at the top of the Mac instructions when needed.</p>
-          <p><b>Will my map zoom come back?</b><br>Yes. The app saves your scrollable-map zoom level and whether you
-            were using Fit Map or Scroll Map, plus your last pan position in scrollable mode.</p>
-          <p><b>Will my Notes filters come back?</b><br>Yes. Notes view, sort, grouping, excluded visibility, Legend
-            filters, icon filters, collapsed categories, and selected location restore with your local settings. Filters
-            apply to the main Notes list; a selected location always shows all of its own notes.</p>
           <p><b>Can I undo a reset?</b><br>No. Export a JSON backup first if you want a safety net.</p>
-          <p><b>What does Categorical do in Notes?</b><br>It groups locations by City, State, and Territory, keeps your
-            Alphabetical or Chronological sort inside each group, and keeps the current group header sticky while you
-            scroll.</p>
-          <p><b>What is Text Only view for?</b><br>It renders a clean plain-text version of the current Notes view that
-            is easy to select, copy, and paste into Apple Notes. Single-note locations stay on one line when possible.
-          </p>
-          <p><b>How does Smart Convert work?</b><br>Type a quick note in the note editor, then Auto Convert fills any
-            recognized date, level, visit icon, where, what, and who fields. Any leftover text goes to Additional
-            Details.</p>
-          <p><b>Can one note have multiple visit icons?</b><br>Yes. Pick any labels that fit, though four or fewer keeps
-            Notes rows easier to scan.</p>
-          <p><b>Where do the extra Location Tags come from?</b><br>More Icons is built from the circle symbols bundled
-            into this file. Search by icon name, label, or related terms, then add the ones you want.</p>
-          <p><b>Can two Location Tags use the same hotkey?</b><br>No. If a key is already assigned to another active
-            tag,
-            the app warns you and keeps the existing shortcut setup unchanged.</p>
-          <p><b>What's the difference between cycle and select mode?</b><br>Cycle taps rotate through your active levels
-            automatically. Select mode opens a picker so you can choose a level and add a note in one step.</p>
-          <p><b>Can I have more than five levels?</b><br>No. Five is the cap — enough for any reasonable visit taxonomy
-            without turning the legend into a spreadsheet.</p>
+        </section>
+        <section class="help-section">
+          <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ: Map</h3>
+          <p><b>Will my map zoom come back?</b><br>Yes. The app saves your scrollable-map zoom level, fit/scroll mode,
+            and last pan position.</p>
+          <p><b>What is Match Notes?</b><br>It applies the active Notes filters to the map, dimming locations and hiding
+            note pins that do not match.</p>
+          <p><b>Why are some pins grouped?</b><br>Nearby mapped notes cluster so the map stays readable. Click a cluster
+            to zoom or open the picker when notes are too close to separate.</p>
+        </section>
+        <section class="help-section">
+          <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ: Legend</h3>
+          <p><b>What's the difference between cycle and select mode?</b><br>Cycle taps rotate through active levels.
+            Select mode opens a picker so you can choose a level and add a note.</p>
+          <p><b>Can I have more than five levels?</b><br>No. Five is the current cap. There is a Roadmap item for adding
+            more levels later.</p>
           <p><b>Why do some levels show a no symbol instead of a percentage?</b><br>Those levels are excluded from
             completion stats.</p>
-          <p><b>Can I use this offline?</b><br>Yes. It is a single local HTML app with no backend and no external
-            services required. The optional Locate button needs internet access for lookup, but manual coordinates and
-            saved markers work offline.</p>
+        </section>
+        <section class="help-section">
+          <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ: Notes</h3>
+          <p><b>Will my Notes filters come back?</b><br>Yes. Notes view, sort, grouping, excluded visibility, Legend
+            filters, icon filters, collapsed categories, and selected location restore with your local settings.</p>
+          <p><b>What does Categorical do in Notes?</b><br>It groups locations by City, State, and Territory while keeping
+            your selected sort order inside each group.</p>
+          <p><b>What is Text Only view for?</b><br>It renders a clean plain-text version of the current Notes view that
+            is easy to select, copy, and paste into Apple Notes.</p>
+          <p><b>How does Smart Convert work?</b><br>Type a quick note, then Auto Convert fills recognized date, level,
+            visit icon, where, what, and who fields. Leftover text goes to Additional Details.</p>
+          <p><b>Can one note have multiple visit icons?</b><br>Yes. Pick any labels that fit, though four or fewer keeps
+            Notes rows easier to scan.</p>
+          <p><b>Where do extra Location Tags come from?</b><br>More Icons is built from the circle symbols bundled into
+            this file. Search by icon name, label, or related terms, then add the ones you want.</p>
+          <p><b>Can two Location Tags use the same hotkey?</b><br>No. If a key is already assigned to another active
+            tag, the app warns you and keeps the existing shortcut setup unchanged.</p>
+        </section>
+        <section class="help-section">
+          <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ: Other</h3>
+          <p><b>How do I add it like an app?</b><br>Use Add as App in the top toolbar. Trail Log detects iPhone/iPad,
+            Android, Mac, or PC, expands the matching directions, and keeps one other device guide open at a time.</p>
+          <p><b>How do hints work?</b><br>Hints can be dismissed one at a time, or turned off globally in Settings.
+            Turning Hints back on restores dismissed hints.</p>
         </section>
         <section class="help-section">
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-feedback"></span>Feedback
@@ -7400,7 +7419,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.0.0.46";
+    const APP_VERSION = "3.0.0.47";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -8540,6 +8559,18 @@
         category: "UI"
       },
       {
+        title: "Add More Legend Levels",
+        ticketId: "WISH-041",
+        description: "Allow more than the current five Legend levels while keeping the map, stats, color palettes, mobile layout, imports, and exports readable.",
+        priority: "P3",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 24,
+        prompt: "Increase the Legend level capacity beyond five. Preserve existing saved levels, keep mobile and map readability, update stats/color palettes/import/export, and avoid cluttering the Legend controls.",
+        category: "Legend"
+      },
+      {
         title: "Optimize iPhone UI",
         ticketId: "WISH-011",
         description: "Tune the app for iPhone-sized screens. Scope includes map sizing, tabs, controls, dialogs, touch targets, safe areas, and avoiding cramped or clipped text.",
@@ -8554,7 +8585,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.0.0.46",
+        version: "3.0.0.47",
         date: "2026-05-24",
         title: "3.0 Development Begins",
         summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, mapped note locations, a guided install flow, and a beta environment indicator.",
@@ -8682,7 +8713,9 @@
           "Match Notes now defaults to on so the map reflects the active notes filters out of the box. Existing users without a saved preference for this setting get migrated to on; explicit off choices are preserved.",
           "Roadmap cards now use subtle priority coloring with a small colored pill and left-edge accent for P0 through P3.",
           "Polished Add as App with cleaner icon cards, matched two-column guide widths, centered step rows, top-positioned Mac icon reload notice, one-open other-device guides, and Developer Mode install-device simulation.",
-          "Moved the Notes panel tag-settings ellipsis into the icon filter chip flow so it sits directly after the last visible chip."
+          "Moved the Notes panel tag-settings ellipsis into the icon filter chip flow so it sits directly after the last visible chip.",
+          "Reorganized Help Center documentation and FAQ into focused Toolbar, Map, Legend, Notes, and Other sections, with refreshed hints for the current toolbar, map, legend, and notes controls.",
+          "Added roadmap ticket WISH-041 for supporting more Legend levels beyond the current five-level cap."
         ]
       },
       {
