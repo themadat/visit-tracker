@@ -1,3 +1,101 @@
+## Names
+
+Trail Log <- [Travel Log, Trail Notes, Book/Journal] <- Visit Tracker  <- US State Visit Map
+| Profession / Hobby | Common Term
+|---|---|
+Journalists | Field Notes
+Pilots | Logbook
+Hikers | Trail Journal
+Scientists | Field Journal
+Sailors | Ship’s Log
+Engineers | Engineering Notebook
+Developers | Dev Log
+Photographers | Shoot Log
+Military | Field Book
+EMS / Fire | Incident Log
+Birders | Observation Log
+Fishermen | Catch Log
+Divers | Dive Log
+Climbers | Ascent Log
+Astronomers | Observing Log
+Ham Radio Operators | QSO Log
+Gardeners | Garden Journal
+Travelers | Travel Journal
+Artists | Sketchbook
+Mechanics | Maintenance Log
+
+## National Parks
+
+Here are the official 4-letter NPS “alpha codes” for all 63 U.S. national parks managed by National Park Service. Official NPS code references are maintained by the  National Park Service park code listings and NPS unit datasets.
+
+Park | Code
+|---|---|
+Acadia National Park | ACAD
+American Samoa National Park | NPSA
+Arches National Park | ARCH
+Badlands National Park | BADL
+Big Bend National Park | BIBE
+Biscayne National Park | BISC
+Black Canyon of the Gunnison National Park | BLCA
+Bryce Canyon National Park | BRCA
+Canyonlands National Park | CANY
+Capitol Reef National Park | CARE
+Carlsbad Caverns National Park | CAVE
+Channel Islands National Park | CHIS
+Congaree National Park | CONG
+Crater Lake National Park | CRLA
+Cuyahoga Valley National Park | CUVA
+Death Valley National Park | DEVA
+Denali National Park and Preserve | DENA
+Dry Tortugas National Park | DRTO
+Everglades National Park | EVER
+Gates of the Arctic National Park and Preserve | GAAR
+Gateway Arch National Park | JEFF
+Glacier National Park | GLAC
+Glacier Bay National Park and Preserve | GLBA
+Grand Canyon National Park | GRCA
+Grand Teton National Park | GRTE
+Great Basin National Park | GRBA
+Great Sand Dunes National Park and Preserve | GRSA
+Great Smoky Mountains National Park | GRSM
+Guadalupe Mountains National Park | GUMO
+Haleakalā National Park | HALE
+Hawaiʻi Volcanoes National Park | HAVO
+Hot Springs National Park | HOSP
+Indiana Dunes National Park | INDU
+Isle Royale National Park | ISRO
+Joshua Tree National Park | JOTR
+Katmai National Park and Preserve | KATM
+Kenai Fjords National Park | KEFJ
+Kings Canyon National Park | KICA
+Kobuk Valley National Park | KOVA
+Lake Clark National Park and Preserve | LACL
+Lassen Volcanic National Park | LAVO
+Mammoth Cave National Park | MACA
+Mesa Verde National Park | MEVE
+Mount Rainier National Park | MORA
+New River Gorge National Park and Preserve | NERI
+North Cascades National Park | NOCA
+Olympic National Park | OLYM
+Petrified Forest National Park | PEFO
+Pinnacles National Park | PINN
+Redwood National and State Parks | REDW
+Rocky Mountain National Park | ROMO
+Saguaro National Park | SAGU
+Sequoia National Park | SEQU
+Shenandoah National Park | SHEN
+Theodore Roosevelt National Park | THRO
+Virgin Islands National Park | VIIS
+Voyageurs National Park | VOYA
+White Sands National Park | WHSA
+Wind Cave National Park | WICA
+Wrangell–St. Elias National Park and Preserve | WRST
+Yellowstone National Park | YELL
+Yosemite National Park | YOSE
+Zion National Park | ZION
+
+## SVG Stuff
+
 <!-- 70% <g transform="translate(228 164) scale(21)"> -->
 <!-- 80% <g transform="translate(177 112) scale(24.77)"> -->
 
