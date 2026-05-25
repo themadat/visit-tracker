@@ -2289,7 +2289,7 @@
 
     .date-picker-head {
       display: grid;
-      grid-template-columns: auto auto minmax(0, 1fr);
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
       align-items: center;
       gap: .42rem;
       min-width: 0;
@@ -2298,7 +2298,7 @@
     .date-heading-actions {
       display: flex;
       align-items: center;
-      gap: .32rem;
+      gap: .22rem;
       min-width: 0;
     }
 
@@ -2310,12 +2310,15 @@
       height: 34px;
       box-sizing: border-box;
       text-align: center;
+      padding: .24rem .44rem;
+      font-size: .72rem;
+      white-space: nowrap;
     }
 
     .date-builder {
       display: grid;
-      grid-template-columns: minmax(7.1rem, 1fr) 5.35rem 3.65rem;
-      gap: .28rem;
+      grid-template-columns: auto auto auto auto;
+      gap: .22rem;
       align-items: center;
       min-width: 0;
     }
@@ -2327,8 +2330,9 @@
 
     .date-year-row {
       display: grid;
-      grid-template-columns: 28px minmax(0, 1fr) 28px;
-      gap: .2rem;
+      grid-template-columns: 24px 5.4ch 24px;
+      gap: .16rem;
+      width: max-content;
     }
 
     .date-builder input,
@@ -2340,6 +2344,46 @@
       padding: .24rem .28rem;
       font-size: .76rem;
       box-sizing: border-box;
+    }
+
+    .date-year-row button {
+      width: 24px;
+      padding: 0;
+    }
+
+    #noteYear {
+      width: 5.4ch;
+      text-align: center;
+    }
+
+    #noteMonth {
+      width: 5.1rem;
+    }
+
+    #noteDay {
+      width: 3.25rem;
+      text-align: center;
+    }
+
+    #noteDay.is-month-missing {
+      border-color: color-mix(in srgb, var(--danger) 62%, var(--line));
+      background: color-mix(in srgb, var(--danger) 12%, var(--surface));
+      color: var(--danger);
+      opacity: 1;
+    }
+
+    #noteDay.is-month-missing::placeholder {
+      color: var(--danger);
+      opacity: 1;
+    }
+
+    .date-picker-status {
+      grid-column: 1 / -1;
+      color: var(--muted);
+      font-size: .72rem;
+      font-weight: 750;
+      line-height: 1.1;
+      white-space: nowrap;
     }
 
     .month-chip-grid {
@@ -2374,8 +2418,8 @@
       background: var(--surface);
       color: var(--accent-2);
       padding: .24rem .5rem;
-      width: 9.45rem;
-      min-width: 9.45rem;
+      width: 100%;
+      min-width: 0;
       font-size: .94rem;
       font-weight: 800;
       font-variant-numeric: tabular-nums;
@@ -6006,7 +6050,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.1.0.2</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.1.0.3</span>
                 <span id="betaPill" class="env-pill beta-pill hidden" title="This is the beta deploy">BETA</span>
                 <span id="alphaPill" class="env-pill alpha-pill hidden" title="This is the alpha deploy">ALPHA</span>
               </div>
@@ -6873,11 +6917,11 @@
       <section class="partial-date-picker" aria-label="Date">
         <div class="date-picker-head">
           <span id="noteDatePreview" class="date-preview-pill">No date</span>
-          <div class="date-heading-actions">
-            <button id="noteTodayBtn" type="button">Today</button>
-            <button id="noteYearOnlyBtn" type="button">Year Only</button>
-          </div>
           <div class="date-builder">
+            <div class="date-heading-actions">
+              <button id="noteTodayBtn" type="button">Today</button>
+              <button id="noteYearOnlyBtn" type="button">Year Only</button>
+            </div>
             <label aria-label="Year">
               <span class="date-year-row">
                 <button type="button" data-note-year-delta="-1" aria-label="Previous year">−</button>
@@ -6892,15 +6936,17 @@
               </select>
             </label>
             <label aria-label="Day optional">
-              <input id="noteDay" type="text" inputmode="numeric" maxlength="2" placeholder="Day" disabled>
+              <input id="noteDay" class="is-month-missing" type="text" inputmode="numeric" maxlength="2"
+                placeholder="--" disabled>
             </label>
+            <span class="date-picker-status">(Month/Day optional)</span>
           </div>
         </div>
         <input id="noteDate" type="hidden">
         <div id="noteMonthChips" class="month-chip-grid" aria-label="Quick month choices"></div>
         <div class="date-picker-actions">
           <small data-hint data-hint-key="note-date-help">
-            Accepted dates: YYYY, M/YYYY, M/D/YYYY, M/D/YY, Month YYYY, or Month D YYYY. Weekdays are optional.
+            Accepted dates: YYYY, YYYY M, YYYY M D, YYYY-MM-DD, M/YYYY, M/D/YYYY, M/D/YY, Month YYYY, Month D YYYY, YYYY Month, or YYYY Month D. Weekdays are optional.
           </small>
         </div>
       </section>
@@ -7486,7 +7532,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.1.0.2";
+    const APP_VERSION = "3.1.0.3";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -8724,17 +8770,32 @@
     ];
     const CHANGELOG = [
       {
+        version: "3.1.0.3",
+        date: "2026-05-25",
+        title: "Date Picker Lineup",
+        summary: "The note date picker is more compact and clearer about optional month/day fields.",
+        highlights: [
+          "Today and Year Only now sit on the date input line beside the picker.",
+          "The Day field shows a red -- placeholder until a month is selected."
+        ],
+        updates: [
+          "Rebalanced the note date row into a 40/60 pill-and-picker layout.",
+          "Sized the Year, Month, and Day controls around their actual expected input lengths.",
+          "Added a compact (Month/Day optional) status label beside the picker."
+        ]
+      },
+      {
         version: "3.1.0.2",
         date: "2026-05-25",
         title: "Date Pill Breathing Room",
-        summary: "The note date row now fits weekday brackets and accepts short numeric years.",
+        summary: "The note date row now fits weekday brackets and accepts more numeric date formats.",
         highlights: [
           "The note date preview has more room for weekday brackets.",
-          "Short numeric dates such as 11/15/23 now parse."
+          "Short numeric dates such as 11/15/23 and year-first dates such as 2026 6 5 now parse."
         ],
         updates: [
           "Widened the note date preview pill and tightened the Month and Day controls so weekday brackets fit cleanly.",
-          "Added two-digit year support for numeric dates such as 11/15/23, while preserving existing year, month/year, full-year numeric, month-name, and weekday-aware parsing.",
+          "Added two-digit year support for numeric dates such as 11/15/23 and year-first space formats such as 2026 6, 2026 6 5, 2026 June, and 2026 June 5.",
           "Updated the note date hint to list the accepted date formats directly."
         ]
       },
@@ -9725,6 +9786,8 @@
       if (match) return normalizeDateYear(match[1]);
       match = clean.match(/^(\d{4})[-/.](\d{1,2})(?:[-/.](\d{1,2}))?$/);
       if (match) return normalizeDateParts(match[1], match[2], match[3]);
+      match = clean.match(/^(\d{4})\s+(\d{1,2})(?:\s+(\d{1,2}))?$/);
+      if (match) return normalizeDateParts(match[1], match[2], match[3]);
       match = clean.match(/^(\d{1,2})[-/.](\d{2}|\d{4})$/);
       if (match) return normalizeDateParts(match[2], match[1]);
       match = clean.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{2}|\d{4})$/);
@@ -9795,7 +9858,7 @@
     }
 
     function populateNoteDatePicker() {
-      $("#noteMonth").innerHTML = `<option value="">Month (Optional)</option>` + MONTH_NAMES.map((name, index) =>
+      $("#noteMonth").innerHTML = `<option value="">Month</option>` + MONTH_NAMES.map((name, index) =>
         `<option value="${pad2(index + 1)}">${name}</option>`
       ).join("");
       $("#noteMonthChips").innerHTML = MONTH_NAMES.map((name, index) =>
@@ -9810,8 +9873,11 @@
       const cleanYear = yearInput.value.replace(/\D/g, "").slice(0, 4);
       if (yearInput.value !== cleanYear) yearInput.value = cleanYear;
       const month = monthInput.value;
-      dayInput.disabled = !month;
-      if (!month) dayInput.value = "";
+      const monthMissing = !month;
+      dayInput.disabled = monthMissing;
+      dayInput.placeholder = monthMissing ? "--" : "Day";
+      dayInput.classList.toggle("is-month-missing", monthMissing);
+      if (monthMissing) dayInput.value = "";
       const maxDay = month && cleanYear.length === 4 ? new Date(Number(cleanYear), Number(month), 0).getDate() : 31;
       dayInput.max = String(maxDay);
       const cleanDay = String(dayInput.value || "").replace(/\D/g, "").slice(0, 2);
@@ -13130,6 +13196,7 @@
           new RegExp(withWeekday(`\\b\\d{4}\\s+(?:${monthPattern})(?:\\s+\\d{1,2})?\\b`), "i"),
           new RegExp(withWeekday(`\\b\\d{1,2}[-/.]\\d{1,2}[-/.](?:\\d{2}|\\d{4})\\b`), "i"),
           new RegExp(withWeekday(`\\b\\d{4}[-/.]\\d{1,2}(?:[-/.]\\d{1,2})?\\b`), "i"),
+          new RegExp(withWeekday(`\\b\\d{4}\\s+\\d{1,2}(?:\\s+\\d{1,2})?\\b`), "i"),
           new RegExp(withWeekday(`\\b\\d{1,2}[-/.](?:\\d{2}|\\d{4})\\b`), "i"),
           new RegExp(withWeekday(`\\b(?:\\d{2}|\\d{4})\\b`), "i")
         ];
