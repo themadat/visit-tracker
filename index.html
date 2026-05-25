@@ -2695,6 +2695,26 @@
       padding: 0;
     }
 
+    .release-subsection {
+      margin-top: .28rem;
+    }
+
+    .release-subsection>b {
+      display: block;
+      margin-bottom: .12rem;
+      color: var(--text);
+      font-size: .86rem;
+      text-transform: none;
+    }
+
+    .release-subsection ul {
+      margin: .08rem 0 .22rem 1rem;
+    }
+
+    .release-subsection li {
+      margin: .12rem 0;
+    }
+
     #changelogList {
       display: grid;
       gap: .48rem;
@@ -5980,7 +6000,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0.50</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0</span>
                 <span id="betaPill" class="beta-pill hidden" title="This is the beta deploy">BETA</span>
               </div>
             </div>
@@ -5989,9 +6009,11 @@
         </div>
         <div class="topbar-hints" aria-label="Title bar tips">
           <small id="topbarPanelHint" data-hint data-hint-key="topbar-panel-controls">
-            Toggle Cards Shown: Map, Legend, Notes<br />Tip the Dev! | Add as App | Settings</small>
+            Toggle Cards Shown: Map, Legend, Notes<br />Tip the Dev! | Add as App | Settings
+          </small>
           <small id="mapResizeHint" class="topbar-resize-hint" data-hint data-hint-key="map-resize">
-            Looks wonky? Resize the map and cards.</small>
+            Looks wonky? Resize the map and cards.
+          </small>
         </div>
       </div>
       <div id="whatsNewNotice" class="release-notice hidden" role="button" tabindex="0" aria-label="Open release notes">
@@ -6035,7 +6057,9 @@
               <small data-hint data-hint-key="map-controls">
                 Switch Map Views: Zoom/Pan/Scroll | Fit<br />
                 Toggle Location Notes Visibility and Filter<br />
-                Choose Map Labels: none | ABBR | Full Name</small>            </div>
+                Choose Map Labels: none | ABBR | Full Name
+              </small>
+            </div>
             <div class="map-zoom-controls" aria-label="Scrollable map zoom controls">
               <button id="mapZoomOutBtn" type="button" aria-label="Zoom map out" data-shortcut="-">Zoom Out</button>
               <input id="mapZoomReadout" class="map-zoom-readout" type="text" inputmode="numeric"
@@ -6576,7 +6600,8 @@
                 placeholder="Search groups, names, levels, dates, notes, tags, etc..." aria-label="Search notes">
             </div>
             <small id="notesPanelBackHint" class="notes-back-hint" data-hint data-hint-key="notes-panel-back-hint">
-              Hit Back to return to the main list.</small>
+              Hit Back to return to the main list.
+            </small>
             <button id="notesPanelBackBtn" type="button" data-shortcut="B">All</button>
           </div>
           <div class="notes-controls" aria-label="Notes display controls">
@@ -6598,14 +6623,16 @@
               data-shortcut="D">Coordinates</button>
           </div>
           <small id="notesPanelSubtitle" class="notes-toggle-hint" data-hint data-hint-key="notesPanelSubtitle">
-            Category Grouping | Excluded and Mapped Filters.</small>
+            Category Grouping | Excluded and Mapped Filters.
+          </small>
           <div id="notesIconFilterRow" class="notes-icon-filter-row">
             <ol id="notesIconFilters" class="notes-icon-filters" aria-label="Filter notes by icon"></ol>
           </div>
           <small id="notesIconFilterHint" class="notes-icon-filter-hint" data-hint
             data-hint-key="notes-icon-filter-help">
             Select icons to filter notes. Empty circle is all Notes without an icon.<br />
-            Right-Click/Long-Press an icon to toggle filter on just it or show all.</small>
+            Right-Click/Long-Press an icon to toggle filter on just it or show all.
+          </small>
           <div id="notesFilterSummary" class="notes-filter-summary" aria-live="polite"></div>
           <div id="notesPanelContent" class="note-list"></div>
         </section>
@@ -6823,15 +6850,19 @@
       <div class="note-inline-hints">
         <small data-hint data-hint-key="note-smart-convert-help">
           Type a quick note, then Auto Convert looks for items like “at”, “for”, and “with”.<br />
-          Leftover text goes to Additional Details.</small>
+          Leftover text goes to Additional Details.
+        </small>
       </div>
       <section id="visitTypeRow" class="visit-type-row" aria-label="Visit labels">
       </section>
       <small data-hint data-hint-key="note-tag-settings-help">
-        Open Location Tags, choose which tags appear here, rename them, sort them, and set shortcuts.</small>
+        Open Location Tags, choose which tags appear here, rename them, sort them, and set shortcuts.
+      </small>
       <small data-hint data-hint-key="note-label-help">
-        Select Location Tags. Recommend no more than 4 for a cleaner UI/UX.<br />
-        When the cursor is outside a text field, use the letter hotkeys to toggle Location Tags on/off.</small>
+        Select Location Tags. First icon in this list order will be what this point renders as on the map.<br />
+        Recommend no more than 4 for a cleaner UX/UI.<br />
+        When the cursor is outside a text field, use the letter hotkeys to toggle Location Tags on/off.
+      </small>
       <section class="partial-date-picker" aria-label="Date">
         <div class="date-picker-head">
           <span id="noteDatePreview" class="date-preview-pill">No date</span>
@@ -6850,7 +6881,7 @@
             </label>
             <label aria-label="Month">
               <select id="noteMonth">
-                <option value="">Month</option>
+                <option value="">Month (Optional)</option>
               </select>
             </label>
             <label aria-label="Day optional">
@@ -6861,8 +6892,9 @@
         <input id="noteDate" type="hidden">
         <div id="noteMonthChips" class="month-chip-grid" aria-label="Quick month choices"></div>
         <div class="date-picker-actions">
-          <small data-hint data-hint-key="note-date-help">Use whatever you know: year only, month and year, or a full
-            date.</small>
+          <small data-hint data-hint-key="note-date-help">
+            Use whatever you know: year only, month and year, or a full date.
+          </small>
         </div>
       </section>
       <section class="note-level-section">
@@ -6881,16 +6913,17 @@
           <div class="note-coordinate-inputs">
             <label>Latitude
               <input id="noteLat" type="number" inputmode="decimal" step="any" min="-90" max="90"
-                placeholder="Manual override">
+                placeholder="Optional">
             </label>
             <label>Longitude
               <input id="noteLng" type="number" inputmode="decimal" step="any" min="-180" max="180"
-                placeholder="Manual override">
+                placeholder="Optional">
             </label>
           </div>
           <small id="noteGeocodeStatus" class="note-geocode-status" data-hint data-hint-key="note-location-help">
-            Use Locate to place this note on the map, or enter latitude/longitude manually. Nearby markers cluster and
-            use a hex-grid cluster icon.</small>
+            Use Locate to place this note on the map, or enter latitude/longitude manually.
+            This will use the first icon in the list; Nearby markers cluster and use a hex-grid cluster icon.
+          </small>
         </div>
       </div>
       <div class="note-field-grid">
@@ -6937,8 +6970,9 @@
           <span><b class="exclude-stat-title"><span>Exclude</span><span>from</span><span>Stats</span></b></span>
         </label>
       </div>
-      <small data-hint data-hint-key="level-editor-help">Exclude from Stats removes any location in this level from
-        completion totals.</small>
+      <small data-hint data-hint-key="level-editor-help">
+        Exclude from Stats removes any location in this level from completion totals.
+      </small>
       <section>
         <h3>Existing Swatches</h3>
         <div id="existingSwatches" class="swatch-grid" style="margin-top: .5rem;"></div>
@@ -6987,9 +7021,10 @@
       </div>
     </header>
     <div class="dialog-body">
-      <small data-hint data-hint-key="tag-editor-help">Selected tags appear in the note editor. Drag selected rows to
-        change order, click rows to add or hide them, and search More Icons for optional labels from the circle icon
-        catalog.</small>
+      <small data-hint data-hint-key="tag-editor-help">
+        Selected tags appear in the note editor. Select/Drag icons to change order/name/hotkey,
+        click icons to add/remove them, and search More Available Icons from the catalog.
+      </small>
       <div id="tagEditorList" class="tag-editor-list"></div>
     </div>
   </dialog>
@@ -7022,8 +7057,9 @@
               <span class="size-letter large" aria-hidden="true">A</span>
             </div>
           </div>
-          <small class="setting-hint" data-hint data-hint-key="settings-text-size-help">Text Size adjusts the whole app
-            while map zoom stays separate.</small>
+          <small class="setting-hint" data-hint data-hint-key="settings-text-size-help">
+            Text Size adjusts the whole app while map zoom stays separate.
+          </small>
           <div class="setting-row">
             <div class="setting-label">Theme</div>
             <div class="segmented" aria-label="Theme">
@@ -7046,8 +7082,9 @@
               <button id="hintsOffBtn" type="button" aria-pressed="false" data-shortcut="O">Off</button>
             </div>
           </div>
-          <small class="setting-hint" data-hint data-hint-key="settings-hints-help">Turning Hints off hides all hints.
-            Turning them back on restores dismissed hints.</small>
+          <small class="setting-hint" data-hint data-hint-key="settings-hints-help">
+            Turning Hints off hides all hints. Turning them back on restores dismissed hints.
+          </small>
         </section>
         <section class="settings-category">
           <h3>Map Interaction</h3>
@@ -7084,9 +7121,9 @@
             <button id="visitTagSettingsBtn" type="button" data-shortcut="Y">Choose, Reorder, Rename, Assign
               Hotkeys</button>
           </div>
-          <small class="setting-hint" data-hint data-hint-key="settings-note-tags-help">Pick which note icon labels
-            appear in the note editor, rename them, drag to sort, set shortcuts, and search the optional circle icon
-            catalog.</small>
+          <small class="setting-hint" data-hint data-hint-key="settings-note-tags-help">
+            Pick which note icon labels appear in the note editor, rename them, drag to sort, set shortcuts, and search the optional circle icon catalog.
+          </small>
         </section>
         <section class="settings-category">
           <h3>Import and Export</h3>
@@ -7097,8 +7134,9 @@
             - Markdown (.md): structured text; use for pretty rendering or HTML based applications.<br>
             - Rich Text (.rtf): formatted text; for word processors with basic formatting.<br>
             - Plain Text (.txt): simple text; used anywhere, useful for basic notes.</p>
-          <small data-hint data-hint-key="import-export-help">JSON restores your full map. Text exports are for sharing,
-            notes, or printing.</small>
+          <small data-hint data-hint-key="import-export-help">
+            JSON restores your full map. Text exports are for sharing, notes, or printing.
+          </small>
           <div class="actions">
             <button id="exportJsonBtn" class="primary" type="button" data-shortcut="J">JSON</button>
             <button id="exportMarkdownBtn" type="button" data-shortcut="M">Markdown</button>
@@ -7232,7 +7270,8 @@
             to zoom or open the picker when notes are too close to separate.</p>
         </section>
         <section class="help-section">
-          <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ: Legend</h3>
+          <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ: Legend
+          </h3>
           <p><b>What's the difference between cycle and select mode?</b><br>Cycle taps rotate through active levels.
             Select mode opens a picker so you can choose a level and add a note.</p>
           <p><b>Can I have more than five levels?</b><br>No. Five is the current cap. There is a Roadmap item for adding
@@ -7244,7 +7283,8 @@
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ: Notes</h3>
           <p><b>Will my Notes filters come back?</b><br>Yes. Notes view, sort, grouping, excluded visibility, Legend
             filters, icon filters, collapsed categories, and selected location restore with your local settings.</p>
-          <p><b>What does Categorical do in Notes?</b><br>It groups locations by City, State, and Territory while keeping
+          <p><b>What does Categorical do in Notes?</b><br>It groups locations by City, State, and Territory while
+            keeping
             your selected sort order inside each group.</p>
           <p><b>What is Text Only view for?</b><br>It renders a clean plain-text version of the current Notes view that
             is easy to select, copy, and paste into Apple Notes.</p>
@@ -7431,7 +7471,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.0.0.50";
+    const APP_VERSION = "3.0.0";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7540,7 +7580,7 @@
     };
 
     // Find Free Custom SVGs: https://www.svgrepo.com
-    
+
     // Common Resused
     const __PENCIL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 22.3366 21.9615"><g><rect height="21.9615" opacity="0" width="22.3366" x="0" y="0"/><path d="M3.90513 20.6975L18.6854 5.91726L16.0829 3.31472L1.30747 18.0901L0.0379412 21.1907C-0.13784 21.6399 0.33091 22.0891 0.750832 21.928ZM19.9891 4.63796L21.4247 3.21218C22.1278 2.50417 22.162 1.71316 21.5126 1.05398L20.9706 0.507102C20.3211-0.147195 19.5106-0.0837187 18.8075 0.604758L17.367 2.02566Z" /></g></svg>`;
     const __PLUS_APP_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24.0576 23.7305"><g><rect height="23.7305" opacity="0" width="24.0576" x="0" y="0"/><path d="M21.8799 1.81152C23.0664 2.9834 23.6963 4.7168 23.6963 6.92383L23.6963 16.7822C23.6963 18.9893 23.0615 20.7275 21.8799 21.8994C20.7227 23.0615 18.9844 23.7061 16.7725 23.7061L6.92383 23.7061C4.7168 23.7061 2.97852 23.0664 1.81641 21.8994C0.629883 20.7227 0 18.9893 0 16.7822L0 6.92383C0 4.7168 0.634766 2.97852 1.81641 1.81152C2.97363 0.649414 4.7168 0 6.92383 0L16.7725 0C18.9844 0 20.7178 0.634766 21.8799 1.81152ZM10.4932 7.12891L10.4932 10.498L7.12402 10.498C6.35254 10.498 5.79102 11.0645 5.79102 11.8506C5.79102 12.6221 6.35742 13.1836 7.12402 13.1836L10.4932 13.1836L10.4932 16.5625C10.4932 17.3291 11.0596 17.8955 11.8311 17.8955C12.6123 17.8955 13.1836 17.334 13.1836 16.5625L13.1836 13.1836L16.5625 13.1836C17.3291 13.1836 17.8955 12.6221 17.8955 11.8506C17.8955 11.0645 17.3291 10.498 16.5625 10.498L13.1836 10.498L13.1836 7.12891C13.1836 6.35254 12.6123 5.78613 11.8311 5.78613C11.0596 5.78613 10.4932 6.35742 10.4932 7.12891Z" /></g></svg>`;
@@ -8440,11 +8480,11 @@
     }
 
     const BASE_VISIT_TYPES = [
-      { id: "star", label: "First", icon: "star", shortcut: "f", enabled: true, searchTags: ["new", "initial"] },
+      { id: "flag", label: "Flagged", icon: "flag", shortcut: "x", enabled: true, searchTags: ["important", "marker", "review"] },
+      { id: "house", label: "Home", icon: "house", shortcut: "", enabled: true, searchTags: ["house", "saved", "home"] },
       { id: "heart", label: "Favorite", icon: "heart", shortcut: "v", enabled: true, searchTags: ["love", "best"] },
       { id: "bookmark", label: "Memorable", icon: "bookmark", shortcut: "b", enabled: true, searchTags: ["memory", "remember", "core"] },
-      { id: "flag", label: "Flagged", icon: "flag", shortcut: "x", enabled: true, searchTags: ["important", "marker"] },
-      { id: "house", label: "Home", icon: "house", shortcut: "h", enabled: true, searchTags: ["house", "saved"] },
+      { id: "star", label: "First", icon: "star", shortcut: "f", enabled: true, searchTags: ["new", "initial"] },
     ];
     const BASE_VISIT_TYPE_IDS = new Set(BASE_VISIT_TYPES.map(type => type.id));
     const VISIT_TYPES = [
@@ -8595,6 +8635,66 @@
         category: "Notes"
       },
       {
+        title: "Basecamp Notes Section",
+        ticketId: "WISH-043",
+        description: "Add a dedicated Basecamp notes section for home-base planning, recurring travel context, packing reminders, saved trip context, or other notes that are useful but not tied to one state, territory, or mapped location.",
+        priority: "P1",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 24,
+        prompt: "Add a Basecamp notes section for app-level travel notes that are not tied to a single location. Keep it local/offline, searchable, exportable, and visually distinct from location visit notes.",
+        category: "Notes"
+      },
+      {
+        title: "Bucket List Mode View",
+        ticketId: "WISH-044",
+        description: "Add a Bucket List mode that changes the usual checked Notes affordance into an unchecked/planning affordance and adjusts the Notes view for planned future travel instead of completed or remembered visits.",
+        priority: "P1",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 28,
+        prompt: "Add a Bucket List mode that swaps the Notes checked icon treatment to an unchecked planning state and changes the Notes view to focus on future/planned locations while preserving normal visit notes.",
+        category: "Planning"
+      },
+      {
+        title: "Day Of Week Date Detection",
+        ticketId: "WISH-045",
+        description: "Teach date parsing and Smart Convert to detect day-of-week words such as Monday, Tue, or Fri when a full or partial date is entered, without breaking partial date support.",
+        priority: "P0",
+        effort: "small",
+        targetKind: "patch",
+        targetVersion: "",
+        tokenCostPct: 10,
+        prompt: "Enhance note date parsing and Smart Convert so weekday names/abbreviations are detected and handled gracefully alongside existing year, month-year, and full-date support.",
+        category: "Dates"
+      },
+      {
+        title: "More Location Icon Tag Search",
+        ticketId: "WISH-046",
+        description: "Expand Location Icon Tag search so More Icons are easier to find by synonyms, travel terms, activity names, icon names, and common alternate words.",
+        priority: "P0",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 18,
+        prompt: "Improve Location Icon Tag search with richer aliases and generated search terms for More Icons. Preserve custom user tag labels, hotkeys, ordering, and enabled state.",
+        category: "Notes"
+      },
+      {
+        title: "Choose Note Display Icon",
+        ticketId: "WISH-047",
+        description: "Let a note with multiple icon tags choose which icon should represent it in lists and on the map, instead of always using the first/default selected tag.",
+        priority: "P2",
+        effort: "small",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 12,
+        prompt: "Add a per-note display-icon choice for notes with multiple tags. Use it in Notes rows and map markers while preserving existing first-icon behavior as the default.",
+        category: "Notes"
+      },
+      {
         title: "Optimize iPhone UI",
         ticketId: "WISH-011",
         description: "Tune the app for iPhone-sized screens. Scope includes map sizing, tabs, controls, dialogs, touch targets, safe areas, and avoiding cramped or clipped text.",
@@ -8609,28 +8709,94 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.0.0.50",
-        date: "2026-05-24",
-        title: "3.0 Development Begins",
-        summary: "Started the 3.0.0 development track with Trail Log branding, home-screen metadata, title/header polish, an optional tip jar, mapped note locations, a guided install flow, and a beta environment indicator.",
+        version: "3.0.0",
+        date: "2026-05-25",
+        title: "Meet Trail Log",
+        summary: "A place to track where you've been, where you're going, and log memories with an outdoorsy, geeky vibe.",
         highlights: [
-          "The app version is now on the 3.0.0 development track.",
-          "Trail Log branding now reaches the document title, app name, default map name, Settings footer, README, and mobile web app metadata.",
-          "Added favicon, Apple touch icon, install manifest, and generated app-icon assets for Add to Home Screen polish.",
-          "Added an Install Trail Log control with a guided pick-your-icon dialog, dark-icon variants, and clear step-by-step instructions for iPhone/iPad, Android, Mac, and PC.",
-          "Added an optional Tip Jar flow with preset drink tiers, a custom amount, and Venmo app/web handoff.",
-          "Notes can now store latitude/longitude and render as clustered map markers.",
-          "Notes can now be created from the main Notes header with a Quick Add flow and a searchable target location.",
-          "The note editor gained a Locate control beside Where Specifically, plus manual coordinate override fields.",
-          "Developer Tools now shows a Device Detection readout with the detected iPhone, iPad, Laptop, or Desktop type plus the matching install icon and user agent.",
-          "Add as App now detects iPhone/iPad, Android, Mac, or PC and expands the right install directions automatically.",
-          "Beta deploys now show a BETA pill in the title bar beside the existing Dev Mode pill so the active environment is obvious.",
-          "Blank map names now fall back to the correct app-branded title.",
-          "The app icon and name stay pinned left on desktop and centered on mobile without collapsing the title text.",
-          "Global map SVG sizing no longer leaks into the app icon or button symbols."
+          "Maps Show the Way: Memory surface layer linked to Notes, clustered pins, improved scroll and fit experiences with suctomized label support.",
+          "The Legend Grew Up: A cleaner more powerful experience movable desktop placement, drag sorting, swipe quick actions, and inline definitions with integrated stats.",
+          "Notes are Supercharged: Supports Quick Add, Save and Add Another, structured fields, partial dates, multiple lcoation icon tags, coordinate lookup, richer filters, and copy-ready views.",
+          "Power Toolbar: Tip Jar, Add as App, Help Center, What's New all got enough polish to make Trail Log feel like a personal tool instead of a prototype.",
+          "Add as App Feature to help this feel like a more native experience.",
+          "Tip Jar to fuel the development of this App.",
+        ],
+        notice: {
+          version: "3.0.0",
+          title: "Meet Trail Log",
+          summary: "A place to track where you've been, where you're going, and log firsts and memories, with an outdoorsy, geeky vibe.",
+          cta: "Explore!"
+        },
+        updateSections: [
+          {
+            heading: "Brand, Install, and App Shell",
+            items: [
+              "Renamed the visible app experience to Trail Log while preserving the existing localStorage key so saved maps keep working.",
+              "Updated the document title, default map-name fallback, Settings footer, README, mobile metadata, favicon, Apple touch icon, standalone manifest, and generated icon assets.",
+              "Refreshed the README opening so Trail Log's map-first travel journal purpose and local-first setup are clear right away.",
+              "Added a left-pinned desktop title bar with a Trail Log app icon and a centered mobile title treatment that keeps the name readable.",
+              "Added Add as App guidance with device-aware iPhone/iPad, Android, Mac, and PC instructions, light/dark icon choices, shortcut overlays, Mac reload guidance, and Developer Mode device simulation.",
+              "Added Beta and Dev Mode title pills so testing environments are obvious without crowding the main map."
+            ]
+          },
+          {
+            heading: "Map, Labels, and Location Pins",
+            items: [
+              "Added mapped note locations with exact latitude/longitude storage, manual coordinate override, Locate lookup from Where Specifically, and JSON/text export support.",
+              "Notes without exact coordinates now render at the center of their state or territory shape instead of drifting to an edge.",
+              "Location pins now cluster nearby notes, scale down as map zoom increases, choose cluster color/title from the highest-priority level and earliest note, and use the hex-grid cluster symbol.",
+              "Single-note pins open the note; same-location clusters open a picker; nearby clusters zoom while they can separate and then open the picker when max zoom would be a dead end.",
+              "Map labels render above location pins, support separate hand-tuned positions for abbreviation and full-name modes, and expose Developer Mode copy-paste snippets while dragging labels."
+            ]
+          },
+          {
+            heading: "Notes and Memory Log",
+            items: [
+              "Added Quick Add Note beside search with a searchable target picker, Save and Add Another actions, and context switching so Locate uses the newly selected location.",
+              "Expanded note editing with structured Where Specifically, What For, Who With, Additional Details, partial dates, level selection, coordinate fields, and Smart Convert on a faster inline row.",
+              "Location tags now support multiple icons per note, configurable labels, custom or blank hotkeys, enabled/disabled defaults, ordering, search tags, duplicate-hotkey protection, and a large auto-discovered More Icons catalog.",
+              "Notes filters now include search, levels, icon tags, untagged notes, excluded-only visibility, and All/Mapped/Missing coordinate precision, with matching SVG symbols in the permanent filter summary.",
+              "Expanded, Condensed, and Text Only views were tuned for scanning, copying, sticky category headers, compact icon filters, and selected-location detail views that ignore global list filters."
+            ]
+          },
+          {
+            heading: "Legend, Levels, and Stats",
+            items: [
+              "Legend levels can be edited behind a dedicated Edit toggle, reordered by dragging, and revealed with right-to-left swipe quick actions.",
+              "Desktop Legend placement can be changed from a mini corner picker or by dragging the Legend title with live placement previews.",
+              "Per-level stats now live inside the color oval, total stats sit under the Legend title, and opt-out levels can be excluded from completion statistics.",
+              "Level definitions are visible inline, deleting a level safely demotes affected states, and Smart Colors plus suggested categories remain available for quick setup."
+            ]
+          },
+          {
+            heading: "Toolbar, Settings, and Power Tools",
+            items: [
+              "Settings now covers Appearance, map interaction, date formats, text size, import/export, Location Icon Tags, and local reset utilities with cleaner spacing and consistent controls.",
+              "The top toolbar gained Tip, Install, Help, What's New, Settings, Map/Legend/Notes visibility, map zoom, fit/scroll, labels, View Locations, and Match Notes controls.",
+              "Developer Mode includes shortcut simulation, hidden command documentation, live export JSON, device detection, install-experience simulation, and reset helpers.",
+              "Shift-Control/Option shortcut overlays, hidden H H hint reset, and app-icon quad tap make testing and power use faster without leaving permanent UI clutter."
+            ]
+          },
+          {
+            heading: "Help, Roadmap, and Release Notes",
+            items: [
+              "Help Center and dismissible hints were refreshed for Trail Log branding, map controls, Legend placement, note coordinates, Quick Add, Location Icon Tags, Add as App, Tip Jar, and current filters.",
+              "What's New now supports richer major-release copy, highlights, organized full update sections, banner badging, and Learn More routing.",
+              "Roadmap cards gained priority coloring, count-aware filters, live search counts, updated priorities, and cleanup for shipped work.",
+              "Roadmap now includes future ideas for Basecamp notes, Bucket List mode, weekday date detection, stronger Location Icon Tag search, and choosing the display icon for multi-tag notes."
+            ]
+          },
+          {
+            heading: "Data, Compatibility, and Cleanup",
+            items: [
+              "Existing maps, levels, notes, colors, settings, and import/export data remain compatible through localStorage migrations.",
+              "Saved state now covers map zoom, map view mode, pan center, panel visibility, selected location, Notes filters, collapsed categories, text size, and other high-value preferences.",
+              "Backups omit obsolete user wishlist data, notes normalize empty coordinates safely, and older 0,0 coordinate mistakes no longer appear as exact mapped notes."
+            ]
+          }
         ],
         updates: [
-          "Opened the 3.0.0 release track with build 3.0.0.1.",
+          "Opened the 3.0.0 release track.",
           "Renamed the visible app shell from Visit Tracker to Trail Log while preserving the existing localStorage key for compatibility.",
           "Added linked favicon, Apple touch icon, standalone manifest, theme-color metadata, and generated icon files for browser tabs and home-screen installs.",
           "Updated the README title to Trail Log.",
@@ -9513,7 +9679,7 @@
     }
 
     function populateNoteDatePicker() {
-      $("#noteMonth").innerHTML = `<option value="">Month</option>` + MONTH_NAMES.map((name, index) =>
+      $("#noteMonth").innerHTML = `<option value="">Month (Optional)</option>` + MONTH_NAMES.map((name, index) =>
         `<option value="${pad2(index + 1)}">${name}</option>`
       ).join("");
       $("#noteMonthChips").innerHTML = MONTH_NAMES.map((name, index) =>
@@ -13502,10 +13668,22 @@
     function renderReleaseSection(title, items) {
       const list = Array.isArray(items) ? items.filter(Boolean) : [];
       if (!list.length) return "";
+      const renderItem = note => {
+        if (typeof note === "string") return `<li>${escapeHtml(note)}</li>`;
+        const heading = String(note.heading || note.title || "").trim();
+        const subitems = Array.isArray(note.items) ? note.items.filter(Boolean) : [];
+        if (!heading && !subitems.length) return "";
+        return `
+          <li class="release-subsection">
+            ${heading ? `<b>${escapeHtml(heading)}</b>` : ""}
+            ${subitems.length ? `<ul>${subitems.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>` : ""}
+          </li>
+        `;
+      };
       return `
         <div class="release-section">
           <b>${escapeHtml(title)}</b>
-          <ul>${list.map(note => `<li>${escapeHtml(note)}</li>`).join("")}</ul>
+          <ul>${list.map(renderItem).join("")}</ul>
         </div>
       `;
     }
@@ -13516,7 +13694,7 @@
           <b>${escapeHtml(entry.version)} :: ${escapeHtml(entry.date)} :: ${escapeHtml(entry.title)}</b>
           <p><b>${escapeHtml(entry.summary)}</b></p>
           ${renderReleaseSection("Highlights", entry.highlights)}
-          ${renderReleaseSection("Full Update List", entry.updates || entry.notes)}
+          ${renderReleaseSection("Full Update List", entry.updateSections || entry.updates || entry.notes)}
         </article>
       `).join("");
     }
