@@ -127,7 +127,8 @@ Since `3.0.0`, the active work has focused on faster note entry and date parsing
 - Flexible date parsing accepts weekday names/abbreviations beside year-only, month-year, numeric, and month-name dates.
 - Smart Convert removes weekday-adjacent date phrases cleanly instead of leaving weekdays behind in Additional Details.
 - The note editor date preview pill shows weekday brackets like `[Fri]` for full dates.
-- Accepted note date formats include `YYYY`, `M/YYYY`, `M/D/YYYY`, `M/D/YY`, `Month YYYY`, and `Month D YYYY`; weekdays are optional.
+- Accepted note date formats include `YYYY`, `YYYY M`, `YYYY M D`, `YYYY-MM-DD`, `M/YYYY`, `M/D/YYYY`, `M/D/YY`, `Month YYYY`, `Month D YYYY`, `YYYY Month`, and `YYYY Month D`; weekdays are optional.
+- The note date picker uses a 40/60 preview-and-input row, keeps Today/Year Only beside the compact date controls, and marks Day as `--` until Month is selected.
 
 ## Persistence and Migration
 
