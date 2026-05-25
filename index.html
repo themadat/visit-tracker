@@ -2314,8 +2314,8 @@
 
     .date-builder {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: .38rem;
+      grid-template-columns: minmax(7.1rem, 1fr) 5.35rem 3.65rem;
+      gap: .28rem;
       align-items: center;
       min-width: 0;
     }
@@ -2327,8 +2327,8 @@
 
     .date-year-row {
       display: grid;
-      grid-template-columns: 30px minmax(0, 1fr) 30px;
-      gap: .25rem;
+      grid-template-columns: 28px minmax(0, 1fr) 28px;
+      gap: .2rem;
     }
 
     .date-builder input,
@@ -2337,8 +2337,8 @@
     .month-chip {
       min-height: 34px;
       height: 34px;
-      padding: .24rem .34rem;
-      font-size: .8rem;
+      padding: .24rem .28rem;
+      font-size: .76rem;
       box-sizing: border-box;
     }
 
@@ -2373,10 +2373,10 @@
       border-radius: 999px;
       background: var(--surface);
       color: var(--accent-2);
-      padding: .24rem .58rem;
-      width: 7.35rem;
-      min-width: 7.35rem;
-      font-size: 1rem;
+      padding: .24rem .5rem;
+      width: 9.45rem;
+      min-width: 9.45rem;
+      font-size: .94rem;
       font-weight: 800;
       font-variant-numeric: tabular-nums;
       line-height: 1.1;
@@ -6006,7 +6006,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.1.0.2</span>
                 <span id="betaPill" class="env-pill beta-pill hidden" title="This is the beta deploy">BETA</span>
                 <span id="alphaPill" class="env-pill alpha-pill hidden" title="This is the alpha deploy">ALPHA</span>
               </div>
@@ -6857,7 +6857,7 @@
       <div class="note-inline-hints">
         <small data-hint data-hint-key="note-smart-convert-help">
           Type a quick note, then Auto Convert looks for items like “at”, “for”, and “with”.<br />
-          Leftover text goes to Additional Details.
+          Leftover text goes to Additional Details. Saved Where, What, and Who entries suggest while you type.
         </small>
       </div>
       <section id="visitTypeRow" class="visit-type-row" aria-label="Visit labels">
@@ -6888,11 +6888,11 @@
             </label>
             <label aria-label="Month">
               <select id="noteMonth">
-                <option value="">Month (Optional)</option>
+                <option value="">Month</option>
               </select>
             </label>
             <label aria-label="Day optional">
-              <input id="noteDay" type="text" inputmode="numeric" maxlength="2" placeholder="Day (Optional)" disabled>
+              <input id="noteDay" type="text" inputmode="numeric" maxlength="2" placeholder="Day" disabled>
             </label>
           </div>
         </div>
@@ -6900,7 +6900,7 @@
         <div id="noteMonthChips" class="month-chip-grid" aria-label="Quick month choices"></div>
         <div class="date-picker-actions">
           <small data-hint data-hint-key="note-date-help">
-            Use whatever you know: year only, month and year, or a full date.
+            Accepted dates: YYYY, M/YYYY, M/D/YYYY, M/D/YY, Month YYYY, or Month D YYYY. Weekdays are optional.
           </small>
         </div>
       </section>
@@ -6912,7 +6912,8 @@
       <div class="note-place-grid">
         <div class="note-location-field">
           <label>Where Specifically
-            <input id="noteWhere" maxlength="120" placeholder="City, venue, park, route">
+            <input id="noteWhere" maxlength="120" placeholder="City, venue, park, route"
+              list="noteWhereSuggestions" autocomplete="off">
           </label>
           <button id="noteGeocodeBtn" type="button" data-shortcut="G">Locate</button>
         </div>
@@ -6935,12 +6936,17 @@
       </div>
       <div class="note-field-grid">
         <label>What For
-          <input id="noteWhat" maxlength="120" placeholder="Trip, event, meal, work">
+          <input id="noteWhat" maxlength="120" placeholder="Trip, event, meal, work" list="noteWhatSuggestions"
+            autocomplete="off">
         </label>
         <label>Who With
-          <input id="noteWho" maxlength="120" placeholder="Solo, family, friends">
+          <input id="noteWho" maxlength="120" placeholder="Solo, family, friends" list="noteWhoSuggestions"
+            autocomplete="off">
         </label>
       </div>
+      <datalist id="noteWhereSuggestions"></datalist>
+      <datalist id="noteWhatSuggestions"></datalist>
+      <datalist id="noteWhoSuggestions"></datalist>
       <label>Additional Details
         <textarea id="noteText" maxlength="700" placeholder="Markdown-friendly plain text"></textarea>
       </label>
@@ -7230,8 +7236,9 @@
             <li>Use the coordinate filter to cycle between All, Mapped, and Missing.</li>
             <li>Use the circle-slash excluded toggle to show or hide locations that only have excluded-from-stats
               levels. Amber means excluded locations are visible.</li>
-            <li>Use Smart Convert in the note editor to turn quick text into dates, levels, location specifics, people,
-              purpose, and details.</li>
+            <li>Use Smart Convert in the note editor to turn quick text into weekday-aware dates, levels, location
+              specifics, people, purpose, and details.</li>
+            <li>Saved Where Specifically, What For, and Who With values appear as local suggestions while you type.</li>
             <li>Use Locate beside Where Specifically to look up latitude/longitude. You can manually edit or clear
               coordinates.</li>
             <li>Notes support Where Specifically, What For, Who With, Additional Details, partial dates, and multiple
@@ -7296,7 +7303,8 @@
           <p><b>What is Text Only view for?</b><br>It renders a clean plain-text version of the current Notes view that
             is easy to select, copy, and paste into Apple Notes.</p>
           <p><b>How does Smart Convert work?</b><br>Type a quick note, then Auto Convert fills recognized date, level,
-            visit icon, where, what, and who fields. Leftover text goes to Additional Details.</p>
+            visit icon, where, what, and who fields. Weekdays next to dates are understood. Leftover text goes to
+            Additional Details.</p>
           <p><b>Can one note have multiple visit icons?</b><br>Yes. Pick any labels that fit, though four or fewer keeps
             Notes rows easier to scan.</p>
           <p><b>Where do extra Location Tags come from?</b><br>More Icons is built from the circle symbols bundled into
@@ -7478,7 +7486,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.0.0";
+    const APP_VERSION = "3.1.0.2";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -8564,7 +8572,7 @@
         priority: "P0",
         effort: "large",
         targetKind: "exact",
-        targetVersion: "3.1.0",
+        targetVersion: "3.2.0",
         tokenCostPct: 36,
         prompt: "Add saved-place radius planning. Persist distance/settings and show clear non-road-distance limits.",
         category: "Maps"
@@ -8666,18 +8674,6 @@
         category: "Planning"
       },
       {
-        title: "Day Of Week Date Detection",
-        ticketId: "WISH-045",
-        description: "Teach date parsing and Smart Convert to detect day-of-week words such as Monday, Tue, or Fri when a full or partial date is entered, without breaking partial date support.",
-        priority: "P0",
-        effort: "small",
-        targetKind: "patch",
-        targetVersion: "",
-        tokenCostPct: 10,
-        prompt: "Enhance note date parsing and Smart Convert so weekday names/abbreviations are detected and handled gracefully alongside existing year, month-year, and full-date support.",
-        category: "Dates"
-      },
-      {
         title: "More Location Icon Tag Search",
         ticketId: "WISH-046",
         description: "Expand Location Icon Tag search so More Icons are easier to find by synonyms, travel terms, activity names, icon names, and common alternate words.",
@@ -8702,6 +8698,18 @@
         category: "Notes"
       },
       {
+        title: "Split Note Location into City and Specifics",
+        ticketId: "WISH-048",
+        description: "Break the current Where Specifically note field into separate City and Specifics inputs. Scope includes migration/import compatibility with existing note.where text, search/export display, Locate query behavior, saved suggestions, and a compact editor layout.",
+        priority: "P1",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 22,
+        prompt: "Split note location entry into City and Specifics fields. Preserve existing note.where data through migration/import/export/search, keep Locate queries useful, and keep the note editor compact.",
+        category: "Notes"
+      },
+      {
         title: "Optimize iPhone UI",
         ticketId: "WISH-011",
         description: "Tune the app for iPhone-sized screens. Scope includes map sizing, tabs, controls, dialogs, touch targets, safe areas, and avoiding cramped or clipped text.",
@@ -8715,6 +8723,58 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "3.1.0.2",
+        date: "2026-05-25",
+        title: "Date Pill Breathing Room",
+        summary: "The note date row now fits weekday brackets and accepts short numeric years.",
+        highlights: [
+          "The note date preview has more room for weekday brackets.",
+          "Short numeric dates such as 11/15/23 now parse."
+        ],
+        updates: [
+          "Widened the note date preview pill and tightened the Month and Day controls so weekday brackets fit cleanly.",
+          "Added two-digit year support for numeric dates such as 11/15/23, while preserving existing year, month/year, full-year numeric, month-name, and weekday-aware parsing.",
+          "Updated the note date hint to list the accepted date formats directly."
+        ]
+      },
+      {
+        version: "3.1.0.1",
+        date: "2026-05-25",
+        title: "Bracket the Day",
+        summary: "Full note dates now show their weekday in the editor preview.",
+        highlights: [
+          "The note editor date pill adds weekday brackets such as [Fri] when a full date is selected."
+        ],
+        updates: [
+          "Added weekday brackets to the note editor's date preview pill for full dates while keeping year-only and month/year previews unchanged.",
+          "Added a Roadmap item for splitting note location entry into separate City and Specifics fields with migration, search, export, Locate, and suggestion compatibility."
+        ]
+      },
+      {
+        version: "3.1.0",
+        date: "2026-05-25",
+        title: "Trail Echoes",
+        summary: "Faster note entry with saved field suggestions and weekday-aware date parsing.",
+        highlights: [
+          "Saved Where, What, and Who values now suggest while you type.",
+          "Smart Convert and flexible date parsing now understand weekday names next to full or partial dates."
+        ],
+        notice: {
+          version: "3.1.0",
+          title: "Trail Echoes",
+          summary: "Note entry is quicker now, with saved field suggestions and weekday-aware dates.",
+          cta: "See What's New"
+        },
+        updates: [
+          "Added local autocomplete suggestions for Where Specifically, What For, and Who With using existing saved notes, with the current target location prioritized.",
+          "Flexible date parsing now accepts weekday names and abbreviations such as Monday, Tue, or Fri beside year-only, month-year, numeric, and month-name dates.",
+          "Smart Convert now captures weekday-adjacent date phrases so the date is filled and the weekday does not linger in Additional Details.",
+          "Removed the completed weekday date parsing idea from the Roadmap after shipping it.",
+          "Retargeted drive-radius planning to a future release now that Trail Echoes owns 3.1.0.",
+          "Updated note help and hints so saved suggestions and weekday-aware dates are discoverable without adding settings or network calls."
+        ]
+      },
       {
         version: "3.0.0",
         date: "2026-05-25",
@@ -9409,11 +9469,21 @@
     const today = () => new Date().toISOString().slice(0, 10);
     const clone = obj => JSON.parse(JSON.stringify(obj));
     const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const MONTH_LOOKUP = Object.fromEntries(MONTH_NAMES.flatMap((name, index) => [[name.toLowerCase(), index + 1], [name.slice(0, 3).toLowerCase(), index + 1]]));
+    const MONTH_FULL_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const MONTH_LOOKUP = Object.fromEntries(MONTH_FULL_NAMES.flatMap((name, index) => [
+      [name.toLowerCase(), index + 1],
+      [name.slice(0, 3).toLowerCase(), index + 1],
+      ...(name === "September" ? [["sept", index + 1]] : [])
+    ]));
+    const MONTH_PATTERN = MONTH_FULL_NAMES.flatMap(name => [name, name.slice(0, 3), ...(name === "September" ? ["Sept"] : [])]).join("|");
+    const WEEKDAY_ALIASES = ["Sunday", "Sun", "Monday", "Mon", "Tuesday", "Tues", "Tue", "Wednesday", "Weds", "Wed", "Thursday", "Thurs", "Thur", "Thu", "Friday", "Fri", "Saturday", "Sat"];
+    const WEEKDAY_LOOKUP = Object.fromEntries(WEEKDAY_ALIASES.map(name => [name.toLowerCase(), true]));
+    const WEEKDAY_PATTERN = WEEKDAY_ALIASES.join("|");
     const MAP_ASPECT_RATIO = 934 / 593;
     const MAP_ZOOM_MIN = 1;
     const MAP_ZOOM_MAX = 10;
     const MAP_ZOOM_STEP = .5;
+    const NOTE_AUTOCOMPLETE_LIMIT = 40;
     const LEGEND_POSITION_ORDER = ["right-top", "right-bottom", "left-bottom", "left-top"];
     const LEGEND_POSITION_MENU_ORDER = ["left-top", "right-top", "left-bottom", "right-bottom"];
     const INSTALL_PLATFORM_SEQUENCE = ["auto", "idevice", "android", "mac", "pc"];
@@ -9611,9 +9681,23 @@
       return MONTH_LOOKUP[String(value || "").trim().replace(/\.$/, "").toLowerCase()] || 0;
     }
 
+    function isWeekdayName(value) {
+      return WEEKDAY_LOOKUP[String(value || "").trim().replace(/[,.]+$/g, "").toLowerCase()] === true;
+    }
+
+    function stripDateWeekdayWords(value) {
+      return String(value || "")
+        .replace(/,/g, " ")
+        .replace(/\s+/g, " ")
+        .trim()
+        .split(" ")
+        .filter(part => !isWeekdayName(part))
+        .join(" ");
+    }
+
     function normalizeDateParts(yearValue, monthValue = "", dayValue = "") {
-      const yearText = String(yearValue || "").trim();
-      if (!/^\d{4}$/.test(yearText)) return "";
+      const yearText = normalizeDateYear(yearValue);
+      if (!yearText) return "";
       if (monthValue === "" || monthValue === undefined) return yearText;
       const month = Number(monthValue);
       if (!Number.isInteger(month) || month < 1 || month > 12) return "";
@@ -9624,17 +9708,26 @@
       return `${yearText}-${pad2(month)}-${pad2(day)}`;
     }
 
+    function normalizeDateYear(value) {
+      const text = String(value || "").trim();
+      if (/^\d{4}$/.test(text)) return text;
+      if (!/^\d{2}$/.test(text)) return "";
+      const year = Number(text);
+      return String(year >= 70 ? 1900 + year : 2000 + year);
+    }
+
     function parseFlexibleDate(value, order = "mdy") {
       const text = String(value || "").trim();
       if (!text) return "";
-      const clean = text.replace(/,/g, " ").replace(/\s+/g, " ").trim();
-      let match = clean.match(/^(\d{4})$/);
-      if (match) return match[1];
+      const clean = stripDateWeekdayWords(text);
+      if (!clean) return "";
+      let match = clean.match(/^(\d{2}|\d{4})$/);
+      if (match) return normalizeDateYear(match[1]);
       match = clean.match(/^(\d{4})[-/.](\d{1,2})(?:[-/.](\d{1,2}))?$/);
       if (match) return normalizeDateParts(match[1], match[2], match[3]);
-      match = clean.match(/^(\d{1,2})[-/.](\d{4})$/);
+      match = clean.match(/^(\d{1,2})[-/.](\d{2}|\d{4})$/);
       if (match) return normalizeDateParts(match[2], match[1]);
-      match = clean.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})$/);
+      match = clean.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{2}|\d{4})$/);
       if (match) {
         const isDmy = order === "dmy";
         return normalizeDateParts(match[3], isDmy ? match[2] : match[1], isDmy ? match[1] : match[2]);
@@ -9643,7 +9736,8 @@
       const monthIndex = parts.findIndex(part => monthNameToNumber(part));
       if (monthIndex < 0) return "";
       const month = monthNameToNumber(parts[monthIndex]);
-      const years = parts.map((part, index) => (/^\d{4}$/.test(part) ? index : -1)).filter(index => index >= 0);
+      let years = parts.map((part, index) => (/^\d{4}$/.test(part) ? index : -1)).filter(index => index >= 0);
+      if (!years.length) years = parts.map((part, index) => (/^\d{2}$/.test(part) ? index : -1)).filter(index => index >= 0);
       if (!years.length) return "";
       const yearIndex = years[0];
       const dayPart = parts.find((part, index) => index !== monthIndex && index !== yearIndex && /^\d{1,2}$/.test(part));
@@ -9677,6 +9771,21 @@
       if (order === "ymd") return `${year}-${month}-${day}`;
       if (order === "dmy") return `${day}.${month}.${year}`;
       return `${month}/${day}/${year}`;
+    }
+
+    function dateWeekdayLabel(value) {
+      const match = String(value || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (!match) return "";
+      const [, year, month, day] = match;
+      const date = new Date(Number(year), Number(month) - 1, Number(day));
+      if (date.getFullYear() !== Number(year) || date.getMonth() !== Number(month) - 1 || date.getDate() !== Number(day)) return "";
+      return ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][date.getDay()] || "";
+    }
+
+    function formatNoteDatePreview(value) {
+      const display = formatDateDisplay(value);
+      const weekday = dateWeekdayLabel(value);
+      return weekday ? `${display} [${weekday}]` : display;
     }
 
     function datePartsFromValue(value) {
@@ -9713,7 +9822,7 @@
         ? (month ? normalizeDateParts(cleanYear, month, day || "") : cleanYear)
         : "";
       $("#noteDate").value = normalized;
-      $("#noteDatePreview").textContent = normalized ? formatDateDisplay(normalized) : "Enter year";
+      $("#noteDatePreview").textContent = normalized ? formatNoteDatePreview(normalized) : "Enter year";
       $$("[data-note-month]").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.noteMonth === month)));
       return normalized;
     }
@@ -13010,13 +13119,19 @@
         remainder = cleanDetails(remainder.replace(new RegExp(escapeRegExp(clean), "i"), " "));
       };
       const findDateCandidate = () => {
-        const monthPattern = MONTH_NAMES.join("|");
+        const monthPattern = MONTH_PATTERN;
+        const weekdayPrefix = `(?:\\b(?:${WEEKDAY_PATTERN})\\b\\.?\\s*,?\\s+)?`;
+        const weekdaySuffix = `(?:\\s*,?\\s+\\b(?:${WEEKDAY_PATTERN})\\b\\.?)?`;
+        const withWeekday = source => `${weekdayPrefix}${source}${weekdaySuffix}`;
         const patterns = [
-          /\b\d{4}(?:[-/.]\d{1,2}(?:[-/.]\d{1,2})?)?\b/,
-          new RegExp(`\\b(?:${monthPattern})\\s+\\d{1,2},?\\s+\\d{4}\\b`, "i"),
-          new RegExp(`\\b(?:${monthPattern})\\s+\\d{4}\\b`, "i"),
-          new RegExp(`\\b\\d{1,2}\\s+(?:${monthPattern})\\s+\\d{4}\\b`, "i"),
-          new RegExp(`\\b\\d{4}\\s+(?:${monthPattern})(?:\\s+\\d{1,2})?\\b`, "i")
+          new RegExp(withWeekday(`\\b(?:${monthPattern})\\s+\\d{1,2},?\\s+\\d{4}\\b`), "i"),
+          new RegExp(withWeekday(`\\b(?:${monthPattern})\\s+\\d{4}\\b`), "i"),
+          new RegExp(withWeekday(`\\b\\d{1,2}\\s+(?:${monthPattern})\\s+\\d{4}\\b`), "i"),
+          new RegExp(withWeekday(`\\b\\d{4}\\s+(?:${monthPattern})(?:\\s+\\d{1,2})?\\b`), "i"),
+          new RegExp(withWeekday(`\\b\\d{1,2}[-/.]\\d{1,2}[-/.](?:\\d{2}|\\d{4})\\b`), "i"),
+          new RegExp(withWeekday(`\\b\\d{4}[-/.]\\d{1,2}(?:[-/.]\\d{1,2})?\\b`), "i"),
+          new RegExp(withWeekday(`\\b\\d{1,2}[-/.](?:\\d{2}|\\d{4})\\b`), "i"),
+          new RegExp(withWeekday(`\\b(?:\\d{2}|\\d{4})\\b`), "i")
         ];
         return patterns.map(pattern => text.match(pattern)?.[0]).find(candidate => parseFlexibleDate(candidate, state.settings.dateOrder)) || "";
       };
@@ -13239,11 +13354,53 @@
       return noteDialogMode === "quick" ? abbrFromNoteLocationValue($("#noteLocationSearch")?.value) : selectedState;
     }
 
+    function noteAutocompleteRows(targetAbbr = "") {
+      const rows = [];
+      Object.entries(state.notes || {}).forEach(([abbr, notes]) => {
+        if (!STATE_NAMES[abbr] || !Array.isArray(notes)) return;
+        notes.forEach((note, index) => rows.push({ abbr, note, index }));
+      });
+      return rows.sort((a, b) => {
+        const aScope = a.abbr === targetAbbr ? 0 : 1;
+        const bScope = b.abbr === targetAbbr ? 0 : 1;
+        return aScope - bScope
+          || String(b.note.date || "").localeCompare(String(a.note.date || ""))
+          || b.index - a.index;
+      });
+    }
+
+    function noteAutocompleteValues(field, targetAbbr = "") {
+      const seen = new Set();
+      return noteAutocompleteRows(targetAbbr)
+        .map(({ note }) => String(note[field] || "").replace(/\s+/g, " ").trim())
+        .filter(value => {
+          const key = value.toLowerCase();
+          if (!key || seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        })
+        .slice(0, NOTE_AUTOCOMPLETE_LIMIT);
+    }
+
+    function renderNoteAutocompleteList(id, values) {
+      const list = $(`#${id}`);
+      if (!list) return;
+      list.innerHTML = values.map(value => `<option value="${escapeHtml(value)}"></option>`).join("");
+    }
+
+    function refreshNoteAutocompletes(targetAbbr = currentNoteTargetAbbr()) {
+      const scopedTarget = STATE_NAMES[targetAbbr] ? targetAbbr : "";
+      renderNoteAutocompleteList("noteWhereSuggestions", noteAutocompleteValues("where", scopedTarget));
+      renderNoteAutocompleteList("noteWhatSuggestions", noteAutocompleteValues("what", scopedTarget));
+      renderNoteAutocompleteList("noteWhoSuggestions", noteAutocompleteValues("who", scopedTarget));
+    }
+
     function syncQuickNoteTargetContext() {
       const abbr = currentNoteTargetAbbr();
       if (!abbr || $("#noteId").value) return "";
       selectedState = abbr;
       renderNoteLevelRadios(dominantLevel(abbr)?.id || state.levels[0]?.id || "");
+      refreshNoteAutocompletes(abbr);
       if (!$("#noteLat").value && !$("#noteLng").value) {
         setNoteGeocodeStatus("Use Locate to place this note on the map, or enter latitude/longitude manually.");
       }
@@ -13289,6 +13446,7 @@
       $("#noteSmartConvert").value = "";
       setNoteVisitTypes(note?.visitTypes || defaults?.visitTypes || []);
       $("#noteText").value = note ? noteDetails(note) : "";
+      refreshNoteAutocompletes(noteTarget);
       $("#noteDialog").showModal();
       const focusTarget = isQuick && !noteTarget ? $("#noteLocationSearch") : $("#noteSmartConvert");
       focusTarget?.focus();
