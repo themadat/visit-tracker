@@ -2340,11 +2340,15 @@
     }
 
     .date-entry-group {
-      display: flex;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
       align-items: center;
-      justify-content: space-between;
       gap: .45rem;
       min-width: 0;
+    }
+
+    .date-entry-group .date-fields {
+      justify-self: center;
     }
 
     .date-year-row {
@@ -6150,7 +6154,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.1.0.8</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.1.0.10</span>
                 <span id="betaPill" class="env-pill beta-pill hidden" title="This is the beta deploy">BETA</span>
                 <span id="alphaPill" class="env-pill alpha-pill hidden" title="This is the alpha deploy">ALPHA</span>
               </div>
@@ -7677,7 +7681,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.1.0.8";
+    const APP_VERSION = "3.1.0.10";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -8637,13 +8641,16 @@
       calendar: ["date", "schedule", "event", "plan"],
       camera: ["photo", "picture", "photography", "sightseeing"],
       car: ["drive", "road", "vehicle", "trip", "roadtrip"],
+      carrier: ["pet", "animal", "dog", "cat", "travel"],
       cart: ["shopping", "store"],
       clock: ["time", "chrono"],
       climbing: ["climb", "boulder", "mountain", "outdoors"],
+      cloud: ["weather", "sky", "storm", "rain", "snow", "winter"],
       cocktail: ["bar", "drink", "beverage"],
       coffee: ["cafe", "drink", "cup"],
       cross: ["medical", "health"],
       dance: ["dancing", "party", "music"],
+      fish: ["fishing", "water", "lake", "river", "seafood"],
       fishing: ["fish", "water", "lake", "river"],
       cup: ["coffee", "drink", "meal"],
       figure: ["activity", "athlete", "exercise", "fitness", "person", "sport", "sports"],
@@ -8651,8 +8658,10 @@
       fork: ["food", "restaurant", "meal", "dinner", "lunch"],
       football: ["sport", "sports", "game", "stadium"],
       gamecontroller: ["game", "play", "arcade"],
+      gift: ["present", "souvenir", "tip", "celebration", "birthday"],
       golf: ["sport", "sports", "course"],
       graduationcap: ["school", "college", "university", "education", "campus"],
+      handbag: ["shopping", "bag", "store", "market"],
       hiking: ["hike", "trail", "mountain", "outdoors", "walk"],
       heart: ["favorite", "love", "best"],
       house: ["home", "saved", "location"],
@@ -8670,19 +8679,30 @@
       parking: ["park", "car", "vehicle"],
       pawprint: ["pet", "dog", "cat", "animal"],
       person: ["friend", "family", "people", "solo"],
+      personalhotspot: ["wifi", "internet", "connection", "hotspot", "signal"],
+      pet: ["dog", "cat", "animal", "pet friendly"],
       photo: ["camera", "picture", "photography", "sightseeing"],
+      pin: ["place", "location", "map", "marker"],
       plane: ["flight", "airport", "layover", "travel"],
       sailboat: ["boat", "cruise", "water", "sailing"],
+      shippingbox: ["package", "shipping", "box", "delivery", "storage"],
       soccerball: ["soccer", "football", "sport", "sports", "game"],
+      snow: ["winter", "ski", "snowboard", "cold", "weather"],
+      snowflake: ["winter", "ski", "snowboard", "cold", "weather"],
       sportscourt: ["sport", "sports", "game", "court", "basketball", "tennis"],
       star: ["first", "favorite", "featured"],
+      staroflife: ["medical", "health", "hospital", "emergency"],
       stars: ["night", "favorite", "special"],
       stethoscope: ["medical", "health"],
+      storefront: ["shopping", "store", "market", "shop"],
+      sun: ["weather", "day", "warm", "sunny", "outdoors"],
       suitcase: ["travel", "trip", "luggage", "airport", "hotel"],
       swim: ["swimming", "pool", "water"],
       tennis: ["sport", "sports", "court", "racket"],
+      tennisball: ["tennis", "sport", "sports", "court", "ball"],
       tent: ["camp", "camping", "campsite", "outdoors"],
       theatermasks: ["theater", "show", "play", "performance"],
+      thermometer: ["weather", "temperature", "hot", "cold"],
       ticket: ["event", "show", "concert", "admission"],
       train: ["rail", "transit", "transportation", "commute"],
       tree: ["park", "nature", "forest", "outdoors", "national park"],
@@ -8690,6 +8710,7 @@
       volleyball: ["sport", "sports", "ball", "game"],
       walk: ["walking", "hike", "trail"],
       water: ["swim", "pool", "lake", "river", "beach"],
+      wind: ["weather", "storm", "breeze", "outdoors"],
       yoga: ["fitness", "exercise", "wellness"]
     };
     function autoCircleIconIds() {
@@ -8948,18 +8969,6 @@
         category: "Notes"
       },
       {
-        title: "Tidy Date Picker and Smart Convert Height",
-        ticketId: "WISH-050",
-        description: "Polish the note editor's compact date picker and Smart Convert entry row. Scope includes picker spacing/alignment, control sizing, status/hint placement, and Smart Convert input/action height so the row feels tidy across desktop and phone widths.",
-        priority: "P1",
-        effort: "small",
-        targetKind: "patch",
-        targetVersion: "",
-        tokenCostPct: 10,
-        prompt: "Tidy the note editor date picker UI and Smart Convert entry field height. Align compact controls, reduce cramped spacing, keep labels/status readable, and verify the row fits cleanly on desktop and phone widths.",
-        category: "UI"
-      },
-      {
         title: "Optimize iPhone UI",
         ticketId: "WISH-011",
         description: "Tune the app for iPhone-sized screens. Scope includes map sizing, tabs, controls, dialogs, touch targets, safe areas, and avoiding cramped or clipped text.",
@@ -8973,6 +8982,34 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "3.1.0.10",
+        date: "2026-05-25",
+        title: "Alias Priority",
+        summary: "More Icons now gives richer, aliased tags pride of place.",
+        highlights: [
+          "More Icons lists aliased icons before icons without semantic aliases.",
+          "Added aliases for useful remaining travel, shopping, weather, pet, package, sport, gift, and medical symbols."
+        ],
+        updates: [
+          "Added additional search aliases for icons such as gift, fish, pet carrier, storefront, handbag, pin, shipping box, star of life, snow/weather, and tennis ball.",
+          "Sorted the additional Location Icon Tag list so icons with explicit aliases appear before unaliased icons while preserving selected tag order."
+        ]
+      },
+      {
+        version: "3.1.0.9",
+        date: "2026-05-25",
+        title: "Centered Date Bits",
+        summary: "The date fields sit cleaner between quick actions and optional-status text.",
+        highlights: [
+          "Year, Month, and Day are centered in the space between the quick buttons and Month/Day status.",
+          "The completed date-picker cleanup roadmap item was removed."
+        ],
+        updates: [
+          "Changed the date entry group to center the date controls before the status label while preserving the chip-grid rhythm.",
+          "Removed the completed roadmap item for tidying the date picker and Smart Convert entry height."
+        ]
+      },
       {
         version: "3.1.0.8",
         date: "2026-05-25",
@@ -9992,6 +10029,18 @@
         ...generatedTags,
         ...aliasTags
       ].join(" "));
+    }
+
+    function visitTypeHasExplicitAlias(type) {
+      return [type.id, type.icon].filter(Boolean).some(id =>
+        String(id).split("_").some(part => (ICON_SEARCH_TAG_ALIASES[part] || []).length)
+      );
+    }
+
+    function compareVisitTypesForMoreIcons(a, b) {
+      const aliasDelta = Number(visitTypeHasExplicitAlias(b)) - Number(visitTypeHasExplicitAlias(a));
+      if (aliasDelta) return aliasDelta;
+      return String(a.label || a.id).localeCompare(String(b.label || b.id), undefined, { numeric: true });
     }
 
     function normalizeVisitTypeConfig(inputTypes, defaults = VISIT_TYPES) {
@@ -13223,7 +13272,9 @@
         return queryTokens.every(token => searchText.includes(token));
       };
       const active = allVisitTypes().filter(type => type.enabled !== false);
-      const inactive = allVisitTypes().filter(type => type.enabled === false && matchesQuery(type));
+      const inactive = allVisitTypes()
+        .filter(type => type.enabled === false && matchesQuery(type))
+        .sort(compareVisitTypesForMoreIcons);
       const tagRow = (type, enabled) => `
         <article class="tag-editor-row ${enabled ? "is-enabled" : ""}" role="button" tabindex="0"
           aria-pressed="${enabled}" draggable="${enabled ? "true" : "false"}" data-tag-id="${type.id}" data-tag-row="${type.id}">
