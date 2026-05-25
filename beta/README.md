@@ -1,6 +1,35 @@
 # Trail Log
 
-Single-file, offline-capable HTML app for tracking US state visits and mapped visit notes. The app itself is plain HTML, CSS, and JavaScript with no required build step or backend. An optional macOS-only build script regenerates the PNG and SVG icon assets from the two source SVGs in `icon/`. Optional coordinate lookup uses an online geocode request only when the user taps Locate; saved data and manual coordinates work offline.
+Trail Log is a local-first travel map for marking where you've been, where you want to go next, and the little memories worth keeping along the way. It started as a US state visit tracker and now layers in DC, territories, custom legend levels, location notes, icon tags, mapped memories, and copy-friendly exports, all with a slightly outdoorsy, geeky vibe.
+
+The app is still intentionally simple to run: one offline-capable `index.html`, plain HTML/CSS/JavaScript, browser localStorage, JSON import/export, and no backend. Optional coordinate lookup only goes online when you tap Locate; saved data and manual coordinates keep working offline.
+
+## Current Release
+
+| Version | Date | Title | Summary
+|---|---:|---|---|
+| 3.0.0 | 2026-05-25 | Meet Trail Log | A place to track where you've been, where you're going, and log memories with an outdoorsy, geeky vibe. |
+| 2.5.0 | 2026-05-23 | Legend Gets Legs | A Legend-focused release that makes levels easier to edit, reorder, position, and scan. |
+| 2.4.0 | 2026-05-22 | Polish, Memory, and Mobile Flow | A cleanup release for saved layout state, Notes filtering and summaries, Location Tag settings, Roadmap counts, and What's New polish. |
+| 2.3.0 | 2026-05-21 | Map Goes Places | A map-focused release with scrollable pan/zoom, cleaner fit controls, better mobile header behavior, and sharper map-control shortcuts. |
+| 2.2.1 | 2026-05-21 | Readable Road | A small patch release for the Text Size slider and readability tuning. |
+| 2.2.0 | 2026-05-19 | Tag, You're It | Faster note entry, configurable icon tags, a bigger searchable icon catalog, and a resizable Notes workspace. |
+| 2.1.0 | 2026-05-17 | Notes Layout Polish | A focused Notes release with better scanning, sticky groups, clearer hierarchy, and cleaner copy-ready text. |
+| 2.0.0 | 2026-05-16 | Major Notes Upgrade | Richer visit notes, smarter search and views, release notifications, and a more copy-ready notes workflow. |
+| 1.13.0 | 2026-05-16 | Release Notes, Help, and Shortcut Polish | A focused release for faster release-note access, a clearer Help Center, tighter map controls, cleaner roadmap defaults, and more useful Developer Tools. |
+| 1.12.0 | 2026-05-16 | Developer Mode and Map Label Tuning | A hidden Developer Tools mode with one-key Shortcut Mode and a drag-to-position map label tool, plus simpler hardcoded label positions, suggestions on by default, and a notes-panel detail fix. |
+| 1.11.0 | 2026-05-16 | Hints, Legend, and Mobile Polish | A focused refinement release for dismissible guidance, cleaner legend controls, mobile Settings fit, and screenshot-friendly map behavior. |
+| 1.10.0 | 2026-05-16 | Visitor's Center | [Visit Tracker] The app got a new name, a new layout, four ways out, and a Help Center that actually helps. |
+| 1.9.0 | 2026-05-14 | Roadmap Pit Crew | Made roadmap planning, release notes, map controls, and notes scrolling easier to scan without losing detail. |
+| 1.8.0 | 2026-05-14 | Icon Tailor Shop | Polished Settings, dialogs, labels, SF-style iconography, and display order. |
+| 1.7.0 | 2026-05-11 | Counting What Counts | Added explicit stat behavior and visual treatment for legend levels. |
+| 1.6.0 | 2026-05-11 | Pocket Map Mode | Improved mobile map viewing and small-screen density. |
+| 1.5.0 | 2026-05-11 | Labels, Lands, And Little Islands | Expanded the map and made labels and notes easier to scan. |
+| 1.4.0 | 2026-05-11 | Control Room Renovation | Reworked the main interface around notes, shortcuts, exports, and flexible dates. |
+| 1.3.0 | 2026-05-10 | Drawer Drama, Resolved | Polished state selection, stats, and destructive actions. |
+| 1.2.0 | 2026-05-10 | Legend Has It | Made visit levels easier to order, color, and understand. |
+| 1.1.0 | 2026-05-10 | Real Map Energy | Upgraded the tracker from a grid into a richer map experience. |
+| 1.0.0 | 2026-05-10 | First Pin On The Map | [US State Visit Map] Launched the offline state visit tracker. |
 
 ## Quick Start
 
@@ -180,14 +209,6 @@ For every completed change:
 - Mention any known manual QA gaps in the handoff.
 - Give me a push commit summary and description in two distinct containers that make copy and paste very easy.
 
-
 ## Notes
 SEE SCRATCHPAD
 Contains Color Notes, rejected/backup svgs, amongst other stuff.
-
-## Future Prompts
-
-Cut Version 3.0.0
-This is a MAJOR RELEASE so highlights and Full Update List can be much more verbose. Full Update List is going to need organzied sub-sections
-Meet Trail Log
-A little place to track and store your Travel Firsts and Memories with a slight Outdoorsy Geeky Vibe
