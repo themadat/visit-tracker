@@ -546,18 +546,24 @@
       --placeholder: 0;
     }
 
-    .beta-pill {
+    .env-pill {
       width: fit-content;
       padding: .18rem .5rem;
-      border: 1px solid color-mix(in srgb, var(--danger) 50%, var(--line) 50%);
+      border: 1px solid color-mix(in srgb, var(--env-color) 50%, var(--line) 50%);
       border-radius: 999px;
-      background: color-mix(in srgb, var(--danger) 14%, var(--surface) 86%);
-      color: var(--danger);
+      background: color-mix(in srgb, var(--env-color) 14%, var(--surface) 86%);
+      color: var(--env-color);
       font-size: .68rem;
       font-weight: 850;
       line-height: 1;
       letter-spacing: .06em;
     }
+
+    .beta-pill { --env-color: #9333ea; }
+    .alpha-pill { --env-color: #ec4899; }
+
+    [data-theme="dark"] .beta-pill { --env-color: #c084fc; }
+    [data-theme="dark"] .alpha-pill { --env-color: #f9a8d4; }
 
     .topbar-hints {
       flex: 0 1 30rem;
@@ -6001,7 +6007,8 @@
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
                 <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.0.0</span>
-                <span id="betaPill" class="beta-pill hidden" title="This is the beta deploy">BETA</span>
+                <span id="betaPill" class="env-pill beta-pill hidden" title="This is the beta deploy">BETA</span>
+                <span id="alphaPill" class="env-pill alpha-pill hidden" title="This is the alpha deploy">ALPHA</span>
               </div>
             </div>
             <button id="renameBtn" class="ghost title-edit-btn" type="button" data-shortcut="M">Rename</button>
@@ -14385,10 +14392,21 @@
       return false;
     }
 
+    function isAlphaDeploy() {
+      const path = (location.pathname || "").toLowerCase();
+      if (/\/alpha(\/|$)/.test(path)) return true;
+      const params = new URLSearchParams(location.search || "");
+      if (params.get("alpha") === "1" || params.get("alpha") === "true") return true;
+      return false;
+    }
+
     function applyBetaIndicator() {
-      const pill = $("#betaPill");
-      if (!pill) return;
-      pill.classList.toggle("hidden", !isBetaDeploy());
+      const betaPill = $("#betaPill");
+      const alphaPill = $("#alphaPill");
+      const alpha = isAlphaDeploy();
+      const beta = !alpha && isBetaDeploy();
+      if (betaPill) betaPill.classList.toggle("hidden", !beta);
+      if (alphaPill) alphaPill.classList.toggle("hidden", !alpha);
     }
 
     function bindAddToHome() {
