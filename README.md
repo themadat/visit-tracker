@@ -126,9 +126,15 @@ Since `3.0.0`, the active work has focused on faster note entry and date parsing
 - Suggestion lists prioritize the active note target before older values from other locations.
 - Flexible date parsing accepts weekday names/abbreviations beside year-only, month-year, numeric, and month-name dates.
 - Smart Convert removes weekday-adjacent date phrases cleanly instead of leaving weekdays behind in Additional Details.
+- Smart Convert treats both `@Place` and `@ Place` as `at Place`, including comma-plus-two-letter place suffixes like `Chapel Hill, NC`.
 - The note editor date preview pill shows weekday brackets like `[Fri]` for full dates.
 - Accepted note date formats include `YYYY`, `YYYY M`, `YYYY M D`, `YYYY-MM-DD`, `M/YYYY`, `M/D/YYYY`, `M/D/YY`, `Month YYYY`, `Month D YYYY`, `YYYY Month`, and `YYYY Month D`; weekdays are optional.
 - The note date picker uses a 40/60 preview-and-input row, keeps Today/Year Only beside the compact date controls, and marks Day as `--` until Month is selected.
+- Smart Convert placeholder text is visually quieter, and the date picker action buttons have clearer spacing from the date fields.
+- The note date picker groups quick actions, date fields, and status text explicitly; the preview pill keeps a fixed height even with a two-line weekday.
+- The note date picker aligns its pill, quick actions, date fields, and status text to the month-chip rhythm, with mobile month chips shown three across.
+- Location Icon Tag search uses richer generated aliases and travel/activity synonyms so More Icons are easier to find.
+- Mobile Quick Add moves the location picker to its own header row under the Add Note title and action buttons.
 
 ## Persistence and Migration
 
