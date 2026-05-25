@@ -8,6 +8,7 @@ The app is still intentionally simple to run: one offline-capable `index.html`, 
 
 | Version | Date | Title | Summary
 |---|---:|---|---|
+| 3.1.0 | 2026-05-25 | Trail Echoes | Faster note entry with saved field suggestions and weekday-aware date parsing. |
 | 3.0.0 | 2026-05-25 | Meet Trail Log | A place to track where you've been, where you're going, and log memories with an outdoorsy, geeky vibe. |
 | 2.5.0 | 2026-05-23 | Legend Gets Legs | A Legend-focused release that makes levels easier to edit, reorder, position, and scan. |
 | 2.4.0 | 2026-05-22 | Polish, Memory, and Mobile Flow | A cleanup release for saved layout state, Notes filtering and summaries, Location Tag settings, Roadmap counts, and What's New polish. |
@@ -102,7 +103,7 @@ The app is organized as one self-contained document:
 
 - CSS lives in the `<style>` block and uses CSS variables for light/dark themes.
 - Static HTML contains the app shell, dialogs, settings, documents, notes, and inline SVG map.
-- JavaScript lives in one `<script>` block and uses centralized state plus render functions.
+- JavaScript uses a small head boot script for install icons plus the main app `<script>` with centralized state and render functions.
 - State is persisted with `localStorage` under `STORAGE_KEY = "usStateVisitMap.v1"`.
 - App version is controlled by `APP_VERSION`.
 
@@ -117,16 +118,16 @@ Useful code regions in `index.html`:
 
 Current persisted settings include map layout state such as `mapSplitRatio`, `legendPosition`, `mapViewMode`, `mapZoom`, `mapPanCenter`, visible panels, selected Notes location, Notes sort/view/grouping/filter choices, and collapsed Notes categories.
 
-## Current 3.0 Development Surface
+## Current 3.1 Development Surface
 
-Since `2.5.0`, the active work has focused on branding, app install polish, tips, and mapped note locations:
+Since `3.0.0`, the active work has focused on faster note entry and date parsing polish:
 
-- Trail Log branding now reaches the title, default map name, README, Settings footer, app icon, favicon, and manifest.
-- The title-bar app icon owns the hidden quad-tap hint/banner reset gesture.
-- Optional Tip Jar controls use a compact local dialog and Venmo handoff without SDKs or trackers.
-- Notes can store latitude/longitude, use an optional online Locate lookup, and accept manual coordinate overrides.
-- Coordinate-backed notes render as clustered markers on the map; the highest-priority earliest note colors/titles each hex-grid cluster, and grouped markers zoom while they can split or open a picker when they are too close.
-- Location coordinates persist in localStorage and JSON backups and appear in text exports/search.
+- Note editor Where Specifically, What For, and Who With fields suggest saved note values locally while typing.
+- Suggestion lists prioritize the active note target before older values from other locations.
+- Flexible date parsing accepts weekday names/abbreviations beside year-only, month-year, numeric, and month-name dates.
+- Smart Convert removes weekday-adjacent date phrases cleanly instead of leaving weekdays behind in Additional Details.
+- The note editor date preview pill shows weekday brackets like `[Fri]` for full dates.
+- Accepted note date formats include `YYYY`, `M/YYYY`, `M/D/YYYY`, `M/D/YY`, `Month YYYY`, and `Month D YYYY`; weekdays are optional.
 
 ## Persistence and Migration
 
@@ -170,7 +171,7 @@ Run these after meaningful changes:
 1. Parse check:
 
 ```sh
-node -e "const fs=require('fs'); const html=fs.readFileSync('index.html','utf8'); const js=html.match(/<script>([\\s\\S]*)<\\/script>/)[1]; new Function(js); console.log('script parses');"
+node -e "const fs=require('fs'); const html=fs.readFileSync('index.html','utf8'); const scripts=[...html.matchAll(/<script>([\\s\\S]*?)<\\/script>/g)].map(m=>m[1]); new Function(scripts.at(-1)); console.log('main script parses');"
 ```
 
 2. Whitespace check:
