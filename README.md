@@ -135,6 +135,8 @@ Since `3.0.0`, the active work has focused on faster note entry and date parsing
 - The note date picker aligns its pill, quick actions, date fields, and status text to the month-chip rhythm, with mobile month chips shown three across.
 - Location Icon Tag search uses richer generated aliases and travel/activity synonyms so More Icons are easier to find.
 - Mobile Quick Add moves the location picker to its own header row under the Add Note title and action buttons.
+- The date fields are centered between the quick action buttons and Month/Day optional status, and WISH-050 is complete.
+- More Icons shows aliased symbols first and includes extra aliases for useful remaining travel, shopping, weather, pet, package, sport, gift, and medical icons.
 
 ## Persistence and Migration
 
