@@ -674,14 +674,16 @@
     }
 
     #noteSmartConvertBtn,
+    #noteSmartConvertInfoBtn,
     #noteGeocodeBtn {
-      height: 36px;
-      min-height: 36px;
-      width: 36px;
-      min-width: 36px;
+      height: 40px;
+      min-height: 40px;
+      width: 40px;
+      min-width: 40px;
     }
 
     #noteSmartConvertBtn .sf-symbol,
+    #noteSmartConvertInfoBtn .sf-symbol,
     #noteGeocodeBtn .sf-symbol {
       height: 24px;
       width: 24px;
@@ -2258,8 +2260,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: .08rem;
-      line-height: 1.05;
+      line-height: 1.1;
       pointer-events: none;
     }
 
@@ -2267,20 +2268,20 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: .24rem;
     }
 
     .date-toggle-example {
       color: var(--muted);
-      font-size: .68rem;
+      font-size: .75rem;
       font-weight: 750;
       line-height: 1.1;
       white-space: nowrap;
     }
 
     .partial-date-picker {
+      --date-chip-gap: .2rem;
       display: grid;
-      gap: .34rem;
+      gap: .4rem;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       padding: .48rem .55rem;
@@ -2289,16 +2290,17 @@
 
     .date-picker-head {
       display: grid;
-      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--date-chip-gap);
       align-items: center;
-      gap: .42rem;
       min-width: 0;
     }
 
     .date-heading-actions {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       align-items: center;
-      gap: .22rem;
+      gap: var(--date-chip-gap);
       min-width: 0;
     }
 
@@ -2311,15 +2313,17 @@
       box-sizing: border-box;
       text-align: center;
       padding: .24rem .44rem;
-      font-size: .72rem;
+      font-size: .75rem;
       white-space: nowrap;
     }
 
     .date-builder {
       display: grid;
-      grid-template-columns: auto auto auto auto;
-      gap: .22rem;
+      grid-column: span 9;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+      column-gap: var(--date-chip-gap);
       align-items: center;
+      justify-content: start;
       min-width: 0;
     }
 
@@ -2328,10 +2332,25 @@
       min-width: 0;
     }
 
+    .date-fields {
+      display: flex;
+      align-items: center;
+      gap: .32rem;
+      min-width: 0;
+    }
+
+    .date-entry-group {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .45rem;
+      min-width: 0;
+    }
+
     .date-year-row {
-      display: grid;
-      grid-template-columns: 24px 5.4ch 24px;
-      gap: .16rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
       width: max-content;
     }
 
@@ -2341,27 +2360,27 @@
     .month-chip {
       min-height: 34px;
       height: 34px;
-      padding: .24rem .28rem;
-      font-size: .76rem;
+      padding: .25rem;
+      font-size: .75rem;
       box-sizing: border-box;
     }
 
     .date-year-row button {
-      width: 24px;
+      width: 20px;
       padding: 0;
     }
 
     #noteYear {
-      width: 5.4ch;
+      width: 6ch;
       text-align: center;
     }
 
     #noteMonth {
-      width: 5.1rem;
+      width: 11ch;
     }
 
     #noteDay {
-      width: 3.25rem;
+      width: 4ch;
       text-align: center;
     }
 
@@ -2378,18 +2397,23 @@
     }
 
     .date-picker-status {
-      grid-column: 1 / -1;
       color: var(--muted);
-      font-size: .72rem;
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      font-size: .75rem;
       font-weight: 750;
       line-height: 1.1;
+      align-self: center;
+      justify-self: end;
+      text-align: right;
       white-space: nowrap;
     }
 
     .month-chip-grid {
       display: grid;
       grid-template-columns: repeat(12, minmax(0, 1fr));
-      gap: .18rem;
+      gap: var(--date-chip-gap);
     }
 
     .month-chip[aria-pressed="true"] {
@@ -2411,22 +2435,37 @@
 
     .date-preview-pill {
       display: inline-flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       border: 1px solid var(--line);
-      border-radius: 999px;
+      border-radius: 14px;
       background: var(--surface);
       color: var(--accent-2);
-      padding: .24rem .5rem;
+      padding: .16rem .44rem;
       width: 100%;
+      height: 34px;
+      min-height: 34px;
       min-width: 0;
-      font-size: .94rem;
+      overflow: hidden;
+      font-size: .82rem;
       font-weight: 800;
       font-variant-numeric: tabular-nums;
-      line-height: 1.1;
+      line-height: 1;
       justify-self: start;
       align-self: center;
-      white-space: nowrap;
+      text-align: center;
+      white-space: normal;
+    }
+
+    #noteDatePreview {
+      grid-column: span 3;
+    }
+
+    .date-preview-weekday {
+      font-size: .64rem;
+      font-weight: 700;
+      opacity: .82;
     }
 
     .levelAutosuggestionChips {
@@ -4285,9 +4324,35 @@
 
     .smart-convert-input-row {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-columns: minmax(0, 1fr) auto auto;
       gap: .32rem;
       align-items: stretch;
+    }
+
+    #noteSmartConvert::placeholder {
+      font-size: .78rem;
+      opacity: .68;
+    }
+
+    .smart-convert-help-body h3 {
+      margin: .9rem 0 .25rem;
+      font-size: .92rem;
+    }
+
+    .smart-convert-help-body h3:first-of-type {
+      margin-top: .4rem;
+    }
+
+    .smart-convert-help-body ul {
+      margin: 0;
+      padding-left: 1.25rem;
+    }
+
+    .smart-convert-help-body code {
+      background: var(--surface-2);
+      padding: 0 .25rem;
+      border-radius: 4px;
+      font-size: .88em;
     }
 
     .smart-convert-row button {
@@ -5722,10 +5787,21 @@
       .date-picker-head {
         grid-template-columns: 1fr;
         align-items: stretch;
+        row-gap: var(--date-chip-gap);
       }
 
       .date-heading-actions {
         justify-content: start;
+      }
+
+      .date-builder {
+        grid-column: auto;
+        grid-template-columns: 1fr;
+        row-gap: .28rem;
+      }
+
+      .date-entry-group {
+        align-items: center;
       }
 
       .date-preview-pill {
@@ -5733,7 +5809,7 @@
       }
 
       .month-chip-grid {
-        grid-template-columns: repeat(6, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
 
       .setting-row {
@@ -5782,6 +5858,34 @@
 
       #settingsDialog .dialog-body {
         padding: .68rem;
+      }
+
+      .note-dialog-head {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+          "title actions"
+          "picker picker";
+        gap: .42rem .5rem;
+        align-items: center;
+      }
+
+      .note-dialog-title-wrap {
+        grid-area: title;
+        grid-column: auto;
+      }
+
+      .note-dialog-head .dialog-head-actions {
+        grid-area: actions;
+        grid-column: auto;
+      }
+
+      .note-location-select {
+        grid-area: picker;
+        grid-column: 1 / -1;
+        justify-self: stretch;
+        width: 100%;
+        min-width: 0;
+        max-width: none;
       }
 
       #tab-settings .settings-category {
@@ -5835,10 +5939,6 @@
       .notes-search {
         flex-basis: 100%;
         grid-column: 1 / -1;
-      }
-
-      .month-chip-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
       }
 
       .theme-row {
@@ -6050,7 +6150,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.1.0.3</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.1.0.8</span>
                 <span id="betaPill" class="env-pill beta-pill hidden" title="This is the beta deploy">BETA</span>
                 <span id="alphaPill" class="env-pill alpha-pill hidden" title="This is the alpha deploy">ALPHA</span>
               </div>
@@ -6894,8 +6994,9 @@
       <section class="smart-convert-row">
         <label for="noteSmartConvert">Smart Convert</label>
         <div class="smart-convert-input-row">
-          <input id="noteSmartConvert" maxlength="420" placeholder="Type a quick note to auto-fill the fields below">
+          <input id="noteSmartConvert" maxlength="420" placeholder="Type a quick note to auto-fill the fields below; learn the syntax with the (i) button">
           <button id="noteSmartConvertBtn" type="button" data-shortcut="W">Auto Convert</button>
+          <button id="noteSmartConvertInfoBtn" type="button" data-shortcut="I">Info</button>
         </div>
       </section>
       <div class="note-inline-hints">
@@ -6922,31 +7023,35 @@
               <button id="noteTodayBtn" type="button">Today</button>
               <button id="noteYearOnlyBtn" type="button">Year Only</button>
             </div>
-            <label aria-label="Year">
-              <span class="date-year-row">
-                <button type="button" data-note-year-delta="-1" aria-label="Previous year">−</button>
-                <input id="noteYear" type="text" inputmode="numeric" maxlength="4" placeholder="Year" autocomplete="off"
-                  required>
-                <button type="button" data-note-year-delta="1" aria-label="Next year">+</button>
-              </span>
-            </label>
-            <label aria-label="Month">
-              <select id="noteMonth">
-                <option value="">Month</option>
-              </select>
-            </label>
-            <label aria-label="Day optional">
-              <input id="noteDay" class="is-month-missing" type="text" inputmode="numeric" maxlength="2"
-                placeholder="--" disabled>
-            </label>
-            <span class="date-picker-status">(Month/Day optional)</span>
+            <div class="date-entry-group">
+              <div class="date-fields">
+                <label aria-label="Year">
+                  <span class="date-year-row">
+                    <button type="button" data-note-year-delta="-1" aria-label="Previous year">−</button>
+                    <input id="noteYear" type="text" inputmode="numeric" maxlength="4" placeholder="Year"
+                      autocomplete="off" required>
+                    <button type="button" data-note-year-delta="1" aria-label="Next year">+</button>
+                  </span>
+                </label>
+                <label aria-label="Month">
+                  <select id="noteMonth">
+                    <option value="">Month</option>
+                  </select>
+                </label>
+                <label aria-label="Day optional">
+                  <input id="noteDay" class="is-month-missing" type="text" inputmode="numeric" maxlength="2"
+                    placeholder="--" disabled>
+                </label>
+              </div>
+              <span class="date-picker-status">Month/Day<br />is Optional</span>
+            </div>
           </div>
         </div>
         <input id="noteDate" type="hidden">
         <div id="noteMonthChips" class="month-chip-grid" aria-label="Quick month choices"></div>
         <div class="date-picker-actions">
           <small data-hint data-hint-key="note-date-help">
-            Accepted dates: YYYY, YYYY M, YYYY M D, YYYY-MM-DD, M/YYYY, M/D/YYYY, M/D/YY, Month YYYY, Month D YYYY, YYYY Month, or YYYY Month D. Weekdays are optional.
+            Date can be partial. At a minimum year is needed. Day can only be added if month is selected.
           </small>
         </div>
       </section>
@@ -7067,6 +7172,46 @@
         <button id="confirmActionBtn" class="danger" type="button" data-shortcut="D">Confirm</button>
         <button id="confirmCancelBtn" type="button" data-close="confirmDialog" data-shortcut="X">Cancel</button>
       </div>
+    </div>
+  </dialog>
+
+  <dialog id="smartConvertHelpDialog">
+    <header>
+      <h2>Smart Convert Rules</h2>
+      <button id="smartConvertHelpCloseBtn" type="button" data-close="smartConvertHelpDialog"
+        data-shortcut="Q">Close</button>
+    </header>
+    <div class="dialog-body smart-convert-help-body">
+      <p class="muted">Type a quick note, then Auto Convert tries to fill the fields below using these rules.</p>
+      <h3>Abbreviations</h3>
+      <ul>
+        <li><code>@</code> → <b>at</b> &nbsp;<span class="muted">(e.g. <code>@Yosemite</code> → <code>at Yosemite</code>)</span></li>
+        <li><code>w/</code> → <b>with</b></li>
+        <li><code>w/o</code> → <b>without</b></li>
+      </ul>
+      <h3>Phrases</h3>
+      <ul>
+        <li><b>at / in / near</b> &lt;place&gt; → <em>Where Specifically</em></li>
+        <li><b>for</b> &lt;activity&gt; → <em>What For</em></li>
+        <li><b>with</b> &lt;people&gt; → <em>Who With</em></li>
+      </ul>
+      <h3>Dates</h3>
+      <ul>
+        <li><code>Month D, YYYY</code> &nbsp;·&nbsp; <code>Month YYYY</code> &nbsp;·&nbsp; <code>D Month YYYY</code></li>
+        <li><code>YYYY Month [D]</code> &nbsp;·&nbsp; <code>YYYY-MM-DD</code> &nbsp;·&nbsp; <code>M/D/YYYY</code> &nbsp;·&nbsp; <code>M/D/YY</code></li>
+        <li>A weekday prefix or suffix is ignored if present.</li>
+      </ul>
+      <h3>Visit Levels &amp; Tags</h3>
+      <ul>
+        <li>Any active <b>level</b> name in the text auto-selects that level.</li>
+        <li>Any active <b>visit label</b> name auto-selects that label.</li>
+      </ul>
+      <h3>Multi-part Shortcut</h3>
+      <ul>
+        <li>Split with <code>||</code>, <code>|</code>, <code>::</code>, <code>;</code>, or <code> - </code>:
+          <br /><code>Where | What | Who</code></li>
+      </ul>
+      <p class="muted">Anything left over is placed in <em>Additional Details</em>.</p>
     </div>
   </dialog>
 
@@ -7532,7 +7677,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.1.0.3";
+    const APP_VERSION = "3.1.0.8";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -8464,41 +8609,88 @@
     const DEFAULT_ACTIVE_VISIT_TYPE_IDS = ["star", "heart", "bookmark", "flag", "house"];
     const ICON_SEARCH_TAG_ALIASES = {
       airplane: ["flight", "plane", "airport", "layover", "travel"],
-      automobile: ["car", "drive", "road", "vehicle"],
+      apple: ["mac", "ios", "iphone", "device"],
+      archivebox: ["archive", "box", "storage"],
+      backpack: ["pack", "hike", "hiking", "camp", "camping", "trail", "gear"],
+      bag: ["shopping", "store", "market", "luggage"],
+      baseball: ["sport", "sports", "ball", "game", "stadium"],
+      basketball: ["sport", "sports", "ball", "game", "court"],
+      bed: ["hotel", "motel", "sleep", "stay", "overnight", "lodging"],
+      bell: ["wedding", "ceremony", "alert", "notification"],
+      binoculars: ["view", "lookout", "wildlife", "sightseeing"],
+      bolt: ["electric", "ev", "charge", "charging", "energy"],
+      book: ["read", "library", "school", "study"],
+      books: ["read", "library", "school", "study"],
+      box: ["package", "shipping", "storage"],
+      building: ["city", "office", "work", "downtown", "urban"],
+      columns: ["museum", "college", "university", "bank", "government", "historic"],
+      creditcard: ["card", "pay", "payment", "shopping"],
+      double: ["hotel", "motel", "sleep", "stay", "overnight", "lodging"],
+      dollar: ["money", "cash", "cost", "payment"],
+      dollarsign: ["money", "cash", "cost", "payment"],
+      drink: ["bar", "coffee", "cocktail", "beverage"],
+      automobile: ["car", "drive", "road", "vehicle", "trip", "roadtrip"],
       bicycle: ["bike", "cycling", "ride"],
       bookmark: ["memory", "remember", "saved"],
       briefcase: ["work", "business", "office"],
-      building: ["city", "office", "work"],
-      bus: ["transit", "transportation"],
-      calendar: ["date", "schedule"],
-      camera: ["photo", "picture"],
-      car: ["drive", "road", "vehicle"],
+      bus: ["transit", "transportation", "public", "commute"],
+      calendar: ["date", "schedule", "event", "plan"],
+      camera: ["photo", "picture", "photography", "sightseeing"],
+      car: ["drive", "road", "vehicle", "trip", "roadtrip"],
       cart: ["shopping", "store"],
       clock: ["time", "chrono"],
+      climbing: ["climb", "boulder", "mountain", "outdoors"],
+      cocktail: ["bar", "drink", "beverage"],
+      coffee: ["cafe", "drink", "cup"],
       cross: ["medical", "health"],
+      dance: ["dancing", "party", "music"],
+      fishing: ["fish", "water", "lake", "river"],
       cup: ["coffee", "drink", "meal"],
-      fork: ["food", "restaurant", "meal"],
-      gamecontroller: ["game", "play"],
-      graduationcap: ["school", "college", "education"],
+      figure: ["activity", "athlete", "exercise", "fitness", "person", "sport", "sports"],
+      flag: ["marker", "important", "finish", "goal", "country"],
+      fork: ["food", "restaurant", "meal", "dinner", "lunch"],
+      football: ["sport", "sports", "game", "stadium"],
+      gamecontroller: ["game", "play", "arcade"],
+      golf: ["sport", "sports", "course"],
+      graduationcap: ["school", "college", "university", "education", "campus"],
+      hiking: ["hike", "trail", "mountain", "outdoors", "walk"],
       heart: ["favorite", "love", "best"],
       house: ["home", "saved", "location"],
       infinity: ["wedding"],
-      leaf: ["nature", "park"],
-      map: ["travel", "route"],
+      knife: ["food", "restaurant", "meal", "dinner", "lunch"],
+      leaf: ["nature", "park", "garden", "outdoors"],
+      lodge: ["hotel", "cabin", "stay", "overnight", "lodging"],
+      map: ["travel", "route", "trip", "roadtrip", "navigate"],
       mappin: ["place", "location", "pin"],
-      mountain: ["hike", "trail", "outdoors"],
+      microphone: ["music", "concert", "karaoke", "show"],
+      moon: ["night", "sleep", "camp"],
+      mountain: ["hike", "trail", "outdoors", "peak", "climb", "national park"],
       music: ["concert", "show"],
-      park: ["nature", "tree"],
-      person: ["friend", "family", "people"],
-      sailboat: ["boat", "cruise", "water"],
-      sportscourt: ["sport", "sports", "game"],
+      park: ["nature", "tree", "outdoors", "national park"],
+      parking: ["park", "car", "vehicle"],
+      pawprint: ["pet", "dog", "cat", "animal"],
+      person: ["friend", "family", "people", "solo"],
+      photo: ["camera", "picture", "photography", "sightseeing"],
+      plane: ["flight", "airport", "layover", "travel"],
+      sailboat: ["boat", "cruise", "water", "sailing"],
+      soccerball: ["soccer", "football", "sport", "sports", "game"],
+      sportscourt: ["sport", "sports", "game", "court", "basketball", "tennis"],
       star: ["first", "favorite", "featured"],
+      stars: ["night", "favorite", "special"],
       stethoscope: ["medical", "health"],
-      suitcase: ["travel", "trip", "luggage"],
-      ticket: ["event", "show"],
-      train: ["rail", "transit"],
-      tree: ["park", "nature", "forest"],
-      tram: ["transit", "transportation"]
+      suitcase: ["travel", "trip", "luggage", "airport", "hotel"],
+      swim: ["swimming", "pool", "water"],
+      tennis: ["sport", "sports", "court", "racket"],
+      tent: ["camp", "camping", "campsite", "outdoors"],
+      theatermasks: ["theater", "show", "play", "performance"],
+      ticket: ["event", "show", "concert", "admission"],
+      train: ["rail", "transit", "transportation", "commute"],
+      tree: ["park", "nature", "forest", "outdoors", "national park"],
+      tram: ["transit", "transportation", "rail"],
+      volleyball: ["sport", "sports", "ball", "game"],
+      walk: ["walking", "hike", "trail"],
+      water: ["swim", "pool", "lake", "river", "beach"],
+      yoga: ["fitness", "exercise", "wellness"]
     };
     function autoCircleIconIds() {
       const source = typeof document === "undefined" ? "" : document.currentScript?.textContent || "";
@@ -8527,7 +8719,7 @@
       });
       if (parts.includes("slash")) ["hidden", "off", "no", "exclude"].forEach(tag => tags.add(tag));
       if (parts.includes("fill")) tags.add("filled");
-      return [...tags].map(tag => String(tag || "").trim().toLowerCase()).filter(Boolean).slice(0, 12);
+      return [...tags].map(tag => String(tag || "").trim().toLowerCase()).filter(Boolean).slice(0, 32);
     }
 
     function circleIconSvg(id) {
@@ -8720,18 +8912,6 @@
         category: "Planning"
       },
       {
-        title: "More Location Icon Tag Search",
-        ticketId: "WISH-046",
-        description: "Expand Location Icon Tag search so More Icons are easier to find by synonyms, travel terms, activity names, icon names, and common alternate words.",
-        priority: "P0",
-        effort: "medium",
-        targetKind: "minor",
-        targetVersion: "",
-        tokenCostPct: 18,
-        prompt: "Improve Location Icon Tag search with richer aliases and generated search terms for More Icons. Preserve custom user tag labels, hotkeys, ordering, and enabled state.",
-        category: "Notes"
-      },
-      {
         title: "Choose Note Display Icon",
         ticketId: "WISH-047",
         description: "Let a note with multiple icon tags choose which icon should represent it in lists and on the map, instead of always using the first/default selected tag.",
@@ -8756,6 +8936,30 @@
         category: "Notes"
       },
       {
+        title: "More Date Formats and Spelled-Out Months",
+        ticketId: "WISH-049",
+        description: "Broaden the date parser used by Smart Convert and manual date entry to accept more natural date formats — long and short spelled-out months (January / Jan), ordinals (1st, 2nd), comma variants, weekday prefixes/suffixes, ISO-like and locale-flexible orderings — without breaking the current accepted formats.",
+        priority: "P2",
+        effort: "small",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 14,
+        prompt: "Expand date parsing for Smart Convert and the note date field to accept more natural date formats including long/short spelled-out month names, ordinal day numbers, weekday prefixes/suffixes, and varied separators, while preserving currently accepted formats.",
+        category: "Notes"
+      },
+      {
+        title: "Tidy Date Picker and Smart Convert Height",
+        ticketId: "WISH-050",
+        description: "Polish the note editor's compact date picker and Smart Convert entry row. Scope includes picker spacing/alignment, control sizing, status/hint placement, and Smart Convert input/action height so the row feels tidy across desktop and phone widths.",
+        priority: "P1",
+        effort: "small",
+        targetKind: "patch",
+        targetVersion: "",
+        tokenCostPct: 10,
+        prompt: "Tidy the note editor date picker UI and Smart Convert entry field height. Align compact controls, reduce cramped spacing, keep labels/status readable, and verify the row fits cleanly on desktop and phone widths.",
+        category: "UI"
+      },
+      {
         title: "Optimize iPhone UI",
         ticketId: "WISH-011",
         description: "Tune the app for iPhone-sized screens. Scope includes map sizing, tabs, controls, dialogs, touch targets, safe areas, and avoiding cramped or clipped text.",
@@ -8769,6 +8973,81 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "3.1.0.8",
+        date: "2026-05-25",
+        title: "Find the Right Little Icon",
+        summary: "Location Icon Tag search is smarter, and the mobile note picker layout is tidier.",
+        highlights: [
+          "More Icons search now understands richer travel, activity, and synonym terms.",
+          "Mobile Quick Add puts the location picker on its own line under the title and actions."
+        ],
+        updates: [
+          "Expanded generated search aliases for Location Icon Tags so searches such as hotel, airport, hiking, restaurant, concert, college, camping, soccer, road trip, and national park find better matches.",
+          "Improved More Icons matching by normalizing query text and checking all query words against icon IDs, labels, saved tags, generated labels, and generated aliases.",
+          "Removed the completed roadmap item for richer Location Icon Tag search.",
+          "Fixed mobile month chips to render three across and vertically centered the Month/Day optional status text."
+        ]
+      },
+      {
+        version: "3.1.0.7",
+        date: "2026-05-25",
+        title: "Chip Grid Rhythm",
+        summary: "The note date picker now aligns its controls and vertical spacing to the month chip grid.",
+        highlights: [
+          "The picker rows have clearer spacing between controls, chips, and hint text.",
+          "Month chips now render three across on mobile."
+        ],
+        updates: [
+          "Aligned the date preview, quick actions, date fields, and status text to a shared 12-column chip rhythm.",
+          "Sized Today and Year Only together to the same span as three month chips, with the same gap used between the pill and buttons.",
+          "Made the date fields plus optional-status text stretch across the six-chip span beside the quick actions."
+        ]
+      },
+      {
+        version: "3.1.0.6",
+        date: "2026-05-25",
+        title: "Three Neat Little Groups",
+        summary: "The note date picker now uses true control groups and a fixed-height preview pill.",
+        highlights: [
+          "Today and Year Only are equal-width grouped buttons.",
+          "The date preview pill keeps a fixed height even when the weekday creates two lines."
+        ],
+        updates: [
+          "Grouped the note date row into quick actions, date fields, and status text so spacing is controlled by intent instead of leftover grid width.",
+          "Tightened the year stepper controls while keeping normal spacing between Year, Month, and Day.",
+          "Reduced the date preview pill text and fixed its height so full dates do not grow the row."
+        ]
+      },
+      {
+        version: "3.1.0.5",
+        date: "2026-05-25",
+        title: "A Little Elbow Room",
+        summary: "The note editor's Smart Convert hint and date picker spacing are cleaner.",
+        highlights: [
+          "Smart Convert placeholder text is smaller and quieter.",
+          "The date picker line has clearer separation between quick actions and date fields."
+        ],
+        updates: [
+          "Reduced the Smart Convert placeholder text size without changing the input behavior.",
+          "Added spacing after Today and Year Only while tightening the year stepper gap so the date row reads more neatly."
+        ]
+      },
+      {
+        version: "3.1.0.4",
+        date: "2026-05-25",
+        title: "At Sign Means At",
+        summary: "Smart Convert now understands spaced @ place shorthand and the roadmap captures the next picker cleanup pass.",
+        highlights: [
+          "Smart Convert parses place shorthand like @ Chapel Hill, NC.",
+          "Added a P1 roadmap item to tidy the date picker and Smart Convert entry height."
+        ],
+        updates: [
+          "Expanded the @ abbreviation so both @Place and @ Place become at Place before phrase parsing runs.",
+          "Allowed Smart Convert's location phrase to keep a trailing two-letter place suffix such as NC or DC after a comma.",
+          "Added a roadmap item for a focused note editor UI cleanup around the date picker and Smart Convert row."
+        ]
+      },
       {
         version: "3.1.0.3",
         date: "2026-05-25",
@@ -9686,7 +9965,33 @@
 
     function normalizeVisitTypeSearchTags(value) {
       const raw = Array.isArray(value) ? value : String(value || "").split(",");
-      return [...new Set(raw.map(item => String(item || "").trim().toLowerCase()).filter(Boolean))].slice(0, 12);
+      return [...new Set(raw.map(item => String(item || "").trim().toLowerCase()).filter(Boolean))].slice(0, 32);
+    }
+
+    function normalizeVisitTagSearchText(value) {
+      return String(value || "")
+        .toLowerCase()
+        .replace(/&/g, " and ")
+        .replace(/[^a-z0-9]+/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function visitTypeSearchText(type) {
+      const ids = [type.id, type.icon].filter(Boolean);
+      const generatedTags = ids.flatMap(id => iconSearchTagsFromId(id));
+      const parts = ids.flatMap(id => String(id).split("_").filter(Boolean));
+      const aliasTags = parts.flatMap(part => ICON_SEARCH_TAG_ALIASES[part] || []);
+      return normalizeVisitTagSearchText([
+        type.id,
+        type.icon,
+        type.label,
+        iconLabelFromId(type.id),
+        iconLabelFromId(type.icon),
+        ...(type.searchTags || []),
+        ...generatedTags,
+        ...aliasTags
+      ].join(" "));
     }
 
     function normalizeVisitTypeConfig(inputTypes, defaults = VISIT_TYPES) {
@@ -9842,13 +10147,16 @@
       const [, year, month, day] = match;
       const date = new Date(Number(year), Number(month) - 1, Number(day));
       if (date.getFullYear() !== Number(year) || date.getMonth() !== Number(month) - 1 || date.getDate() !== Number(day)) return "";
-      return ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][date.getDay()] || "";
+      return ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][date.getDay()] || "";
     }
 
     function formatNoteDatePreview(value) {
       const display = formatDateDisplay(value);
       const weekday = dateWeekdayLabel(value);
-      return weekday ? `${display} [${weekday}]` : display;
+      const displayHtml = `<span class="date-preview-main">${escapeHtml(display)}</span>`;
+      return weekday
+        ? `${displayHtml}<span class="date-preview-weekday">(${escapeHtml(weekday)})</span>`
+        : displayHtml;
     }
 
     function datePartsFromValue(value) {
@@ -9888,7 +10196,7 @@
         ? (month ? normalizeDateParts(cleanYear, month, day || "") : cleanYear)
         : "";
       $("#noteDate").value = normalized;
-      $("#noteDatePreview").textContent = normalized ? formatNoteDatePreview(normalized) : "Enter year";
+      $("#noteDatePreview").innerHTML = normalized ? formatNoteDatePreview(normalized) : "Enter year";
       $$("[data-note-month]").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.noteMonth === month)));
       return normalized;
     }
@@ -10557,6 +10865,7 @@
       setButtonLabel("#deleteNoteFromDialogBtn", __DELETE_LEFT_FILL, "Delete Note");
       setButtonLabel("#noteGeocodeBtn", __DOT_SCOPE, "Locate", "Look up latitude and longitude", "Look up latitude and longitude");
       setButtonLabel("#noteSmartConvertBtn", __WAND_AND_SPARKLES_INVERSE, "Auto Convert", "Smart convert note text");
+      setButtonLabel("#noteSmartConvertInfoBtn", __INFO_CIRCLE, "Info", "Smart Convert Rules");
       setButtonLabel("#levelDialogCloseBtn", __XMARK, "Close");
       setButtonLabel("#paletteCloseBtn", __XMARK, "Close");
       setButtonLabelBoth("#tagDialogBackBtn", __CHEVRON_BACKWARD, visitTagReturnTarget === "note" ? "Back to Note" : "Back to Settings");
@@ -10951,7 +11260,7 @@
     function locationMarkerItems() {
       const filterMode = state.settings.mapFollowsNotesFilters === true;
       return STATES.flatMap(([abbr]) => (state.notes[abbr] || []).map(note => {
-        if (filterMode && !(stateMatchesActiveNotesFilters(abbr) && noteMatchesAllFilters(note) && noteMatchesCoordinateFilter(note))) return null;
+        if (filterMode && !(stateMatchesActiveNotesFilters(abbr) && noteMatchesAllFilters(note) && noteMatchesCoordinateFilter(note) && (stateMetaMatchesNotesSearch(abbr) || noteMatchesSearch(note)))) return null;
         const point = projectNoteLocation(abbr, note);
         if (!point) return null;
         const coords = validNoteCoordinates(note);
@@ -11934,12 +12243,8 @@
       return true;
     }
 
-    function stateMatchesNotesSearch(abbr) {
-      const query = notesSearchQuery.trim().toLowerCase();
-      if (!query) return true;
-      const type = locationTypeMeta(abbr);
-      const levelText = stateLevelNames(abbr).join(" ");
-      const notesText = (state.notes[abbr] || []).map(note => [
+    function noteSearchText(note) {
+      return [
         note.date,
         formatDateDisplay(note.date),
         levelById(note.levelId)?.name || "",
@@ -11950,11 +12255,30 @@
         note.who,
         noteDetails(note),
         noteVisitTypeLabels(note).map(item => item.label).join(" ")
-      ].join(" ")).join(" ");
-      return `${abbr} ${STATE_NAMES[abbr]} ${type.label} ${levelText} ${notesText}`
+      ].join(" ").replace(/\s+/g, " ").toLowerCase();
+    }
+
+    function noteMatchesSearch(note) {
+      const query = notesSearchQuery.trim().toLowerCase();
+      if (!query) return true;
+      return noteSearchText(note).includes(query);
+    }
+
+    function stateMetaMatchesNotesSearch(abbr) {
+      const query = notesSearchQuery.trim().toLowerCase();
+      if (!query) return true;
+      const type = locationTypeMeta(abbr);
+      const levelText = stateLevelNames(abbr).join(" ");
+      return `${abbr} ${STATE_NAMES[abbr]} ${type.label} ${levelText}`
         .replace(/\s+/g, " ")
         .toLowerCase()
         .includes(query);
+    }
+
+    function stateMatchesNotesSearch(abbr) {
+      if (!notesSearchQuery.trim()) return true;
+      if (stateMetaMatchesNotesSearch(abbr)) return true;
+      return (state.notes[abbr] || []).some(noteMatchesSearch);
     }
 
     function notesForDisplay(abbr, options = {}) {
@@ -11966,7 +12290,10 @@
     }
 
     function filteredNotesFor(abbr) {
-      return sortedNotesFor(abbr).filter(noteMatchesAllFilters);
+      const stateMeta = stateMetaMatchesNotesSearch(abbr);
+      return sortedNotesFor(abbr).filter(note =>
+        noteMatchesAllFilters(note) && (stateMeta || noteMatchesSearch(note))
+      );
     }
 
     function filteredStateLevelNames(abbr) {
@@ -12888,12 +13215,13 @@
     }
 
     function renderVisitTagSettings() {
-      const query = visitTagSearchQuery.trim().toLowerCase();
-      const matchesQuery = type => !query
-        || type.id.toLowerCase().includes(query)
-        || String(type.label || "").toLowerCase().includes(query)
-        || String(type.icon || "").toLowerCase().includes(query)
-        || (type.searchTags || []).some(tag => tag.toLowerCase().includes(query));
+      const query = normalizeVisitTagSearchText(visitTagSearchQuery);
+      const queryTokens = query.split(" ").filter(Boolean);
+      const matchesQuery = type => {
+        if (!queryTokens.length) return true;
+        const searchText = visitTypeSearchText(type);
+        return queryTokens.every(token => searchText.includes(token));
+      };
       const active = allVisitTypes().filter(type => type.enabled !== false);
       const inactive = allVisitTypes().filter(type => type.enabled === false && matchesQuery(type));
       const tagRow = (type, enabled) => `
@@ -13169,7 +13497,11 @@
         const input = $(selector);
         if (input) input.value = String(value || "").trim().slice(0, Number(input.maxLength) || 700);
       };
-      const text = raw.replace(/\s+/g, " ").trim();
+      const expanded = raw
+        .replace(/(^|\s)w\/o\b/gi, "$1without")
+        .replace(/(^|\s)w\/(?=\S)/gi, "$1with ")
+        .replace(/(^|\s)@\s*(?=\S)/g, "$1at ");
+      const text = expanded.replace(/\s+/g, " ").trim();
       const lower = text.toLowerCase();
       let parsed = false;
       let remainder = text;
@@ -13236,7 +13568,7 @@
         return;
       }
       const phraseParsers = [
-        { selector: "#noteWhere", match: remainder.match(/\b(?:at|in|near)\s+([^,;]+?)(?=\s+\b(?:with|for)\b|$|[,;])/i) },
+        { selector: "#noteWhere", match: remainder.match(/\b(?:at|in|near)\s+([^,;]+,\s*[a-z]{2})(?=\s+\b(?:with|for)\b|$|[;])/i) || remainder.match(/\b(?:at|in|near)\s+([^,;]+?)(?=\s+\b(?:with|for)\b|$|[,;])/i) },
         { selector: "#noteWhat", match: remainder.match(/\bfor\s+([^,;]+?)(?=\s+\b(?:with|at|in|near)\b|$|[,;])/i) },
         { selector: "#noteWho", match: remainder.match(/\bwith\s+([^,;]+?)(?=\s+\b(?:for|at|in|near)\b|$|[,;])/i) }
       ];
@@ -13366,7 +13698,12 @@
         activeIndex = -1;
       };
 
-      input.addEventListener("focus", open);
+      input.addEventListener("focus", () => {
+        open();
+        setTimeout(() => {
+          if (document.activeElement === input && input.value) input.select();
+        }, 0);
+      });
       input.addEventListener("input", open);
       input.addEventListener("blur", () => setTimeout(close, 140));
       input.addEventListener("keydown", event => {
@@ -15301,6 +15638,10 @@
       }));
       $("#quickAddNoteBtn").addEventListener("click", openQuickAddNoteDialog);
       $("#noteSmartConvertBtn").addEventListener("click", applySmartNoteConvert);
+      $("#noteSmartConvertInfoBtn")?.addEventListener("click", () => {
+        const dialog = $("#smartConvertHelpDialog");
+        if (dialog && !dialog.open) dialog.showModal();
+      });
       $("#saveAddNoteBtn").addEventListener("click", saveNoteAndAddAnother);
       bindNoteLocationDropdown();
       $("#noteLocationSearch").addEventListener("change", () => {
