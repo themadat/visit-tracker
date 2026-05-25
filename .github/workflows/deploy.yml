@@ -1,7 +1,8 @@
 name: Deploy to GitHub Pages
 
-# Production:  main branch       -> https://themadat.github.io/visit-tracker/
-# Beta:        3-0-0-Trail-Log   -> https://themadat.github.io/visit-tracker/beta/
+# Production:  main   -> https://themadat.github.io/visit-tracker/
+# Beta:        beta   -> https://themadat.github.io/visit-tracker/beta/
+# Alpha:       alpha  -> https://themadat.github.io/visit-tracker/alpha/
 #
 # Each branch publishes into its own subfolder of the gh-pages branch.
 # keep_files: true prevents one branch's deploy from wiping the other's folder.
@@ -10,7 +11,8 @@ on:
   push:
     branches:
       - main
-      - 3-0-0-Trail-Log
+      - beta
+      - alpha
   workflow_dispatch:
 
 concurrency:
@@ -29,13 +31,24 @@ jobs:
       - name: Decide destination subfolder
         id: dest
         run: |
-          if [ "${{ github.ref_name }}" = "main" ]; then
-            echo "dir=." >> "$GITHUB_OUTPUT"
-            echo "label=production" >> "$GITHUB_OUTPUT"
-          else
-            echo "dir=beta" >> "$GITHUB_OUTPUT"
-            echo "label=beta (${{ github.ref_name }})" >> "$GITHUB_OUTPUT"
-          fi
+          case "${{ github.ref_name }}" in
+            main)
+              echo "dir=." >> "$GITHUB_OUTPUT"
+              echo "label=production" >> "$GITHUB_OUTPUT"
+              ;;
+            beta)
+              echo "dir=beta" >> "$GITHUB_OUTPUT"
+              echo "label=beta" >> "$GITHUB_OUTPUT"
+              ;;
+            alpha)
+              echo "dir=alpha" >> "$GITHUB_OUTPUT"
+              echo "label=alpha" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "Unsupported branch: ${{ github.ref_name }}" >&2
+              exit 1
+              ;;
+          esac
 
       - name: Mark deploy with .nojekyll
         run: touch .nojekyll
