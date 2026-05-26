@@ -6258,7 +6258,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.1.0</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.2.0.0</span>
                 <span id="betaPill" class="env-pill beta-pill hidden" title="This is the beta deploy">BETA</span>
                 <span id="alphaPill" class="env-pill alpha-pill hidden" title="This is the alpha deploy">ALPHA</span>
               </div>
@@ -7806,7 +7806,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.1.0";
+    const APP_VERSION = "3.2.0.0";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -9157,6 +9157,18 @@
         targetVersion: "",
         tokenCostPct: 18,
         prompt: "Add faster note-to-note navigation. Include previous/next controls in the note editor, respect the active Notes ordering/filter context where practical, add keyboard shortcuts, and handle edge cases when the current note is filtered out or deleted.",
+        category: "Notes"
+      },
+      {
+        title: "Add Icon Categories",
+        ticketId: "WISH-052",
+        description: "Group Location Icon Tags and More Icons into browseable categories so the icon catalog is easier to scan than one long list. Scope includes a category taxonomy, category chips or sections, search across all categories, aliased-first ordering within categories, and no disruption to saved active tags or existing icon search behavior.",
+        priority: "P1",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 20,
+        prompt: "Add browseable categories to Location Icon Tags and More Icons. Keep search global, preserve saved active tags and aliases, and make category browsing compact on desktop and mobile.",
         category: "Notes"
       },
       {

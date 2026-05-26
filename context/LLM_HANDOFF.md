@@ -1,67 +1,67 @@
 # LLM Handoff
 
-Load this before editing the repo.
-
-## Repo In 10 Seconds
-
-Trail Log is a single-file, offline HTML/CSS/JS app for tracking visits to US states, DC, territories, and mapped visit notes. Main code is `index.html`. Source SVG icons live in `ICON/`. User data is browser localStorage. No build step, backend, or dependencies. The optional note Locate button makes an online geocode request only when clicked; saved/manual coordinates work offline.
-
-Current anchors:
-
-- `APP_VERSION`: `3.1.0`
-- storage key: `usStateVisitMap.v1`
-- roadmap/wishlist is developer-facing seed data only; do not persist user roadmap data in backups.
-
-## Critical Constraints
-
-- Manual edits are authoritative. Treat uncommitted changes and unexpected diffs as intentional user work.
-- Do not overwrite, revert, rename, reformat, normalize, or "clean up" existing edits unless the current request explicitly asks for it.
-- If a requested change overlaps user-edited code, make the smallest compatible patch and preserve surrounding edits.
-- When manual or unexpected edits are detected, determine what changed and include their tracked app/docs effects in `CHANGELOG` alongside the current update.
-- If ownership of a change is unclear, leave it untouched or ask before modifying.
-- Run `git status --short` before editing.
-- Edit `index.html` surgically; do not reformat the whole file.
-- Keep the app single-file/offline unless explicitly asked otherwise.
-- New persisted field: update `defaultState()` and `normalizeState()`.
-- Every completed change: bump fourth `APP_VERSION` number and update `CHANGELOG`.
-- Every completed change should end with a push commit summary and a description in two distinct copy-paste-friendly containers.
-- When finalizing a release, set `APP_VERSION` to the released semantic version, collapse same-line patch/build notes into that release entry, and update Help Center plus dismissible hints wherever user-facing behavior, controls, workflows, or terminology changed.
-- Update `README.md` and `context/LLM_HANDOFF.md` when a change affects repo rules, architecture, workflow, or handoff context.
-- Changelog wording must be public-safe: describe features and changes, not internal tickets, prompts, or workflow mechanics.
-- Roadmap items use P0-P3 priority, small/medium/large/x-large effort, exact-or-bucket target, scoped description, token cost %, and a terse LLM prompt.
-- When adding roadmap items, ask concise clarifying questions with default answers the user can approve unchanged.
-- Roadmap seed migrations may refresh existing `seed-*` items by ticket ID, but must not overwrite user-created roadmap entries.
-- Destructive UI actions go through `requestConfirm(...)`.
-
-## Fast Search
-
-```sh
-# orientation
-rg -n "APP_VERSION|STORAGE_KEY|WISHLIST_SEED_VERSION|CHANGELOG|WISHLIST_SEEDS" index.html
-
-# persistence
-rg -n "function defaultState|function loadState|function normalizeState|function save" index.html
-
-# map
-rg -n "function initMap|function handleStateTap|function renderMap|function renderMapLabels|toggleMapFitMode" index.html
-
-# legend / notes / settings
-rg -n "function renderLegend|function renderNotesPanel|function renderSettingsControls|function bindEvents|function handlePowerShortcut" index.html
-```
-
-## Runtime Shape
+Copy this into new chats:
 
 ```text
-state = loadState()
-init()
-  initMap()
-  bindEvents()
-  render()
+Continue work in /Users/stripes/Documents/GitHub/visit-tracker. Read context/LLM_HANDOFF.md first. Respect manual edits. Run git status --short before editing. Use port 8018 for local preview. Current development line is Trail Log 3.2.0.
 ```
 
-Change state, call `save()` when persistence is needed, then `render()` or the narrow render function used nearby.
+## Release Notes
 
-## State Contract
+For every completed change:
+
+- Bump the fourth `APP_VERSION` build number.
+- When finalizing a release, set `APP_VERSION` to the released semantic version and collapse same-line patch/build notes into that release entry.
+- Update `CHANGELOG` using the collapsed release-note format: `Major.Minor.Patch :: YYYY-mm-dd :: Cheeky theme name`, then a bold one-line summary, then `highlights` and `updates`.
+- Keep `highlights` short and abbreviated; use `updates` for the fuller, denser change list.
+- Keep changelog wording public-safe: describe features and changes, not internal tickets, prompts, or workflow mechanics.
+- When manual or unexpected edits are present, identify their app/docs effect and include it in `CHANGELOG` alongside the current update.
+- Keep the current major/minor release entry updated unless intentionally opening a new release line.
+- Preserve the localStorage schema where possible.
+- Give me a push commit summary and description in two distinct containers that make copy and paste very easy.
+
+## Snapshot
+
+- Trail Log is a single-file, local-first HTML/CSS/JS app.
+- Main file: `index.html`
+- Docs: `README.md`, this handoff
+- Storage key: `usStateVisitMap.v1`
+- Current development version: `APP_VERSION = "3.2.0.0"`
+- Latest public release: Trail Log 3.1.0
+- No build step, backend, or dependencies.
+- User data lives in browser localStorage. Locate is the only intentional online action and only runs when clicked.
+
+## Rules
+
+- Run `git status --short` before editing.
+- Manual edits are authoritative. Preserve dirty work unless the user explicitly asks to revert it.
+- Edit surgically, especially in `index.html`; do not reformat the file.
+- Use `apply_patch` for manual edits.
+- App behavior changes usually require `APP_VERSION`/`CHANGELOG` updates. Docs-only, handoff-only, or planning-only edits do not need release churn unless the user asks.
+- New persisted fields need defaults in `defaultState()` and repair/defaulting in `normalizeState()`.
+- Keep release notes public-facing: describe shipped behavior, not prompts or internal workflow.
+- Roadmap seeds are developer-facing defaults only; do not persist user roadmap data in backups.
+- Roadmap item shape: `title`, `ticketId`, `description`, `priority`, `effort`, `targetKind`, `targetVersion`, `tokenCostPct`, `prompt`, `category`.
+- Destructive UI actions should use `requestConfirm(...)`.
+
+## Quick Commands
+
+```sh
+rg -n "APP_VERSION|STORAGE_KEY|WISHLIST_SEEDS|CHANGELOG" index.html
+rg -n "function defaultState|function normalizeState|function save" index.html
+rg -n "function renderNotesPanel|function renderMap|function bindEvents" index.html
+node -e "const fs=require('fs'); const h=fs.readFileSync('index.html','utf8'); const scripts=[...h.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]); new Function(scripts.at(-1)); console.log('main script parses');"
+git diff --check
+python3 -m http.server 8018
+```
+
+Open `http://127.0.0.1:8018/index.html` for preview. Stop the server before final response.
+
+## App Shape
+
+Runtime flow: `state = loadState()` -> `init()` -> `initMap()` / `bindEvents()` / `render()`.
+
+State basics:
 
 ```js
 {
@@ -75,40 +75,46 @@ Change state, call `save()` when persistence is needed, then `render()` or the n
 }
 ```
 
-Invariants: level order controls map color; `levels` max is 5; state level IDs must exist; dates normalize to `YYYY`, `YYYY-MM`, `YYYY-MM-DD`, or `""`; note `lat`/`lng` are stored as numbers or `""`; `visitTypes` may contain multiple known ids and `state.visitTypes` stores the configurable label/order/shortcut/enabled/search-tag setup; active visit-type shortcuts should stay unique and may be blank, including for default tags; `settings.mapSplitRatio` stores the desktop map/cards divider position and defaults to `0.66`; `settings.mapPanCenter` stores the scrollable map center as normalized `{x,y}`; `settings.legendPosition` is one of `right-top`, `right-bottom`, `left-bottom`, or `left-top`; saved Notes filters are repaired against current level/tag ids; new default note tags enable First, Favorite, Memorable, Flagged, and Home while preserving saved tag customizations; opt-out levels do not count toward completion; territories seed once.
+Important invariants:
 
-## Product Surface
+- Dates normalize to `YYYY`, `YYYY-MM`, `YYYY-MM-DD`, or `""`.
+- Coordinates are numbers or `""`.
+- `levels` max is 5; level order controls map color.
+- `visitTypes` are configurable icon tags; shortcuts should stay unique among active tags.
+- Saved Notes filters are repaired against current level/tag ids.
+- Selected-location Notes detail ignores main-list filters.
+- Match Notes map filtering follows active Notes filters.
 
-Clickable SVG map; note markers render over the map and cluster nearby locations, with exact coordinate-backed notes projected into the state shape and no-coordinate notes placed at the center of their state/territory bbox; markers use a hex-grid cluster glyph, zoom-scaled marker size, and the highest-priority level plus earliest note date choosing the visible cluster color/title; single-note markers open the note, same-location multi-note markers open a picker, nearby clusters zoom in while they can separate, too-close distinct clusters open the picker instead of dead-end zooming, and the picker can add a new note at the top mapped location; header-level Map/Legend/Notes visibility toggles with Map on by default and compact title-bar hints for panel visibility/editing plus divider resizing; Developer Mode shows a compact version pill under the title-bar map name; resizable desktop map/cards split with a tighter divider track; title-bar Edit/Rename is bottom-aligned with the map name; map labels none/abbr/name; map label/render hints sit left of the map controls; scrollable map mode is the default and has compact title-bar zoom controls ordered out/editable percent/in/reset, then Fit Map to the right, 50% zoom steps up to 1000%, custom typed zoom percentages, plus/minus snapping from custom percentages to the next 50% increment in the pressed direction, drag-to-pan, viewport-center anchored zoom-button behavior, centered reset/initial scroll positioning, and pointer-anchored pinch/modified-wheel zoom; `settings.mapViewMode`, `settings.mapZoom`, and `settings.mapPanCenter` persist Fit/Scroll mode, zoom, and pan center across reloads/imports/exports; Match Notes map filtering follows active Notes filters even while a single location is open; Map/Legend/Notes visibility, selected Notes location, Notes sort/view/grouping/excluded/filter state, date precision filter, coordinate precision filter, and collapsed categories also persist; map zoom controls and Fit Map normalize around a 40px header control height; the fit/scroll button shows the current mode icon/text while its tooltip says what it switches to; fit-map mode stays clean for screenshots; mobile gives the app title its own line before title-bar controls and keeps the State Map header compact; editable legend levels/colors/stats with an Edit toggle that reveals row controls, placeholder-based row dragging that commits order once on release, right-to-left swipe-to-reveal quick Edit/Delete, per-level stats embedded in color ovals, visible inline definitions, a desktop-only mini Legend Position picker laid out by actual corner with full-size icons, and pointer-driven Legend title dragging with a live placement spacer across all targets including the current/original spot, where it uses a solid blue outline; notes search/filter/sort/compact/expanded plus active icon filter strip with a leftmost no-icon filter using the shared `__CIRCLE` SVG and an inline tag-settings ellipsis directly after the last visible chip, a compact date precision filter cycling All Dates/Year Only/Year and Month Only/Full Dates Only with neutral/cyan/custom-blue/indigo states, a compact coordinate filter cycling All/Mapped/Missing using scope-dot glyphs and color state, a circle-slash excluded visibility toggle with amber shown state, Copy beside Quick Add in the Notes header, location-type icons with a safe state-map fallback when the requested globe symbol is not present, permanent filter summary using the same SVGs as the excluded/date/coordinate buttons, note Locate lookup/manual lat-lng override, category headings sticky at the top of the Notes list scroll area, and selected-location detail views that ignore main-list filters; Quick Add syncs the selected note target into context so Locate/default level uses the newly selected location; note editor Smart Convert keeps input/action on one row, Location Tag settings live as an ellipsis inside the compact fixed-width tag chip row, Where/What/Who fields suggest saved note values locally with the active target location prioritized, Smart Convert treats both `@Place` and `@ Place` as `at Place` and keeps comma-plus-two-letter place suffixes such as `Chapel Hill, NC`, flexible date parsing accepts `YYYY`, `YYYY M`, `YYYY M D`, `YYYY-MM-DD`, `M/YYYY`, `M/D/YYYY`, `M/D/YY`, `Month YYYY`, `Month D YYYY`, `YYYY Month`, `YYYY Month D`, and optional weekday names/abbreviations, the note date preview pill appends weekday brackets like `[Fri]` when a full date is selected, and the note date picker uses a 40/60 preview/input row with Today/Year Only beside compact Year/Month/Day controls, a `(Month/Day optional)` status label, and a red `--` Day placeholder until Month is selected; Add as App detects iPhone/iPad, Android, Mac, or PC, expands the matching install directions, keeps one other-device guide open at a time, uses matched two-column guide/icon-card widths, and supports shortcut overlays for icon choice/device guides/reload, with Mac icon-reload guidance at the top of the Mac guide; Developer Mode can click the detected-device icon/readout to simulate other Add as App device experiences; settings for text size/theme/buttons/hints/tap/date/import/export and compact draggable icon-tag curation; searchable Help Center is split into Toolbar, Map, Legend, Notes, Other, and focused FAQ sections; Roadmap search has a live result count pill beside the search field and priority-colored cards with subtle left accents plus P0-P3 pills; Text Size is an iOS-style oval slider with its percent text visually riding the moving thumb; Location Icon Tags auto-catalogs every imported `__*_CIRCLE` constant into More Icons with generated labels/search tags while preserving the default active tag set, allowing default tags to be disabled/renamed/reordered/blanked, preventing duplicate active hotkeys, and appending newly added tags to the end of the active list; developer JSON tree mirrors full export data with large collections collapsed and refreshes from save/map-resize paths; JSON/Markdown/RTF export; JSON import; shortcut overlay via Shift + Option + Control/Command includes map zoom, text size, note Locate, note tag settings, and Add as App shortcuts using physical keys; hidden `H` `H` tester shortcut resets dismissed hints by toggling Hints off and back on and is documented in Developer Tools.
+## Current Surface
 
-Recent 3.1.0 release note: Trail Echoes is cut as `APP_VERSION` 3.1.0 with the build-level 3.1.0.x changelog entries collapsed into the single public release entry. The release covers saved City/Where/What/Who suggestions, broader flexible date parsing, weekday date preview, City/Where editor behavior, date picker polish, mapped-location status polish, richer Location Icon Tag aliases and sorting, the persisted date precision filter, Match Notes map filtering, and completed-roadmap cleanup.
+- Map: SVG state/territory map, scroll/fit modes, pan/zoom persistence, labels, clustered note pins, Match Notes filtering.
+- Legend: editable levels, colors, definitions, stats behavior, drag reorder, swipe quick actions, movable desktop placement.
+- Notes: search, sort, compact/expanded/text views, category grouping, icon filters, excluded toggle, coordinate filter, date precision filter, selected-location detail.
+- Note editor: Quick Add, City/Where/What/Who/Details, local field suggestions, Smart Convert, partial/flexible dates, weekday preview, manual/lookup coordinates, multiple icon tags.
+- Location Icon Tags: configurable active tags plus auto-discovered More Icons from `__*_CIRCLE` constants, generated labels/search tags, explicit aliases, aliased-first sorting.
+- Help/What's New/Roadmap live under Settings-style tabs.
+- Exports: JSON, Markdown, RTF, plain text.
 
-What's New behavior: patch releases may omit `notice`; the banner uses the latest changelog entry with a `notice`. Fresh localStorage profiles seed `lastSeenReleaseVersion` to `0.0.0` so they can see the latest feature notice, while older saved data without this field migrates from its stored `appVersion`. Version 3.1.0 is the "Trail Echoes" minor release for faster note entry, smarter dates, cleaner date controls, richer icon search, and date precision filtering; version 3.0.0 is the "Meet Trail Log" major release and uses organized changelog subsections via `updateSections`.
+## Recent Release
 
-UX taste: compact, practical, map-first, light personality in docs/release copy. Avoid airy marketing-style UI.
+3.1.0 "Trail Echoes" is cut. It covers:
 
-## User Preference Memory
+- Saved City/Where/What/Who suggestions.
+- Broader flexible date parsing and weekday date preview.
+- City/Where editor behavior and mapped-location status polish.
+- Date picker layout polish.
+- Richer Location Icon Tag aliases and aliased-first sorting.
+- Persisted Notes date precision filter.
+- Match Notes map filtering updates.
+- Completed-roadmap cleanup.
 
-- Desktop main view is viewport-locked above 980px: app/body do not vertically scroll, the map column is height-limited, and Notes panel content scrolls internally to align with the map bottom without stretching note rows/cards.
-- Desktop map/cards split can be manually resized with the divider; preserve `settings.mapSplitRatio` and default unset/old values to a 66/33 map-to-cards split.
-- Mobile/tablet keeps the single-column page scroll below 981px.
-- Hints should become individually dismissible; global hints toggle overrides all.
-- Settings uses compact category sections; parent headings should stay visually stronger than row-level setting labels.
-- Settings dialog uses one intended scroll surface: keep `#settingsDialog` grid-bounded and let `.dialog-body` own vertical scrolling.
-- Import/export buttons equal-sized and space-efficient.
-- Help Center stays searchable and is organized into focused Documentation/FAQ sections.
-- Changelog + roadmap live under What's New.
-- Public release notes describe features, not internal tickets/prompts/wishlist mechanics.
-- Collapse build-level changelog entries into major.minor release entries, then update Help Center and dismissible hints for the same user-facing changes before calling the release cut done.
-- Changelog format: `Major.Minor.Patch :: YYYY-mm-dd :: cheeky theme name`, then a bold one-line summary, then short `highlights` and denser `updates`.
+## UX Preferences
 
-## Verify
-
-```sh
-node -e "const fs=require('fs'); const h=fs.readFileSync('index.html','utf8'); const scripts=[...h.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]); new Function(scripts.at(-1)); console.log('main script parses');"
-git diff --check
-python3 -m http.server 8018
-```
-
-Open `http://127.0.0.1:8018/index.html` for smoke testing.
-Use port `8018` by default for local smoke checks so startup and cleanup stay predictable. If it is occupied, use the next nearby port, say which one, and stop the server before the final response.
+- Compact, practical, map-first.
+- Mix of Travel, Outdoorsy, Geeky Vibe.
+- Avoid airy marketing UI.
+- Desktop main view should stay viewport-locked above 980px; Notes scroll internally.
+- Mobile/tablet keeps single-column page scroll below 981px.
+- Settings dialog should have one scroll surface: `.dialog-body`.
+- Help Center stays searchable and focused.
+- Public release notes describe user-facing features.
