@@ -675,18 +675,27 @@
 
     #noteSmartConvertBtn,
     #noteSmartConvertInfoBtn,
-    #noteGeocodeBtn {
+    #noteGeocodeBtn,
+    #noteWhereToCityBtn {
+      display: inline-grid;
+      place-items: center;
       height: 40px;
       min-height: 40px;
       width: 40px;
       min-width: 40px;
+      padding: 0;
+      line-height: 1;
     }
 
     #noteSmartConvertBtn .sf-symbol,
     #noteSmartConvertInfoBtn .sf-symbol,
-    #noteGeocodeBtn .sf-symbol {
+    #noteGeocodeBtn .sf-symbol,
+    #noteWhereToCityBtn .sf-symbol {
+      display: block;
       height: 24px;
       width: 24px;
+      margin: 0;
+      vertical-align: middle;
     }
 
     #quickAddNoteBtn,
@@ -2291,7 +2300,6 @@
     .date-picker-head {
       display: grid;
       grid-template-columns: repeat(12, minmax(0, 1fr));
-      column-gap: var(--date-chip-gap);
       align-items: center;
       min-width: 0;
     }
@@ -2300,7 +2308,10 @@
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       align-items: center;
+      justify-self: stretch;
       gap: var(--date-chip-gap);
+      width: 100%;
+      margin: 0;
       min-width: 0;
     }
 
@@ -2312,19 +2323,13 @@
       height: 34px;
       box-sizing: border-box;
       text-align: center;
-      padding: .24rem .44rem;
-      font-size: .75rem;
+      padding: .24rem .55rem;
+      width: 100%;
+      margin: 0;
+      justify-self: stretch;
+      font-size: .9rem;
+      font-weight: 650;
       white-space: nowrap;
-    }
-
-    .date-builder {
-      display: grid;
-      grid-column: span 9;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-      column-gap: var(--date-chip-gap);
-      align-items: center;
-      justify-content: start;
-      min-width: 0;
     }
 
     .date-builder label {
@@ -2341,10 +2346,12 @@
 
     .date-entry-group {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-columns: minmax(0, auto) auto;
       align-items: center;
+      justify-content: center;
       gap: .45rem;
       min-width: 0;
+      grid-column: span 6;
     }
 
     .date-entry-group .date-fields {
@@ -2358,8 +2365,8 @@
       width: max-content;
     }
 
-    .date-builder input,
-    .date-builder select,
+    .date-fields input,
+    .date-fields select,
     .date-year-row button,
     .month-chip {
       min-height: 34px;
@@ -2389,14 +2396,14 @@
     }
 
     #noteDay.is-month-missing {
-      border-color: color-mix(in srgb, var(--danger) 62%, var(--line));
-      background: color-mix(in srgb, var(--danger) 12%, var(--surface));
-      color: var(--danger);
+      border-color: var(--line);
+      background: color-mix(in srgb, var(--muted) 12%, var(--surface));
+      color: var(--muted);
       opacity: 1;
     }
 
     #noteDay.is-month-missing::placeholder {
-      color: var(--danger);
+      color: var(--muted);
       opacity: 1;
     }
 
@@ -2420,10 +2427,23 @@
       gap: var(--date-chip-gap);
     }
 
+    .month-chip {
+      background: color-mix(in srgb, var(--muted) 6%, var(--surface));
+      border-color: color-mix(in srgb, var(--line) 82%, var(--text) 18%);
+      color: color-mix(in srgb, var(--text) 58%, var(--muted));
+      opacity: 1;
+    }
+
+    .month-chip:hover {
+      opacity: 1;
+      color: var(--text);
+    }
+
     .month-chip[aria-pressed="true"] {
       background: var(--accent);
       border-color: var(--accent);
       color: white;
+      opacity: 1;
     }
 
     [data-theme="dark"] .month-chip[aria-pressed="true"] {
@@ -2451,18 +2471,25 @@
       height: 34px;
       min-height: 34px;
       min-width: 0;
+      margin: 0;
+      box-sizing: border-box;
       overflow: hidden;
       font-size: .82rem;
       font-weight: 800;
       font-variant-numeric: tabular-nums;
       line-height: 1;
-      justify-self: start;
+      justify-self: stretch;
       align-self: center;
       text-align: center;
       white-space: normal;
     }
 
     #noteDatePreview {
+      grid-column: span 3;
+      justify-self: stretch;
+    }
+
+    .date-heading-actions {
       grid-column: span 3;
     }
 
@@ -3947,6 +3974,7 @@
 
     .notes-controls .notes-category-toggle,
     .notes-controls .notes-excluded-toggle,
+    .notes-controls .notes-date-filter,
     .notes-controls .notes-coordinate-filter {
       flex: 0 0 var(--notes-control-size);
       width: var(--notes-control-size);
@@ -3996,6 +4024,36 @@
 
     [data-theme="dark"] .notes-excluded-toggle[data-excluded-visibility="shown"] {
       color: #fbbf24;
+    }
+
+    .notes-date-filter[data-date-precision-filter="year"] {
+      background: color-mix(in srgb, #0891b2 16%, var(--surface));
+      border-color: color-mix(in srgb, #0891b2 62%, var(--line));
+      color: #0e7490;
+    }
+
+    [data-theme="dark"] .notes-date-filter[data-date-precision-filter="year"] {
+      color: #67e8f9;
+    }
+
+    .notes-date-filter[data-date-precision-filter="month"] {
+      background: color-mix(in srgb, #0f6fc6 16%, var(--surface));
+      border-color: color-mix(in srgb, #0f6fc6 60%, var(--line));
+      color: #1d4ed8;
+    }
+
+    [data-theme="dark"] .notes-date-filter[data-date-precision-filter="month"] {
+      color: #93c5fd;
+    }
+
+    .notes-date-filter[data-date-precision-filter="full"] {
+      background: color-mix(in srgb, #4f46e5 16%, var(--surface));
+      border-color: color-mix(in srgb, #4f46e5 62%, var(--line));
+      color: #4338ca;
+    }
+
+    [data-theme="dark"] .notes-date-filter[data-date-precision-filter="full"] {
+      color: #a5b4fc;
     }
 
     .notes-coordinate-filter[data-coordinate-filter="mapped"] {
@@ -4238,48 +4296,85 @@
     }
 
     .note-place-grid {
-      grid-template-columns: minmax(0, 1.35fr) minmax(16rem, .9fr);
-      align-items: start;
+      grid-template-columns: 1fr;
+      gap: .42rem;
     }
 
     .note-field-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .note-location-field {
+    .note-place-row {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 38px;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: .32rem;
       align-items: end;
     }
 
-    .note-location-field label {
+    .note-place-row > label {
       min-width: 0;
     }
 
-    .note-location-field button {
-      min-width: 38px;
-      width: 38px;
-      min-height: 38px;
-      height: 38px;
-      padding: 0;
-      display: inline-grid;
-      place-items: center;
+    .note-city-column {
+      display: grid;
+      min-width: 0;
     }
 
-    .note-coordinate-grid {
+    .note-city-tail {
       display: grid;
-      gap: .18rem;
-    }
-
-    .note-coordinate-inputs {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr);
       gap: .32rem;
+      align-items: end;
+      min-width: 0;
     }
 
-    .note-coordinate-inputs input {
-      min-height: 38px;
+    .note-where-tail {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: .32rem;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .note-location-message-stack {
+      display: grid;
+      gap: .12rem;
+      min-width: 0;
+      align-self: center;
+    }
+
+    .field-label {
+      display: inline-flex;
+      align-items: baseline;
+      gap: .25rem;
+      white-space: nowrap;
+    }
+
+    .note-promote-hint {
+      font-size: .7rem;
+      line-height: 1.15;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: .25rem;
+      min-width: 0;
+    }
+
+    .note-promote-hint.hint-dismissed {
+      display: none;
+    }
+
+    .field-tokens {
+      color: var(--muted);
+      font-weight: 400;
+      font-size: .72rem;
+      margin-left: .25rem;
+      white-space: nowrap;
+    }
+
+    .note-place-grid input,
+    .note-field-grid input {
+      min-height: 40px;
     }
 
     .note-geocode-status {
@@ -5774,7 +5869,10 @@
       .date-builder,
       .note-place-grid,
       .note-field-grid,
-      .note-coordinate-grid,
+      .note-place-row,
+      .note-city-column,
+      .note-city-tail,
+      .note-where-tail,
       .note-level-radios,
       .smart-convert-row {
         grid-template-columns: 1fr;
@@ -5792,6 +5890,12 @@
         grid-template-columns: 1fr;
         align-items: stretch;
         row-gap: var(--date-chip-gap);
+      }
+
+      #noteDatePreview,
+      .date-entry-group,
+      .date-heading-actions {
+        grid-column: auto;
       }
 
       .date-heading-actions {
@@ -6154,7 +6258,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.1.0.13</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.1.0</span>
                 <span id="betaPill" class="env-pill beta-pill hidden" title="This is the beta deploy">BETA</span>
                 <span id="alphaPill" class="env-pill alpha-pill hidden" title="This is the alpha deploy">ALPHA</span>
               </div>
@@ -6774,11 +6878,13 @@
               data-shortcut="Y">Categorical</button>
             <button id="notesExcludedToggleBtn" class="notes-excluded-toggle" type="button" aria-pressed="true"
               data-shortcut="V">Show Excluded</button>
+            <button id="notesDatePrecisionFilterBtn" class="notes-date-filter" type="button" aria-pressed="false">All
+              Dates</button>
             <button id="notesCoordinateFilterBtn" class="notes-coordinate-filter" type="button" aria-pressed="false"
               data-shortcut="D">Coordinates</button>
           </div>
           <small id="notesPanelSubtitle" class="notes-toggle-hint" data-hint data-hint-key="notesPanelSubtitle">
-            Category Grouping | Excluded and Mapped Filters.
+            Category Grouping | Excluded, Date, and Mapped Filters.
           </small>
           <div id="notesIconFilterRow" class="notes-icon-filter-row">
             <ol id="notesIconFilters" class="notes-icon-filters" aria-label="Filter notes by icon"></ol>
@@ -7005,7 +7111,7 @@
       </section>
       <div class="note-inline-hints">
         <small data-hint data-hint-key="note-smart-convert-help">
-          Type a quick note, then Auto Convert looks for items like “at”, “for”, and “with”.<br />
+          Type a quick note, then Auto Convert looks for items like “in” (city), “at”/“near” (where), “for”, and “with”.<br />
           Leftover text goes to Additional Details. Saved Where, What, and Who entries suggest while you type.
         </small>
       </div>
@@ -7022,33 +7128,31 @@
       <section class="partial-date-picker" aria-label="Date">
         <div class="date-picker-head">
           <span id="noteDatePreview" class="date-preview-pill">No date</span>
-          <div class="date-builder">
-            <div class="date-heading-actions">
-              <button id="noteTodayBtn" type="button">Today</button>
-              <button id="noteYearOnlyBtn" type="button">Year Only</button>
+          <div class="date-entry-group">
+            <div class="date-fields">
+              <label aria-label="Year">
+                <span class="date-year-row">
+                  <button type="button" data-note-year-delta="-1" aria-label="Previous year">−</button>
+                  <input id="noteYear" type="text" inputmode="numeric" maxlength="4" placeholder="Year"
+                    autocomplete="off" required>
+                  <button type="button" data-note-year-delta="1" aria-label="Next year">+</button>
+                </span>
+              </label>
+              <label aria-label="Month">
+                <select id="noteMonth">
+                  <option value="">Month</option>
+                </select>
+              </label>
+              <label aria-label="Day optional">
+                <input id="noteDay" class="is-month-missing" type="text" inputmode="numeric" maxlength="2"
+                  placeholder="--" disabled>
+              </label>
             </div>
-            <div class="date-entry-group">
-              <div class="date-fields">
-                <label aria-label="Year">
-                  <span class="date-year-row">
-                    <button type="button" data-note-year-delta="-1" aria-label="Previous year">−</button>
-                    <input id="noteYear" type="text" inputmode="numeric" maxlength="4" placeholder="Year"
-                      autocomplete="off" required>
-                    <button type="button" data-note-year-delta="1" aria-label="Next year">+</button>
-                  </span>
-                </label>
-                <label aria-label="Month">
-                  <select id="noteMonth">
-                    <option value="">Month</option>
-                  </select>
-                </label>
-                <label aria-label="Day optional">
-                  <input id="noteDay" class="is-month-missing" type="text" inputmode="numeric" maxlength="2"
-                    placeholder="--" disabled>
-                </label>
-              </div>
-              <span class="date-picker-status">Month/Day<br />is Optional</span>
-            </div>
+            <span class="date-picker-status">Month/Day<br />is Optional</span>
+          </div>
+          <div class="date-heading-actions">
+            <button id="noteTodayBtn" type="button">Today</button>
+            <button id="noteYearOnlyBtn" type="button">Year Only</button>
           </div>
         </div>
         <input id="noteDate" type="hidden">
@@ -7065,40 +7169,56 @@
         <div id="noteLevelRadios" class="note-level-radios"></div>
       </section>
       <div class="note-place-grid">
-        <div class="note-location-field">
-          <label>Where Specifically
-            <input id="noteWhere" maxlength="120" placeholder="City, venue, park, route"
+        <div class="note-place-row">
+          <label><span class="field-label">City <small class="field-tokens">(in …)</small></span>
+            <input id="noteCity" maxlength="80" placeholder="e.g. Austin"
+              list="noteCitySuggestions" autocomplete="off">
+          </label>
+          <div class="note-city-column">
+            <div class="note-city-tail">
+              <button id="noteGeocodeBtn" type="button" data-shortcut="G">Locate</button>
+              <label><span class="field-label">Latitude</span>
+                <input id="noteLat" type="number" inputmode="decimal" step="any" min="-90" max="90"
+                  placeholder="Optional">
+              </label>
+              <label><span class="field-label">Longitude</span>
+                <input id="noteLng" type="number" inputmode="decimal" step="any" min="-180" max="180"
+                  placeholder="Optional">
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="note-place-row">
+          <label><span class="field-label">Where <small class="field-tokens">(at, near, @ …)</small></span>
+            <input id="noteWhere" maxlength="120" placeholder="Venue, park, trail, route"
               list="noteWhereSuggestions" autocomplete="off">
           </label>
-          <button id="noteGeocodeBtn" type="button" data-shortcut="G">Locate</button>
-        </div>
-        <div class="note-coordinate-grid">
-          <div class="note-coordinate-inputs">
-            <label>Latitude
-              <input id="noteLat" type="number" inputmode="decimal" step="any" min="-90" max="90"
-                placeholder="Optional">
-            </label>
-            <label>Longitude
-              <input id="noteLng" type="number" inputmode="decimal" step="any" min="-180" max="180"
-                placeholder="Optional">
-            </label>
+          <div class="note-where-tail">
+            <button id="noteWhereToCityBtn" type="button" data-shortcut=""
+              aria-label="Move Where text to City" title="Move Where text to City"></button>
+            <div class="note-location-message-stack">
+              <small id="noteGeocodeStatus" class="note-geocode-status" role="status" aria-live="polite">
+                Use Locate to place this note on the map, or enter latitude/longitude manually.
+                This will use the first icon in the list; Nearby markers cluster and use a hex-grid cluster icon.
+              </small>
+              <small class="note-promote-hint" data-hint data-hint-key="note-where-to-city">
+                Move Where text up to the City Input
+              </small>
+            </div>
           </div>
-          <small id="noteGeocodeStatus" class="note-geocode-status" data-hint data-hint-key="note-location-help">
-            Use Locate to place this note on the map, or enter latitude/longitude manually.
-            This will use the first icon in the list; Nearby markers cluster and use a hex-grid cluster icon.
-          </small>
         </div>
       </div>
       <div class="note-field-grid">
-        <label>What For
+        <label><span class="field-label">What <small class="field-tokens">(for …)</small></span>
           <input id="noteWhat" maxlength="120" placeholder="Trip, event, meal, work" list="noteWhatSuggestions"
             autocomplete="off">
         </label>
-        <label>Who With
+        <label><span class="field-label">Who <small class="field-tokens">(with, w/ …)</small></span>
           <input id="noteWho" maxlength="120" placeholder="Solo, family, friends" list="noteWhoSuggestions"
             autocomplete="off">
         </label>
       </div>
+      <datalist id="noteCitySuggestions"></datalist>
       <datalist id="noteWhereSuggestions"></datalist>
       <datalist id="noteWhatSuggestions"></datalist>
       <datalist id="noteWhoSuggestions"></datalist>
@@ -7195,7 +7315,8 @@
       </ul>
       <h3>Phrases</h3>
       <ul>
-        <li><b>at / in / near</b> &lt;place&gt; → <em>Where Specifically</em></li>
+        <li><b>in</b> &lt;city&gt; → <em>City</em> &nbsp;<span class="muted">(used by Locate for lat/lon)</span></li>
+        <li><b>at</b> / <b>near</b> &lt;place&gt; → <em>Where</em> &nbsp;<span class="muted">(stadium, park, trail, route — text only)</span></li>
         <li><b>for</b> &lt;activity&gt; → <em>What For</em></li>
         <li><b>with</b> &lt;people&gt; → <em>Who With</em></li>
       </ul>
@@ -7428,18 +7549,21 @@
               opens Location Tag settings.</li>
             <li>Right-click or long-press an icon chip to show only that icon. Do it again when one icon is selected to
               restore all icons.</li>
+            <li>Use the date filter to cycle between All Dates, Year Only, Year and Month Only, and Full Dates Only.
+            </li>
             <li>Use the coordinate filter to cycle between All, Mapped, and Missing.</li>
             <li>Use the circle-slash excluded toggle to show or hide locations that only have excluded-from-stats
               levels. Amber means excluded locations are visible.</li>
-            <li>Use Smart Convert in the note editor to turn quick text into weekday-aware dates, levels, location
-              specifics, people, purpose, and details.</li>
-            <li>Saved Where Specifically, What For, and Who With values appear as local suggestions while you type.</li>
-            <li>Use Locate beside Where Specifically to look up latitude/longitude. You can manually edit or clear
-              coordinates.</li>
-            <li>Notes support Where Specifically, What For, Who With, Additional Details, partial dates, and multiple
+            <li>Use Smart Convert in the note editor to turn quick text into weekday-aware dates, levels, city,
+              where, people, purpose, and details.</li>
+            <li>Saved City, Where, What, and Who values appear as local suggestions while you type.</li>
+            <li>Use Locate beside the Lat/Lng row to look up latitude/longitude (City + state). The Where field for a
+              stadium or trail name stays text-only. The arrow button next to Where moves its text into City. You can
+              also edit or clear coordinates manually.</li>
+            <li>Notes support City, Where, What, Who, Additional Details, partial dates, and multiple
               icon labels. Four or fewer labels keeps rows easier to scan.</li>
-            <li>When one location is open, Notes shows every note for that location. Main-list search, level, icon, and
-              visibility filters do not hide that selected location's notes.</li>
+            <li>When one location is open, Notes shows every note for that location. Main-list search, level, icon,
+              date, coordinate, and visibility filters do not hide that selected location's notes.</li>
           </ol>
         </section>
         <section class="help-section">
@@ -7473,8 +7597,8 @@
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ: Map</h3>
           <p><b>Will my map zoom come back?</b><br>Yes. The app saves your scrollable-map zoom level, fit/scroll mode,
             and last pan position.</p>
-          <p><b>What is Match Notes?</b><br>It applies the active Notes filters to the map, dimming locations and hiding
-            note pins that do not match.</p>
+          <p><b>What is Match Notes?</b><br>It applies the active Notes filters, including date precision, to the map,
+            dimming locations and hiding note pins that do not match.</p>
           <p><b>Why are some pins grouped?</b><br>Nearby mapped notes cluster so the map stays readable. Click a cluster
             to zoom or open the picker when notes are too close to separate.</p>
         </section>
@@ -7490,8 +7614,9 @@
         </section>
         <section class="help-section">
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ: Notes</h3>
-          <p><b>Will my Notes filters come back?</b><br>Yes. Notes view, sort, grouping, excluded visibility, Legend
-            filters, icon filters, collapsed categories, and selected location restore with your local settings.</p>
+          <p><b>Will my Notes filters come back?</b><br>Yes. Notes view, sort, grouping, excluded visibility, date
+            precision, coordinate filter, Legend filters, icon filters, collapsed categories, and selected location
+            restore with your local settings.</p>
           <p><b>What does Categorical do in Notes?</b><br>It groups locations by City, State, and Territory while
             keeping
             your selected sort order inside each group.</p>
@@ -7654,7 +7779,7 @@
                 reload action when shown, or open device directions.</span></div>
             <div class="shortcut-row"><kbd>Click</kbd><span>Developer: click Detected Type/Icon or the Add as App
                 detected-device icon to simulate another install device.</span></div>
-            <div class="shortcut-row"><kbd>G</kbd><span>Note editor: look up coordinates from Where Specifically.</span>
+            <div class="shortcut-row"><kbd>G</kbd><span>Note editor: look up coordinates from City (or Where) and state.</span>
             </div>
             <div class="shortcut-row"><kbd>W</kbd><span>Developer: reset the What's New banner and badges.</span></div>
             <div class="shortcut-row"><kbd>F</kbd><span>Developer: reset local app data to defaults.</span></div>
@@ -7681,7 +7806,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.1.0.13";
+    const APP_VERSION = "3.1.0";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7791,6 +7916,15 @@
 
     // Find Free Custom SVGs: https://www.svgrepo.com
 
+    const __CALENDAR_CIRCLE_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M25.4395 12.7344C25.4395 19.7461 19.7266 25.459 12.7148 25.459C5.71289 25.459 0 19.7461 0 12.7344C0 5.73242 5.71289 0.0195312 12.7148 0.0195312C19.7266 0.0195312 25.4395 5.73242 25.4395 12.7344ZM7.97852 6.46484C6.5918 6.46484 5.88867 7.1582 5.88867 8.52539L5.88867 16.9531C5.88867 18.3203 6.5918 19.0137 7.97852 19.0137L17.4609 19.0137C18.8379 19.0137 19.541 18.3203 19.541 16.9531L19.541 8.52539C19.541 7.1582 18.8379 6.46484 17.4609 6.46484ZM18.4668 10.6152L18.4668 16.9922C18.4668 17.6465 18.1543 17.9492 17.5098 17.9492L7.91992 17.9492C7.28516 17.9492 6.97266 17.6465 6.97266 16.9922L6.97266 10.6152C6.97266 9.92188 7.33398 9.56055 8.00781 9.56055L17.4121 9.56055C18.0859 9.56055 18.4668 9.92188 18.4668 10.6152ZM9.01367 15.498C8.74023 15.498 8.65234 15.5664 8.65234 15.8301L8.65234 16.3184C8.65234 16.5918 8.74023 16.6699 9.01367 16.6699L9.48242 16.6699C9.76562 16.6699 9.84375 16.5918 9.84375 16.3184L9.84375 15.8301C9.84375 15.5664 9.76562 15.498 9.48242 15.498ZM11.3281 15.498C11.0449 15.498 10.9766 15.5664 10.9766 15.8301L10.9766 16.3184C10.9766 16.5918 11.0449 16.6699 11.3281 16.6699L11.7969 16.6699C12.0801 16.6699 12.1484 16.5918 12.1484 16.3184L12.1484 15.8301C12.1484 15.5664 12.0801 15.498 11.7969 15.498ZM13.6426 15.498C13.3594 15.498 13.2812 15.5664 13.2812 15.8301L13.2812 16.3184C13.2812 16.5918 13.3594 16.6699 13.6426 16.6699L14.1113 16.6699C14.3848 16.6699 14.4629 16.5918 14.4629 16.3184L14.4629 15.8301C14.4629 15.5664 14.3848 15.498 14.1113 15.498ZM9.01367 13.2227C8.74023 13.2227 8.65234 13.291 8.65234 13.5742L8.65234 14.0527C8.65234 14.3262 8.74023 14.3848 9.01367 14.3848L9.48242 14.3848C9.76562 14.3848 9.84375 14.3262 9.84375 14.0527L9.84375 13.5742C9.84375 13.291 9.76562 13.2227 9.48242 13.2227ZM11.3281 13.2227C11.0449 13.2227 10.9766 13.291 10.9766 13.5742L10.9766 14.0527C10.9766 14.3262 11.0449 14.3848 11.3281 14.3848L11.7969 14.3848C12.0801 14.3848 12.1484 14.3262 12.1484 14.0527L12.1484 13.5742C12.1484 13.291 12.0801 13.2227 11.7969 13.2227ZM13.6426 13.2227C13.3594 13.2227 13.2812 13.291 13.2812 13.5742L13.2812 14.0527C13.2812 14.3262 13.3594 14.3848 13.6426 14.3848L14.1113 14.3848C14.3848 14.3848 14.4629 14.3262 14.4629 14.0527L14.4629 13.5742C14.4629 13.291 14.3848 13.2227 14.1113 13.2227ZM15.9473 13.2227C15.6641 13.2227 15.5859 13.291 15.5859 13.5742L15.5859 14.0527C15.5859 14.3262 15.6641 14.3848 15.9473 14.3848L16.416 14.3848C16.6992 14.3848 16.7871 14.3262 16.7871 14.0527L16.7871 13.5742C16.7871 13.291 16.6992 13.2227 16.416 13.2227ZM11.3281 10.9375C11.0449 10.9375 10.9766 11.0254 10.9766 11.2891L10.9766 11.7871C10.9766 12.041 11.0449 12.1191 11.3281 12.1191L11.7969 12.1191C12.0801 12.1191 12.1484 12.041 12.1484 11.7871L12.1484 11.2891C12.1484 11.0254 12.0801 10.9375 11.7969 10.9375ZM13.6426 10.9375C13.3594 10.9375 13.2812 11.0254 13.2812 11.2891L13.2812 11.7871C13.2812 12.041 13.3594 12.1191 13.6426 12.1191L14.1113 12.1191C14.3848 12.1191 14.4629 12.041 14.4629 11.7871L14.4629 11.2891C14.4629 11.0254 14.3848 10.9375 14.1113 10.9375ZM15.9473 10.9375C15.6641 10.9375 15.5859 11.0254 15.5859 11.2891L15.5859 11.7871C15.5859 12.041 15.6641 12.1191 15.9473 12.1191L16.416 12.1191C16.6992 12.1191 16.7871 12.041 16.7871 11.7871L16.7871 11.2891C16.7871 11.0254 16.6992 10.9375 16.416 10.9375Z"/></g></svg>`;
+    const __ELLIPSIS_CALENDAR = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.3809 22.9785"><g><rect height="22.9785" opacity="0" width="25.3809" x="0" y="0"/><path d="M3.79883 22.9785L21.2109 22.9785C23.7402 22.9785 25.0195 21.709 25.0195 19.2188L25.0195 3.78906C25.0195 1.29883 23.7402 0.0292969 21.2109 0.0292969L3.79883 0.0292969C1.2793 0.0292969 0 1.28906 0 3.78906L0 19.2188C0 21.7188 1.2793 22.9785 3.79883 22.9785ZM3.66211 21.25C2.41211 21.25 1.72852 20.5859 1.72852 19.2969L1.72852 7.64648C1.72852 6.34766 2.41211 5.69336 3.66211 5.69336L21.3379 5.69336C22.5781 5.69336 23.2812 6.34766 23.2812 7.64648L23.2812 19.2969C23.2812 20.5859 22.5781 21.25 21.3379 21.25Z"/><path d="M18.3496 15.2051C19.3164 15.2051 20.0977 14.4238 20.0977 13.457C20.0977 12.5 19.3164 11.709 18.3496 11.709C17.3926 11.709 16.6113 12.5 16.6113 13.457C16.6113 14.4238 17.3926 15.2051 18.3496 15.2051Z"/><path d="M12.5195 15.2051C13.4766 15.2051 14.2578 14.4238 14.2578 13.457C14.2578 12.5 13.4766 11.709 12.5195 11.709C11.5527 11.709 10.7715 12.5 10.7715 13.457C10.7715 14.4238 11.5527 15.2051 12.5195 15.2051Z"/><path d="M6.67969 15.2051C7.63672 15.2051 8.42773 14.4238 8.42773 13.457C8.42773 12.5 7.62695 11.709 6.67969 11.709C5.71289 11.709 4.93164 12.5 4.93164 13.457C4.93164 14.4238 5.71289 15.2051 6.67969 15.2051Z"/></g></svg>`;
+    const __CALENDAR = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.3809 22.9785"><g><rect height="22.9785" opacity="0" width="25.3809" x="0" y="0"/><path d="M3.79883 22.9785L21.2109 22.9785C23.7402 22.9785 25.0195 21.709 25.0195 19.2188L25.0195 3.78906C25.0195 1.29883 23.7402 0.0292969 21.2109 0.0292969L3.79883 0.0292969C1.2793 0.0292969 0 1.28906 0 3.78906L0 19.2188C0 21.7188 1.2793 22.9785 3.79883 22.9785ZM3.66211 21.25C2.41211 21.25 1.72852 20.5859 1.72852 19.2969L1.72852 7.64648C1.72852 6.34766 2.41211 5.69336 3.66211 5.69336L21.3379 5.69336C22.5781 5.69336 23.2812 6.34766 23.2812 7.64648L23.2812 19.2969C23.2812 20.5859 22.5781 21.25 21.3379 21.25ZM10.0195 10.1855L10.7617 10.1855C11.1816 10.1855 11.2988 10.0684 11.2988 9.6582L11.2988 8.92578C11.2988 8.51562 11.1816 8.4082 10.7617 8.4082L10.0195 8.4082C9.60938 8.4082 9.49219 8.51562 9.49219 8.92578L9.49219 9.6582C9.49219 10.0684 9.60938 10.1855 10.0195 10.1855ZM14.2676 10.1855L15.0098 10.1855C15.4199 10.1855 15.5371 10.0684 15.5371 9.6582L15.5371 8.92578C15.5371 8.51562 15.4199 8.4082 15.0098 8.4082L14.2676 8.4082C13.8477 8.4082 13.7305 8.51562 13.7305 8.92578L13.7305 9.6582C13.7305 10.0684 13.8477 10.1855 14.2676 10.1855ZM18.5059 10.1855L19.248 10.1855C19.6582 10.1855 19.7852 10.0684 19.7852 9.6582L19.7852 8.92578C19.7852 8.51562 19.6582 8.4082 19.248 8.4082L18.5059 8.4082C18.0957 8.4082 17.9688 8.51562 17.9688 8.92578L17.9688 9.6582C17.9688 10.0684 18.0957 10.1855 18.5059 10.1855ZM5.78125 14.3555L6.52344 14.3555C6.93359 14.3555 7.06055 14.248 7.06055 13.8379L7.06055 13.0957C7.06055 12.6953 6.93359 12.5781 6.52344 12.5781L5.78125 12.5781C5.37109 12.5781 5.24414 12.6953 5.24414 13.0957L5.24414 13.8379C5.24414 14.248 5.37109 14.3555 5.78125 14.3555ZM10.0195 14.3555L10.7617 14.3555C11.1816 14.3555 11.2988 14.248 11.2988 13.8379L11.2988 13.0957C11.2988 12.6953 11.1816 12.5781 10.7617 12.5781L10.0195 12.5781C9.60938 12.5781 9.49219 12.6953 9.49219 13.0957L9.49219 13.8379C9.49219 14.248 9.60938 14.3555 10.0195 14.3555ZM14.2676 14.3555L15.0098 14.3555C15.4199 14.3555 15.5371 14.248 15.5371 13.8379L15.5371 13.0957C15.5371 12.6953 15.4199 12.5781 15.0098 12.5781L14.2676 12.5781C13.8477 12.5781 13.7305 12.6953 13.7305 13.0957L13.7305 13.8379C13.7305 14.248 13.8477 14.3555 14.2676 14.3555ZM18.5059 14.3555L19.248 14.3555C19.6582 14.3555 19.7852 14.248 19.7852 13.8379L19.7852 13.0957C19.7852 12.6953 19.6582 12.5781 19.248 12.5781L18.5059 12.5781C18.0957 12.5781 17.9688 12.6953 17.9688 13.0957L17.9688 13.8379C17.9688 14.248 18.0957 14.3555 18.5059 14.3555ZM5.78125 18.5352L6.52344 18.5352C6.93359 18.5352 7.06055 18.4277 7.06055 18.0176L7.06055 17.2754C7.06055 16.8652 6.93359 16.7578 6.52344 16.7578L5.78125 16.7578C5.37109 16.7578 5.24414 16.8652 5.24414 17.2754L5.24414 18.0176C5.24414 18.4277 5.37109 18.5352 5.78125 18.5352ZM10.0195 18.5352L10.7617 18.5352C11.1816 18.5352 11.2988 18.4277 11.2988 18.0176L11.2988 17.2754C11.2988 16.8652 11.1816 16.7578 10.7617 16.7578L10.0195 16.7578C9.60938 16.7578 9.49219 16.8652 9.49219 17.2754L9.49219 18.0176C9.49219 18.4277 9.60938 18.5352 10.0195 18.5352ZM14.2676 18.5352L15.0098 18.5352C15.4199 18.5352 15.5371 18.4277 15.5371 18.0176L15.5371 17.2754C15.5371 16.8652 15.4199 16.7578 15.0098 16.7578L14.2676 16.7578C13.8477 16.7578 13.7305 16.8652 13.7305 17.2754L13.7305 18.0176C13.7305 18.4277 13.8477 18.5352 14.2676 18.5352Z"/></g></svg>`;
+    const __4_CALENDAR = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.3809 22.9785"><g><rect height="22.9785" opacity="0" width="25.3809" x="0" y="0"/><path d="M3.79883 22.9785L21.2109 22.9785C23.7402 22.9785 25.0195 21.709 25.0195 19.2188L25.0195 3.78906C25.0195 1.29883 23.7402 0.0292969 21.2109 0.0292969L3.79883 0.0292969C1.2793 0.0292969 0 1.28906 0 3.78906L0 19.2188C0 21.7188 1.2793 22.9785 3.79883 22.9785ZM3.66211 21.25C2.41211 21.25 1.72852 20.5859 1.72852 19.2969L1.72852 7.64648C1.72852 6.34766 2.41211 5.69336 3.66211 5.69336L21.3379 5.69336C22.5781 5.69336 23.2812 6.34766 23.2812 7.64648L23.2812 19.2969C23.2812 20.5859 22.5781 21.25 21.3379 21.25Z"/><path d="M14.0332 19.043C14.5215 19.043 14.7949 18.7305 14.7949 18.2031L14.7949 16.543L15.8203 16.543C16.2305 16.543 16.5039 16.2695 16.5039 15.8691C16.5039 15.4785 16.2402 15.2051 15.8203 15.2051L14.7949 15.2051L14.7949 8.98438C14.7949 8.33984 14.3066 7.90039 13.5742 7.90039C12.8613 7.90039 12.4219 8.1543 12.002 8.7793C10.8203 10.5566 9.13086 13.0566 8.1543 14.6387C7.95898 14.9707 7.88086 15.2246 7.88086 15.5273C7.88086 16.1426 8.30078 16.543 8.96484 16.543L13.291 16.543L13.291 18.2031C13.291 18.7207 13.5742 19.043 14.0332 19.043ZM13.291 15.2051L9.4043 15.2051L9.4043 15.127C10.2637 13.6523 12.0703 10.9766 13.2129 9.25781L13.291 9.25781Z"/></g></svg>`;
+    const __CALENDAR_BADGE_CHECKMARK = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 38.7012 30.9082"><g><rect height="30.9082" opacity="0" width="38.7012" x="0" y="0"/><path d="M31.6797 7.75391L31.6797 15.2062C31.3978 15.1723 31.1108 15.1562 30.8203 15.1562C30.5231 15.1562 30.2294 15.1731 29.9414 15.2095L29.9414 11.6113C29.9414 10.3125 29.2383 9.6582 27.998 9.6582L10.3223 9.6582C9.07227 9.6582 8.38867 10.3125 8.38867 11.6113L8.38867 23.2617C8.38867 24.5508 9.07227 25.2148 10.3223 25.2148L23.2661 25.2148C23.4379 25.8271 23.6875 26.4072 24.005 26.9434L10.459 26.9434C7.93945 26.9434 6.66016 25.6836 6.66016 23.1836L6.66016 7.75391C6.66016 5.25391 7.93945 3.99414 10.459 3.99414L27.8711 3.99414C30.4004 3.99414 31.6797 5.26367 31.6797 7.75391Z"/><path d="M13.7207 21.2402L13.7207 21.9824C13.7207 22.3926 13.5938 22.5 13.1836 22.5L12.4414 22.5C12.0312 22.5 11.9043 22.3926 11.9043 21.9824L11.9043 21.2402C11.9043 20.8301 12.0312 20.7227 12.4414 20.7227L13.1836 20.7227C13.5938 20.7227 13.7207 20.8301 13.7207 21.2402ZM17.959 21.2402L17.959 21.9824C17.959 22.3926 17.8418 22.5 17.4219 22.5L16.6797 22.5C16.2695 22.5 16.1523 22.3926 16.1523 21.9824L16.1523 21.2402C16.1523 20.8301 16.2695 20.7227 16.6797 20.7227L17.4219 20.7227C17.8418 20.7227 17.959 20.8301 17.959 21.2402ZM22.1973 21.2402L22.1973 21.9824C22.1973 22.3926 22.0801 22.5 21.6699 22.5L20.9277 22.5C20.5078 22.5 20.3906 22.3926 20.3906 21.9824L20.3906 21.2402C20.3906 20.8301 20.5078 20.7227 20.9277 20.7227L21.6699 20.7227C22.0801 20.7227 22.1973 20.8301 22.1973 21.2402ZM13.7207 17.0605L13.7207 17.8027C13.7207 18.2129 13.5938 18.3203 13.1836 18.3203L12.4414 18.3203C12.0312 18.3203 11.9043 18.2129 11.9043 17.8027L11.9043 17.0605C11.9043 16.6602 12.0312 16.543 12.4414 16.543L13.1836 16.543C13.5938 16.543 13.7207 16.6602 13.7207 17.0605ZM17.959 17.0605L17.959 17.8027C17.959 18.2129 17.8418 18.3203 17.4219 18.3203L16.6797 18.3203C16.2695 18.3203 16.1523 18.2129 16.1523 17.8027L16.1523 17.0605C16.1523 16.6602 16.2695 16.543 16.6797 16.543L17.4219 16.543C17.8418 16.543 17.959 16.6602 17.959 17.0605ZM22.1973 17.0605L22.1973 17.8027C22.1973 18.2129 22.0801 18.3203 21.6699 18.3203L20.9277 18.3203C20.5078 18.3203 20.3906 18.2129 20.3906 17.8027L20.3906 17.0605C20.3906 16.6602 20.5078 16.543 20.9277 16.543L21.6699 16.543C22.0801 16.543 22.1973 16.6602 22.1973 17.0605ZM17.959 12.8906L17.959 13.623C17.959 14.0332 17.8418 14.1504 17.4219 14.1504L16.6797 14.1504C16.2695 14.1504 16.1523 14.0332 16.1523 13.623L16.1523 12.8906C16.1523 12.4805 16.2695 12.373 16.6797 12.373L17.4219 12.373C17.8418 12.373 17.959 12.4805 17.959 12.8906ZM22.1973 12.8906L22.1973 13.623C22.1973 14.0332 22.0801 14.1504 21.6699 14.1504L20.9277 14.1504C20.5078 14.1504 20.3906 14.0332 20.3906 13.623L20.3906 12.8906C20.3906 12.4805 20.5078 12.373 20.9277 12.373L21.6699 12.373C22.0801 12.373 22.1973 12.4805 22.1973 12.8906ZM26.4453 12.8906L26.4453 13.623C26.4453 14.0332 26.3184 14.1504 25.9082 14.1504L25.166 14.1504C24.7559 14.1504 24.6289 14.0332 24.6289 13.623L24.6289 12.8906C24.6289 12.4805 24.7559 12.373 25.166 12.373L25.9082 12.373C26.3184 12.373 26.4453 12.4805 26.4453 12.8906Z"/><path d="M37.1387 23.0273C37.1387 26.4844 34.2578 29.3457 30.8203 29.3457C27.3633 29.3457 24.5117 26.5039 24.5117 23.0273C24.5117 19.5703 27.3633 16.7188 30.8203 16.7188C34.2871 16.7188 37.1387 19.5703 37.1387 23.0273ZM33.0957 20.2734L30.0195 24.5312L28.457 22.8418C28.3301 22.7051 28.1543 22.5781 27.9004 22.5781C27.5 22.5781 27.1777 22.8906 27.1777 23.3008C27.1777 23.4766 27.2363 23.6816 27.373 23.8281L29.4727 26.1426C29.6289 26.3086 29.8633 26.3867 30.0586 26.3867C30.3125 26.3867 30.5371 26.2793 30.6641 26.1133L34.2676 21.1133C34.375 20.9668 34.4238 20.8105 34.4238 20.6738C34.4238 20.2637 34.0918 19.9609 33.7012 19.9609C33.4473 19.9609 33.2324 20.0879 33.0957 20.2734Z"/></g></svg>`;
+    const __CALENDAR_BADGE_CLOCK = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 38.7012 30.9082"><g><rect height="30.9082" opacity="0" width="38.7012" x="0" y="0"/><path d="M31.6797 7.75391L31.6797 15.2062C31.3978 15.1723 31.1108 15.1562 30.8203 15.1562C30.5231 15.1562 30.2294 15.1731 29.9414 15.2095L29.9414 11.6113C29.9414 10.3125 29.2383 9.6582 27.998 9.6582L10.3223 9.6582C9.07227 9.6582 8.38867 10.3125 8.38867 11.6113L8.38867 23.2617C8.38867 24.5508 9.07227 25.2148 10.3223 25.2148L23.2661 25.2148C23.4379 25.8271 23.6875 26.4072 24.005 26.9434L10.459 26.9434C7.93945 26.9434 6.66016 25.6836 6.66016 23.1836L6.66016 7.75391C6.66016 5.25391 7.93945 3.99414 10.459 3.99414L27.8711 3.99414C30.4004 3.99414 31.6797 5.26367 31.6797 7.75391Z"/><path d="M13.7207 21.2402L13.7207 21.9824C13.7207 22.3926 13.5938 22.5 13.1836 22.5L12.4414 22.5C12.0312 22.5 11.9043 22.3926 11.9043 21.9824L11.9043 21.2402C11.9043 20.8301 12.0312 20.7227 12.4414 20.7227L13.1836 20.7227C13.5938 20.7227 13.7207 20.8301 13.7207 21.2402ZM17.959 21.2402L17.959 21.9824C17.959 22.3926 17.8418 22.5 17.4219 22.5L16.6797 22.5C16.2695 22.5 16.1523 22.3926 16.1523 21.9824L16.1523 21.2402C16.1523 20.8301 16.2695 20.7227 16.6797 20.7227L17.4219 20.7227C17.8418 20.7227 17.959 20.8301 17.959 21.2402ZM22.1973 21.2402L22.1973 21.9824C22.1973 22.3926 22.0801 22.5 21.6699 22.5L20.9277 22.5C20.5078 22.5 20.3906 22.3926 20.3906 21.9824L20.3906 21.2402C20.3906 20.8301 20.5078 20.7227 20.9277 20.7227L21.6699 20.7227C22.0801 20.7227 22.1973 20.8301 22.1973 21.2402ZM13.7207 17.0605L13.7207 17.8027C13.7207 18.2129 13.5938 18.3203 13.1836 18.3203L12.4414 18.3203C12.0312 18.3203 11.9043 18.2129 11.9043 17.8027L11.9043 17.0605C11.9043 16.6602 12.0312 16.543 12.4414 16.543L13.1836 16.543C13.5938 16.543 13.7207 16.6602 13.7207 17.0605ZM17.959 17.0605L17.959 17.8027C17.959 18.2129 17.8418 18.3203 17.4219 18.3203L16.6797 18.3203C16.2695 18.3203 16.1523 18.2129 16.1523 17.8027L16.1523 17.0605C16.1523 16.6602 16.2695 16.543 16.6797 16.543L17.4219 16.543C17.8418 16.543 17.959 16.6602 17.959 17.0605ZM22.1973 17.0605L22.1973 17.8027C22.1973 18.2129 22.0801 18.3203 21.6699 18.3203L20.9277 18.3203C20.5078 18.3203 20.3906 18.2129 20.3906 17.8027L20.3906 17.0605C20.3906 16.6602 20.5078 16.543 20.9277 16.543L21.6699 16.543C22.0801 16.543 22.1973 16.6602 22.1973 17.0605ZM17.959 12.8906L17.959 13.623C17.959 14.0332 17.8418 14.1504 17.4219 14.1504L16.6797 14.1504C16.2695 14.1504 16.1523 14.0332 16.1523 13.623L16.1523 12.8906C16.1523 12.4805 16.2695 12.373 16.6797 12.373L17.4219 12.373C17.8418 12.373 17.959 12.4805 17.959 12.8906ZM22.1973 12.8906L22.1973 13.623C22.1973 14.0332 22.0801 14.1504 21.6699 14.1504L20.9277 14.1504C20.5078 14.1504 20.3906 14.0332 20.3906 13.623L20.3906 12.8906C20.3906 12.4805 20.5078 12.373 20.9277 12.373L21.6699 12.373C22.0801 12.373 22.1973 12.4805 22.1973 12.8906ZM26.4453 12.8906L26.4453 13.623C26.4453 14.0332 26.3184 14.1504 25.9082 14.1504L25.166 14.1504C24.7559 14.1504 24.6289 14.0332 24.6289 13.623L24.6289 12.8906C24.6289 12.4805 24.7559 12.373 25.166 12.373L25.9082 12.373C26.3184 12.373 26.4453 12.4805 26.4453 12.8906Z"/><path d="M37.1387 23.0273C37.1387 26.4844 34.2578 29.3457 30.8203 29.3457C27.3633 29.3457 24.5117 26.5039 24.5117 23.0273C24.5117 19.5703 27.3633 16.7188 30.8203 16.7188C34.2871 16.7188 37.1387 19.5703 37.1387 23.0273ZM30.166 19.248L30.166 22.5586L27.8027 22.5586C27.4121 22.5586 27.0801 22.8809 27.0801 23.2715C27.0801 23.6621 27.4023 23.9844 27.8027 23.9844L30.8789 23.9844C31.2793 23.9844 31.5918 23.6719 31.5918 23.2715L31.5918 19.248C31.5918 18.8672 31.2793 18.5547 30.8789 18.5547C30.4883 18.5547 30.166 18.8672 30.166 19.248Z"/></g></svg>`;
+    const __CALENDAR_BADGE_EXCLAMATIONMARK = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 38.7012 30.9082"><g><rect height="30.9082" opacity="0" width="38.7012" x="0" y="0"/><path d="M31.6797 7.75391L31.6797 15.2062C31.3978 15.1723 31.1108 15.1562 30.8203 15.1562C30.5231 15.1562 30.2294 15.1731 29.9414 15.2095L29.9414 11.6113C29.9414 10.3125 29.2383 9.6582 27.998 9.6582L10.3223 9.6582C9.07227 9.6582 8.38867 10.3125 8.38867 11.6113L8.38867 23.2617C8.38867 24.5508 9.07227 25.2148 10.3223 25.2148L23.2661 25.2148C23.4379 25.8271 23.6875 26.4072 24.005 26.9434L10.459 26.9434C7.93945 26.9434 6.66016 25.6836 6.66016 23.1836L6.66016 7.75391C6.66016 5.25391 7.93945 3.99414 10.459 3.99414L27.8711 3.99414C30.4004 3.99414 31.6797 5.26367 31.6797 7.75391Z"/><path d="M13.7207 21.2402L13.7207 21.9824C13.7207 22.3926 13.5938 22.5 13.1836 22.5L12.4414 22.5C12.0312 22.5 11.9043 22.3926 11.9043 21.9824L11.9043 21.2402C11.9043 20.8301 12.0312 20.7227 12.4414 20.7227L13.1836 20.7227C13.5938 20.7227 13.7207 20.8301 13.7207 21.2402ZM17.959 21.2402L17.959 21.9824C17.959 22.3926 17.8418 22.5 17.4219 22.5L16.6797 22.5C16.2695 22.5 16.1523 22.3926 16.1523 21.9824L16.1523 21.2402C16.1523 20.8301 16.2695 20.7227 16.6797 20.7227L17.4219 20.7227C17.8418 20.7227 17.959 20.8301 17.959 21.2402ZM22.1973 21.2402L22.1973 21.9824C22.1973 22.3926 22.0801 22.5 21.6699 22.5L20.9277 22.5C20.5078 22.5 20.3906 22.3926 20.3906 21.9824L20.3906 21.2402C20.3906 20.8301 20.5078 20.7227 20.9277 20.7227L21.6699 20.7227C22.0801 20.7227 22.1973 20.8301 22.1973 21.2402ZM13.7207 17.0605L13.7207 17.8027C13.7207 18.2129 13.5938 18.3203 13.1836 18.3203L12.4414 18.3203C12.0312 18.3203 11.9043 18.2129 11.9043 17.8027L11.9043 17.0605C11.9043 16.6602 12.0312 16.543 12.4414 16.543L13.1836 16.543C13.5938 16.543 13.7207 16.6602 13.7207 17.0605ZM17.959 17.0605L17.959 17.8027C17.959 18.2129 17.8418 18.3203 17.4219 18.3203L16.6797 18.3203C16.2695 18.3203 16.1523 18.2129 16.1523 17.8027L16.1523 17.0605C16.1523 16.6602 16.2695 16.543 16.6797 16.543L17.4219 16.543C17.8418 16.543 17.959 16.6602 17.959 17.0605ZM22.1973 17.0605L22.1973 17.8027C22.1973 18.2129 22.0801 18.3203 21.6699 18.3203L20.9277 18.3203C20.5078 18.3203 20.3906 18.2129 20.3906 17.8027L20.3906 17.0605C20.3906 16.6602 20.5078 16.543 20.9277 16.543L21.6699 16.543C22.0801 16.543 22.1973 16.6602 22.1973 17.0605ZM17.959 12.8906L17.959 13.623C17.959 14.0332 17.8418 14.1504 17.4219 14.1504L16.6797 14.1504C16.2695 14.1504 16.1523 14.0332 16.1523 13.623L16.1523 12.8906C16.1523 12.4805 16.2695 12.373 16.6797 12.373L17.4219 12.373C17.8418 12.373 17.959 12.4805 17.959 12.8906ZM22.1973 12.8906L22.1973 13.623C22.1973 14.0332 22.0801 14.1504 21.6699 14.1504L20.9277 14.1504C20.5078 14.1504 20.3906 14.0332 20.3906 13.623L20.3906 12.8906C20.3906 12.4805 20.5078 12.373 20.9277 12.373L21.6699 12.373C22.0801 12.373 22.1973 12.4805 22.1973 12.8906ZM26.4453 12.8906L26.4453 13.623C26.4453 14.0332 26.3184 14.1504 25.9082 14.1504L25.166 14.1504C24.7559 14.1504 24.6289 14.0332 24.6289 13.623L24.6289 12.8906C24.6289 12.4805 24.7559 12.373 25.166 12.373L25.9082 12.373C26.3184 12.373 26.4453 12.4805 26.4453 12.8906Z"/><path d="M37.1387 23.0273C37.1387 26.4844 34.2578 29.3457 30.8203 29.3457C27.3633 29.3457 24.5117 26.5039 24.5117 23.0273C24.5117 19.5703 27.3633 16.7188 30.8203 16.7188C34.2871 16.7188 37.1387 19.5703 37.1387 23.0273ZM29.8047 26.0254C29.8047 26.5918 30.2637 27.041 30.8203 27.041C31.377 27.041 31.8359 26.5918 31.8359 26.0254C31.8457 25.4785 31.3867 25.0098 30.8203 25.0098C30.2734 25.0098 29.8047 25.4785 29.8047 26.0254ZM30.0195 19.7559L30.1172 23.4375C30.127 23.8477 30.4199 24.1309 30.8203 24.1309C31.2305 24.1309 31.5234 23.8477 31.5332 23.4375L31.6211 19.7559C31.6309 19.2871 31.3086 18.9551 30.8203 18.9551C30.3418 18.9551 30.0098 19.2871 30.0195 19.7559Z"/></g></svg>`;
+
+
     // Common Resused
     const __PENCIL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 22.3366 21.9615"><g><rect height="21.9615" opacity="0" width="22.3366" x="0" y="0"/><path d="M3.90513 20.6975L18.6854 5.91726L16.0829 3.31472L1.30747 18.0901L0.0379412 21.1907C-0.13784 21.6399 0.33091 22.0891 0.750832 21.928ZM19.9891 4.63796L21.4247 3.21218C22.1278 2.50417 22.162 1.71316 21.5126 1.05398L20.9706 0.507102C20.3211-0.147195 19.5106-0.0837187 18.8075 0.604758L17.367 2.02566Z" /></g></svg>`;
     const __PLUS_APP_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24.0576 23.7305"><g><rect height="23.7305" opacity="0" width="24.0576" x="0" y="0"/><path d="M21.8799 1.81152C23.0664 2.9834 23.6963 4.7168 23.6963 6.92383L23.6963 16.7822C23.6963 18.9893 23.0615 20.7275 21.8799 21.8994C20.7227 23.0615 18.9844 23.7061 16.7725 23.7061L6.92383 23.7061C4.7168 23.7061 2.97852 23.0664 1.81641 21.8994C0.629883 20.7227 0 18.9893 0 16.7822L0 6.92383C0 4.7168 0.634766 2.97852 1.81641 1.81152C2.97363 0.649414 4.7168 0 6.92383 0L16.7725 0C18.9844 0 20.7178 0.634766 21.8799 1.81152ZM10.4932 7.12891L10.4932 10.498L7.12402 10.498C6.35254 10.498 5.79102 11.0645 5.79102 11.8506C5.79102 12.6221 6.35742 13.1836 7.12402 13.1836L10.4932 13.1836L10.4932 16.5625C10.4932 17.3291 11.0596 17.8955 11.8311 17.8955C12.6123 17.8955 13.1836 17.334 13.1836 16.5625L13.1836 13.1836L16.5625 13.1836C17.3291 13.1836 17.8955 12.6221 17.8955 11.8506C17.8955 11.0645 17.3291 10.498 16.5625 10.498L13.1836 10.498L13.1836 7.12891C13.1836 6.35254 12.6123 5.78613 11.8311 5.78613C11.0596 5.78613 10.4932 6.35742 10.4932 7.12891Z" /></g></svg>`;
@@ -7881,15 +8015,21 @@
     const __DOCUMENT_ON_DOCUMENT = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.9473 31.5137"><g><rect height="31.5137" opacity="0" width="25.9473" x="0" y="0"/><path d="M17.7539 1.12305L24.4629 7.91992C25.3125 8.78906 25.5859 9.64844 25.5859 10.9863L25.5859 21.5039C25.5859 24.0234 24.3262 25.3027 21.8262 25.3027L19.4824 25.3027L19.4824 23.5742L21.7383 23.5742C23.1348 23.5742 23.8574 22.832 23.8574 21.4746L23.8574 10.4785L17.6465 10.4785C16.2891 10.4785 15.6152 9.84375 15.6152 8.44727L15.6152 1.72852L9.96094 1.72852C8.55469 1.72852 7.83203 2.5 7.83203 3.83789L7.83203 6.17187L6.10352 6.17187L6.10352 3.79883C6.10352 1.2793 7.38281 0 9.87305 0L14.8535 0C16.0254 0 16.9336 0.292969 17.7539 1.12305ZM17.1875 8.21289C17.1875 8.71094 17.3926 8.90625 17.8809 8.90625L23.3691 8.90625L17.1875 2.64648Z"/><path d="M0 27.6758C0 30.2051 1.25977 31.4746 3.75977 31.4746L15.7227 31.4746C18.2227 31.4746 19.4824 30.1953 19.4824 27.6758L19.4824 17.5977C19.4824 16.1426 19.3066 15.5078 18.3984 14.5898L11.1621 7.25586C10.3027 6.37695 9.59961 6.17188 8.30078 6.17188L3.75977 6.17188C1.2793 6.17188 0 7.46094 0 9.9707ZM1.72852 27.6465L1.72852 10.0098C1.72852 8.67188 2.45117 7.90039 3.85742 7.90039L8.28125 7.90039L8.28125 15.3906C8.28125 16.8848 9.0332 17.5977 10.4883 17.5977L17.7539 17.5977L17.7539 27.6465C17.7539 29.0039 17.0312 29.7461 15.625 29.7461L3.84766 29.7461C2.45117 29.7461 1.72852 29.0039 1.72852 27.6465ZM10.6836 15.9668C10.127 15.9668 9.91211 15.752 9.91211 15.1953L9.91211 8.36914L17.4121 15.9668Z"/></g></svg>`;
     const __LOCATION_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8012 23.6879"><g><rect height="23.6879" opacity="0" width="25.8012" x="0" y="0"/><path d="M1.46505 12.4836L11.0158 12.5227C11.1818 12.5227 11.2404 12.591 11.2404 12.7571L11.2697 22.2395C11.2697 23.8899 13.2619 24.2512 13.9943 22.6887L23.5158 2.27854C24.2678 0.637911 22.9787-0.426543 21.426 0.296114L0.908411 9.83713C-0.517371 10.4914-0.214636 12.4738 1.46505 12.4836Z"/></g></svg>`;
     // __LIST_BULLET_RECTANGLE_PORTRAIT_FILL
-    // Edit Note
-    // Save and Add New
+    // Add/Edit Note
+    // Add/Edit Note :: Save
+    // Add/Edit Note :: Save and Add New
     const __CHECKMARK_CIRCLE_BADGE_PLUS_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 37.666 28.8574"><g><rect height="28.8574" opacity="0" width="37.666" x="0" y="0"/><path d="M31.3183 13.2677C30.8254 13.1668 30.3157 13.1152 29.7949 13.1152C25.4785 13.1152 21.9141 16.6699 21.9141 20.9863C21.9141 22.9101 22.617 24.6794 23.7808 26.0487C22.2138 26.7518 20.4771 27.1387 18.6523 27.1387C11.6504 27.1387 5.9375 21.4258 5.9375 14.4238C5.9375 7.41211 11.6504 1.69922 18.6523 1.69922C25.2738 1.69922 30.737 6.79392 31.3183 13.2677ZM22.8613 9.4043L17.2168 18.3789L14.4043 14.8633C14.1406 14.5215 13.8965 14.4141 13.5938 14.4141C13.1055 14.4141 12.7246 14.8145 12.7246 15.3027C12.7246 15.5469 12.8223 15.791 12.9883 16.0059L16.3184 20.0293C16.6016 20.3906 16.8848 20.5469 17.2559 20.5469C17.627 20.5469 17.9297 20.3711 18.1543 20.0293L24.2773 10.4297C24.4043 10.2246 24.5312 9.9707 24.5312 9.73633C24.5312 9.23828 24.1016 8.90625 23.6328 8.90625C23.3398 8.90625 23.0566 9.08203 22.8613 9.4043Z"/><path d="M36.1035 20.9863C36.1035 24.4434 33.2227 27.3047 29.7949 27.3047C26.3281 27.3047 23.4766 24.4629 23.4766 20.9863C23.4766 17.5293 26.3281 14.668 29.7949 14.668C33.252 14.668 36.1035 17.5195 36.1035 20.9863ZM29.082 17.7148L29.082 20.2734L26.5137 20.2734C26.0938 20.2734 25.8008 20.5469 25.8008 20.9863C25.8008 21.416 26.0938 21.6992 26.5137 21.6992L29.082 21.6992L29.082 24.2676C29.082 24.6875 29.3555 24.9707 29.7949 24.9707C30.2246 24.9707 30.498 24.6875 30.498 24.2676L30.498 21.6992L33.0664 21.6992C33.4863 21.6992 33.7695 21.416 33.7695 20.9863C33.7695 20.5469 33.4863 20.2734 33.0664 20.2734L30.498 20.2734L30.498 17.7148C30.498 17.2949 30.2246 17.002 29.7949 17.002C29.3555 17.002 29.082 17.2949 29.082 17.7148Z"/></g></svg>`;
-    // Auto Convert
+    // Add/Edit Note :: Delete
+    // Add/Edit Note :: Exit
+    // Add/Edit Note :: Input
+    // Add/Edit Note :: Input :: Smart Convert
     const __WAND_AND_SPARKLES_INVERSE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.9766 26.5527"><g><rect height="26.5527" opacity="0" width="25.9766" x="0" y="0"/><path d="M17.4805 9.31641C17.6465 9.31641 17.7734 9.19922 17.8125 9.0332C18.3691 6.04492 18.8086 5.43945 21.8359 4.99023C22.0117 4.96094 22.1191 4.83398 22.1191 4.66797C22.1191 4.48242 22.0117 4.35547 21.8359 4.32617C18.8086 3.87695 18.2715 3.22266 17.8125 0.3125C17.7734 0.117188 17.6465 0 17.4805 0C17.2949 0 17.168 0.117188 17.1387 0.302734C16.5723 3.26172 16.123 3.87695 13.1152 4.32617C12.9199 4.35547 12.8125 4.48242 12.8125 4.66797C12.8125 4.83398 12.9199 4.95117 13.1152 4.99023C16.123 5.43945 16.6602 6.03516 17.1387 9.02344C17.1582 9.19922 17.2754 9.31641 17.4805 9.31641ZM3.4375 19.4141C3.61328 19.4141 3.71094 19.3066 3.74023 19.1406C4.08203 16.8652 4.08203 16.6406 6.60156 16.2793C6.77734 16.25 6.88477 16.1426 6.88477 15.9766C6.88477 15.8105 6.77734 15.7031 6.60156 15.6738C4.08203 15.3027 4.08203 15.0879 3.74023 12.8125C3.71094 12.6465 3.61328 12.5293 3.4375 12.5293C3.27148 12.5293 3.16406 12.6465 3.13477 12.8125C2.79297 15.0879 2.79297 15.3027 0.273438 15.6738C0.107422 15.7031 0 15.8105 0 15.9766C0 16.1426 0.107422 16.25 0.273438 16.2793C2.79297 16.6406 2.79297 16.8652 3.13477 19.1406C3.16406 19.3066 3.27148 19.4141 3.4375 19.4141ZM7.65625 23.0859C7.7832 23.0859 7.88086 22.9883 7.90039 22.8613C8.125 21.4844 8.08594 21.3574 9.7168 21.0547C9.85352 21.0254 9.93164 20.9277 9.93164 20.8008C9.93164 20.6738 9.85352 20.5859 9.7168 20.5566C8.0957 20.2539 8.14453 20.1367 7.90039 18.7402C7.88086 18.6133 7.77344 18.5254 7.65625 18.5254C7.5293 18.5254 7.44141 18.6133 7.41211 18.7598C7.13867 20.1367 7.2168 20.2832 5.60547 20.5566C5.46875 20.5859 5.38086 20.6641 5.38086 20.8008C5.38086 20.9277 5.46875 21.0254 5.5957 21.0547C7.2168 21.3574 7.13867 21.4844 7.41211 22.8613C7.44141 22.9883 7.5293 23.0859 7.65625 23.0859Z"/><path d="M23.8477 24.1699C24.3359 23.6719 24.3457 22.9102 23.8477 22.4023L7.60742 6.17188C7.10938 5.66406 6.28906 5.67383 5.82031 6.17188C5.33203 6.67969 5.33203 7.44141 5.83008 7.94922L22.0605 24.1699C22.5684 24.6973 23.3789 24.6777 23.8477 24.1699ZM23.2031 23.5254C23.0469 23.6816 22.793 23.6914 22.6367 23.5254L10.8398 11.7383L11.416 11.1621L23.2031 22.959C23.3691 23.125 23.3691 23.3691 23.2031 23.5254Z"/></g></svg>`;
-    // Edit Location Icon Tags: __GEAR_CIRCLE
-    // Resolve Lat/Long
+    // Add/Edit Note :: Input :: Info
+    // Add/Edit Note :: Input :: Resolve Lat/Long
     const __DOT_SCOPE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 30.6445 30.3027"><g><rect height="30.3027" opacity="0" width="30.6445" x="0" y="0"/><path d="M14.375 25.2052L14.375 26.9433C8.47302 26.5736 3.73495 21.844 3.3511 15.9375L5.08921 15.9375C5.46892 20.894 9.42256 24.8395 14.375 25.2052ZM15.9277 26.9429L15.9277 25.2047C20.8842 24.835 24.834 20.8912 25.2135 15.9375L26.9516 15.9375C26.568 21.8411 21.834 26.569 15.9277 26.9429ZM26.9541 14.3848L25.2159 14.3848C24.8591 9.41667 20.9 5.44934 15.9277 5.07846L15.9277 3.34034C21.8498 3.7152 26.5934 8.46721 26.9541 14.3848ZM14.375 5.07803C9.40683 5.44486 5.44381 9.41386 5.08681 14.3848L3.34868 14.3848C3.70951 8.46433 8.45718 3.71058 14.375 3.3399Z"/><path d="M15.1465 10.0391C15.5859 10.0391 15.9277 9.6875 15.9277 9.25781L15.9277 0.800781C15.9277 0.361328 15.5859 0.0195312 15.1465 0.0195312C14.707 0.0195312 14.375 0.361328 14.375 0.800781L14.375 9.25781C14.375 9.6875 14.707 10.0391 15.1465 10.0391ZM0.78125 15.9375L9.23828 15.9375C9.67773 15.9375 10.0293 15.5957 10.0293 15.166C10.0293 14.7168 9.67773 14.3848 9.23828 14.3848L0.78125 14.3848C0.351562 14.3848 0 14.7168 0 15.166C0 15.5957 0.351562 15.9375 0.78125 15.9375ZM15.1465 30.3027C15.5859 30.3027 15.9277 29.9512 15.9277 29.5215L15.9277 21.0645C15.9277 20.625 15.5859 20.2832 15.1465 20.2832C14.707 20.2832 14.375 20.625 14.375 21.0645L14.375 29.5215C14.375 29.9512 14.707 30.3027 15.1465 30.3027ZM21.0449 15.9375L29.502 15.9375C29.9414 15.9375 30.2832 15.5957 30.2832 15.166C30.2832 14.7168 29.9414 14.3848 29.502 14.3848L21.0449 14.3848C20.6152 14.3848 20.2637 14.7168 20.2637 15.166C20.2637 15.5957 20.6152 15.9375 21.0449 15.9375Z"/><path d="M15.1465 17.2559C16.3086 17.2559 17.2363 16.3184 17.2363 15.1562C17.2363 14.0039 16.3086 13.0664 15.1465 13.0664C13.9844 13.0664 13.0566 14.0039 13.0566 15.1562C13.0566 16.3184 13.9844 17.2559 15.1465 17.2559Z"/></g></svg>`;
     const __SCOPE_DOT = __DOT_SCOPE;
+    // Add/Edit Note :: Input :: Move Location Specifics to City
+    const __ARROW_UP_LEFT_SQUARE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 23.3203 22.959"><g><rect height="22.959" opacity="0" width="23.3203" x="0" y="0"/><path d="M3.79883 22.959L19.1504 22.959C21.6797 22.959 22.959 21.6797 22.959 19.1992L22.959 3.76953C22.959 1.2793 21.6797 0 19.1504 0L3.79883 0C1.2793 0 0 1.26953 0 3.76953L0 19.1992C0 21.6992 1.2793 22.959 3.79883 22.959ZM3.83789 21.2305C2.4707 21.2305 1.72852 20.5078 1.72852 19.1016L1.72852 3.85742C1.72852 2.46094 2.4707 1.72852 3.83789 1.72852L19.1211 1.72852C20.459 1.72852 21.2305 2.46094 21.2305 3.85742L21.2305 19.1016C21.2305 20.5078 20.459 21.2305 19.1211 21.2305Z"/><path d="M8.78906 7.77344C7.97852 7.02148 6.98242 7.94922 7.77344 8.79883L9.74609 10.8984L14.9023 16.0449C15.0488 16.1914 15.2539 16.2891 15.5176 16.2891C15.9961 16.2891 16.3184 15.9766 16.3184 15.4883C16.3184 15.2637 16.2109 15.0586 16.0547 14.9023L10.8984 9.74609ZM8.22266 11.1523L7.94922 7.91992L10.9375 8.22266L13.7012 8.22266C14.2188 8.22266 14.5508 7.90039 14.5508 7.42188C14.5508 6.95312 14.2285 6.64062 13.7207 6.64062L7.5293 6.64062C6.98242 6.64062 6.64062 6.89453 6.64062 7.5293L6.64062 13.6816C6.64062 14.1895 6.95312 14.541 7.43164 14.541C7.91016 14.541 8.22266 14.2188 8.22266 13.7012Z"/></g></svg>`;
     // Settings
     // Help Center
     const __WAVEFORM_PATH_ECG_TEXT_PAGE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 21.3281 26.9238"><g><rect height="26.9238" opacity="0" width="21.3281" x="0" y="0"/><path d="M5.48828 10.1074L7.73438 10.1074C8.07617 10.1074 8.30078 9.92188 8.37891 9.61914L8.95508 7.28516L10.127 12.9883C10.2539 13.6133 11.0742 13.623 11.2598 13.0078L12.5293 8.55469L12.793 9.58984C12.8711 9.92188 13.0957 10.1074 13.4277 10.1074L15.4688 10.1074C15.791 10.1074 16.0547 9.84375 16.0547 9.54102C16.0547 9.21875 15.8008 8.95508 15.4688 8.95508L13.7891 8.95508L13.1152 6.36719C12.9688 5.78125 12.1875 5.79102 12.002 6.38672L10.7617 10.5566L9.53125 4.57031C9.4043 3.94531 8.57422 3.93555 8.41797 4.56055L7.36328 8.95508L5.48828 8.95508C5.16602 8.95508 4.91211 9.22852 4.91211 9.54102C4.91211 9.84375 5.17578 10.1074 5.48828 10.1074ZM5.54688 17.3438L15.459 17.3438C15.8496 17.3438 16.1426 17.041 16.1426 16.6602C16.1426 16.2793 15.8496 15.9863 15.459 15.9863L5.54688 15.9863C5.14648 15.9863 4.85352 16.2793 4.85352 16.6602C4.85352 17.041 5.14648 17.3438 5.54688 17.3438ZM5.54688 21.1719L10.2832 21.1719C10.6738 21.1719 10.9668 20.8789 10.9668 20.5078C10.9668 20.127 10.6738 19.8242 10.2832 19.8242L5.54688 19.8242C5.14648 19.8242 4.85352 20.127 4.85352 20.5078C4.85352 20.8789 5.14648 21.1719 5.54688 21.1719ZM0 23.125C0 25.6445 1.25977 26.9238 3.75977 26.9238L17.207 26.9238C19.707 26.9238 20.9668 25.6445 20.9668 23.125L20.9668 3.80859C20.9668 1.28906 19.707 0.00976562 17.207 0.00976562L3.75977 0.00976562C1.25977 0.00976562 0 1.28906 0 3.80859ZM1.72852 23.0859L1.72852 3.84766C1.72852 2.48047 2.45117 1.73828 3.85742 1.73828L17.1094 1.73828C18.5156 1.73828 19.2383 2.48047 19.2383 3.84766L19.2383 23.0859C19.2383 24.4531 18.5156 25.1953 17.1094 25.1953L3.85742 25.1953C2.45117 25.1953 1.72852 24.4531 1.72852 23.0859Z"/></g></svg>`;
@@ -8610,6 +8750,7 @@
       territory: { label: "Territory", icon: "territory", order: 2 }
     };
     const NOTE_FILTER_NO_ICON = "__no-icon";
+    const DATE_PRECISION_FILTER_MODES = ["all", "year", "month", "full"];
     const DEFAULT_ACTIVE_VISIT_TYPE_IDS = ["star", "heart", "bookmark", "flag", "house"];
     const ICON_SEARCH_TAG_ALIASES = {
       airplane: ["flight", "plane", "airport", "layover", "travel"],
@@ -8877,13 +9018,13 @@
       {
         title: "Bucket List Feature",
         ticketId: "WISH-036",
-        description: "Add a dedicated bucket-list layer for places someone wants to visit next, separate from completed visits and ordinary notes. Scope includes local persistence, filtering, export support, and a clear way to promote a bucket-list item into a real visit note.",
-        priority: "P0",
+        description: "Add a dedicated bucket-list feature for places someone wants to visit next, separate from completed visits and ordinary notes. Scope includes local persistence, filtering, export support, and a clear way to promote a bucket-list item into a real visit note. Includes a Bucket List mode/view that swaps the usual checked Notes affordance for an unchecked/planning affordance and refocuses the Notes view on planned future travel instead of completed visits, while preserving normal visit notes.",
+        priority: "P1",
         effort: "medium",
         targetKind: "minor",
         targetVersion: "",
-        tokenCostPct: 28,
-        prompt: "Add a Bucket List feature for planned future places. Keep it local/offline, connect it to map locations and notes, include filtering/export support, and let users convert a bucket-list item into a visit note.",
+        tokenCostPct: 36,
+        prompt: "Add a Bucket List feature for planned future places. Keep it local/offline, connect it to map locations and notes, include filtering/export support, and let users convert a bucket-list item into a visit note. Include a Bucket List mode/view that swaps the Notes checked icon for an unchecked planning state and reorients the Notes view to focus on future/planned locations while preserving normal visit notes.",
         category: "Planning"
       },
       {
@@ -8902,7 +9043,7 @@
         title: "Add Drive Radius",
         ticketId: "WISH-010",
         description: "Show a planning radius from home or saved locations. Scope includes distance input, visual radius overlay where map geometry supports it, saved settings, and clear limitations for non-road distance.",
-        priority: "P0",
+        priority: "P1",
         effort: "large",
         targetKind: "exact",
         targetVersion: "3.2.0",
@@ -8914,7 +9055,7 @@
         title: "National Park Overlay Layer",
         ticketId: "WISH-004",
         description: "Add an optional national parks layer that can be viewed with state progress. Scope includes park data, visible markers or outlines, visit status, filtering, and exports that remain readable.",
-        priority: "P0",
+        priority: "P1",
         effort: "large",
         targetKind: "exact",
         targetVersion: "4.0.0",
@@ -8926,7 +9067,7 @@
         title: "Country Map",
         ticketId: "WISH-001",
         description: "Add a country-map mode alongside the US map. Scope includes a world SVG/data source, visit levels, notes, exports/imports, map mode switching, and a strategy for historical countries without breaking existing state data.",
-        priority: "P0",
+        priority: "P1",
         effort: "x-large",
         targetKind: "exact",
         targetVersion: "5.0.0",
@@ -8973,13 +9114,13 @@
       {
         title: "Dramatically Improve Auto Convert",
         ticketId: "WISH-042",
-        description: "Make Smart Convert feel much more intelligent and interactive. Scope includes richer parsing, Enter triggering Auto Convert while the Smart Convert field is active instead of saving the note, and lightweight recognition popups as dates, places, people, purposes, levels, and tags are detected.",
-        priority: "P1",
+        description: "Make Smart Convert feel much more intelligent and interactive. Scope includes richer parsing, Enter triggering Auto Convert while the Smart Convert field is active instead of saving the note, and lightweight recognition popups as dates, places, people, purposes, levels, and tags are detected. As the user types, recognized tokens (dates, weekdays, City via 'in', Specifics via 'at'/'near', What For via 'for', Who With via 'with', visit levels, visit labels, abbreviations) should auto-highlight inline in the Smart Convert input. Clicking a highlighted token — or retyping it — removes it from the Smart Convert input and promotes it into the corresponding field below (City, Specifics, What For, Who With, Visit Level, Visit Labels, Date), with any remaining unrecognized text dropping into Additional Details.",
+        priority: "P0",
         effort: "large",
-        targetKind: "minor",
-        targetVersion: "",
+        targetKind: "exact",
+        targetVersion: "3.2.0",
         tokenCostPct: 42,
-        prompt: "Dramatically improve Smart Convert in the note editor. Expand parsing coverage, make Enter in the Smart Convert input run Auto Convert instead of saving, and explore lightweight inline recognition popups for parsed dates, places, people, purposes, levels, and tags.",
+        prompt: "Dramatically improve Smart Convert in the note editor. Expand parsing coverage, make Enter in the Smart Convert input run Auto Convert instead of saving, and explore lightweight inline recognition popups for parsed dates, places, people, purposes, levels, and tags. Add live inline highlighting of recognized tokens as the user types; clicking a highlight (or retyping it) removes it from the Smart Convert input and promotes it into the matching field (City, Specifics, What For, Who With, Visit Level, Visit Labels, Date), with leftover text routed to Additional Details.",
         category: "Notes"
       },
       {
@@ -8995,18 +9136,6 @@
         category: "Notes"
       },
       {
-        title: "Bucket List Mode View",
-        ticketId: "WISH-044",
-        description: "Add a Bucket List mode that changes the usual checked Notes affordance into an unchecked/planning affordance and adjusts the Notes view for planned future travel instead of completed or remembered visits.",
-        priority: "P1",
-        effort: "medium",
-        targetKind: "minor",
-        targetVersion: "",
-        tokenCostPct: 28,
-        prompt: "Add a Bucket List mode that swaps the Notes checked icon treatment to an unchecked planning state and changes the Notes view to focus on future/planned locations while preserving normal visit notes.",
-        category: "Planning"
-      },
-      {
         title: "Choose Note Display Icon",
         ticketId: "WISH-047",
         description: "Let a note with multiple icon tags choose which icon should represent it in lists and on the map, instead of always using the first/default selected tag.",
@@ -9019,15 +9148,15 @@
         category: "Notes"
       },
       {
-        title: "Split Note Location into City and Specifics",
-        ticketId: "WISH-048",
-        description: "Break the current Where Specifically note field into separate City and Specifics inputs. Scope includes migration/import compatibility with existing note.where text, search/export display, Locate query behavior, saved suggestions, and a compact editor layout.",
-        priority: "P1",
+        title: "Move Between Notes Faster",
+        ticketId: "WISH-051",
+        description: "Add faster navigation between notes so reviewing or editing a run of notes does not require closing and reopening each one. Scope includes previous/next note controls in the note editor, predictable ordering from the current Notes view/filter context, keyboard shortcuts, and safe handling when filters or selected locations change.",
+        priority: "P2",
         effort: "medium",
         targetKind: "minor",
         targetVersion: "",
-        tokenCostPct: 22,
-        prompt: "Split note location entry into City and Specifics fields. Preserve existing note.where data through migration/import/export/search, keep Locate queries useful, and keep the note editor compact.",
+        tokenCostPct: 18,
+        prompt: "Add faster note-to-note navigation. Include previous/next controls in the note editor, respect the active Notes ordering/filter context where practical, add keyboard shortcuts, and handle edge cases when the current note is filtered out or deleted.",
         category: "Notes"
       },
       {
@@ -9057,215 +9186,35 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.1.0.13",
-        date: "2026-05-25",
-        title: "Search Finds The Bits And Bobs",
-        summary: "More media, phone, utility, restroom, award, and cleanup icons respond to natural searches.",
-        highlights: [
-          "Film, fuel, hand, head, hourglass, search, restroom, trash, trophy, storm, phone, TV, video, and xmark-bin icons gained aliases.",
-          "More Icons keeps these newly searchable symbols in the aliased-first group."
-        ],
-        updates: [
-          "Added aliases for film, fuel pump, hand, headphones, headset, hourglass, magnifying glass, toilet, trash, trophy, tropical storm, phone, TV, video, and xmark-bin icons.",
-          "Added iPhone and bin aliases so phone and delete/trash searches catch related symbols more reliably."
-        ]
-      },
-      {
-        version: "3.1.0.12",
-        date: "2026-05-25",
-        title: "Appliances, Paper Trails, And Handy Things",
-        summary: "More everyday symbols now show up in plain-language icon searches.",
-        highlights: [
-          "Appliance, utility, mail, paper, boating, and signpost symbols gained search aliases.",
-          "More Icons continues to rank newly aliased symbols ahead of unaliased ones."
-        ],
-        updates: [
-          "Added appliance aliases for dishwasher, dryer, washer, fan, and related home/laundry terms.",
-          "Added practical object aliases for envelope, flashlight, lightbulb, newspaper, oar, paper plane, paper clip, document, folder, tray, power, and signpost icons."
-        ]
-      },
-      {
-        version: "3.1.0.11",
-        date: "2026-05-25",
-        title: "More Searchable Symbols",
-        summary: "More animal, object, food, and weather icons now answer to plain-language searches.",
-        highlights: [
-          "Animal, object, food, and weather icons gained broader search aliases.",
-          "More Icons continues to surface explicitly aliased symbols before unaliased ones."
-        ],
-        updates: [
-          "Added search aliases for animal symbols such as ant, bird, cat, dog, hare, ladybug, lizard, and tortoise.",
-          "Added aliases for practical object, food, and weather symbols including coat, cricket ball, key, pencil, popcorn, pills, sunrise, smoke, tornado, and umbrella."
-        ]
-      },
-      {
-        version: "3.1.0.10",
-        date: "2026-05-25",
-        title: "Alias Priority",
-        summary: "More Icons now gives richer, aliased tags pride of place.",
-        highlights: [
-          "More Icons lists aliased icons before icons without semantic aliases.",
-          "Added aliases for useful remaining travel, shopping, weather, pet, package, sport, gift, and medical symbols."
-        ],
-        updates: [
-          "Added additional search aliases for icons such as gift, fish, pet carrier, storefront, handbag, pin, shipping box, star of life, snow/weather, and tennis ball.",
-          "Sorted the additional Location Icon Tag list so icons with explicit aliases appear before unaliased icons while preserving selected tag order."
-        ]
-      },
-      {
-        version: "3.1.0.9",
-        date: "2026-05-25",
-        title: "Centered Date Bits",
-        summary: "The date fields sit cleaner between quick actions and optional-status text.",
-        highlights: [
-          "Year, Month, and Day are centered in the space between the quick buttons and Month/Day status.",
-          "The completed date-picker cleanup roadmap item was removed."
-        ],
-        updates: [
-          "Changed the date entry group to center the date controls before the status label while preserving the chip-grid rhythm.",
-          "Removed the completed roadmap item for tidying the date picker and Smart Convert entry height."
-        ]
-      },
-      {
-        version: "3.1.0.8",
-        date: "2026-05-25",
-        title: "Find the Right Little Icon",
-        summary: "Location Icon Tag search is smarter, and the mobile note picker layout is tidier.",
-        highlights: [
-          "More Icons search now understands richer travel, activity, and synonym terms.",
-          "Mobile Quick Add puts the location picker on its own line under the title and actions."
-        ],
-        updates: [
-          "Expanded generated search aliases for Location Icon Tags so searches such as hotel, airport, hiking, restaurant, concert, college, camping, soccer, road trip, and national park find better matches.",
-          "Improved More Icons matching by normalizing query text and checking all query words against icon IDs, labels, saved tags, generated labels, and generated aliases.",
-          "Removed the completed roadmap item for richer Location Icon Tag search.",
-          "Fixed mobile month chips to render three across and vertically centered the Month/Day optional status text."
-        ]
-      },
-      {
-        version: "3.1.0.7",
-        date: "2026-05-25",
-        title: "Chip Grid Rhythm",
-        summary: "The note date picker now aligns its controls and vertical spacing to the month chip grid.",
-        highlights: [
-          "The picker rows have clearer spacing between controls, chips, and hint text.",
-          "Month chips now render three across on mobile."
-        ],
-        updates: [
-          "Aligned the date preview, quick actions, date fields, and status text to a shared 12-column chip rhythm.",
-          "Sized Today and Year Only together to the same span as three month chips, with the same gap used between the pill and buttons.",
-          "Made the date fields plus optional-status text stretch across the six-chip span beside the quick actions."
-        ]
-      },
-      {
-        version: "3.1.0.6",
-        date: "2026-05-25",
-        title: "Three Neat Little Groups",
-        summary: "The note date picker now uses true control groups and a fixed-height preview pill.",
-        highlights: [
-          "Today and Year Only are equal-width grouped buttons.",
-          "The date preview pill keeps a fixed height even when the weekday creates two lines."
-        ],
-        updates: [
-          "Grouped the note date row into quick actions, date fields, and status text so spacing is controlled by intent instead of leftover grid width.",
-          "Tightened the year stepper controls while keeping normal spacing between Year, Month, and Day.",
-          "Reduced the date preview pill text and fixed its height so full dates do not grow the row."
-        ]
-      },
-      {
-        version: "3.1.0.5",
-        date: "2026-05-25",
-        title: "A Little Elbow Room",
-        summary: "The note editor's Smart Convert hint and date picker spacing are cleaner.",
-        highlights: [
-          "Smart Convert placeholder text is smaller and quieter.",
-          "The date picker line has clearer separation between quick actions and date fields."
-        ],
-        updates: [
-          "Reduced the Smart Convert placeholder text size without changing the input behavior.",
-          "Added spacing after Today and Year Only while tightening the year stepper gap so the date row reads more neatly."
-        ]
-      },
-      {
-        version: "3.1.0.4",
-        date: "2026-05-25",
-        title: "At Sign Means At",
-        summary: "Smart Convert now understands spaced @ place shorthand and the roadmap captures the next picker cleanup pass.",
-        highlights: [
-          "Smart Convert parses place shorthand like @ Chapel Hill, NC.",
-          "Added a P1 roadmap item to tidy the date picker and Smart Convert entry height."
-        ],
-        updates: [
-          "Expanded the @ abbreviation so both @Place and @ Place become at Place before phrase parsing runs.",
-          "Allowed Smart Convert's location phrase to keep a trailing two-letter place suffix such as NC or DC after a comma.",
-          "Added a roadmap item for a focused note editor UI cleanup around the date picker and Smart Convert row."
-        ]
-      },
-      {
-        version: "3.1.0.3",
-        date: "2026-05-25",
-        title: "Date Picker Lineup",
-        summary: "The note date picker is more compact and clearer about optional month/day fields.",
-        highlights: [
-          "Today and Year Only now sit on the date input line beside the picker.",
-          "The Day field shows a red -- placeholder until a month is selected."
-        ],
-        updates: [
-          "Rebalanced the note date row into a 40/60 pill-and-picker layout.",
-          "Sized the Year, Month, and Day controls around their actual expected input lengths.",
-          "Added a compact (Month/Day optional) status label beside the picker."
-        ]
-      },
-      {
-        version: "3.1.0.2",
-        date: "2026-05-25",
-        title: "Date Pill Breathing Room",
-        summary: "The note date row now fits weekday brackets and accepts more numeric date formats.",
-        highlights: [
-          "The note date preview has more room for weekday brackets.",
-          "Short numeric dates such as 11/15/23 and year-first dates such as 2026 6 5 now parse."
-        ],
-        updates: [
-          "Widened the note date preview pill and tightened the Month and Day controls so weekday brackets fit cleanly.",
-          "Added two-digit year support for numeric dates such as 11/15/23 and year-first space formats such as 2026 6, 2026 6 5, 2026 June, and 2026 June 5.",
-          "Updated the note date hint to list the accepted date formats directly."
-        ]
-      },
-      {
-        version: "3.1.0.1",
-        date: "2026-05-25",
-        title: "Bracket the Day",
-        summary: "Full note dates now show their weekday in the editor preview.",
-        highlights: [
-          "The note editor date pill adds weekday brackets such as [Fri] when a full date is selected."
-        ],
-        updates: [
-          "Added weekday brackets to the note editor's date preview pill for full dates while keeping year-only and month/year previews unchanged.",
-          "Added a Roadmap item for splitting note location entry into separate City and Specifics fields with migration, search, export, Locate, and suggestion compatibility."
-        ]
-      },
-      {
         version: "3.1.0",
         date: "2026-05-25",
         title: "Trail Echoes",
-        summary: "Faster note entry with saved field suggestions and weekday-aware date parsing.",
+        summary: "Better note entry, smarter dates/location support, added a notes date precision filter, and richer icon search.",
         highlights: [
-          "Saved Where, What, and Who values now suggest while you type.",
-          "Smart Convert and flexible date parsing now understand weekday names next to full or partial dates."
+          "Smart Convert is less dumb... Better Date, Location, Purpose, and People auto-fills. More coming to this in the future!",
+          "The note editor has a cleaner layout with a better date picker, nuanced location handling, and some bug fixes around search and location choosing.",
+          "Notes can now be filtered by date precision: All Dates, Year Only, Year and Month Only, or Full Dates Only.",
+          "Added over 200 icon aliases for better search and promoted more used icons."
         ],
         notice: {
           version: "3.1.0",
           title: "Trail Echoes",
-          summary: "Note entry is quicker now, with saved field suggestions and weekday-aware dates.",
+          summary: "Note entry is quicker now, with saved suggestions, smarter dates, cleaner controls, richer icon search, and date precision filters.",
           cta: "See What's New"
         },
         updates: [
-          "Added local autocomplete suggestions for Where Specifically, What For, and Who With using existing saved notes, with the current target location prioritized.",
-          "Flexible date parsing now accepts weekday names and abbreviations such as Monday, Tue, or Fri beside year-only, month-year, numeric, and month-name dates.",
-          "Smart Convert now captures weekday-adjacent date phrases so the date is filled and the weekday does not linger in Additional Details.",
-          "Removed the completed weekday date parsing idea from the Roadmap after shipping it.",
-          "Retargeted drive-radius planning to a future release now that Trail Echoes owns 3.1.0.",
-          "Updated note help and hints so saved suggestions and weekday-aware dates are discoverable without adding settings or network calls."
+          "Added local autocomplete suggestions for City, Where, What, and Who using existing saved notes, with the current target location prioritized.",
+          "Split note location entry into City and Where while preserving existing note text through search, display, export, and coordinate lookup behavior.",
+          "Smart Convert now treats @Place and @ Place as at Place and keeps comma-plus-two-letter place suffixes such as Chapel Hill, NC.",
+          "Flexible date parsing now accepts YYYY, YYYY M, YYYY M D, YYYY-MM-DD, M/YYYY, M/D/YYYY, M/D/YY, Month YYYY, Month D YYYY, YYYY Month, YYYY Month D, and optional weekday names or abbreviations.",
+          "Full note dates show weekday brackets in the date preview, and the date picker groups its fixed-height preview pill, Today/Year Only buttons, Year/Month/Day controls, month chips, and Month/Day optional status more cleanly on desktop and mobile.",
+          "Mapped-location status now sits below Latitude/Longitude and above the Move Where hint, stays visible when hints are dismissed, and uses centered Locate and Move icons.",
+          "Location Icon Tag search now has broader generated aliases and more plain-language matches for travel, activity, animals, objects, food, weather, appliances, utility, mail, paper, boating, signpost, media, fuel, hand/head, hourglass, search, restroom, trash, trophy, storm, phone, TV, video, and xmark-bin icons.",
+          "More Icons now sorts explicitly aliased symbols ahead of unaliased symbols while preserving the active tag order.",
+          "Added a persisted Notes date precision filter before the coordinate filter, using All Dates, Year Only, Year and Month Only, and Full Dates Only with matching summary chips and a neutral/cyan/custom-blue/indigo precision scale.",
+          "Match Notes map dimming and pins now honor date precision, coordinate, search, level, icon, and excluded-location filters while selected-location detail views continue to show every note for that location.",
+          "Removed completed planning items from the active roadmap and retargeted future planning work now that Trail Echoes owns 3.1.0.",
+          "Updated Help Center copy and Notes hints so saved suggestions, expanded date formats, City/Where behavior, mapped-location status, date precision filters, and Match Notes behavior are discoverable."
         ]
       },
       {
@@ -9997,6 +9946,7 @@
     let notesViewMode = "compact";
     let notesCategoricalMode = true;
     let notesHideExcludedOnly = true;
+    let notesDatePrecisionFilter = "all";
     let notesCoordinateFilter = "all";
     let notesSearchQuery = "";
     let mapFitMode = false;
@@ -10072,6 +10022,7 @@
           notesViewMode: "compact",
           notesCategoricalMode: true,
           notesHideExcludedOnly: true,
+          notesDatePrecisionFilter: "all",
           notesCoordinateFilter: "all",
           noteLevelFilters: [],
           noteVisitTypeFilters: [],
@@ -10429,6 +10380,7 @@
       if (!["expanded", "compact", "text"].includes(next.settings.notesViewMode)) next.settings.notesViewMode = "compact";
       if (typeof next.settings.notesCategoricalMode !== "boolean") next.settings.notesCategoricalMode = true;
       if (typeof next.settings.notesHideExcludedOnly !== "boolean") next.settings.notesHideExcludedOnly = true;
+      if (!DATE_PRECISION_FILTER_MODES.includes(next.settings.notesDatePrecisionFilter)) next.settings.notesDatePrecisionFilter = "all";
       if (!["all", "mapped", "missing"].includes(next.settings.notesCoordinateFilter)) next.settings.notesCoordinateFilter = "all";
       next.settings.selectedState = STATE_NAMES[next.settings.selectedState] ? next.settings.selectedState : "";
       next.settings.notesPanelState = STATE_NAMES[next.settings.notesPanelState] ? next.settings.notesPanelState : "";
@@ -10528,8 +10480,9 @@
         : [];
       return {
         id: String(note.id || uid()),
-        date: normalizeStoredDate(note.date, next.settings.dateOrder) || today(),
+        date: normalizeStoredDate(note.date, next.settings.dateOrder) || "",
         levelId: validLevelIds.has(note.levelId) ? note.levelId : (next.states[abbr]?.[0] || ""),
+        city: String(note.city || "").slice(0, 80),
         where: String(note.where || note.whereSpecifically || "").slice(0, 120),
         what: String(note.what || note.whatFor || "").slice(0, 120),
         who: String(note.who || note.whoWith || "").slice(0, 120),
@@ -10544,7 +10497,7 @@
 
     function noteHasContent(note) {
       const hasLatLng = note.lat !== "" && note.lat !== undefined && note.lng !== "" && note.lng !== undefined;
-      return Boolean(note.text || note.details || note.where || note.what || note.who || hasLatLng || (note.visitTypes || []).length);
+      return Boolean(note.text || note.details || note.where || note.city || note.what || note.who || hasLatLng || (note.visitTypes || []).length);
     }
 
     function isExcludedLevel(level) {
@@ -10579,6 +10532,7 @@
       state.settings.notesViewMode = ["expanded", "compact", "text"].includes(notesViewMode) ? notesViewMode : "compact";
       state.settings.notesCategoricalMode = notesCategoricalMode === true;
       state.settings.notesHideExcludedOnly = notesHideExcludedOnly === true;
+      state.settings.notesDatePrecisionFilter = DATE_PRECISION_FILTER_MODES.includes(notesDatePrecisionFilter) ? notesDatePrecisionFilter : "all";
       state.settings.notesCoordinateFilter = ["all", "mapped", "missing"].includes(notesCoordinateFilter) ? notesCoordinateFilter : "all";
       ensureNoteIconFilters();
       state.settings.noteLevelFilters = [...noteLevelFilters].filter(id => levelById(id));
@@ -10600,6 +10554,7 @@
       notesViewMode = ["expanded", "compact", "text"].includes(state.settings.notesViewMode) ? state.settings.notesViewMode : "compact";
       notesCategoricalMode = state.settings.notesCategoricalMode !== false;
       notesHideExcludedOnly = state.settings.notesHideExcludedOnly !== false;
+      notesDatePrecisionFilter = DATE_PRECISION_FILTER_MODES.includes(state.settings.notesDatePrecisionFilter) ? state.settings.notesDatePrecisionFilter : "all";
       notesCoordinateFilter = ["all", "mapped", "missing"].includes(state.settings.notesCoordinateFilter) ? state.settings.notesCoordinateFilter : "all";
       selectedState = STATE_NAMES[state.settings.selectedState] ? state.settings.selectedState : null;
       notesPanelState = STATE_NAMES[state.settings.notesPanelState] ? state.settings.notesPanelState : null;
@@ -11009,6 +10964,8 @@
       setButtonLabel("#notesSortChronoBtn", __CLOCK_ARROW_TRIANGLEHEAD_2_COUNTERCLOCKWISE_ROTATE_90, "Chronological");
       setButtonLabel("#notesCategoryToggleBtn", __RECTANGLE_3_GROUP_FILL, "Categorical", "Group by Location Type");
       setButtonLabel("#notesExcludedToggleBtn", __CIRCLE_SLASH, notesHideExcludedOnly ? "Hidden" : "Shown", notesHideExcludedOnly ? "Excluded locations hidden" : "Excluded locations shown", notesHideExcludedOnly ? "Excluded locations hidden" : "Excluded locations shown");
+      const dateFilter = datePrecisionFilterMeta();
+      setButtonLabel("#notesDatePrecisionFilterBtn", dateFilter.icon, dateFilter.label, dateFilter.aria, dateFilter.title);
       const coordFilter = coordinateFilterMeta();
       setButtonLabel("#notesCoordinateFilterBtn", coordFilter.icon, coordFilter.label, coordFilter.aria, coordFilter.title);
       setButtonLabel("#notesViewExpandedBtn", __RECTANGLE_EXPAND_VERTICAL, "Expanded", "Expanded View");
@@ -11029,6 +10986,7 @@
       }
       setButtonLabel("#deleteNoteFromDialogBtn", __DELETE_LEFT_FILL, "Delete Note");
       setButtonLabel("#noteGeocodeBtn", __DOT_SCOPE, "Locate", "Look up latitude and longitude", "Look up latitude and longitude");
+      setButtonLabel("#noteWhereToCityBtn", __ARROW_UP_LEFT_SQUARE, "Move", "Move Where text to City", "Move Where text to City");
       setButtonLabel("#noteSmartConvertBtn", __WAND_AND_SPARKLES_INVERSE, "Auto Convert", "Smart convert note text");
       setButtonLabel("#noteSmartConvertInfoBtn", __INFO_CIRCLE, "Info", "Smart Convert Rules");
       setButtonLabel("#levelDialogCloseBtn", __XMARK, "Close");
@@ -11354,6 +11312,7 @@
       return stateMatchesLevelFilter(abbr)
         && stateMatchesVisitTypeFilter(abbr)
         && stateMatchesExcludedVisibility(abbr)
+        && stateMatchesDatePrecisionFilter(abbr)
         && stateMatchesCoordinateFilter(abbr)
         && stateMatchesNotesSearch(abbr);
     }
@@ -11442,7 +11401,7 @@
           levelId: level?.id || "",
           color: level?.color || "var(--accent)",
           iconId: firstType,
-          label: `${STATE_NAMES[abbr]}: ${note.where || note.geocodeLabel || noteSummary(note)}`
+          label: `${STATE_NAMES[abbr]}: ${noteLocationDisplay(note) || note.geocodeLabel || noteSummary(note)}`
         };
       }).filter(Boolean));
     }
@@ -11655,7 +11614,7 @@
       const samePlace = clusterLocationKeys(cluster).size === 1;
       const first = markerClusterRepresentative(cluster);
       return samePlace
-        ? `${count} note${count === 1 ? "" : "s"} mapped to ${first.note.where || first.note.geocodeLabel || STATE_NAMES[first.abbr]}.`
+        ? `${count} note${count === 1 ? "" : "s"} mapped to ${noteLocationDisplay(first.note) || first.note.geocodeLabel || STATE_NAMES[first.abbr]}.`
         : !markerClusterCanSeparateAtMaxZoom(cluster)
           ? `${count} mapped notes are too close to split cleanly. Pick one below.`
           : `${count} nearby mapped notes. Zoom in to split close locations, or pick one below.`;
@@ -11663,7 +11622,7 @@
 
     function markerRowHtml(item, index) {
       const level = levelById(item.note.levelId);
-      const title = item.note.where || item.note.geocodeLabel || noteSummary(item.note);
+      const title = noteLocationDisplay(item.note) || item.note.geocodeLabel || noteSummary(item.note);
       const types = noteVisitTypeLabels(item.note).map(type => type.label).join(", ");
       const meta = [STATE_NAMES[item.abbr], level?.name, types].filter(Boolean).join(" :: ");
       return `
@@ -11705,9 +11664,10 @@
       notesPanelOpen = true;
       pendingNoteDefaults = {
         where: item.note.where || "",
+        city: item.note.city || "",
         lat: item.lat,
         lng: item.lng,
-        geocodeLabel: item.note.geocodeLabel || item.note.where || "",
+        geocodeLabel: item.note.geocodeLabel || noteLocationDisplay(item.note) || "",
         levelId: item.note.levelId || "",
         visitTypes: item.note.visitTypes || []
       };
@@ -11882,8 +11842,15 @@
       return coords ? `${coords.lat}, ${coords.lng}` : "";
     }
 
+    function noteLocationDisplay(note) {
+      const where = String(note.where || "").trim();
+      const city = String(note.city || "").trim();
+      if (where && city) return `${where}, ${city}`;
+      return where || city;
+    }
+
     function noteFieldValues(note) {
-      return [note.where, note.what, note.who, noteDetails(note)].filter(Boolean);
+      return [noteLocationDisplay(note), note.what, note.who, noteDetails(note)].filter(Boolean);
     }
 
     function noteSummary(note) {
@@ -11896,6 +11863,7 @@
       return [
         includeTypes && visitTypes.length ? `${indent}Types: ${visitTypes.map(type => type.label).join(", ")}` : "",
         note.where ? `${indent}Where: ${note.where}` : "",
+        note.city ? `${indent}City: ${note.city}` : "",
         noteCoordinateText(note) ? `${indent}Coordinates: ${noteCoordinateText(note)}` : "",
         note.what ? `${indent}What: ${note.what}` : "",
         note.who ? `${indent}Who: ${note.who}` : "",
@@ -12295,6 +12263,61 @@
       return ids.some(id => noteVisitTypeFilters.has(id));
     }
 
+    function noteDatePrecision(date) {
+      const value = String(date || "").trim();
+      if (/^\d{4}$/.test(value)) return "year";
+      if (/^\d{4}-\d{2}$/.test(value)) return "month";
+      if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return "full";
+      return "none";
+    }
+
+    function datePrecisionFilterMeta(value = notesDatePrecisionFilter) {
+      const map = {
+        all: {
+          label: "All Dates",
+          icon: __CALENDAR_CIRCLE,
+          aria: "Show notes with any date precision",
+          title: "Date filter: all dates",
+          state: "all"
+        },
+        year: {
+          label: "Year Only",
+          icon: __ELLIPSIS_CALENDAR,
+          aria: "Show notes with year-only dates",
+          title: "Date filter: year-only dates",
+          state: "year"
+        },
+        month: {
+          label: "Year and Month Only",
+          icon: __CALENDAR,
+          aria: "Show notes with year and month dates",
+          title: "Date filter: year and month dates",
+          state: "month"
+        },
+        full: {
+          label: "Full Dates Only",
+          icon: __4_CALENDAR,
+          aria: "Show notes with full dates",
+          title: "Date filter: full dates",
+          state: "full"
+        }
+      };
+      return map[value] || map.all;
+    }
+
+    function cycleNotesDatePrecisionFilter() {
+      const index = DATE_PRECISION_FILTER_MODES.indexOf(notesDatePrecisionFilter);
+      notesDatePrecisionFilter = DATE_PRECISION_FILTER_MODES[(index + 1) % DATE_PRECISION_FILTER_MODES.length] || "all";
+      save();
+      syncButtonLabels();
+      refreshAfterNotesFilterChange();
+    }
+
+    function noteMatchesDatePrecisionFilter(note) {
+      if (notesDatePrecisionFilter === "all") return true;
+      return noteDatePrecision(note?.date) === notesDatePrecisionFilter;
+    }
+
     function coordinateFilterMeta(value = notesCoordinateFilter) {
       const map = {
         all: {
@@ -12329,7 +12352,7 @@
     }
 
     function noteMatchesAllFilters(note) {
-      return noteMatchesLevelFilter(note) && noteMatchesVisitTypeFilter(note);
+      return noteMatchesLevelFilter(note) && noteMatchesVisitTypeFilter(note) && noteMatchesDatePrecisionFilter(note);
     }
 
     function activeFilterNames() {
@@ -12350,9 +12373,11 @@
       const icons = allNoteIconFiltersSelected()
         ? []
         : [...noteVisitTypeFilters].map(id => id === NOTE_FILTER_NO_ICON ? "No Icon" : visitTypeMeta(id)?.label).filter(Boolean);
+      const dateFilter = datePrecisionFilterMeta();
       const coordFilter = coordinateFilterMeta();
       const filterParts = [
         notesSummaryIconPart(__CIRCLE_SLASH, notesHideExcludedOnly ? "Hidden" : "Shown", notesHideExcludedOnly ? "Excluded locations hidden" : "Excluded locations shown"),
+        notesSummaryIconPart(dateFilter.icon, dateFilter.label, dateFilter.title),
         notesSummaryIconPart(coordFilter.icon, coordFilter.label, coordFilter.title),
         escapeHtml(levels.length ? `${levels.join(", ")}` : "All Levels"),
         escapeHtml(icons.length ? `${icons.join(", ")}` : "All Icons"),
@@ -12386,6 +12411,11 @@
       return (state.notes[abbr] || []).some(noteMatchesVisitTypeFilter);
     }
 
+    function stateMatchesDatePrecisionFilter(abbr) {
+      if (notesDatePrecisionFilter === "all") return true;
+      return (state.notes[abbr] || []).some(noteMatchesDatePrecisionFilter);
+    }
+
     function stateOnlyHasExcludedLevels(abbr) {
       const ids = [
         ...getStateLevelIds(abbr),
@@ -12414,6 +12444,7 @@
         formatDateDisplay(note.date),
         levelById(note.levelId)?.name || "",
         note.where,
+        note.city,
         note.geocodeLabel,
         noteCoordinateText(note),
         note.what,
@@ -12589,7 +12620,7 @@
     function markedStateAbbrs() {
       const marked = new Set([...Object.keys(state.states), ...Object.keys(state.notes).filter(abbr => (state.notes[abbr] || []).length)]);
       return STATES.map(([abbr]) => abbr).filter(abbr =>
-        marked.has(abbr) && stateMatchesLevelFilter(abbr) && stateMatchesVisitTypeFilter(abbr) && stateMatchesExcludedVisibility(abbr) && stateMatchesCoordinateFilter(abbr)
+        marked.has(abbr) && stateMatchesLevelFilter(abbr) && stateMatchesVisitTypeFilter(abbr) && stateMatchesExcludedVisibility(abbr) && stateMatchesDatePrecisionFilter(abbr) && stateMatchesCoordinateFilter(abbr)
       );
     }
 
@@ -12763,7 +12794,7 @@
     function sortedMarkedStateAbbrs() {
       const marked = notesSearchQuery.trim()
         ? STATES.map(([abbr]) => abbr).filter(abbr =>
-          stateMatchesNotesSearch(abbr) && stateMatchesLevelFilter(abbr) && stateMatchesVisitTypeFilter(abbr) && stateMatchesExcludedVisibility(abbr) && stateMatchesCoordinateFilter(abbr)
+          stateMatchesNotesSearch(abbr) && stateMatchesLevelFilter(abbr) && stateMatchesVisitTypeFilter(abbr) && stateMatchesExcludedVisibility(abbr) && stateMatchesDatePrecisionFilter(abbr) && stateMatchesCoordinateFilter(abbr)
         )
         : markedStateAbbrs();
       return marked.sort((a, b) => {
@@ -12790,6 +12821,8 @@
       $("#notesCategoryToggleBtn").setAttribute("aria-pressed", String(notesCategoricalMode));
       $("#notesExcludedToggleBtn").setAttribute("aria-pressed", String(!notesHideExcludedOnly));
       $("#notesExcludedToggleBtn").dataset.excludedVisibility = notesHideExcludedOnly ? "hidden" : "shown";
+      $("#notesDatePrecisionFilterBtn").setAttribute("aria-pressed", String(notesDatePrecisionFilter !== "all"));
+      $("#notesDatePrecisionFilterBtn").dataset.datePrecisionFilter = notesDatePrecisionFilter;
       $("#notesCoordinateFilterBtn").setAttribute("aria-pressed", String(notesCoordinateFilter !== "all"));
       $("#notesCoordinateFilterBtn").dataset.coordinateFilter = notesCoordinateFilter;
       $("#notesViewExpandedBtn").setAttribute("aria-pressed", notesViewMode === "expanded");
@@ -13205,8 +13238,9 @@
           ? "No states match that search."
           : notesHideExcludedOnly ? "No visible marked locations. Excluded locations are hidden."
             : !allNoteIconFiltersSelected() ? "No locations match the selected icon filters."
-              : notesCoordinateFilter !== "all" ? `No locations match the ${coordinateFilterMeta().label} coordinate filter.`
-                : noteLevelFilters.size ? "No states match the selected legend filters." : "No marked states yet.";
+              : notesDatePrecisionFilter !== "all" ? `No locations match the ${datePrecisionFilterMeta().label} date filter.`
+                : notesCoordinateFilter !== "all" ? `No locations match the ${coordinateFilterMeta().label} coordinate filter.`
+                  : noteLevelFilters.size ? "No states match the selected legend filters." : "No marked states yet.";
         $("#notesPanelContent").innerHTML = `<div class="empty">${emptyText}</div>`;
       } else if (notesViewMode === "text") {
         $("#notesPanelContent").innerHTML = `<pre id="notesTextOnly" class="notes-text-only" tabindex="0">${escapeHtml(buildNotesTextOnly(marked))}</pre>`;
@@ -13732,10 +13766,12 @@
         }
         parsed = true;
         $("#noteSmartConvert").value = "";
+        refreshNoteLocationButtons();
         return;
       }
       const phraseParsers = [
-        { selector: "#noteWhere", match: remainder.match(/\b(?:at|in|near)\s+([^,;]+,\s*[a-z]{2})(?=\s+\b(?:with|for)\b|$|[;])/i) || remainder.match(/\b(?:at|in|near)\s+([^,;]+?)(?=\s+\b(?:with|for)\b|$|[,;])/i) },
+        { selector: "#noteCity", match: remainder.match(/\bin\s+([^,;]+,\s*[a-z]{2})(?=\s+\b(?:with|for|at|near)\b|$|[;])/i) || remainder.match(/\bin\s+([^,;]+?)(?=\s+\b(?:with|for|at|near)\b|$|[,;])/i) },
+        { selector: "#noteWhere", match: remainder.match(/\b(?:at|near)\s+([^,;]+,\s*[a-z]{2})(?=\s+\b(?:with|for|in)\b|$|[;])/i) || remainder.match(/\b(?:at|near)\s+([^,;]+?)(?=\s+\b(?:with|for|in)\b|$|[,;])/i) },
         { selector: "#noteWhat", match: remainder.match(/\bfor\s+([^,;]+?)(?=\s+\b(?:with|at|in|near)\b|$|[,;])/i) },
         { selector: "#noteWho", match: remainder.match(/\bwith\s+([^,;]+?)(?=\s+\b(?:for|at|in|near)\b|$|[,;])/i) }
       ];
@@ -13751,6 +13787,7 @@
         setValue("#noteText", text);
       }
       $("#noteSmartConvert").value = "";
+      refreshNoteLocationButtons();
     }
 
     function setNoteGeocodeStatus(message, label = "") {
@@ -13761,20 +13798,34 @@
     }
 
     function noteGeocodeQuery() {
+      const city = $("#noteCity").value.trim();
       const where = $("#noteWhere").value.trim();
+      const place = city || where;
       const targetAbbr = currentNoteTargetAbbr();
-      if (!where || !targetAbbr) return "";
-      return [where, STATE_NAMES[targetAbbr], "United States"].filter(Boolean).join(", ");
+      if (!place || !targetAbbr) return "";
+      return [place, STATE_NAMES[targetAbbr], "United States"].filter(Boolean).join(", ");
+    }
+
+    function refreshNoteLocationButtons() {
+      const cityValue = $("#noteCity")?.value.trim() || "";
+      const whereValue = $("#noteWhere")?.value.trim() || "";
+      const geocode = $("#noteGeocodeBtn");
+      if (geocode && !geocode.dataset.busy) {
+        geocode.disabled = !(cityValue || whereValue);
+      }
+      const promote = $("#noteWhereToCityBtn");
+      if (promote) promote.disabled = !whereValue;
     }
 
     async function lookupNoteCoordinates() {
       const query = noteGeocodeQuery();
       if (!query) {
-        setNoteGeocodeStatus("Enter a place in Where Specifically first, or type coordinates manually.");
-        $("#noteWhere").focus();
+        setNoteGeocodeStatus("Enter a City or Where first, or type coordinates manually.");
+        ($("#noteCity").value.trim() ? $("#noteWhere") : $("#noteCity")).focus();
         return;
       }
       const button = $("#noteGeocodeBtn");
+      button.dataset.busy = "1";
       button.disabled = true;
       setNoteGeocodeStatus("Looking up location...");
       try {
@@ -13793,7 +13844,8 @@
       } catch {
         setNoteGeocodeStatus("Could not look that up. Enter latitude/longitude manually or tweak Where.");
       } finally {
-        button.disabled = false;
+        delete button.dataset.busy;
+        refreshNoteLocationButtons();
       }
     }
 
@@ -13961,6 +14013,7 @@
 
     function refreshNoteAutocompletes(targetAbbr = currentNoteTargetAbbr()) {
       const scopedTarget = STATE_NAMES[targetAbbr] ? targetAbbr : "";
+      renderNoteAutocompleteList("noteCitySuggestions", noteAutocompleteValues("city", scopedTarget));
       renderNoteAutocompleteList("noteWhereSuggestions", noteAutocompleteValues("where", scopedTarget));
       renderNoteAutocompleteList("noteWhatSuggestions", noteAutocompleteValues("what", scopedTarget));
       renderNoteAutocompleteList("noteWhoSuggestions", noteAutocompleteValues("who", scopedTarget));
@@ -14006,6 +14059,7 @@
       $("#deleteNoteFromDialogBtn").classList.toggle("hidden", !note);
       $("#deleteNoteFromDialogBtn").dataset.noteId = note ? note.id : "";
       setNoteDateBuilder(note ? note.date : today().slice(0, 4));
+      $("#noteCity").value = note ? note.city || "" : defaults?.city || "";
       $("#noteWhere").value = note ? note.where || "" : defaults?.where || "";
       $("#noteWhat").value = note ? note.what || "" : "";
       $("#noteWho").value = note ? note.who || "" : "";
@@ -14018,6 +14072,7 @@
       setNoteVisitTypes(note?.visitTypes || defaults?.visitTypes || []);
       $("#noteText").value = note ? noteDetails(note) : "";
       refreshNoteAutocompletes(noteTarget);
+      refreshNoteLocationButtons();
       $("#noteDialog").showModal();
       const focusTarget = isQuick && !noteTarget ? $("#noteLocationSearch") : $("#noteSmartConvert");
       focusTarget?.focus();
@@ -14037,6 +14092,7 @@
         day: $("#noteDay").value,
         date: $("#noteDate").value,
         levelId: $("#noteLevel").value,
+        city: $("#noteCity").value,
         where: $("#noteWhere").value,
         what: $("#noteWhat").value,
         who: $("#noteWho").value,
@@ -14107,6 +14163,7 @@
         id: id || uid(),
         date: parsedDate,
         levelId,
+        city: $("#noteCity").value.trim(),
         where: $("#noteWhere").value.trim(),
         what: $("#noteWhat").value.trim(),
         who: $("#noteWho").value.trim(),
@@ -15755,6 +15812,7 @@
         syncButtonLabels();
         refreshAfterNotesFilterChange();
       });
+      $("#notesDatePrecisionFilterBtn").addEventListener("click", () => cycleNotesDatePrecisionFilter());
       $("#notesCoordinateFilterBtn").addEventListener("click", () => cycleNotesCoordinateFilter());
       $("#notesViewExpandedBtn").addEventListener("click", () => {
         notesViewMode = "expanded";
@@ -15800,6 +15858,27 @@
         syncNoteDateBuilder();
       });
       $("#noteGeocodeBtn").addEventListener("click", lookupNoteCoordinates);
+      ["#noteCity", "#noteWhere"].forEach(selector =>
+        $(selector)?.addEventListener("input", refreshNoteLocationButtons)
+      );
+      $("#noteWhereToCityBtn")?.addEventListener("click", () => {
+        const whereInput = $("#noteWhere");
+        const cityInput = $("#noteCity");
+        if (!whereInput || !cityInput) return;
+        const whereValue = whereInput.value.trim();
+        if (!whereValue) {
+          cityInput.focus();
+          return;
+        }
+        const existingCity = cityInput.value.trim();
+        cityInput.value = existingCity
+          ? `${whereValue}, ${existingCity}`.slice(0, Number(cityInput.maxLength) || 80)
+          : whereValue.slice(0, Number(cityInput.maxLength) || 80);
+        whereInput.value = "";
+        cityInput.dispatchEvent(new Event("input", { bubbles: true }));
+        whereInput.dispatchEvent(new Event("input", { bubbles: true }));
+        cityInput.focus();
+      });
       ["#noteLat", "#noteLng"].forEach(selector => $(selector).addEventListener("input", () => {
         setNoteGeocodeStatus("Manual coordinates will be used for the map marker.");
       }));
