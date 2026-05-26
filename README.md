@@ -135,11 +135,15 @@ Since `3.0.0`, the active work has focused on faster note entry and date parsing
 - The note date picker aligns its pill, quick actions, date fields, and status text to the month-chip rhythm, with mobile month chips shown three across.
 - Location Icon Tag search uses richer generated aliases and travel/activity synonyms so More Icons are easier to find.
 - Mobile Quick Add moves the location picker to its own header row under the Add Note title and action buttons.
-- The date fields are centered between the quick action buttons and Month/Day optional status, and WISH-050 is complete.
+- The date fields are centered between the quick action buttons and Month/Day optional status.
 - More Icons shows aliased symbols first and includes extra aliases for useful remaining travel, shopping, weather, pet, package, sport, gift, and medical icons.
 - More Icons also understands broader animal, object, food, and weather aliases for symbols such as ant, bird, coat, cricket ball, popcorn, pills, sunrise, and smoke.
 - More Icons includes appliance, utility, mail, paper, boating, and signpost aliases for symbols such as dishwasher, dryer, envelope, flashlight, lightbulb, newspaper, oar, paper plane, and paper clip.
 - More Icons includes media, fuel, hand/head, hourglass, search, restroom, trash, trophy, storm, phone, TV, video, and xmark-bin aliases.
+- Note date entry keeps the date pill, Year/Month/Day controls, Month/Day optional text, and Today/Year Only buttons on one desktop line; inactive month chips use a mid-contrast state.
+- Mapped-location status sits below Latitude/Longitude and above the shortened Move Where hint, and the Locate/Move SVG icons are centered inside their square buttons.
+- Date pill and Today/Year Only buttons fill their three-chip columns edge to edge, and mapped-location status no longer disappears when a nearby hint is dismissed.
+- Roadmap includes a P2 item for faster previous/next navigation between notes.
 
 ## Persistence and Migration
 
@@ -227,5 +231,3 @@ SEE SCRATCHPAD
 Contains Color Notes, rejected/backup svgs, amongst other stuff.
 
 ## Future Prompt
-
-WISHLIST: P2 Way to go between notes faster

@@ -677,18 +677,25 @@
     #noteSmartConvertInfoBtn,
     #noteGeocodeBtn,
     #noteWhereToCityBtn {
+      display: inline-grid;
+      place-items: center;
       height: 40px;
       min-height: 40px;
       width: 40px;
       min-width: 40px;
+      padding: 0;
+      line-height: 1;
     }
 
     #noteSmartConvertBtn .sf-symbol,
     #noteSmartConvertInfoBtn .sf-symbol,
     #noteGeocodeBtn .sf-symbol,
     #noteWhereToCityBtn .sf-symbol {
+      display: block;
       height: 24px;
       width: 24px;
+      margin: 0;
+      vertical-align: middle;
     }
 
     #quickAddNoteBtn,
@@ -2292,7 +2299,7 @@
 
     .date-picker-head {
       display: grid;
-      grid-template-columns: minmax(0, auto) minmax(0, 1fr) auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
       column-gap: .55rem;
       align-items: center;
       min-width: 0;
@@ -2302,7 +2309,10 @@
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       align-items: center;
+      justify-self: stretch;
       gap: var(--date-chip-gap);
+      width: 100%;
+      margin: 0;
       min-width: 0;
     }
 
@@ -2315,6 +2325,9 @@
       box-sizing: border-box;
       text-align: center;
       padding: .24rem .55rem;
+      width: 100%;
+      margin: 0;
+      justify-self: stretch;
       font-size: .9rem;
       font-weight: 650;
       white-space: nowrap;
@@ -2334,10 +2347,12 @@
 
     .date-entry-group {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-columns: minmax(0, auto) auto;
       align-items: center;
+      justify-content: center;
       gap: .45rem;
       min-width: 0;
+      grid-column: span 6;
     }
 
     .date-entry-group .date-fields {
@@ -2414,10 +2429,10 @@
     }
 
     .month-chip {
-      background: color-mix(in srgb, var(--muted) 10%, var(--surface));
-      border-color: color-mix(in srgb, var(--line) 60%, transparent);
-      color: var(--muted);
-      opacity: .85;
+      background: color-mix(in srgb, var(--muted) 6%, var(--surface));
+      border-color: color-mix(in srgb, var(--line) 82%, var(--text) 18%);
+      color: color-mix(in srgb, var(--text) 58%, var(--muted));
+      opacity: 1;
     }
 
     .month-chip:hover {
@@ -2457,18 +2472,25 @@
       height: 34px;
       min-height: 34px;
       min-width: 0;
+      margin: 0;
+      box-sizing: border-box;
       overflow: hidden;
       font-size: .82rem;
       font-weight: 800;
       font-variant-numeric: tabular-nums;
       line-height: 1;
-      justify-self: start;
+      justify-self: stretch;
       align-self: center;
       text-align: center;
       white-space: normal;
     }
 
     #noteDatePreview {
+      grid-column: span 3;
+      justify-self: stretch;
+    }
+
+    .date-heading-actions {
       grid-column: span 3;
     }
 
@@ -4265,7 +4287,6 @@
 
     .note-city-column {
       display: grid;
-      gap: .18rem;
       min-width: 0;
     }
 
@@ -4280,9 +4301,16 @@
     .note-where-tail {
       display: grid;
       grid-template-columns: auto minmax(0, 1fr);
-      gap: .42rem;
+      gap: .32rem;
       align-items: center;
       min-width: 0;
+    }
+
+    .note-location-message-stack {
+      display: grid;
+      gap: .12rem;
+      min-width: 0;
+      align-self: center;
     }
 
     .field-label {
@@ -5834,6 +5862,12 @@
         row-gap: var(--date-chip-gap);
       }
 
+      #noteDatePreview,
+      .date-entry-group,
+      .date-heading-actions {
+        grid-column: auto;
+      }
+
       .date-heading-actions {
         justify-content: start;
       }
@@ -6194,7 +6228,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.1.0.13</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.1.0.17</span>
                 <span id="betaPill" class="env-pill beta-pill hidden" title="This is the beta deploy">BETA</span>
                 <span id="alphaPill" class="env-pill alpha-pill hidden" title="This is the alpha deploy">ALPHA</span>
               </div>
@@ -7120,10 +7154,6 @@
                   placeholder="Optional">
               </label>
             </div>
-            <small id="noteGeocodeStatus" class="note-geocode-status" data-hint data-hint-key="note-location-help">
-              Use Locate to place this note on the map, or enter latitude/longitude manually.
-              This will use the first icon in the list; Nearby markers cluster and use a hex-grid cluster icon.
-            </small>
           </div>
         </div>
         <div class="note-place-row">
@@ -7134,9 +7164,15 @@
           <div class="note-where-tail">
             <button id="noteWhereToCityBtn" type="button" data-shortcut=""
               aria-label="Move Where text to City" title="Move Where text to City"></button>
-            <small class="note-promote-hint" data-hint data-hint-key="note-where-to-city">
-              Move this Where Location Text up to the City Input
-            </small>
+            <div class="note-location-message-stack">
+              <small id="noteGeocodeStatus" class="note-geocode-status" role="status" aria-live="polite">
+                Use Locate to place this note on the map, or enter latitude/longitude manually.
+                This will use the first icon in the list; Nearby markers cluster and use a hex-grid cluster icon.
+              </small>
+              <small class="note-promote-hint" data-hint data-hint-key="note-where-to-city">
+                Move Where text up to the City Input
+              </small>
+            </div>
           </div>
         </div>
       </div>
@@ -7735,7 +7771,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.1.0.15";
+    const APP_VERSION = "3.1.0.17";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -9076,6 +9112,18 @@
         category: "Notes"
       },
       {
+        title: "Move Between Notes Faster",
+        ticketId: "WISH-051",
+        description: "Add faster navigation between notes so reviewing or editing a run of notes does not require closing and reopening each one. Scope includes previous/next note controls in the note editor, predictable ordering from the current Notes view/filter context, keyboard shortcuts, and safe handling when filters or selected locations change.",
+        priority: "P2",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 18,
+        prompt: "Add faster note-to-note navigation. Include previous/next controls in the note editor, respect the active Notes ordering/filter context where practical, add keyboard shortcuts, and handle edge cases when the current note is filtered out or deleted.",
+        category: "Notes"
+      },
+      {
         title: "Split Note Location into City and Specifics",
         ticketId: "WISH-048",
         description: "Break the current Where Specifically note field into separate City and Specifics inputs. Scope includes migration/import compatibility with existing note.where text, search/export display, Locate query behavior, saved suggestions, and a compact editor layout.",
@@ -9125,6 +9173,37 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "3.1.0.17",
+        date: "2026-05-25",
+        title: "No More Shy Edges",
+        summary: "Date row edges tighten up, and mapped status stops disappearing with dismissed hints.",
+        highlights: [
+          "The date pill and quick date buttons now fill their three-chip columns edge to edge.",
+          "Mapped status stays visible even when nearby hints are dismissed."
+        ],
+        updates: [
+          "Removed stray internal margins from the date preview pill and Today/Year Only action group.",
+          "Changed mapped-location status from dismissible hint content into a live status line above the Move Where hint.",
+          "Added a roadmap item for faster previous/next navigation between notes."
+        ]
+      },
+      {
+        version: "3.1.0.16",
+        date: "2026-05-25",
+        title: "One-Line Date, Cleaner Place",
+        summary: "Date entry and mapped-location controls settle into tighter rows.",
+        highlights: [
+          "The date preview, picker controls, optional text, and quick buttons now share one desktop line.",
+          "Mapped status now sits below latitude/longitude and above the Move Where hint."
+        ],
+        updates: [
+          "Aligned the date preview and Today/Year Only buttons to three month-chip columns each, with the picker and Month/Day optional text centered between them.",
+          "Raised the default month-chip contrast so inactive months sit between primary action text and disabled controls.",
+          "Moved mapped-location status into the Where row, above the Move Where hint, and shortened the hint copy.",
+          "Centered the Locate and Move-to-City SVG icons by giving those square buttons the same zero-padding grid centering as Smart Convert controls."
+        ]
+      },
       {
         version: "3.1.0.15",
         date: "2026-05-25",
@@ -13901,7 +13980,7 @@
     async function lookupNoteCoordinates() {
       const query = noteGeocodeQuery();
       if (!query) {
-        setNoteGeocodeStatus("Enter a City (or Specifics) first, or type coordinates manually.");
+        setNoteGeocodeStatus("Enter a City or Where first, or type coordinates manually.");
         ($("#noteCity").value.trim() ? $("#noteWhere") : $("#noteCity")).focus();
         return;
       }
