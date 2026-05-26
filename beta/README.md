@@ -135,6 +135,11 @@ Since `3.0.0`, the active work has focused on faster note entry and date parsing
 - The note date picker aligns its pill, quick actions, date fields, and status text to the month-chip rhythm, with mobile month chips shown three across.
 - Location Icon Tag search uses richer generated aliases and travel/activity synonyms so More Icons are easier to find.
 - Mobile Quick Add moves the location picker to its own header row under the Add Note title and action buttons.
+- The date fields are centered between the quick action buttons and Month/Day optional status, and WISH-050 is complete.
+- More Icons shows aliased symbols first and includes extra aliases for useful remaining travel, shopping, weather, pet, package, sport, gift, and medical icons.
+- More Icons also understands broader animal, object, food, and weather aliases for symbols such as ant, bird, coat, cricket ball, popcorn, pills, sunrise, and smoke.
+- More Icons includes appliance, utility, mail, paper, boating, and signpost aliases for symbols such as dishwasher, dryer, envelope, flashlight, lightbulb, newspaper, oar, paper plane, and paper clip.
+- More Icons includes media, fuel, hand/head, hourglass, search, restroom, trash, trophy, storm, phone, TV, video, and xmark-bin aliases.
 
 ## Persistence and Migration
 
