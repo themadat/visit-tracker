@@ -675,7 +675,8 @@
 
     #noteSmartConvertBtn,
     #noteSmartConvertInfoBtn,
-    #noteGeocodeBtn {
+    #noteGeocodeBtn,
+    #noteWhereToCityBtn {
       height: 40px;
       min-height: 40px;
       width: 40px;
@@ -684,7 +685,8 @@
 
     #noteSmartConvertBtn .sf-symbol,
     #noteSmartConvertInfoBtn .sf-symbol,
-    #noteGeocodeBtn .sf-symbol {
+    #noteGeocodeBtn .sf-symbol,
+    #noteWhereToCityBtn .sf-symbol {
       height: 24px;
       width: 24px;
     }
@@ -2290,8 +2292,8 @@
 
     .date-picker-head {
       display: grid;
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-      column-gap: var(--date-chip-gap);
+      grid-template-columns: minmax(0, auto) minmax(0, 1fr) auto;
+      column-gap: .55rem;
       align-items: center;
       min-width: 0;
     }
@@ -2312,19 +2314,10 @@
       height: 34px;
       box-sizing: border-box;
       text-align: center;
-      padding: .24rem .44rem;
-      font-size: .75rem;
+      padding: .24rem .55rem;
+      font-size: .9rem;
+      font-weight: 650;
       white-space: nowrap;
-    }
-
-    .date-builder {
-      display: grid;
-      grid-column: span 9;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-      column-gap: var(--date-chip-gap);
-      align-items: center;
-      justify-content: start;
-      min-width: 0;
     }
 
     .date-builder label {
@@ -2358,8 +2351,8 @@
       width: max-content;
     }
 
-    .date-builder input,
-    .date-builder select,
+    .date-fields input,
+    .date-fields select,
     .date-year-row button,
     .month-chip {
       min-height: 34px;
@@ -2389,14 +2382,14 @@
     }
 
     #noteDay.is-month-missing {
-      border-color: color-mix(in srgb, var(--danger) 62%, var(--line));
-      background: color-mix(in srgb, var(--danger) 12%, var(--surface));
-      color: var(--danger);
+      border-color: var(--line);
+      background: color-mix(in srgb, var(--muted) 12%, var(--surface));
+      color: var(--muted);
       opacity: 1;
     }
 
     #noteDay.is-month-missing::placeholder {
-      color: var(--danger);
+      color: var(--muted);
       opacity: 1;
     }
 
@@ -2420,10 +2413,23 @@
       gap: var(--date-chip-gap);
     }
 
+    .month-chip {
+      background: color-mix(in srgb, var(--muted) 10%, var(--surface));
+      border-color: color-mix(in srgb, var(--line) 60%, transparent);
+      color: var(--muted);
+      opacity: .85;
+    }
+
+    .month-chip:hover {
+      opacity: 1;
+      color: var(--text);
+    }
+
     .month-chip[aria-pressed="true"] {
       background: var(--accent);
       border-color: var(--accent);
       color: white;
+      opacity: 1;
     }
 
     [data-theme="dark"] .month-chip[aria-pressed="true"] {
@@ -4246,41 +4252,54 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .note-city-where-row {
+    .note-place-row {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: .32rem;
       align-items: end;
     }
 
-    .note-city-where-row label {
+    .note-place-row > label {
       min-width: 0;
     }
 
-    .note-where-input-row {
+    .note-city-column {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 38px minmax(0, auto);
-      gap: .32rem;
-      align-items: center;
+      gap: .18rem;
+      min-width: 0;
     }
 
-    .note-promote-btn {
-      width: 38px;
-      min-width: 38px;
-      height: 38px;
-      min-height: 38px;
-      padding: 0;
-      display: inline-grid;
-      place-items: center;
+    .note-city-tail {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr);
+      gap: .32rem;
+      align-items: end;
+      min-width: 0;
+    }
+
+    .note-where-tail {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: .42rem;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .field-label {
+      display: inline-flex;
+      align-items: baseline;
+      gap: .25rem;
+      white-space: nowrap;
     }
 
     .note-promote-hint {
       font-size: .7rem;
-      line-height: 1.1;
+      line-height: 1.15;
       color: var(--muted);
       display: inline-flex;
       align-items: center;
       gap: .25rem;
+      min-width: 0;
     }
 
     .note-promote-hint.hint-dismissed {
@@ -4292,34 +4311,12 @@
       font-weight: 400;
       font-size: .72rem;
       margin-left: .25rem;
-    }
-
-    .note-coord-row {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: .32rem;
-      align-items: end;
-    }
-
-    .note-coordinate-inputs {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: .32rem;
+      white-space: nowrap;
     }
 
     .note-place-grid input,
     .note-field-grid input {
-      min-height: 38px;
-    }
-
-    #noteGeocodeBtn {
-      min-width: 38px;
-      min-height: 38px;
-      height: 38px;
-      padding: 0 .8rem;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+      min-height: 40px;
     }
 
     .note-geocode-status {
@@ -5814,8 +5811,10 @@
       .date-builder,
       .note-place-grid,
       .note-field-grid,
-      .note-city-where-row,
-      .note-coord-row,
+      .note-place-row,
+      .note-city-column,
+      .note-city-tail,
+      .note-where-tail,
       .note-level-radios,
       .smart-convert-row {
         grid-template-columns: 1fr;
@@ -7063,33 +7062,31 @@
       <section class="partial-date-picker" aria-label="Date">
         <div class="date-picker-head">
           <span id="noteDatePreview" class="date-preview-pill">No date</span>
-          <div class="date-builder">
-            <div class="date-heading-actions">
-              <button id="noteTodayBtn" type="button">Today</button>
-              <button id="noteYearOnlyBtn" type="button">Year Only</button>
+          <div class="date-entry-group">
+            <div class="date-fields">
+              <label aria-label="Year">
+                <span class="date-year-row">
+                  <button type="button" data-note-year-delta="-1" aria-label="Previous year">−</button>
+                  <input id="noteYear" type="text" inputmode="numeric" maxlength="4" placeholder="Year"
+                    autocomplete="off" required>
+                  <button type="button" data-note-year-delta="1" aria-label="Next year">+</button>
+                </span>
+              </label>
+              <label aria-label="Month">
+                <select id="noteMonth">
+                  <option value="">Month</option>
+                </select>
+              </label>
+              <label aria-label="Day optional">
+                <input id="noteDay" class="is-month-missing" type="text" inputmode="numeric" maxlength="2"
+                  placeholder="--" disabled>
+              </label>
             </div>
-            <div class="date-entry-group">
-              <div class="date-fields">
-                <label aria-label="Year">
-                  <span class="date-year-row">
-                    <button type="button" data-note-year-delta="-1" aria-label="Previous year">−</button>
-                    <input id="noteYear" type="text" inputmode="numeric" maxlength="4" placeholder="Year"
-                      autocomplete="off" required>
-                    <button type="button" data-note-year-delta="1" aria-label="Next year">+</button>
-                  </span>
-                </label>
-                <label aria-label="Month">
-                  <select id="noteMonth">
-                    <option value="">Month</option>
-                  </select>
-                </label>
-                <label aria-label="Day optional">
-                  <input id="noteDay" class="is-month-missing" type="text" inputmode="numeric" maxlength="2"
-                    placeholder="--" disabled>
-                </label>
-              </div>
-              <span class="date-picker-status">Month/Day<br />is Optional</span>
-            </div>
+            <span class="date-picker-status">Month/Day<br />is Optional</span>
+          </div>
+          <div class="date-heading-actions">
+            <button id="noteTodayBtn" type="button">Today</button>
+            <button id="noteYearOnlyBtn" type="button">Year Only</button>
           </div>
         </div>
         <input id="noteDate" type="hidden">
@@ -7106,47 +7103,49 @@
         <div id="noteLevelRadios" class="note-level-radios"></div>
       </section>
       <div class="note-place-grid">
-        <div class="note-city-where-row">
-          <label>City <small class="field-tokens">(in …)</small>
+        <div class="note-place-row">
+          <label><span class="field-label">City <small class="field-tokens">(in …)</small></span>
             <input id="noteCity" maxlength="80" placeholder="e.g. Austin"
               list="noteCitySuggestions" autocomplete="off">
           </label>
-          <label>Where <small class="field-tokens">(at, near, @ …)</small>
-            <span class="note-where-input-row">
-              <input id="noteWhere" maxlength="120" placeholder="Venue, park, trail, route"
-                list="noteWhereSuggestions" autocomplete="off">
-              <button id="noteWhereToCityBtn" type="button" class="note-promote-btn"
-                aria-label="Move Where text to City" title="Move Where text to City"></button>
-              <small class="note-promote-hint" data-hint data-hint-key="note-where-to-city">
-                Move this to City
-              </small>
-            </span>
-          </label>
-        </div>
-        <div class="note-coord-row">
-          <div class="note-coordinate-inputs">
-            <label>Latitude
-              <input id="noteLat" type="number" inputmode="decimal" step="any" min="-90" max="90"
-                placeholder="Optional">
-            </label>
-            <label>Longitude
-              <input id="noteLng" type="number" inputmode="decimal" step="any" min="-180" max="180"
-                placeholder="Optional">
-            </label>
+          <div class="note-city-column">
+            <div class="note-city-tail">
+              <button id="noteGeocodeBtn" type="button" data-shortcut="G">Locate</button>
+              <label><span class="field-label">Latitude</span>
+                <input id="noteLat" type="number" inputmode="decimal" step="any" min="-90" max="90"
+                  placeholder="Optional">
+              </label>
+              <label><span class="field-label">Longitude</span>
+                <input id="noteLng" type="number" inputmode="decimal" step="any" min="-180" max="180"
+                  placeholder="Optional">
+              </label>
+            </div>
+            <small id="noteGeocodeStatus" class="note-geocode-status" data-hint data-hint-key="note-location-help">
+              Use Locate to place this note on the map, or enter latitude/longitude manually.
+              This will use the first icon in the list; Nearby markers cluster and use a hex-grid cluster icon.
+            </small>
           </div>
-          <button id="noteGeocodeBtn" type="button" data-shortcut="G">Locate</button>
         </div>
-        <small id="noteGeocodeStatus" class="note-geocode-status" data-hint data-hint-key="note-location-help">
-          Use Locate to place this note on the map, or enter latitude/longitude manually.
-          This will use the first icon in the list; Nearby markers cluster and use a hex-grid cluster icon.
-        </small>
+        <div class="note-place-row">
+          <label><span class="field-label">Where <small class="field-tokens">(at, near, @ …)</small></span>
+            <input id="noteWhere" maxlength="120" placeholder="Venue, park, trail, route"
+              list="noteWhereSuggestions" autocomplete="off">
+          </label>
+          <div class="note-where-tail">
+            <button id="noteWhereToCityBtn" type="button" data-shortcut=""
+              aria-label="Move Where text to City" title="Move Where text to City"></button>
+            <small class="note-promote-hint" data-hint data-hint-key="note-where-to-city">
+              Move this Where Location Text up to the City Input
+            </small>
+          </div>
+        </div>
       </div>
       <div class="note-field-grid">
-        <label>What <small class="field-tokens">(for …)</small>
+        <label><span class="field-label">What <small class="field-tokens">(for …)</small></span>
           <input id="noteWhat" maxlength="120" placeholder="Trip, event, meal, work" list="noteWhatSuggestions"
             autocomplete="off">
         </label>
-        <label>Who <small class="field-tokens">(with, w/ …)</small>
+        <label><span class="field-label">Who <small class="field-tokens">(with, w/ …)</small></span>
           <input id="noteWho" maxlength="120" placeholder="Solo, family, friends" list="noteWhoSuggestions"
             autocomplete="off">
         </label>
@@ -7736,7 +7735,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.1.0.14";
+    const APP_VERSION = "3.1.0.15";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -9118,20 +9117,37 @@
     ];
     const CHANGELOG = [
       {
+        version: "3.1.0.15",
+        date: "2026-05-25",
+        title: "Sharper Edges",
+        summary: "Note location and date picker get tighter polish — disabled buttons, inline labels, and a calmer month strip.",
+        highlights: [
+          "Locate and Move-to-City buttons gray out when their inputs are empty and light up when there is something to act on.",
+          "Mapped/Locate status now lives directly under the Latitude/Longitude row.",
+          "Field labels keep their parser hints inline (e.g. What (for …)) instead of wrapping to a second line."
+        ],
+        updates: [
+          "Reworded the Move-to-City hint to 'Move this Where Location Text up to the City Input'.",
+          "Date picker now reads pill → fields + Month/Day Optional → Today / Year Only buttons.",
+          "Today and Year Only buttons use a larger, weightier label.",
+          "Month chips are muted by default so they read as quick-pick chrome rather than primary actions.",
+          "Day field uses a muted gray hint when Month is missing instead of the previous red warning style."
+        ]
+      },
+      {
         version: "3.1.0.14",
         date: "2026-05-25",
         title: "Where Meets City",
-        summary: "Note location splits into a clearer City / Where row with a one-tap promotion and parser hints on every field.",
+        summary: "Note location editor reorganizes around a half-width City and Where, with parser hints on every label.",
         highlights: [
-          "City and Where sit side-by-side at 50% width, matching the What / Who row below.",
-          "A small arrow button beside Where moves its text into City in one tap.",
-          "Each location and detail label shows the Smart Convert tokens it understands (e.g. City (in …), Where (at, near, @ …))."
+          "City sits left at 50% with Locate, Latitude, and Longitude on the same row.",
+          "Where sits left at 50% with a one-tap arrow button that moves its text into City, and a dismissible hint beside it.",
+          "Each editor label shows the Smart Convert tokens it understands inline — City (in …), Where (at, near, @ …), What (for …), Who (with, w/ …)."
         ],
         updates: [
           "Renamed Specifics to Where across the editor, Smart Convert rules, and Help Center.",
-          "Field inputs and the Lat/Lng boxes now line up to the same 38px height as the Locate button.",
-          "Moved Locate next to Lat/Lng so geocoding controls live with their outputs.",
-          "The Where → City arrow has a dismissible hint explaining what it does."
+          "Note form inputs and Lat/Lng boxes share the same 40px height as the Locate and Move buttons.",
+          "Move-to-City arrow reuses the Locate button styling so the two pill buttons match."
         ]
       },
       {
@@ -11108,10 +11124,7 @@
       }
       setButtonLabel("#deleteNoteFromDialogBtn", __DELETE_LEFT_FILL, "Delete Note");
       setButtonLabel("#noteGeocodeBtn", __DOT_SCOPE, "Locate", "Look up latitude and longitude", "Look up latitude and longitude");
-      const promoteBtn = $("#noteWhereToCityBtn");
-      if (promoteBtn) {
-        promoteBtn.innerHTML = `<span class="btn-symbol" aria-hidden="true">${__ARROW_UP_LEFT_SQUARE}</span>`;
-      }
+      setButtonLabel("#noteWhereToCityBtn", __ARROW_UP_LEFT_SQUARE, "Move", "Move Where text to City", "Move Where text to City");
       setButtonLabel("#noteSmartConvertBtn", __WAND_AND_SPARKLES_INVERSE, "Auto Convert", "Smart convert note text");
       setButtonLabel("#noteSmartConvertInfoBtn", __INFO_CIRCLE, "Info", "Smart Convert Rules");
       setButtonLabel("#levelDialogCloseBtn", __XMARK, "Close");
@@ -13825,6 +13838,7 @@
         }
         parsed = true;
         $("#noteSmartConvert").value = "";
+        refreshNoteLocationButtons();
         return;
       }
       const phraseParsers = [
@@ -13845,6 +13859,7 @@
         setValue("#noteText", text);
       }
       $("#noteSmartConvert").value = "";
+      refreshNoteLocationButtons();
     }
 
     function setNoteGeocodeStatus(message, label = "") {
@@ -13863,6 +13878,17 @@
       return [place, STATE_NAMES[targetAbbr], "United States"].filter(Boolean).join(", ");
     }
 
+    function refreshNoteLocationButtons() {
+      const cityValue = $("#noteCity")?.value.trim() || "";
+      const whereValue = $("#noteWhere")?.value.trim() || "";
+      const geocode = $("#noteGeocodeBtn");
+      if (geocode && !geocode.dataset.busy) {
+        geocode.disabled = !(cityValue || whereValue);
+      }
+      const promote = $("#noteWhereToCityBtn");
+      if (promote) promote.disabled = !whereValue;
+    }
+
     async function lookupNoteCoordinates() {
       const query = noteGeocodeQuery();
       if (!query) {
@@ -13871,6 +13897,7 @@
         return;
       }
       const button = $("#noteGeocodeBtn");
+      button.dataset.busy = "1";
       button.disabled = true;
       setNoteGeocodeStatus("Looking up location...");
       try {
@@ -13889,7 +13916,8 @@
       } catch {
         setNoteGeocodeStatus("Could not look that up. Enter latitude/longitude manually or tweak Where.");
       } finally {
-        button.disabled = false;
+        delete button.dataset.busy;
+        refreshNoteLocationButtons();
       }
     }
 
@@ -14116,6 +14144,7 @@
       setNoteVisitTypes(note?.visitTypes || defaults?.visitTypes || []);
       $("#noteText").value = note ? noteDetails(note) : "";
       refreshNoteAutocompletes(noteTarget);
+      refreshNoteLocationButtons();
       $("#noteDialog").showModal();
       const focusTarget = isQuick && !noteTarget ? $("#noteLocationSearch") : $("#noteSmartConvert");
       focusTarget?.focus();
@@ -15900,6 +15929,9 @@
         syncNoteDateBuilder();
       });
       $("#noteGeocodeBtn").addEventListener("click", lookupNoteCoordinates);
+      ["#noteCity", "#noteWhere"].forEach(selector =>
+        $(selector)?.addEventListener("input", refreshNoteLocationButtons)
+      );
       $("#noteWhereToCityBtn")?.addEventListener("click", () => {
         const whereInput = $("#noteWhere");
         const cityInput = $("#noteCity");
