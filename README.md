@@ -225,3 +225,7 @@ For every completed change:
 ## Notes
 SEE SCRATCHPAD
 Contains Color Notes, rejected/backup svgs, amongst other stuff.
+
+## Future Prompt
+
+WISHLIST: P2 Way to go between notes faster
