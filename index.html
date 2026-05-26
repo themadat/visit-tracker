@@ -6154,7 +6154,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.1.0.10</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.1.0.13</span>
                 <span id="betaPill" class="env-pill beta-pill hidden" title="This is the beta deploy">BETA</span>
                 <span id="alphaPill" class="env-pill alpha-pill hidden" title="This is the alpha deploy">ALPHA</span>
               </div>
@@ -7681,7 +7681,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.1.0.10";
+    const APP_VERSION = "3.1.0.13";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -8613,7 +8613,8 @@
     const DEFAULT_ACTIVE_VISIT_TYPE_IDS = ["star", "heart", "bookmark", "flag", "house"];
     const ICON_SEARCH_TAG_ALIASES = {
       airplane: ["flight", "plane", "airport", "layover", "travel"],
-      apple: ["mac", "ios", "iphone", "device"],
+      ant: ["animal", "animals", "bug", "insect", "nature"],
+      apple: ["mac", "ios", "device"],
       archivebox: ["archive", "box", "storage"],
       backpack: ["pack", "hike", "hiking", "camp", "camping", "trail", "gear"],
       bag: ["shopping", "store", "market", "luggage"],
@@ -8621,7 +8622,9 @@
       basketball: ["sport", "sports", "ball", "game", "court"],
       bed: ["hotel", "motel", "sleep", "stay", "overnight", "lodging"],
       bell: ["wedding", "ceremony", "alert", "notification"],
+      bin: ["trash", "delete", "remove", "discard"],
       binoculars: ["view", "lookout", "wildlife", "sightseeing"],
+      bird: ["animal", "animals", "wildlife", "nature"],
       bolt: ["electric", "ev", "charge", "charging", "energy"],
       book: ["read", "library", "school", "study"],
       books: ["read", "library", "school", "study"],
@@ -8633,6 +8636,7 @@
       dollar: ["money", "cash", "cost", "payment"],
       dollarsign: ["money", "cash", "cost", "payment"],
       drink: ["bar", "coffee", "cocktail", "beverage"],
+      dishwasher: ["appliance", "appliances", "kitchen", "cleaning", "home"],
       automobile: ["car", "drive", "road", "vehicle", "trip", "roadtrip"],
       bicycle: ["bike", "cycling", "ride"],
       bookmark: ["memory", "remember", "saved"],
@@ -8643,49 +8647,96 @@
       car: ["drive", "road", "vehicle", "trip", "roadtrip"],
       carrier: ["pet", "animal", "dog", "cat", "travel"],
       cart: ["shopping", "store"],
+      cat: ["pet", "animal", "animals"],
       clock: ["time", "chrono"],
       climbing: ["climb", "boulder", "mountain", "outdoors"],
       cloud: ["weather", "sky", "storm", "rain", "snow", "winter"],
       cocktail: ["bar", "drink", "beverage"],
       coffee: ["cafe", "drink", "cup"],
+      coat: ["object", "objects", "clothes", "clothing", "jacket", "winter"],
+      cricket: ["sport", "sports", "game", "ball", "object", "objects"],
       cross: ["medical", "health"],
+      cup: ["coffee", "drink", "meal", "food", "beverage"],
       dance: ["dancing", "party", "music"],
+      document: ["paper", "file", "note", "document", "records"],
+      dog: ["pet", "animal", "animals"],
+      drop: ["weather", "rain", "water", "storm"],
+      dryer: ["appliance", "appliances", "laundry", "clothes", "home"],
+      envelope: ["mail", "letter", "message", "email", "postcard"],
+      fan: ["appliance", "appliances", "cooling", "air", "home"],
+      film: ["movie", "movies", "cinema", "video", "camera"],
       fish: ["fishing", "water", "lake", "river", "seafood"],
       fishing: ["fish", "water", "lake", "river"],
-      cup: ["coffee", "drink", "meal"],
       figure: ["activity", "athlete", "exercise", "fitness", "person", "sport", "sports"],
       flag: ["marker", "important", "finish", "goal", "country"],
+      flashlight: ["light", "lamp", "torch", "camp", "camping"],
+      flame: ["fire", "campfire", "weather", "heat", "hot"],
+      folder: ["file", "document", "paper", "records", "storage"],
       fork: ["food", "restaurant", "meal", "dinner", "lunch"],
       football: ["sport", "sports", "game", "stadium"],
+      fuelpump: ["gas", "fuel", "gas station", "roadtrip", "car"],
       gamecontroller: ["game", "play", "arcade"],
       gift: ["present", "souvenir", "tip", "celebration", "birthday"],
       golf: ["sport", "sports", "course"],
       graduationcap: ["school", "college", "university", "education", "campus"],
+      hand: ["hands", "gesture", "thumb", "thumbs up", "thumbs down"],
+      hammer: ["tool", "tools", "object", "objects", "repair"],
       handbag: ["shopping", "bag", "store", "market"],
+      hare: ["animal", "animals", "wildlife", "rabbit", "fast"],
+      headphones: ["head", "audio", "music", "sound", "listen"],
+      headset: ["head", "audio", "phone", "call", "support"],
       hiking: ["hike", "trail", "mountain", "outdoors", "walk"],
       heart: ["favorite", "love", "best"],
+      hurricane: ["weather", "storm", "wind"],
+      hourglass: ["time", "timer", "waiting", "duration", "history"],
+      iphone: ["phone", "mobile", "cell", "device", "call"],
+      jacket: ["object", "objects", "clothes", "clothing", "coat", "winter"],
+      key: ["object", "objects", "lock", "unlock", "access"],
+      ladybug: ["animal", "animals", "bug", "insect", "nature"],
       house: ["home", "saved", "location"],
       infinity: ["wedding"],
       knife: ["food", "restaurant", "meal", "dinner", "lunch"],
       leaf: ["nature", "park", "garden", "outdoors"],
+      lightbulb: ["light", "idea", "lamp", "electric", "home"],
+      lizard: ["animal", "animals", "wildlife", "reptile", "nature"],
+      lock: ["object", "objects", "key", "secure", "security"],
       lodge: ["hotel", "cabin", "stay", "overnight", "lodging"],
       map: ["travel", "route", "trip", "roadtrip", "navigate"],
       mappin: ["place", "location", "pin"],
+      magnifyingglass: ["search", "find", "lookup", "inspect", "zoom"],
       microphone: ["music", "concert", "karaoke", "show"],
-      moon: ["night", "sleep", "camp"],
+      moon: ["night", "sleep", "camp", "weather", "sky"],
+      moonrise: ["weather", "night", "sky", "moon"],
+      moonset: ["weather", "night", "sky", "moon"],
       mountain: ["hike", "trail", "outdoors", "peak", "climb", "national park"],
       music: ["concert", "show"],
+      newspaper: ["news", "paper", "article", "press", "journal"],
+      oar: ["rowing", "paddle", "boat", "water", "outdoors"],
       park: ["nature", "tree", "outdoors", "national park"],
       parking: ["park", "car", "vehicle"],
       pawprint: ["pet", "dog", "cat", "animal"],
+      paperclip: ["clip", "attachment", "paper", "office", "document"],
+      paperplane: ["send", "message", "mail", "paper", "travel"],
       person: ["friend", "family", "people", "solo"],
       personalhotspot: ["wifi", "internet", "connection", "hotspot", "signal"],
       pet: ["dog", "cat", "animal", "pet friendly"],
+      phone: ["call", "mobile", "cell", "telephone", "contact"],
       photo: ["camera", "picture", "photography", "sightseeing"],
+      pencil: ["write", "edit", "object", "objects", "note"],
       pin: ["place", "location", "map", "marker"],
+      pill: ["medicine", "medical", "health", "food", "pharmacy"],
+      pills: ["medicine", "medical", "health", "food", "pharmacy"],
       plane: ["flight", "airport", "layover", "travel"],
+      popcorn: ["food", "snack", "movie", "theater"],
+      power: ["electric", "power", "energy", "outlet", "plug"],
+      puck: ["hockey", "sport", "sports", "object", "objects"],
+      rugbyball: ["rugby", "sport", "sports", "ball", "game"],
       sailboat: ["boat", "cruise", "water", "sailing"],
+      scissors: ["cut", "tool", "object", "objects"],
       shippingbox: ["package", "shipping", "box", "delivery", "storage"],
+      shoe: ["object", "objects", "clothes", "clothing", "walking", "running"],
+      signpost: ["sign", "direction", "directions", "road", "trail", "wayfinding"],
+      smoke: ["weather", "fire", "haze", "air"],
       soccerball: ["soccer", "football", "sport", "sports", "game"],
       snow: ["winter", "ski", "snowboard", "cold", "weather"],
       snowflake: ["winter", "ski", "snowboard", "cold", "weather"],
@@ -8696,6 +8747,8 @@
       stethoscope: ["medical", "health"],
       storefront: ["shopping", "store", "market", "shop"],
       sun: ["weather", "day", "warm", "sunny", "outdoors"],
+      sunrise: ["weather", "morning", "sun", "sky"],
+      sunset: ["weather", "evening", "sun", "sky"],
       suitcase: ["travel", "trip", "luggage", "airport", "hotel"],
       swim: ["swimming", "pool", "water"],
       tennis: ["sport", "sports", "court", "racket"],
@@ -8704,13 +8757,26 @@
       theatermasks: ["theater", "show", "play", "performance"],
       thermometer: ["weather", "temperature", "hot", "cold"],
       ticket: ["event", "show", "concert", "admission"],
+      toilet: ["bathroom", "restroom", "washroom", "facilities"],
+      tornado: ["weather", "storm", "wind"],
+      tortoise: ["animal", "animals", "wildlife", "turtle", "slow"],
+      trash: ["delete", "remove", "discard", "bin"],
       train: ["rail", "transit", "transportation", "commute"],
       tree: ["park", "nature", "forest", "outdoors", "national park"],
+      trophy: ["award", "winner", "sports", "achievement", "prize"],
       tram: ["transit", "transportation", "rail"],
+      tropicalstorm: ["weather", "storm", "hurricane", "wind"],
+      tray: ["inbox", "paper", "office", "document", "storage"],
+      tshirt: ["object", "objects", "clothes", "clothing", "shirt"],
+      tv: ["television", "screen", "video", "movie", "show"],
+      umbrella: ["weather", "rain", "object", "objects"],
+      video: ["movie", "film", "camera", "recording", "show"],
       volleyball: ["sport", "sports", "ball", "game"],
       walk: ["walking", "hike", "trail"],
+      washer: ["appliance", "appliances", "laundry", "clothes", "home"],
       water: ["swim", "pool", "lake", "river", "beach"],
       wind: ["weather", "storm", "breeze", "outdoors"],
+      xmark: ["close", "remove", "delete", "cancel"],
       yoga: ["fitness", "exercise", "wellness"]
     };
     function autoCircleIconIds() {
@@ -8982,6 +9048,48 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "3.1.0.13",
+        date: "2026-05-25",
+        title: "Search Finds The Bits And Bobs",
+        summary: "More media, phone, utility, restroom, award, and cleanup icons respond to natural searches.",
+        highlights: [
+          "Film, fuel, hand, head, hourglass, search, restroom, trash, trophy, storm, phone, TV, video, and xmark-bin icons gained aliases.",
+          "More Icons keeps these newly searchable symbols in the aliased-first group."
+        ],
+        updates: [
+          "Added aliases for film, fuel pump, hand, headphones, headset, hourglass, magnifying glass, toilet, trash, trophy, tropical storm, phone, TV, video, and xmark-bin icons.",
+          "Added iPhone and bin aliases so phone and delete/trash searches catch related symbols more reliably."
+        ]
+      },
+      {
+        version: "3.1.0.12",
+        date: "2026-05-25",
+        title: "Appliances, Paper Trails, And Handy Things",
+        summary: "More everyday symbols now show up in plain-language icon searches.",
+        highlights: [
+          "Appliance, utility, mail, paper, boating, and signpost symbols gained search aliases.",
+          "More Icons continues to rank newly aliased symbols ahead of unaliased ones."
+        ],
+        updates: [
+          "Added appliance aliases for dishwasher, dryer, washer, fan, and related home/laundry terms.",
+          "Added practical object aliases for envelope, flashlight, lightbulb, newspaper, oar, paper plane, paper clip, document, folder, tray, power, and signpost icons."
+        ]
+      },
+      {
+        version: "3.1.0.11",
+        date: "2026-05-25",
+        title: "More Searchable Symbols",
+        summary: "More animal, object, food, and weather icons now answer to plain-language searches.",
+        highlights: [
+          "Animal, object, food, and weather icons gained broader search aliases.",
+          "More Icons continues to surface explicitly aliased symbols before unaliased ones."
+        ],
+        updates: [
+          "Added search aliases for animal symbols such as ant, bird, cat, dog, hare, ladybug, lizard, and tortoise.",
+          "Added aliases for practical object, food, and weather symbols including coat, cricket ball, key, pencil, popcorn, pills, sunrise, smoke, tornado, and umbrella."
+        ]
+      },
       {
         version: "3.1.0.10",
         date: "2026-05-25",
