@@ -8,7 +8,7 @@ The app is still intentionally simple to run: one offline-capable `index.html`, 
 
 | Version | Date | Title | Summary
 |---|---:|---|---|
-| 3.1.0 | 2026-05-25 | Trail Echoes | Faster note entry with saved field suggestions and weekday-aware date parsing. |
+| 3.1.0 | 2026-05-25 | Trail Echoes | Better note entry, smarter dates/location support, added a notes date precision filter, and richer icon search. |
 | 3.0.0 | 2026-05-25 | Meet Trail Log | A place to track where you've been, where you're going, and log memories with an outdoorsy, geeky vibe. |
 | 2.5.0 | 2026-05-23 | Legend Gets Legs | A Legend-focused release that makes levels easier to edit, reorder, position, and scan. |
 | 2.4.0 | 2026-05-22 | Polish, Memory, and Mobile Flow | A cleanup release for saved layout state, Notes filtering and summaries, Location Tag settings, Roadmap counts, and What's New polish. |
@@ -116,11 +116,11 @@ Useful code regions in `index.html`:
 - Notes: `renderNotesPanel`, `openNoteDialog`, `lookupNoteCoordinates`, `saveNoteFromForm`, note sorting/filter helpers
 - Settings/import/export: `renderSettingsControls`, `exportMarkdown`, `exportRichText`, `importJson`
 
-Current persisted settings include map layout state such as `mapSplitRatio`, `legendPosition`, `mapViewMode`, `mapZoom`, `mapPanCenter`, visible panels, selected Notes location, Notes sort/view/grouping/filter choices, and collapsed Notes categories.
+Current persisted settings include map layout state such as `mapSplitRatio`, `legendPosition`, `mapViewMode`, `mapZoom`, `mapPanCenter`, visible panels, selected Notes location, Notes sort/view/grouping/filter choices including date precision, and collapsed Notes categories.
 
-## Current 3.1 Development Surface
+## Current 3.1 Release Surface
 
-Since `3.0.0`, the active work has focused on faster note entry and date parsing polish:
+Since `3.0.0`, the release work focused on faster note entry, date parsing polish, icon search, and Notes filters:
 
 - Note editor Where Specifically, What For, and Who With fields suggest saved note values locally while typing.
 - Suggestion lists prioritize the active note target before older values from other locations.
@@ -143,7 +143,9 @@ Since `3.0.0`, the active work has focused on faster note entry and date parsing
 - Note date entry keeps the date pill, Year/Month/Day controls, Month/Day optional text, and Today/Year Only buttons on one desktop line; inactive month chips use a mid-contrast state.
 - Mapped-location status sits below Latitude/Longitude and above the shortened Move Where hint, and the Locate/Move SVG icons are centered inside their square buttons.
 - Date pill and Today/Year Only buttons fill their three-chip columns edge to edge, and mapped-location status no longer disappears when a nearby hint is dismissed.
+- Notes include a persisted Date Precision filter for All Dates, Year Only, Year and Month Only, and Full Dates Only; Match Notes map filtering follows it while selected-location detail views stay unfiltered, with a neutral/cyan/custom-blue/indigo precision scale.
 - Roadmap includes a P2 item for faster previous/next navigation between notes.
+- The completed City/Where split roadmap item was removed from seeded wishlist data.
 
 ## Persistence and Migration
 
