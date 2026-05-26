@@ -4238,49 +4238,67 @@
     }
 
     .note-place-grid {
-      grid-template-columns: minmax(0, 1.35fr) minmax(16rem, .9fr);
-      align-items: start;
+      grid-template-columns: 1fr;
+      gap: .42rem;
     }
 
     .note-field-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .note-location-field {
+    .note-city-where-row {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 38px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .32rem;
+      align-items: end;
+    }
+
+    .note-city-where-row label {
+      min-width: 0;
+    }
+
+    .note-where-input-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 38px minmax(0, auto);
       gap: .32rem;
       align-items: center;
     }
 
-    .note-location-field label {
-      min-width: 0;
-    }
-
-    .note-location-inputs {
-      display: grid;
-      grid-template-rows: auto auto;
-      gap: .28rem;
-      min-width: 0;
-    }
-
-    .note-location-inputs label {
-      min-width: 0;
-    }
-
-    .note-location-field button {
-      min-width: 38px;
+    .note-promote-btn {
       width: 38px;
-      min-height: 38px;
+      min-width: 38px;
       height: 38px;
+      min-height: 38px;
       padding: 0;
       display: inline-grid;
       place-items: center;
     }
 
-    .note-coordinate-grid {
+    .note-promote-hint {
+      font-size: .7rem;
+      line-height: 1.1;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: .25rem;
+    }
+
+    .note-promote-hint.hint-dismissed {
+      display: none;
+    }
+
+    .field-tokens {
+      color: var(--muted);
+      font-weight: 400;
+      font-size: .72rem;
+      margin-left: .25rem;
+    }
+
+    .note-coord-row {
       display: grid;
-      gap: .18rem;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: .32rem;
+      align-items: end;
     }
 
     .note-coordinate-inputs {
@@ -4289,8 +4307,19 @@
       gap: .32rem;
     }
 
-    .note-coordinate-inputs input {
+    .note-place-grid input,
+    .note-field-grid input {
       min-height: 38px;
+    }
+
+    #noteGeocodeBtn {
+      min-width: 38px;
+      min-height: 38px;
+      height: 38px;
+      padding: 0 .8rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .note-geocode-status {
@@ -5785,7 +5814,8 @@
       .date-builder,
       .note-place-grid,
       .note-field-grid,
-      .note-coordinate-grid,
+      .note-city-where-row,
+      .note-coord-row,
       .note-level-radios,
       .smart-convert-row {
         grid-template-columns: 1fr;
@@ -7016,7 +7046,7 @@
       </section>
       <div class="note-inline-hints">
         <small data-hint data-hint-key="note-smart-convert-help">
-          Type a quick note, then Auto Convert looks for items like “in” (city), “at”/“near” (specifics), “for”, and “with”.<br />
+          Type a quick note, then Auto Convert looks for items like “in” (city), “at”/“near” (where), “for”, and “with”.<br />
           Leftover text goes to Additional Details. Saved Where, What, and Who entries suggest while you type.
         </small>
       </div>
@@ -7076,20 +7106,24 @@
         <div id="noteLevelRadios" class="note-level-radios"></div>
       </section>
       <div class="note-place-grid">
-        <div class="note-location-field">
-          <div class="note-location-inputs">
-            <label>City
-              <input id="noteCity" maxlength="80" placeholder="e.g. Austin"
-                list="noteCitySuggestions" autocomplete="off">
-            </label>
-            <label>Specifics
+        <div class="note-city-where-row">
+          <label>City <small class="field-tokens">(in …)</small>
+            <input id="noteCity" maxlength="80" placeholder="e.g. Austin"
+              list="noteCitySuggestions" autocomplete="off">
+          </label>
+          <label>Where <small class="field-tokens">(at, near, @ …)</small>
+            <span class="note-where-input-row">
               <input id="noteWhere" maxlength="120" placeholder="Venue, park, trail, route"
                 list="noteWhereSuggestions" autocomplete="off">
-            </label>
-          </div>
-          <button id="noteGeocodeBtn" type="button" data-shortcut="G">Locate</button>
+              <button id="noteWhereToCityBtn" type="button" class="note-promote-btn"
+                aria-label="Move Where text to City" title="Move Where text to City"></button>
+              <small class="note-promote-hint" data-hint data-hint-key="note-where-to-city">
+                Move this to City
+              </small>
+            </span>
+          </label>
         </div>
-        <div class="note-coordinate-grid">
+        <div class="note-coord-row">
           <div class="note-coordinate-inputs">
             <label>Latitude
               <input id="noteLat" type="number" inputmode="decimal" step="any" min="-90" max="90"
@@ -7100,18 +7134,19 @@
                 placeholder="Optional">
             </label>
           </div>
-          <small id="noteGeocodeStatus" class="note-geocode-status" data-hint data-hint-key="note-location-help">
-            Use Locate to place this note on the map, or enter latitude/longitude manually.
-            This will use the first icon in the list; Nearby markers cluster and use a hex-grid cluster icon.
-          </small>
+          <button id="noteGeocodeBtn" type="button" data-shortcut="G">Locate</button>
         </div>
+        <small id="noteGeocodeStatus" class="note-geocode-status" data-hint data-hint-key="note-location-help">
+          Use Locate to place this note on the map, or enter latitude/longitude manually.
+          This will use the first icon in the list; Nearby markers cluster and use a hex-grid cluster icon.
+        </small>
       </div>
       <div class="note-field-grid">
-        <label>What For
+        <label>What <small class="field-tokens">(for …)</small>
           <input id="noteWhat" maxlength="120" placeholder="Trip, event, meal, work" list="noteWhatSuggestions"
             autocomplete="off">
         </label>
-        <label>Who With
+        <label>Who <small class="field-tokens">(with, w/ …)</small>
           <input id="noteWho" maxlength="120" placeholder="Solo, family, friends" list="noteWhoSuggestions"
             autocomplete="off">
         </label>
@@ -7214,7 +7249,7 @@
       <h3>Phrases</h3>
       <ul>
         <li><b>in</b> &lt;city&gt; → <em>City</em> &nbsp;<span class="muted">(used by Locate for lat/lon)</span></li>
-        <li><b>at</b> / <b>near</b> &lt;place&gt; → <em>Specifics</em> &nbsp;<span class="muted">(stadium, park, trail, route — text only)</span></li>
+        <li><b>at</b> / <b>near</b> &lt;place&gt; → <em>Where</em> &nbsp;<span class="muted">(stadium, park, trail, route — text only)</span></li>
         <li><b>for</b> &lt;activity&gt; → <em>What For</em></li>
         <li><b>with</b> &lt;people&gt; → <em>Who With</em></li>
       </ul>
@@ -7450,12 +7485,13 @@
             <li>Use the coordinate filter to cycle between All, Mapped, and Missing.</li>
             <li>Use the circle-slash excluded toggle to show or hide locations that only have excluded-from-stats
               levels. Amber means excluded locations are visible.</li>
-            <li>Use Smart Convert in the note editor to turn quick text into weekday-aware dates, levels, location
-              specifics, people, purpose, and details.</li>
-            <li>Saved City, Specifics, What For, and Who With values appear as local suggestions while you type.</li>
-            <li>Use Locate beside the City field to look up latitude/longitude (City + state). Specifics like a stadium
-              or trail name stay text-only. You can manually edit or clear coordinates.</li>
-            <li>Notes support City, Specifics, What For, Who With, Additional Details, partial dates, and multiple
+            <li>Use Smart Convert in the note editor to turn quick text into weekday-aware dates, levels, city,
+              where, people, purpose, and details.</li>
+            <li>Saved City, Where, What, and Who values appear as local suggestions while you type.</li>
+            <li>Use Locate beside the Lat/Lng row to look up latitude/longitude (City + state). The Where field for a
+              stadium or trail name stays text-only. The arrow button next to Where moves its text into City. You can
+              also edit or clear coordinates manually.</li>
+            <li>Notes support City, Where, What, Who, Additional Details, partial dates, and multiple
               icon labels. Four or fewer labels keeps rows easier to scan.</li>
             <li>When one location is open, Notes shows every note for that location. Main-list search, level, icon, and
               visibility filters do not hide that selected location's notes.</li>
@@ -7673,7 +7709,7 @@
                 reload action when shown, or open device directions.</span></div>
             <div class="shortcut-row"><kbd>Click</kbd><span>Developer: click Detected Type/Icon or the Add as App
                 detected-device icon to simulate another install device.</span></div>
-            <div class="shortcut-row"><kbd>G</kbd><span>Note editor: look up coordinates from Where Specifically.</span>
+            <div class="shortcut-row"><kbd>G</kbd><span>Note editor: look up coordinates from City (or Where) and state.</span>
             </div>
             <div class="shortcut-row"><kbd>W</kbd><span>Developer: reset the What's New banner and badges.</span></div>
             <div class="shortcut-row"><kbd>F</kbd><span>Developer: reset local app data to defaults.</span></div>
@@ -7700,7 +7736,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.1.0.13";
+    const APP_VERSION = "3.1.0.14";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -9081,6 +9117,23 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "3.1.0.14",
+        date: "2026-05-25",
+        title: "Where Meets City",
+        summary: "Note location splits into a clearer City / Where row with a one-tap promotion and parser hints on every field.",
+        highlights: [
+          "City and Where sit side-by-side at 50% width, matching the What / Who row below.",
+          "A small arrow button beside Where moves its text into City in one tap.",
+          "Each location and detail label shows the Smart Convert tokens it understands (e.g. City (in …), Where (at, near, @ …))."
+        ],
+        updates: [
+          "Renamed Specifics to Where across the editor, Smart Convert rules, and Help Center.",
+          "Field inputs and the Lat/Lng boxes now line up to the same 38px height as the Locate button.",
+          "Moved Locate next to Lat/Lng so geocoding controls live with their outputs.",
+          "The Where → City arrow has a dismissible hint explaining what it does."
+        ]
+      },
       {
         version: "3.1.0.13",
         date: "2026-05-25",
@@ -11055,6 +11108,10 @@
       }
       setButtonLabel("#deleteNoteFromDialogBtn", __DELETE_LEFT_FILL, "Delete Note");
       setButtonLabel("#noteGeocodeBtn", __DOT_SCOPE, "Locate", "Look up latitude and longitude", "Look up latitude and longitude");
+      const promoteBtn = $("#noteWhereToCityBtn");
+      if (promoteBtn) {
+        promoteBtn.innerHTML = `<span class="btn-symbol" aria-hidden="true">${__ARROW_UP_LEFT_SQUARE}</span>`;
+      }
       setButtonLabel("#noteSmartConvertBtn", __WAND_AND_SPARKLES_INVERSE, "Auto Convert", "Smart convert note text");
       setButtonLabel("#noteSmartConvertInfoBtn", __INFO_CIRCLE, "Info", "Smart Convert Rules");
       setButtonLabel("#levelDialogCloseBtn", __XMARK, "Close");
@@ -15843,6 +15900,24 @@
         syncNoteDateBuilder();
       });
       $("#noteGeocodeBtn").addEventListener("click", lookupNoteCoordinates);
+      $("#noteWhereToCityBtn")?.addEventListener("click", () => {
+        const whereInput = $("#noteWhere");
+        const cityInput = $("#noteCity");
+        if (!whereInput || !cityInput) return;
+        const whereValue = whereInput.value.trim();
+        if (!whereValue) {
+          cityInput.focus();
+          return;
+        }
+        const existingCity = cityInput.value.trim();
+        cityInput.value = existingCity
+          ? `${whereValue}, ${existingCity}`.slice(0, Number(cityInput.maxLength) || 80)
+          : whereValue.slice(0, Number(cityInput.maxLength) || 80);
+        whereInput.value = "";
+        cityInput.dispatchEvent(new Event("input", { bubbles: true }));
+        whereInput.dispatchEvent(new Event("input", { bubbles: true }));
+        cityInput.focus();
+      });
       ["#noteLat", "#noteLng"].forEach(selector => $(selector).addEventListener("input", () => {
         setNoteGeocodeStatus("Manual coordinates will be used for the map marker.");
       }));
