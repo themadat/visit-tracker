@@ -2300,7 +2300,6 @@
     .date-picker-head {
       display: grid;
       grid-template-columns: repeat(12, minmax(0, 1fr));
-      column-gap: .55rem;
       align-items: center;
       min-width: 0;
     }
@@ -3975,6 +3974,7 @@
 
     .notes-controls .notes-category-toggle,
     .notes-controls .notes-excluded-toggle,
+    .notes-controls .notes-date-filter,
     .notes-controls .notes-coordinate-filter {
       flex: 0 0 var(--notes-control-size);
       width: var(--notes-control-size);
@@ -4024,6 +4024,36 @@
 
     [data-theme="dark"] .notes-excluded-toggle[data-excluded-visibility="shown"] {
       color: #fbbf24;
+    }
+
+    .notes-date-filter[data-date-precision-filter="year"] {
+      background: color-mix(in srgb, #0891b2 16%, var(--surface));
+      border-color: color-mix(in srgb, #0891b2 62%, var(--line));
+      color: #0e7490;
+    }
+
+    [data-theme="dark"] .notes-date-filter[data-date-precision-filter="year"] {
+      color: #67e8f9;
+    }
+
+    .notes-date-filter[data-date-precision-filter="month"] {
+      background: color-mix(in srgb, #0f6fc6 16%, var(--surface));
+      border-color: color-mix(in srgb, #0f6fc6 60%, var(--line));
+      color: #1d4ed8;
+    }
+
+    [data-theme="dark"] .notes-date-filter[data-date-precision-filter="month"] {
+      color: #93c5fd;
+    }
+
+    .notes-date-filter[data-date-precision-filter="full"] {
+      background: color-mix(in srgb, #4f46e5 16%, var(--surface));
+      border-color: color-mix(in srgb, #4f46e5 62%, var(--line));
+      color: #4338ca;
+    }
+
+    [data-theme="dark"] .notes-date-filter[data-date-precision-filter="full"] {
+      color: #a5b4fc;
     }
 
     .notes-coordinate-filter[data-coordinate-filter="mapped"] {
@@ -6228,7 +6258,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.1.0.17</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.1.0</span>
                 <span id="betaPill" class="env-pill beta-pill hidden" title="This is the beta deploy">BETA</span>
                 <span id="alphaPill" class="env-pill alpha-pill hidden" title="This is the alpha deploy">ALPHA</span>
               </div>
@@ -6848,11 +6878,13 @@
               data-shortcut="Y">Categorical</button>
             <button id="notesExcludedToggleBtn" class="notes-excluded-toggle" type="button" aria-pressed="true"
               data-shortcut="V">Show Excluded</button>
+            <button id="notesDatePrecisionFilterBtn" class="notes-date-filter" type="button" aria-pressed="false">All
+              Dates</button>
             <button id="notesCoordinateFilterBtn" class="notes-coordinate-filter" type="button" aria-pressed="false"
               data-shortcut="D">Coordinates</button>
           </div>
           <small id="notesPanelSubtitle" class="notes-toggle-hint" data-hint data-hint-key="notesPanelSubtitle">
-            Category Grouping | Excluded and Mapped Filters.
+            Category Grouping | Excluded, Date, and Mapped Filters.
           </small>
           <div id="notesIconFilterRow" class="notes-icon-filter-row">
             <ol id="notesIconFilters" class="notes-icon-filters" aria-label="Filter notes by icon"></ol>
@@ -7517,6 +7549,8 @@
               opens Location Tag settings.</li>
             <li>Right-click or long-press an icon chip to show only that icon. Do it again when one icon is selected to
               restore all icons.</li>
+            <li>Use the date filter to cycle between All Dates, Year Only, Year and Month Only, and Full Dates Only.
+            </li>
             <li>Use the coordinate filter to cycle between All, Mapped, and Missing.</li>
             <li>Use the circle-slash excluded toggle to show or hide locations that only have excluded-from-stats
               levels. Amber means excluded locations are visible.</li>
@@ -7528,8 +7562,8 @@
               also edit or clear coordinates manually.</li>
             <li>Notes support City, Where, What, Who, Additional Details, partial dates, and multiple
               icon labels. Four or fewer labels keeps rows easier to scan.</li>
-            <li>When one location is open, Notes shows every note for that location. Main-list search, level, icon, and
-              visibility filters do not hide that selected location's notes.</li>
+            <li>When one location is open, Notes shows every note for that location. Main-list search, level, icon,
+              date, coordinate, and visibility filters do not hide that selected location's notes.</li>
           </ol>
         </section>
         <section class="help-section">
@@ -7563,8 +7597,8 @@
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ: Map</h3>
           <p><b>Will my map zoom come back?</b><br>Yes. The app saves your scrollable-map zoom level, fit/scroll mode,
             and last pan position.</p>
-          <p><b>What is Match Notes?</b><br>It applies the active Notes filters to the map, dimming locations and hiding
-            note pins that do not match.</p>
+          <p><b>What is Match Notes?</b><br>It applies the active Notes filters, including date precision, to the map,
+            dimming locations and hiding note pins that do not match.</p>
           <p><b>Why are some pins grouped?</b><br>Nearby mapped notes cluster so the map stays readable. Click a cluster
             to zoom or open the picker when notes are too close to separate.</p>
         </section>
@@ -7580,8 +7614,9 @@
         </section>
         <section class="help-section">
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ: Notes</h3>
-          <p><b>Will my Notes filters come back?</b><br>Yes. Notes view, sort, grouping, excluded visibility, Legend
-            filters, icon filters, collapsed categories, and selected location restore with your local settings.</p>
+          <p><b>Will my Notes filters come back?</b><br>Yes. Notes view, sort, grouping, excluded visibility, date
+            precision, coordinate filter, Legend filters, icon filters, collapsed categories, and selected location
+            restore with your local settings.</p>
           <p><b>What does Categorical do in Notes?</b><br>It groups locations by City, State, and Territory while
             keeping
             your selected sort order inside each group.</p>
@@ -7771,7 +7806,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.1.0.17";
+    const APP_VERSION = "3.1.0";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -8715,6 +8750,7 @@
       territory: { label: "Territory", icon: "territory", order: 2 }
     };
     const NOTE_FILTER_NO_ICON = "__no-icon";
+    const DATE_PRECISION_FILTER_MODES = ["all", "year", "month", "full"];
     const DEFAULT_ACTIVE_VISIT_TYPE_IDS = ["star", "heart", "bookmark", "flag", "house"];
     const ICON_SEARCH_TAG_ALIASES = {
       airplane: ["flight", "plane", "airport", "layover", "travel"],
@@ -9124,30 +9160,6 @@
         category: "Notes"
       },
       {
-        title: "Split Note Location into City and Specifics",
-        ticketId: "WISH-048",
-        description: "Break the current Where Specifically note field into separate City and Specifics inputs. Scope includes migration/import compatibility with existing note.where text, search/export display, Locate query behavior, saved suggestions, and a compact editor layout.",
-        priority: "P0",
-        effort: "medium",
-        targetKind: "minor",
-        targetVersion: "",
-        tokenCostPct: 22,
-        prompt: "Split note location entry into City and Specifics fields. Preserve existing note.where data through migration/import/export/search, keep Locate queries useful, and keep the note editor compact.",
-        category: "Notes"
-      },
-      {
-        title: "Date Precision Filter Toggle",
-        ticketId: "WISH-050",
-        description: "Add a Notes filter toggle that cycles between four states: All Dates, Year Only, Year + Month Only, and Full (Year + Month + Day). Useful for finding notes with vague vs. precise dates, similar to the existing Mapped/Missing coordinate filter. Should integrate with the filter summary and persist with other Notes filter settings.",
-        priority: "P0",
-        effort: "small",
-        targetKind: "minor",
-        targetVersion: "",
-        tokenCostPct: 14,
-        prompt: "Add a Notes date-precision filter toggle cycling All / Year Only / Year+Month / Full. Match the pattern of the existing coordinate filter (icon, summary chip, persistence) and apply to both the Notes panel and Match-Notes map filtering.",
-        category: "Notes"
-      },
-      {
         title: "More Date Formats and Spelled-Out Months",
         ticketId: "WISH-049",
         description: "Broaden the date parser used by Smart Convert and manual date entry to accept more natural date formats — long and short spelled-out months (January / Jan), ordinals (1st, 2nd), comma variants, weekday prefixes/suffixes, ISO-like and locale-flexible orderings — without breaking the current accepted formats.",
@@ -9174,280 +9186,35 @@
     ];
     const CHANGELOG = [
       {
-        version: "3.1.0.17",
-        date: "2026-05-25",
-        title: "No More Shy Edges",
-        summary: "Date row edges tighten up, and mapped status stops disappearing with dismissed hints.",
-        highlights: [
-          "The date pill and quick date buttons now fill their three-chip columns edge to edge.",
-          "Mapped status stays visible even when nearby hints are dismissed."
-        ],
-        updates: [
-          "Removed stray internal margins from the date preview pill and Today/Year Only action group.",
-          "Changed mapped-location status from dismissible hint content into a live status line above the Move Where hint.",
-          "Added a roadmap item for faster previous/next navigation between notes."
-        ]
-      },
-      {
-        version: "3.1.0.16",
-        date: "2026-05-25",
-        title: "One-Line Date, Cleaner Place",
-        summary: "Date entry and mapped-location controls settle into tighter rows.",
-        highlights: [
-          "The date preview, picker controls, optional text, and quick buttons now share one desktop line.",
-          "Mapped status now sits below latitude/longitude and above the Move Where hint."
-        ],
-        updates: [
-          "Aligned the date preview and Today/Year Only buttons to three month-chip columns each, with the picker and Month/Day optional text centered between them.",
-          "Raised the default month-chip contrast so inactive months sit between primary action text and disabled controls.",
-          "Moved mapped-location status into the Where row, above the Move Where hint, and shortened the hint copy.",
-          "Centered the Locate and Move-to-City SVG icons by giving those square buttons the same zero-padding grid centering as Smart Convert controls."
-        ]
-      },
-      {
-        version: "3.1.0.15",
-        date: "2026-05-25",
-        title: "Sharper Edges",
-        summary: "Note location and date picker get tighter polish — disabled buttons, inline labels, and a calmer month strip.",
-        highlights: [
-          "Locate and Move-to-City buttons gray out when their inputs are empty and light up when there is something to act on.",
-          "Mapped/Locate status now lives directly under the Latitude/Longitude row.",
-          "Field labels keep their parser hints inline (e.g. What (for …)) instead of wrapping to a second line."
-        ],
-        updates: [
-          "Reworded the Move-to-City hint to 'Move this Where Location Text up to the City Input'.",
-          "Date picker now reads pill → fields + Month/Day Optional → Today / Year Only buttons.",
-          "Today and Year Only buttons use a larger, weightier label.",
-          "Month chips are muted by default so they read as quick-pick chrome rather than primary actions.",
-          "Day field uses a muted gray hint when Month is missing instead of the previous red warning style."
-        ]
-      },
-      {
-        version: "3.1.0.14",
-        date: "2026-05-25",
-        title: "Where Meets City",
-        summary: "Note location editor reorganizes around a half-width City and Where, with parser hints on every label.",
-        highlights: [
-          "City sits left at 50% with Locate, Latitude, and Longitude on the same row.",
-          "Where sits left at 50% with a one-tap arrow button that moves its text into City, and a dismissible hint beside it.",
-          "Each editor label shows the Smart Convert tokens it understands inline — City (in …), Where (at, near, @ …), What (for …), Who (with, w/ …)."
-        ],
-        updates: [
-          "Renamed Specifics to Where across the editor, Smart Convert rules, and Help Center.",
-          "Note form inputs and Lat/Lng boxes share the same 40px height as the Locate and Move buttons.",
-          "Move-to-City arrow reuses the Locate button styling so the two pill buttons match."
-        ]
-      },
-      {
-        version: "3.1.0.13",
-        date: "2026-05-25",
-        title: "Search Finds The Bits And Bobs",
-        summary: "More media, phone, utility, restroom, award, and cleanup icons respond to natural searches.",
-        highlights: [
-          "Film, fuel, hand, head, hourglass, search, restroom, trash, trophy, storm, phone, TV, video, and xmark-bin icons gained aliases.",
-          "More Icons keeps these newly searchable symbols in the aliased-first group."
-        ],
-        updates: [
-          "Added aliases for film, fuel pump, hand, headphones, headset, hourglass, magnifying glass, toilet, trash, trophy, tropical storm, phone, TV, video, and xmark-bin icons.",
-          "Added iPhone and bin aliases so phone and delete/trash searches catch related symbols more reliably."
-        ]
-      },
-      {
-        version: "3.1.0.12",
-        date: "2026-05-25",
-        title: "Appliances, Paper Trails, And Handy Things",
-        summary: "More everyday symbols now show up in plain-language icon searches.",
-        highlights: [
-          "Appliance, utility, mail, paper, boating, and signpost symbols gained search aliases.",
-          "More Icons continues to rank newly aliased symbols ahead of unaliased ones."
-        ],
-        updates: [
-          "Added appliance aliases for dishwasher, dryer, washer, fan, and related home/laundry terms.",
-          "Added practical object aliases for envelope, flashlight, lightbulb, newspaper, oar, paper plane, paper clip, document, folder, tray, power, and signpost icons."
-        ]
-      },
-      {
-        version: "3.1.0.11",
-        date: "2026-05-25",
-        title: "More Searchable Symbols",
-        summary: "More animal, object, food, and weather icons now answer to plain-language searches.",
-        highlights: [
-          "Animal, object, food, and weather icons gained broader search aliases.",
-          "More Icons continues to surface explicitly aliased symbols before unaliased ones."
-        ],
-        updates: [
-          "Added search aliases for animal symbols such as ant, bird, cat, dog, hare, ladybug, lizard, and tortoise.",
-          "Added aliases for practical object, food, and weather symbols including coat, cricket ball, key, pencil, popcorn, pills, sunrise, smoke, tornado, and umbrella."
-        ]
-      },
-      {
-        version: "3.1.0.10",
-        date: "2026-05-25",
-        title: "Alias Priority",
-        summary: "More Icons now gives richer, aliased tags pride of place.",
-        highlights: [
-          "More Icons lists aliased icons before icons without semantic aliases.",
-          "Added aliases for useful remaining travel, shopping, weather, pet, package, sport, gift, and medical symbols."
-        ],
-        updates: [
-          "Added additional search aliases for icons such as gift, fish, pet carrier, storefront, handbag, pin, shipping box, star of life, snow/weather, and tennis ball.",
-          "Sorted the additional Location Icon Tag list so icons with explicit aliases appear before unaliased icons while preserving selected tag order."
-        ]
-      },
-      {
-        version: "3.1.0.9",
-        date: "2026-05-25",
-        title: "Centered Date Bits",
-        summary: "The date fields sit cleaner between quick actions and optional-status text.",
-        highlights: [
-          "Year, Month, and Day are centered in the space between the quick buttons and Month/Day status.",
-          "The completed date-picker cleanup roadmap item was removed."
-        ],
-        updates: [
-          "Changed the date entry group to center the date controls before the status label while preserving the chip-grid rhythm.",
-          "Removed the completed roadmap item for tidying the date picker and Smart Convert entry height."
-        ]
-      },
-      {
-        version: "3.1.0.8",
-        date: "2026-05-25",
-        title: "Find the Right Little Icon",
-        summary: "Location Icon Tag search is smarter, and the mobile note picker layout is tidier.",
-        highlights: [
-          "More Icons search now understands richer travel, activity, and synonym terms.",
-          "Mobile Quick Add puts the location picker on its own line under the title and actions."
-        ],
-        updates: [
-          "Expanded generated search aliases for Location Icon Tags so searches such as hotel, airport, hiking, restaurant, concert, college, camping, soccer, road trip, and national park find better matches.",
-          "Improved More Icons matching by normalizing query text and checking all query words against icon IDs, labels, saved tags, generated labels, and generated aliases.",
-          "Removed the completed roadmap item for richer Location Icon Tag search.",
-          "Fixed mobile month chips to render three across and vertically centered the Month/Day optional status text."
-        ]
-      },
-      {
-        version: "3.1.0.7",
-        date: "2026-05-25",
-        title: "Chip Grid Rhythm",
-        summary: "The note date picker now aligns its controls and vertical spacing to the month chip grid.",
-        highlights: [
-          "The picker rows have clearer spacing between controls, chips, and hint text.",
-          "Month chips now render three across on mobile."
-        ],
-        updates: [
-          "Aligned the date preview, quick actions, date fields, and status text to a shared 12-column chip rhythm.",
-          "Sized Today and Year Only together to the same span as three month chips, with the same gap used between the pill and buttons.",
-          "Made the date fields plus optional-status text stretch across the six-chip span beside the quick actions."
-        ]
-      },
-      {
-        version: "3.1.0.6",
-        date: "2026-05-25",
-        title: "Three Neat Little Groups",
-        summary: "The note date picker now uses true control groups and a fixed-height preview pill.",
-        highlights: [
-          "Today and Year Only are equal-width grouped buttons.",
-          "The date preview pill keeps a fixed height even when the weekday creates two lines."
-        ],
-        updates: [
-          "Grouped the note date row into quick actions, date fields, and status text so spacing is controlled by intent instead of leftover grid width.",
-          "Tightened the year stepper controls while keeping normal spacing between Year, Month, and Day.",
-          "Reduced the date preview pill text and fixed its height so full dates do not grow the row."
-        ]
-      },
-      {
-        version: "3.1.0.5",
-        date: "2026-05-25",
-        title: "A Little Elbow Room",
-        summary: "The note editor's Smart Convert hint and date picker spacing are cleaner.",
-        highlights: [
-          "Smart Convert placeholder text is smaller and quieter.",
-          "The date picker line has clearer separation between quick actions and date fields."
-        ],
-        updates: [
-          "Reduced the Smart Convert placeholder text size without changing the input behavior.",
-          "Added spacing after Today and Year Only while tightening the year stepper gap so the date row reads more neatly."
-        ]
-      },
-      {
-        version: "3.1.0.4",
-        date: "2026-05-25",
-        title: "At Sign Means At",
-        summary: "Smart Convert now understands spaced @ place shorthand and the roadmap captures the next picker cleanup pass.",
-        highlights: [
-          "Smart Convert parses place shorthand like @ Chapel Hill, NC.",
-          "Added a P1 roadmap item to tidy the date picker and Smart Convert entry height."
-        ],
-        updates: [
-          "Expanded the @ abbreviation so both @Place and @ Place become at Place before phrase parsing runs.",
-          "Allowed Smart Convert's location phrase to keep a trailing two-letter place suffix such as NC or DC after a comma.",
-          "Added a roadmap item for a focused note editor UI cleanup around the date picker and Smart Convert row."
-        ]
-      },
-      {
-        version: "3.1.0.3",
-        date: "2026-05-25",
-        title: "Date Picker Lineup",
-        summary: "The note date picker is more compact and clearer about optional month/day fields.",
-        highlights: [
-          "Today and Year Only now sit on the date input line beside the picker.",
-          "The Day field shows a red -- placeholder until a month is selected."
-        ],
-        updates: [
-          "Rebalanced the note date row into a 40/60 pill-and-picker layout.",
-          "Sized the Year, Month, and Day controls around their actual expected input lengths.",
-          "Added a compact (Month/Day optional) status label beside the picker."
-        ]
-      },
-      {
-        version: "3.1.0.2",
-        date: "2026-05-25",
-        title: "Date Pill Breathing Room",
-        summary: "The note date row now fits weekday brackets and accepts more numeric date formats.",
-        highlights: [
-          "The note date preview has more room for weekday brackets.",
-          "Short numeric dates such as 11/15/23 and year-first dates such as 2026 6 5 now parse."
-        ],
-        updates: [
-          "Widened the note date preview pill and tightened the Month and Day controls so weekday brackets fit cleanly.",
-          "Added two-digit year support for numeric dates such as 11/15/23 and year-first space formats such as 2026 6, 2026 6 5, 2026 June, and 2026 June 5.",
-          "Updated the note date hint to list the accepted date formats directly."
-        ]
-      },
-      {
-        version: "3.1.0.1",
-        date: "2026-05-25",
-        title: "Bracket the Day",
-        summary: "Full note dates now show their weekday in the editor preview.",
-        highlights: [
-          "The note editor date pill adds weekday brackets such as [Fri] when a full date is selected."
-        ],
-        updates: [
-          "Added weekday brackets to the note editor's date preview pill for full dates while keeping year-only and month/year previews unchanged.",
-          "Added a Roadmap item for splitting note location entry into separate City and Specifics fields with migration, search, export, Locate, and suggestion compatibility."
-        ]
-      },
-      {
         version: "3.1.0",
         date: "2026-05-25",
         title: "Trail Echoes",
-        summary: "Faster note entry with saved field suggestions and weekday-aware date parsing.",
+        summary: "Better note entry, smarter dates/location support, added a notes date precision filter, and richer icon search.",
         highlights: [
-          "Saved Where, What, and Who values now suggest while you type.",
-          "Smart Convert and flexible date parsing now understand weekday names next to full or partial dates."
+          "Smart Convert is less dumb... Better Date, Location, Purpose, and People auto-fills. More coming to this in the future!",
+          "The note editor has a cleaner layout with a better date picker, nuanced location handling, and some bug fixes around search and location choosing.",
+          "Notes can now be filtered by date precision: All Dates, Year Only, Year and Month Only, or Full Dates Only.",
+          "Added over 200 icon aliases for better search and promoted more used icons."
         ],
         notice: {
           version: "3.1.0",
           title: "Trail Echoes",
-          summary: "Note entry is quicker now, with saved field suggestions and weekday-aware dates.",
+          summary: "Note entry is quicker now, with saved suggestions, smarter dates, cleaner controls, richer icon search, and date precision filters.",
           cta: "See What's New"
         },
         updates: [
-          "Added local autocomplete suggestions for Where Specifically, What For, and Who With using existing saved notes, with the current target location prioritized.",
-          "Flexible date parsing now accepts weekday names and abbreviations such as Monday, Tue, or Fri beside year-only, month-year, numeric, and month-name dates.",
-          "Smart Convert now captures weekday-adjacent date phrases so the date is filled and the weekday does not linger in Additional Details.",
-          "Removed the completed weekday date parsing idea from the Roadmap after shipping it.",
-          "Retargeted drive-radius planning to a future release now that Trail Echoes owns 3.1.0.",
-          "Updated note help and hints so saved suggestions and weekday-aware dates are discoverable without adding settings or network calls."
+          "Added local autocomplete suggestions for City, Where, What, and Who using existing saved notes, with the current target location prioritized.",
+          "Split note location entry into City and Where while preserving existing note text through search, display, export, and coordinate lookup behavior.",
+          "Smart Convert now treats @Place and @ Place as at Place and keeps comma-plus-two-letter place suffixes such as Chapel Hill, NC.",
+          "Flexible date parsing now accepts YYYY, YYYY M, YYYY M D, YYYY-MM-DD, M/YYYY, M/D/YYYY, M/D/YY, Month YYYY, Month D YYYY, YYYY Month, YYYY Month D, and optional weekday names or abbreviations.",
+          "Full note dates show weekday brackets in the date preview, and the date picker groups its fixed-height preview pill, Today/Year Only buttons, Year/Month/Day controls, month chips, and Month/Day optional status more cleanly on desktop and mobile.",
+          "Mapped-location status now sits below Latitude/Longitude and above the Move Where hint, stays visible when hints are dismissed, and uses centered Locate and Move icons.",
+          "Location Icon Tag search now has broader generated aliases and more plain-language matches for travel, activity, animals, objects, food, weather, appliances, utility, mail, paper, boating, signpost, media, fuel, hand/head, hourglass, search, restroom, trash, trophy, storm, phone, TV, video, and xmark-bin icons.",
+          "More Icons now sorts explicitly aliased symbols ahead of unaliased symbols while preserving the active tag order.",
+          "Added a persisted Notes date precision filter before the coordinate filter, using All Dates, Year Only, Year and Month Only, and Full Dates Only with matching summary chips and a neutral/cyan/custom-blue/indigo precision scale.",
+          "Match Notes map dimming and pins now honor date precision, coordinate, search, level, icon, and excluded-location filters while selected-location detail views continue to show every note for that location.",
+          "Removed completed planning items from the active roadmap and retargeted future planning work now that Trail Echoes owns 3.1.0.",
+          "Updated Help Center copy and Notes hints so saved suggestions, expanded date formats, City/Where behavior, mapped-location status, date precision filters, and Match Notes behavior are discoverable."
         ]
       },
       {
@@ -10179,6 +9946,7 @@
     let notesViewMode = "compact";
     let notesCategoricalMode = true;
     let notesHideExcludedOnly = true;
+    let notesDatePrecisionFilter = "all";
     let notesCoordinateFilter = "all";
     let notesSearchQuery = "";
     let mapFitMode = false;
@@ -10254,6 +10022,7 @@
           notesViewMode: "compact",
           notesCategoricalMode: true,
           notesHideExcludedOnly: true,
+          notesDatePrecisionFilter: "all",
           notesCoordinateFilter: "all",
           noteLevelFilters: [],
           noteVisitTypeFilters: [],
@@ -10611,6 +10380,7 @@
       if (!["expanded", "compact", "text"].includes(next.settings.notesViewMode)) next.settings.notesViewMode = "compact";
       if (typeof next.settings.notesCategoricalMode !== "boolean") next.settings.notesCategoricalMode = true;
       if (typeof next.settings.notesHideExcludedOnly !== "boolean") next.settings.notesHideExcludedOnly = true;
+      if (!DATE_PRECISION_FILTER_MODES.includes(next.settings.notesDatePrecisionFilter)) next.settings.notesDatePrecisionFilter = "all";
       if (!["all", "mapped", "missing"].includes(next.settings.notesCoordinateFilter)) next.settings.notesCoordinateFilter = "all";
       next.settings.selectedState = STATE_NAMES[next.settings.selectedState] ? next.settings.selectedState : "";
       next.settings.notesPanelState = STATE_NAMES[next.settings.notesPanelState] ? next.settings.notesPanelState : "";
@@ -10710,7 +10480,7 @@
         : [];
       return {
         id: String(note.id || uid()),
-        date: normalizeStoredDate(note.date, next.settings.dateOrder) || today(),
+        date: normalizeStoredDate(note.date, next.settings.dateOrder) || "",
         levelId: validLevelIds.has(note.levelId) ? note.levelId : (next.states[abbr]?.[0] || ""),
         city: String(note.city || "").slice(0, 80),
         where: String(note.where || note.whereSpecifically || "").slice(0, 120),
@@ -10762,6 +10532,7 @@
       state.settings.notesViewMode = ["expanded", "compact", "text"].includes(notesViewMode) ? notesViewMode : "compact";
       state.settings.notesCategoricalMode = notesCategoricalMode === true;
       state.settings.notesHideExcludedOnly = notesHideExcludedOnly === true;
+      state.settings.notesDatePrecisionFilter = DATE_PRECISION_FILTER_MODES.includes(notesDatePrecisionFilter) ? notesDatePrecisionFilter : "all";
       state.settings.notesCoordinateFilter = ["all", "mapped", "missing"].includes(notesCoordinateFilter) ? notesCoordinateFilter : "all";
       ensureNoteIconFilters();
       state.settings.noteLevelFilters = [...noteLevelFilters].filter(id => levelById(id));
@@ -10783,6 +10554,7 @@
       notesViewMode = ["expanded", "compact", "text"].includes(state.settings.notesViewMode) ? state.settings.notesViewMode : "compact";
       notesCategoricalMode = state.settings.notesCategoricalMode !== false;
       notesHideExcludedOnly = state.settings.notesHideExcludedOnly !== false;
+      notesDatePrecisionFilter = DATE_PRECISION_FILTER_MODES.includes(state.settings.notesDatePrecisionFilter) ? state.settings.notesDatePrecisionFilter : "all";
       notesCoordinateFilter = ["all", "mapped", "missing"].includes(state.settings.notesCoordinateFilter) ? state.settings.notesCoordinateFilter : "all";
       selectedState = STATE_NAMES[state.settings.selectedState] ? state.settings.selectedState : null;
       notesPanelState = STATE_NAMES[state.settings.notesPanelState] ? state.settings.notesPanelState : null;
@@ -11192,6 +10964,8 @@
       setButtonLabel("#notesSortChronoBtn", __CLOCK_ARROW_TRIANGLEHEAD_2_COUNTERCLOCKWISE_ROTATE_90, "Chronological");
       setButtonLabel("#notesCategoryToggleBtn", __RECTANGLE_3_GROUP_FILL, "Categorical", "Group by Location Type");
       setButtonLabel("#notesExcludedToggleBtn", __CIRCLE_SLASH, notesHideExcludedOnly ? "Hidden" : "Shown", notesHideExcludedOnly ? "Excluded locations hidden" : "Excluded locations shown", notesHideExcludedOnly ? "Excluded locations hidden" : "Excluded locations shown");
+      const dateFilter = datePrecisionFilterMeta();
+      setButtonLabel("#notesDatePrecisionFilterBtn", dateFilter.icon, dateFilter.label, dateFilter.aria, dateFilter.title);
       const coordFilter = coordinateFilterMeta();
       setButtonLabel("#notesCoordinateFilterBtn", coordFilter.icon, coordFilter.label, coordFilter.aria, coordFilter.title);
       setButtonLabel("#notesViewExpandedBtn", __RECTANGLE_EXPAND_VERTICAL, "Expanded", "Expanded View");
@@ -11538,6 +11312,7 @@
       return stateMatchesLevelFilter(abbr)
         && stateMatchesVisitTypeFilter(abbr)
         && stateMatchesExcludedVisibility(abbr)
+        && stateMatchesDatePrecisionFilter(abbr)
         && stateMatchesCoordinateFilter(abbr)
         && stateMatchesNotesSearch(abbr);
     }
@@ -12488,6 +12263,61 @@
       return ids.some(id => noteVisitTypeFilters.has(id));
     }
 
+    function noteDatePrecision(date) {
+      const value = String(date || "").trim();
+      if (/^\d{4}$/.test(value)) return "year";
+      if (/^\d{4}-\d{2}$/.test(value)) return "month";
+      if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return "full";
+      return "none";
+    }
+
+    function datePrecisionFilterMeta(value = notesDatePrecisionFilter) {
+      const map = {
+        all: {
+          label: "All Dates",
+          icon: __CALENDAR_CIRCLE,
+          aria: "Show notes with any date precision",
+          title: "Date filter: all dates",
+          state: "all"
+        },
+        year: {
+          label: "Year Only",
+          icon: __ELLIPSIS_CALENDAR,
+          aria: "Show notes with year-only dates",
+          title: "Date filter: year-only dates",
+          state: "year"
+        },
+        month: {
+          label: "Year and Month Only",
+          icon: __CALENDAR,
+          aria: "Show notes with year and month dates",
+          title: "Date filter: year and month dates",
+          state: "month"
+        },
+        full: {
+          label: "Full Dates Only",
+          icon: __4_CALENDAR,
+          aria: "Show notes with full dates",
+          title: "Date filter: full dates",
+          state: "full"
+        }
+      };
+      return map[value] || map.all;
+    }
+
+    function cycleNotesDatePrecisionFilter() {
+      const index = DATE_PRECISION_FILTER_MODES.indexOf(notesDatePrecisionFilter);
+      notesDatePrecisionFilter = DATE_PRECISION_FILTER_MODES[(index + 1) % DATE_PRECISION_FILTER_MODES.length] || "all";
+      save();
+      syncButtonLabels();
+      refreshAfterNotesFilterChange();
+    }
+
+    function noteMatchesDatePrecisionFilter(note) {
+      if (notesDatePrecisionFilter === "all") return true;
+      return noteDatePrecision(note?.date) === notesDatePrecisionFilter;
+    }
+
     function coordinateFilterMeta(value = notesCoordinateFilter) {
       const map = {
         all: {
@@ -12522,7 +12352,7 @@
     }
 
     function noteMatchesAllFilters(note) {
-      return noteMatchesLevelFilter(note) && noteMatchesVisitTypeFilter(note);
+      return noteMatchesLevelFilter(note) && noteMatchesVisitTypeFilter(note) && noteMatchesDatePrecisionFilter(note);
     }
 
     function activeFilterNames() {
@@ -12543,9 +12373,11 @@
       const icons = allNoteIconFiltersSelected()
         ? []
         : [...noteVisitTypeFilters].map(id => id === NOTE_FILTER_NO_ICON ? "No Icon" : visitTypeMeta(id)?.label).filter(Boolean);
+      const dateFilter = datePrecisionFilterMeta();
       const coordFilter = coordinateFilterMeta();
       const filterParts = [
         notesSummaryIconPart(__CIRCLE_SLASH, notesHideExcludedOnly ? "Hidden" : "Shown", notesHideExcludedOnly ? "Excluded locations hidden" : "Excluded locations shown"),
+        notesSummaryIconPart(dateFilter.icon, dateFilter.label, dateFilter.title),
         notesSummaryIconPart(coordFilter.icon, coordFilter.label, coordFilter.title),
         escapeHtml(levels.length ? `${levels.join(", ")}` : "All Levels"),
         escapeHtml(icons.length ? `${icons.join(", ")}` : "All Icons"),
@@ -12577,6 +12409,11 @@
     function stateMatchesVisitTypeFilter(abbr) {
       if (allNoteIconFiltersSelected()) return true;
       return (state.notes[abbr] || []).some(noteMatchesVisitTypeFilter);
+    }
+
+    function stateMatchesDatePrecisionFilter(abbr) {
+      if (notesDatePrecisionFilter === "all") return true;
+      return (state.notes[abbr] || []).some(noteMatchesDatePrecisionFilter);
     }
 
     function stateOnlyHasExcludedLevels(abbr) {
@@ -12783,7 +12620,7 @@
     function markedStateAbbrs() {
       const marked = new Set([...Object.keys(state.states), ...Object.keys(state.notes).filter(abbr => (state.notes[abbr] || []).length)]);
       return STATES.map(([abbr]) => abbr).filter(abbr =>
-        marked.has(abbr) && stateMatchesLevelFilter(abbr) && stateMatchesVisitTypeFilter(abbr) && stateMatchesExcludedVisibility(abbr) && stateMatchesCoordinateFilter(abbr)
+        marked.has(abbr) && stateMatchesLevelFilter(abbr) && stateMatchesVisitTypeFilter(abbr) && stateMatchesExcludedVisibility(abbr) && stateMatchesDatePrecisionFilter(abbr) && stateMatchesCoordinateFilter(abbr)
       );
     }
 
@@ -12957,7 +12794,7 @@
     function sortedMarkedStateAbbrs() {
       const marked = notesSearchQuery.trim()
         ? STATES.map(([abbr]) => abbr).filter(abbr =>
-          stateMatchesNotesSearch(abbr) && stateMatchesLevelFilter(abbr) && stateMatchesVisitTypeFilter(abbr) && stateMatchesExcludedVisibility(abbr) && stateMatchesCoordinateFilter(abbr)
+          stateMatchesNotesSearch(abbr) && stateMatchesLevelFilter(abbr) && stateMatchesVisitTypeFilter(abbr) && stateMatchesExcludedVisibility(abbr) && stateMatchesDatePrecisionFilter(abbr) && stateMatchesCoordinateFilter(abbr)
         )
         : markedStateAbbrs();
       return marked.sort((a, b) => {
@@ -12984,6 +12821,8 @@
       $("#notesCategoryToggleBtn").setAttribute("aria-pressed", String(notesCategoricalMode));
       $("#notesExcludedToggleBtn").setAttribute("aria-pressed", String(!notesHideExcludedOnly));
       $("#notesExcludedToggleBtn").dataset.excludedVisibility = notesHideExcludedOnly ? "hidden" : "shown";
+      $("#notesDatePrecisionFilterBtn").setAttribute("aria-pressed", String(notesDatePrecisionFilter !== "all"));
+      $("#notesDatePrecisionFilterBtn").dataset.datePrecisionFilter = notesDatePrecisionFilter;
       $("#notesCoordinateFilterBtn").setAttribute("aria-pressed", String(notesCoordinateFilter !== "all"));
       $("#notesCoordinateFilterBtn").dataset.coordinateFilter = notesCoordinateFilter;
       $("#notesViewExpandedBtn").setAttribute("aria-pressed", notesViewMode === "expanded");
@@ -13399,8 +13238,9 @@
           ? "No states match that search."
           : notesHideExcludedOnly ? "No visible marked locations. Excluded locations are hidden."
             : !allNoteIconFiltersSelected() ? "No locations match the selected icon filters."
-              : notesCoordinateFilter !== "all" ? `No locations match the ${coordinateFilterMeta().label} coordinate filter.`
-                : noteLevelFilters.size ? "No states match the selected legend filters." : "No marked states yet.";
+              : notesDatePrecisionFilter !== "all" ? `No locations match the ${datePrecisionFilterMeta().label} date filter.`
+                : notesCoordinateFilter !== "all" ? `No locations match the ${coordinateFilterMeta().label} coordinate filter.`
+                  : noteLevelFilters.size ? "No states match the selected legend filters." : "No marked states yet.";
         $("#notesPanelContent").innerHTML = `<div class="empty">${emptyText}</div>`;
       } else if (notesViewMode === "text") {
         $("#notesPanelContent").innerHTML = `<pre id="notesTextOnly" class="notes-text-only" tabindex="0">${escapeHtml(buildNotesTextOnly(marked))}</pre>`;
@@ -15972,6 +15812,7 @@
         syncButtonLabels();
         refreshAfterNotesFilterChange();
       });
+      $("#notesDatePrecisionFilterBtn").addEventListener("click", () => cycleNotesDatePrecisionFilter());
       $("#notesCoordinateFilterBtn").addEventListener("click", () => cycleNotesCoordinateFilter());
       $("#notesViewExpandedBtn").addEventListener("click", () => {
         notesViewMode = "expanded";
