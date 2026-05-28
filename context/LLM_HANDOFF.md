@@ -26,8 +26,9 @@ For every completed change:
 - Main file: `index.html`
 - Docs: `README.md`, this handoff
 - Storage key: `usStateVisitMap.v1`
-- Current development version: `APP_VERSION = "3.2.0.0"`
-- Latest public release: Trail Log 3.1.0
+- Current development version: `APP_VERSION = "3.2.0"` (just cut; bump the fourth build segment for the next change)
+- Latest public release: Trail Log 3.2.0 "Trail Shorthand"
+- Reserved theme name: "Trail Atlas" is held for the WISH-001 Country Map release.
 - No build step, backend, or dependencies.
 - User data lives in browser localStorage. Locate is the only intentional online action and only runs when clicked.
 
@@ -97,16 +98,17 @@ Important invariants:
 
 ## Recent Release
 
-3.1.0 "Trail Echoes" is cut. It covers:
+3.2.0 "Trail Shorthand" is cut. It covers:
 
-- Saved City/Where/What/Who suggestions.
-- Broader flexible date parsing and weekday date preview.
-- City/Where editor behavior and mapped-location status polish.
-- Date picker layout polish.
-- Richer Location Icon Tag aliases and aliased-first sorting.
-- Persisted Notes date precision filter.
-- Match Notes map filtering updates.
-- Completed-roadmap cleanup.
+- Interactive Smart Convert: single recognizer powering live inline highlighting, color-coded recognition chips, and Auto Convert.
+- Click a chip to promote one field; Enter in the Smart Convert box runs Auto Convert (fields replace, tags add, details append).
+- Separator-aware keyword parsing (`::` etc. terminate values), ordinal-day dates, bracket stripping.
+- Paste-ready note text: Plain Text export and Notes Copy emit `at Where in City with Who for What; details` lines that re-import via Smart Convert.
+- 17 browseable icon categories with a sticky three-row chip strip, multi-select, long-press isolate, scoped search, and a live count line.
+- Non-clipping icon hover tooltip; compact mobile Selected Tags.
+- Completed-roadmap cleanup (WISH-042, WISH-052).
+
+(WISH-001 Country Map reserves the "Trail Atlas" theme name.)
 
 ## UX Preferences
 

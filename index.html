@@ -8177,7 +8177,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.2.0.13";
+    const APP_VERSION = "3.2.0";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -9501,7 +9501,7 @@
         targetKind: "exact",
         targetVersion: "5.0.0",
         tokenCostPct: 80,
-        prompt: "Add world-country map mode without breaking US state data. Reuse levels/notes/export paths. Include migration and historical-country handling.",
+        prompt: "Add world-country map mode without breaking US state data. Reuse levels/notes/export paths. Include migration and historical-country handling. Reserve the 'Trail Atlas' release theme name for whichever release ships this.",
         category: "Maps"
       },
       {
@@ -9604,52 +9604,42 @@
     const CHANGELOG = [
       {
         version: "3.2.0",
-        date: "2026-05-27",
-        title: "Trail Atlas",
-        summary: "Browseable icon categories plus a much smarter, interactive Smart Convert that highlights and promotes recognized note pieces as you type.",
+        date: "2026-05-28",
+        title: "Trail Shorthand",
+        summary: "A much smarter, interactive Smart Convert that highlights and promotes note pieces as you type — plus browseable categories for the whole icon catalog.",
         highlights: [
-          "Tag Settings now has a sticky chip strip under the search bar — pick one or many categories and the icon grid scopes to that selection.",
-          "Right-click or long-press a category chip to isolate just that category; tap All to clear.",
-          "Search is scoped to the chips you have selected, with a live count line describing the current scope.",
-          "Smart Convert now highlights recognized dates, places, people, levels, and tags as you type and lists them as chips below the field.",
-          "Click a Smart Convert chip to send just that piece to its field, or press Enter / Auto Convert to fill everything at once.",
-          "Hovering an icon now shows a clear 'Add <name>' tooltip that no longer gets cut off."
+          "Smart Convert now highlights recognized dates, places, people, levels, and tags as you type and lists them as color-coded chips below the field.",
+          "Click a Smart Convert chip to send just that piece to its field, or hit Enter / Auto Convert to drop everything in at once.",
+          "Copied notes now read as clean, paste-ready lines you can drop straight back into Smart Convert.",
+          "Tag Settings has a sticky category chip strip — pick one or many categories and the icon grid scopes to your selection, with a live count.",
+          "Right-click or long-press a category chip to isolate it; tap All to clear.",
+          "Hovering an icon shows a clear 'Add <name>' tooltip that no longer gets cut off."
         ],
         notice: {
           version: "3.2.0",
-          title: "Trail Atlas",
-          summary: "More Icons gained 17 browseable categories, and Smart Convert now highlights and promotes recognized note pieces live as you type.",
-          cta: "See What's New"
+          title: "Trail Shorthand",
+          summary: "Smart Convert now highlights and promotes recognized note pieces live as you type, and More Icons gained 17 browseable categories.",
+          cta: "Check it Out!"
         },
         updates: [
-          "Added 17 icon categories — Markers & Time, Travel, Outdoors & Animals, Sports & Fitness, Weather, Tech & Media, Office & Docs, People & Health, Home & Daily, Entertainment, Navigation & Arrows, Audio & Playback, Shapes, Math & Symbols, Numbers, Letters, and Currency — covering every bundled icon, with promoted everyday categories ahead of mechanical ones.",
-          "Categories are multi-membership, so cross-domain icons like ticket, microphone, tent, and house appear under more than one chip.",
-          "Chip strip is a single horizontally scrollable two-row container under the search bar, sticky alongside it, with an All chip up front and per-chip counts.",
-          "Multi-select chips combine results across categories; long-press or right-click on a chip isolates it, and long-pressing an already-solo chip re-enables All.",
-          "Count line describes the current scope using formats like '639 icons in all categories', '100 icons in category Sports & Fitness', '15 icons in categories Sports & Fitness, Animals, and Home & Daily with search term \\'ant\\''.",
-          "Aliased-first ordering inside the More Icons grid is preserved within each category selection.",
-          "Hover tooltip on each More Icons button now renders an 'Add <name>' label that overflows the grid cleanly and never gets cut off.",
-          "Updated Help Center with a category browsing entry covering chip selection, search scoping, and the long-press isolate gesture.",
-          "Chip strip is now three rows tall, starts flush at the left edge, uses short chip labels with right-aligned counts, fills the available horizontal space when there is no overflow, and remembers its scroll position across selections.",
-          "Removed the duplicate count beside the More Available Icons header since the same total appears in the count line below the chip strip.",
-          "More Icons grid keeps icons flush against the sticky search + chip strip with a steady gap between rows and reserved scroll runway so the sticky never jumps when the result set shrinks.",
-          "Hover label on each icon now uses a shared overlay anchored to the viewport that clamps to the edge of the screen, so long labels like 'Add American Football Professional' never get clipped.",
-          "Removed the completed icon-categories planning item from the active roadmap now that browseable categories have shipped.",
-          "Compacted Selected Tags rows on phones with tighter padding, smaller name/hotkey inputs, condensed labels, and a slimmer toggle pill so a full set fits without dominating the dialog.",
           "Rebuilt Smart Convert around a single recognizer so live highlighting, recognition chips, and Auto Convert all agree on what was detected.",
           "Smart Convert highlights recognized dates, cities (in), places (at/near/@), purposes (for), people (with, w/), visit levels, and visit labels inline as you type, with no fields changed until you act.",
-          "Each recognized piece appears as a color-coded chip below the field; clicking a chip promotes just that piece into its field and removes it from the Smart Convert text. Promoting replaces the field's current value, except visit-label tags which are simply activated.",
-          "Pressing Enter while the Smart Convert field is focused now runs Auto Convert instead of saving the note; Auto Convert still fills every recognized field and routes leftover text to Additional Details.",
+          "Each recognized piece appears as a color-coded chip below the field (Tag blue, Date red, Level gray, City indigo, Where purple, What orange, Who yellow); clicking a chip promotes just that piece into its field and removes it from the Smart Convert text. Promoting replaces the field's current value, except visit-label tags which are simply activated and details which are appended.",
+          "Pressing Enter while the Smart Convert field is focused now runs Auto Convert instead of saving the note; Auto Convert fills every recognized field and appends leftover text to Additional Details. A hint beside the title reminds you Enter adds every chip.",
+          "Smart Convert phrase parsing treats :: and other separators as value terminators, so keyword tokens are recognized even in a separator-delimited line; plain positional splits still work when no keyword is present, and multi-part entries surface as Where/What/Who/Details chips too.",
           "Date parsing now understands ordinal days such as 1st, 2nd, and 3rd in addition to the existing formats.",
-          "Removed the completed Smart Convert upgrade planning item from the active roadmap now that the interactive Smart Convert has shipped.",
-          "Recognition chips are shorter with smaller, vertically centered kind/value text and a refreshed color set (Tag blue, Date red, Level gray, City indigo, Where purple, What orange, Who yellow).",
-          "Plain Text export now renders each note as a readable, Smart Convert-ready line using keyword tokens between :: separators (in City :: @ Where :: for What :: with Who :: Date :: Level :: Tags :: Details), so a note line can be copied and pasted back into the Smart Convert box to refill its fields.",
-          "Smart Convert phrase parsing now treats :: and other separators as value terminators, so keyword tokens are recognized even in a separator-delimited line; plain positional splits still work when no keyword is present.",
-          "Multi-part entries also surface as Where/What/Who/Details recognition chips and highlights, so the live preview matches what Auto Convert fills.",
-          "The Notes Copy text now writes each note's location, purpose, and people with Smart Convert keyword tokens (at Where in City for What with Who, details) instead of a bare comma list, so copied notes read clearly and paste back cleanly.",
-          "Moved the Enter-to-add hint up beside the Smart Convert title and reworded it; recognition chips now align their label and value on a shared baseline so they stay tidy across one or multiple rows.",
-          "Smart Convert now strips stray square brackets and trims whitespace when routing leftover text to Additional Details, and Auto Convert appends to Additional Details instead of replacing whatever is already there.",
-          "Copied note lines now order the keyword fields as Where, City, Who, What and separate the details with a semicolon (at … in … with … for …; details)."
+          "Smart Convert strips stray square brackets and trims whitespace when routing leftover text to Additional Details.",
+          "Plain Text export and the Notes Copy text now render each note as a readable, paste-ready line using keyword tokens (at Where in City with Who for What; details), so a note line can be copied and pasted back into Smart Convert to refill its fields.",
+          "Added 17 icon categories — Markers & Time, Travel, Outdoors & Animals, Sports & Fitness, Weather, Tech & Media, Office & Docs, People & Health, Home & Daily, Entertainment, Navigation & Arrows, Audio & Playback, Shapes, Math & Symbols, Numbers, Letters, and Currency — covering every bundled icon, with promoted everyday categories ahead of mechanical ones.",
+          "Categories are multi-membership, so cross-domain icons like ticket, microphone, tent, and house appear under more than one chip.",
+          "The category chip strip is three rows tall, starts flush at the left edge, uses short chip labels with right-aligned counts, fills the available width when there is no overflow, and remembers its scroll position across selections.",
+          "Multi-select chips combine results across categories; long-press or right-click on a chip isolates it, and long-pressing an already-solo chip re-enables All.",
+          "A count line describes the current scope using formats like '639 icons in all categories', '100 icons in category Sports & Fitness', and '15 icons in categories Sports & Fitness, Animals, and Home & Daily with search term \\'ant\\''.",
+          "Aliased-first ordering inside the More Icons grid is preserved within each category selection, and the grid stays flush against the sticky search + chip strip so it never jumps when the result set shrinks.",
+          "Hovering an icon uses a shared overlay anchored to the viewport that clamps to the edge of the screen, so long labels like 'Add American Football Professional' never get clipped.",
+          "Compacted Selected Tags rows on phones with tighter padding, smaller name/hotkey inputs, condensed labels, and a slimmer toggle pill so a full set fits without dominating the dialog.",
+          "Updated Help Center with a category browsing entry covering chip selection, search scoping, and the long-press isolate gesture.",
+          "Cleared the completed Smart Convert and icon-categories planning items from the active roadmap now that both have shipped."
         ]
       },
       {
