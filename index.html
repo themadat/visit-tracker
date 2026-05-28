@@ -4438,6 +4438,142 @@
       align-items: stretch;
     }
 
+    /* Per-kind token colors shared by inline highlights and recognition chips. */
+    .smart-convert-row {
+      --tok-tag: #2563eb;
+      --tok-date: #dc2626;
+      --tok-level: #6b7280;
+      --tok-city: #4f46e5;
+      --tok-where: #7c3aed;
+      --tok-what: #ea580c;
+      --tok-who: #ca8a04;
+    }
+
+    .smart-convert-field {
+      position: relative;
+      min-width: 0;
+    }
+
+    .smart-convert-field > #noteSmartConvert,
+    .smart-convert-highlights {
+      font: inherit;
+      line-height: 1.4;
+      padding: .62rem .7rem;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      white-space: pre;
+      letter-spacing: normal;
+      box-sizing: border-box;
+    }
+
+    .smart-convert-field > #noteSmartConvert {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      border-color: var(--line);
+      background: transparent;
+    }
+
+    .smart-convert-highlights {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      color: transparent;
+      pointer-events: none;
+      background: var(--surface);
+    }
+
+    .smart-convert-highlights mark {
+      color: transparent;
+      border-radius: 4px;
+      background: color-mix(in srgb, var(--tok-color, var(--accent)) 30%, transparent);
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--tok-color, var(--accent)) 32%, transparent);
+    }
+
+    .smart-convert-highlights mark.tok-date { --tok-color: var(--tok-date); }
+    .smart-convert-highlights mark.tok-level { --tok-color: var(--tok-level); }
+    .smart-convert-highlights mark.tok-tag { --tok-color: var(--tok-tag); }
+    .smart-convert-highlights mark.tok-city { --tok-color: var(--tok-city); }
+    .smart-convert-highlights mark.tok-where { --tok-color: var(--tok-where); }
+    .smart-convert-highlights mark.tok-what { --tok-color: var(--tok-what); }
+    .smart-convert-highlights mark.tok-who { --tok-color: var(--tok-who); }
+
+    .smart-convert-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .3rem;
+    }
+
+    .smart-convert-chips[hidden] {
+      display: none;
+    }
+
+    .smart-convert-row .smart-chip {
+      min-height: 22px;
+    }
+
+    .smart-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: .28rem;
+      min-height: 22px;
+      padding: .04rem .3rem .04rem .45rem;
+      border: 1px solid color-mix(in srgb, var(--tok-color, var(--accent)) 45%, var(--line));
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--tok-color, var(--accent)) 12%, var(--surface));
+      color: var(--text);
+      font-size: .68rem;
+      font-weight: 700;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .smart-chip:hover,
+    .smart-chip:focus-visible {
+      background: color-mix(in srgb, var(--tok-color, var(--accent)) 22%, var(--surface));
+      border-color: var(--tok-color, var(--accent));
+    }
+
+    .smart-chip.tok-date { --tok-color: var(--tok-date); }
+    .smart-chip.tok-level { --tok-color: var(--tok-level); }
+    .smart-chip.tok-tag { --tok-color: var(--tok-tag); }
+    .smart-chip.tok-city { --tok-color: var(--tok-city); }
+    .smart-chip.tok-where { --tok-color: var(--tok-where); }
+    .smart-chip.tok-what { --tok-color: var(--tok-what); }
+    .smart-chip.tok-who { --tok-color: var(--tok-who); }
+
+    .smart-chip-kind {
+      display: inline-block;
+      color: var(--tok-color, var(--accent));
+      text-transform: uppercase;
+      letter-spacing: .03em;
+      font-size: .58rem;
+      line-height: 1;
+    }
+
+    .smart-chip-value {
+      display: inline-block;
+      max-width: 16ch;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      line-height: 1;
+    }
+
+    .smart-chip-add {
+      display: inline-grid;
+      place-items: center;
+      width: .92rem;
+      height: .92rem;
+      border-radius: 999px;
+      background: var(--tok-color, var(--accent));
+      color: #fff;
+      font-size: .72rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
     #noteSmartConvert::placeholder {
       font-size: .78rem;
       opacity: .68;
@@ -7299,16 +7435,21 @@
       <section class="smart-convert-row">
         <label for="noteSmartConvert">Smart Convert</label>
         <div class="smart-convert-input-row">
-          <input id="noteSmartConvert" maxlength="420"
-            placeholder="Type a quick note to auto-fill the fields below; learn the syntax with the (i) button">
+          <div class="smart-convert-field">
+            <div id="noteSmartConvertHighlights" class="smart-convert-highlights" aria-hidden="true"></div>
+            <input id="noteSmartConvert" maxlength="420" autocomplete="off" spellcheck="false"
+              placeholder="Type a quick note to auto-fill the fields below; learn the syntax with the (i) button">
+          </div>
           <button id="noteSmartConvertBtn" type="button" data-shortcut="W">Auto Convert</button>
           <button id="noteSmartConvertInfoBtn" type="button" data-shortcut="I">Info</button>
         </div>
+        <div id="noteSmartConvertChips" class="smart-convert-chips" aria-live="polite"></div>
       </section>
       <div class="note-inline-hints">
         <small data-hint data-hint-key="note-smart-convert-help">
-          Type a quick note, then Auto Convert looks for items like “in” (city), “at”/“near” (where), “for”, and
-          “with”.<br />
+          Type a quick note — recognized dates, places, people, levels, and tags highlight as you type and appear as
+          chips below. Click a chip to send just that piece to its field, or press Enter / Auto Convert to fill
+          everything at once.<br />
           Leftover text goes to Additional Details. Saved Where, What, and Who entries suggest while you type.
         </small>
       </div>
@@ -7502,7 +7643,9 @@
         data-shortcut="Q">Close</button>
     </header>
     <div class="dialog-body smart-convert-help-body">
-      <p class="muted">Type a quick note, then Auto Convert tries to fill the fields below using these rules.</p>
+      <p class="muted">Type a quick note. Recognized pieces highlight inline and show as chips below the field.
+        Click a chip to send just that piece to its field, or press Enter (while the Smart Convert field is focused)
+        or Auto Convert to fill every recognized field at once. Leftover text goes to Additional Details.</p>
       <h3>Abbreviations</h3>
       <ul>
         <li><code>@</code> → <b>at</b> &nbsp;<span class="muted">(e.g. <code>@Yosemite</code> →
@@ -7524,6 +7667,7 @@
         </li>
         <li><code>YYYY Month [D]</code> &nbsp;·&nbsp; <code>YYYY-MM-DD</code> &nbsp;·&nbsp; <code>M/D/YYYY</code>
           &nbsp;·&nbsp; <code>M/D/YY</code></li>
+        <li>Ordinal days like <code>1st</code>, <code>2nd</code>, <code>3rd</code> are understood.</li>
         <li>A weekday prefix or suffix is ignored if present.</li>
       </ul>
       <h3>Visit Levels &amp; Tags</h3>
@@ -8012,7 +8156,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.2.0.4";
+    const APP_VERSION = "3.2.0.8";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -9376,18 +9520,6 @@
         category: "Legend"
       },
       {
-        title: "Dramatically Improve Auto Convert",
-        ticketId: "WISH-042",
-        description: "Make Smart Convert feel much more intelligent and interactive. Scope includes richer parsing, Enter triggering Auto Convert while the Smart Convert field is active instead of saving the note, and lightweight recognition popups as dates, places, people, purposes, levels, and tags are detected. As the user types, recognized tokens (dates, weekdays, City via 'in', Specifics via 'at'/'near', What For via 'for', Who With via 'with', visit levels, visit labels, abbreviations) should auto-highlight inline in the Smart Convert input. Clicking a highlighted token — or retyping it — removes it from the Smart Convert input and promotes it into the corresponding field below (City, Specifics, What For, Who With, Visit Level, Visit Labels, Date), with any remaining unrecognized text dropping into Additional Details.",
-        priority: "P0",
-        effort: "large",
-        targetKind: "exact",
-        targetVersion: "3.2.0",
-        tokenCostPct: 42,
-        prompt: "Dramatically improve Smart Convert in the note editor. Expand parsing coverage, make Enter in the Smart Convert input run Auto Convert instead of saving, and explore lightweight inline recognition popups for parsed dates, places, people, purposes, levels, and tags. Add live inline highlighting of recognized tokens as the user types; clicking a highlight (or retyping it) removes it from the Smart Convert input and promotes it into the matching field (City, Specifics, What For, Who With, Visit Level, Visit Labels, Date), with leftover text routed to Additional Details.",
-        category: "Notes"
-      },
-      {
         title: "Basecamp Notes Section",
         ticketId: "WISH-043",
         description: "Add a dedicated Basecamp notes section for home-base planning, recurring travel context, packing reminders, saved trip context, or other notes that are useful but not tied to one state, territory, or mapped location.",
@@ -9424,18 +9556,6 @@
         category: "Notes"
       },
       {
-        title: "Add Icon Categories",
-        ticketId: "WISH-052",
-        description: "Group Location Icon Tags and More Icons into browseable categories so the icon catalog is easier to scan than one long list. Scope includes a category taxonomy, category chips or sections, search across all categories, aliased-first ordering within categories, and no disruption to saved active tags or existing icon search behavior.",
-        priority: "P1",
-        effort: "medium",
-        targetKind: "minor",
-        targetVersion: "",
-        tokenCostPct: 20,
-        prompt: "Add browseable categories to Location Icon Tags and More Icons. Keep search global, preserve saved active tags and aliases, and make category browsing compact on desktop and mobile.",
-        category: "Notes"
-      },
-      {
         title: "More Date Formats and Spelled-Out Months",
         ticketId: "WISH-049",
         description: "Broaden the date parser used by Smart Convert and manual date entry to accept more natural date formats — long and short spelled-out months (January / Jan), ordinals (1st, 2nd), comma variants, weekday prefixes/suffixes, ISO-like and locale-flexible orderings — without breaking the current accepted formats.",
@@ -9465,18 +9585,19 @@
         version: "3.2.0",
         date: "2026-05-27",
         title: "Trail Atlas",
-        summary: "Browseable icon categories make the More Icons catalog easier to scan, search, and isolate.",
+        summary: "Browseable icon categories plus a much smarter, interactive Smart Convert that highlights and promotes recognized note pieces as you type.",
         highlights: [
           "Tag Settings now has a sticky chip strip under the search bar — pick one or many categories and the icon grid scopes to that selection.",
           "Right-click or long-press a category chip to isolate just that category; tap All to clear.",
           "Search is scoped to the chips you have selected, with a live count line describing the current scope.",
-          "Hovering an icon now shows a clear 'Add <name>' tooltip that no longer gets cut off.",
-          "Tighter chip strip, compact mobile Selected Tags, and steadier sticky layout that no longer jumps when results change."
+          "Smart Convert now highlights recognized dates, places, people, levels, and tags as you type and lists them as chips below the field.",
+          "Click a Smart Convert chip to send just that piece to its field, or press Enter / Auto Convert to fill everything at once.",
+          "Hovering an icon now shows a clear 'Add <name>' tooltip that no longer gets cut off."
         ],
         notice: {
           version: "3.2.0",
           title: "Trail Atlas",
-          summary: "More Icons is now organized into 17 browseable categories with a sticky chip strip, scoped search, and a clearer hover label.",
+          summary: "More Icons gained 17 browseable categories, and Smart Convert now highlights and promotes recognized note pieces live as you type.",
           cta: "See What's New"
         },
         updates: [
@@ -9492,7 +9613,16 @@
           "Removed the duplicate count beside the More Available Icons header since the same total appears in the count line below the chip strip.",
           "More Icons grid keeps icons flush against the sticky search + chip strip with a steady gap between rows and reserved scroll runway so the sticky never jumps when the result set shrinks.",
           "Hover label on each icon now uses a shared overlay anchored to the viewport that clamps to the edge of the screen, so long labels like 'Add American Football Professional' never get clipped.",
-          "Compacted Selected Tags rows on phones with tighter padding, smaller name/hotkey inputs, condensed labels, and a slimmer toggle pill so a full set fits without dominating the dialog."
+          "Removed the completed icon-categories planning item from the active roadmap now that browseable categories have shipped.",
+          "Compacted Selected Tags rows on phones with tighter padding, smaller name/hotkey inputs, condensed labels, and a slimmer toggle pill so a full set fits without dominating the dialog.",
+          "Rebuilt Smart Convert around a single recognizer so live highlighting, recognition chips, and Auto Convert all agree on what was detected.",
+          "Smart Convert highlights recognized dates, cities (in), places (at/near/@), purposes (for), people (with, w/), visit levels, and visit labels inline as you type, with no fields changed until you act.",
+          "Each recognized piece appears as a color-coded chip below the field; clicking a chip promotes just that piece into its field and removes it from the Smart Convert text. Promoting replaces the field's current value, except visit-label tags which are simply activated.",
+          "Pressing Enter while the Smart Convert field is focused now runs Auto Convert instead of saving the note; Auto Convert still fills every recognized field and routes leftover text to Additional Details.",
+          "Date parsing now understands ordinal days such as 1st, 2nd, and 3rd in addition to the existing formats.",
+          "Removed the completed Smart Convert upgrade planning item from the active roadmap now that the interactive Smart Convert has shipped.",
+          "Recognition chips are shorter with smaller, vertically centered kind/value text and a refreshed color set (Tag blue, Date red, Level gray, City indigo, Where purple, What orange, Who yellow).",
+          "Plain Text export now renders each note as a Smart Convert-ready line, so a note line can be copied and pasted back into the Smart Convert box to refill its fields."
         ]
       },
       {
@@ -10515,7 +10645,9 @@
     function parseFlexibleDate(value, order = "mdy") {
       const text = String(value || "").trim();
       if (!text) return "";
-      const clean = stripDateWeekdayWords(text);
+      // Strip ordinal suffixes on day numbers (1st, 2nd, 3rd, 4th) before parsing.
+      const deordinal = text.replace(/\b(\d{1,2})(?:st|nd|rd|th)\b/gi, "$1");
+      const clean = stripDateWeekdayWords(deordinal);
       if (!clean) return "";
       let match = clean.match(/^(\d{2}|\d{4})$/);
       if (match) return normalizeDateYear(match[1]);
@@ -12188,6 +12320,38 @@
     function noteExportText(note) {
       const fields = noteFieldLines(note, "");
       return fields.length ? fields.join("; ") : "No details";
+    }
+
+    // A parseable date string Smart Convert's date grammar accepts.
+    function smartDateString(date) {
+      const match = String(date || "").match(/^(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?$/);
+      if (!match) return "";
+      const [, year, month, day] = match;
+      if (!month) return year;
+      const monthName = MONTH_NAMES[Number(month) - 1];
+      if (!day) return `${monthName} ${year}`;
+      return `${monthName} ${Number(day)}, ${year}`;
+    }
+
+    // Render a note as a single line that can be pasted back into Smart Convert
+    // and re-parsed into the same fields. Free-text details lead so they fall
+    // through as leftover; structured fields use Smart Convert keyword syntax;
+    // date, level, and tag names are recognized anywhere in the line.
+    function noteToSmartConvertText(note) {
+      const parts = [];
+      const details = String(noteDetails(note) || "").trim();
+      if (details) parts.push(details);
+      if (String(note.city || "").trim()) parts.push(`in ${String(note.city).trim()}`);
+      if (String(note.where || "").trim()) parts.push(`at ${String(note.where).trim()}`);
+      if (String(note.what || "").trim()) parts.push(`for ${String(note.what).trim()}`);
+      if (String(note.who || "").trim()) parts.push(`with ${String(note.who).trim()}`);
+      const dateText = smartDateString(note.date);
+      if (dateText) parts.push(dateText);
+      const level = levelById(note.levelId);
+      if (level) parts.push(level.name);
+      const tags = noteVisitTypeLabels(note).map(type => type.label);
+      if (tags.length) parts.push(tags.join(" "));
+      return parts.join(" ").replace(/\s+/g, " ").trim() || "(empty note)";
     }
 
     function levelCounts() {
@@ -14184,70 +14348,225 @@
       if ($("#tagDialog").open) renderVisitTagSettings();
     }
 
-    function applySmartNoteConvert() {
-      const raw = $("#noteSmartConvert").value.trim();
-      if (!raw) return;
-      const setValue = (selector, value) => {
-        const input = $(selector);
-        if (input) input.value = String(value || "").trim().slice(0, Number(input.maxLength) || 700);
-      };
-      const expanded = raw
-        .replace(/(^|\s)w\/o\b/gi, "$1without")
-        .replace(/(^|\s)w\/(?=\S)/gi, "$1with ")
-        .replace(/(^|\s)@\s*(?=\S)/g, "$1at ");
-      const text = expanded.replace(/\s+/g, " ").trim();
+    // Field metadata for each recognized Smart Convert token kind.
+    const SMART_TOKEN_META = {
+      date:  { selector: "#noteDate",  label: "Date" },
+      level: { selector: "#noteLevel", label: "Level" },
+      tag:   { selector: null,         label: "Tag" },
+      city:  { selector: "#noteCity",  label: "City" },
+      where: { selector: "#noteWhere", label: "Where" },
+      what:  { selector: "#noteWhat",  label: "What" },
+      who:   { selector: "#noteWho",   label: "Who" }
+    };
+    const SMART_SEPARATOR_RE = /\|\||\||::|;| - /;
+    const smartCleanDetails = value => String(value || "")
+      .replace(/\s*(?:\|\||\||::|;| - )\s*/g, " ")
+      .replace(/\s+/g, " ")
+      .replace(/^[,.;:\-\s]+|[,.;:\-\s]+$/g, "")
+      .trim();
+    // Expand the same abbreviations the old parser handled, for details output only.
+    const smartExpandDetails = value => String(value || "")
+      .replace(/(^|\s)w\/o\b/gi, "$1without")
+      .replace(/(^|\s)w\/(?=\S)/gi, "$1with ")
+      .replace(/(^|\s)@\s*(?=\S)/g, "$1at ");
+
+    // Pure recognizer: returns positioned, non-overlapping tokens in raw-input
+    // coordinates so the live highlight, chips, and Auto Convert all agree.
+    function recognizeSmartTokens(raw) {
+      const text = String(raw || "");
+      if (!text.trim()) return [];
       const lower = text.toLowerCase();
-      let parsed = false;
-      let remainder = text;
-      const cleanDetails = value => String(value || "")
-        .replace(/\s*(?:\|\||\||::|;| - )\s*/g, " ")
-        .replace(/\s+/g, " ")
-        .replace(/^[,.;:\-\s]+|[,.;:\-\s]+$/g, "")
-        .trim();
-      const escapeRegExp = value => String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      const removeFromRemainder = value => {
-        const clean = String(value || "").trim();
-        if (!clean) return;
-        remainder = cleanDetails(remainder.replace(new RegExp(escapeRegExp(clean), "i"), " "));
+      const claimed = new Array(text.length).fill(false);
+      const rangeFree = (s, e) => {
+        for (let i = s; i < e; i++) if (claimed[i]) return false;
+        return true;
       };
-      const findDateCandidate = () => {
-        const monthPattern = MONTH_PATTERN;
-        const weekdayPrefix = `(?:\\b(?:${WEEKDAY_PATTERN})\\b\\.?\\s*,?\\s+)?`;
-        const weekdaySuffix = `(?:\\s*,?\\s+\\b(?:${WEEKDAY_PATTERN})\\b\\.?)?`;
-        const withWeekday = source => `${weekdayPrefix}${source}${weekdaySuffix}`;
-        const patterns = [
-          new RegExp(withWeekday(`\\b(?:${monthPattern})\\s+\\d{1,2},?\\s+\\d{4}\\b`), "i"),
-          new RegExp(withWeekday(`\\b(?:${monthPattern})\\s+\\d{4}\\b`), "i"),
-          new RegExp(withWeekday(`\\b\\d{1,2}\\s+(?:${monthPattern})\\s+\\d{4}\\b`), "i"),
-          new RegExp(withWeekday(`\\b\\d{4}\\s+(?:${monthPattern})(?:\\s+\\d{1,2})?\\b`), "i"),
-          new RegExp(withWeekday(`\\b\\d{1,2}[-/.]\\d{1,2}[-/.](?:\\d{2}|\\d{4})\\b`), "i"),
-          new RegExp(withWeekday(`\\b\\d{4}[-/.]\\d{1,2}(?:[-/.]\\d{1,2})?\\b`), "i"),
-          new RegExp(withWeekday(`\\b\\d{4}\\s+\\d{1,2}(?:\\s+\\d{1,2})?\\b`), "i"),
-          new RegExp(withWeekday(`\\b\\d{1,2}[-/.](?:\\d{2}|\\d{4})\\b`), "i"),
-          new RegExp(withWeekday(`\\b(?:\\d{2}|\\d{4})\\b`), "i")
+      const claimRange = (s, e) => {
+        for (let i = s; i < e; i++) claimed[i] = true;
+      };
+      const tokens = [];
+      const add = (kind, start, end, value, opts = {}) => {
+        if (start == null || end == null || start < 0 || end > text.length || start >= end) return false;
+        if (!rangeFree(start, end)) return false;
+        const v = String(value == null ? text.slice(start, end) : value).trim();
+        if (!v) return false;
+        claimRange(start, end);
+        tokens.push({
+          kind, start, end,
+          text: text.slice(start, end),
+          value: v,
+          fieldSelector: SMART_TOKEN_META[kind]?.selector || null,
+          fieldLabel: SMART_TOKEN_META[kind]?.label || kind,
+          displayValue: opts.displayValue || v,
+          extraId: opts.extraId || "",
+          hlStart: opts.hlStart == null ? start : opts.hlStart,
+          hlEnd: opts.hlEnd == null ? end : opts.hlEnd
+        });
+        return true;
+      };
+      const order = state?.settings?.dateOrder || "mdy";
+
+      // --- Date (single best candidate, mirroring the old findDateCandidate) ---
+      const weekdayPrefix = `(?:\\b(?:${WEEKDAY_PATTERN})\\b\\.?\\s*,?\\s+)?`;
+      const weekdaySuffix = `(?:\\s*,?\\s+\\b(?:${WEEKDAY_PATTERN})\\b\\.?)?`;
+      const ww = src => `${weekdayPrefix}${src}${weekdaySuffix}`;
+      const dayOrd = `\\d{1,2}(?:st|nd|rd|th)?`;
+      const datePatterns = [
+        ww(`\\b(?:${MONTH_PATTERN})\\s+${dayOrd},?\\s+\\d{4}\\b`),
+        ww(`\\b(?:${MONTH_PATTERN})\\s+\\d{4}\\b`),
+        ww(`\\b${dayOrd}\\s+(?:${MONTH_PATTERN})\\s+\\d{4}\\b`),
+        ww(`\\b\\d{4}\\s+(?:${MONTH_PATTERN})(?:\\s+${dayOrd})?\\b`),
+        ww(`\\b\\d{1,2}[-/.]\\d{1,2}[-/.](?:\\d{2}|\\d{4})\\b`),
+        ww(`\\b\\d{4}[-/.]\\d{1,2}(?:[-/.]\\d{1,2})?\\b`),
+        ww(`\\b\\d{4}\\s+\\d{1,2}(?:\\s+\\d{1,2})?\\b`),
+        ww(`\\b\\d{1,2}[-/.](?:\\d{2}|\\d{4})\\b`),
+        ww(`\\b(?:\\d{2}|\\d{4})\\b`)
+      ];
+      for (const source of datePatterns) {
+        const m = text.match(new RegExp(source, "i"));
+        if (!m) continue;
+        const parsedDate = parseFlexibleDate(m[0], order);
+        if (!parsedDate) continue;
+        // Absorb a connector word ("on") right before the date into the token
+        // range so it is removed with the date and does not leak into a
+        // neighboring phrase value (e.g. "with Sam on <date>"). Highlight stays
+        // on the date itself.
+        const lead = text.slice(0, m.index).match(/\bon\s+$/i);
+        const start = lead ? m.index - lead[0].length : m.index;
+        if (add("date", start, m.index + m[0].length, parsedDate, { displayValue: formatDateDisplay(parsedDate), hlStart: m.index, hlEnd: m.index + m[0].length })) break;
+      }
+
+      // --- Levels (first free occurrence of each level name) ---
+      const findFree = needle => {
+        const needleLower = needle.toLowerCase();
+        if (!needleLower) return null;
+        let from = 0;
+        while (from <= lower.length - needleLower.length) {
+          const idx = lower.indexOf(needleLower, from);
+          if (idx < 0) return null;
+          if (rangeFree(idx, idx + needle.length)) return [idx, idx + needle.length];
+          from = idx + 1;
+        }
+        return null;
+      };
+      state.levels.forEach(level => {
+        const span = findFree(level.name);
+        if (span) add("level", span[0], span[1], level.id, { displayValue: level.name, extraId: level.id });
+      });
+
+      // --- Visit-label tags (first free occurrence of each active label) ---
+      activeVisitTypes().forEach(type => {
+        const span = findFree(type.label);
+        if (span) add("tag", span[0], span[1], type.id, { displayValue: type.label, extraId: type.id });
+      });
+
+      // --- Keyword phrases (skipped when a multi-part separator is present, to
+      //     preserve the legacy split behavior handled by applySmartNoteConvert).
+      //     Run against text with already-claimed ranges blanked out (index-
+      //     preserving) so date/level/tag content is not re-consumed — mirroring
+      //     the old "remove from remainder, then parse phrases" order. ---
+      if (!SMART_SEPARATOR_RE.test(text)) {
+        const masked = text.split("").map((ch, i) => (claimed[i] ? " " : ch)).join("");
+        // Terminator fragments treat abbreviations as their expansions so a
+        // phrase value stops before "w/" (with) and "@" (at), matching the old
+        // expand-then-parse behavior without mutating the raw text.
+        const tWith = String.raw`(?:\bwith\b|\bw\/(?!o))`;
+        const tAt = String.raw`(?:\b(?:at|near)\b|@)`;
+        const re = (src, flags = "i") => new RegExp(src, flags);
+        const phraseSpecs = [
+          { kind: "city",  res: [
+            re(String.raw`\bin\s+([^,;]+,\s*[a-z]{2})(?=\s+(?:${tWith}|\bfor\b|${tAt})|$|[;])`),
+            re(String.raw`\bin\s+([^,;]+?)(?=\s+(?:${tWith}|\bfor\b|${tAt})|$|[,;])`)
+          ] },
+          { kind: "where", res: [
+            re(String.raw`(?:\b(?:at|near)\s+|@\s*)([^,;]+,\s*[a-z]{2})(?=\s+(?:${tWith}|\bfor\b|\bin\b)|$|[;])`),
+            re(String.raw`(?:\b(?:at|near)\s+|@\s*)([^,;]+?)(?=\s+(?:${tWith}|\bfor\b|\bin\b)|$|[,;])`)
+          ] },
+          { kind: "what",  res: [
+            re(String.raw`\bfor\s+([^,;]+?)(?=\s+(?:${tWith}|${tAt}|\bin\b)|$|[,;])`)
+          ] },
+          { kind: "who",   res: [
+            re(String.raw`(?:\bwith\s+|\bw\/(?!o\b)\s*)([^,;]+?)(?=\s+(?:\bfor\b|${tAt}|\bin\b)|$|[,;])`)
+          ] }
         ];
-        return patterns.map(pattern => text.match(pattern)?.[0]).find(candidate => parseFlexibleDate(candidate, state.settings.dateOrder)) || "";
+        phraseSpecs.forEach(spec => {
+          for (const re of spec.res) {
+            const m = masked.match(re);
+            if (!m || !m[1].trim()) continue;
+            const valueText = m[1].replace(/\s+$/, "");
+            const valueOffset = m.index + m[0].lastIndexOf(m[1]);
+            if (add(spec.kind, m.index, m.index + m[0].replace(/\s+$/, "").length, text.slice(valueOffset, valueOffset + valueText.length), { hlStart: valueOffset, hlEnd: valueOffset + valueText.length })) break;
+          }
+        });
+      }
+
+      tokens.sort((a, b) => a.start - b.start);
+      return tokens;
+    }
+
+    // Remove the claimed ranges of the given tokens from text, returning the leftover.
+    function smartRemoveTokenRanges(raw, tokens) {
+      const text = String(raw || "");
+      if (!tokens.length) return text;
+      const keep = new Array(text.length).fill(true);
+      tokens.forEach(token => {
+        for (let i = token.start; i < token.end; i++) keep[i] = false;
+      });
+      let out = "";
+      for (let i = 0; i < text.length; i++) if (keep[i]) out += text[i];
+      return out;
+    }
+
+    // Apply a single recognized token to its destination field.
+    function applySmartTokenToField(token) {
+      if (token.kind === "date") {
+        setNoteDateBuilder(token.value);
+        return;
+      }
+      if (token.kind === "level") {
+        renderNoteLevelRadios(token.value);
+        return;
+      }
+      if (token.kind === "tag") {
+        setNoteVisitTypes([...new Set([...selectedNoteVisitTypes(), token.value])]);
+        return;
+      }
+      const input = $(token.fieldSelector);
+      if (!input) return;
+      // Replace the current field value (tags above are the exception — they
+      // are additive). Date and level also replace via their own setters.
+      const value = String(token.value || "").trim();
+      input.value = value.slice(0, Number(input.maxLength) || 700);
+    }
+
+    // Promote one token (chip click): apply to field, splice its text out of the
+    // Smart Convert input, then refresh the live recognition view.
+    function promoteSmartToken(token) {
+      const input = $("#noteSmartConvert");
+      if (!input) return;
+      applySmartTokenToField(token);
+      const before = input.value.slice(0, token.start);
+      const after = input.value.slice(token.end);
+      input.value = `${before} ${after}`.replace(/\s+/g, " ").trim();
+      renderSmartConvertRecognition();
+      refreshNoteLocationButtons();
+      input.focus();
+    }
+
+    function applySmartNoteConvert() {
+      const input = $("#noteSmartConvert");
+      if (!input) return;
+      const raw = input.value;
+      if (!raw.trim()) return;
+      const setValue = (selector, value) => {
+        const el = $(selector);
+        if (el) el.value = String(value || "").trim().slice(0, Number(el.maxLength) || 700);
       };
-      const matchedLevel = state.levels.find(level => lower.includes(level.name.toLowerCase()));
-      if (matchedLevel) {
-        renderNoteLevelRadios(matchedLevel.id);
-        removeFromRemainder(matchedLevel.name);
-        parsed = true;
-      }
-      const dateCandidate = findDateCandidate();
-      const parsedDate = parseFlexibleDate(dateCandidate, state.settings.dateOrder);
-      if (parsedDate) {
-        setNoteDateBuilder(parsedDate);
-        removeFromRemainder(dateCandidate);
-        parsed = true;
-      }
-      const matchedVisitTypes = activeVisitTypes().filter(type => lower.includes(type.label.toLowerCase()));
-      if (matchedVisitTypes.length) {
-        setNoteVisitTypes([...new Set([...selectedNoteVisitTypes(), ...matchedVisitTypes.map(type => type.id)])]);
-        matchedVisitTypes.forEach(type => removeFromRemainder(type.label));
-        parsed = true;
-      }
-      const parts = remainder.split(/\s*(?:\|\||\||::|;| - )\s*/).map(part => cleanDetails(part)).filter(Boolean);
+      const tokens = recognizeSmartTokens(raw);
+      tokens.forEach(applySmartTokenToField);
+      let leftover = smartRemoveTokenRanges(raw, tokens);
+      leftover = smartExpandDetails(leftover);
+      const parts = leftover.split(/\s*(?:\|\||\||::|;| - )\s*/).map(smartCleanDetails).filter(Boolean);
       if (parts.length >= 2) {
         setValue("#noteWhere", parts[0]);
         if (parts.length === 2) {
@@ -14257,30 +14576,53 @@
           setValue("#noteWho", parts[2]);
           setValue("#noteText", parts.slice(3).join(" :: "));
         }
-        parsed = true;
-        $("#noteSmartConvert").value = "";
-        refreshNoteLocationButtons();
+      } else {
+        setValue("#noteText", smartCleanDetails(leftover));
+      }
+      input.value = "";
+      renderSmartConvertRecognition();
+      refreshNoteLocationButtons();
+    }
+
+    let smartConvertTokens = [];
+
+    // Rebuild the live highlight mirror and recognition chips from the current
+    // Smart Convert input. Visual only — does not change any fields.
+    function renderSmartConvertRecognition() {
+      const input = $("#noteSmartConvert");
+      const layer = $("#noteSmartConvertHighlights");
+      const chipsEl = $("#noteSmartConvertChips");
+      if (!input || !layer || !chipsEl) return;
+      const text = input.value;
+      const tokens = recognizeSmartTokens(text);
+      smartConvertTokens = tokens;
+      const marks = tokens
+        .map(token => ({ start: token.hlStart, end: token.hlEnd, kind: token.kind }))
+        .sort((a, b) => a.start - b.start);
+      let html = "";
+      let cursor = 0;
+      marks.forEach(mark => {
+        if (mark.start < cursor) return;
+        html += escapeHtml(text.slice(cursor, mark.start));
+        html += `<mark class="tok-${mark.kind}">${escapeHtml(text.slice(mark.start, mark.end))}</mark>`;
+        cursor = mark.end;
+      });
+      html += escapeHtml(text.slice(cursor));
+      layer.innerHTML = html;
+      layer.scrollLeft = input.scrollLeft;
+      if (!tokens.length) {
+        chipsEl.innerHTML = "";
+        chipsEl.hidden = true;
         return;
       }
-      const phraseParsers = [
-        { selector: "#noteCity", match: remainder.match(/\bin\s+([^,;]+,\s*[a-z]{2})(?=\s+\b(?:with|for|at|near)\b|$|[;])/i) || remainder.match(/\bin\s+([^,;]+?)(?=\s+\b(?:with|for|at|near)\b|$|[,;])/i) },
-        { selector: "#noteWhere", match: remainder.match(/\b(?:at|near)\s+([^,;]+,\s*[a-z]{2})(?=\s+\b(?:with|for|in)\b|$|[;])/i) || remainder.match(/\b(?:at|near)\s+([^,;]+?)(?=\s+\b(?:with|for|in)\b|$|[,;])/i) },
-        { selector: "#noteWhat", match: remainder.match(/\bfor\s+([^,;]+?)(?=\s+\b(?:with|at|in|near)\b|$|[,;])/i) },
-        { selector: "#noteWho", match: remainder.match(/\bwith\s+([^,;]+?)(?=\s+\b(?:for|at|in|near)\b|$|[,;])/i) }
-      ];
-      phraseParsers.forEach(item => {
-        if (!item.match) return;
-        setValue(item.selector, item.match[1]);
-        removeFromRemainder(item.match[0]);
-        parsed = true;
-      });
-      if (parsed) {
-        setValue("#noteText", cleanDetails(remainder));
-      } else {
-        setValue("#noteText", text);
-      }
-      $("#noteSmartConvert").value = "";
-      refreshNoteLocationButtons();
+      chipsEl.hidden = false;
+      chipsEl.innerHTML = tokens.map((token, index) => `
+        <button class="smart-chip tok-${token.kind}" type="button" data-smart-token="${index}"
+          title="Add to ${escapeHtml(token.fieldLabel)}">
+          <span class="smart-chip-kind">${escapeHtml(token.fieldLabel)}</span>
+          <span class="smart-chip-value">${escapeHtml(token.displayValue)}</span>
+          <span class="smart-chip-add" aria-hidden="true">+</span>
+        </button>`).join("");
     }
 
     function setNoteGeocodeStatus(message, label = "") {
@@ -14562,6 +14904,7 @@
       const hasCoordinates = $("#noteLat").value !== "" && $("#noteLng").value !== "";
       setNoteGeocodeStatus(hasCoordinates ? `Mapped${geocodeLabel ? `: ${geocodeLabel}` : "."}` : "Use Locate to place this note on the map, or enter latitude/longitude manually.", geocodeLabel);
       $("#noteSmartConvert").value = "";
+      renderSmartConvertRecognition();
       setNoteVisitTypes(note?.visitTypes || defaults?.visitTypes || []);
       $("#noteText").value = note ? noteDetails(note) : "";
       refreshNoteAutocompletes(noteTarget);
@@ -15147,11 +15490,9 @@
       const counted = countedStateTotal();
       const completionTotal = completionRegionTotal();
       const pct = Math.round((counted / completionTotal) * 100);
-      const notesFor = abbr => (state.notes[abbr] || [])
+      const sortedNotes = abbr => (state.notes[abbr] || [])
         .slice()
-        .sort((a, b) => (a.date || "").localeCompare(b.date || ""))
-        .map(note => `${formatDateDisplay(note.date)} [${levelById(note.levelId)?.name || "No level"}]: ${noteExportText(note)}`)
-        .join("; ") || "None";
+        .sort((a, b) => (a.date || "").localeCompare(b.date || ""));
       const lines = [
         state.mapName,
         `Generated by ${APP_NAME} ${APP_VERSION}`,
@@ -15160,17 +15501,24 @@
         `Total counted regions: ${counted} of ${completionTotal}`,
         `Completion: ${pct}%`,
         "",
-        "Regions A-Z"
+        "Regions A-Z",
+        "(Paste any indented note line into a note's Smart Convert box to refill its fields.)"
       ];
       STATES.slice().sort((a, b) => a[1].localeCompare(b[1])).forEach(([abbr, name]) => {
-        lines.push(`${name} (${abbr}) — ${stateLevelNames(abbr).join(", ") || "Unvisited"} — ${notesFor(abbr)}`);
+        lines.push(`${name} (${abbr}) — ${stateLevelNames(abbr).join(", ") || "Unvisited"}`);
+        const notes = sortedNotes(abbr);
+        if (!notes.length) {
+          lines.push("  (no notes)");
+          return;
+        }
+        notes.forEach(note => lines.push(`  ${noteToSmartConvertText(note)}`));
       });
       const chronological = STATES.flatMap(([abbr, name]) => (state.notes[abbr] || []).map(note => ({ ...note, abbr, name })))
         .sort((a, b) => (a.date || "").localeCompare(b.date || "") || a.name.localeCompare(b.name));
       if (chronological.length) {
-        lines.push("", "Notes Chronologically");
+        lines.push("", "Notes Chronologically", "(Each line is Smart Convert-ready; the region name after the dash is just context — drop it before pasting.)");
         chronological.forEach(note => {
-          lines.push(`${formatDateDisplay(note.date)} — ${note.name} — ${levelById(note.levelId)?.name || "No level"} — ${noteExportText(note)}`);
+          lines.push(`${noteToSmartConvertText(note)}  —  ${note.name}`);
         });
       }
       downloadFile(`${slug(state.mapName)}-simple.txt`, "text/plain", lines.join("\n"));
@@ -15841,6 +16189,12 @@
       }
       if (event.key === "Enter" && !event.shiftKey) {
         event.preventDefault();
+        // In the Smart Convert field, Enter runs Auto Convert instead of saving,
+        // as long as there is text to parse.
+        if (event.target === $("#noteSmartConvert") && event.target.value.trim()) {
+          applySmartNoteConvert();
+          return;
+        }
         $("#noteForm").requestSubmit();
         return;
       }
@@ -16377,6 +16731,18 @@
       }));
       $("#quickAddNoteBtn").addEventListener("click", openQuickAddNoteDialog);
       $("#noteSmartConvertBtn").addEventListener("click", applySmartNoteConvert);
+      const smartInput = $("#noteSmartConvert");
+      const smartLayer = $("#noteSmartConvertHighlights");
+      smartInput?.addEventListener("input", renderSmartConvertRecognition);
+      smartInput?.addEventListener("scroll", () => {
+        if (smartLayer) smartLayer.scrollLeft = smartInput.scrollLeft;
+      });
+      $("#noteSmartConvertChips")?.addEventListener("click", event => {
+        const button = event.target.closest("[data-smart-token]");
+        if (!button) return;
+        const token = smartConvertTokens[Number(button.dataset.smartToken)];
+        if (token) promoteSmartToken(token);
+      });
       $("#noteSmartConvertInfoBtn")?.addEventListener("click", () => {
         const dialog = $("#smartConvertHelpDialog");
         if (dialog && !dialog.open) dialog.showModal();
