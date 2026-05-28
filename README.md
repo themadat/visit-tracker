@@ -213,21 +213,6 @@ git diff --check
 - Export JSON, Markdown, and Simple Rich Text.
 - Import a JSON backup only after confirming overwrite behavior.
 
-## Release Notes
-
-For every completed change:
-
-- Bump the fourth `APP_VERSION` build number.
-- When finalizing a release, set `APP_VERSION` to the released semantic version and collapse same-line patch/build notes into that release entry.
-- Update `CHANGELOG` using the collapsed release-note format: `Major.Minor.Patch :: YYYY-mm-dd :: Cheeky theme name`, then a bold one-line summary, then `highlights` and `updates`.
-- Keep `highlights` short and abbreviated; use `updates` for the fuller, denser change list.
-- Keep changelog wording public-safe: describe features and changes, not internal tickets, prompts, or workflow mechanics.
-- When manual or unexpected edits are present, identify their app/docs effect and include it in `CHANGELOG` alongside the current update.
-- Keep the current major/minor release entry updated unless intentionally opening a new release line.
-- Preserve the localStorage schema where possible.
-- Mention any known manual QA gaps in the handoff.
-- Give me a push commit summary and description in two distinct containers that make copy and paste very easy.
-
 ## Notes
 SEE SCRATCHPAD
 Contains Color Notes, rejected/backup svgs, amongst other stuff.
