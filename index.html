@@ -667,6 +667,14 @@
       height: 24px;
     }
 
+    /* The Basecamp glyph has a larger, taller viewBox with internal padding,
+       so it renders smaller than the other toggle icons in the 24px box;
+       bump it up to match their visual weight. */
+    #basecampBtn .sf-symbol {
+      width: 36px;
+      height: 36px;
+    }
+
     /* Per-platform icon scaling for the Add as App button.
        Wide laptop/desktop SVGs render much smaller in a 24px box than
        the squarer phone/tablet ones; bumping them via a CSS variable
@@ -3799,6 +3807,52 @@
       gap: .5rem;
     }
 
+    #basecampDialog[open] {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      width: min(820px, calc(100dvw - 1rem));
+      height: min(860px, calc(100vh - 1.6rem));
+      overflow: hidden;
+    }
+
+    #basecampDialog,
+    #basecampDialog * {
+      box-sizing: border-box;
+    }
+
+    .basecamp-body {
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+      min-height: 0;
+      max-height: none;
+    }
+
+    .basecamp-text {
+      flex: 1 1 auto;
+      width: 100%;
+      min-height: 240px;
+      resize: none;
+      font: inherit;
+      line-height: 1.55;
+    }
+
+    .basecamp-foot {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .basecamp-status,
+    .basecamp-count {
+      color: var(--muted);
+      font-size: .8rem;
+    }
+
+    .basecamp-status.is-flash {
+      color: var(--accent);
+      font-weight: 800;
+    }
+
     .form-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -6646,6 +6700,8 @@
             data-shortcut="L">Legend</button>
           <button id="notesToggleBtn" class="toggle-btn" type="button" aria-pressed="true"
             data-shortcut="N">Notes</button>
+          <button id="basecampBtn" class="toggle-btn" type="button" data-shortcut="B"
+            aria-label="Open Basecamp notes">Basecamp</button>
         </div>
         <button id="tipJarBtn" type="button" data-shortcut="T" aria-label="Send a tip">Tip</button>
         <button id="addToHomeBtn" type="button" data-shortcut="J" aria-label="Add to Home Screen">Install</button>
@@ -7706,6 +7762,28 @@
     </div>
   </dialog>
 
+  <dialog id="basecampDialog">
+    <header>
+      <div>
+        <h2>Basecamp</h2>
+        <small id="basecampStatus" class="basecamp-status" aria-live="polite">Autosaves as you type.</small>
+      </div>
+      <div class="dialog-head-actions">
+        <button id="basecampCopyBtn" type="button" data-shortcut="P">Copy</button>
+        <button id="basecampClearBtn" class="danger" type="button" data-shortcut="X">Clear</button>
+        <button id="basecampCloseBtn" class="dialog-close" type="button" data-close="basecampDialog"
+          data-shortcut="Q">Close</button>
+      </div>
+    </header>
+    <div class="dialog-body basecamp-body">
+      <textarea id="basecampText" class="basecamp-text" maxlength="20000"
+        placeholder="Basecamp is your home-base scratchpad — trip plans, packing lists, gear, and any notes not tied to one place. It autosaves on this device and rides along in Copy, exports, and backups. Jot anything here…"></textarea>
+      <div class="basecamp-foot">
+        <small id="basecampCount" class="basecamp-count" aria-live="polite">0 characters</small>
+      </div>
+    </div>
+  </dialog>
+
   <dialog id="tagDialog">
     <header>
       <h2>Location Icon Tags</h2>
@@ -8004,6 +8082,9 @@
         </section>
         <section class="help-section">
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ: Other</h3>
+          <p><b>What is Basecamp?</b><br>Basecamp (toolbar button, or press B) opens a roomy scratchpad for notes that
+            are not tied to a single place — trip planning, packing lists, gear, reminders. It autosaves on this device
+            and is included in exports and backups.</p>
           <p><b>How do I add it like an app?</b><br>Use Add as App in the top toolbar. Trail Log detects iPhone/iPad,
             Android, Mac, or PC, expands the matching directions, and keeps one other device guide open at a time.</p>
           <p><b>How do hints work?</b><br>Hints can be dismissed one at a time, or turned off globally in Settings.
@@ -8177,7 +8258,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.2.0";
+    const APP_VERSION = "3.3.0";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -8309,6 +8390,7 @@
     const __MAP_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 26.0352 24.4434"><g><rect height="24.4434" opacity="0" width="26.0352" x="0" y="0"/><path d="M0 22.6562C0 23.4961 0.488281 23.9746 1.30859 23.9746C1.60156 23.9746 1.9043 23.8867 2.26562 23.6816L7.74414 20.7031L7.74414 0.15625C7.50977 0.253906 7.25586 0.380859 7.01172 0.517578L1.01562 4.01367C0.332031 4.39453 0 4.92188 0 5.70312ZM9.29688 20.5371L15.6152 24.1602C15.8105 24.2676 16.0059 24.3555 16.1914 24.4043L16.1914 4.07227L10.0293 0.302734C9.80469 0.166016 9.55078 0.0585938 9.29688 0ZM17.7539 24.3652C17.8906 24.3164 18.0371 24.2578 18.1738 24.1699L24.668 20.4492C25.3418 20.0586 25.6738 19.541 25.6738 18.75L25.6738 1.78711C25.6738 0.9375 25.1758 0.46875 24.375 0.46875C24.082 0.46875 23.7793 0.556641 23.418 0.761719L17.7539 3.88672Z"/></g></svg>`;
     const __CHECKLIST_UNCHECKED = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 29.9414 26.0156"><g><rect height="26.0156" opacity="0" width="29.9414" x="0" y="0"/><path d="M15.6494 21.6943L28.2422 21.6943C28.9893 21.6943 29.5801 21.0742 29.5801 20.3369C29.5801 19.5898 28.9941 18.9795 28.2422 18.9795L15.6494 18.9795C14.9023 18.9795 14.3164 19.5996 14.3164 20.3369C14.3164 21.0596 14.9072 21.6943 15.6494 21.6943Z"/><path d="M5.67383 26.0156C8.7793 26.0156 11.3428 23.4473 11.3428 20.3369C11.3428 17.2314 8.7793 14.668 5.67383 14.668C2.54883 14.668 0 17.2363 0 20.3369C0 23.4473 2.55371 26.0156 5.67383 26.0156ZM5.67383 23.6133C3.88672 23.6133 2.40234 22.1191 2.40234 20.3369C2.40234 18.5645 3.8916 17.0654 5.67383 17.0654C7.45117 17.0654 8.94043 18.5645 8.94043 20.3369C8.94043 22.1191 7.45117 23.6133 5.67383 23.6133Z"/><path d="M15.6494 7.06543L28.2422 7.06543C28.9893 7.06543 29.5801 6.44531 29.5801 5.70801C29.5801 4.95605 28.9941 4.35547 28.2422 4.35547L15.6494 4.35547C14.9023 4.35547 14.3164 4.9707 14.3164 5.70801C14.3164 6.43555 14.9072 7.06543 15.6494 7.06543Z"/><path d="M5.67383 11.3818C8.7793 11.3818 11.3428 8.81348 11.3428 5.70312C11.3428 2.59766 8.7793 0.0390625 5.67383 0.0390625C2.54883 0.0390625 0 2.59766 0 5.70312C0 8.80859 2.55371 11.3818 5.67383 11.3818ZM5.67383 8.97949C3.88672 8.97949 2.40234 7.49023 2.40234 5.70312C2.40234 3.92578 3.8916 2.43652 5.67383 2.43652C7.45117 2.43652 8.94043 3.93066 8.94043 5.70312C8.94043 7.49023 7.45117 8.97949 5.67383 8.97949Z"/></g></svg>`;
     const __LIST_BULLET_RECTANGLE_PORTRAIT_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 21.3281 26.9238"><g><rect height="26.9238" opacity="0" width="21.3281" x="0" y="0"/><path d="M20.9668 3.80859L20.9668 23.125C20.9668 25.6445 19.707 26.9238 17.207 26.9238L3.75977 26.9238C1.25977 26.9238 0 25.6445 0 23.125L0 3.80859C0 1.28906 1.25977 0.00976562 3.75977 0.00976562L17.207 0.00976562C19.707 0.00976562 20.9668 1.28906 20.9668 3.80859ZM3.56445 13.6816C3.56445 14.3164 4.10156 14.873 4.75586 14.873C5.40039 14.873 5.9375 14.3262 5.9375 13.6816C5.9375 13.0176 5.40039 12.4902 4.75586 12.4902C4.10156 12.4902 3.56445 13.0273 3.56445 13.6816ZM8.37891 12.9688C7.96875 12.9688 7.66602 13.2812 7.66602 13.6816C7.66602 14.0723 7.97852 14.3848 8.37891 14.3848L16.6992 14.3848C17.0898 14.3848 17.4023 14.0723 17.4023 13.6816C17.4023 13.2812 17.0996 12.9688 16.6992 12.9688ZM3.56445 9.52148C3.56445 10.1758 4.0918 10.7129 4.75586 10.7129C5.40039 10.7129 5.9375 10.1758 5.9375 9.52148C5.9375 8.85742 5.40039 8.33984 4.75586 8.33984C4.0918 8.33984 3.56445 8.86719 3.56445 9.52148ZM8.37891 8.81836C7.96875 8.81836 7.66602 9.12109 7.66602 9.52148C7.66602 9.92188 7.96875 10.2246 8.37891 10.2246L16.6992 10.2246C17.0996 10.2246 17.4023 9.92188 17.4023 9.52148C17.4023 9.12109 17.0996 8.81836 16.6992 8.81836ZM3.56445 5.50781C3.56445 6.16211 4.10156 6.69922 4.75586 6.69922C5.40039 6.69922 5.9375 6.17188 5.9375 5.50781C5.9375 4.86328 5.40039 4.31641 4.75586 4.31641C4.10156 4.31641 3.56445 4.87305 3.56445 5.50781ZM8.37891 4.80469C7.97852 4.80469 7.66602 5.11719 7.66602 5.50781C7.66602 5.9082 7.97852 6.23047 8.37891 6.23047L16.6992 6.23047C17.0898 6.23047 17.4023 5.9082 17.4023 5.50781C17.4023 5.11719 17.0898 4.80469 16.6992 4.80469Z"/></g></svg>`;
+    const __LONG_TEXT_PAGE_AND_PENCIL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 34.3848 38.7598"><g><rect height="38.7598" opacity="0" width="34.3848" x="0" y="0"/><path d="M27.4903 9.72656L27.4903 18.9167L25.7617 20.9728L25.7617 9.76562C25.7617 8.39844 25.0391 7.65625 23.6426 7.65625L10.3809 7.65625C8.9844 7.65625 8.26174 8.39844 8.26174 9.76562L8.26174 29.0039C8.26174 30.3711 8.9844 31.1133 10.3809 31.1133L17.2369 31.1133L15.7837 32.8418L10.293 32.8418C7.79299 32.8418 6.52346 31.5625 6.52346 29.043L6.52346 9.72656C6.52346 7.20703 7.79299 5.92773 10.293 5.92773L23.7305 5.92773C26.2305 5.92773 27.4903 7.20703 27.4903 9.72656ZM22.4116 24.9579L21.4567 26.0937L12.1289 26.0938C11.7285 26.0938 11.4356 25.8008 11.4356 25.4297C11.4356 25.0391 11.7285 24.7363 12.1289 24.7363L21.9043 24.7363C22.1103 24.7363 22.2891 24.8205 22.4116 24.9579ZM22.5879 20.9961C22.5879 21.377 22.2949 21.6797 21.9043 21.6797L12.1289 21.6797C11.7285 21.6797 11.4356 21.377 11.4356 20.9961C11.4356 20.6152 11.7285 20.3223 12.1289 20.3223L21.9043 20.3223C22.2949 20.3223 22.5879 20.6152 22.5879 20.9961ZM22.5879 16.5918C22.5879 16.9727 22.2949 17.2754 21.9043 17.2754L12.1289 17.2754C11.7285 17.2754 11.4356 16.9727 11.4356 16.5918C11.4356 16.2207 11.7285 15.9277 12.1289 15.9277L21.9043 15.9277C22.2949 15.9277 22.5879 16.2207 22.5879 16.5918ZM22.5879 12.1777C22.5879 12.5684 22.2949 12.8711 21.9043 12.8711L12.1289 12.8711C11.7285 12.8711 11.4356 12.5684 11.4356 12.1777C11.4356 11.8066 11.7285 11.5137 12.1289 11.5137L21.9043 11.5137C22.2949 11.5137 22.5879 11.8066 22.5879 12.1777Z"/><path d="M18.75 36.0449L31.0156 21.4355L28.9063 19.6582L16.6309 34.2578L15.6934 36.9531C15.6055 37.2266 15.9082 37.5098 16.1719 37.373ZM31.9336 20.3711L32.9883 19.1406C33.5254 18.5059 33.4961 17.8906 32.9297 17.4023L32.5586 17.0898C31.9922 16.6211 31.377 16.7285 30.8496 17.3438L29.7949 18.5742Z"/></g></svg>`;
     // Tool Bar :: Tip/Gift
     const __GIFT_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24.3457 27.0996"><g><rect height="27.0996" opacity="0" width="24.3457" x="0" y="0"/><path d="M1.86523 22.9004C1.86523 24.9023 3.06641 25.9961 5.06836 25.9961L11.0254 25.9961L11.0254 14.707L1.86523 14.707ZM12.959 25.9961L18.916 25.9961C20.918 25.9961 22.1191 24.9023 22.1191 22.9004L22.1191 14.707L12.959 14.707ZM0 11.5918C0 12.8711 0.732422 13.4473 2.02148 13.4473L11.0254 13.4473L11.0254 6.77734L9.20898 6.77734C7.14844 6.77734 5.9082 5.54688 5.9082 4.0625C5.9082 2.71484 6.88477 1.91406 8.25195 1.91406C9.82422 1.91406 11.0254 3.125 11.0254 5.06836L11.0254 6.77734L12.959 6.77734L12.959 5.06836C12.959 3.125 14.1602 1.91406 15.7324 1.91406C17.0996 1.91406 18.0762 2.71484 18.0762 4.0625C18.0762 5.54688 16.8359 6.77734 14.7754 6.77734L12.959 6.77734L12.959 13.4473L21.9629 13.4473C23.2617 13.4473 23.9844 12.8711 23.9844 11.5918L23.9844 8.63281C23.9844 7.34375 23.2617 6.77734 21.9629 6.77734L18.7305 6.77734C19.5312 6.10352 20.0098 5.13672 20.0098 3.97461C20.0098 1.64062 18.1836 0 15.8301 0C14.043 0 12.6074 0.996094 11.9922 2.71484C11.377 0.996094 9.94141 0 8.1543 0C5.80078 0 3.97461 1.64062 3.97461 3.97461C3.97461 5.13672 4.45312 6.10352 5.25391 6.77734L2.02148 6.77734C0.78125 6.77734 0 7.34375 0 8.63281Z"/></g></svg>`;
     const __DRINK_WATER = `<svg class="sf-symbol" comment="native-sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 17.5293 25.2051"><g><rect height="25.2051" opacity="0" width="17.5293" x="0" y="0"/><path d="M8.58398 25.2051C13.7402 25.2051 17.168 21.8555 17.168 16.8359C17.168 14.4434 16.2207 11.9434 15.3809 10.0684C14.043 7.08008 11.8359 3.80859 9.90234 0.839844C9.55078 0.283203 9.0918 0 8.58398 0C8.07617 0 7.62695 0.283203 7.26562 0.839844C5.33203 3.80859 3.125 7.08008 1.78711 10.0684C0.947266 11.9434 0 14.4434 0 16.8359C0 21.8555 3.4375 25.2051 8.58398 25.2051Z"/></g></svg>`;
@@ -9496,7 +9578,7 @@
         title: "Country Map",
         ticketId: "WISH-001",
         description: "Add a country-map mode alongside the US map. Scope includes a world SVG/data source, visit levels, notes, exports/imports, map mode switching, and a strategy for historical countries without breaking existing state data.",
-        priority: "P1",
+        priority: "P0",
         effort: "x-large",
         targetKind: "exact",
         targetVersion: "5.0.0",
@@ -9541,15 +9623,15 @@
         category: "Legend"
       },
       {
-        title: "Basecamp Notes Section",
-        ticketId: "WISH-043",
-        description: "Add a dedicated Basecamp notes section for home-base planning, recurring travel context, packing reminders, saved trip context, or other notes that are useful but not tied to one state, territory, or mapped location.",
-        priority: "P1",
+        title: "Multiple Named Basecamp Pads",
+        ticketId: "WISH-053",
+        description: "Extend Basecamp Notes from a single scratchpad to multiple named pads (for example Packing, Gear, or a per-trip pad), with a pad list, add/rename/delete/reorder, a large editor per pad, and search across pads. Migrate the existing single scratchpad into the first pad without data loss.",
+        priority: "P2",
         effort: "medium",
         targetKind: "minor",
         targetVersion: "",
-        tokenCostPct: 24,
-        prompt: "Add a Basecamp notes section for app-level travel notes that are not tied to a single location. Keep it local/offline, searchable, exportable, and visually distinct from location visit notes.",
+        tokenCostPct: 18,
+        prompt: "Extend Basecamp Notes to multiple named pads: a pad list with add/rename/delete/reorder, a large markdown editor per pad, and search across pads. Migrate the existing single Basecamp scratchpad into the first pad without data loss. Keep it local/offline, exportable, and visually distinct from location notes.",
         category: "Notes"
       },
       {
@@ -9603,6 +9685,30 @@
     ];
     const CHANGELOG = [
       {
+        version: "3.3.0",
+        date: "2026-05-28",
+        title: "Basecamp Notes",
+        summary: "A roomy Basecamp scratchpad for home-base notes that aren't tied to any one place.",
+        highlights: [
+          "New Basecamp button in the toolbar (or press B) opens a large scratchpad for trip planning, packing lists, gear, and reminders not tied to a place.",
+          "Basecamp autosaves on this device and rides along in Copy, exports, and backups."
+        ],
+        notice: {
+          version: "3.3.0",
+          title: "Basecamp Notes",
+          summary: "A roomy scratchpad for home-base notes not tied to any one place.",
+          cta: "Set Up Camp"
+        },
+        updates: [
+          "Added Basecamp: a dedicated dialog with a large autosaving scratchpad for app-level notes (planning, packing, gear, reminders) that are not tied to a state, territory, or mapped location.",
+          "Open Basecamp from the toolbar button beside Notes (matched in size to the other toggle icons) or with the B hotkey.",
+          "Copy mirrors the scratchpad to the clipboard with a 'Copied to Clipboard' status flash under the title; Clear wipes it behind a confirmation and is styled red; usage guidance lives in the editor placeholder.",
+          "Basecamp text is stored locally in the existing backup schema and is appended to the Markdown, Plain Text, and RTF exports.",
+          "Release notice summaries are now capped at 100 characters and each release uses a themed call-to-action.",
+          "Cleared the completed Basecamp planning item from the active roadmap and seeded a follow-up for splitting Basecamp into multiple named pads."
+        ]
+      },
+      {
         version: "3.2.0",
         date: "2026-05-28",
         title: "Trail Shorthand",
@@ -9618,8 +9724,8 @@
         notice: {
           version: "3.2.0",
           title: "Trail Shorthand",
-          summary: "Smart Convert now highlights and promotes recognized note pieces live as you type, and More Icons gained 17 browseable categories.",
-          cta: "Check it Out!"
+          summary: "Smart Convert highlights and promotes note pieces as you type, plus browseable icon categories.",
+          cta: "Take Note"
         },
         updates: [
           "Rebuilt Smart Convert around a single recognizer so live highlighting, recognition chips, and Auto Convert all agree on what was detected.",
@@ -10383,6 +10489,7 @@
     const MAP_ZOOM_MAX = 10;
     const MAP_ZOOM_STEP = .5;
     const NOTE_AUTOCOMPLETE_LIMIT = 40;
+    const BASECAMP_MAX_LENGTH = 20000;
     const LEGEND_POSITION_ORDER = ["right-top", "right-bottom", "left-bottom", "left-top"];
     const LEGEND_POSITION_MENU_ORDER = ["left-top", "right-top", "left-bottom", "right-bottom"];
     const INSTALL_PLATFORM_SEQUENCE = ["auto", "idevice", "android", "mac", "pc"];
@@ -10499,6 +10606,7 @@
         states: defaultTerritoryStates(levels),
         notes: {},
         visitTypes: defaultVisitTypes(),
+        basecamp: { text: "", updated: "" },
         dismissedHints: [],
         lastSeenReleaseVersion: "0.0.0",
         dismissedReleaseVersion: "",
@@ -10913,6 +11021,11 @@
       });
       const savedMapName = String(next.mapName || base.mapName).trim();
       next.mapName = (savedMapName === "Your ${APP_NAME}" ? DEFAULT_MAP_NAME : savedMapName || base.mapName).slice(0, 80);
+      const basecampInput = input.basecamp && typeof input.basecamp === "object" ? input.basecamp : {};
+      next.basecamp = {
+        text: String(basecampInput.text || "").slice(0, BASECAMP_MAX_LENGTH),
+        updated: String(basecampInput.updated || "")
+      };
       pruneObsoleteBackupKeys(next);
       return next;
     }
@@ -11400,6 +11513,7 @@
       setButtonLabel("#mapToggleBtn", __MAP_FILL, "Map", "Toggle Map Panel", "Toggle Map Panel");
       setButtonLabel("#legendToggleBtn", __CHECKLIST_UNCHECKED, "Legend", "Toggle Legend Panel", "Toggle Legend Panel");
       setButtonLabel("#notesToggleBtn", __LIST_BULLET_RECTANGLE_PORTRAIT_FILL, "Notes", "Toggle Notes Panel", "Toggle Notes Panel");
+      setButtonLabel("#basecampBtn", __LONG_TEXT_PAGE_AND_PENCIL, "Basecamp", "Open Basecamp notes", "Open Basecamp notes");
       $("#labelsToggleLabel").innerHTML = prefersSymbols() ? __TAG_FILL : "Labels";
       setButtonLabel("#labelsNoneBtn", __CIRCLE_SLASH, "None", "No map labels");
       setButtonLabel("#labelsAbbrBtn", __CHARACTER, "Abbr", "Show location abbreviations");
@@ -11442,6 +11556,9 @@
       setButtonLabel("#saveNoteBtn", __CHECKMARK, "Save Note");
       setButtonLabel("#saveAddNoteBtn", __CHECKMARK_CIRCLE_BADGE_PLUS_FILL, "Save + Add", "Save and add another note");
       setButtonLabel("#tipJarCloseBtn", __XMARK, "Close");
+      setButtonLabel("#basecampCopyBtn", __DOCUMENT_ON_DOCUMENT, "Copy", "Copy Basecamp text");
+      setButtonLabel("#basecampClearBtn", ICON_SETTINGS_DELETE__TRASH_FILL, "Clear", "Clear Basecamp");
+      setButtonLabel("#basecampCloseBtn", __XMARK, "Close");
       const tipSendIcon = $("#tipOtherSendBtn .tip-send-icon");
       if (tipSendIcon && !tipSendIcon.dataset.iconReady) {
         tipSendIcon.innerHTML = __PAPERPLANE_FILL;
@@ -15536,6 +15653,87 @@
       }).catch(() => showMessage("Copy Failed", "Your browser blocked clipboard access. Switch to Text Only mode and select the text manually."));
     }
 
+    let basecampSaveTimer = 0;
+    let basecampFlashTimer = 0;
+    const BASECAMP_DEFAULT_STATUS = "Autosaves as you type.";
+
+    function setBasecampStatus(text, flash = false) {
+      const status = $("#basecampStatus");
+      if (!status) return;
+      clearTimeout(basecampFlashTimer);
+      status.textContent = text;
+      status.classList.toggle("is-flash", flash);
+      if (flash) {
+        basecampFlashTimer = window.setTimeout(() => {
+          status.classList.remove("is-flash");
+          status.textContent = BASECAMP_DEFAULT_STATUS;
+        }, 2200);
+      }
+    }
+
+    function openBasecampDialog() {
+      const area = $("#basecampText");
+      if (!area) return;
+      area.value = state.basecamp?.text || "";
+      updateBasecampCount();
+      setBasecampStatus(BASECAMP_DEFAULT_STATUS);
+      closeOpenDialogs("basecampDialog");
+      $("#basecampDialog").showModal();
+      area.focus();
+    }
+
+    function updateBasecampCount() {
+      const area = $("#basecampText");
+      const count = $("#basecampCount");
+      if (!area || !count) return;
+      const n = area.value.length;
+      count.textContent = `${n.toLocaleString()} character${n === 1 ? "" : "s"}`;
+    }
+
+    function handleBasecampInput() {
+      const area = $("#basecampText");
+      if (!area) return;
+      updateBasecampCount();
+      setBasecampStatus("Saving…");
+      clearTimeout(basecampSaveTimer);
+      basecampSaveTimer = window.setTimeout(() => {
+        state.basecamp = { text: area.value.slice(0, BASECAMP_MAX_LENGTH), updated: new Date().toISOString() };
+        save();
+        // Don't stomp an active "Copied to Clipboard" flash with the ambient save status.
+        const status = $("#basecampStatus");
+        if (!status?.classList.contains("is-flash")) setBasecampStatus("Saved");
+      }, 400);
+    }
+
+    function copyBasecampText() {
+      const text = $("#basecampText")?.value || "";
+      if (!text.trim()) {
+        setBasecampStatus("Nothing to copy yet", true);
+        return;
+      }
+      copyTextToClipboard(text)
+        .then(() => setBasecampStatus("Copied to Clipboard", true))
+        .catch(() => showMessage("Copy Failed", "Your browser blocked clipboard access. Select the text manually."));
+    }
+
+    function clearBasecampText() {
+      if (!String(state.basecamp?.text || "").trim()) return;
+      requestConfirm({
+        title: "Clear Basecamp?",
+        message: "This erases all Basecamp notes on this device. This cannot be undone.",
+        actionLabel: "Clear",
+        preserveOpenDialogs: true,
+        onConfirm: () => {
+          state.basecamp = { text: "", updated: new Date().toISOString() };
+          save();
+          const area = $("#basecampText");
+          if (area) area.value = "";
+          updateBasecampCount();
+          setBasecampStatus("Cleared", true);
+        }
+      });
+    }
+
     function exportMarkdown() {
       const counts = levelCounts();
       const counted = countedStateTotal();
@@ -15553,6 +15751,8 @@
         else lines.push("- Notes: None");
         lines.push("");
       });
+      const mdBasecamp = String(state.basecamp?.text || "").trim();
+      if (mdBasecamp) lines.push("## Basecamp", mdBasecamp, "");
       lines.push("## Custom Levels and Definitions");
       state.levels.forEach(level => lines.push(`- ${level.name}: ${level.definition} (${level.color})`));
       downloadFile(`${slug(state.mapName)}-complete.md`, "text/markdown", lines.join("\n"));
@@ -15587,6 +15787,8 @@
         lines.push(`${formatDateDisplay(note.date)} | ${note.name} | ${levelById(note.levelId)?.name || "No level"} | ${noteExportText(note)}`);
       });
       else lines.push("No dated notes yet.");
+      const rtfBasecamp = String(state.basecamp?.text || "").trim();
+      if (rtfBasecamp) lines.push("", "Basecamp", rtfBasecamp);
       const body = lines.map(line => rtfEscape(line)).join("\\line ");
       const rtf = `{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0 -apple-system;}}\\f0\\fs24 ${body}}`;
       downloadFile(`${slug(state.mapName)}-simple.rtf`, "application/rtf", rtf);
@@ -15627,6 +15829,8 @@
           lines.push(`${noteToSmartConvertText(note)}  —  ${note.name}`);
         });
       }
+      const txtBasecamp = String(state.basecamp?.text || "").trim();
+      if (txtBasecamp) lines.push("", "Basecamp", txtBasecamp);
       downloadFile(`${slug(state.mapName)}-simple.txt`, "text/plain", lines.join("\n"));
     }
 
@@ -16608,7 +16812,7 @@
           else if (notesPanelOpen && notesPanelState && addNote) addNote.click();
           else if (!$("#addLevelBtn").disabled) $("#addLevelBtn").click();
         },
-        b: () => notesPanelState && $("#notesPanelBackBtn").click(),
+        b: () => notesPanelState ? $("#notesPanelBackBtn").click() : $("#basecampBtn").click(),
         t: () => {
           if (notesPanelOpen && !notesPanelState) $("#notesSortChronoBtn").click();
           else $("#tipJarBtn").click();
@@ -16734,6 +16938,10 @@
       $("#mapToggleBtn").addEventListener("click", toggleMapPanel);
       $("#legendToggleBtn").addEventListener("click", toggleLegendPanel);
       $("#notesToggleBtn").addEventListener("click", toggleNotesPanel);
+      $("#basecampBtn").addEventListener("click", openBasecampDialog);
+      $("#basecampText").addEventListener("input", handleBasecampInput);
+      $("#basecampCopyBtn").addEventListener("click", copyBasecampText);
+      $("#basecampClearBtn").addEventListener("click", clearBasecampText);
       $("#mapFitBtn").addEventListener("click", toggleMapFitMode);
       $("#notesPanelBackBtn").addEventListener("click", () => {
         notesPanelState = null;
