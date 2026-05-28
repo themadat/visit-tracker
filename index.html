@@ -8177,7 +8177,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.2.0.12";
+    const APP_VERSION = "3.2.0.13";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -9648,7 +9648,8 @@
           "Multi-part entries also surface as Where/What/Who/Details recognition chips and highlights, so the live preview matches what Auto Convert fills.",
           "The Notes Copy text now writes each note's location, purpose, and people with Smart Convert keyword tokens (at Where in City for What with Who, details) instead of a bare comma list, so copied notes read clearly and paste back cleanly.",
           "Moved the Enter-to-add hint up beside the Smart Convert title and reworded it; recognition chips now align their label and value on a shared baseline so they stay tidy across one or multiple rows.",
-          "Smart Convert now strips stray square brackets and trims whitespace when routing leftover text to Additional Details, and Auto Convert appends to Additional Details instead of replacing whatever is already there."
+          "Smart Convert now strips stray square brackets and trims whitespace when routing leftover text to Additional Details, and Auto Convert appends to Additional Details instead of replacing whatever is already there.",
+          "Copied note lines now order the keyword fields as Where, City, Who, What and separate the details with a semicolon (at … in … with … for …; details)."
         ]
       },
       {
@@ -12325,17 +12326,18 @@
       return [noteLocationDisplay(note), note.what, note.who, noteDetails(note)].filter(Boolean);
     }
 
-    // Render where/city/what/who with Smart Convert keyword tokens, then append
-    // free-text details after a comma. Reads naturally and re-parses by keyword.
+    // Render where/city/who/what with Smart Convert keyword tokens, then append
+    // free-text details after a semicolon. Reads naturally and re-parses by
+    // keyword (who terminates at "for", what terminates at the ";").
     function noteFieldsKeywordText(note) {
       const segs = [];
       if (String(note.where || "").trim()) segs.push(`at ${String(note.where).trim()}`);
       if (String(note.city || "").trim()) segs.push(`in ${String(note.city).trim()}`);
-      if (String(note.what || "").trim()) segs.push(`for ${String(note.what).trim()}`);
       if (String(note.who || "").trim()) segs.push(`with ${String(note.who).trim()}`);
+      if (String(note.what || "").trim()) segs.push(`for ${String(note.what).trim()}`);
       const keyworded = segs.join(" ");
       const details = String(noteDetails(note) || "").trim();
-      if (keyworded && details) return `${keyworded}, ${details}`;
+      if (keyworded && details) return `${keyworded}; ${details}`;
       return keyworded || details;
     }
 
