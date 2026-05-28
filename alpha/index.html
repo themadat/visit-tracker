@@ -559,11 +559,21 @@
       letter-spacing: .06em;
     }
 
-    .beta-pill { --env-color: #9333ea; }
-    .alpha-pill { --env-color: #ec4899; }
+    .beta-pill {
+      --env-color: #9333ea;
+    }
 
-    [data-theme="dark"] .beta-pill { --env-color: #c084fc; }
-    [data-theme="dark"] .alpha-pill { --env-color: #f9a8d4; }
+    .alpha-pill {
+      --env-color: #ec4899;
+    }
+
+    [data-theme="dark"] .beta-pill {
+      --env-color: #c084fc;
+    }
+
+    [data-theme="dark"] .alpha-pill {
+      --env-color: #f9a8d4;
+    }
 
     .topbar-hints {
       flex: 0 1 30rem;
@@ -657,6 +667,14 @@
       height: 24px;
     }
 
+    /* The Basecamp glyph has a larger, taller viewBox with internal padding,
+       so it renders smaller than the other toggle icons in the 24px box;
+       bump it up to match their visual weight. */
+    #basecampBtn .sf-symbol {
+      width: 36px;
+      height: 36px;
+    }
+
     /* Per-platform icon scaling for the Add as App button.
        Wide laptop/desktop SVGs render much smaller in a 24px box than
        the squarer phone/tablet ones; bumping them via a CSS variable
@@ -695,7 +713,6 @@
       height: 24px;
       width: 24px;
       margin: 0;
-      vertical-align: middle;
     }
 
     #quickAddNoteBtn,
@@ -3790,6 +3807,52 @@
       gap: .5rem;
     }
 
+    #basecampDialog[open] {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      width: min(820px, calc(100dvw - 1rem));
+      height: min(860px, calc(100vh - 1.6rem));
+      overflow: hidden;
+    }
+
+    #basecampDialog,
+    #basecampDialog * {
+      box-sizing: border-box;
+    }
+
+    .basecamp-body {
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+      min-height: 0;
+      max-height: none;
+    }
+
+    .basecamp-text {
+      flex: 1 1 auto;
+      width: 100%;
+      min-height: 240px;
+      resize: none;
+      font: inherit;
+      line-height: 1.55;
+    }
+
+    .basecamp-foot {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .basecamp-status,
+    .basecamp-count {
+      color: var(--muted);
+      font-size: .8rem;
+    }
+
+    .basecamp-status.is-flash {
+      color: var(--accent);
+      font-weight: 800;
+    }
+
     .form-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -4311,7 +4374,7 @@
       align-items: end;
     }
 
-    .note-place-row > label {
+    .note-place-row>label {
       min-width: 0;
     }
 
@@ -4426,6 +4489,161 @@
       grid-template-columns: minmax(0, 1fr) auto auto;
       gap: .32rem;
       align-items: stretch;
+    }
+
+    /* Per-kind token colors shared by inline highlights and recognition chips. */
+    .smart-convert-row {
+      --tok-tag: #2563eb;
+      --tok-date: #dc2626;
+      --tok-level: #6b7280;
+      --tok-city: #4f46e5;
+      --tok-where: #7c3aed;
+      --tok-what: #ea580c;
+      --tok-who: #ca8a04;
+    }
+
+    .smart-convert-field {
+      position: relative;
+      min-width: 0;
+    }
+
+    .smart-convert-field > #noteSmartConvert,
+    .smart-convert-highlights {
+      font: inherit;
+      line-height: 1.4;
+      padding: .62rem .7rem;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      white-space: pre;
+      letter-spacing: normal;
+      box-sizing: border-box;
+    }
+
+    .smart-convert-field > #noteSmartConvert {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      border-color: var(--line);
+      background: transparent;
+    }
+
+    .smart-convert-highlights {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      color: transparent;
+      pointer-events: none;
+      background: var(--surface);
+    }
+
+    .smart-convert-highlights mark {
+      color: transparent;
+      border-radius: 4px;
+      background: color-mix(in srgb, var(--tok-color, var(--accent)) 30%, transparent);
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--tok-color, var(--accent)) 32%, transparent);
+    }
+
+    .smart-convert-highlights mark.tok-date { --tok-color: var(--tok-date); }
+    .smart-convert-highlights mark.tok-level { --tok-color: var(--tok-level); }
+    .smart-convert-highlights mark.tok-tag { --tok-color: var(--tok-tag); }
+    .smart-convert-highlights mark.tok-city { --tok-color: var(--tok-city); }
+    .smart-convert-highlights mark.tok-where { --tok-color: var(--tok-where); }
+    .smart-convert-highlights mark.tok-what { --tok-color: var(--tok-what); }
+    .smart-convert-highlights mark.tok-who { --tok-color: var(--tok-who); }
+
+    .smart-convert-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .3rem;
+    }
+
+    .smart-convert-chips[hidden] {
+      display: none;
+    }
+
+    .smart-convert-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: .5rem;
+    }
+
+    .smart-convert-chips-hint {
+      font-size: .68rem;
+      font-weight: 700;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    .smart-convert-chips-hint[hidden] {
+      display: none;
+    }
+
+    .smart-convert-row .smart-chip {
+      min-height: 22px;
+    }
+
+    .smart-chip {
+      display: inline-flex;
+      align-items: baseline;
+      gap: .28rem;
+      min-height: 22px;
+      padding: .04rem .3rem .04rem .45rem;
+      border: 1px solid color-mix(in srgb, var(--tok-color, var(--accent)) 45%, var(--line));
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--tok-color, var(--accent)) 12%, var(--surface));
+      color: var(--text);
+      font-size: .68rem;
+      font-weight: 700;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .smart-chip:hover,
+    .smart-chip:focus-visible {
+      background: color-mix(in srgb, var(--tok-color, var(--accent)) 22%, var(--surface));
+      border-color: var(--tok-color, var(--accent));
+    }
+
+    .smart-chip.tok-date { --tok-color: var(--tok-date); }
+    .smart-chip.tok-level { --tok-color: var(--tok-level); }
+    .smart-chip.tok-tag { --tok-color: var(--tok-tag); }
+    .smart-chip.tok-city { --tok-color: var(--tok-city); }
+    .smart-chip.tok-where { --tok-color: var(--tok-where); }
+    .smart-chip.tok-what { --tok-color: var(--tok-what); }
+    .smart-chip.tok-who { --tok-color: var(--tok-who); }
+
+    .smart-chip-kind {
+      display: inline-block;
+      color: var(--tok-color, var(--accent));
+      text-transform: uppercase;
+      letter-spacing: .03em;
+      font-size: .58rem;
+      line-height: 1;
+    }
+
+    .smart-chip-value {
+      display: inline-block;
+      max-width: 16ch;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      line-height: 1;
+    }
+
+    .smart-chip-add {
+      display: inline-grid;
+      place-items: center;
+      align-self: center;
+      width: .92rem;
+      height: .92rem;
+      border-radius: 999px;
+      background: var(--tok-color, var(--accent));
+      color: #fff;
+      font-size: .72rem;
+      font-weight: 900;
+      line-height: 1;
     }
 
     #noteSmartConvert::placeholder {
@@ -4548,6 +4766,18 @@
       display: grid;
       grid-template-columns: repeat(6, minmax(0, 1fr));
       gap: .34rem;
+      align-items: start;
+    }
+
+    /* Keep icons flush-top against the sticky search+chips strip with a
+       steady gap between rows; the padding-bottom reserves enough scroll
+       runway that search/chip changes do not yank the sticky around. */
+    .tag-more-section {
+      align-self: start;
+      padding-bottom: 60vh;
+    }
+    .tag-more-grid {
+      align-content: start;
       align-items: start;
     }
 
@@ -4749,6 +4979,114 @@
       white-space: nowrap;
       font-size: .68rem;
       font-weight: 850;
+    }
+
+    /* Shared body-level fixed-position tooltip so the icon hover label can
+       never be clipped by the dialog's overflow. Positioned by JS on hover
+       and clamped to the viewport. */
+    #tagMoreTooltipOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      max-width: calc(100vw - 16px);
+      padding: .24rem .55rem;
+      border-radius: 6px;
+      background: var(--text);
+      color: var(--surface);
+      font-size: .72rem;
+      font-weight: 700;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .1s ease;
+      z-index: 2147483647;
+      display: none;
+    }
+    #tagMoreTooltipOverlay.is-visible {
+      opacity: 1;
+    }
+
+    .tag-category-strip {
+      position: relative;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x proximity;
+      mask-image: linear-gradient(to right, #000 0, #000 calc(100% - .9rem), transparent 100%);
+    }
+
+    .tag-category-strip-track {
+      display: grid;
+      grid-auto-flow: column dense;
+      grid-template-rows: repeat(3, auto);
+      grid-auto-columns: minmax(max-content, 1fr);
+      min-width: 100%;
+      gap: .22rem .26rem;
+      padding: .08rem .14rem;
+    }
+
+    .tag-category-chip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .42rem;
+      height: 26px;
+      min-height: 26px;
+      width: 100%;
+      padding: 0 .5rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--muted);
+      font-size: .7rem;
+      font-weight: 800;
+      line-height: 1;
+      cursor: pointer;
+      white-space: nowrap;
+      scroll-snap-align: start;
+      transition: background .12s ease, color .12s ease, border-color .12s ease;
+    }
+
+    .tag-category-chip-label {
+      text-align: left;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .tag-category-chip:hover,
+    .tag-category-chip:focus-visible {
+      border-color: color-mix(in srgb, var(--accent) 50%, var(--line));
+      color: var(--text);
+    }
+
+    .tag-category-chip.is-active {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+      color: var(--text);
+    }
+
+    .tag-category-chip-count {
+      display: inline-grid;
+      place-items: center;
+      min-width: 1.2rem;
+      padding: 0 .26rem;
+      height: 16px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      color: var(--muted);
+      font-size: .62rem;
+      font-weight: 800;
+    }
+
+    .tag-category-chip.is-active .tag-category-chip-count {
+      background: color-mix(in srgb, var(--accent) 22%, var(--surface-2));
+      color: var(--text);
+    }
+
+    .tag-category-count {
+      margin: 0;
+      font-size: .7rem;
+      color: var(--muted);
     }
 
     .tag-editor-row label {
@@ -6073,10 +6411,75 @@
 
       .tag-selected-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: .26rem;
       }
 
       .tag-more-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .tag-editor-row.is-enabled {
+        min-height: 0;
+        padding: .28rem .32rem;
+        gap: .2rem .26rem;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        grid-template-areas:
+          "drag icon toggle"
+          "fields fields fields";
+      }
+
+      .tag-editor-row.is-enabled .tag-render-preview {
+        width: 1.85rem;
+        height: 1.85rem;
+      }
+
+      .tag-editor-row.is-enabled .tag-render-preview .sf-symbol {
+        width: 1.4rem;
+        height: 1.4rem;
+      }
+
+      .tag-editor-row.is-enabled .tag-editor-fields {
+        grid-template-columns: minmax(0, 1fr) 2.2rem;
+        gap: .18rem;
+        align-items: end;
+      }
+
+      .tag-editor-row.is-enabled .tag-editor-fields label {
+        font-size: 0;
+        line-height: 0;
+        gap: 0;
+        color: transparent;
+      }
+
+      .tag-editor-row.is-enabled .tag-editor-fields label input {
+        font-size: .78rem;
+        line-height: 1.2;
+        color: var(--text);
+      }
+
+      .tag-editor-row.is-enabled .tag-editor-fields label .tag-shortcut-input {
+        text-align: center;
+      }
+
+      .tag-editor-row.is-enabled .tag-editor-fields input {
+        padding: .14rem .3rem;
+        font-size: .78rem;
+        min-height: 24px;
+      }
+
+      .tag-editor-row.is-enabled .tag-editor-fields .tag-shortcut-input {
+        padding: .14rem 0;
+      }
+
+      .tag-editor-row.is-enabled .tag-state-pill {
+        min-height: 22px;
+        padding: .04rem .38rem;
+        font-size: .62rem;
+      }
+
+      .tag-editor-row.is-enabled .tag-drag-handle {
+        font-size: .78rem;
+        min-width: .9rem;
       }
 
       #legendPanel {
@@ -6258,7 +6661,7 @@
             <div class="title-name">
               <h1 id="mapTitle">Your Trail Log</h1>
               <div class="title-pill-row">
-                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.1.0</span>
+                <span id="devModePill" class="dev-mode-pill hidden">Dev Mode v3.2.0.0</span>
                 <span id="betaPill" class="env-pill beta-pill hidden" title="This is the beta deploy">BETA</span>
                 <span id="alphaPill" class="env-pill alpha-pill hidden" title="This is the alpha deploy">ALPHA</span>
               </div>
@@ -6297,6 +6700,8 @@
             data-shortcut="L">Legend</button>
           <button id="notesToggleBtn" class="toggle-btn" type="button" aria-pressed="true"
             data-shortcut="N">Notes</button>
+          <button id="basecampBtn" class="toggle-btn" type="button" data-shortcut="B"
+            aria-label="Open Basecamp notes">Basecamp</button>
         </div>
         <button id="tipJarBtn" type="button" data-shortcut="T" aria-label="Send a tip">Tip</button>
         <button id="addToHomeBtn" type="button" data-shortcut="J" aria-label="Add to Home Screen">Install</button>
@@ -7102,16 +7507,26 @@
     <form id="noteForm" class="dialog-body" method="dialog">
       <input id="noteId" type="hidden">
       <section class="smart-convert-row">
-        <label for="noteSmartConvert">Smart Convert</label>
+        <div class="smart-convert-head">
+          <label for="noteSmartConvert">Smart Convert</label>
+          <small id="noteSmartConvertChipsHint" class="smart-convert-chips-hint" hidden>Hit ↵ Enter to add every chip</small>
+        </div>
         <div class="smart-convert-input-row">
-          <input id="noteSmartConvert" maxlength="420" placeholder="Type a quick note to auto-fill the fields below; learn the syntax with the (i) button">
+          <div class="smart-convert-field">
+            <div id="noteSmartConvertHighlights" class="smart-convert-highlights" aria-hidden="true"></div>
+            <input id="noteSmartConvert" maxlength="420" autocomplete="off" spellcheck="false"
+              placeholder="Type a quick note to auto-fill the fields below; learn the syntax with the (i) button">
+          </div>
           <button id="noteSmartConvertBtn" type="button" data-shortcut="W">Auto Convert</button>
           <button id="noteSmartConvertInfoBtn" type="button" data-shortcut="I">Info</button>
         </div>
+        <div id="noteSmartConvertChips" class="smart-convert-chips" aria-live="polite"></div>
       </section>
       <div class="note-inline-hints">
         <small data-hint data-hint-key="note-smart-convert-help">
-          Type a quick note, then Auto Convert looks for items like “in” (city), “at”/“near” (where), “for”, and “with”.<br />
+          Type a quick note — recognized dates, places, people, levels, and tags highlight as you type and appear as
+          chips below. Click a chip to send just that piece to its field, or press Enter / Auto Convert to fill
+          everything at once.<br />
           Leftover text goes to Additional Details. Saved Where, What, and Who entries suggest while you type.
         </small>
       </div>
@@ -7171,8 +7586,7 @@
       <div class="note-place-grid">
         <div class="note-place-row">
           <label><span class="field-label">City <small class="field-tokens">(in …)</small></span>
-            <input id="noteCity" maxlength="80" placeholder="e.g. Austin"
-              list="noteCitySuggestions" autocomplete="off">
+            <input id="noteCity" maxlength="80" placeholder="e.g. Austin" list="noteCitySuggestions" autocomplete="off">
           </label>
           <div class="note-city-column">
             <div class="note-city-tail">
@@ -7190,12 +7604,12 @@
         </div>
         <div class="note-place-row">
           <label><span class="field-label">Where <small class="field-tokens">(at, near, @ …)</small></span>
-            <input id="noteWhere" maxlength="120" placeholder="Venue, park, trail, route"
-              list="noteWhereSuggestions" autocomplete="off">
+            <input id="noteWhere" maxlength="120" placeholder="Venue, park, trail, route" list="noteWhereSuggestions"
+              autocomplete="off">
           </label>
           <div class="note-where-tail">
-            <button id="noteWhereToCityBtn" type="button" data-shortcut=""
-              aria-label="Move Where text to City" title="Move Where text to City"></button>
+            <button id="noteWhereToCityBtn" type="button" data-shortcut="" aria-label="Move Where text to City"
+              title="Move Where text to City"></button>
             <div class="note-location-message-stack">
               <small id="noteGeocodeStatus" class="note-geocode-status" role="status" aria-live="polite">
                 Use Locate to place this note on the map, or enter latitude/longitude manually.
@@ -7306,24 +7720,31 @@
         data-shortcut="Q">Close</button>
     </header>
     <div class="dialog-body smart-convert-help-body">
-      <p class="muted">Type a quick note, then Auto Convert tries to fill the fields below using these rules.</p>
+      <p class="muted">Type a quick note. Recognized pieces highlight inline and show as chips below the field.
+        Click a chip to send just that piece to its field, or press Enter (while the Smart Convert field is focused)
+        or Auto Convert to fill every recognized field at once. Leftover text goes to Additional Details.</p>
       <h3>Abbreviations</h3>
       <ul>
-        <li><code>@</code> → <b>at</b> &nbsp;<span class="muted">(e.g. <code>@Yosemite</code> → <code>at Yosemite</code>)</span></li>
+        <li><code>@</code> → <b>at</b> &nbsp;<span class="muted">(e.g. <code>@Yosemite</code> →
+            <code>at Yosemite</code>)</span></li>
         <li><code>w/</code> → <b>with</b></li>
         <li><code>w/o</code> → <b>without</b></li>
       </ul>
       <h3>Phrases</h3>
       <ul>
         <li><b>in</b> &lt;city&gt; → <em>City</em> &nbsp;<span class="muted">(used by Locate for lat/lon)</span></li>
-        <li><b>at</b> / <b>near</b> &lt;place&gt; → <em>Where</em> &nbsp;<span class="muted">(stadium, park, trail, route — text only)</span></li>
+        <li><b>at</b> / <b>near</b> &lt;place&gt; → <em>Where</em> &nbsp;<span class="muted">(stadium, park, trail,
+            route — text only)</span></li>
         <li><b>for</b> &lt;activity&gt; → <em>What For</em></li>
         <li><b>with</b> &lt;people&gt; → <em>Who With</em></li>
       </ul>
       <h3>Dates</h3>
       <ul>
-        <li><code>Month D, YYYY</code> &nbsp;·&nbsp; <code>Month YYYY</code> &nbsp;·&nbsp; <code>D Month YYYY</code></li>
-        <li><code>YYYY Month [D]</code> &nbsp;·&nbsp; <code>YYYY-MM-DD</code> &nbsp;·&nbsp; <code>M/D/YYYY</code> &nbsp;·&nbsp; <code>M/D/YY</code></li>
+        <li><code>Month D, YYYY</code> &nbsp;·&nbsp; <code>Month YYYY</code> &nbsp;·&nbsp; <code>D Month YYYY</code>
+        </li>
+        <li><code>YYYY Month [D]</code> &nbsp;·&nbsp; <code>YYYY-MM-DD</code> &nbsp;·&nbsp; <code>M/D/YYYY</code>
+          &nbsp;·&nbsp; <code>M/D/YY</code></li>
+        <li>Ordinal days like <code>1st</code>, <code>2nd</code>, <code>3rd</code> are understood.</li>
         <li>A weekday prefix or suffix is ignored if present.</li>
       </ul>
       <h3>Visit Levels &amp; Tags</h3>
@@ -7334,9 +7755,32 @@
       <h3>Multi-part Shortcut</h3>
       <ul>
         <li>Split with <code>||</code>, <code>|</code>, <code>::</code>, <code>;</code>, or <code> - </code>:
-          <br /><code>Where | What | Who</code></li>
+          <br /><code>Where | What | Who</code>
+        </li>
       </ul>
       <p class="muted">Anything left over is placed in <em>Additional Details</em>.</p>
+    </div>
+  </dialog>
+
+  <dialog id="basecampDialog">
+    <header>
+      <div>
+        <h2>Basecamp</h2>
+        <small id="basecampStatus" class="basecamp-status" aria-live="polite">Autosaves as you type.</small>
+      </div>
+      <div class="dialog-head-actions">
+        <button id="basecampCopyBtn" type="button" data-shortcut="P">Copy</button>
+        <button id="basecampClearBtn" class="danger" type="button" data-shortcut="X">Clear</button>
+        <button id="basecampCloseBtn" class="dialog-close" type="button" data-close="basecampDialog"
+          data-shortcut="Q">Close</button>
+      </div>
+    </header>
+    <div class="dialog-body basecamp-body">
+      <textarea id="basecampText" class="basecamp-text" maxlength="20000"
+        placeholder="Basecamp is your home-base scratchpad — trip plans, packing lists, gear, and any notes not tied to one place. It autosaves on this device and rides along in Copy, exports, and backups. Jot anything here…"></textarea>
+      <div class="basecamp-foot">
+        <small id="basecampCount" class="basecamp-count" aria-live="polite">0 characters</small>
+      </div>
     </div>
   </dialog>
 
@@ -7447,11 +7891,11 @@
           <h3>Location Notes</h3>
           <div class="setting-row">
             <div class="setting-label">Location Tags</div>
-            <button id="visitTagSettingsBtn" type="button" data-shortcut="Y">Choose, Reorder, Rename, Assign
-              Hotkeys</button>
+            <button id="visitTagSettingsBtn" type="button" data-shortcut="Y"></button>
           </div>
           <small class="setting-hint" data-hint data-hint-key="settings-note-tags-help">
-            Pick which note icon labels appear in the note editor, rename them, drag to sort, set shortcuts, and search the optional circle icon catalog.
+            Pick which note icon labels appear in the note editor, rename them, drag to sort, set shortcuts, and search
+            the optional circle icon catalog.
           </small>
         </section>
         <section class="settings-category">
@@ -7629,11 +8073,18 @@
             Notes rows easier to scan.</p>
           <p><b>Where do extra Location Tags come from?</b><br>More Icons is built from the circle symbols bundled into
             this file. Search by icon name, label, or related terms, then add the ones you want.</p>
+          <p><b>How do icon categories work?</b><br>The chip strip under the search box scopes More Icons to one or more
+            categories. Tap a chip to add or remove that category, tap All to clear, and right-click or long-press a
+            chip
+            to isolate just that category. Search is scoped to the chips you have selected.</p>
           <p><b>Can two Location Tags use the same hotkey?</b><br>No. If a key is already assigned to another active
             tag, the app warns you and keeps the existing shortcut setup unchanged.</p>
         </section>
         <section class="help-section">
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ: Other</h3>
+          <p><b>What is Basecamp?</b><br>Basecamp (toolbar button, or press B) opens a roomy scratchpad for notes that
+            are not tied to a single place — trip planning, packing lists, gear, reminders. It autosaves on this device
+            and is included in exports and backups.</p>
           <p><b>How do I add it like an app?</b><br>Use Add as App in the top toolbar. Trail Log detects iPhone/iPad,
             Android, Mac, or PC, expands the matching directions, and keeps one other device guide open at a time.</p>
           <p><b>How do hints work?</b><br>Hints can be dismissed one at a time, or turned off globally in Settings.
@@ -7779,7 +8230,8 @@
                 reload action when shown, or open device directions.</span></div>
             <div class="shortcut-row"><kbd>Click</kbd><span>Developer: click Detected Type/Icon or the Add as App
                 detected-device icon to simulate another install device.</span></div>
-            <div class="shortcut-row"><kbd>G</kbd><span>Note editor: look up coordinates from City (or Where) and state.</span>
+            <div class="shortcut-row"><kbd>G</kbd><span>Note editor: look up coordinates from City (or Where) and
+                state.</span>
             </div>
             <div class="shortcut-row"><kbd>W</kbd><span>Developer: reset the What's New banner and badges.</span></div>
             <div class="shortcut-row"><kbd>F</kbd><span>Developer: reset local app data to defaults.</span></div>
@@ -7806,7 +8258,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.1.0";
+    const APP_VERSION = "3.3.0";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7938,6 +8390,7 @@
     const __MAP_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 26.0352 24.4434"><g><rect height="24.4434" opacity="0" width="26.0352" x="0" y="0"/><path d="M0 22.6562C0 23.4961 0.488281 23.9746 1.30859 23.9746C1.60156 23.9746 1.9043 23.8867 2.26562 23.6816L7.74414 20.7031L7.74414 0.15625C7.50977 0.253906 7.25586 0.380859 7.01172 0.517578L1.01562 4.01367C0.332031 4.39453 0 4.92188 0 5.70312ZM9.29688 20.5371L15.6152 24.1602C15.8105 24.2676 16.0059 24.3555 16.1914 24.4043L16.1914 4.07227L10.0293 0.302734C9.80469 0.166016 9.55078 0.0585938 9.29688 0ZM17.7539 24.3652C17.8906 24.3164 18.0371 24.2578 18.1738 24.1699L24.668 20.4492C25.3418 20.0586 25.6738 19.541 25.6738 18.75L25.6738 1.78711C25.6738 0.9375 25.1758 0.46875 24.375 0.46875C24.082 0.46875 23.7793 0.556641 23.418 0.761719L17.7539 3.88672Z"/></g></svg>`;
     const __CHECKLIST_UNCHECKED = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 29.9414 26.0156"><g><rect height="26.0156" opacity="0" width="29.9414" x="0" y="0"/><path d="M15.6494 21.6943L28.2422 21.6943C28.9893 21.6943 29.5801 21.0742 29.5801 20.3369C29.5801 19.5898 28.9941 18.9795 28.2422 18.9795L15.6494 18.9795C14.9023 18.9795 14.3164 19.5996 14.3164 20.3369C14.3164 21.0596 14.9072 21.6943 15.6494 21.6943Z"/><path d="M5.67383 26.0156C8.7793 26.0156 11.3428 23.4473 11.3428 20.3369C11.3428 17.2314 8.7793 14.668 5.67383 14.668C2.54883 14.668 0 17.2363 0 20.3369C0 23.4473 2.55371 26.0156 5.67383 26.0156ZM5.67383 23.6133C3.88672 23.6133 2.40234 22.1191 2.40234 20.3369C2.40234 18.5645 3.8916 17.0654 5.67383 17.0654C7.45117 17.0654 8.94043 18.5645 8.94043 20.3369C8.94043 22.1191 7.45117 23.6133 5.67383 23.6133Z"/><path d="M15.6494 7.06543L28.2422 7.06543C28.9893 7.06543 29.5801 6.44531 29.5801 5.70801C29.5801 4.95605 28.9941 4.35547 28.2422 4.35547L15.6494 4.35547C14.9023 4.35547 14.3164 4.9707 14.3164 5.70801C14.3164 6.43555 14.9072 7.06543 15.6494 7.06543Z"/><path d="M5.67383 11.3818C8.7793 11.3818 11.3428 8.81348 11.3428 5.70312C11.3428 2.59766 8.7793 0.0390625 5.67383 0.0390625C2.54883 0.0390625 0 2.59766 0 5.70312C0 8.80859 2.55371 11.3818 5.67383 11.3818ZM5.67383 8.97949C3.88672 8.97949 2.40234 7.49023 2.40234 5.70312C2.40234 3.92578 3.8916 2.43652 5.67383 2.43652C7.45117 2.43652 8.94043 3.93066 8.94043 5.70312C8.94043 7.49023 7.45117 8.97949 5.67383 8.97949Z"/></g></svg>`;
     const __LIST_BULLET_RECTANGLE_PORTRAIT_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 21.3281 26.9238"><g><rect height="26.9238" opacity="0" width="21.3281" x="0" y="0"/><path d="M20.9668 3.80859L20.9668 23.125C20.9668 25.6445 19.707 26.9238 17.207 26.9238L3.75977 26.9238C1.25977 26.9238 0 25.6445 0 23.125L0 3.80859C0 1.28906 1.25977 0.00976562 3.75977 0.00976562L17.207 0.00976562C19.707 0.00976562 20.9668 1.28906 20.9668 3.80859ZM3.56445 13.6816C3.56445 14.3164 4.10156 14.873 4.75586 14.873C5.40039 14.873 5.9375 14.3262 5.9375 13.6816C5.9375 13.0176 5.40039 12.4902 4.75586 12.4902C4.10156 12.4902 3.56445 13.0273 3.56445 13.6816ZM8.37891 12.9688C7.96875 12.9688 7.66602 13.2812 7.66602 13.6816C7.66602 14.0723 7.97852 14.3848 8.37891 14.3848L16.6992 14.3848C17.0898 14.3848 17.4023 14.0723 17.4023 13.6816C17.4023 13.2812 17.0996 12.9688 16.6992 12.9688ZM3.56445 9.52148C3.56445 10.1758 4.0918 10.7129 4.75586 10.7129C5.40039 10.7129 5.9375 10.1758 5.9375 9.52148C5.9375 8.85742 5.40039 8.33984 4.75586 8.33984C4.0918 8.33984 3.56445 8.86719 3.56445 9.52148ZM8.37891 8.81836C7.96875 8.81836 7.66602 9.12109 7.66602 9.52148C7.66602 9.92188 7.96875 10.2246 8.37891 10.2246L16.6992 10.2246C17.0996 10.2246 17.4023 9.92188 17.4023 9.52148C17.4023 9.12109 17.0996 8.81836 16.6992 8.81836ZM3.56445 5.50781C3.56445 6.16211 4.10156 6.69922 4.75586 6.69922C5.40039 6.69922 5.9375 6.17188 5.9375 5.50781C5.9375 4.86328 5.40039 4.31641 4.75586 4.31641C4.10156 4.31641 3.56445 4.87305 3.56445 5.50781ZM8.37891 4.80469C7.97852 4.80469 7.66602 5.11719 7.66602 5.50781C7.66602 5.9082 7.97852 6.23047 8.37891 6.23047L16.6992 6.23047C17.0898 6.23047 17.4023 5.9082 17.4023 5.50781C17.4023 5.11719 17.0898 4.80469 16.6992 4.80469Z"/></g></svg>`;
+    const __LONG_TEXT_PAGE_AND_PENCIL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 34.3848 38.7598"><g><rect height="38.7598" opacity="0" width="34.3848" x="0" y="0"/><path d="M27.4903 9.72656L27.4903 18.9167L25.7617 20.9728L25.7617 9.76562C25.7617 8.39844 25.0391 7.65625 23.6426 7.65625L10.3809 7.65625C8.9844 7.65625 8.26174 8.39844 8.26174 9.76562L8.26174 29.0039C8.26174 30.3711 8.9844 31.1133 10.3809 31.1133L17.2369 31.1133L15.7837 32.8418L10.293 32.8418C7.79299 32.8418 6.52346 31.5625 6.52346 29.043L6.52346 9.72656C6.52346 7.20703 7.79299 5.92773 10.293 5.92773L23.7305 5.92773C26.2305 5.92773 27.4903 7.20703 27.4903 9.72656ZM22.4116 24.9579L21.4567 26.0937L12.1289 26.0938C11.7285 26.0938 11.4356 25.8008 11.4356 25.4297C11.4356 25.0391 11.7285 24.7363 12.1289 24.7363L21.9043 24.7363C22.1103 24.7363 22.2891 24.8205 22.4116 24.9579ZM22.5879 20.9961C22.5879 21.377 22.2949 21.6797 21.9043 21.6797L12.1289 21.6797C11.7285 21.6797 11.4356 21.377 11.4356 20.9961C11.4356 20.6152 11.7285 20.3223 12.1289 20.3223L21.9043 20.3223C22.2949 20.3223 22.5879 20.6152 22.5879 20.9961ZM22.5879 16.5918C22.5879 16.9727 22.2949 17.2754 21.9043 17.2754L12.1289 17.2754C11.7285 17.2754 11.4356 16.9727 11.4356 16.5918C11.4356 16.2207 11.7285 15.9277 12.1289 15.9277L21.9043 15.9277C22.2949 15.9277 22.5879 16.2207 22.5879 16.5918ZM22.5879 12.1777C22.5879 12.5684 22.2949 12.8711 21.9043 12.8711L12.1289 12.8711C11.7285 12.8711 11.4356 12.5684 11.4356 12.1777C11.4356 11.8066 11.7285 11.5137 12.1289 11.5137L21.9043 11.5137C22.2949 11.5137 22.5879 11.8066 22.5879 12.1777Z"/><path d="M18.75 36.0449L31.0156 21.4355L28.9063 19.6582L16.6309 34.2578L15.6934 36.9531C15.6055 37.2266 15.9082 37.5098 16.1719 37.373ZM31.9336 20.3711L32.9883 19.1406C33.5254 18.5059 33.4961 17.8906 32.9297 17.4023L32.5586 17.0898C31.9922 16.6211 31.377 16.7285 30.8496 17.3438L29.7949 18.5742Z"/></g></svg>`;
     // Tool Bar :: Tip/Gift
     const __GIFT_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24.3457 27.0996"><g><rect height="27.0996" opacity="0" width="24.3457" x="0" y="0"/><path d="M1.86523 22.9004C1.86523 24.9023 3.06641 25.9961 5.06836 25.9961L11.0254 25.9961L11.0254 14.707L1.86523 14.707ZM12.959 25.9961L18.916 25.9961C20.918 25.9961 22.1191 24.9023 22.1191 22.9004L22.1191 14.707L12.959 14.707ZM0 11.5918C0 12.8711 0.732422 13.4473 2.02148 13.4473L11.0254 13.4473L11.0254 6.77734L9.20898 6.77734C7.14844 6.77734 5.9082 5.54688 5.9082 4.0625C5.9082 2.71484 6.88477 1.91406 8.25195 1.91406C9.82422 1.91406 11.0254 3.125 11.0254 5.06836L11.0254 6.77734L12.959 6.77734L12.959 5.06836C12.959 3.125 14.1602 1.91406 15.7324 1.91406C17.0996 1.91406 18.0762 2.71484 18.0762 4.0625C18.0762 5.54688 16.8359 6.77734 14.7754 6.77734L12.959 6.77734L12.959 13.4473L21.9629 13.4473C23.2617 13.4473 23.9844 12.8711 23.9844 11.5918L23.9844 8.63281C23.9844 7.34375 23.2617 6.77734 21.9629 6.77734L18.7305 6.77734C19.5312 6.10352 20.0098 5.13672 20.0098 3.97461C20.0098 1.64062 18.1836 0 15.8301 0C14.043 0 12.6074 0.996094 11.9922 2.71484C11.377 0.996094 9.94141 0 8.1543 0C5.80078 0 3.97461 1.64062 3.97461 3.97461C3.97461 5.13672 4.45312 6.10352 5.25391 6.77734L2.02148 6.77734C0.78125 6.77734 0 7.34375 0 8.63281Z"/></g></svg>`;
     const __DRINK_WATER = `<svg class="sf-symbol" comment="native-sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 17.5293 25.2051"><g><rect height="25.2051" opacity="0" width="17.5293" x="0" y="0"/><path d="M8.58398 25.2051C13.7402 25.2051 17.168 21.8555 17.168 16.8359C17.168 14.4434 16.2207 11.9434 15.3809 10.0684C14.043 7.08008 11.8359 3.80859 9.90234 0.839844C9.55078 0.283203 9.0918 0 8.58398 0C8.07617 0 7.62695 0.283203 7.26562 0.839844C5.33203 3.80859 3.125 7.08008 1.78711 10.0684C0.947266 11.9434 0 14.4434 0 16.8359C0 21.8555 3.4375 25.2051 8.58398 25.2051Z"/></g></svg>`;
@@ -8938,6 +9391,64 @@
     const CIRCLE_ICON_IDS = autoCircleIconIds();
     const CIRCLE_ICON_ID_SET = new Set(CIRCLE_ICON_IDS);
 
+    // Browseable categories for the More Icons grid. Order = display order in the
+    // chip strip; an icon may belong to multiple categories. Resolver below.
+    const ICON_CATEGORIES = [
+      { id: "markers", label: "Markers & Time", shortLabel: "Markers", test: id => /^calendar/.test(id) || /^(?:flag|flag_2_crossed|flag_pattern_checkered|flag_slash|star|heart|heart_slash|bookmark|tag|pin|mappin|mappin_slash|mappin_and_ellipse|ticket|signpost_left|signpost_right|signpost_right_and_left|signpost_and_arrowtriangle_up|exclamationmark|exclamationmark_bubble|checkmark|xmark|bell|bell_badge|bell_slash|clock|hourglass|timer|sleep|wake)$/.test(id) },
+      { id: "travel", label: "Travel", shortLabel: "Travel", test: id => /^(?:airplane|car|bicycle|tram|sailboat|suitcase|suitcase_rolling|suitcase_rolling_and_film|suitcase_rolling_and_suitcase|signpost_left|signpost_right|signpost_right_and_left|signpost_and_arrowtriangle_up|map|mappin|mappin_and_ellipse|mappin_slash|tsa|fuelpump|parkingsign|steeringwheel|location|location_north|location_slash|pet_carrier|bolt_car|hydrogen|shoe|shoe_arrow_trianglehead_up_right|figure_walk_suitcase_rolling|building_2_crop|building_columns)$/.test(id) },
+      { id: "outdoors", label: "Outdoors & Animals", shortLabel: "Outdoors", test: id => /^(?:tree|leaf|mountain_2|flame|oar_2_crossed|tent|tent_2|backpack|binoculars|flashlight_on|flashlight_off|flashlight_slash|hare|fish|bird|ant|cat|dog|ladybug|ladybug_slash|lizard|microbe|pawprint|pet_carrier|tortoise)$/.test(id) },
+      { id: "sports", label: "Sports & Fitness", shortLabel: "Sports", test: id => /^figure_/.test(id) || /^(?:abs|american_football|american_football_professional|australian_football|baseball|basketball|cricket_ball|hockey_puck|rugbyball|soccerball|sportscourt|tennisball|tennis_racket|volleyball|trophy)$/.test(id) },
+      { id: "weather", label: "Weather", shortLabel: "Weather", test: id => /^cloud/.test(id) || /^sun_/.test(id) || /^moon/.test(id) || /^(?:sunrise|sunset|moonrise|moonset|drop|snowflake|smoke|wind|wind_snow|hurricane|tornado|tropicalstorm|heat_waves|umbrella|thermometer_snowflake|thermometer_sun|thermometer_variable_and_figure)$/.test(id) },
+      { id: "tech", label: "Tech & Media", shortLabel: "Tech", test: id => /^iphone/.test(id) || /^wave_3_/.test(id) || /^(?:airplay_audio|airplay_video|antenna_radiowaves_left_and_right|antenna_radiowaves_left_and_right_slash|apple_terminal|battery_100percent|bolt|bolt_horizontal|bolt_slash|bubble|bubble_left|bubble_right|camera|camera_macro|camera_macro_slash|cellularbars|command|ellipsis|envelope|exclamationmark_bubble|eye|eye_slash|film|gamecontroller|gearshape|gear|headphones|headset|icloud|info|ipad_gen1_crop_homebutton|link|magnifyingglass|message|message_badge|microphone|microphone_slash|music_microphone|paperplane|personalhotspot|phone|phone_arrow_up_right|phone_down|phone_pause|photo|photo_artframe|play_rectangle_on_rectangle|recordingtape|record|rectangle_on_rectangle|rectangle_on_rectangle_slash|sharedwithyou|speaker|speaker_slash|speaker_wave_2|square_and_arrow_up|square_and_pencil|teletype|teletype_answer|tv|video|video_slash|viewfinder|vision_pro|vision_pro_slash|waveform|wifi|wifi_exclamationmark|apple_meditate|power|l1|l2|r1|r2|lb|rb|lt|rt|chart_line_downtrend_xyaxis|chart_line_flattrend_xyaxis|chart_line_uptrend_xyaxis)$/.test(id) },
+      { id: "office", label: "Office & Docs", shortLabel: "Office", test: id => /^(?:archivebox|book|book_closed|books_vertical|briefcase|document|envelope|folder|graduationcap|newspaper|paperclip|paperplane|pencil|pencil_tip_crop|scissors|shippingbox|square_and_pencil|tray|hammer|trash|trash_slash|xmark_bin|list_bullet|chart_line_downtrend_xyaxis|chart_line_flattrend_xyaxis|chart_line_uptrend_xyaxis|building_2_crop|building_columns)$/.test(id) },
+      { id: "people", label: "People & Health", shortLabel: "People", test: id => /^(?:person|person_2|person_bust|person_crop|person_crop_circle_dashed|hand_raised|hand_thumbsdown|hand_thumbsup|figure_2|cross|cross_case|pill|pills|sos|staroflife|stethoscope|apple_meditate|microbe|figure_yoga|figure_mind_and_body|figure_pilates|figure_taichi|thermometer_snowflake|thermometer_sun|thermometer_variable_and_figure)$/.test(id) },
+      { id: "home", label: "Home & Daily", shortLabel: "Home", test: id => /^(?:bed_double|coat|dishwasher|dryer|fan|jacket|key|lightbulb|lock|shoe|tshirt|washer|toilet|sleep|wake|hammer|scissors|house|house_and_flag|house_lodge)$/.test(id) },
+      { id: "entertainment", label: "Entertainment", shortLabel: "Entertainment", test: id => /^(?:theatermasks|popcorn|ticket|film|music_microphone|microphone|gamecontroller|headphones|figure_dance|figure_socialdance|figure_play|tv|video|bag|cart|handbag|gift|storefront|creditcard|purchased|fork_knife)$/.test(id) },
+      { id: "nav", label: "Navigation & Arrows", shortLabel: "Arrows", test: id => /^arrow_/.test(id) || /^arrowshape_/.test(id) || /^arrowtriangle_/.test(id) || /^chevron_/.test(id) || /^(?:location|location_north|location_slash|signpost_left|signpost_right|signpost_right_and_left|signpost_and_arrowtriangle_up|left|right|dot_arrowtriangles_up_right_down_left)$/.test(id) },
+      { id: "audio", label: "Audio & Playback", shortLabel: "Audio", test: id => /^wave_3_/.test(id) || /^(?:play|pause|stop|eject|forward|forward_end|backward|backward_end|playpause|shuffle|repeat|repeat_1|record|rotate_3d|restart|wake|sleep|speaker|speaker_slash|speaker_wave_2|waveform|antenna_radiowaves_left_and_right|antenna_radiowaves_left_and_right_slash|recordingtape|microphone|microphone_slash|music_microphone|headphones|headset)$/.test(id) },
+      { id: "shapes", label: "Shapes", shortLabel: "Shapes", test: id => /^(?:circle|circle_dotted|circle_grid_3x3|circle_hexagongrid|cube|diamond|environments|environments_slash|grid|inset_filled|inset_filled_rectangle_and_person_filled|rectangle_on_rectangle|rectangle_on_rectangle_slash|smallcircle|smallcircle_filled|square|triangle|viewfinder|dot_arrowtriangles_up_right_down_left|line_2_horizontal_decrease|line_3_horizontal|line_3_horizontal_decrease)$/.test(id) },
+      { id: "symbols", label: "Math & Symbols", shortLabel: "Symbols", test: id => /^(?:plus|minus|multiply|divide|equal|notequal|greaterthan|greaterthanorequalto|lessthan|lessthanorequalto|plusminus|asterisk|at|slash|questionmark|exclamationmark|xmark|checkmark|command|infinity|number|character|pi|f_cursive|kph|mph|lb)$/.test(id) },
+      { id: "numbers", label: "Numbers", shortLabel: "Numbers", test: id => /^(?:[0-9]+(?:_alt)?|[0-9][a-z])$/.test(id) },
+      { id: "letters", label: "Letters", shortLabel: "Letters", test: id => /^[a-z]$/.test(id) },
+      { id: "currency", label: "Currency", shortLabel: "Currency", test: id => /sign$/.test(id) && !/parking|signpost/.test(id) },
+    ];
+    const ICON_CATEGORY_IDS = ICON_CATEGORIES.map(cat => cat.id);
+    const ICON_CATEGORY_LABELS = Object.fromEntries(ICON_CATEGORIES.map(cat => [cat.id, cat.label]));
+
+    function iconCategoriesForId(id) {
+      const norm = String(id || "").toLowerCase();
+      return ICON_CATEGORIES.filter(cat => cat.test(norm)).map(cat => cat.id);
+    }
+
+    function iconCategoryLabel(id) {
+      return ICON_CATEGORY_LABELS[id] || "";
+    }
+
+    function iconCategoryCountText(catIds, count, query) {
+      const trimmed = String(query || "").trim();
+      const noun = count === 1 ? "icon" : "icons";
+      const cleanIds = (catIds || []).filter(id => ICON_CATEGORY_LABELS[id]);
+      let scope;
+      if (!cleanIds.length) {
+        scope = "in all categories";
+      } else if (cleanIds.length === 1) {
+        scope = `in category ${ICON_CATEGORY_LABELS[cleanIds[0]]}`;
+      } else {
+        const labels = cleanIds.map(id => ICON_CATEGORY_LABELS[id]);
+        const head = labels.slice(0, -1).join(", ");
+        const noun2 = cleanIds.length >= 2 ? "categories" : "category";
+        scope = cleanIds.length === 2
+          ? `in ${noun2} ${labels[0]} and ${labels[1]}`
+          : `in ${noun2} ${head}, and ${labels[labels.length - 1]}`;
+      }
+      const suffix = trimmed ? ` with search term '${trimmed}'` : "";
+      return `${count} ${noun} ${scope}${suffix}`;
+    }
+
+    function iconCategoryHasInactive(catId, inactiveTypes) {
+      return inactiveTypes.some(type => iconCategoriesForId(type.id).includes(catId));
+    }
+
     function iconLabelFromId(id) {
       return String(id || "").split("_").filter(Boolean).map(part => {
         if (/^\d+$/.test(part)) return part;
@@ -9067,12 +9578,12 @@
         title: "Country Map",
         ticketId: "WISH-001",
         description: "Add a country-map mode alongside the US map. Scope includes a world SVG/data source, visit levels, notes, exports/imports, map mode switching, and a strategy for historical countries without breaking existing state data.",
-        priority: "P1",
+        priority: "P0",
         effort: "x-large",
         targetKind: "exact",
         targetVersion: "5.0.0",
         tokenCostPct: 80,
-        prompt: "Add world-country map mode without breaking US state data. Reuse levels/notes/export paths. Include migration and historical-country handling.",
+        prompt: "Add world-country map mode without breaking US state data. Reuse levels/notes/export paths. Include migration and historical-country handling. Reserve the 'Trail Atlas' release theme name for whichever release ships this.",
         category: "Maps"
       },
       {
@@ -9112,27 +9623,15 @@
         category: "Legend"
       },
       {
-        title: "Dramatically Improve Auto Convert",
-        ticketId: "WISH-042",
-        description: "Make Smart Convert feel much more intelligent and interactive. Scope includes richer parsing, Enter triggering Auto Convert while the Smart Convert field is active instead of saving the note, and lightweight recognition popups as dates, places, people, purposes, levels, and tags are detected. As the user types, recognized tokens (dates, weekdays, City via 'in', Specifics via 'at'/'near', What For via 'for', Who With via 'with', visit levels, visit labels, abbreviations) should auto-highlight inline in the Smart Convert input. Clicking a highlighted token — or retyping it — removes it from the Smart Convert input and promotes it into the corresponding field below (City, Specifics, What For, Who With, Visit Level, Visit Labels, Date), with any remaining unrecognized text dropping into Additional Details.",
-        priority: "P0",
-        effort: "large",
-        targetKind: "exact",
-        targetVersion: "3.2.0",
-        tokenCostPct: 42,
-        prompt: "Dramatically improve Smart Convert in the note editor. Expand parsing coverage, make Enter in the Smart Convert input run Auto Convert instead of saving, and explore lightweight inline recognition popups for parsed dates, places, people, purposes, levels, and tags. Add live inline highlighting of recognized tokens as the user types; clicking a highlight (or retyping it) removes it from the Smart Convert input and promotes it into the matching field (City, Specifics, What For, Who With, Visit Level, Visit Labels, Date), with leftover text routed to Additional Details.",
-        category: "Notes"
-      },
-      {
-        title: "Basecamp Notes Section",
-        ticketId: "WISH-043",
-        description: "Add a dedicated Basecamp notes section for home-base planning, recurring travel context, packing reminders, saved trip context, or other notes that are useful but not tied to one state, territory, or mapped location.",
-        priority: "P1",
+        title: "Multiple Named Basecamp Pads",
+        ticketId: "WISH-053",
+        description: "Extend Basecamp Notes from a single scratchpad to multiple named pads (for example Packing, Gear, or a per-trip pad), with a pad list, add/rename/delete/reorder, a large editor per pad, and search across pads. Migrate the existing single scratchpad into the first pad without data loss.",
+        priority: "P2",
         effort: "medium",
         targetKind: "minor",
         targetVersion: "",
-        tokenCostPct: 24,
-        prompt: "Add a Basecamp notes section for app-level travel notes that are not tied to a single location. Keep it local/offline, searchable, exportable, and visually distinct from location visit notes.",
+        tokenCostPct: 18,
+        prompt: "Extend Basecamp Notes to multiple named pads: a pad list with add/rename/delete/reorder, a large markdown editor per pad, and search across pads. Migrate the existing single Basecamp scratchpad into the first pad without data loss. Keep it local/offline, exportable, and visually distinct from location notes.",
         category: "Notes"
       },
       {
@@ -9185,6 +9684,70 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "3.3.0",
+        date: "2026-05-28",
+        title: "Basecamp Notes",
+        summary: "A roomy Basecamp scratchpad for home-base notes that aren't tied to any one place.",
+        highlights: [
+          "New Basecamp button in the toolbar (or press B) opens a large scratchpad for trip planning, packing lists, gear, and reminders not tied to a place.",
+          "Basecamp autosaves on this device and rides along in Copy, exports, and backups."
+        ],
+        notice: {
+          version: "3.3.0",
+          title: "Basecamp Notes",
+          summary: "A roomy scratchpad for home-base notes not tied to any one place.",
+          cta: "Set Up Camp"
+        },
+        updates: [
+          "Added Basecamp: a dedicated dialog with a large autosaving scratchpad for app-level notes (planning, packing, gear, reminders) that are not tied to a state, territory, or mapped location.",
+          "Open Basecamp from the toolbar button beside Notes (matched in size to the other toggle icons) or with the B hotkey.",
+          "Copy mirrors the scratchpad to the clipboard with a 'Copied to Clipboard' status flash under the title; Clear wipes it behind a confirmation and is styled red; usage guidance lives in the editor placeholder.",
+          "Basecamp text is stored locally in the existing backup schema and is appended to the Markdown, Plain Text, and RTF exports.",
+          "Release notice summaries are now capped at 100 characters and each release uses a themed call-to-action.",
+          "Cleared the completed Basecamp planning item from the active roadmap and seeded a follow-up for splitting Basecamp into multiple named pads."
+        ]
+      },
+      {
+        version: "3.2.0",
+        date: "2026-05-28",
+        title: "Trail Shorthand",
+        summary: "A much smarter, interactive Smart Convert that highlights and promotes note pieces as you type — plus browseable categories for the whole icon catalog.",
+        highlights: [
+          "Smart Convert now highlights recognized dates, places, people, levels, and tags as you type and lists them as color-coded chips below the field.",
+          "Click a Smart Convert chip to send just that piece to its field, or hit Enter / Auto Convert to drop everything in at once.",
+          "Copied notes now read as clean, paste-ready lines you can drop straight back into Smart Convert.",
+          "Tag Settings has a sticky category chip strip — pick one or many categories and the icon grid scopes to your selection, with a live count.",
+          "Right-click or long-press a category chip to isolate it; tap All to clear.",
+          "Hovering an icon shows a clear 'Add <name>' tooltip that no longer gets cut off."
+        ],
+        notice: {
+          version: "3.2.0",
+          title: "Trail Shorthand",
+          summary: "Smart Convert highlights and promotes note pieces as you type, plus browseable icon categories.",
+          cta: "Take Note"
+        },
+        updates: [
+          "Rebuilt Smart Convert around a single recognizer so live highlighting, recognition chips, and Auto Convert all agree on what was detected.",
+          "Smart Convert highlights recognized dates, cities (in), places (at/near/@), purposes (for), people (with, w/), visit levels, and visit labels inline as you type, with no fields changed until you act.",
+          "Each recognized piece appears as a color-coded chip below the field (Tag blue, Date red, Level gray, City indigo, Where purple, What orange, Who yellow); clicking a chip promotes just that piece into its field and removes it from the Smart Convert text. Promoting replaces the field's current value, except visit-label tags which are simply activated and details which are appended.",
+          "Pressing Enter while the Smart Convert field is focused now runs Auto Convert instead of saving the note; Auto Convert fills every recognized field and appends leftover text to Additional Details. A hint beside the title reminds you Enter adds every chip.",
+          "Smart Convert phrase parsing treats :: and other separators as value terminators, so keyword tokens are recognized even in a separator-delimited line; plain positional splits still work when no keyword is present, and multi-part entries surface as Where/What/Who/Details chips too.",
+          "Date parsing now understands ordinal days such as 1st, 2nd, and 3rd in addition to the existing formats.",
+          "Smart Convert strips stray square brackets and trims whitespace when routing leftover text to Additional Details.",
+          "Plain Text export and the Notes Copy text now render each note as a readable, paste-ready line using keyword tokens (at Where in City with Who for What; details), so a note line can be copied and pasted back into Smart Convert to refill its fields.",
+          "Added 17 icon categories — Markers & Time, Travel, Outdoors & Animals, Sports & Fitness, Weather, Tech & Media, Office & Docs, People & Health, Home & Daily, Entertainment, Navigation & Arrows, Audio & Playback, Shapes, Math & Symbols, Numbers, Letters, and Currency — covering every bundled icon, with promoted everyday categories ahead of mechanical ones.",
+          "Categories are multi-membership, so cross-domain icons like ticket, microphone, tent, and house appear under more than one chip.",
+          "The category chip strip is three rows tall, starts flush at the left edge, uses short chip labels with right-aligned counts, fills the available width when there is no overflow, and remembers its scroll position across selections.",
+          "Multi-select chips combine results across categories; long-press or right-click on a chip isolates it, and long-pressing an already-solo chip re-enables All.",
+          "A count line describes the current scope using formats like '639 icons in all categories', '100 icons in category Sports & Fitness', and '15 icons in categories Sports & Fitness, Animals, and Home & Daily with search term \\'ant\\''.",
+          "Aliased-first ordering inside the More Icons grid is preserved within each category selection, and the grid stays flush against the sticky search + chip strip so it never jumps when the result set shrinks.",
+          "Hovering an icon uses a shared overlay anchored to the viewport that clamps to the edge of the screen, so long labels like 'Add American Football Professional' never get clipped.",
+          "Compacted Selected Tags rows on phones with tighter padding, smaller name/hotkey inputs, condensed labels, and a slimmer toggle pill so a full set fits without dominating the dialog.",
+          "Updated Help Center with a category browsing entry covering chip selection, search scoping, and the long-press isolate gesture.",
+          "Cleared the completed Smart Convert and icon-categories planning items from the active roadmap now that both have shipped."
+        ]
+      },
       {
         version: "3.1.0",
         date: "2026-05-25",
@@ -9926,6 +10489,7 @@
     const MAP_ZOOM_MAX = 10;
     const MAP_ZOOM_STEP = .5;
     const NOTE_AUTOCOMPLETE_LIMIT = 40;
+    const BASECAMP_MAX_LENGTH = 20000;
     const LEGEND_POSITION_ORDER = ["right-top", "right-bottom", "left-bottom", "left-top"];
     const LEGEND_POSITION_MENU_ORDER = ["left-top", "right-top", "left-bottom", "right-bottom"];
     const INSTALL_PLATFORM_SEQUENCE = ["auto", "idevice", "android", "mac", "pc"];
@@ -9975,6 +10539,10 @@
     let draggingVisitTagId = "";
     let visitTagDragCommitted = false;
     let visitTagSearchQuery = "";
+    let visitTagCategoryFilters = new Set();
+    let visitTagCategoryLongPressTimer = 0;
+    let visitTagCategoryLongPressHandled = false;
+    let visitTagCategoryGestureSuppressUntil = 0;
     let visitTagReturnTarget = "settings";
     let mainResizeActive = false;
     let legendEditMode = false;
@@ -10038,6 +10606,7 @@
         states: defaultTerritoryStates(levels),
         notes: {},
         visitTypes: defaultVisitTypes(),
+        basecamp: { text: "", updated: "" },
         dismissedHints: [],
         lastSeenReleaseVersion: "0.0.0",
         dismissedReleaseVersion: "",
@@ -10201,7 +10770,9 @@
     function parseFlexibleDate(value, order = "mdy") {
       const text = String(value || "").trim();
       if (!text) return "";
-      const clean = stripDateWeekdayWords(text);
+      // Strip ordinal suffixes on day numbers (1st, 2nd, 3rd, 4th) before parsing.
+      const deordinal = text.replace(/\b(\d{1,2})(?:st|nd|rd|th)\b/gi, "$1");
+      const clean = stripDateWeekdayWords(deordinal);
       if (!clean) return "";
       let match = clean.match(/^(\d{2}|\d{4})$/);
       if (match) return normalizeDateYear(match[1]);
@@ -10450,6 +11021,11 @@
       });
       const savedMapName = String(next.mapName || base.mapName).trim();
       next.mapName = (savedMapName === "Your ${APP_NAME}" ? DEFAULT_MAP_NAME : savedMapName || base.mapName).slice(0, 80);
+      const basecampInput = input.basecamp && typeof input.basecamp === "object" ? input.basecamp : {};
+      next.basecamp = {
+        text: String(basecampInput.text || "").slice(0, BASECAMP_MAX_LENGTH),
+        updated: String(basecampInput.updated || "")
+      };
       pruneObsoleteBackupKeys(next);
       return next;
     }
@@ -10937,6 +11513,7 @@
       setButtonLabel("#mapToggleBtn", __MAP_FILL, "Map", "Toggle Map Panel", "Toggle Map Panel");
       setButtonLabel("#legendToggleBtn", __CHECKLIST_UNCHECKED, "Legend", "Toggle Legend Panel", "Toggle Legend Panel");
       setButtonLabel("#notesToggleBtn", __LIST_BULLET_RECTANGLE_PORTRAIT_FILL, "Notes", "Toggle Notes Panel", "Toggle Notes Panel");
+      setButtonLabel("#basecampBtn", __LONG_TEXT_PAGE_AND_PENCIL, "Basecamp", "Open Basecamp notes", "Open Basecamp notes");
       $("#labelsToggleLabel").innerHTML = prefersSymbols() ? __TAG_FILL : "Labels";
       setButtonLabel("#labelsNoneBtn", __CIRCLE_SLASH, "None", "No map labels");
       setButtonLabel("#labelsAbbrBtn", __CHARACTER, "Abbr", "Show location abbreviations");
@@ -10979,6 +11556,9 @@
       setButtonLabel("#saveNoteBtn", __CHECKMARK, "Save Note");
       setButtonLabel("#saveAddNoteBtn", __CHECKMARK_CIRCLE_BADGE_PLUS_FILL, "Save + Add", "Save and add another note");
       setButtonLabel("#tipJarCloseBtn", __XMARK, "Close");
+      setButtonLabel("#basecampCopyBtn", __DOCUMENT_ON_DOCUMENT, "Copy", "Copy Basecamp text");
+      setButtonLabel("#basecampClearBtn", ICON_SETTINGS_DELETE__TRASH_FILL, "Clear", "Clear Basecamp");
+      setButtonLabel("#basecampCloseBtn", __XMARK, "Close");
       const tipSendIcon = $("#tipOtherSendBtn .tip-send-icon");
       if (tipSendIcon && !tipSendIcon.dataset.iconReady) {
         tipSendIcon.innerHTML = __PAPERPLANE_FILL;
@@ -11004,7 +11584,7 @@
       setButtonLabelBoth("#hintsOffBtn", ICON_SETTINGS_HINT_OFF__LIGHTBULB, "Off", "Hints off");
       setButtonLabelBoth("#cycleModeBtn", ICON_SETTINGS_MAP_CYCLE__ARROW_TRIANGLEHEAD_2_CLOCKWISE, "Cycle", "Tap to select then cycle");
       setButtonLabelBoth("#selectModeBtn", ICON_SETTINGS_MAP_SELECT__SCOPE, "Select", "Tap to select");
-      setButtonLabelBoth("#visitTagSettingsBtn", __CIRCLE_CIRCLE, "Choose, Reorder, Rename, Assign Hotkeys");
+      setButtonLabelBoth("#visitTagSettingsBtn", __CIRCLE_CIRCLE, "Choose, Order, Rename, Hotkeys");
       setExportBtnLabel("#exportJsonBtn", ICON_SETTINGS_EXPORT_JSON__CURLYBRACES, "JSON", ".json");
       setExportBtnLabel("#exportMarkdownBtn", ICON_SETTINGS_EXPORT_MARKDOWN__RICHTEXT_PAGE, "Markdown", ".md");
       setExportBtnLabel("#exportRichTextBtn", ICON_SETTINGS_EXPORT_RICHTEXT__CHARACTER_TEXT_JUSTIFY, "Rich Text", ".rtf");
@@ -11853,6 +12433,21 @@
       return [noteLocationDisplay(note), note.what, note.who, noteDetails(note)].filter(Boolean);
     }
 
+    // Render where/city/who/what with Smart Convert keyword tokens, then append
+    // free-text details after a semicolon. Reads naturally and re-parses by
+    // keyword (who terminates at "for", what terminates at the ";").
+    function noteFieldsKeywordText(note) {
+      const segs = [];
+      if (String(note.where || "").trim()) segs.push(`at ${String(note.where).trim()}`);
+      if (String(note.city || "").trim()) segs.push(`in ${String(note.city).trim()}`);
+      if (String(note.who || "").trim()) segs.push(`with ${String(note.who).trim()}`);
+      if (String(note.what || "").trim()) segs.push(`for ${String(note.what).trim()}`);
+      const keyworded = segs.join(" ");
+      const details = String(noteDetails(note) || "").trim();
+      if (keyworded && details) return `${keyworded}; ${details}`;
+      return keyworded || details;
+    }
+
     function noteSummary(note) {
       const bits = noteFieldValues(note);
       return bits.join(" :: ") || "No details";
@@ -11874,6 +12469,48 @@
     function noteExportText(note) {
       const fields = noteFieldLines(note, "");
       return fields.length ? fields.join("; ") : "No details";
+    }
+
+    // A parseable date string Smart Convert's date grammar accepts.
+    function smartDateString(date) {
+      const match = String(date || "").match(/^(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?$/);
+      if (!match) return "";
+      const [, year, month, day] = match;
+      if (!month) return year;
+      const monthName = MONTH_NAMES[Number(month) - 1];
+      if (!day) return `${monthName} ${year}`;
+      return `${monthName} ${Number(day)}, ${year}`;
+    }
+
+    // Render a note as a single line that can be pasted back into Smart Convert
+    // and re-parsed into the same fields. Free-text details lead so they fall
+    // through as leftover; structured fields use Smart Convert keyword syntax;
+    // date, level, and tag names are recognized anywhere in the line.
+    function noteToSmartConvertText(note) {
+      // Strip multi-part separators from values so the line stays in keyword
+      // mode (and commas inside city/where/what/who that would truncate a
+      // phrase) — keeps the line round-trippable through Smart Convert.
+      const noSep = value => String(value || "")
+        .replace(/\s*(?:\|\||\||::|;| - )\s*/g, ", ")
+        .replace(/\s+/g, " ")
+        .trim();
+      const noSepNoComma = value => noSep(value).replace(/,/g, "");
+      // Keyword tokens + " :: " separators: reads cleanly and re-parses through
+      // Smart Convert by keyword (the separators just terminate each value).
+      const parts = [];
+      if (noSep(note.city)) parts.push(`in ${noSepNoComma(note.city)}`);
+      if (noSep(note.where)) parts.push(`@ ${noSepNoComma(note.where)}`);
+      if (noSep(note.what)) parts.push(`for ${noSepNoComma(note.what)}`);
+      if (noSep(note.who)) parts.push(`with ${noSepNoComma(note.who)}`);
+      const dateText = smartDateString(note.date);
+      if (dateText) parts.push(dateText);
+      const level = levelById(note.levelId);
+      if (level) parts.push(noSep(level.name));
+      const tags = noteVisitTypeLabels(note).map(type => type.label);
+      if (tags.length) parts.push(tags.map(noSep).join(", "));
+      const details = noSep(noteDetails(note));
+      if (details) parts.push(details);
+      return parts.join(" :: ") || "(empty note)";
     }
 
     function levelCounts() {
@@ -12986,7 +13623,7 @@
     }
 
     function textOnlyNoteLine(note) {
-      const parts = [formatTextOnlyDate(note.date), levelById(note.levelId)?.name || "No level", ...noteFieldValues(note)];
+      const parts = [formatTextOnlyDate(note.date), levelById(note.levelId)?.name || "No level", noteFieldsKeywordText(note)];
       return `        - ${parts.filter(Boolean).join(" :: ")}${visitTypeTextSuffix(note)}`;
     }
 
@@ -13008,7 +13645,7 @@
       const suffix = levelText ? ` :: ${type.label} :: ${levelText}` : "";
       if (notes.length === 1) {
         const note = notes[0];
-        const noteParts = [formatTextOnlyDate(note.date), noteFieldValues(note).join(", ")].filter(Boolean);
+        const noteParts = [formatTextOnlyDate(note.date), noteFieldsKeywordText(note)].filter(Boolean);
         return `- [${checked}] ${STATE_NAMES[abbr]} (${abbr})${suffix}${noteParts.length ? ` :: ${noteParts.join(" :: ")}` : ""}${visitTypeTextSuffix(note)}`;
       }
       const lines = [`- [${checked}] ${STATE_NAMES[abbr]} (${abbr})${suffix}`];
@@ -13393,6 +14030,7 @@
 
     function openVisitTagSettings(returnTarget = "settings") {
       visitTagReturnTarget = returnTarget === "note" ? "note" : "settings";
+      visitTagCategoryFilters = new Set();
       renderVisitTagSettings();
       closeOpenDialogs("tagDialog");
       $("#tagDialog").showModal();
@@ -13422,9 +14060,40 @@
         return queryTokens.every(token => searchText.includes(token));
       };
       const active = allVisitTypes().filter(type => type.enabled !== false);
-      const inactive = allVisitTypes()
-        .filter(type => type.enabled === false && matchesQuery(type))
+      const allInactive = allVisitTypes().filter(type => type.enabled === false);
+      // Drop stale chip selections (defensive — categories are static, but keeps
+      // the Set tight if anything ever changes).
+      [...visitTagCategoryFilters].forEach(catId => {
+        if (!ICON_CATEGORY_LABELS[catId]) visitTagCategoryFilters.delete(catId);
+      });
+      const matchesCategory = type => {
+        if (!visitTagCategoryFilters.size) return true;
+        const cats = iconCategoriesForId(type.id);
+        return cats.some(catId => visitTagCategoryFilters.has(catId));
+      };
+      const inactive = allInactive
+        .filter(type => matchesCategory(type) && matchesQuery(type))
         .sort(compareVisitTypesForMoreIcons);
+      const activeCatIds = [...visitTagCategoryFilters];
+      const orderedActiveCatIds = ICON_CATEGORY_IDS.filter(id => visitTagCategoryFilters.has(id));
+      const countText = iconCategoryCountText(orderedActiveCatIds, inactive.length, visitTagSearchQuery);
+      const allCount = allInactive.length;
+      const chipFor = (catId, label, shortLabel, count, pressed) => `
+        <button class="tag-category-chip${pressed ? " is-active" : ""}" type="button"
+          role="button" aria-pressed="${pressed}"
+          data-tag-category="${catId}" title="${escapeHtml(label)} (${count})">
+          <span class="tag-category-chip-label">${escapeHtml(shortLabel)}</span>
+          <span class="tag-category-chip-count">${count}</span>
+        </button>
+      `;
+      const categoryChips = [
+        chipFor("__all", "All", "All", allCount, visitTagCategoryFilters.size === 0),
+        ...ICON_CATEGORIES.map(cat => {
+          const count = allInactive.filter(type => iconCategoriesForId(type.id).includes(cat.id)).length;
+          if (!count) return "";
+          return chipFor(cat.id, cat.label, cat.shortLabel || cat.label, count, visitTagCategoryFilters.has(cat.id));
+        })
+      ].filter(Boolean).join("");
       const tagRow = (type, enabled) => `
         <article class="tag-editor-row ${enabled ? "is-enabled" : ""}" role="button" tabindex="0"
           aria-pressed="${enabled}" draggable="${enabled ? "true" : "false"}" data-tag-id="${type.id}" data-tag-row="${type.id}">
@@ -13441,12 +14110,22 @@
           <button class="tag-state-pill" type="button" data-tag-toggle-button="${type.id}">${enabled ? "On" : "Add"}</button>
         </article>
       `;
-      const moreIcon = type => `
-        <button class="tag-more-option" type="button" data-tag-add="${type.id}" title="Add ${escapeHtml(type.label)}">
+      const moreIcon = type => {
+        // Prefer the full id-derived label for the hover tooltip so long names
+        // like "American Football Professional" are not clipped by the 24-char
+        // truncation applied to type.label in normalizeVisitTypeConfig.
+        const fullLabel = iconLabelFromId(type.id) || type.label;
+        return `
+        <button class="tag-more-option" type="button" data-tag-add="${type.id}"
+          data-tooltip-label="Add ${escapeHtml(fullLabel)}"
+          title="Add ${escapeHtml(fullLabel)}">
           <span class="tag-more-symbol-wrap">${visitTypeIcon(type.id)}<span class="tag-more-add" aria-hidden="true">+</span></span>
           <span class="tag-more-name">${escapeHtml(type.label)}</span>
         </button>
       `;
+      };
+      const previousStrip = $(".tag-category-strip");
+      const previousStripScrollLeft = previousStrip ? previousStrip.scrollLeft : 0;
       $("#tagEditorList").innerHTML = `
         <section class="tag-editor-section">
           <h3><span>Selected Tags</span><small>${active.length}</small></h3>
@@ -13454,17 +14133,94 @@
         </section>
         <div class="tag-more-sticky">
           <label class="tag-search-row">
-            <span class="tag-search-label">More Available Icons <small>(${inactive.length})</small></span>
+            <span class="tag-search-label">More Available Icons</span>
             <input id="tagSearchInput" type="search" maxlength="80" placeholder="Search icons/tags" value="${escapeHtml(visitTagSearchQuery)}">
           </label>
+          <div class="tag-category-strip" role="group" aria-label="Filter icons by category">
+            <div class="tag-category-strip-track">${categoryChips}</div>
+          </div>
+          <p class="tag-category-count" aria-live="polite">${escapeHtml(countText)}</p>
         </div>
         <section class="tag-editor-section tag-more-section">
-          ${inactive.length ? `<div class="tag-more-grid">${inactive.map(moreIcon).join("")}</div>` : `<div class="empty">No hidden icons match that search.</div>`}
+          ${inactive.length ? `<div class="tag-more-grid">${inactive.map(moreIcon).join("")}</div>` : `<div class="empty">No icons match this filter.</div>`}
         </section>
       `;
+      const nextStrip = $(".tag-category-strip");
+      if (nextStrip) nextStrip.scrollLeft = previousStripScrollLeft;
       bindVisitTagSettings();
+      bindMoreIconTooltipOverlay();
       enhanceHints();
       syncButtonLabels();
+    }
+
+    function ensureMoreIconTooltipOverlay() {
+      let overlay = document.getElementById("tagMoreTooltipOverlay");
+      if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "tagMoreTooltipOverlay";
+        overlay.setAttribute("role", "tooltip");
+        overlay.setAttribute("aria-hidden", "true");
+        document.body.appendChild(overlay);
+      }
+      return overlay;
+    }
+
+    function hideMoreIconTooltip() {
+      const overlay = document.getElementById("tagMoreTooltipOverlay");
+      if (!overlay) return;
+      overlay.classList.remove("is-visible");
+      overlay.style.display = "none";
+    }
+
+    function showMoreIconTooltip(button) {
+      if (!button) return;
+      const label = button.dataset.tooltipLabel || button.getAttribute("title") || "";
+      if (!label) return;
+      const overlay = ensureMoreIconTooltipOverlay();
+      overlay.textContent = label;
+      overlay.style.display = "block";
+      // Measure after display so width is accurate, then clamp to viewport.
+      const ttRect = overlay.getBoundingClientRect();
+      const btnRect = button.getBoundingClientRect();
+      const margin = 8;
+      const idealX = btnRect.left + btnRect.width / 2 - ttRect.width / 2;
+      const x = Math.max(margin, Math.min(window.innerWidth - ttRect.width - margin, idealX));
+      const above = btnRect.top - ttRect.height - 6;
+      const y = above >= margin ? above : btnRect.bottom + 6;
+      overlay.style.left = `${x}px`;
+      overlay.style.top = `${y}px`;
+      overlay.classList.add("is-visible");
+    }
+
+    function bindMoreIconTooltipOverlay() {
+      const grid = $(".tag-more-grid");
+      if (!grid || grid.dataset.tooltipBound === "1") return;
+      grid.dataset.tooltipBound = "1";
+      grid.addEventListener("pointerover", event => {
+        if (event.pointerType === "touch") return;
+        const button = event.target.closest(".tag-more-option");
+        if (!button || !grid.contains(button)) return;
+        showMoreIconTooltip(button);
+      });
+      grid.addEventListener("pointerout", event => {
+        const button = event.target.closest(".tag-more-option");
+        if (!button) return;
+        const next = event.relatedTarget && event.relatedTarget.closest && event.relatedTarget.closest(".tag-more-option");
+        if (next && next !== button) showMoreIconTooltip(next);
+        else hideMoreIconTooltip();
+      });
+      grid.addEventListener("focusin", event => {
+        const button = event.target.closest(".tag-more-option");
+        if (button) showMoreIconTooltip(button);
+      });
+      grid.addEventListener("focusout", event => {
+        const button = event.target.closest(".tag-more-option");
+        if (!button) return;
+        const next = event.relatedTarget && event.relatedTarget.closest && event.relatedTarget.closest(".tag-more-option");
+        if (!next) hideMoreIconTooltip();
+      });
+      grid.addEventListener("scroll", hideMoreIconTooltip, true);
+      window.addEventListener("scroll", hideMoreIconTooltip, true);
     }
 
     function updateVisitTag(id, patch, options = {}) {
@@ -13558,6 +14314,30 @@
       else updateVisitTag(id, { enabled: false });
     }
 
+    function toggleVisitTagCategory(catId) {
+      if (catId === "__all") {
+        visitTagCategoryFilters.clear();
+      } else if (!ICON_CATEGORY_LABELS[catId]) {
+        return;
+      } else if (visitTagCategoryFilters.has(catId)) {
+        visitTagCategoryFilters.delete(catId);
+      } else {
+        visitTagCategoryFilters.add(catId);
+      }
+      renderVisitTagSettings();
+    }
+
+    function soloVisitTagCategory(catId) {
+      if (catId === "__all" || !ICON_CATEGORY_LABELS[catId]) {
+        visitTagCategoryFilters.clear();
+      } else if (visitTagCategoryFilters.size === 1 && visitTagCategoryFilters.has(catId)) {
+        visitTagCategoryFilters.clear();
+      } else {
+        visitTagCategoryFilters = new Set([catId]);
+      }
+      renderVisitTagSettings();
+    }
+
     function bindVisitTagSettings() {
       const searchInput = $("#tagSearchInput");
       searchInput?.addEventListener("input", () => {
@@ -13567,6 +14347,42 @@
         const nextSearch = $("#tagSearchInput");
         nextSearch?.focus();
         nextSearch?.setSelectionRange(cursor, cursor);
+      });
+      $$("[data-tag-category]").forEach(button => {
+        let pressTimer = 0;
+        button.addEventListener("click", event => {
+          if (visitTagCategoryLongPressHandled || Date.now() < visitTagCategoryGestureSuppressUntil) {
+            event.preventDefault();
+            visitTagCategoryLongPressHandled = false;
+            return;
+          }
+          toggleVisitTagCategory(button.dataset.tagCategory);
+        });
+        button.addEventListener("contextmenu", event => {
+          event.preventDefault();
+          if (Date.now() < visitTagCategoryGestureSuppressUntil) return;
+          soloVisitTagCategory(button.dataset.tagCategory);
+        });
+        button.addEventListener("pointerdown", event => {
+          if (event.pointerType === "mouse") return;
+          clearTimeout(pressTimer);
+          visitTagCategoryLongPressHandled = false;
+          button.setPointerCapture?.(event.pointerId);
+          pressTimer = window.setTimeout(() => {
+            visitTagCategoryLongPressHandled = true;
+            visitTagCategoryGestureSuppressUntil = Date.now() + 1200;
+            soloVisitTagCategory(button.dataset.tagCategory);
+            window.setTimeout(() => visitTagCategoryLongPressHandled = false, 700);
+          }, 520);
+          visitTagCategoryLongPressTimer = pressTimer;
+        });
+        ["pointerup", "pointercancel", "pointerleave"].forEach(name => {
+          button.addEventListener(name, event => {
+            clearTimeout(pressTimer);
+            if (visitTagCategoryLongPressHandled || Date.now() < visitTagCategoryGestureSuppressUntil) event.preventDefault();
+            if (visitTagCategoryLongPressTimer === pressTimer) visitTagCategoryLongPressTimer = 0;
+          });
+        });
       });
       $$("[data-tag-label]").forEach(input => {
         input.addEventListener("click", event => event.stopPropagation());
@@ -13691,103 +14507,345 @@
       if ($("#tagDialog").open) renderVisitTagSettings();
     }
 
-    function applySmartNoteConvert() {
-      const raw = $("#noteSmartConvert").value.trim();
-      if (!raw) return;
-      const setValue = (selector, value) => {
-        const input = $(selector);
-        if (input) input.value = String(value || "").trim().slice(0, Number(input.maxLength) || 700);
-      };
-      const expanded = raw
-        .replace(/(^|\s)w\/o\b/gi, "$1without")
-        .replace(/(^|\s)w\/(?=\S)/gi, "$1with ")
-        .replace(/(^|\s)@\s*(?=\S)/g, "$1at ");
-      const text = expanded.replace(/\s+/g, " ").trim();
+    // Field metadata for each recognized Smart Convert token kind.
+    const SMART_TOKEN_META = {
+      date:    { selector: "#noteDate",  label: "Date" },
+      level:   { selector: "#noteLevel", label: "Level" },
+      tag:     { selector: null,         label: "Tag" },
+      city:    { selector: "#noteCity",  label: "City" },
+      where:   { selector: "#noteWhere", label: "Where" },
+      what:    { selector: "#noteWhat",  label: "What" },
+      who:     { selector: "#noteWho",   label: "Who" },
+      details: { selector: "#noteText",  label: "Details" }
+    };
+    const SMART_SEPARATOR_RE = /\|\||\||::|;| - /;
+    const smartCleanDetails = value => String(value || "")
+      .replace(/\s*(?:\|\||\||::|;| - )\s*/g, " ")
+      .replace(/[\[\]]/g, " ")
+      .replace(/\s+/g, " ")
+      .replace(/^[,.;:\-\s]+|[,.;:\-\s]+$/g, "")
+      .trim();
+    // Expand the same abbreviations the old parser handled, for details output only.
+    const smartExpandDetails = value => String(value || "")
+      .replace(/(^|\s)w\/o\b/gi, "$1without")
+      .replace(/(^|\s)w\/(?=\S)/gi, "$1with ")
+      .replace(/(^|\s)@\s*(?=\S)/g, "$1at ");
+
+    // Pure recognizer: returns positioned, non-overlapping tokens in raw-input
+    // coordinates so the live highlight, chips, and Auto Convert all agree.
+    function recognizeSmartTokens(raw) {
+      // Neutralize square brackets to spaces (same length, so offsets still line
+      // up with the input) — removes [tag] bracket noise from values/leftover and
+      // keeps a bracketed tag from gluing onto an adjacent phrase value.
+      const text = String(raw || "").replace(/[\[\]]/g, " ");
+      if (!text.trim()) return [];
       const lower = text.toLowerCase();
-      let parsed = false;
-      let remainder = text;
-      const cleanDetails = value => String(value || "")
-        .replace(/\s*(?:\|\||\||::|;| - )\s*/g, " ")
-        .replace(/\s+/g, " ")
-        .replace(/^[,.;:\-\s]+|[,.;:\-\s]+$/g, "")
-        .trim();
-      const escapeRegExp = value => String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      const removeFromRemainder = value => {
-        const clean = String(value || "").trim();
-        if (!clean) return;
-        remainder = cleanDetails(remainder.replace(new RegExp(escapeRegExp(clean), "i"), " "));
+      const claimed = new Array(text.length).fill(false);
+      const rangeFree = (s, e) => {
+        for (let i = s; i < e; i++) if (claimed[i]) return false;
+        return true;
       };
-      const findDateCandidate = () => {
-        const monthPattern = MONTH_PATTERN;
-        const weekdayPrefix = `(?:\\b(?:${WEEKDAY_PATTERN})\\b\\.?\\s*,?\\s+)?`;
-        const weekdaySuffix = `(?:\\s*,?\\s+\\b(?:${WEEKDAY_PATTERN})\\b\\.?)?`;
-        const withWeekday = source => `${weekdayPrefix}${source}${weekdaySuffix}`;
-        const patterns = [
-          new RegExp(withWeekday(`\\b(?:${monthPattern})\\s+\\d{1,2},?\\s+\\d{4}\\b`), "i"),
-          new RegExp(withWeekday(`\\b(?:${monthPattern})\\s+\\d{4}\\b`), "i"),
-          new RegExp(withWeekday(`\\b\\d{1,2}\\s+(?:${monthPattern})\\s+\\d{4}\\b`), "i"),
-          new RegExp(withWeekday(`\\b\\d{4}\\s+(?:${monthPattern})(?:\\s+\\d{1,2})?\\b`), "i"),
-          new RegExp(withWeekday(`\\b\\d{1,2}[-/.]\\d{1,2}[-/.](?:\\d{2}|\\d{4})\\b`), "i"),
-          new RegExp(withWeekday(`\\b\\d{4}[-/.]\\d{1,2}(?:[-/.]\\d{1,2})?\\b`), "i"),
-          new RegExp(withWeekday(`\\b\\d{4}\\s+\\d{1,2}(?:\\s+\\d{1,2})?\\b`), "i"),
-          new RegExp(withWeekday(`\\b\\d{1,2}[-/.](?:\\d{2}|\\d{4})\\b`), "i"),
-          new RegExp(withWeekday(`\\b(?:\\d{2}|\\d{4})\\b`), "i")
-        ];
-        return patterns.map(pattern => text.match(pattern)?.[0]).find(candidate => parseFlexibleDate(candidate, state.settings.dateOrder)) || "";
+      const claimRange = (s, e) => {
+        for (let i = s; i < e; i++) claimed[i] = true;
       };
-      const matchedLevel = state.levels.find(level => lower.includes(level.name.toLowerCase()));
-      if (matchedLevel) {
-        renderNoteLevelRadios(matchedLevel.id);
-        removeFromRemainder(matchedLevel.name);
-        parsed = true;
+      const tokens = [];
+      const add = (kind, start, end, value, opts = {}) => {
+        if (start == null || end == null || start < 0 || end > text.length || start >= end) return false;
+        if (!rangeFree(start, end)) return false;
+        const v = String(value == null ? text.slice(start, end) : value).trim();
+        if (!v) return false;
+        claimRange(start, end);
+        tokens.push({
+          kind, start, end,
+          text: text.slice(start, end),
+          value: v,
+          fieldSelector: SMART_TOKEN_META[kind]?.selector || null,
+          fieldLabel: SMART_TOKEN_META[kind]?.label || kind,
+          displayValue: opts.displayValue || v,
+          extraId: opts.extraId || "",
+          hlStart: opts.hlStart == null ? start : opts.hlStart,
+          hlEnd: opts.hlEnd == null ? end : opts.hlEnd
+        });
+        return true;
+      };
+      const order = state?.settings?.dateOrder || "mdy";
+
+      // --- Date (single best candidate, mirroring the old findDateCandidate) ---
+      const weekdayPrefix = `(?:\\b(?:${WEEKDAY_PATTERN})\\b\\.?\\s*,?\\s+)?`;
+      const weekdaySuffix = `(?:\\s*,?\\s+\\b(?:${WEEKDAY_PATTERN})\\b\\.?)?`;
+      const ww = src => `${weekdayPrefix}${src}${weekdaySuffix}`;
+      const dayOrd = `\\d{1,2}(?:st|nd|rd|th)?`;
+      const datePatterns = [
+        ww(`\\b(?:${MONTH_PATTERN})\\s+${dayOrd},?\\s+\\d{4}\\b`),
+        ww(`\\b(?:${MONTH_PATTERN})\\s+\\d{4}\\b`),
+        ww(`\\b${dayOrd}\\s+(?:${MONTH_PATTERN})\\s+\\d{4}\\b`),
+        ww(`\\b\\d{4}\\s+(?:${MONTH_PATTERN})(?:\\s+${dayOrd})?\\b`),
+        ww(`\\b\\d{1,2}[-/.]\\d{1,2}[-/.](?:\\d{2}|\\d{4})\\b`),
+        ww(`\\b\\d{4}[-/.]\\d{1,2}(?:[-/.]\\d{1,2})?\\b`),
+        ww(`\\b\\d{4}\\s+\\d{1,2}(?:\\s+\\d{1,2})?\\b`),
+        ww(`\\b\\d{1,2}[-/.](?:\\d{2}|\\d{4})\\b`),
+        ww(`\\b(?:\\d{2}|\\d{4})\\b`)
+      ];
+      for (const source of datePatterns) {
+        const m = text.match(new RegExp(source, "i"));
+        if (!m) continue;
+        const parsedDate = parseFlexibleDate(m[0], order);
+        if (!parsedDate) continue;
+        // Absorb a connector word ("on") right before the date into the token
+        // range so it is removed with the date and does not leak into a
+        // neighboring phrase value (e.g. "with Sam on <date>"). Highlight stays
+        // on the date itself.
+        const lead = text.slice(0, m.index).match(/\bon\s+$/i);
+        const start = lead ? m.index - lead[0].length : m.index;
+        if (add("date", start, m.index + m[0].length, parsedDate, { displayValue: formatDateDisplay(parsedDate), hlStart: m.index, hlEnd: m.index + m[0].length })) break;
       }
-      const dateCandidate = findDateCandidate();
-      const parsedDate = parseFlexibleDate(dateCandidate, state.settings.dateOrder);
-      if (parsedDate) {
-        setNoteDateBuilder(parsedDate);
-        removeFromRemainder(dateCandidate);
-        parsed = true;
-      }
-      const matchedVisitTypes = activeVisitTypes().filter(type => lower.includes(type.label.toLowerCase()));
-      if (matchedVisitTypes.length) {
-        setNoteVisitTypes([...new Set([...selectedNoteVisitTypes(), ...matchedVisitTypes.map(type => type.id)])]);
-        matchedVisitTypes.forEach(type => removeFromRemainder(type.label));
-        parsed = true;
-      }
-      const parts = remainder.split(/\s*(?:\|\||\||::|;| - )\s*/).map(part => cleanDetails(part)).filter(Boolean);
-      if (parts.length >= 2) {
-        setValue("#noteWhere", parts[0]);
-        if (parts.length === 2) {
-          setValue("#noteText", parts[1]);
-        } else {
-          setValue("#noteWhat", parts[1]);
-          setValue("#noteWho", parts[2]);
-          setValue("#noteText", parts.slice(3).join(" :: "));
+
+      // --- Levels (first free occurrence of each level name) ---
+      const findFree = needle => {
+        const needleLower = needle.toLowerCase();
+        if (!needleLower) return null;
+        let from = 0;
+        while (from <= lower.length - needleLower.length) {
+          const idx = lower.indexOf(needleLower, from);
+          if (idx < 0) return null;
+          if (rangeFree(idx, idx + needle.length)) return [idx, idx + needle.length];
+          from = idx + 1;
         }
-        parsed = true;
-        $("#noteSmartConvert").value = "";
-        refreshNoteLocationButtons();
+        return null;
+      };
+      state.levels.forEach(level => {
+        const span = findFree(level.name);
+        if (span) add("level", span[0], span[1], level.id, { displayValue: level.name, extraId: level.id });
+      });
+
+      // --- Visit-label tags (first free occurrence of each active label) ---
+      activeVisitTypes().forEach(type => {
+        const span = findFree(type.label);
+        if (span) add("tag", span[0], span[1], type.id, { displayValue: type.label, extraId: type.id });
+      });
+
+      // --- Keyword phrases. Run against text with already-claimed ranges blanked
+      //     out (index-preserving) so date/level/tag content is not re-consumed.
+      //     Phrase values also terminate at multi-part separators, so a readable
+      //     "in City :: @ Where :: for What" line still parses by keyword. ---
+      let phraseMatched = false;
+      {
+        const masked = text.split("").map((ch, i) => (claimed[i] ? " " : ch)).join("");
+        // Terminator fragments treat abbreviations as their expansions so a
+        // phrase value stops before "w/" (with) and "@" (at), matching the old
+        // expand-then-parse behavior without mutating the raw text. tSep lets a
+        // value also stop at a multi-part separator (::, |, ||, ;).
+        const tWith = String.raw`(?:\bwith\b|\bw\/(?!o))`;
+        const tAt = String.raw`(?:\b(?:at|near)\b|@)`;
+        const tSep = String.raw`\s*(?:\|\||\||::|;)`;
+        const re = (src, flags = "i") => new RegExp(src, flags);
+        const phraseSpecs = [
+          { kind: "city",  res: [
+            re(String.raw`\bin\s+([^,;]+,\s*[a-z]{2})(?=\s+(?:${tWith}|\bfor\b|${tAt})|${tSep}|$|[;])`),
+            re(String.raw`\bin\s+([^,;]+?)(?=\s+(?:${tWith}|\bfor\b|${tAt})|${tSep}|$|[,;])`)
+          ] },
+          { kind: "where", res: [
+            re(String.raw`(?:\b(?:at|near)\s+|@\s*)([^,;]+,\s*[a-z]{2})(?=\s+(?:${tWith}|\bfor\b|\bin\b)|${tSep}|$|[;])`),
+            re(String.raw`(?:\b(?:at|near)\s+|@\s*)([^,;]+?)(?=\s+(?:${tWith}|\bfor\b|\bin\b)|${tSep}|$|[,;])`)
+          ] },
+          { kind: "what",  res: [
+            re(String.raw`\bfor\s+([^,;]+?)(?=\s+(?:${tWith}|${tAt}|\bin\b)|${tSep}|$|[,;])`)
+          ] },
+          { kind: "who",   res: [
+            re(String.raw`(?:\bwith\s+|\bw\/(?!o\b)\s*)([^,;]+?)(?=\s+(?:\bfor\b|${tAt}|\bin\b)|${tSep}|$|[,;])`)
+          ] }
+        ];
+        phraseSpecs.forEach(spec => {
+          for (const re of spec.res) {
+            const m = masked.match(re);
+            if (!m || !m[1].trim()) continue;
+            const valueText = m[1].replace(/\s+$/, "");
+            const valueOffset = m.index + m[0].lastIndexOf(m[1]);
+            if (add(spec.kind, m.index, m.index + m[0].replace(/\s+$/, "").length, text.slice(valueOffset, valueOffset + valueText.length), { hlStart: valueOffset, hlEnd: valueOffset + valueText.length })) {
+              phraseMatched = true;
+              break;
+            }
+          }
+        });
+      }
+      // Legacy positional multi-part split — only when separators are present and
+      // no keyword phrase matched (so "Yosemite | Camping | Family" still works).
+      if (!phraseMatched && SMART_SEPARATOR_RE.test(text)) {
+        const masked = text.split("").map((ch, i) => (claimed[i] ? " " : ch)).join("");
+        const sep = /\|\||\||::|;| - /g;
+        const segments = [];
+        let last = 0;
+        let sm;
+        while ((sm = sep.exec(masked)) !== null) {
+          segments.push([last, sm.index]);
+          last = sm.index + sm[0].length;
+        }
+        segments.push([last, masked.length]);
+        const parts = segments.map(([s, e]) => {
+          let a = s;
+          let b = e;
+          while (a < b && /\s/.test(masked[a])) a++;
+          while (b > a && /\s/.test(masked[b - 1])) b--;
+          return [a, b];
+        }).filter(([a, b]) => a < b && masked.slice(a, b).trim());
+        // A segment may straddle an already-claimed date/level/tag; claim only
+        // the free chars and derive the value from the masked text so the
+        // claimed content does not get duplicated into the field.
+        const pushPart = (kind, s, e) => {
+          const value = masked.slice(s, e).replace(/\s+/g, " ").trim();
+          if (!value) return;
+          for (let k = s; k < e; k++) claimed[k] = true;
+          tokens.push({
+            kind, start: s, end: e,
+            text: text.slice(s, e),
+            value,
+            fieldSelector: SMART_TOKEN_META[kind]?.selector || null,
+            fieldLabel: SMART_TOKEN_META[kind]?.label || kind,
+            displayValue: value, extraId: "",
+            hlStart: s, hlEnd: e
+          });
+        };
+        if (parts.length >= 2) {
+          pushPart("where", parts[0][0], parts[0][1]);
+          if (parts.length === 2) {
+            pushPart("details", parts[1][0], parts[1][1]);
+          } else {
+            pushPart("what", parts[1][0], parts[1][1]);
+            pushPart("who", parts[2][0], parts[2][1]);
+            const rest = parts.slice(3);
+            if (rest.length) pushPart("details", rest[0][0], rest[rest.length - 1][1]);
+          }
+        }
+      }
+
+      tokens.sort((a, b) => a.start - b.start);
+      return tokens;
+    }
+
+    // Remove the claimed ranges of the given tokens from text, returning the leftover.
+    function smartRemoveTokenRanges(raw, tokens) {
+      const text = String(raw || "");
+      if (!tokens.length) return text;
+      const keep = new Array(text.length).fill(true);
+      tokens.forEach(token => {
+        for (let i = token.start; i < token.end; i++) keep[i] = false;
+      });
+      let out = "";
+      for (let i = 0; i < text.length; i++) if (keep[i]) out += text[i];
+      return out;
+    }
+
+    // Append text to Additional Details, preserving anything already there.
+    function appendNoteDetails(value) {
+      const el = $("#noteText");
+      if (!el) return;
+      const addition = smartCleanDetails(value);
+      if (!addition) return;
+      const existing = el.value.trim();
+      const next = existing ? `${existing} ${addition}` : addition;
+      el.value = next.slice(0, Number(el.maxLength) || 700);
+    }
+
+    // Apply a single recognized token to its destination field.
+    function applySmartTokenToField(token) {
+      if (token.kind === "date") {
+        setNoteDateBuilder(token.value);
         return;
       }
-      const phraseParsers = [
-        { selector: "#noteCity", match: remainder.match(/\bin\s+([^,;]+,\s*[a-z]{2})(?=\s+\b(?:with|for|at|near)\b|$|[;])/i) || remainder.match(/\bin\s+([^,;]+?)(?=\s+\b(?:with|for|at|near)\b|$|[,;])/i) },
-        { selector: "#noteWhere", match: remainder.match(/\b(?:at|near)\s+([^,;]+,\s*[a-z]{2})(?=\s+\b(?:with|for|in)\b|$|[;])/i) || remainder.match(/\b(?:at|near)\s+([^,;]+?)(?=\s+\b(?:with|for|in)\b|$|[,;])/i) },
-        { selector: "#noteWhat", match: remainder.match(/\bfor\s+([^,;]+?)(?=\s+\b(?:with|at|in|near)\b|$|[,;])/i) },
-        { selector: "#noteWho", match: remainder.match(/\bwith\s+([^,;]+?)(?=\s+\b(?:for|at|in|near)\b|$|[,;])/i) }
-      ];
-      phraseParsers.forEach(item => {
-        if (!item.match) return;
-        setValue(item.selector, item.match[1]);
-        removeFromRemainder(item.match[0]);
-        parsed = true;
-      });
-      if (parsed) {
-        setValue("#noteText", cleanDetails(remainder));
-      } else {
-        setValue("#noteText", text);
+      if (token.kind === "level") {
+        renderNoteLevelRadios(token.value);
+        return;
       }
-      $("#noteSmartConvert").value = "";
+      if (token.kind === "tag") {
+        setNoteVisitTypes([...new Set([...selectedNoteVisitTypes(), token.value])]);
+        return;
+      }
+      if (token.kind === "details") {
+        // Details accumulate rather than overwrite.
+        appendNoteDetails(token.value);
+        return;
+      }
+      const input = $(token.fieldSelector);
+      if (!input) return;
+      // Replace the current field value (tags and details above are the
+      // exceptions). Date and level also replace via their own setters.
+      const value = String(token.value || "").trim();
+      input.value = value.slice(0, Number(input.maxLength) || 700);
+    }
+
+    // Promote one token (chip click): apply to field, splice its text out of the
+    // Smart Convert input, then refresh the live recognition view.
+    function promoteSmartToken(token) {
+      const input = $("#noteSmartConvert");
+      if (!input) return;
+      applySmartTokenToField(token);
+      const before = input.value.slice(0, token.start);
+      const after = input.value.slice(token.end);
+      input.value = `${before} ${after}`.replace(/\s+/g, " ").trim();
+      renderSmartConvertRecognition();
       refreshNoteLocationButtons();
+      input.focus();
+    }
+
+    function applySmartNoteConvert() {
+      const input = $("#noteSmartConvert");
+      if (!input) return;
+      const raw = input.value;
+      if (!raw.trim()) return;
+      const tokens = recognizeSmartTokens(raw);
+      tokens.forEach(applySmartTokenToField);
+      // In keyword mode there is no details token, so route leftover text to
+      // Additional Details (appended). In multi-part mode a details token
+      // already appended it.
+      if (!tokens.some(token => token.kind === "details")) {
+        appendNoteDetails(smartExpandDetails(smartRemoveTokenRanges(raw, tokens)));
+      }
+      input.value = "";
+      renderSmartConvertRecognition();
+      refreshNoteLocationButtons();
+    }
+
+    let smartConvertTokens = [];
+
+    // Rebuild the live highlight mirror and recognition chips from the current
+    // Smart Convert input. Visual only — does not change any fields.
+    function renderSmartConvertRecognition() {
+      const input = $("#noteSmartConvert");
+      const layer = $("#noteSmartConvertHighlights");
+      const chipsEl = $("#noteSmartConvertChips");
+      if (!input || !layer || !chipsEl) return;
+      const text = input.value;
+      const tokens = recognizeSmartTokens(text);
+      smartConvertTokens = tokens;
+      const hint = $("#noteSmartConvertChipsHint");
+      if (hint) hint.hidden = !tokens.length;
+      const marks = tokens
+        .map(token => ({ start: token.hlStart, end: token.hlEnd, kind: token.kind }))
+        .sort((a, b) => a.start - b.start);
+      let html = "";
+      let cursor = 0;
+      marks.forEach(mark => {
+        if (mark.start < cursor) return;
+        html += escapeHtml(text.slice(cursor, mark.start));
+        html += `<mark class="tok-${mark.kind}">${escapeHtml(text.slice(mark.start, mark.end))}</mark>`;
+        cursor = mark.end;
+      });
+      html += escapeHtml(text.slice(cursor));
+      layer.innerHTML = html;
+      layer.scrollLeft = input.scrollLeft;
+      if (!tokens.length) {
+        chipsEl.innerHTML = "";
+        chipsEl.hidden = true;
+        return;
+      }
+      chipsEl.hidden = false;
+      chipsEl.innerHTML = tokens.map((token, index) => `
+        <button class="smart-chip tok-${token.kind}" type="button" data-smart-token="${index}"
+          title="Add to ${escapeHtml(token.fieldLabel)}">
+          <span class="smart-chip-kind">${escapeHtml(token.fieldLabel)}</span>
+          <span class="smart-chip-value">${escapeHtml(token.displayValue)}</span>
+          <span class="smart-chip-add" aria-hidden="true">+</span>
+        </button>`).join("");
     }
 
     function setNoteGeocodeStatus(message, label = "") {
@@ -14069,6 +15127,7 @@
       const hasCoordinates = $("#noteLat").value !== "" && $("#noteLng").value !== "";
       setNoteGeocodeStatus(hasCoordinates ? `Mapped${geocodeLabel ? `: ${geocodeLabel}` : "."}` : "Use Locate to place this note on the map, or enter latitude/longitude manually.", geocodeLabel);
       $("#noteSmartConvert").value = "";
+      renderSmartConvertRecognition();
       setNoteVisitTypes(note?.visitTypes || defaults?.visitTypes || []);
       $("#noteText").value = note ? noteDetails(note) : "";
       refreshNoteAutocompletes(noteTarget);
@@ -14594,6 +15653,87 @@
       }).catch(() => showMessage("Copy Failed", "Your browser blocked clipboard access. Switch to Text Only mode and select the text manually."));
     }
 
+    let basecampSaveTimer = 0;
+    let basecampFlashTimer = 0;
+    const BASECAMP_DEFAULT_STATUS = "Autosaves as you type.";
+
+    function setBasecampStatus(text, flash = false) {
+      const status = $("#basecampStatus");
+      if (!status) return;
+      clearTimeout(basecampFlashTimer);
+      status.textContent = text;
+      status.classList.toggle("is-flash", flash);
+      if (flash) {
+        basecampFlashTimer = window.setTimeout(() => {
+          status.classList.remove("is-flash");
+          status.textContent = BASECAMP_DEFAULT_STATUS;
+        }, 2200);
+      }
+    }
+
+    function openBasecampDialog() {
+      const area = $("#basecampText");
+      if (!area) return;
+      area.value = state.basecamp?.text || "";
+      updateBasecampCount();
+      setBasecampStatus(BASECAMP_DEFAULT_STATUS);
+      closeOpenDialogs("basecampDialog");
+      $("#basecampDialog").showModal();
+      area.focus();
+    }
+
+    function updateBasecampCount() {
+      const area = $("#basecampText");
+      const count = $("#basecampCount");
+      if (!area || !count) return;
+      const n = area.value.length;
+      count.textContent = `${n.toLocaleString()} character${n === 1 ? "" : "s"}`;
+    }
+
+    function handleBasecampInput() {
+      const area = $("#basecampText");
+      if (!area) return;
+      updateBasecampCount();
+      setBasecampStatus("Saving…");
+      clearTimeout(basecampSaveTimer);
+      basecampSaveTimer = window.setTimeout(() => {
+        state.basecamp = { text: area.value.slice(0, BASECAMP_MAX_LENGTH), updated: new Date().toISOString() };
+        save();
+        // Don't stomp an active "Copied to Clipboard" flash with the ambient save status.
+        const status = $("#basecampStatus");
+        if (!status?.classList.contains("is-flash")) setBasecampStatus("Saved");
+      }, 400);
+    }
+
+    function copyBasecampText() {
+      const text = $("#basecampText")?.value || "";
+      if (!text.trim()) {
+        setBasecampStatus("Nothing to copy yet", true);
+        return;
+      }
+      copyTextToClipboard(text)
+        .then(() => setBasecampStatus("Copied to Clipboard", true))
+        .catch(() => showMessage("Copy Failed", "Your browser blocked clipboard access. Select the text manually."));
+    }
+
+    function clearBasecampText() {
+      if (!String(state.basecamp?.text || "").trim()) return;
+      requestConfirm({
+        title: "Clear Basecamp?",
+        message: "This erases all Basecamp notes on this device. This cannot be undone.",
+        actionLabel: "Clear",
+        preserveOpenDialogs: true,
+        onConfirm: () => {
+          state.basecamp = { text: "", updated: new Date().toISOString() };
+          save();
+          const area = $("#basecampText");
+          if (area) area.value = "";
+          updateBasecampCount();
+          setBasecampStatus("Cleared", true);
+        }
+      });
+    }
+
     function exportMarkdown() {
       const counts = levelCounts();
       const counted = countedStateTotal();
@@ -14611,6 +15751,8 @@
         else lines.push("- Notes: None");
         lines.push("");
       });
+      const mdBasecamp = String(state.basecamp?.text || "").trim();
+      if (mdBasecamp) lines.push("## Basecamp", mdBasecamp, "");
       lines.push("## Custom Levels and Definitions");
       state.levels.forEach(level => lines.push(`- ${level.name}: ${level.definition} (${level.color})`));
       downloadFile(`${slug(state.mapName)}-complete.md`, "text/markdown", lines.join("\n"));
@@ -14645,6 +15787,8 @@
         lines.push(`${formatDateDisplay(note.date)} | ${note.name} | ${levelById(note.levelId)?.name || "No level"} | ${noteExportText(note)}`);
       });
       else lines.push("No dated notes yet.");
+      const rtfBasecamp = String(state.basecamp?.text || "").trim();
+      if (rtfBasecamp) lines.push("", "Basecamp", rtfBasecamp);
       const body = lines.map(line => rtfEscape(line)).join("\\line ");
       const rtf = `{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0 -apple-system;}}\\f0\\fs24 ${body}}`;
       downloadFile(`${slug(state.mapName)}-simple.rtf`, "application/rtf", rtf);
@@ -14654,11 +15798,9 @@
       const counted = countedStateTotal();
       const completionTotal = completionRegionTotal();
       const pct = Math.round((counted / completionTotal) * 100);
-      const notesFor = abbr => (state.notes[abbr] || [])
+      const sortedNotes = abbr => (state.notes[abbr] || [])
         .slice()
-        .sort((a, b) => (a.date || "").localeCompare(b.date || ""))
-        .map(note => `${formatDateDisplay(note.date)} [${levelById(note.levelId)?.name || "No level"}]: ${noteExportText(note)}`)
-        .join("; ") || "None";
+        .sort((a, b) => (a.date || "").localeCompare(b.date || ""));
       const lines = [
         state.mapName,
         `Generated by ${APP_NAME} ${APP_VERSION}`,
@@ -14667,19 +15809,28 @@
         `Total counted regions: ${counted} of ${completionTotal}`,
         `Completion: ${pct}%`,
         "",
-        "Regions A-Z"
+        "Regions A-Z",
+        "(Paste any indented note line into a note's Smart Convert box to refill its fields.)"
       ];
       STATES.slice().sort((a, b) => a[1].localeCompare(b[1])).forEach(([abbr, name]) => {
-        lines.push(`${name} (${abbr}) — ${stateLevelNames(abbr).join(", ") || "Unvisited"} — ${notesFor(abbr)}`);
+        lines.push(`${name} (${abbr}) — ${stateLevelNames(abbr).join(", ") || "Unvisited"}`);
+        const notes = sortedNotes(abbr);
+        if (!notes.length) {
+          lines.push("  (no notes)");
+          return;
+        }
+        notes.forEach(note => lines.push(`  ${noteToSmartConvertText(note)}`));
       });
       const chronological = STATES.flatMap(([abbr, name]) => (state.notes[abbr] || []).map(note => ({ ...note, abbr, name })))
         .sort((a, b) => (a.date || "").localeCompare(b.date || "") || a.name.localeCompare(b.name));
       if (chronological.length) {
-        lines.push("", "Notes Chronologically");
+        lines.push("", "Notes Chronologically", "(Each line is Smart Convert-ready; the region name after the dash is just context — drop it before pasting.)");
         chronological.forEach(note => {
-          lines.push(`${formatDateDisplay(note.date)} — ${note.name} — ${levelById(note.levelId)?.name || "No level"} — ${noteExportText(note)}`);
+          lines.push(`${noteToSmartConvertText(note)}  —  ${note.name}`);
         });
       }
+      const txtBasecamp = String(state.basecamp?.text || "").trim();
+      if (txtBasecamp) lines.push("", "Basecamp", txtBasecamp);
       downloadFile(`${slug(state.mapName)}-simple.txt`, "text/plain", lines.join("\n"));
     }
 
@@ -15348,6 +16499,12 @@
       }
       if (event.key === "Enter" && !event.shiftKey) {
         event.preventDefault();
+        // In the Smart Convert field, Enter runs Auto Convert instead of saving,
+        // as long as there is text to parse.
+        if (event.target === $("#noteSmartConvert") && event.target.value.trim()) {
+          applySmartNoteConvert();
+          return;
+        }
         $("#noteForm").requestSubmit();
         return;
       }
@@ -15655,7 +16812,7 @@
           else if (notesPanelOpen && notesPanelState && addNote) addNote.click();
           else if (!$("#addLevelBtn").disabled) $("#addLevelBtn").click();
         },
-        b: () => notesPanelState && $("#notesPanelBackBtn").click(),
+        b: () => notesPanelState ? $("#notesPanelBackBtn").click() : $("#basecampBtn").click(),
         t: () => {
           if (notesPanelOpen && !notesPanelState) $("#notesSortChronoBtn").click();
           else $("#tipJarBtn").click();
@@ -15781,6 +16938,10 @@
       $("#mapToggleBtn").addEventListener("click", toggleMapPanel);
       $("#legendToggleBtn").addEventListener("click", toggleLegendPanel);
       $("#notesToggleBtn").addEventListener("click", toggleNotesPanel);
+      $("#basecampBtn").addEventListener("click", openBasecampDialog);
+      $("#basecampText").addEventListener("input", handleBasecampInput);
+      $("#basecampCopyBtn").addEventListener("click", copyBasecampText);
+      $("#basecampClearBtn").addEventListener("click", clearBasecampText);
       $("#mapFitBtn").addEventListener("click", toggleMapFitMode);
       $("#notesPanelBackBtn").addEventListener("click", () => {
         notesPanelState = null;
@@ -15884,6 +17045,18 @@
       }));
       $("#quickAddNoteBtn").addEventListener("click", openQuickAddNoteDialog);
       $("#noteSmartConvertBtn").addEventListener("click", applySmartNoteConvert);
+      const smartInput = $("#noteSmartConvert");
+      const smartLayer = $("#noteSmartConvertHighlights");
+      smartInput?.addEventListener("input", renderSmartConvertRecognition);
+      smartInput?.addEventListener("scroll", () => {
+        if (smartLayer) smartLayer.scrollLeft = smartInput.scrollLeft;
+      });
+      $("#noteSmartConvertChips")?.addEventListener("click", event => {
+        const button = event.target.closest("[data-smart-token]");
+        if (!button) return;
+        const token = smartConvertTokens[Number(button.dataset.smartToken)];
+        if (token) promoteSmartToken(token);
+      });
       $("#noteSmartConvertInfoBtn")?.addEventListener("click", () => {
         const dialog = $("#smartConvertHelpDialog");
         if (dialog && !dialog.open) dialog.showModal();
