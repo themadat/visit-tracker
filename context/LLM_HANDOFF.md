@@ -14,6 +14,8 @@ For every completed change:
 - When finalizing a release, set `APP_VERSION` to the released semantic version and collapse same-line patch/build notes into that release entry.
 - Update `CHANGELOG` using the collapsed release-note format: `Major.Minor.Patch :: YYYY-mm-dd :: Cheeky theme name`, then a bold one-line summary, then `highlights` and `updates`.
 - Keep `highlights` short and abbreviated; use `updates` for the fuller, denser change list.
+- The release `notice.summary` must never exceed 100 characters.
+- The release `notice.cta` changes per version like the theme name and should be themed toward that release's title (e.g. a Basecamp release → "Set Up Camp").
 - Keep changelog wording public-safe: describe features and changes, not internal tickets, prompts, or workflow mechanics.
 - When manual or unexpected edits are present, identify their app/docs effect and include it in `CHANGELOG` alongside the current update.
 - Keep the current major/minor release entry updated unless intentionally opening a new release line.
@@ -26,8 +28,8 @@ For every completed change:
 - Main file: `index.html`
 - Docs: `README.md`, this handoff
 - Storage key: `usStateVisitMap.v1`
-- Current development version: `APP_VERSION = "3.2.0"` (just cut; bump the fourth build segment for the next change)
-- Latest public release: Trail Log 3.2.0 "Trail Shorthand"
+- Current development version: `APP_VERSION = "3.3.0"` (just cut; bump the fourth build segment for the next change)
+- Latest public release: Trail Log 3.3.0 "Basecamp Notes"
 - Reserved theme name: "Trail Atlas" is held for the WISH-001 Country Map release.
 - No build step, backend, or dependencies.
 - User data lives in browser localStorage. Locate is the only intentional online action and only runs when clicked.
@@ -98,17 +100,17 @@ Important invariants:
 
 ## Recent Release
 
-3.2.0 "Trail Shorthand" is cut. It covers:
+3.3.0 "Basecamp Notes" is cut. It covers:
 
-- Interactive Smart Convert: single recognizer powering live inline highlighting, color-coded recognition chips, and Auto Convert.
-- Click a chip to promote one field; Enter in the Smart Convert box runs Auto Convert (fields replace, tags add, details append).
-- Separator-aware keyword parsing (`::` etc. terminate values), ordinal-day dates, bracket stripping.
-- Paste-ready note text: Plain Text export and Notes Copy emit `at Where in City with Who for What; details` lines that re-import via Smart Convert.
-- 17 browseable icon categories with a sticky three-row chip strip, multi-select, long-press isolate, scoped search, and a live count line.
-- Non-clipping icon hover tooltip; compact mobile Selected Tags.
-- Completed-roadmap cleanup (WISH-042, WISH-052).
+- Basecamp: a dedicated toolbar dialog (page+pencil icon, hotkey B) with a large autosaving scratchpad for app-level notes not tied to a place.
+- `state.basecamp { text, updated }` persisted in the backup schema; appended to Markdown / Plain Text / RTF exports.
+- Copy flashes a "Copied to Clipboard" status; Clear (red) wipes behind a confirm; guidance lives in the placeholder.
+- Release rule: `notice.summary` ≤ 100 chars and a per-release themed `notice.cta`.
+- Completed-roadmap cleanup (WISH-043); seeded WISH-053 (multiple named Basecamp pads).
 
-(WISH-001 Country Map reserves the "Trail Atlas" theme name.)
+Prior: 3.2.0 "Trail Shorthand" (interactive Smart Convert + 17 browseable icon categories).
+
+(WISH-001 Country Map — now P0 — reserves the "Trail Atlas" theme name.)
 
 ## UX Preferences
 
