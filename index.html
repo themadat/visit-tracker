@@ -705,7 +705,6 @@
       height: 24px;
       width: 24px;
       margin: 0;
-      vertical-align: middle;
     }
 
     #quickAddNoteBtn,
@@ -4509,13 +4508,31 @@
       display: none;
     }
 
+    .smart-convert-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: .5rem;
+    }
+
+    .smart-convert-chips-hint {
+      font-size: .68rem;
+      font-weight: 700;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    .smart-convert-chips-hint[hidden] {
+      display: none;
+    }
+
     .smart-convert-row .smart-chip {
       min-height: 22px;
     }
 
     .smart-chip {
       display: inline-flex;
-      align-items: center;
+      align-items: baseline;
       gap: .28rem;
       min-height: 22px;
       padding: .04rem .3rem .04rem .45rem;
@@ -4564,6 +4581,7 @@
     .smart-chip-add {
       display: inline-grid;
       place-items: center;
+      align-self: center;
       width: .92rem;
       height: .92rem;
       border-radius: 999px;
@@ -7433,7 +7451,10 @@
     <form id="noteForm" class="dialog-body" method="dialog">
       <input id="noteId" type="hidden">
       <section class="smart-convert-row">
-        <label for="noteSmartConvert">Smart Convert</label>
+        <div class="smart-convert-head">
+          <label for="noteSmartConvert">Smart Convert</label>
+          <small id="noteSmartConvertChipsHint" class="smart-convert-chips-hint" hidden>Hit ↵ Enter to add every chip</small>
+        </div>
         <div class="smart-convert-input-row">
           <div class="smart-convert-field">
             <div id="noteSmartConvertHighlights" class="smart-convert-highlights" aria-hidden="true"></div>
@@ -8156,7 +8177,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "3.2.0.8";
+    const APP_VERSION = "3.2.0.12";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -9622,7 +9643,12 @@
           "Date parsing now understands ordinal days such as 1st, 2nd, and 3rd in addition to the existing formats.",
           "Removed the completed Smart Convert upgrade planning item from the active roadmap now that the interactive Smart Convert has shipped.",
           "Recognition chips are shorter with smaller, vertically centered kind/value text and a refreshed color set (Tag blue, Date red, Level gray, City indigo, Where purple, What orange, Who yellow).",
-          "Plain Text export now renders each note as a Smart Convert-ready line, so a note line can be copied and pasted back into the Smart Convert box to refill its fields."
+          "Plain Text export now renders each note as a readable, Smart Convert-ready line using keyword tokens between :: separators (in City :: @ Where :: for What :: with Who :: Date :: Level :: Tags :: Details), so a note line can be copied and pasted back into the Smart Convert box to refill its fields.",
+          "Smart Convert phrase parsing now treats :: and other separators as value terminators, so keyword tokens are recognized even in a separator-delimited line; plain positional splits still work when no keyword is present.",
+          "Multi-part entries also surface as Where/What/Who/Details recognition chips and highlights, so the live preview matches what Auto Convert fills.",
+          "The Notes Copy text now writes each note's location, purpose, and people with Smart Convert keyword tokens (at Where in City for What with Who, details) instead of a bare comma list, so copied notes read clearly and paste back cleanly.",
+          "Moved the Enter-to-add hint up beside the Smart Convert title and reworded it; recognition chips now align their label and value on a shared baseline so they stay tidy across one or multiple rows.",
+          "Smart Convert now strips stray square brackets and trims whitespace when routing leftover text to Additional Details, and Auto Convert appends to Additional Details instead of replacing whatever is already there."
         ]
       },
       {
@@ -12299,6 +12325,20 @@
       return [noteLocationDisplay(note), note.what, note.who, noteDetails(note)].filter(Boolean);
     }
 
+    // Render where/city/what/who with Smart Convert keyword tokens, then append
+    // free-text details after a comma. Reads naturally and re-parses by keyword.
+    function noteFieldsKeywordText(note) {
+      const segs = [];
+      if (String(note.where || "").trim()) segs.push(`at ${String(note.where).trim()}`);
+      if (String(note.city || "").trim()) segs.push(`in ${String(note.city).trim()}`);
+      if (String(note.what || "").trim()) segs.push(`for ${String(note.what).trim()}`);
+      if (String(note.who || "").trim()) segs.push(`with ${String(note.who).trim()}`);
+      const keyworded = segs.join(" ");
+      const details = String(noteDetails(note) || "").trim();
+      if (keyworded && details) return `${keyworded}, ${details}`;
+      return keyworded || details;
+    }
+
     function noteSummary(note) {
       const bits = noteFieldValues(note);
       return bits.join(" :: ") || "No details";
@@ -12338,20 +12378,30 @@
     // through as leftover; structured fields use Smart Convert keyword syntax;
     // date, level, and tag names are recognized anywhere in the line.
     function noteToSmartConvertText(note) {
+      // Strip multi-part separators from values so the line stays in keyword
+      // mode (and commas inside city/where/what/who that would truncate a
+      // phrase) — keeps the line round-trippable through Smart Convert.
+      const noSep = value => String(value || "")
+        .replace(/\s*(?:\|\||\||::|;| - )\s*/g, ", ")
+        .replace(/\s+/g, " ")
+        .trim();
+      const noSepNoComma = value => noSep(value).replace(/,/g, "");
+      // Keyword tokens + " :: " separators: reads cleanly and re-parses through
+      // Smart Convert by keyword (the separators just terminate each value).
       const parts = [];
-      const details = String(noteDetails(note) || "").trim();
-      if (details) parts.push(details);
-      if (String(note.city || "").trim()) parts.push(`in ${String(note.city).trim()}`);
-      if (String(note.where || "").trim()) parts.push(`at ${String(note.where).trim()}`);
-      if (String(note.what || "").trim()) parts.push(`for ${String(note.what).trim()}`);
-      if (String(note.who || "").trim()) parts.push(`with ${String(note.who).trim()}`);
+      if (noSep(note.city)) parts.push(`in ${noSepNoComma(note.city)}`);
+      if (noSep(note.where)) parts.push(`@ ${noSepNoComma(note.where)}`);
+      if (noSep(note.what)) parts.push(`for ${noSepNoComma(note.what)}`);
+      if (noSep(note.who)) parts.push(`with ${noSepNoComma(note.who)}`);
       const dateText = smartDateString(note.date);
       if (dateText) parts.push(dateText);
       const level = levelById(note.levelId);
-      if (level) parts.push(level.name);
+      if (level) parts.push(noSep(level.name));
       const tags = noteVisitTypeLabels(note).map(type => type.label);
-      if (tags.length) parts.push(tags.join(" "));
-      return parts.join(" ").replace(/\s+/g, " ").trim() || "(empty note)";
+      if (tags.length) parts.push(tags.map(noSep).join(", "));
+      const details = noSep(noteDetails(note));
+      if (details) parts.push(details);
+      return parts.join(" :: ") || "(empty note)";
     }
 
     function levelCounts() {
@@ -13464,7 +13514,7 @@
     }
 
     function textOnlyNoteLine(note) {
-      const parts = [formatTextOnlyDate(note.date), levelById(note.levelId)?.name || "No level", ...noteFieldValues(note)];
+      const parts = [formatTextOnlyDate(note.date), levelById(note.levelId)?.name || "No level", noteFieldsKeywordText(note)];
       return `        - ${parts.filter(Boolean).join(" :: ")}${visitTypeTextSuffix(note)}`;
     }
 
@@ -13486,7 +13536,7 @@
       const suffix = levelText ? ` :: ${type.label} :: ${levelText}` : "";
       if (notes.length === 1) {
         const note = notes[0];
-        const noteParts = [formatTextOnlyDate(note.date), noteFieldValues(note).join(", ")].filter(Boolean);
+        const noteParts = [formatTextOnlyDate(note.date), noteFieldsKeywordText(note)].filter(Boolean);
         return `- [${checked}] ${STATE_NAMES[abbr]} (${abbr})${suffix}${noteParts.length ? ` :: ${noteParts.join(" :: ")}` : ""}${visitTypeTextSuffix(note)}`;
       }
       const lines = [`- [${checked}] ${STATE_NAMES[abbr]} (${abbr})${suffix}`];
@@ -14350,17 +14400,19 @@
 
     // Field metadata for each recognized Smart Convert token kind.
     const SMART_TOKEN_META = {
-      date:  { selector: "#noteDate",  label: "Date" },
-      level: { selector: "#noteLevel", label: "Level" },
-      tag:   { selector: null,         label: "Tag" },
-      city:  { selector: "#noteCity",  label: "City" },
-      where: { selector: "#noteWhere", label: "Where" },
-      what:  { selector: "#noteWhat",  label: "What" },
-      who:   { selector: "#noteWho",   label: "Who" }
+      date:    { selector: "#noteDate",  label: "Date" },
+      level:   { selector: "#noteLevel", label: "Level" },
+      tag:     { selector: null,         label: "Tag" },
+      city:    { selector: "#noteCity",  label: "City" },
+      where:   { selector: "#noteWhere", label: "Where" },
+      what:    { selector: "#noteWhat",  label: "What" },
+      who:     { selector: "#noteWho",   label: "Who" },
+      details: { selector: "#noteText",  label: "Details" }
     };
     const SMART_SEPARATOR_RE = /\|\||\||::|;| - /;
     const smartCleanDetails = value => String(value || "")
       .replace(/\s*(?:\|\||\||::|;| - )\s*/g, " ")
+      .replace(/[\[\]]/g, " ")
       .replace(/\s+/g, " ")
       .replace(/^[,.;:\-\s]+|[,.;:\-\s]+$/g, "")
       .trim();
@@ -14373,7 +14425,10 @@
     // Pure recognizer: returns positioned, non-overlapping tokens in raw-input
     // coordinates so the live highlight, chips, and Auto Convert all agree.
     function recognizeSmartTokens(raw) {
-      const text = String(raw || "");
+      // Neutralize square brackets to spaces (same length, so offsets still line
+      // up with the input) — removes [tag] bracket noise from values/leftover and
+      // keeps a bracketed tag from gluing onto an adjacent phrase value.
+      const text = String(raw || "").replace(/[\[\]]/g, " ");
       if (!text.trim()) return [];
       const lower = text.toLowerCase();
       const claimed = new Array(text.length).fill(false);
@@ -14460,33 +14515,35 @@
         if (span) add("tag", span[0], span[1], type.id, { displayValue: type.label, extraId: type.id });
       });
 
-      // --- Keyword phrases (skipped when a multi-part separator is present, to
-      //     preserve the legacy split behavior handled by applySmartNoteConvert).
-      //     Run against text with already-claimed ranges blanked out (index-
-      //     preserving) so date/level/tag content is not re-consumed — mirroring
-      //     the old "remove from remainder, then parse phrases" order. ---
-      if (!SMART_SEPARATOR_RE.test(text)) {
+      // --- Keyword phrases. Run against text with already-claimed ranges blanked
+      //     out (index-preserving) so date/level/tag content is not re-consumed.
+      //     Phrase values also terminate at multi-part separators, so a readable
+      //     "in City :: @ Where :: for What" line still parses by keyword. ---
+      let phraseMatched = false;
+      {
         const masked = text.split("").map((ch, i) => (claimed[i] ? " " : ch)).join("");
         // Terminator fragments treat abbreviations as their expansions so a
         // phrase value stops before "w/" (with) and "@" (at), matching the old
-        // expand-then-parse behavior without mutating the raw text.
+        // expand-then-parse behavior without mutating the raw text. tSep lets a
+        // value also stop at a multi-part separator (::, |, ||, ;).
         const tWith = String.raw`(?:\bwith\b|\bw\/(?!o))`;
         const tAt = String.raw`(?:\b(?:at|near)\b|@)`;
+        const tSep = String.raw`\s*(?:\|\||\||::|;)`;
         const re = (src, flags = "i") => new RegExp(src, flags);
         const phraseSpecs = [
           { kind: "city",  res: [
-            re(String.raw`\bin\s+([^,;]+,\s*[a-z]{2})(?=\s+(?:${tWith}|\bfor\b|${tAt})|$|[;])`),
-            re(String.raw`\bin\s+([^,;]+?)(?=\s+(?:${tWith}|\bfor\b|${tAt})|$|[,;])`)
+            re(String.raw`\bin\s+([^,;]+,\s*[a-z]{2})(?=\s+(?:${tWith}|\bfor\b|${tAt})|${tSep}|$|[;])`),
+            re(String.raw`\bin\s+([^,;]+?)(?=\s+(?:${tWith}|\bfor\b|${tAt})|${tSep}|$|[,;])`)
           ] },
           { kind: "where", res: [
-            re(String.raw`(?:\b(?:at|near)\s+|@\s*)([^,;]+,\s*[a-z]{2})(?=\s+(?:${tWith}|\bfor\b|\bin\b)|$|[;])`),
-            re(String.raw`(?:\b(?:at|near)\s+|@\s*)([^,;]+?)(?=\s+(?:${tWith}|\bfor\b|\bin\b)|$|[,;])`)
+            re(String.raw`(?:\b(?:at|near)\s+|@\s*)([^,;]+,\s*[a-z]{2})(?=\s+(?:${tWith}|\bfor\b|\bin\b)|${tSep}|$|[;])`),
+            re(String.raw`(?:\b(?:at|near)\s+|@\s*)([^,;]+?)(?=\s+(?:${tWith}|\bfor\b|\bin\b)|${tSep}|$|[,;])`)
           ] },
           { kind: "what",  res: [
-            re(String.raw`\bfor\s+([^,;]+?)(?=\s+(?:${tWith}|${tAt}|\bin\b)|$|[,;])`)
+            re(String.raw`\bfor\s+([^,;]+?)(?=\s+(?:${tWith}|${tAt}|\bin\b)|${tSep}|$|[,;])`)
           ] },
           { kind: "who",   res: [
-            re(String.raw`(?:\bwith\s+|\bw\/(?!o\b)\s*)([^,;]+?)(?=\s+(?:\bfor\b|${tAt}|\bin\b)|$|[,;])`)
+            re(String.raw`(?:\bwith\s+|\bw\/(?!o\b)\s*)([^,;]+?)(?=\s+(?:\bfor\b|${tAt}|\bin\b)|${tSep}|$|[,;])`)
           ] }
         ];
         phraseSpecs.forEach(spec => {
@@ -14495,9 +14552,61 @@
             if (!m || !m[1].trim()) continue;
             const valueText = m[1].replace(/\s+$/, "");
             const valueOffset = m.index + m[0].lastIndexOf(m[1]);
-            if (add(spec.kind, m.index, m.index + m[0].replace(/\s+$/, "").length, text.slice(valueOffset, valueOffset + valueText.length), { hlStart: valueOffset, hlEnd: valueOffset + valueText.length })) break;
+            if (add(spec.kind, m.index, m.index + m[0].replace(/\s+$/, "").length, text.slice(valueOffset, valueOffset + valueText.length), { hlStart: valueOffset, hlEnd: valueOffset + valueText.length })) {
+              phraseMatched = true;
+              break;
+            }
           }
         });
+      }
+      // Legacy positional multi-part split — only when separators are present and
+      // no keyword phrase matched (so "Yosemite | Camping | Family" still works).
+      if (!phraseMatched && SMART_SEPARATOR_RE.test(text)) {
+        const masked = text.split("").map((ch, i) => (claimed[i] ? " " : ch)).join("");
+        const sep = /\|\||\||::|;| - /g;
+        const segments = [];
+        let last = 0;
+        let sm;
+        while ((sm = sep.exec(masked)) !== null) {
+          segments.push([last, sm.index]);
+          last = sm.index + sm[0].length;
+        }
+        segments.push([last, masked.length]);
+        const parts = segments.map(([s, e]) => {
+          let a = s;
+          let b = e;
+          while (a < b && /\s/.test(masked[a])) a++;
+          while (b > a && /\s/.test(masked[b - 1])) b--;
+          return [a, b];
+        }).filter(([a, b]) => a < b && masked.slice(a, b).trim());
+        // A segment may straddle an already-claimed date/level/tag; claim only
+        // the free chars and derive the value from the masked text so the
+        // claimed content does not get duplicated into the field.
+        const pushPart = (kind, s, e) => {
+          const value = masked.slice(s, e).replace(/\s+/g, " ").trim();
+          if (!value) return;
+          for (let k = s; k < e; k++) claimed[k] = true;
+          tokens.push({
+            kind, start: s, end: e,
+            text: text.slice(s, e),
+            value,
+            fieldSelector: SMART_TOKEN_META[kind]?.selector || null,
+            fieldLabel: SMART_TOKEN_META[kind]?.label || kind,
+            displayValue: value, extraId: "",
+            hlStart: s, hlEnd: e
+          });
+        };
+        if (parts.length >= 2) {
+          pushPart("where", parts[0][0], parts[0][1]);
+          if (parts.length === 2) {
+            pushPart("details", parts[1][0], parts[1][1]);
+          } else {
+            pushPart("what", parts[1][0], parts[1][1]);
+            pushPart("who", parts[2][0], parts[2][1]);
+            const rest = parts.slice(3);
+            if (rest.length) pushPart("details", rest[0][0], rest[rest.length - 1][1]);
+          }
+        }
       }
 
       tokens.sort((a, b) => a.start - b.start);
@@ -14517,6 +14626,17 @@
       return out;
     }
 
+    // Append text to Additional Details, preserving anything already there.
+    function appendNoteDetails(value) {
+      const el = $("#noteText");
+      if (!el) return;
+      const addition = smartCleanDetails(value);
+      if (!addition) return;
+      const existing = el.value.trim();
+      const next = existing ? `${existing} ${addition}` : addition;
+      el.value = next.slice(0, Number(el.maxLength) || 700);
+    }
+
     // Apply a single recognized token to its destination field.
     function applySmartTokenToField(token) {
       if (token.kind === "date") {
@@ -14531,10 +14651,15 @@
         setNoteVisitTypes([...new Set([...selectedNoteVisitTypes(), token.value])]);
         return;
       }
+      if (token.kind === "details") {
+        // Details accumulate rather than overwrite.
+        appendNoteDetails(token.value);
+        return;
+      }
       const input = $(token.fieldSelector);
       if (!input) return;
-      // Replace the current field value (tags above are the exception — they
-      // are additive). Date and level also replace via their own setters.
+      // Replace the current field value (tags and details above are the
+      // exceptions). Date and level also replace via their own setters.
       const value = String(token.value || "").trim();
       input.value = value.slice(0, Number(input.maxLength) || 700);
     }
@@ -14558,26 +14683,13 @@
       if (!input) return;
       const raw = input.value;
       if (!raw.trim()) return;
-      const setValue = (selector, value) => {
-        const el = $(selector);
-        if (el) el.value = String(value || "").trim().slice(0, Number(el.maxLength) || 700);
-      };
       const tokens = recognizeSmartTokens(raw);
       tokens.forEach(applySmartTokenToField);
-      let leftover = smartRemoveTokenRanges(raw, tokens);
-      leftover = smartExpandDetails(leftover);
-      const parts = leftover.split(/\s*(?:\|\||\||::|;| - )\s*/).map(smartCleanDetails).filter(Boolean);
-      if (parts.length >= 2) {
-        setValue("#noteWhere", parts[0]);
-        if (parts.length === 2) {
-          setValue("#noteText", parts[1]);
-        } else {
-          setValue("#noteWhat", parts[1]);
-          setValue("#noteWho", parts[2]);
-          setValue("#noteText", parts.slice(3).join(" :: "));
-        }
-      } else {
-        setValue("#noteText", smartCleanDetails(leftover));
+      // In keyword mode there is no details token, so route leftover text to
+      // Additional Details (appended). In multi-part mode a details token
+      // already appended it.
+      if (!tokens.some(token => token.kind === "details")) {
+        appendNoteDetails(smartExpandDetails(smartRemoveTokenRanges(raw, tokens)));
       }
       input.value = "";
       renderSmartConvertRecognition();
@@ -14596,6 +14708,8 @@
       const text = input.value;
       const tokens = recognizeSmartTokens(text);
       smartConvertTokens = tokens;
+      const hint = $("#noteSmartConvertChipsHint");
+      if (hint) hint.hidden = !tokens.length;
       const marks = tokens
         .map(token => ({ start: token.hlStart, end: token.hlEnd, kind: token.kind }))
         .sort((a, b) => a.start - b.start);
