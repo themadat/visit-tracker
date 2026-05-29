@@ -218,3 +218,9 @@ SEE SCRATCHPAD
 Contains Color Notes, rejected/backup svgs, amongst other stuff.
 
 ## Future Prompt
+
+World Labels
+World SVG button icon
+Unified notes
+test guam on both
+undo the world clipping

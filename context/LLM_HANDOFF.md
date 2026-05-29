@@ -14,9 +14,9 @@ For every completed change:
 - When finalizing a release, set `APP_VERSION` to the released semantic version and collapse same-line patch/build notes into that release entry.
 - Update `CHANGELOG` using the collapsed release-note format: `Major.Minor.Patch :: YYYY-mm-dd :: Cheeky theme name`, then a bold one-line summary, then `highlights` and `updates`.
 - Keep `highlights` short: **max 4 bullets, each ≤100 characters.** Anything longer or extra goes in `updates` (the fuller, denser change list).
-- Release Notes UI auto-collapses each entry's Highlights and Full Update List so the tab reads as a scannable list of releases.
+- Release Notes UI shows each release as a scannable card: header + summary + visible Highlights, with the Full Update List behind a clear collapsed toggle.
 - The release `notice.summary` must never exceed 100 characters.
-- The release `notice.cta` changes per version like the theme name and should be themed toward that release's title (e.g. a Basecamp release → "Set Up Camp").
+- The release `notice.cta` changes per version like the theme name and should be themed toward that release's title along with an exclamation point! (e.g. a Basecamp release → "Set Up Camp!").
 - Keep changelog wording public-safe: describe features and changes, not internal tickets, prompts, or workflow mechanics.
 - When manual or unexpected edits are present, identify their app/docs effect and include it in `CHANGELOG` alongside the current update.
 - Keep the current major/minor release entry updated unless intentionally opening a new release line.
