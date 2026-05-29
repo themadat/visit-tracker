@@ -1083,67 +1083,83 @@
       height: 2.1em;
     }
 
-    /* US and World glyphs have different visual weights, so size them
-       independently. Tune each freely (keep <= ~2.1em to avoid growing the header). */
+    /* US and World glyphs have different visual weights. The container size
+       (width/height) stays within the header budget, while --layer-icon-scale
+       enlarges just the SVG inside it (like toolbar icon scaling) — so the world
+       glyph can read bigger without growing the button or header. Tune each. */
     [data-active-layer="us"] .map-layer-icon {
       width: 2.1em;
       height: 2.1em;
+      --layer-icon-scale: 1;
     }
 
     [data-active-layer="world"] .map-layer-icon {
       width: 2.1em;
       height: 2.1em;
+      --layer-icon-scale: 1.45;
     }
 
     .map-layer-icon svg {
       width: 100%;
       height: 100%;
       display: block;
+      transform: scale(var(--layer-icon-scale, 1));
+      transform-origin: center;
     }
 
     .map-layer-icon svg path {
       fill: currentColor;
     }
 
-    .map-head-hints {
-      display: grid;
-      justify-items: end;
-      gap: .25rem;
-      flex: 1 1 18rem;
-      min-width: 10rem;
-      line-height: 1.1;
+    /* Each control group stacks its buttons above its own hint, so across the
+       header all buttons land on one visual row and all hints on the row below.
+       As width shrinks the stacks wrap; on mobile they become the 4 rows. */
+    .map-control-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .22rem;
+      min-width: 0;
     }
 
-    .map-head-hints small {
+    .map-control-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .42rem;
+      min-width: 0;
+      flex-wrap: nowrap;
+    }
+
+    .map-control-stack > small[data-hint] {
       display: inline-flex;
       align-items: center;
-      justify-content: flex-end;
-      font-size: .75rem;
-      text-align: right;
-    }
-
-    .map-head-hints small[data-hint-key="map-controls"] {
+      justify-content: center;
       gap: .12rem;
+      font-size: .72rem;
+      line-height: 1.1;
+      text-align: center;
+      max-width: 100%;
     }
 
-    .map-head-hints small[data-hint-key="map-controls"] .hint-dismiss-btn {
+    .map-control-stack > small[data-hint] .hint-dismiss-btn {
       margin-left: 0;
       width: .95rem;
       min-width: .95rem;
       min-height: .95rem;
     }
 
-    .map-head-hints small[data-hint-key="map-controls"] .hint-dismiss-btn .sf-symbol {
+    .map-control-stack > small[data-hint] .hint-dismiss-btn .sf-symbol {
       width: .8rem;
       height: .8rem;
     }
 
     .map-head-actions {
       display: flex;
-      gap: .42rem;
-      align-items: center;
+      gap: .42rem .7rem;
+      align-items: flex-start;
       flex: 1 1 auto;
-      flex-wrap: nowrap;
+      flex-wrap: wrap;
       justify-content: flex-end;
       margin-left: auto;
       min-width: 0;
@@ -1241,8 +1257,8 @@
     }
 
     [data-button-style="symbols"] .map-head-actions {
-      flex-wrap: nowrap;
-      gap: .25rem;
+      flex-wrap: wrap;
+      gap: .35rem .5rem;
     }
 
     [data-button-style="symbols"] .map-head-actions button {
@@ -1427,6 +1443,16 @@
 
     .map-states .state-tile.is-filter-dimmed {
       opacity: .35;
+    }
+
+    /* Excluded levels (Not Interested, Bucket List, etc.) keep their own legend
+       color as the fill (baked into each per-color hatch pattern) and get thin
+       diagonal dashes in the recessive empty color laid over it — so you get
+       "dashes on gray" or "dashes on purple". Thin/light dashes keep small
+       countries + borders visible; the empty-color dashes adapt to light/dark. */
+    .excluded-hatch-line {
+      stroke: var(--state-empty);
+      stroke-opacity: .85;
     }
 
     /* World map layer (WISH-001). Country groups fill like US tiles via
@@ -1757,10 +1783,21 @@
 
     .legend-title-row {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: .38rem;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: .38rem .62rem;
       align-items: center;
       margin-bottom: .45rem;
+    }
+
+    /* The legend hint rides between the title and the action buttons so it shares
+       the title row's height instead of adding its own rows below. */
+    .legend-title-hint {
+      grid-column: 2;
+      align-items: center;
+      align-self: center;
+      color: var(--muted);
+      font-size: .72rem;
+      line-height: 1.12;
     }
 
     .legend-title-main {
@@ -1786,7 +1823,7 @@
 
     .legend-title-actions {
       display: flex;
-      grid-column: 2;
+      grid-column: 3;
       align-items: center;
       gap: .32rem;
       flex-wrap: nowrap;
@@ -2013,6 +2050,13 @@
     }
 
     .legend-help-position {
+      display: contents;
+    }
+
+    /* These hints are flex containers; a normal inline <span> would become its
+       own flex item and break the text flow. display: contents dissolves the
+       wrapper so the swapped term stays part of the surrounding text run. */
+    .js-pointer-action {
       display: contents;
     }
 
@@ -6286,22 +6330,20 @@
         flex: 1 1 100%;
         flex-wrap: wrap;
         flex-direction: row;
-        align-items: center;
-        gap: .2rem;
+        align-items: flex-start;
+        gap: .35rem .2rem;
       }
 
-      .map-head-hints {
-        display: grid;
-        order: -1;
-        flex: 0 0 100%;
-        width: 100%;
-        min-width: 0;
-        justify-items: center;
+      /* Keep the control groups flowing horizontally on mobile (each stays a
+         buttons-above-hint stack); they wrap only when they genuinely run out of
+         room rather than forcing one group per row. */
+      .map-control-stack {
+        flex: 0 1 auto;
+        width: auto;
+        gap: .14rem;
       }
 
-      .map-head-hints small {
-        text-align: center;
-        justify-content: center;
+      .map-control-stack > small[data-hint] {
         font-size: .7rem;
       }
 
@@ -6657,18 +6699,31 @@
       }
 
       .legend-title-row {
+        grid-template-columns: minmax(0, 1fr) auto;
         gap: .2rem;
         margin-bottom: .28rem;
       }
 
       .legend-title-main {
+        grid-column: 1;
+        grid-row: 1;
         gap: .2rem;
       }
 
       .legend-title-actions {
+        grid-column: 2;
+        grid-row: 1;
         gap: .18rem;
         min-width: 0;
         flex-wrap: wrap;
+      }
+
+      /* Not enough width to sit between title and buttons here — drop to its
+         own full-width row below them. */
+      .legend-title-hint {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        justify-self: start;
       }
 
       .legend-position-picker {
@@ -6882,43 +6937,51 @@
               <span id="mapLayerIcon" class="map-layer-icon" aria-hidden="true"></span>
               <h2 id="mapHeading">US Map</h2>
             </button>
-            <small id="tapHint" data-hint>Tap a Location to select/cycle Log Level.<br />Tap the map name to switch between the US and World maps.</small>
+            <small id="tapHint" data-hint>Tap a Location to select/cycle Log Level.<br />Tap map name to switch US/World Maps.</small>
           </div>
           <div class="map-head-actions">
-            <div class="map-head-hints">
-              <small data-hint data-hint-key="map-controls">
-                Switch Map Views: Zoom/Pan/Scroll | Fit<br />
-                Toggle Location Notes Visibility and Filter<br />
-                Choose Map Labels: none | ABBR | Full Name
-              </small>
-            </div>
-            <div class="map-zoom-controls" aria-label="Scrollable map zoom controls">
-              <button id="mapZoomOutBtn" type="button" aria-label="Zoom map out" data-shortcut="-">Zoom Out</button>
-              <input id="mapZoomReadout" class="map-zoom-readout" type="text" inputmode="numeric"
-                aria-label="Map zoom percentage" value="100%">
-              <button id="mapZoomInBtn" type="button" aria-label="Zoom map in" data-shortcut="+">Zoom In</button>
-              <button id="mapZoomResetBtn" type="button" aria-label="Reset map zoom" data-shortcut="R">Reset
-                Zoom</button>
-            </div>
-            <div class="map-action-group map-toggle-group">
-              <button id="mapFitBtn" class="toggle-btn" type="button" aria-pressed="false"
-                aria-label="Fit map on screen" data-shortcut="F">Fit Map</button>
-            </div>
-            <div class="map-action-group map-toggle-group">
-              <button id="mapLocationPinsBtn" class="toggle-btn" type="button" aria-pressed="true"
-                aria-label="Show location note pins" data-shortcut="3">View Locations</button>
-            </div>
-            <div class="map-action-group map-toggle-group">
-              <button id="mapMatchNotesBtn" class="toggle-btn" type="button" aria-pressed="true"
-                aria-label="Apply note filters to the map" data-shortcut="4">Match Notes</button>
-            </div>
-            <div class="map-action-group map-label-group">
-              <div class="segmented map-label-toggle" aria-label="Map labels">
-                <span id="labelsToggleLabel" title="Map Label Type">Labels</span>
-                <button id="labelsNoneBtn" type="button" aria-pressed="true" data-shortcut="0">None</button>
-                <button id="labelsAbbrBtn" type="button" aria-pressed="false" data-shortcut="1">Abbr</button>
-                <button id="labelsNameBtn" type="button" aria-pressed="false" data-shortcut="2">Name</button>
+            <div class="map-control-stack">
+              <div class="map-control-row">
+                <div class="map-zoom-controls" aria-label="Scrollable map zoom controls">
+                  <button id="mapZoomOutBtn" type="button" aria-label="Zoom map out" data-shortcut="-">Zoom Out</button>
+                  <input id="mapZoomReadout" class="map-zoom-readout" type="text" inputmode="numeric"
+                    aria-label="Map zoom percentage" value="100%">
+                  <button id="mapZoomInBtn" type="button" aria-label="Zoom map in" data-shortcut="+">Zoom In</button>
+                  <button id="mapZoomResetBtn" type="button" aria-label="Reset map zoom" data-shortcut="R">Reset
+                    Zoom</button>
+                </div>
+                <div class="map-action-group map-toggle-group">
+                  <button id="mapFitBtn" class="toggle-btn" type="button" aria-pressed="false"
+                    aria-label="Fit map on screen" data-shortcut="F">Fit Map</button>
+                </div>
               </div>
+              <small data-hint data-hint-key="map-view-controls">Switch Map Views:<br/>Zoom/Pan/Scroll | Fit</small>
+            </div>
+            <div class="map-control-stack">
+              <div class="map-control-row">
+                <div class="map-action-group map-toggle-group">
+                  <button id="mapLocationPinsBtn" class="toggle-btn" type="button" aria-pressed="true"
+                    aria-label="Show location note pins" data-shortcut="3">View Locations</button>
+                </div>
+                <div class="map-action-group map-toggle-group">
+                  <button id="mapMatchNotesBtn" class="toggle-btn" type="button" aria-pressed="true"
+                    aria-label="Apply note filters to the map" data-shortcut="4">Match Notes</button>
+                </div>
+              </div>
+              <small data-hint data-hint-key="map-notes-controls">Toggle Location Notes<br/>Visibility and Filter</small>
+            </div>
+            <div class="map-control-stack">
+              <div class="map-control-row">
+                <div class="map-action-group map-label-group">
+                  <div class="segmented map-label-toggle" aria-label="Map labels">
+                    <span id="labelsToggleLabel" title="Map Label Type">Labels</span>
+                    <button id="labelsNoneBtn" type="button" aria-pressed="true" data-shortcut="0">None</button>
+                    <button id="labelsAbbrBtn" type="button" aria-pressed="false" data-shortcut="1">Abbr</button>
+                    <button id="labelsNameBtn" type="button" aria-pressed="false" data-shortcut="2">Name</button>
+                  </div>
+                </div>
+              </div>
+              <small data-hint data-hint-key="map-label-controls">Choose Map Labels:<br/>none | ABBR | Full Name</small>
             </div>
           </div>
         </div>
@@ -6928,6 +6991,7 @@
             <svg id="stateMap" viewBox="0 0 934 593" role="img" aria-labelledby="svgTitle svgDesc">
               <title id="svgTitle">Clickable US Map</title>
               <desc id="svgDesc">Outline map of all 50 United States, Washington DC, and US territories.</desc>
+              <defs id="stateMapDefs"></defs>
               <g class="map-states">
                 <path class="al"
                   d="m 643,467.4 .4,-7.3 -.9,-1.2 -1.7,-.7 -2.5,-2.8 .5,-2.9 48.8,-5.1 -.7,-2.2 -1.5,-1.5 -.5,-1.4 .6,-6.3 -2.4,-5.7 .5,-2.6 .3,-3.7 2.2,-3.8 -.2,-1.1 -1.7,-1 v -3.2 l -1.8,-1.9 -2.9,-6.1 -12.9,-45.8 -45.7,4 1.3,2 -1.3,67 4.4,33.2 .9,-.5 1.3,.1 .6,.4 .8,-.1 2,-3.8 v -2.3 l 1.1,-1.1 1.4,.5 3.4,6.4 v .9 l -3.3,2.2 3.5,-.4 4.9,-1.6 z">
@@ -7395,6 +7459,12 @@
                 <h2>Legend</h2>
                 <span id="legendTotals" class="legend-total-pills" aria-label="Overall completion"></span>
               </div>
+              <small class="legend-title-hint" data-hint data-hint-key="legend-help">
+                <span class="legend-help-position">Drag Legend to Preferred Spot or use Position Button.<br /></span>
+                Top Level Wins & Deleting Demotes in Multi-Levels.<br />
+                Drag to Reorder | Swipe Left for Quick Actions.<br />
+                Featured Palettes | Auto-Suggest | Add/Edit Levels.
+              </small>
               <div class="legend-title-actions">
                 <span class="legend-position-picker">
                   <button id="legendPositionBtn" type="button" data-shortcut="P" aria-haspopup="true"
@@ -7410,12 +7480,6 @@
                   data-shortcut="I">Edit</button>
               </div>
             </div>
-            <small data-hint data-hint-key="legend-help">
-              <span class="legend-help-position">Drag Legend to Preferred Spot or use Position Button.<br /></span>
-              Top Level Wins & Deleting Demotes in Multi-Levels.<br />
-              Drag to Reorder | Swipe Left for Quick Actions.<br />
-              Featured Palettes | Auto-Suggest | Add/Edit Levels.
-            </small>
             <div id="legendList" class="legend-list"></div>
             <div id="builtinLevels" class="levelAutosuggestionChips"></div>
           </section>
@@ -7465,8 +7529,8 @@
           </div>
           <small id="notesIconFilterHint" class="notes-icon-filter-hint" data-hint
             data-hint-key="notes-icon-filter-help">
-            Select icons to filter notes. Empty circle is all Notes without an icon.<br />
-            Right-Click/Long-Press an icon to toggle filter on just it or show all.
+            Select icons to filter notes. Empty is Notes with no icon.<br />
+            <span class="js-pointer-action">Right-Click/Long-Press</span> an icon to toggle filter on just it or show all.
           </small>
           <div id="notesFilterSummary" class="notes-filter-summary" aria-live="polite"></div>
           <div id="notesPanelContent" class="note-list"></div>
@@ -8428,7 +8492,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.0.0.6";
+    const APP_VERSION = "4.0.0";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -8530,13 +8594,13 @@
     const LEGACY_NOT_INTERESTED_COLORS = ["#111111", "#9ca3af"];
     const DEFAULT_LEVEL_IDS = ["visited", "not-interested"];
     const OPTIONAL_LEVEL_IDS = ["visited", "want-to-visit", "pass-through", "day-visit", "not-interested"];
-    // Slot 5 is the excluded / Not Interested color. The two palettes whose slot
-    // was basically black (Classic, Neon) use a neutral #888888 so the level reads
-    // as plainly excluded; the rest keep their themed tones.
+    // Slot 5 is the excluded color. Neon/Classic/Pastel use #89909b — the midpoint
+    // between the light (#d7dce3) and dark (#3b4553) empty fills, so it reads
+    // evenly in both themes; the rest keep their themed tones.
     const THEMES = {
-      Classic: ["#16a34a", "#facc15", "#f97316", "#7c3aed", "#888888"],
-      Neon: ["#0bff00", "#fff100", "#ffac00", "#f000ff", "#888888"],
-      Pastel: ["#86efac", "#fde68a", "#fdba74", "#c4b5fd", "#BBBBBB"],
+      Classic: ["#16a34a", "#facc15", "#f97316", "#7c3aed", "#89909b"],
+      Neon: ["#0bff00", "#fff100", "#ffac00", "#f000ff", "#89909b"],
+      Pastel: ["#86efac", "#fde68a", "#fdba74", "#c4b5fd", "#89909b"],
       Sunset: ["#eeaf61", "#fb9062", "#ee5d6c", "#ce4993", "#6a0d83"],
       Earth: ["#36563e", "#5a8b5d", "#81b14f", "#907350", "#97876b"],
       Ocean: ["#064273", "#1da2d8", "#7fcdff", "#def3f6", "#6d8aa3"],
@@ -9708,7 +9772,7 @@
         title: "Bucket List Feature",
         ticketId: "WISH-036",
         description: "Add a dedicated bucket-list feature for places someone wants to visit next, separate from completed visits and ordinary notes. Scope includes local persistence, filtering, export support, and a clear way to promote a bucket-list item into a real visit note. Includes a Bucket List mode/view that swaps the usual checked Notes affordance for an unchecked/planning affordance and refocuses the Notes view on planned future travel instead of completed visits, while preserving normal visit notes.",
-        priority: "P1",
+        priority: "P0",
         effort: "medium",
         targetKind: "minor",
         targetVersion: "",
@@ -9732,7 +9796,7 @@
         title: "Add Drive Radius",
         ticketId: "WISH-010",
         description: "Show a planning radius from home or saved locations. Scope includes distance input, visual radius overlay where map geometry supports it, saved settings, and clear limitations for non-road distance.",
-        priority: "P1",
+        priority: "P0",
         effort: "large",
         targetKind: "exact",
         targetVersion: "3.2.0",
@@ -9744,7 +9808,7 @@
         title: "National Park Overlay Layer",
         ticketId: "WISH-004",
         description: "Add an optional national parks layer that can be viewed with state progress. Scope includes park data, visible markers or outlines, visit status, filtering, and exports that remain readable.",
-        priority: "P1",
+        priority: "P0",
         effort: "large",
         targetKind: "exact",
         targetVersion: "4.0.0",
@@ -9768,12 +9832,48 @@
         title: "Continent & Region Maps",
         ticketId: "WISH-056",
         description: "Add focused continent/region maps (Europe, South America, Asia, Africa, etc.) as additional map layers so users can zoom into a region at a larger scale than the whole-world view. Reuses the shipped map-layer system (levels, notes, pins, exports). Each region shares country identities with the world map so a country marked once shows everywhere it appears.",
-        priority: "P3",
+        priority: "P2",
         effort: "large",
         targetKind: "minor",
         targetVersion: "",
         tokenCostPct: 34,
         prompt: "Add continent/region map layers (Europe, South America, etc.) on top of the shipped map-layer system. Source labeled SVGs per region (ISO-2 ids), reuse levels/notes/pins/exports, and share country identity with the world layer so marking a country once reflects across the world map and any region map it appears on. Add them to the same map switcher.",
+        category: "Maps"
+      },
+      {
+        title: "Smarter World Map Labels",
+        ticketId: "WISH-057",
+        description: "Improve world-map label readability. At the whole-world (fit) zoom all ~248 country labels render, so dense regions (Europe, Caribbean, microstates) overlap into an unreadable cluster. Scope: collision/declutter handling (hide or thin overlapping labels), zoom-aware density (show more labels as the user zooms in), leader lines or circle labels for tiny/microstate countries, and optionally an 'engaged only' mode that labels only countries with a level or notes.",
+        priority: "P1",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 22,
+        prompt: "Declutter world-map labels. Add label collision handling so overlapping country labels hide/thin instead of stacking, make label density zoom-aware (more labels as you zoom in), handle tiny/microstate countries (leader lines or offset), and consider an option to label only engaged countries (those with a level or notes). Keep US-map label behavior unchanged.",
+        category: "Maps"
+      },
+      {
+        title: "Search All Locations in Quick Add",
+        ticketId: "WISH-058",
+        description: "Let the note Quick Add location search reach every location across all map layers, not just the open map. Today the location list is scoped to the active layer (US states/territories or world countries), so adding a country while viewing the US map (or vice versa) is not possible without switching maps first. Scope: search the full union of states, territories, and countries, show which layer each result belongs to, and route the saved note into the correct store so it appears on the right map.",
+        priority: "P2",
+        effort: "small",
+        targetKind: "patch",
+        targetVersion: "",
+        tokenCostPct: 14,
+        prompt: "Make the note Quick Add location search span every location across all map layers instead of only the active layer. Search the combined set of US states/territories and world countries, label each result with its map/layer, and save the note into the correct region store so it shows on the proper map. Do not change which pins/groupings each map displays.",
+        category: "Notes"
+      },
+      {
+        title: "Add Manual Locations",
+        ticketId: "WISH-059",
+        description: "Let users add their own custom locations that aren't tied to a predefined map region — international cities, sub-national regions, points of interest, landmarks, or anywhere a coordinate can pin. Scope: a way to name and place a manual location (typed coordinates or map lookup), attach notes/levels to it like any other location, show it as a pin on the appropriate map, persist it locally, and include it in exports/backups. Should fit the location-is-a-location model so manual places coexist with states and countries.",
+        priority: "P1",
+        effort: "large",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 38,
+        prompt: "Add user-created manual locations (international cities, regions, points of interest, landmarks) that are not bound to a predefined map region. Let users name and place them via coordinates or lookup, attach notes and levels, render them as pins on the right map, persist them in localStorage with defaults/normalization, and include them in JSON/Markdown/RTF/text exports. Fit the existing location-is-a-location model so manual places coexist with states and countries without breaking current behavior.",
         category: "Maps"
       },
       {
@@ -9876,7 +9976,7 @@
     const CHANGELOG = [
       {
         version: "4.0.0",
-        date: "2026-05-28",
+        date: "2026-05-29",
         title: "Trail Atlas",
         summary: "A switchable World map — log every country right alongside your US states.",
         highlights: [
@@ -9914,7 +10014,18 @@
           "The default Legend position is now the lower-left corner.",
           "Map switch button now stays a fixed size with a larger icon and never wraps to a second line.",
           "Tuned the Ocean and Earth palettes' Not Interested color so it stays visible on the dark-mode map.",
-          "The map switch is now a clearly bordered button with independently sized US and World icons."
+          "The map switch is now a clearly bordered button with independently sized US and World icons.",
+          "Map labels (abbreviation and full name) now work on the World map, showing ISO codes or country names.",
+          "Excluded levels (Not Interested, etc.) keep their legend color and get thin diagonal dashes laid over it, so they read as 'set aside' while staying subtle and distinct in light and dark mode — and multiple excluded levels stay tellable apart by color.",
+          "Neon, Classic, and Pastel palettes use a balanced mid-gray for the excluded color so it reads evenly in both themes.",
+          "Map zoom now reaches 64000%, and the zoom in/out buttons double or halve the zoom each press.",
+          "Map note pins keep shrinking as you zoom in, so they stay a sensible size instead of ballooning at high zoom.",
+          "Quick Add notes lists every country when the World map is active (and US states/territories on the US map).",
+          "Each map control group now sits above its own hint, so the buttons line up on one row and the hints on the next, stacking cleanly on mobile.",
+          "Sped up the map, especially the World map: tile positions are cached and zooming/panning now refreshes only the map instead of the whole page.",
+          "Map controls now stay side by side on mobile instead of each taking a full row, so the header is more compact on phones.",
+          "On desktop the Legend hint sits between the title and the buttons, trimming the Legend header's height.",
+          "The icon-filter hint now says Right-Click on mouse devices and Long-Press on touch devices."
         ]
       },
       {
@@ -10708,7 +10819,7 @@
     const WEEKDAY_PATTERN = WEEKDAY_ALIASES.join("|");
     const MAP_ASPECT_RATIO = 934 / 593;
     const MAP_ZOOM_MIN = 1;
-    const MAP_ZOOM_MAX = 10;
+    const MAP_ZOOM_MAX = 640;
     const MAP_ZOOM_STEP = .5;
     const NOTE_AUTOCOMPLETE_LIMIT = 40;
     const BASECAMP_MAX_LENGTH = 20000;
@@ -11843,6 +11954,15 @@
         markerLayer.setAttribute("class", "map-location-markers");
         svg.append(markerLayer);
       }
+      if (!svg.querySelector("#worldMapLabels")) {
+        const labelLayer = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        labelLayer.id = "worldMapLabels";
+        labelLayer.setAttribute("class", "map-labels");
+        svg.append(labelLayer);
+      }
+      if (!svg.querySelector("defs")) {
+        svg.prepend(document.createElementNS("http://www.w3.org/2000/svg", "defs"));
+      }
     }
 
     function handleWorldTap(code, event) {
@@ -12328,6 +12448,18 @@
       scheduleMainLayoutSync();
     }
 
+    // Zoom/pan only affect the map (tile fills, labels, marker scale/clustering)
+    // and its sizing — not the legend, notes, settings, or hints. Re-running the
+    // full render() per wheel notch was the main interaction lag, worst in world
+    // mode. This refreshes just the map surface.
+    function renderMapView() {
+      document.documentElement.dataset.mapMode = mapFitMode ? "fit" : "scroll";
+      document.documentElement.style.setProperty("--map-zoom", String(mapZoom));
+      document.documentElement.style.setProperty("--map-zoom-width", `${Math.round(mapZoom * 100)}%`);
+      renderMap();
+      scheduleMainLayoutSync();
+    }
+
     function stateMatchesActiveNotesFilters(abbr) {
       return stateMatchesLevelFilter(abbr)
         && stateMatchesVisitTypeFilter(abbr)
@@ -12351,6 +12483,42 @@
       if (state.settings.mapFollowsNotesFilters === true) renderMap();
     }
 
+    // currentColor doesn't inherit into SVG <pattern> content from the referencing
+    // tile, so build one hatch pattern per excluded color (baked in), memoized in
+    // the active map's <defs>. Dashes use the theme-aware empty color via CSS.
+    function ensureExcludedPattern(color, layerId) {
+      const svg = document.getElementById(layerId === "world" ? "worldMap" : "stateMap");
+      if (!svg) return "";
+      const safe = String(color).replace(/[^0-9a-z]/gi, "").toLowerCase();
+      const id = `excl-${safe}-${layerId}`;
+      if (svg.querySelector(`#${id}`)) return id;
+      let defs = svg.querySelector("defs");
+      if (!defs) { defs = document.createElementNS("http://www.w3.org/2000/svg", "defs"); svg.prepend(defs); }
+      const tile = layerId === "world" ? 19 : 6.5;
+      const sw = layerId === "world" ? 3.8 : 1.3;
+      const dash = layerId === "world" ? "5.2 6.5" : "1.8 2.4";
+      const ns = "http://www.w3.org/2000/svg";
+      const pattern = document.createElementNS(ns, "pattern");
+      pattern.id = id;
+      pattern.setAttribute("patternUnits", "userSpaceOnUse");
+      pattern.setAttribute("width", tile);
+      pattern.setAttribute("height", tile);
+      pattern.setAttribute("patternTransform", "rotate(-45)");
+      const rect = document.createElementNS(ns, "rect");
+      rect.setAttribute("width", tile);
+      rect.setAttribute("height", tile);
+      rect.setAttribute("fill", color);
+      const line = document.createElementNS(ns, "line");
+      line.setAttribute("x1", "0"); line.setAttribute("y1", "0");
+      line.setAttribute("x2", "0"); line.setAttribute("y2", tile);
+      line.setAttribute("class", "excluded-hatch-line");
+      line.setAttribute("stroke-width", sw);
+      line.setAttribute("stroke-dasharray", dash);
+      pattern.append(rect, line);
+      defs.append(pattern);
+      return id;
+    }
+
     function renderMap() {
       const layer = activeLayer();
       const isUS = layer.id === "us";
@@ -12359,7 +12527,13 @@
         const code = tile.dataset[layer.codeAttr];
         const level = dominantLevel(code);
         const names = stateLevelNames(code);
-        tile.style.setProperty("--state-fill", level ? level.color : "var(--state-empty)");
+        if (level && level.countsTowardStats === false) {
+          // Excluded: the level color as fill with thin empty-color diagonal dashes laid over it.
+          const pid = ensureExcludedPattern(level.color, layer.id);
+          tile.style.setProperty("--state-fill", pid ? `url(#${pid})` : level.color);
+        } else {
+          tile.style.setProperty("--state-fill", level ? level.color : "var(--state-empty)");
+        }
         tile.setAttribute("aria-label", `${tile.dataset.name}: ${names.length ? names.join(", ") : "Unvisited"}`);
         if (filterMode && level && !stateMatchesActiveNotesFilters(code)) {
           tile.classList.add("is-filter-dimmed");
@@ -12367,8 +12541,9 @@
           tile.classList.remove("is-filter-dimmed");
         }
       });
-      // Labels are US-only for now; pins render for the active layer.
+      // Labels + pins render for the active layer.
       if (isUS) renderMapLabels();
+      else renderWorldMapLabels();
       renderLocationMarkers();
     }
 
@@ -12378,8 +12553,16 @@
       return lat === "" || lng === "" ? null : { lat, lng };
     }
 
+    // getBBox forces a synchronous layout, and on the ~250-country world SVG this
+    // is called per-tile (labels) and per-note (markers) every render. SVG geometry
+    // is static — zoom is a CSS transform that doesn't change user-space getBBox
+    // coords — so memoize per layer/code. Cleared only if the SVG itself changes.
+    const tileCenterCache = new Map();
+
     function stateTileCenter(abbr) {
       const layer = activeLayer();
+      const cacheKey = `${layer.id}:${abbr}`;
+      if (tileCenterCache.has(cacheKey)) return tileCenterCache.get(cacheKey);
       const tile = $(`${layer.tileSelector}[data-${layer.codeAttr}="${abbr}"]`);
       if (!tile) return null;
       // Anchor on the largest sub-shape so multi-part countries (e.g. France's
@@ -12396,7 +12579,16 @@
         if (area > bestArea) { bestArea = area; box = b; }
       });
       if (!box) box = tile.getBBox();
-      return { x: box.x + box.width / 2, y: box.y + box.height / 2, box };
+      // Snapshot the geometry (DOMRect from getBBox is live-ish; copy plain numbers).
+      const result = {
+        x: box.x + box.width / 2,
+        y: box.y + box.height / 2,
+        box: { x: box.x, y: box.y, width: box.width, height: box.height }
+      };
+      // Only cache real geometry; a zero box means the SVG wasn't laid out yet
+      // (e.g. measured while hidden), so don't poison the cache — retry later.
+      if (box.width > 0 || box.height > 0) tileCenterCache.set(cacheKey, result);
+      return result;
     }
 
     function projectNoteLocation(abbr, note) {
@@ -12534,7 +12726,11 @@
     }
 
     function markerZoomScale() {
-      return mapFitMode ? 1 : Math.max(.38, Math.min(1, 1 / Math.sqrt(Math.max(1, mapZoom))));
+      if (mapFitMode) return 1;
+      const z = Math.max(1, mapZoom);
+      // Grow gently (1/sqrt) at low zoom, but cap on-screen size at ~3x base by
+      // falling back to 1/z so pins keep shrinking and never dominate at high zoom.
+      return Math.min(1, 1 / Math.sqrt(z), 3 / z);
     }
 
     function renderLocationMarkers() {
@@ -12717,14 +12913,46 @@
       openNoteDialog();
     }
 
+    function syncMapLabelButtons(mode) {
+      $("#labelsNoneBtn")?.setAttribute("aria-pressed", mode === "none");
+      $("#labelsAbbrBtn")?.setAttribute("aria-pressed", mode === "abbr");
+      $("#labelsNameBtn")?.setAttribute("aria-pressed", mode === "name");
+    }
+
+    // World country labels: ISO code (abbr) or country name (name), placed at the
+    // mainland (largest sub-shape) center. Font is scaled up for the larger world
+    // viewBox (~2754 vs ~934) so labels read at a similar size to the US map.
+    function renderWorldMapLabels() {
+      const labels = $("#worldMapLabels");
+      if (!labels) return;
+      labels.innerHTML = "";
+      const mode = state.settings.mapLabels || "none";
+      syncMapLabelButtons(mode);
+      if (mode === "none") return;
+      const svgNS = "http://www.w3.org/2000/svg";
+      const fontSize = mode === "name" ? 26 : 32;
+      $$("#worldMap .world-tile").forEach(tile => {
+        const code = tile.dataset.region;
+        const center = stateTileCenter(code);
+        if (!center) return;
+        const label = mode === "name" ? regionName(code) : code;
+        const text = document.createElementNS(svgNS, "text");
+        text.dataset.abbr = code;
+        text.setAttribute("x", center.x);
+        text.setAttribute("y", center.y + fontSize * 0.34);
+        text.setAttribute("text-anchor", "middle");
+        text.setAttribute("font-size", fontSize);
+        text.textContent = label;
+        labels.append(text);
+      });
+    }
+
     function renderMapLabels() {
       const labels = $("#mapLabels");
       if (!labels) return;
       labels.innerHTML = "";
       const mode = state.settings.mapLabels || "none";
-      $("#labelsNoneBtn").setAttribute("aria-pressed", mode === "none");
-      $("#labelsAbbrBtn").setAttribute("aria-pressed", mode === "abbr");
-      $("#labelsNameBtn").setAttribute("aria-pressed", mode === "name");
+      syncMapLabelButtons(mode);
       if (mode === "none") return;
 
       const devMode = state.settings.developerMode === true;
@@ -13868,7 +14096,7 @@
       if (wrap && anchor) {
         const beforeLeft = wrap.scrollLeft + anchor.x;
         const beforeTop = wrap.scrollTop + anchor.y;
-        render();
+        renderMapView();
         requestAnimationFrame(() => {
           wrap.scrollLeft = Math.max(0, beforeLeft * ratio - anchor.x);
           wrap.scrollTop = Math.max(0, beforeTop * ratio - anchor.y);
@@ -13877,13 +14105,15 @@
         return;
       }
       centerMapAfterRender = true;
-      render();
+      renderMapView();
     }
 
     function nudgeMapZoom(delta) {
       const wrap = $(".map-wrap");
       const anchor = wrap && !mapFitMode ? { x: wrap.clientWidth / 2, y: wrap.clientHeight / 2 } : null;
-      setMapZoom(snappedMapZoom(delta), anchor);
+      // Each step doubles (zoom in) or halves (zoom out), up to 64000%.
+      const base = mapFitMode ? 1 : mapZoom;
+      setMapZoom(delta > 0 ? base * 2 : base / 2, anchor);
     }
 
     function resetMapZoom() {
@@ -13891,7 +14121,7 @@
       state.settings.mapPanCenter = { x: .5, y: .5 };
       centerMapAfterRender = true;
       persistMapViewSettings();
-      render();
+      renderMapView();
     }
 
     function adjustTextScale(delta) {
@@ -15383,15 +15613,18 @@
     }
 
     function noteLocationLabel(abbr) {
-      return STATE_NAMES[abbr] ? `${STATE_NAMES[abbr]} (${abbr})` : "";
+      const name = regionName(abbr);
+      return name ? `${name} (${abbr})` : "";
     }
 
     function noteLocationDropdownItems() {
-      return STATES.slice()
-        .sort(([abbrA], [abbrB]) =>
-          noteLocationLabel(abbrA).localeCompare(noteLocationLabel(abbrB), undefined, { sensitivity: "base" })
+      // Quick Add lists the active layer's regions — US states/territories on the
+      // US map, all countries (+ territories) on the World map.
+      return activeRegionCodes().slice()
+        .sort((a, b) =>
+          noteLocationLabel(a).localeCompare(noteLocationLabel(b), undefined, { sensitivity: "base" })
         )
-        .map(([abbr]) => ({ abbr, label: noteLocationLabel(abbr) }));
+        .map(abbr => ({ abbr, label: noteLocationLabel(abbr) }));
     }
 
     function renderNoteLocationDropdown(filter = "") {
@@ -15497,13 +15730,14 @@
       const clean = String(value || "").trim();
       if (!clean) return "";
       const paren = clean.match(/\(([A-Z]{2})\)\s*$/i)?.[1]?.toUpperCase();
-      if (paren && STATE_NAMES[paren]) return paren;
-      const match = STATES.find(([abbr, name]) =>
-        abbr.toLowerCase() === clean.toLowerCase()
-        || name.toLowerCase() === clean.toLowerCase()
-        || noteLocationLabel(abbr).toLowerCase() === clean.toLowerCase()
+      if (paren && isValidRegion(paren)) return paren;
+      const lc = clean.toLowerCase();
+      const match = activeRegionCodes().find(code =>
+        code.toLowerCase() === lc
+        || regionName(code).toLowerCase() === lc
+        || noteLocationLabel(code).toLowerCase() === lc
       );
-      return match ? match[0] : "";
+      return match || "";
     }
 
     function currentNoteTargetAbbr() {
@@ -16445,6 +16679,15 @@
       });
     }
 
+    // Swap pointer-specific phrasing in hints to match the device: touch-only
+    // devices (no hover, coarse pointer) get "Long-Press"; anything with a fine
+    // pointer (mouse/trackpad, incl. hybrids) gets "Right-Click".
+    function syncPointerActionTerms() {
+      const touchOnly = window.matchMedia?.("(hover: none) and (pointer: coarse)").matches ?? false;
+      const term = touchOnly ? "Long-Press" : "Right-Click";
+      $$(".js-pointer-action").forEach(el => { el.textContent = term; });
+    }
+
     function dismissHint(key) {
       if (!state.settings.uiHints) return;
       const dismissed = new Set(state.dismissedHints || []);
@@ -17204,7 +17447,8 @@
         if (mapFitMode || !(event.ctrlKey || event.metaKey)) return;
         event.preventDefault();
         const rect = wrap.getBoundingClientRect();
-        setMapZoom(mapZoom + (event.deltaY > 0 ? -MAP_ZOOM_STEP : MAP_ZOOM_STEP), {
+        // Gentle continuous multiplier per wheel notch (buttons/keys do the 2x jumps).
+        setMapZoom(mapZoom * (event.deltaY > 0 ? 1 / 1.25 : 1.25), {
           x: event.clientX - rect.left,
           y: event.clientY - rect.top
         });
@@ -17911,6 +18155,7 @@
       applyActiveLayer();
       bindEvents();
       bindHelpSearch();
+      syncPointerActionTerms();
       render();
     }
 
