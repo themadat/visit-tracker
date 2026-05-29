@@ -3,7 +3,7 @@
 Copy this into new chats:
 
 ```text
-Continue work in /Users/stripes/Documents/GitHub/visit-tracker. Read context/LLM_HANDOFF.md first. Respect manual edits. Run git status --short before editing. Use port 8018 for local preview. Current development line is Trail Log 3.2.0.
+Continue work in /Users/stripes/Documents/GitHub/visit-tracker. Read context/LLM_HANDOFF.md first. Respect manual edits. Run git status --short before editing. Use port 8018 for local preview. Current development line is Trail Log 4.0.0 "Trail Atlas".
 ```
 
 ## Release Notes
@@ -28,9 +28,10 @@ For every completed change:
 - Main file: `index.html`
 - Docs: `README.md`, this handoff
 - Storage key: `usStateVisitMap.v1`
-- Current development version: `APP_VERSION = "3.3.0"` (just cut; bump the fourth build segment for the next change)
-- Latest public release: Trail Log 3.3.0 "Basecamp Notes"
-- Reserved theme name: "Trail Atlas" is held for the WISH-001 Country Map release.
+- Current development version: `APP_VERSION = "4.0.0"` (just cut; bump the fourth build segment for the next change)
+- Latest public release: Trail Log 4.0.0 "Trail Atlas" (World map / Country Map — WISH-001 shipped)
+- Branch: `4-0-0-Trail-Atlas`.
+- Plan + full build log: `context/WISH-001-COUNTRY-MAP-PLAN.md` (layer architecture, data model, every phase + verification notes).
 - No build step, backend, or dependencies.
 - User data lives in browser localStorage. Locate is the only intentional online action and only runs when clicked.
 
@@ -69,14 +70,21 @@ State basics:
 ```js
 {
   appVersion, mapName,
-  settings: { theme, tapBehavior, buttonStyle, uiHints, textScale, dateOrder, dateStyle, mapLabels, mapSplitRatio, mapViewMode, mapZoom, mapPanCenter, mapPanelOpen, legendPanelOpen, notesPanelOpen, notesSortMode, notesViewMode, notesCategoricalMode, notesHideExcludedOnly, notesDatePrecisionFilter, notesCoordinateFilter, noteLevelFilters, noteVisitTypeFilters, selectedState, notesPanelState, collapsedNoteCategories, legendPosition },
+  settings: { ..., activeLayerId, mapLabels, ..., selectedState, notesPanelState, collapsedNoteCategories, legendPosition },
   levels: [{ id, name, definition, color, countsTowardStats }],
   visitTypes: [{ id, label, icon, shortcut, enabled, searchTags }],
-  states: { CA: ["visited"] },
+  states: { CA: ["visited"] },                 // US states + territories
   notes: { CA: [{ id, date, levelId, city, where, what, who, lat, lng, geocodeLabel, details, text, visitTypes }] },
-  territoryDefaultsSeeded
+  world: { regions: { FR: ["visited"] }, notes: { FR: [ ... ] } },  // countries (ISO-2), territories stay in states/notes
+  territoryDefaultsSeeded, countriesSeeded
 }
 ```
+
+Map layers (4.0.0): `MAP_LAYERS` (`us` | `world`) + runtime `activeLayerId`.
+Region helpers resolve by active layer: `activeRegionStore`/`regionStoreForCode`
+(level data), `notesStoreForCode` (notes; territories → US store on both maps),
+`activeRegionCodes` (stats/list universe), `regionName`, `isValidRegion`,
+`ensureWorldRegions` (lazy code/name scan from `#worldMap`).
 
 Important invariants:
 
@@ -100,17 +108,19 @@ Important invariants:
 
 ## Recent Release
 
-3.3.0 "Basecamp Notes" is cut. It covers:
+4.0.0 "Trail Atlas" is cut — the World / Country map (WISH-001). It covers:
 
-- Basecamp: a dedicated toolbar dialog (page+pencil icon, hotkey B) with a large autosaving scratchpad for app-level notes not tied to a place.
-- `state.basecamp { text, updated }` persisted in the backup schema; appended to Markdown / Plain Text / RTF exports.
-- Copy flashes a "Copied to Clipboard" status; Clear (red) wipes behind a confirm; guidance lives in the placeholder.
-- Release rule: `notice.summary` ≤ 100 chars and a per-release themed `notice.cta`.
-- Completed-roadmap cleanup (WISH-043); seeded WISH-053 (multiple named Basecamp pads).
+- A second map layer: "World Map" toggle in the map header (`#mapLayerToggleBtn`) flips between `#stateMap` and the embedded `#worldMap`; `settings.activeLayerId` persists.
+- World SVG: optimized BlankMap-World.svg embedded as `#worldMap` (~820 KB). Source files kept in `assets/` (`world-map_raw.svg`, `world-map.svg`, `optimize-world-svg.py`).
+- Layer seam: `MAP_LAYERS`, `activeLayerId`, `activeRegionStore`, `activeRegionCodes`, `regionName`, `isValidRegion`, `notesStoreForCode`, `regionStoreForCode`. US territories are a shared subset (level + notes in the US store on both maps).
+- Storage: new `state.world { regions, notes }` bucket (ISO-2 keys) + `countriesSeeded`; US `state.states`/`state.notes` unchanged. Old saves migrate cleanly.
+- Countries default to Not Interested (seeded once); the Not Interested level recolored `#111111` → `#9ca3af` (with legacy migration). Legend/stats, notes panel/search, and pins all scope to the active layer.
+- Notes work for countries (editor/list/pins); pins anchor on the largest sub-shape (mainland). Exports (MD/RTF/text) gained a Countries section; JSON carries `world`.
+- Completed-roadmap cleanup: removed WISH-001. Seeded WISH-054 (historical countries). New "country" location type.
 
-Prior: 3.2.0 "Trail Shorthand" (interactive Smart Convert + 17 browseable icon categories).
+Prior: 3.3.0 "Basecamp Notes" (toolbar scratchpad). 3.2.0 "Trail Shorthand".
 
-(WISH-001 Country Map — now P0 — reserves the "Trail Atlas" theme name.)
+Known follow-ups (not blocking): a higher-fidelity world SVG, historical countries (WISH-054), and per-country pin coordinates for finer placement.
 
 ## UX Preferences
 
