@@ -1,5 +1,10 @@
 ## Names
 
+// Find Free Custom SVGs: https://www.svgrepo.com
+https://www.svgrepo.com/collection/travel-and-places-infographic-icons/5
+https://www.svgrepo.com/collection/gis-mapping-icons/5
+https://www.svgrepo.com/collection/travelling/
+
 Trail Log <- [Travel Log, Trail Notes, Book/Journal] <- Visit Tracker  <- US State Visit Map
 | Profession / Hobby | Common Term
 |---|---|
