@@ -2856,7 +2856,27 @@
     .release-section {
       display: grid;
       gap: .18rem;
+      margin-top: .3rem;
     }
+
+    .release-section > summary {
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+    }
+
+    .release-section > summary::-webkit-details-marker { display: none; }
+
+    .release-section > summary::before {
+      content: "\25B8";
+      color: var(--muted);
+      font-size: .7rem;
+      transition: transform .15s ease;
+    }
+
+    .release-section[open] > summary::before { transform: rotate(90deg); }
 
     .release-section b {
       color: var(--muted);
@@ -8300,7 +8320,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.0.0";
+    const APP_VERSION = "4.0.0.1";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -8395,20 +8415,22 @@
       { id: "day-visit", name: "Day Visit", definition: "Day Activity", color: "#facc15", countsTowardStats: true },
       { id: "pass-through", name: "Pass Through", definition: "Drive or Layover", color: "#f97316", countsTowardStats: true },
       { id: "want-to-visit", name: "Want to Visit", definition: "Interested or Planning", color: "#7c3aed", countsTowardStats: true },
-      { id: "not-interested", name: "Not Interested", definition: "Excluded from Stats", color: "#9ca3af", countsTowardStats: false }
+      { id: "not-interested", name: "Not Interested", definition: "Excluded from Stats", color: "#888888", countsTowardStats: false }
     ];
-    // Legacy Not-Interested default was near-black; recolored to a soft gray so the
-    // seeded world map (every country defaults to Not Interested) reads as calm.
-    const LEGACY_NOT_INTERESTED_COLOR = "#111111";
+    // Earlier Not-Interested defaults (near-black, then a blue-gray); both migrate
+    // to a fully neutral gray so the level reads as plainly "excluded" everywhere.
+    const LEGACY_NOT_INTERESTED_COLORS = ["#111111", "#9ca3af"];
     const DEFAULT_LEVEL_IDS = ["visited", "not-interested"];
     const OPTIONAL_LEVEL_IDS = ["visited", "want-to-visit", "pass-through", "day-visit", "not-interested"];
+    // Slot 5 is the excluded / Not Interested color — kept a neutral #888888
+    // across every palette so "Not Interested" always reads as plainly excluded.
     const THEMES = {
-      Classic: ["#16a34a", "#facc15", "#f97316", "#7c3aed", "#111111"],
-      Neon: ["#0bff00", "#fff100", "#ffac00", "#f000ff", "#000000"],
-      Pastel: ["#86efac", "#fde68a", "#fdba74", "#c4b5fd", "#BBBBBB"],
-      Sunset: ["#eeaf61", "#fb9062", "#ee5d6c", "#ce4993", "#6a0d83"],
-      Earth: ["#36563e", "#5a8b5d", "#81b14f", "#907350", "#351b04"],
-      Ocean: ["#064273", "#1da2d8", "#7fcdff", "#def3f6", "#001a33"],
+      Classic: ["#16a34a", "#facc15", "#f97316", "#7c3aed", "#888888"],
+      Neon: ["#0bff00", "#fff100", "#ffac00", "#f000ff", "#888888"],
+      Pastel: ["#86efac", "#fde68a", "#fdba74", "#c4b5fd", "#888888"],
+      Sunset: ["#eeaf61", "#fb9062", "#ee5d6c", "#ce4993", "#888888"],
+      Earth: ["#36563e", "#5a8b5d", "#81b14f", "#907350", "#888888"],
+      Ocean: ["#064273", "#1da2d8", "#7fcdff", "#def3f6", "#888888"],
     };
 
     // Find Free Custom SVGs: https://www.svgrepo.com
@@ -9736,8 +9758,10 @@
         title: "Trail Atlas",
         summary: "A switchable World map — log every country right alongside your US states.",
         highlights: [
-          "New World map: flip between your US map and a full world-country map from the map header, and the Legend, stats, notes, and pins all follow whichever map you're on.",
-          "Log countries like states — set levels, add notes, and drop map pins; every country starts as Not Interested so your stats stay calm."
+          "New World map: switch between US and World from the map header.",
+          "Log countries like states — levels, notes, and map pins.",
+          "Legend, stats, notes, and pins follow the active map.",
+          "Countries default to Not Interested, so your stats stay calm."
         ],
         notice: {
           version: "4.0.0",
@@ -9753,7 +9777,11 @@
           "Notes now group by location type — State, Territory, and Country — and the notes list, search, and map pins follow the active map.",
           "Small island nations and microstates are selectable on the world map, and country pins anchor to the mainland.",
           "Markdown, Rich Text, and Plain Text exports gained a Countries section, and JSON backups include your world data.",
-          "Cleared the completed Country Map item from the active roadmap."
+          "Cleared the completed Country Map item from the active roadmap.",
+          "Press T anywhere to flip between light and dark themes; in Developer Mode a single tap on the app icon does the same.",
+          "Recolored Not Interested to a neutral gray (#888888) across every color palette.",
+          "Location notes now show distinct category icons for States, Territories, Countries, and Cities.",
+          "Release Notes collapse Highlights and the full update list so you can scan the list of releases at a glance."
         ]
       },
       {
@@ -9762,8 +9790,9 @@
         title: "Basecamp Notes",
         summary: "A roomy Basecamp scratchpad for home-base notes that aren't tied to any one place.",
         highlights: [
-          "New Basecamp button in the toolbar (or press B) opens a large scratchpad for trip planning, packing lists, gear, and reminders not tied to a place.",
-          "Basecamp autosaves on this device and rides along in Copy, exports, and backups."
+          "New Basecamp button (or press B) opens a roomy scratchpad.",
+          "For planning, packing, gear, and reminders not tied to a place.",
+          "Autosaves on this device; rides along in Copy, exports, and backups."
         ],
         notice: {
           version: "3.3.0",
@@ -11080,7 +11109,7 @@
       // the seeded world map stays calm. Only touches the untouched legacy default.
       const notInterestedColor = BUILT_INS.find(item => item.id === "not-interested")?.color;
       next.levels.forEach(level => {
-        if (level.id === "not-interested" && level.color.toLowerCase() === LEGACY_NOT_INTERESTED_COLOR) {
+        if (level.id === "not-interested" && LEGACY_NOT_INTERESTED_COLORS.includes(level.color.toLowerCase())) {
           level.color = notInterestedColor;
         }
       });
@@ -12682,10 +12711,16 @@
 
     function locationTypeIcon(abbrOrType) {
       const type = LOCATION_TYPES[abbrOrType] ? abbrOrType : locationTypeFor(abbrOrType);
+      // Concentric-circle glyphs after the SF Symbols: circle.circle (state),
+      // circle.dotted.circle (territory), inset.filled.circle (country),
+      // smallcircle.filled.circle (city).
+      const ring = 'fill="none" stroke="currentColor" stroke-width="1.6"';
+      const wrap = inner => `<svg class="sf-symbol" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" ${ring}/>${inner}</svg>`;
       const icons = {
-        city: typeof __BUILDING_2_CROP_CIRCLE === "string" ? __BUILDING_2_CROP_CIRCLE : __MAPPIN_CIRCLE,
-        state: typeof __GLOBE_AMERICAS_FILL === "string" ? __GLOBE_AMERICAS_FILL : __MAP_CIRCLE,
-        territory: typeof __FLAG_CIRCLE === "string" ? __FLAG_CIRCLE : __MAPPIN_CIRCLE
+        city: wrap(`<circle cx="12" cy="12" r="2.6" fill="currentColor"/>`),
+        state: wrap(`<circle cx="12" cy="12" r="4.2" ${ring}/>`),
+        territory: wrap(`<circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="0.5 2.35"/>`),
+        country: wrap(`<circle cx="12" cy="12" r="5" fill="currentColor"/>`)
       };
       return icons[type] || icons.state;
     }
@@ -15832,10 +15867,10 @@
         `;
       };
       return `
-        <div class="release-section">
-          <b>${escapeHtml(title)}</b>
+        <details class="release-section">
+          <summary><b>${escapeHtml(title)}</b></summary>
           <ul>${list.map(renderItem).join("")}</ul>
-        </div>
+        </details>
       `;
     }
 
@@ -16323,6 +16358,12 @@
       if (key === "/") {
         event.preventDefault();
         focusNotesSearchShortcut();
+        return true;
+      }
+      if (key === "t") {
+        // Global secret: flip light/dark from anywhere.
+        event.preventDefault();
+        updateSetting("theme", state.settings.theme === "dark" ? "light" : "dark");
         return true;
       }
       if (key !== "r") return false;
@@ -16836,6 +16877,12 @@
     }
 
     function handleTitleQuadTap(event) {
+      // In Developer Mode a single tap on the app icon flips light/dark theme.
+      if (state.settings.developerMode) {
+        event.preventDefault();
+        updateSetting("theme", state.settings.theme === "dark" ? "light" : "dark");
+        return;
+      }
       const now = performance.now();
       if (titleQuadTapTimer) clearTimeout(titleQuadTapTimer);
       titleQuadTapCount = now - (Number($("#appIcon").dataset.lastTap || 0)) < 900 ? titleQuadTapCount + 1 : 1;

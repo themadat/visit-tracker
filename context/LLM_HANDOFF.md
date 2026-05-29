@@ -13,7 +13,8 @@ For every completed change:
 - Bump the fourth `APP_VERSION` build number.
 - When finalizing a release, set `APP_VERSION` to the released semantic version and collapse same-line patch/build notes into that release entry.
 - Update `CHANGELOG` using the collapsed release-note format: `Major.Minor.Patch :: YYYY-mm-dd :: Cheeky theme name`, then a bold one-line summary, then `highlights` and `updates`.
-- Keep `highlights` short and abbreviated; use `updates` for the fuller, denser change list.
+- Keep `highlights` short: **max 4 bullets, each ≤100 characters.** Anything longer or extra goes in `updates` (the fuller, denser change list).
+- Release Notes UI auto-collapses each entry's Highlights and Full Update List so the tab reads as a scannable list of releases.
 - The release `notice.summary` must never exceed 100 characters.
 - The release `notice.cta` changes per version like the theme name and should be themed toward that release's title (e.g. a Basecamp release → "Set Up Camp").
 - Keep changelog wording public-safe: describe features and changes, not internal tickets, prompts, or workflow mechanics.
@@ -28,7 +29,7 @@ For every completed change:
 - Main file: `index.html`
 - Docs: `README.md`, this handoff
 - Storage key: `usStateVisitMap.v1`
-- Current development version: `APP_VERSION = "4.0.0"` (just cut; bump the fourth build segment for the next change)
+- Current development version: `APP_VERSION = "4.0.0.1"` (post-4.0.0 refinements; bump the fourth build segment per change, collapse into the 4.0.0 entry)
 - Latest public release: Trail Log 4.0.0 "Trail Atlas" (World map / Country Map — WISH-001 shipped)
 - Branch: `4-0-0-Trail-Atlas`.
 - Plan + full build log: `context/WISH-001-COUNTRY-MAP-PLAN.md` (layer architecture, data model, every phase + verification notes).
