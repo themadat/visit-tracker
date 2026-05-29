@@ -1034,6 +1034,77 @@
       flex: 0 0 auto;
     }
 
+    /* The map title doubles as the US/World switch: icon + name, always shown. */
+    .map-layer-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      padding: .25rem .7rem .25rem .4rem;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: color-mix(in srgb, var(--accent) 6%, var(--surface));
+      box-shadow: 0 1px 2px rgba(15, 23, 42, .08);
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background .15s ease, border-color .15s ease, box-shadow .15s ease;
+    }
+
+    .map-layer-toggle:hover,
+    .map-layer-toggle:focus-visible {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+      box-shadow: 0 2px 6px rgba(15, 23, 42, .14);
+      outline: none;
+    }
+
+    .map-layer-toggle:active {
+      transform: translateY(1px);
+    }
+
+    /* Reserve enough width for the longest label ("World Map") and never wrap,
+       so the button stays the same size in both US and World modes. */
+    .map-layer-toggle h2 {
+      margin: 0;
+      min-width: 9.5ch;
+      white-space: nowrap;
+    }
+
+    .map-layer-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      color: var(--accent);
+      /* Fallback size; per-layer sizes below override. ~2.1em (~34px) is the
+         largest before the stacked title + two-line hint grows the map header. */
+      width: 2.1em;
+      height: 2.1em;
+    }
+
+    /* US and World glyphs have different visual weights, so size them
+       independently. Tune each freely (keep <= ~2.1em to avoid growing the header). */
+    [data-active-layer="us"] .map-layer-icon {
+      width: 2.1em;
+      height: 2.1em;
+    }
+
+    [data-active-layer="world"] .map-layer-icon {
+      width: 2.1em;
+      height: 2.1em;
+    }
+
+    .map-layer-icon svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .map-layer-icon svg path {
+      fill: currentColor;
+    }
+
     .map-head-hints {
       display: grid;
       justify-items: end;
@@ -1429,7 +1500,7 @@
 
     .map-location-marker .marker-ring {
       fill: var(--surface);
-      stroke: color-mix(in srgb, var(--marker-color, var(--accent)) 84%, var(--text));
+      stroke: var(--marker-color, var(--accent));
       stroke-width: 1.8;
     }
 
@@ -2859,24 +2930,50 @@
       margin-top: .3rem;
     }
 
-    .release-section > summary {
+    /* Full Update List is collapsible behind an obvious pill-style toggle. */
+    .release-collapsible > summary {
       cursor: pointer;
       list-style: none;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: .35rem;
+      gap: .4rem;
+      width: fit-content;
+      padding: .28rem .7rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--accent);
+      font-size: .74rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+      transition: background .15s ease, border-color .15s ease;
     }
 
-    .release-section > summary::-webkit-details-marker { display: none; }
+    .release-collapsible > summary:hover {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+    }
 
-    .release-section > summary::before {
+    .release-collapsible > summary::-webkit-details-marker { display: none; }
+
+    .release-toggle-chevron::before {
       content: "\25B8";
-      color: var(--muted);
       font-size: .7rem;
+      display: inline-block;
       transition: transform .15s ease;
     }
 
-    .release-section[open] > summary::before { transform: rotate(90deg); }
+    .release-collapsible[open] > summary .release-toggle-chevron::before { transform: rotate(90deg); }
+
+    .release-toggle-count {
+      min-width: 1.1rem;
+      text-align: center;
+      padding: 0 .35rem;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+      font-size: .68rem;
+    }
 
     .release-section b {
       color: var(--muted);
@@ -5376,6 +5473,16 @@
       min-width: 0;
     }
 
+    /* Developer Mode region-key tag shown beside note location names. */
+    .region-key {
+      color: var(--muted);
+      font-size: .72em;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      opacity: .7;
+    }
+
     .compact-location-icon {
       display: inline-grid;
       place-items: center;
@@ -6770,8 +6877,12 @@
       <section class="panel map-panel" aria-labelledby="mapHeading">
         <div class="map-head">
           <div class="map-head-title">
-            <h2 id="mapHeading">US Map</h2>
-            <small id="tapHint" data-hint>Tap a Location to select/cycle Log Level.</small>
+            <button id="mapLayerToggleBtn" class="map-layer-toggle" type="button" aria-pressed="false"
+              aria-label="Switch between the US and World maps">
+              <span id="mapLayerIcon" class="map-layer-icon" aria-hidden="true"></span>
+              <h2 id="mapHeading">US Map</h2>
+            </button>
+            <small id="tapHint" data-hint>Tap a Location to select/cycle Log Level.<br />Tap the map name to switch between the US and World maps.</small>
           </div>
           <div class="map-head-actions">
             <div class="map-head-hints">
@@ -6788,10 +6899,6 @@
               <button id="mapZoomInBtn" type="button" aria-label="Zoom map in" data-shortcut="+">Zoom In</button>
               <button id="mapZoomResetBtn" type="button" aria-label="Reset map zoom" data-shortcut="R">Reset
                 Zoom</button>
-            </div>
-            <div class="map-action-group map-toggle-group">
-              <button id="mapLayerToggleBtn" class="toggle-btn" type="button" aria-pressed="false"
-                aria-label="Switch between US and World maps">World Map</button>
             </div>
             <div class="map-action-group map-toggle-group">
               <button id="mapFitBtn" class="toggle-btn" type="button" aria-pressed="false"
@@ -8268,6 +8375,7 @@
             <div class="shortcut-row is-direct"><kbd>R</kbd><span>Global: open Release Notes. Press again to jump into
                 Roadmap search.</span></div>
             <div class="shortcut-row is-direct"><kbd>/</kbd><span>Global: focus Notes search.</span></div>
+            <div class="shortcut-row is-direct"><kbd>T</kbd><span>Global: toggle light/dark theme. In Developer Mode, a single tap on the app icon does the same.</span></div>
             <div class="shortcut-row is-direct"><kbd>H H</kbd><span>Global: reset dismissed hints and the What's New
                 banner by toggling Hints off and back on.</span></div>
             <div class="shortcut-row is-direct"><kbd>Tap x4</kbd><span>Quad-tap the app name to run the same hint and
@@ -8286,8 +8394,8 @@
             </div>
             <div class="shortcut-row"><kbd>C H A</kbd><span>Auto Colors, suggested categories, and contextual add
                 actions.</span></div>
-            <div class="shortcut-row"><kbd>B T E K Y V D O P</kbd><span>Notes Back, Chronological Sort, Expanded,
-                Condensed, Categorical, Excluded Visibility, Coordinate Filter, Text Only, and Copy.</span></div>
+            <div class="shortcut-row"><kbd>B E K Y V D O P</kbd><span>Notes Back, Expanded, Condensed, Categorical,
+                Excluded Visibility, Coordinate Filter, Text Only, and Copy. (Chronological Sort moved off T, which is now the global theme toggle.)</span></div>
             <div class="shortcut-row"><kbd>L D R 1-4</kbd><span>Add as App: choose light/dark icon, use the Mac-guide
                 reload action when shown, or open device directions.</span></div>
             <div class="shortcut-row"><kbd>Click</kbd><span>Developer: click Detected Type/Icon or the Add as App
@@ -8320,7 +8428,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.0.0.1";
+    const APP_VERSION = "4.0.0.6";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -8414,7 +8522,7 @@
       { id: "visited", name: "Visited", definition: "Overnight Stay", color: "#16a34a", countsTowardStats: true },
       { id: "day-visit", name: "Day Visit", definition: "Day Activity", color: "#facc15", countsTowardStats: true },
       { id: "pass-through", name: "Pass Through", definition: "Drive or Layover", color: "#f97316", countsTowardStats: true },
-      { id: "want-to-visit", name: "Want to Visit", definition: "Interested or Planning", color: "#7c3aed", countsTowardStats: true },
+      { id: "want-to-visit", name: "Want to Visit", definition: "Planned — excluded from stats", color: "#7c3aed", countsTowardStats: false },
       { id: "not-interested", name: "Not Interested", definition: "Excluded from Stats", color: "#888888", countsTowardStats: false }
     ];
     // Earlier Not-Interested defaults (near-black, then a blue-gray); both migrate
@@ -8422,15 +8530,16 @@
     const LEGACY_NOT_INTERESTED_COLORS = ["#111111", "#9ca3af"];
     const DEFAULT_LEVEL_IDS = ["visited", "not-interested"];
     const OPTIONAL_LEVEL_IDS = ["visited", "want-to-visit", "pass-through", "day-visit", "not-interested"];
-    // Slot 5 is the excluded / Not Interested color — kept a neutral #888888
-    // across every palette so "Not Interested" always reads as plainly excluded.
+    // Slot 5 is the excluded / Not Interested color. The two palettes whose slot
+    // was basically black (Classic, Neon) use a neutral #888888 so the level reads
+    // as plainly excluded; the rest keep their themed tones.
     const THEMES = {
       Classic: ["#16a34a", "#facc15", "#f97316", "#7c3aed", "#888888"],
       Neon: ["#0bff00", "#fff100", "#ffac00", "#f000ff", "#888888"],
-      Pastel: ["#86efac", "#fde68a", "#fdba74", "#c4b5fd", "#888888"],
-      Sunset: ["#eeaf61", "#fb9062", "#ee5d6c", "#ce4993", "#888888"],
-      Earth: ["#36563e", "#5a8b5d", "#81b14f", "#907350", "#888888"],
-      Ocean: ["#064273", "#1da2d8", "#7fcdff", "#def3f6", "#888888"],
+      Pastel: ["#86efac", "#fde68a", "#fdba74", "#c4b5fd", "#BBBBBB"],
+      Sunset: ["#eeaf61", "#fb9062", "#ee5d6c", "#ce4993", "#6a0d83"],
+      Earth: ["#36563e", "#5a8b5d", "#81b14f", "#907350", "#97876b"],
+      Ocean: ["#064273", "#1da2d8", "#7fcdff", "#def3f6", "#6d8aa3"],
     };
 
     // Find Free Custom SVGs: https://www.svgrepo.com
@@ -8442,7 +8551,8 @@
     const __CALENDAR_BADGE_CHECKMARK = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 38.7012 30.9082"><g><rect height="30.9082" opacity="0" width="38.7012" x="0" y="0"/><path d="M31.6797 7.75391L31.6797 15.2062C31.3978 15.1723 31.1108 15.1562 30.8203 15.1562C30.5231 15.1562 30.2294 15.1731 29.9414 15.2095L29.9414 11.6113C29.9414 10.3125 29.2383 9.6582 27.998 9.6582L10.3223 9.6582C9.07227 9.6582 8.38867 10.3125 8.38867 11.6113L8.38867 23.2617C8.38867 24.5508 9.07227 25.2148 10.3223 25.2148L23.2661 25.2148C23.4379 25.8271 23.6875 26.4072 24.005 26.9434L10.459 26.9434C7.93945 26.9434 6.66016 25.6836 6.66016 23.1836L6.66016 7.75391C6.66016 5.25391 7.93945 3.99414 10.459 3.99414L27.8711 3.99414C30.4004 3.99414 31.6797 5.26367 31.6797 7.75391Z"/><path d="M13.7207 21.2402L13.7207 21.9824C13.7207 22.3926 13.5938 22.5 13.1836 22.5L12.4414 22.5C12.0312 22.5 11.9043 22.3926 11.9043 21.9824L11.9043 21.2402C11.9043 20.8301 12.0312 20.7227 12.4414 20.7227L13.1836 20.7227C13.5938 20.7227 13.7207 20.8301 13.7207 21.2402ZM17.959 21.2402L17.959 21.9824C17.959 22.3926 17.8418 22.5 17.4219 22.5L16.6797 22.5C16.2695 22.5 16.1523 22.3926 16.1523 21.9824L16.1523 21.2402C16.1523 20.8301 16.2695 20.7227 16.6797 20.7227L17.4219 20.7227C17.8418 20.7227 17.959 20.8301 17.959 21.2402ZM22.1973 21.2402L22.1973 21.9824C22.1973 22.3926 22.0801 22.5 21.6699 22.5L20.9277 22.5C20.5078 22.5 20.3906 22.3926 20.3906 21.9824L20.3906 21.2402C20.3906 20.8301 20.5078 20.7227 20.9277 20.7227L21.6699 20.7227C22.0801 20.7227 22.1973 20.8301 22.1973 21.2402ZM13.7207 17.0605L13.7207 17.8027C13.7207 18.2129 13.5938 18.3203 13.1836 18.3203L12.4414 18.3203C12.0312 18.3203 11.9043 18.2129 11.9043 17.8027L11.9043 17.0605C11.9043 16.6602 12.0312 16.543 12.4414 16.543L13.1836 16.543C13.5938 16.543 13.7207 16.6602 13.7207 17.0605ZM17.959 17.0605L17.959 17.8027C17.959 18.2129 17.8418 18.3203 17.4219 18.3203L16.6797 18.3203C16.2695 18.3203 16.1523 18.2129 16.1523 17.8027L16.1523 17.0605C16.1523 16.6602 16.2695 16.543 16.6797 16.543L17.4219 16.543C17.8418 16.543 17.959 16.6602 17.959 17.0605ZM22.1973 17.0605L22.1973 17.8027C22.1973 18.2129 22.0801 18.3203 21.6699 18.3203L20.9277 18.3203C20.5078 18.3203 20.3906 18.2129 20.3906 17.8027L20.3906 17.0605C20.3906 16.6602 20.5078 16.543 20.9277 16.543L21.6699 16.543C22.0801 16.543 22.1973 16.6602 22.1973 17.0605ZM17.959 12.8906L17.959 13.623C17.959 14.0332 17.8418 14.1504 17.4219 14.1504L16.6797 14.1504C16.2695 14.1504 16.1523 14.0332 16.1523 13.623L16.1523 12.8906C16.1523 12.4805 16.2695 12.373 16.6797 12.373L17.4219 12.373C17.8418 12.373 17.959 12.4805 17.959 12.8906ZM22.1973 12.8906L22.1973 13.623C22.1973 14.0332 22.0801 14.1504 21.6699 14.1504L20.9277 14.1504C20.5078 14.1504 20.3906 14.0332 20.3906 13.623L20.3906 12.8906C20.3906 12.4805 20.5078 12.373 20.9277 12.373L21.6699 12.373C22.0801 12.373 22.1973 12.4805 22.1973 12.8906ZM26.4453 12.8906L26.4453 13.623C26.4453 14.0332 26.3184 14.1504 25.9082 14.1504L25.166 14.1504C24.7559 14.1504 24.6289 14.0332 24.6289 13.623L24.6289 12.8906C24.6289 12.4805 24.7559 12.373 25.166 12.373L25.9082 12.373C26.3184 12.373 26.4453 12.4805 26.4453 12.8906Z"/><path d="M37.1387 23.0273C37.1387 26.4844 34.2578 29.3457 30.8203 29.3457C27.3633 29.3457 24.5117 26.5039 24.5117 23.0273C24.5117 19.5703 27.3633 16.7188 30.8203 16.7188C34.2871 16.7188 37.1387 19.5703 37.1387 23.0273ZM33.0957 20.2734L30.0195 24.5312L28.457 22.8418C28.3301 22.7051 28.1543 22.5781 27.9004 22.5781C27.5 22.5781 27.1777 22.8906 27.1777 23.3008C27.1777 23.4766 27.2363 23.6816 27.373 23.8281L29.4727 26.1426C29.6289 26.3086 29.8633 26.3867 30.0586 26.3867C30.3125 26.3867 30.5371 26.2793 30.6641 26.1133L34.2676 21.1133C34.375 20.9668 34.4238 20.8105 34.4238 20.6738C34.4238 20.2637 34.0918 19.9609 33.7012 19.9609C33.4473 19.9609 33.2324 20.0879 33.0957 20.2734Z"/></g></svg>`;
     const __CALENDAR_BADGE_CLOCK = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 38.7012 30.9082"><g><rect height="30.9082" opacity="0" width="38.7012" x="0" y="0"/><path d="M31.6797 7.75391L31.6797 15.2062C31.3978 15.1723 31.1108 15.1562 30.8203 15.1562C30.5231 15.1562 30.2294 15.1731 29.9414 15.2095L29.9414 11.6113C29.9414 10.3125 29.2383 9.6582 27.998 9.6582L10.3223 9.6582C9.07227 9.6582 8.38867 10.3125 8.38867 11.6113L8.38867 23.2617C8.38867 24.5508 9.07227 25.2148 10.3223 25.2148L23.2661 25.2148C23.4379 25.8271 23.6875 26.4072 24.005 26.9434L10.459 26.9434C7.93945 26.9434 6.66016 25.6836 6.66016 23.1836L6.66016 7.75391C6.66016 5.25391 7.93945 3.99414 10.459 3.99414L27.8711 3.99414C30.4004 3.99414 31.6797 5.26367 31.6797 7.75391Z"/><path d="M13.7207 21.2402L13.7207 21.9824C13.7207 22.3926 13.5938 22.5 13.1836 22.5L12.4414 22.5C12.0312 22.5 11.9043 22.3926 11.9043 21.9824L11.9043 21.2402C11.9043 20.8301 12.0312 20.7227 12.4414 20.7227L13.1836 20.7227C13.5938 20.7227 13.7207 20.8301 13.7207 21.2402ZM17.959 21.2402L17.959 21.9824C17.959 22.3926 17.8418 22.5 17.4219 22.5L16.6797 22.5C16.2695 22.5 16.1523 22.3926 16.1523 21.9824L16.1523 21.2402C16.1523 20.8301 16.2695 20.7227 16.6797 20.7227L17.4219 20.7227C17.8418 20.7227 17.959 20.8301 17.959 21.2402ZM22.1973 21.2402L22.1973 21.9824C22.1973 22.3926 22.0801 22.5 21.6699 22.5L20.9277 22.5C20.5078 22.5 20.3906 22.3926 20.3906 21.9824L20.3906 21.2402C20.3906 20.8301 20.5078 20.7227 20.9277 20.7227L21.6699 20.7227C22.0801 20.7227 22.1973 20.8301 22.1973 21.2402ZM13.7207 17.0605L13.7207 17.8027C13.7207 18.2129 13.5938 18.3203 13.1836 18.3203L12.4414 18.3203C12.0312 18.3203 11.9043 18.2129 11.9043 17.8027L11.9043 17.0605C11.9043 16.6602 12.0312 16.543 12.4414 16.543L13.1836 16.543C13.5938 16.543 13.7207 16.6602 13.7207 17.0605ZM17.959 17.0605L17.959 17.8027C17.959 18.2129 17.8418 18.3203 17.4219 18.3203L16.6797 18.3203C16.2695 18.3203 16.1523 18.2129 16.1523 17.8027L16.1523 17.0605C16.1523 16.6602 16.2695 16.543 16.6797 16.543L17.4219 16.543C17.8418 16.543 17.959 16.6602 17.959 17.0605ZM22.1973 17.0605L22.1973 17.8027C22.1973 18.2129 22.0801 18.3203 21.6699 18.3203L20.9277 18.3203C20.5078 18.3203 20.3906 18.2129 20.3906 17.8027L20.3906 17.0605C20.3906 16.6602 20.5078 16.543 20.9277 16.543L21.6699 16.543C22.0801 16.543 22.1973 16.6602 22.1973 17.0605ZM17.959 12.8906L17.959 13.623C17.959 14.0332 17.8418 14.1504 17.4219 14.1504L16.6797 14.1504C16.2695 14.1504 16.1523 14.0332 16.1523 13.623L16.1523 12.8906C16.1523 12.4805 16.2695 12.373 16.6797 12.373L17.4219 12.373C17.8418 12.373 17.959 12.4805 17.959 12.8906ZM22.1973 12.8906L22.1973 13.623C22.1973 14.0332 22.0801 14.1504 21.6699 14.1504L20.9277 14.1504C20.5078 14.1504 20.3906 14.0332 20.3906 13.623L20.3906 12.8906C20.3906 12.4805 20.5078 12.373 20.9277 12.373L21.6699 12.373C22.0801 12.373 22.1973 12.4805 22.1973 12.8906ZM26.4453 12.8906L26.4453 13.623C26.4453 14.0332 26.3184 14.1504 25.9082 14.1504L25.166 14.1504C24.7559 14.1504 24.6289 14.0332 24.6289 13.623L24.6289 12.8906C24.6289 12.4805 24.7559 12.373 25.166 12.373L25.9082 12.373C26.3184 12.373 26.4453 12.4805 26.4453 12.8906Z"/><path d="M37.1387 23.0273C37.1387 26.4844 34.2578 29.3457 30.8203 29.3457C27.3633 29.3457 24.5117 26.5039 24.5117 23.0273C24.5117 19.5703 27.3633 16.7188 30.8203 16.7188C34.2871 16.7188 37.1387 19.5703 37.1387 23.0273ZM30.166 19.248L30.166 22.5586L27.8027 22.5586C27.4121 22.5586 27.0801 22.8809 27.0801 23.2715C27.0801 23.6621 27.4023 23.9844 27.8027 23.9844L30.8789 23.9844C31.2793 23.9844 31.5918 23.6719 31.5918 23.2715L31.5918 19.248C31.5918 18.8672 31.2793 18.5547 30.8789 18.5547C30.4883 18.5547 30.166 18.8672 30.166 19.248Z"/></g></svg>`;
     const __CALENDAR_BADGE_EXCLAMATIONMARK = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 38.7012 30.9082"><g><rect height="30.9082" opacity="0" width="38.7012" x="0" y="0"/><path d="M31.6797 7.75391L31.6797 15.2062C31.3978 15.1723 31.1108 15.1562 30.8203 15.1562C30.5231 15.1562 30.2294 15.1731 29.9414 15.2095L29.9414 11.6113C29.9414 10.3125 29.2383 9.6582 27.998 9.6582L10.3223 9.6582C9.07227 9.6582 8.38867 10.3125 8.38867 11.6113L8.38867 23.2617C8.38867 24.5508 9.07227 25.2148 10.3223 25.2148L23.2661 25.2148C23.4379 25.8271 23.6875 26.4072 24.005 26.9434L10.459 26.9434C7.93945 26.9434 6.66016 25.6836 6.66016 23.1836L6.66016 7.75391C6.66016 5.25391 7.93945 3.99414 10.459 3.99414L27.8711 3.99414C30.4004 3.99414 31.6797 5.26367 31.6797 7.75391Z"/><path d="M13.7207 21.2402L13.7207 21.9824C13.7207 22.3926 13.5938 22.5 13.1836 22.5L12.4414 22.5C12.0312 22.5 11.9043 22.3926 11.9043 21.9824L11.9043 21.2402C11.9043 20.8301 12.0312 20.7227 12.4414 20.7227L13.1836 20.7227C13.5938 20.7227 13.7207 20.8301 13.7207 21.2402ZM17.959 21.2402L17.959 21.9824C17.959 22.3926 17.8418 22.5 17.4219 22.5L16.6797 22.5C16.2695 22.5 16.1523 22.3926 16.1523 21.9824L16.1523 21.2402C16.1523 20.8301 16.2695 20.7227 16.6797 20.7227L17.4219 20.7227C17.8418 20.7227 17.959 20.8301 17.959 21.2402ZM22.1973 21.2402L22.1973 21.9824C22.1973 22.3926 22.0801 22.5 21.6699 22.5L20.9277 22.5C20.5078 22.5 20.3906 22.3926 20.3906 21.9824L20.3906 21.2402C20.3906 20.8301 20.5078 20.7227 20.9277 20.7227L21.6699 20.7227C22.0801 20.7227 22.1973 20.8301 22.1973 21.2402ZM13.7207 17.0605L13.7207 17.8027C13.7207 18.2129 13.5938 18.3203 13.1836 18.3203L12.4414 18.3203C12.0312 18.3203 11.9043 18.2129 11.9043 17.8027L11.9043 17.0605C11.9043 16.6602 12.0312 16.543 12.4414 16.543L13.1836 16.543C13.5938 16.543 13.7207 16.6602 13.7207 17.0605ZM17.959 17.0605L17.959 17.8027C17.959 18.2129 17.8418 18.3203 17.4219 18.3203L16.6797 18.3203C16.2695 18.3203 16.1523 18.2129 16.1523 17.8027L16.1523 17.0605C16.1523 16.6602 16.2695 16.543 16.6797 16.543L17.4219 16.543C17.8418 16.543 17.959 16.6602 17.959 17.0605ZM22.1973 17.0605L22.1973 17.8027C22.1973 18.2129 22.0801 18.3203 21.6699 18.3203L20.9277 18.3203C20.5078 18.3203 20.3906 18.2129 20.3906 17.8027L20.3906 17.0605C20.3906 16.6602 20.5078 16.543 20.9277 16.543L21.6699 16.543C22.0801 16.543 22.1973 16.6602 22.1973 17.0605ZM17.959 12.8906L17.959 13.623C17.959 14.0332 17.8418 14.1504 17.4219 14.1504L16.6797 14.1504C16.2695 14.1504 16.1523 14.0332 16.1523 13.623L16.1523 12.8906C16.1523 12.4805 16.2695 12.373 16.6797 12.373L17.4219 12.373C17.8418 12.373 17.959 12.4805 17.959 12.8906ZM22.1973 12.8906L22.1973 13.623C22.1973 14.0332 22.0801 14.1504 21.6699 14.1504L20.9277 14.1504C20.5078 14.1504 20.3906 14.0332 20.3906 13.623L20.3906 12.8906C20.3906 12.4805 20.5078 12.373 20.9277 12.373L21.6699 12.373C22.0801 12.373 22.1973 12.4805 22.1973 12.8906ZM26.4453 12.8906L26.4453 13.623C26.4453 14.0332 26.3184 14.1504 25.9082 14.1504L25.166 14.1504C24.7559 14.1504 24.6289 14.0332 24.6289 13.623L24.6289 12.8906C24.6289 12.4805 24.7559 12.373 25.166 12.373L25.9082 12.373C26.3184 12.373 26.4453 12.4805 26.4453 12.8906Z"/><path d="M37.1387 23.0273C37.1387 26.4844 34.2578 29.3457 30.8203 29.3457C27.3633 29.3457 24.5117 26.5039 24.5117 23.0273C24.5117 19.5703 27.3633 16.7188 30.8203 16.7188C34.2871 16.7188 37.1387 19.5703 37.1387 23.0273ZM29.8047 26.0254C29.8047 26.5918 30.2637 27.041 30.8203 27.041C31.377 27.041 31.8359 26.5918 31.8359 26.0254C31.8457 25.4785 31.3867 25.0098 30.8203 25.0098C30.2734 25.0098 29.8047 25.4785 29.8047 26.0254ZM30.0195 19.7559L30.1172 23.4375C30.127 23.8477 30.4199 24.1309 30.8203 24.1309C31.2305 24.1309 31.5234 23.8477 31.5332 23.4375L31.6211 19.7559C31.6309 19.2871 31.3086 18.9551 30.8203 18.9551C30.3418 18.9551 30.0098 19.2871 30.0195 19.7559Z"/></g></svg>`;
-
+    const __WORLD_MAP = `<svg width="800px" height="800px" viewBox="-20 0 190 190" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M140.85 86.7L138 86.18L139 80.46L133.17 83.12L134.6 91.6L130.32 94.09L130.5 105L126.27 108.42L121.9 103.35L119.09 103.22C113.54 107.3 113.88 112.22 113.88 112.22L111.77 112.52C108.678 109.261 106.721 105.091 106.19 100.63L101.47 100.9L95.66 94.9L94 96.3L96.72 101.64L99.17 102L101.17 104.29L93 109L86.83 97.14L87.61 90.4L84.24 90.82L80.64 87.68L78.93 87.82L80.38 92.41L74.18 94.41L74 88.44L61.51 92.44V84.79L66.14 84.51L69.28 76.63L77.15 76.74L75.29 73.85L77.9 70.85C77.9 70.85 75.72 69.08 74.43 71.08L71.92 70.65C71.92 63.17 85.75 60.89 88.1 69.56L100.73 67.3L103.1 62.14L119 59.65L120.38 64.18L133.96 65.38L149.47 70.53L149.71 75L140.85 86.7ZM64 96.53L69.51 96.92L75.87 100.33L80.11 97.55L85 98L90.32 112.11L98.59 112.85C98.59 112.85 98.48 118.52 91.1 120.73L89.61 129L85.34 133.32C85.82 141.17 76.34 143.62 76.34 143.62L71.18 136.47L70.88 124.96L66.75 120.84L60.08 122L54.93 114.57L55.3 105.65L61.68 101.59L64 96.53ZM46.46 128.27L45.05 131.6L40.58 132.75L37.58 138.94L33.14 142.79L30.6 152.07L27.5 151.72C25.0839 143.682 24.0326 135.296 24.39 126.91L18.56 124.64L14.85 117.35L20.62 111.51L20.9 109.65L11.9 102.91L10.9 91.33L9.13001 90.45L8.48001 95.26L6.58001 94.81L5.00001 84.83C10 68.11 6.55001 63.2 1.00001 64.75L0.320007 62.19L11.87 59C11.87 59 15.47 66.54 26.8 69.2C19.28 73.44 23.8 79.48 27.05 78.39L27.85 80.98L29.39 80.88L30.65 72.62L39.13 80.14L35.22 84L38 86.05L32.6 93.13C29.46 92.34 27.47 95.71 29.07 98.83L27.73 99.38C24.25 93.63 18 95.82 18 102L19.86 103.1L23.34 101.61L23.85 106.49H31.09L40.09 111.23L40.22 114.55L50.07 118.65L49.95 123.38L46.46 128.27ZM32.16 67L28.59 66.86L26.1 64.7L29.33 58L36.25 58.9C35.25 64.09 40.25 65.23 40.25 65.23L41.46 73.23L39.76 74.23L32.16 67ZM126.9 127.9L129.9 128.56L129.98 131.5L133.73 132.5L135.94 127.42L141.94 137.76L140.94 146.98L135 148.3L129.74 143L116.91 145.3L115.91 135.43L121.83 133.12L126.9 127.9Z" /></svg>`;
+    const __US_MAP = `<svg height="800px" width="800px" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><g><path class="st0" d="M511.271,134.997l-10.314-22.104c-1.281-2.734-4.024-4.486-7.049-4.486h-4.059c-3.64,0-6.793,2.529-7.587,6.092l-5.742,25.838c-0.632,2.862-2.82,5.118-5.656,5.852l-23.967,6.187c-1.88,0.479-3.511,1.657-4.58,3.289l-9.988,15.381c-1.017,1.555-2.546,2.699-4.332,3.22l-14.517,4.281v6.365c0,2.948-1.666,5.639-4.306,6.964l-19.934,9.963c-1.341,0.675-2.939,0.598-4.213-0.188c-1.273-0.786-2.042-2.179-2.042-3.674v-9.664c0-1.726-0.581-3.392-1.623-4.76l-10.442-13.5c-1.332-1.735-3.349-2.82-5.519-2.999c-2.188-0.179-4.341,0.572-5.947,2.06l-6.528,6.109c-1.581,1.47-2.469,3.52-2.469,5.682v18.234c0,2.239-0.966,4.366-2.657,5.852c-1.649,1.427-3.82,2.085-5.981,1.838c-3.794-0.581-6.614-3.803-6.614-7.656V177.18c0-1.11,0.24-2.204,0.701-3.221l6.468-14.235c1.683-3.716,0.214-8.108-3.374-10.056l-11.416-6.194l-9.492,8.253c-1.419,1.231-3.23,1.906-5.11,1.906h-6.255c-1.759,0-3.34-1.06-4.007-2.691c-0.666-1.632-0.273-3.503,0.992-4.725l4.93-4.794c1.094-1.06,1.546-2.623,1.196-4.101c-0.358-1.488-1.47-2.675-2.922-3.119l-29.632-9.21c-0.683-0.222-1.402-0.334-2.11-0.351l-99.977-2.494c-0.393-0.017-0.794-0.052-1.187-0.128L51.86,99.897c-3.683-0.667-7.322,1.384-8.655,4.888l1.366-3.588c-0.794,2.084-2.444,3.734-4.528,4.511c-2.094,0.786-4.41,0.64-6.383-0.402l-4.238-2.248c-1.222-0.649-2.691-0.674-3.93-0.06c-1.239,0.598-2.119,1.769-2.359,3.136l-3.614,20.737c-0.043,0.282-0.111,0.564-0.188,0.846L0.305,192.936c-0.351,1.23-0.402,2.529-0.137,3.776l16.243,77.395c0.41,1.948,1.546,3.665,3.187,4.802l20.523,14.209c2.102,1.461,3.35,3.845,3.35,6.399v5.828c0,2.392,1.939,4.332,4.323,4.332h18.311c1.802,0,3.545,0.615,4.93,1.752l29.247,23.924c1.393,1.144,3.136,1.76,4.922,1.76h44.832c2.068,0,4.042,0.82,5.503,2.282l7.638,7.647c1.452,1.452,2.273,3.426,2.273,5.494v2.829c0,2.58,1.281,4.981,3.408,6.433l22.002,14.962l1.281-4.256c1.043-3.46,4.333-5.75,7.938-5.519l5.374,0.333c2.906,0.18,5.46,1.965,6.639,4.622l12.073,27.376c0.812,1.837,2.29,3.281,4.144,4.05l20.618,8.536c1.332,0.547,2.854,0.402,4.058-0.402c1.205-0.803,1.923-2.154,1.923-3.598v-16.848c0-2.581,1.282-4.991,3.418-6.443l28.307-19.147c1.803-1.222,4.042-1.632,6.162-1.128l34.04,8.108c1.29,0.308,2.64,0.009,3.683-0.812c1.033-0.82,1.64-2.068,1.64-3.392v-10.125c0-4.298,3.486-7.784,7.784-7.784h19.31c0.906,0,1.811,0.162,2.657,0.47l16.875,6.134c2.598,0.948,5.511,0.437,7.638-1.332l3.298-2.76c3.093-2.572,7.638-2.367,10.484,0.478l6.656,6.656c1.614,1.615,2.444,3.87,2.256,6.144l-1.307,15.618c-0.256,3.136,1.392,6.126,4.196,7.562l24.65,12.68c1.342,0.692,2.948,0.633,4.229-0.154c1.291-0.786,2.068-2.178,2.068-3.691v-19.147c0-1.461-0.402-2.888-1.179-4.118l-21.617-34.588c-1.589-2.555-1.572-5.793,0.06-8.33l41.132-63.997c1.23-1.905,1.564-4.264,0.914-6.434l-2.026-6.741l3.777-45.362c0.188-2.179,1.282-4.195,3.025-5.528l23.847-18.276c0.991-0.76,1.606-1.914,1.683-3.153c0.085-1.239-0.376-2.46-1.256-3.341l-2.606-2.605l22.044-33.998C512.202,140.27,512.407,137.416,511.271,134.997z"/></g></svg>`;
 
     // Common Resused
     const __PENCIL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 22.3366 21.9615"><g><rect height="21.9615" opacity="0" width="22.3366" x="0" y="0"/><path d="M3.90513 20.6975L18.6854 5.91726L16.0829 3.31472L1.30747 18.0901L0.0379412 21.1907C-0.13784 21.6399 0.33091 22.0891 0.750832 21.928ZM19.9891 4.63796L21.4247 3.21218C22.1278 2.50417 22.162 1.71316 21.5126 1.05398L20.9706 0.507102C20.3211-0.147195 19.5106-0.0837187 18.8075 0.604758L17.367 2.02566Z" /></g></svg>`;
@@ -9655,6 +9765,18 @@
         category: "Maps"
       },
       {
+        title: "Continent & Region Maps",
+        ticketId: "WISH-056",
+        description: "Add focused continent/region maps (Europe, South America, Asia, Africa, etc.) as additional map layers so users can zoom into a region at a larger scale than the whole-world view. Reuses the shipped map-layer system (levels, notes, pins, exports). Each region shares country identities with the world map so a country marked once shows everywhere it appears.",
+        priority: "P3",
+        effort: "large",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 34,
+        prompt: "Add continent/region map layers (Europe, South America, etc.) on top of the shipped map-layer system. Source labeled SVGs per region (ISO-2 ids), reuse levels/notes/pins/exports, and share country identity with the world layer so marking a country once reflects across the world map and any region map it appears on. Add them to the same map switcher.",
+        category: "Maps"
+      },
+      {
         title: "Better Sharing/Exports and Celebrations/Badges",
         ticketId: "WISH-002",
         description: "Add share/export variants that make completed progress easier to show off. Scope includes share-ready image/text outputs, progress milestone copy, and no network-dependent sharing.",
@@ -9767,7 +9889,7 @@
           version: "4.0.0",
           title: "Trail Atlas",
           summary: "Switch to a World map and log every country alongside your US states.",
-          cta: "Go Global"
+          cta: "Go Global!"
         },
         updates: [
           "Added a World map alongside the US map. The 'World Map' button in the map header switches between them, and your choice is remembered.",
@@ -9779,9 +9901,20 @@
           "Markdown, Rich Text, and Plain Text exports gained a Countries section, and JSON backups include your world data.",
           "Cleared the completed Country Map item from the active roadmap.",
           "Press T anywhere to flip between light and dark themes; in Developer Mode a single tap on the app icon does the same.",
-          "Recolored Not Interested to a neutral gray (#888888) across every color palette.",
+          "Recolored the near-black Not Interested swatch to a neutral #888888 (built-in default and the Classic/Neon palettes).",
+          "Moved Want to Visit into the excluded-from-stats category so planned places don't count toward completion.",
           "Location notes now show distinct category icons for States, Territories, Countries, and Cities.",
-          "Release Notes collapse Highlights and the full update list so you can scan the list of releases at a glance."
+          "Release Notes now show each release as a scannable list with Highlights visible and a clear toggle for the full update list.",
+          "Highlights are capped at four bullets of 100 characters or less; the rest lives in each release's full update list.",
+          "Auto Color palettes now fill counting levels from the left and excluded levels from the right, so Not Interested keeps the palette's neutral end color.",
+          "Fixed world-map Notes showing countries whose codes collide with US states (e.g. Georgia/Gabon) — each map now reads only its own notes.",
+          "Developer Mode now shows each note location's region key in brackets (e.g. [GA]) to make code collisions obvious.",
+          "The map title is now the US/World switch: tap the map name and icon at top-left to flip maps; icon and name always show.",
+          "Map note pins now use the exact Legend color in both light and dark themes (removed the dark-mode tint).",
+          "The default Legend position is now the lower-left corner.",
+          "Map switch button now stays a fixed size with a larger icon and never wraps to a second line.",
+          "Tuned the Ocean and Earth palettes' Not Interested color so it stays visible on the dark-mode map.",
+          "The map switch is now a clearly bordered button with independently sized US and World icons."
         ]
       },
       {
@@ -9815,12 +9948,10 @@
         title: "Trail Shorthand",
         summary: "A much smarter, interactive Smart Convert that highlights and promotes note pieces as you type — plus browseable categories for the whole icon catalog.",
         highlights: [
-          "Smart Convert now highlights recognized dates, places, people, levels, and tags as you type and lists them as color-coded chips below the field.",
-          "Click a Smart Convert chip to send just that piece to its field, or hit Enter / Auto Convert to drop everything in at once.",
+          "Smart Convert highlights dates, places, people, levels, and tags as you type.",
+          "Click a chip to fill one field, or Auto Convert to drop everything in at once.",
           "Copied notes now read as clean, paste-ready lines you can drop straight back into Smart Convert.",
-          "Tag Settings has a sticky category chip strip — pick one or many categories and the icon grid scopes to your selection, with a live count.",
-          "Right-click or long-press a category chip to isolate it; tap All to clear.",
-          "Hovering an icon shows a clear 'Add <name>' tooltip that no longer gets cut off."
+          "Tag Settings adds a sticky category chip strip that scopes the icon grid live."
         ],
         notice: {
           version: "3.2.0",
@@ -9855,9 +9986,9 @@
         title: "Trail Echoes",
         summary: "Better note entry, smarter dates/location support, added a notes date precision filter, and richer icon search.",
         highlights: [
-          "Smart Convert is less dumb... Better Date, Location, Purpose, and People auto-fills. More coming to this in the future!",
-          "The note editor has a cleaner layout with a better date picker, nuanced location handling, and some bug fixes around search and location choosing.",
-          "Notes can now be filtered by date precision: All Dates, Year Only, Year and Month Only, or Full Dates Only.",
+          "Smarter Smart Convert: better Date, Location, Purpose, and People auto-fills.",
+          "Cleaner note editor: better date picker, nuanced location handling, and bug fixes.",
+          "Filter notes by date precision: all, year, year+month, or full dates.",
           "Added over 200 icon aliases for better search and promoted more used icons."
         ],
         notice: {
@@ -9887,12 +10018,10 @@
         title: "Meet Trail Log",
         summary: "A place to track where you've been, where you're going, and log memories with an outdoorsy, geeky vibe.",
         highlights: [
-          "Maps Show the Way: Memory surface layer linked to Notes, clustered pins, improved scroll and fit experiences with suctomized label support.",
-          "The Legend Grew Up: A cleaner more powerful experience movable desktop placement, drag sorting, swipe quick actions, and inline definitions with integrated stats.",
-          "Notes are Supercharged: Supports Quick Add, Save and Add Another, structured fields, partial dates, multiple lcoation icon tags, coordinate lookup, richer filters, and copy-ready views.",
-          "Power Toolbar: Tip Jar, Add as App, Help Center, What's New all got enough polish to make Trail Log feel like a personal tool instead of a prototype.",
-          "Add as App Feature to help this feel like a more native experience.",
-          "Tip Jar to fuel the development of this App.",
+          "Maps Show the Way: note-linked pins, clustering, better scroll/fit, custom labels.",
+          "The Legend Grew Up: movable placement, drag sort, swipe actions, inline stats.",
+          "Notes Supercharged: Quick Add, structured fields, partial dates, tags, and filters.",
+          "Power Toolbar: Tip Jar, Add as App, Help Center, and What's New, all polished."
         ],
         notice: {
           version: "3.0.0",
@@ -10092,10 +10221,10 @@
         title: "Legend Gets Legs",
         summary: "A Legend-focused release that makes levels easier to edit, reorder, position, and scan.",
         highlights: [
-          "Legend edit controls now hide behind an active Edit toggle, while level rows remain draggable for priority sorting.",
-          "Legend levels can be reordered with steadier drag behavior, placeholder drop slots, and live row feedback.",
-          "Legend position can be picked from a mini corner menu or changed by dragging the Legend title between desktop placements.",
-          "Legend stats and definitions are denser, with per-level stats inside color ovals and total completion under the title."
+          "Legend edit controls hide behind an Edit toggle; rows stay draggable to sort.",
+          "Reorder Legend levels with steadier drag, drop slots, and live row feedback.",
+          "Pick Legend position from a corner menu or drag its title between placements.",
+          "Denser Legend: per-level stats in color ovals and total completion up top."
         ],
         notice: {
           version: "2.5.0",
@@ -10134,10 +10263,10 @@
           cta: "Learn More"
         },
         highlights: [
-          "Map view mode, zoom level, pan center, panel visibility, Notes filters, selected location, and Notes view preferences now persist in Settings and JSON backups.",
-          "Notes summaries are denser and clearer, with color-coded location icons, compact filter lines, smaller search placeholder text, and steadier long-press icon filtering.",
-          "Location Tag settings now show More Icons in a 6-column grid on wider screens and a 3-column grid on mobile.",
-          "What's New, title-bar hints, mobile map hints, the hidden H H shortcut, app-name quad-tap reset, and Roadmap counts were polished."
+          "Map view, zoom, pan, panels, Notes filters, and view prefs now persist.",
+          "Denser Notes summaries: color-coded icons, compact filters, steadier filtering.",
+          "More Icons now show in a 6-column grid on desktop and 3 columns on mobile.",
+          "Polished What's New, hints, the H H shortcut, quad-tap reset, and Roadmap counts."
         ],
         updates: [
           "Map, Legend, and Notes visibility now restore across reloads.",
@@ -10169,9 +10298,9 @@
         },
         highlights: [
           "The State Map now opens in scrollable mode with pan-and-zoom controls available immediately.",
-          "Zoom supports 50% steps up to 1000%, direct typed percentages, pointer-anchored wheel zoom, and plus/minus snapping from custom values.",
-          "Fit Map now sits beside the zoom controls, shows the current map mode, and uses clearer fit/scroll symbols and tooltips.",
-          "The map header is tighter on desktop and mobile, with controls grouped for faster use and cleaner screenshot mode behavior."
+          "Zoom in 50% steps to 1000%, typed percentages, and pointer-anchored wheel zoom.",
+          "Fit Map sits by the zoom controls with clearer mode symbols and tooltips.",
+          "Tighter map header with grouped controls and cleaner screenshot behavior."
         ],
         updates: [
           "Zoom buttons preserve the current visible map center, while reset and initial scroll mode center the map cleanly.",
@@ -10189,7 +10318,7 @@
         highlights: [
           "Settings now includes a compact iOS-style Text Size slider above Theme in Appearance.",
           "Text Size persists locally and scales the app without changing map zoom.",
-          "The percentage sits inside the moving slider thumb, with a wider oval thumb that keeps 100%+ values readable."
+          "The percentage rides inside a wider oval slider thumb, readable past 100%."
         ],
         updates: [
           "The Text Size slider fills edge to edge while keeping the value centered on the thumb.",
@@ -10208,11 +10337,10 @@
           cta: "Learn More"
         },
         highlights: [
-          "Visit notes can now carry multiple icon labels, with direct keyboard toggles and a clearer note editor built for fast entry.",
-          "Settings now includes Location Icon Tags: choose, rename, reorder, shortcut, search, and add optional labels from More Icons.",
-          "More Icons now auto-discovers every imported circle symbol, generates readable labels and search tags, and renders icons directly from their symbol IDs.",
-          "Notes now includes an active icon-filter strip, a blank-circle filter for untagged notes, clearer filter status, and safer unsaved-change confirmation.",
-          "Desktop gained a draggable map/cards divider, sticky grouped Notes headers, and a more reliable internal Notes scroll area."
+          "Notes can carry multiple icon labels, with keyboard toggles and a faster editor.",
+          "New Location Icon Tags: choose, rename, reorder, shortcut, and search icons.",
+          "More Icons auto-discovers every circle symbol with readable labels and tags.",
+          "Notes add an icon-filter strip, an untagged filter, and clearer filter status."
         ],
         updates: [
           "The date picker was tightened for partial dates, with consistent controls for year-only, month-year, or full dates.",
@@ -10233,8 +10361,8 @@
           cta: "Learn More"
         },
         highlights: [
-          "Notes search now stretches across the available header space and aligns cleanly with the Notes title.",
-          "Categorical group headers stick while scrolling, show counts before the chevron, and use larger labels and icons.",
+          "Notes search now stretches across the header and aligns with the Notes title.",
+          "Categorical headers stick while scrolling and show counts before the chevron.",
           "Condensed rows use balanced 40/20/20/20 columns for faster scanning.",
           "Expanded Notes now has clearer hierarchy between category, location, and note rows."
         ],
@@ -10258,9 +10386,9 @@
           cta: "Learn More"
         },
         highlights: [
-          "Notes now support structured fields for where, what, who, details, dates, levels, and a single visit icon label.",
-          "Notes gained Chronological, Alphabetical, Categorical, Expanded, Condensed, and Text Only views with broader search.",
-          "Text Only and text exports are easier to copy into notes, while JSON backups stay lean and restore the full map.",
+          "Notes support structured fields: where, what, who, details, dates, and levels.",
+          "New Notes views: Chronological, Alphabetical, Categorical, Expanded, and Text.",
+          "Text exports are easier to copy; JSON backups stay lean and restore the map.",
           "Returning users can see a What's New banner and update dots for major feature releases."
         ],
         updates: [
@@ -10277,11 +10405,10 @@
         title: "Release Notes, Help, and Shortcut Polish",
         summary: "A focused release for faster release-note access, a clearer Help Center, tighter map controls, cleaner roadmap defaults, and more useful Developer Tools.",
         highlights: [
-          "Help Center was refreshed to cover current map, legend, notes, dates, exports, hints, and shortcut behavior.",
+          "Help Center refreshed for map, legend, notes, dates, exports, hints, and keys.",
           "What's New and Help Center sections gained custom icons and tighter, cleaner spacing.",
           "State Map header controls are shorter, and mobile map buttons split into label and render groups.",
-          "Roadmap now sorts by Priority by default.",
-          "Developer Tools includes a visible shortcut list with direct commands highlighted."
+          "Roadmap now sorts by Priority by default."
         ],
         updates: [
           "Changed Rename to shortcut M so R can own the Release Notes and Roadmap search flow.",
@@ -10299,11 +10426,9 @@
         summary: "A hidden Developer Tools mode with one-key Shortcut Mode and a drag-to-position map label tool, plus simpler hardcoded label positions, suggestions on by default, and a notes-panel detail fix.",
         highlights: [
           "Added a hidden Developer Tools.",
-          "In Developer Mode, have a Shortcut Mode for one-key actions and map labels become drag-to-position with a centered readout that prints the exact x/y snippet ready to paste into MAP_LABEL_OVERRIDES.",
-          "Map label positioning is now bounding-box center plus per-state dx/dy nudges — no runtime centroid computation, just hardcoded numbers that are easy to tweak.",
-          "Suggested legend categories are now visible by default for new users.",
-          "Fixed the notes panel so tapping a state again reveals Applied Levels and Visit Notes details.",
-          "Roadmap sorting now includes Target and Effort, and roadmap controls/cards stay left-aligned while filtering."
+          "Developer Mode adds one-key Shortcut Mode and drag-to-position map labels.",
+          "Map labels use bounding-box center plus easy per-state dx/dy nudges.",
+          "Suggested legend categories are now visible by default for new users."
         ],
         updates: [
           "Added persisted developerMode and shortcutMode settings with safe migration; Shortcut Mode requires Developer Mode.",
@@ -10323,11 +10448,9 @@
         summary: "A focused refinement release for dismissible guidance, cleaner legend controls, mobile Settings fit, and screenshot-friendly map behavior.",
         highlights: [
           "Hints are now individually dismissible, while the global Hints setting still controls the full set.",
-          "Map, Notes, Legend, level editing, Smart Colors, import/export, date entry, and Settings now have focused helper text.",
-          "Legend controls gained hidden-by-default suggested categories, clearer Auto Colors guidance, and aligned stat lanes.",
-          "The map opens in fit-to-screen mode by default and keeps header controls right aligned.",
-          "Settings now keeps its own compact icon/text controls and fits phone screens without horizontal scroll.",
-          "Roadmap gained Settings close spacing, major Notes upgrade, and state-label centering tickets."
+          "Focused helper text across Map, Notes, Legend, Smart Colors, exports, and Settings.",
+          "Legend adds hidden suggested categories, clearer Auto Colors, and aligned stats.",
+          "The map opens in fit-to-screen mode by default and keeps header controls right aligned."
         ],
         updates: [
           "Added persistent per-hint dismissal using localStorage state migration and the ICON_GLOBAL_DISMISS__X_CIRCLE_FILL control.",
@@ -10353,9 +10476,7 @@
           `Visit Tracker. That's the name now.`,
           "Settings, Help Center, and What's New are a top navigation bar — always visible, never buried.",
           "App name and version live in a tidy footer pill at the bottom of the panel.",
-          "Four export formats: JSON for backups, Markdown for docs, Rich Text for word processors, and Simple Text for anywhere else. Equal buttons, clear labels, file extensions included.",
-          "Help and FAQ are now one searchable Help Center — type anything, matches highlight instantly.",
-          "Changelog and Roadmap are now one What's New tab with collapsible sections that float their headers as you scroll."
+          "Four export formats: JSON, Markdown, Rich Text, and Simple Text."
         ],
         updates: [
           "Import and Export controls compacted: no nested card, buttons stretch to fill the row equally and always show icon and text.",
@@ -10668,8 +10789,8 @@
     let worldRegionCodes = [];
     const worldRegionNames = {};
     const MAP_LAYERS = {
-      us: { id: "us", svgId: "stateMap", tileSelector: ".state-tile", codeAttr: "abbr", markersId: "mapLocationMarkers", heading: "US Map", regionStore: () => state.states },
-      world: { id: "world", svgId: "worldMap", tileSelector: ".world-tile", codeAttr: "region", markersId: "worldMapMarkers", heading: "World Map", regionStore: () => state.world.regions }
+      us: { id: "us", svgId: "stateMap", tileSelector: ".state-tile", codeAttr: "abbr", markersId: "mapLocationMarkers", heading: "US Map", icon: __US_MAP, regionStore: () => state.states },
+      world: { id: "world", svgId: "worldMap", tileSelector: ".world-tile", codeAttr: "region", markersId: "worldMapMarkers", heading: "World Map", icon: __WORLD_MAP, regionStore: () => state.world.regions }
     };
     let state = loadState();
     syncRuntimeUiFromSettings();
@@ -10709,7 +10830,7 @@
           selectedState: "",
           notesPanelState: "",
           collapsedNoteCategories: [],
-          legendPosition: "right-top",
+          legendPosition: "left-bottom",
           hideSuggestedCategories: false,
           developerMode: false,
           shortcutMode: false
@@ -10724,12 +10845,17 @@
         lastSeenReleaseVersion: "0.0.0",
         dismissedReleaseVersion: "",
         territoryDefaultsSeeded: true,
-        countriesSeeded: false
+        countriesSeeded: false,
+        wantToVisitExcludedMigrated: true
       };
     }
 
     function territoryDefaultLevelId(levels) {
-      return (levels || []).find(level => level.countsTowardStats === false || isExcludedLevel(level))?.id || "";
+      // Prefer the actual Not Interested level (Want to Visit is now also excluded
+      // from stats, but should not be the seed default for territories/countries).
+      return (levels || []).find(level => level.id === "not-interested")?.id
+        || (levels || []).find(level => level.countsTowardStats === false || isExcludedLevel(level))?.id
+        || "";
     }
 
     function defaultTerritoryStates(levels) {
@@ -11054,7 +11180,7 @@
       if (!MAP_LAYERS[next.settings.activeLayerId]) next.settings.activeLayerId = "us";
       if (typeof next.settings.mapLocationPinsVisible !== "boolean") next.settings.mapLocationPinsVisible = true;
       if (typeof next.settings.mapFollowsNotesFilters !== "boolean") next.settings.mapFollowsNotesFilters = true;
-      if (!LEGEND_POSITION_ORDER.includes(next.settings.legendPosition)) next.settings.legendPosition = "right-top";
+      if (!LEGEND_POSITION_ORDER.includes(next.settings.legendPosition)) next.settings.legendPosition = "left-bottom";
       if (!["scroll", "fit"].includes(next.settings.mapViewMode)) next.settings.mapViewMode = next.settings.mapFitMode === true ? "fit" : "scroll";
       next.settings.mapZoom = clampMapZoom(next.settings.mapZoom);
       next.settings.mapPanCenter = normalizeMapPanCenter(next.settings.mapPanCenter);
@@ -11113,6 +11239,12 @@
           level.color = notInterestedColor;
         }
       });
+      // One-time: Want to Visit moved into the excluded-from-stats category.
+      if (!input.wantToVisitExcludedMigrated) {
+        const wantLevel = next.levels.find(level => level.id === "want-to-visit");
+        if (wantLevel && wantLevel.countsTowardStats === true) wantLevel.countsTowardStats = false;
+      }
+      next.wantToVisitExcludedMigrated = true;
       next.visitTypes = normalizeVisitTypeConfig(input.visitTypes, base.visitTypes);
       const validLevelIds = new Set(next.levels.map(l => l.id));
       next.settings.noteLevelFilters = Array.isArray(next.settings.noteLevelFilters)
@@ -11404,6 +11536,12 @@
     function regionName(code) {
       if (activeLayerId === "world") return worldRegionNames[code] || STATE_NAMES[code] || code;
       return STATE_NAMES[code] || worldRegionNames[code] || code;
+    }
+
+    // Developer Mode: a de-emphasized region key (e.g. [GA]) shown beside note
+    // location names to make ISO/abbr collisions and the active store obvious.
+    function regionKeyTag(code) {
+      return state.settings.developerMode ? ` <span class="region-key">[${escapeHtml(code)}]</span>` : "";
     }
 
     // Populate world region codes/names from the in-DOM #worldMap (which exists
@@ -11729,18 +11867,23 @@
         // attribute explicitly.
         if (el) el.toggleAttribute("hidden", layer.id !== id);
       });
-      const heading = $("#mapHeading");
-      if (heading) heading.textContent = MAP_LAYERS[id].heading;
+      document.documentElement.dataset.activeLayer = id;
       syncLayerToggleLabel();
     }
 
     function syncLayerToggleLabel() {
       const btn = $("#mapLayerToggleBtn");
       if (!btn) return;
-      const isWorld = activeLayerId === "world";
-      btn.textContent = isWorld ? "US Map" : "World Map";
-      btn.setAttribute("aria-pressed", isWorld ? "true" : "false");
-      btn.setAttribute("aria-label", isWorld ? "Switch to US map" : "Switch to World map");
+      // The title IS the switch: it shows the CURRENT map's icon + name (always
+      // both, regardless of button-style settings); clicking flips to the other.
+      const current = activeLayer();
+      const other = current.id === "world" ? MAP_LAYERS.us : MAP_LAYERS.world;
+      const icon = $("#mapLayerIcon");
+      if (icon) icon.innerHTML = current.icon || "";
+      const heading = $("#mapHeading");
+      if (heading) heading.textContent = current.heading;
+      btn.setAttribute("aria-pressed", current.id === "world" ? "true" : "false");
+      btn.setAttribute("aria-label", `${current.heading}. Tap to switch to the ${other.heading}.`);
     }
 
     function setActiveLayer(id) {
@@ -11920,7 +12063,7 @@
     }
 
     function legendPosition() {
-      return LEGEND_POSITION_ORDER.includes(state.settings.legendPosition) ? state.settings.legendPosition : "right-top";
+      return LEGEND_POSITION_ORDER.includes(state.settings.legendPosition) ? state.settings.legendPosition : "left-bottom";
     }
 
     function legendInSideColumn() {
@@ -13371,23 +13514,23 @@
     function stateMatchesLevelFilter(abbr) {
       if (!noteLevelFilters.size) return true;
       return getStateLevelIds(abbr).some(id => noteLevelFilters.has(id))
-        || (state.notes[abbr] || []).some(noteMatchesLevelFilter);
+        || (notesStoreForCode(abbr)[abbr] || []).some(noteMatchesLevelFilter);
     }
 
     function stateMatchesVisitTypeFilter(abbr) {
       if (allNoteIconFiltersSelected()) return true;
-      return (state.notes[abbr] || []).some(noteMatchesVisitTypeFilter);
+      return (notesStoreForCode(abbr)[abbr] || []).some(noteMatchesVisitTypeFilter);
     }
 
     function stateMatchesDatePrecisionFilter(abbr) {
       if (notesDatePrecisionFilter === "all") return true;
-      return (state.notes[abbr] || []).some(noteMatchesDatePrecisionFilter);
+      return (notesStoreForCode(abbr)[abbr] || []).some(noteMatchesDatePrecisionFilter);
     }
 
     function stateOnlyHasExcludedLevels(abbr) {
       const ids = [
         ...getStateLevelIds(abbr),
-        ...(state.notes[abbr] || []).map(note => note.levelId).filter(Boolean)
+        ...(notesStoreForCode(abbr)[abbr] || []).map(note => note.levelId).filter(Boolean)
       ].filter(id => levelById(id));
       return ids.length > 0 && ids.every(id => levelById(id)?.countsTowardStats === false);
     }
@@ -13397,7 +13540,7 @@
     }
 
     function stateHasPreciseCoordinates(abbr) {
-      return (state.notes[abbr] || []).some(note => Boolean(validNoteCoordinates(note)));
+      return (notesStoreForCode(abbr)[abbr] || []).some(note => Boolean(validNoteCoordinates(note)));
     }
 
     function stateMatchesCoordinateFilter(abbr) {
@@ -13605,7 +13748,7 @@
         const noteCount = filteredNotesFor(abbr).length;
         return `
           <button class="state-list-card" type="button" data-open-marked="${abbr}">
-            <span><b>${escapeHtml(regionName(abbr))}</b><br><small>${names.length ? escapeHtml(names.join(", ")) : "Notes only"}</small></span>
+            <span><b>${escapeHtml(regionName(abbr))}</b>${regionKeyTag(abbr)}<br><small>${names.length ? escapeHtml(names.join(", ")) : "Notes only"}</small></span>
             <span class="tag">${noteCount} note${noteCount === 1 ? "" : "s"}</span>
           </button>
         `;
@@ -14031,7 +14174,7 @@
       const name = regionName(abbr);
       const label = level?.name || (noteLevelFilters.size ? "Notes only" : "Unvisited");
       const color = level?.color || "var(--muted)";
-      return `<span class="compact-location-name" title="${escapeHtml(label)}"><span class="compact-location-icon" style="--level-color:${escapeHtml(color)}" aria-hidden="true">${locationTypeIcon(abbr)}</span><b>${escapeHtml(name)}</b><span class="sr-only">${escapeHtml(label)}</span></span>`;
+      return `<span class="compact-location-name" title="${escapeHtml(label)}"><span class="compact-location-icon" style="--level-color:${escapeHtml(color)}" aria-hidden="true">${locationTypeIcon(abbr)}</span><b>${escapeHtml(name)}</b>${regionKeyTag(abbr)}<span class="sr-only">${escapeHtml(label)}</span></span>`;
     }
 
     function compactStateRow(abbr) {
@@ -15700,9 +15843,26 @@
     }
 
     function smartApplyPalette(colors) {
-      state.levels = state.levels.map((level, index) => {
-        return { ...level, color: colors[Math.min(index, colors.length - 1)] };
+      // Counting levels fill from the palette's left edge, top-to-bottom.
+      // Excluded levels fill from the palette's right edge, bottom-to-top — so the
+      // excluded slot(s) always land on the palette's last color(s). With a 4-level
+      // legend (3 counting + 1 excluded) that means colors 1-3 and 5 are used, 4 is
+      // skipped.
+      const assigned = new Map();
+      const counting = [];
+      const excluded = [];
+      state.levels.forEach((level, index) => {
+        (level.countsTowardStats === false ? excluded : counting).push(index);
       });
+      counting.forEach((levelIndex, i) => {
+        assigned.set(levelIndex, colors[Math.min(i, colors.length - 1)]);
+      });
+      excluded.slice().reverse().forEach((levelIndex, i) => {
+        assigned.set(levelIndex, colors[Math.max(0, colors.length - 1 - i)]);
+      });
+      state.levels = state.levels.map((level, index) =>
+        assigned.has(index) ? { ...level, color: assigned.get(index) } : level
+      );
       save();
       render();
     }
@@ -15851,7 +16011,7 @@
       ].join("");
     }
 
-    function renderReleaseSection(title, items) {
+    function renderReleaseSection(title, items, collapsible) {
       const list = Array.isArray(items) ? items.filter(Boolean) : [];
       if (!list.length) return "";
       const renderItem = note => {
@@ -15866,11 +16026,20 @@
           </li>
         `;
       };
+      const body = `<ul>${list.map(renderItem).join("")}</ul>`;
+      if (collapsible) {
+        return `
+          <details class="release-section release-collapsible">
+            <summary><span class="release-toggle-chevron" aria-hidden="true"></span>${escapeHtml(title)}<span class="release-toggle-count">${list.length}</span></summary>
+            ${body}
+          </details>
+        `;
+      }
       return `
-        <details class="release-section">
-          <summary><b>${escapeHtml(title)}</b></summary>
-          <ul>${list.map(renderItem).join("")}</ul>
-        </details>
+        <div class="release-section">
+          <b>${escapeHtml(title)}</b>
+          ${body}
+        </div>
       `;
     }
 
@@ -15879,8 +16048,8 @@
         <article class="note-card">
           <b>${escapeHtml(entry.version)} :: ${escapeHtml(entry.date)} :: ${escapeHtml(entry.title)}</b>
           <p><b>${escapeHtml(entry.summary)}</b></p>
-          ${renderReleaseSection("Highlights", entry.highlights)}
-          ${renderReleaseSection("Full Update List", entry.updateSections || entry.updates || entry.notes)}
+          ${renderReleaseSection("Highlights", entry.highlights, false)}
+          ${renderReleaseSection("Full Update List", entry.updateSections || entry.updates || entry.notes, true)}
         </article>
       `).join("");
     }
