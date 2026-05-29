@@ -29,7 +29,7 @@ For every completed change:
 - Main file: `index.html`
 - Docs: `README.md`, this handoff
 - Storage key: `usStateVisitMap.v1`
-- Current development version: `APP_VERSION = "4.0.0.1"` (post-4.0.0 refinements; bump the fourth build segment per change, collapse into the 4.0.0 entry)
+- Current version: `APP_VERSION = "4.0.0"` — the 4.0.0 release is cut (semantic version, no build segment). Start the next change by opening a new release line (e.g. `4.0.1.1`) and a fresh `CHANGELOG` entry.
 - Latest public release: Trail Log 4.0.0 "Trail Atlas" (World map / Country Map — WISH-001 shipped)
 - Branch: `4-0-0-Trail-Atlas`.
 - Plan + full build log: `context/WISH-001-COUNTRY-MAP-PLAN.md` (layer architecture, data model, every phase + verification notes).
