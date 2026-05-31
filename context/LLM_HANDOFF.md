@@ -3,7 +3,7 @@
 Copy this into new chats:
 
 ```text
-Continue work in /Users/stripes/Documents/GitHub/visit-tracker. Read context/LLM_HANDOFF.md first. Respect manual edits. Run git status --short before editing. Use port 8018 for local preview. Current development line is Trail Log 4.1.0 "Bucket List".
+Continue work in /Users/stripes/Documents/GitHub/visit-tracker. Read context/LLM_HANDOFF.md first. Respect manual edits. Run git status --short before editing. Use port 8018 for local preview.
 ```
 
 ## Release Notes
@@ -29,11 +29,11 @@ For every completed change:
 - Main file: `index.html`
 - Docs: `README.md`, this handoff
 - Storage key: `usStateVisitMap.v1`
-- Current version: `APP_VERSION = "4.1.0"` — the 4.1.0 "Bucket List" release is cut (semantic version, no build segment). Start the next change by opening a new release line (e.g. `4.1.0.1` or `4.1.1.1`) and a fresh `CHANGELOG` entry.
-- Latest public release: Trail Log 4.1.0 "Wayfinder" (legend-level role + quick-switch mode — WISH-036 shipped)
-- Branch: `4-1-0-Bucket-List`.
-- Plan + full build log: `context/WISH-036-BUCKET-LIST-PLAN.md` (level-role design, mode behavior, every phase + verification notes).
-- Prior plan: `context/WISH-001-COUNTRY-MAP-PLAN.md` (layer architecture, data model from 4.0.0).
+- Current version: `APP_VERSION = "4.1.0"` — 4.1.0 "Wayfinder" is the latest cut release (semantic version, no build segment). No active development line; open a new one when the next change starts (e.g. `4.1.0.1` or `4.1.1.1`) with a fresh `CHANGELOG` entry.
+- Latest public releases (newest first): 4.1.0 "Wayfinder", 4.0.0 "Trail Atlas", 3.3.0 "Basecamp Notes", 3.2.0 "Trail Shorthand". Full notes in the in-app CHANGELOG.
+- Historical plans (reference only — shipped):
+  - `context/WISH-001-COUNTRY-MAP-PLAN.md` (US ⇄ World layer architecture from 4.0.0)
+  - `context/WISH-036-BUCKET-LIST-PLAN.md` (Wayfinder level role + quick-switch mode from 4.1.0)
 - No build step, backend, or dependencies.
 - User data lives in browser localStorage. Locate is the only intentional online action and only runs when clicked.
 
@@ -72,8 +72,12 @@ State basics:
 ```js
 {
   appVersion, mapName,
-  settings: { ..., activeLayerId, mapLabels, ..., selectedState, notesPanelState, collapsedNoteCategories, legendPosition },
-  levels: [{ id, name, definition, color, countsTowardStats }],
+  settings: {
+    ..., activeLayerId, mapLabels,
+    selectedState, notesPanelState, collapsedNoteCategories, legendPosition,
+    bucketListView, bucketListFilterSnapshot   // Wayfinder mode + snapshot
+  },
+  levels: [{ id, name, definition, color, countsTowardStats, isBucketList }],
   visitTypes: [{ id, label, icon, shortcut, enabled, searchTags }],
   states: { CA: ["visited"] },                 // US states + territories
   notes: { CA: [{ id, date, levelId, city, where, what, who, lat, lng, geocodeLabel, details, text, visitTypes }] },
@@ -82,89 +86,62 @@ State basics:
 }
 ```
 
-Map layers (4.0.0): `MAP_LAYERS` (`us` | `world`) + runtime `activeLayerId`.
-Wayfinder (4.1.0): per-level `isBucketList` flag (only one, must be excluded
-from stats — internal symbol kept for schema; user-facing name is
-"Wayfinder"); `settings.bucketListView` + `settings.bucketListFilterSnapshot`
-power the quick-switch mode. Helpers: `bucketListLevel()`,
-`bucketListLevelId()`, `applyBucketListFlag()`, `setBucketListView()`,
-`syncBucketListUi()`. Highlights drive off `html[data-bucket-mode]` (teal).
+Map layers: `MAP_LAYERS` (`us` | `world`) + runtime `activeLayerId`.
 Region helpers resolve by active layer: `activeRegionStore`/`regionStoreForCode`
 (level data), `notesStoreForCode` (notes; territories → US store on both maps),
 `activeRegionCodes` (stats/list universe), `regionName`, `isValidRegion`,
 `ensureWorldRegions` (lazy code/name scan from `#worldMap`).
+
+Wayfinder (user-facing name; internal symbols kept as `BucketList` for schema
+preservation): per-level `isBucketList` flag (only one, must be excluded from
+stats). Helpers: `bucketListLevel()`, `bucketListLevelId()`,
+`applyBucketListFlag()`, `setBucketListView()`, `syncBucketListUi()`,
+`bucketListExportEntries()`. Mode toggles drive off `html[data-bucket-mode]`
+(teal accents); CSS hooks include `.legend-item.is-bucket-list`,
+`.state-tile.is-bucket-target`, `.world-tile.is-bucket-target`,
+`.map-location-marker.is-bucket-target .marker-ring`,
+`.compact-note-row.is-bucket-target`, plus the `.bucket-list-pill` that rides
+inside `#mapLayerToggleBtn`. Activation snapshots `{ levelFilter, matchNotes,
+hideExcluded }` to `settings.bucketListFilterSnapshot`, scopes filters to the
+Wayfinder level, and restores from snapshot on deactivation.
+
+Keyboard shortcut layers (see Developer Tools → Keyboard Shortcuts Reference
+for the full grouped list):
+
+- **Universal**: fire on plain keypress without Shortcut Mode (skipped while
+  typing). Lives in `handleUniversalShortcut`.
+- **Shortcut Mode**: every primary button advertises its key via
+  `data-shortcut`. Dispatch table in `handlePowerShortcut`.
+- **Chord hints**: a few buttons advertise `⇧⌃⌥X`-style chords on their
+  hints; chord behavior dispatches through the same Shortcut-Mode handler.
 
 Important invariants:
 
 - Dates normalize to `YYYY`, `YYYY-MM`, `YYYY-MM-DD`, or `""`.
 - Coordinates are numbers or `""`.
 - `levels` max is 5; level order controls map color.
+- Only one level can be flagged `isBucketList: true`, and it must have
+  `countsTowardStats: false`.
 - `visitTypes` are configurable icon tags; shortcuts should stay unique among active tags.
 - Saved Notes filters are repaired against current level/tag ids.
 - Selected-location Notes detail ignores main-list filters.
 - Match Notes map filtering follows active Notes filters.
+- Selecting an excluded-from-stats legend level auto-enables Show Excluded;
+  turning Show Excluded off drops excluded-level pills from the active filter.
+- Map zoom mutations (button / keyboard / wheel / reset / fit toggle) must
+  flow through `syncMapZoomReadout()` so the `#mapZoomReadout` value and the
+  zoom button enable states stay in sync.
 
 ## Current Surface
 
-- Map: SVG state/territory map, scroll/fit modes, pan/zoom persistence, labels, clustered note pins, Match Notes filtering.
-- Legend: editable levels, colors, definitions, stats behavior, drag reorder, swipe quick actions, movable desktop placement.
-- Notes: search, sort, compact/expanded/text views, category grouping, icon filters, excluded toggle, coordinate filter, date precision filter, selected-location detail.
-- Note editor: Quick Add, City/Where/What/Who/Details, local field suggestions, Smart Convert, partial/flexible dates, weekday preview, manual/lookup coordinates, multiple icon tags.
+- Map: SVG state/territory map + world map; layer toggle (`#mapLayerToggleBtn`); scroll/fit modes, pan/zoom persistence, labels, clustered note pins, Match Notes filtering. Wayfinder pill rides inside the layer toggle when active.
+- Legend: editable levels (name, color, definition, exclude-from-stats, Wayfinder), drag reorder, swipe quick actions, movable desktop placement.
+- Notes: search (with `/` hint chip + universal `/` shortcut), sort, compact/expanded/text views, category grouping, icon filters, Show Excluded toggle (styled like legend's excluded pattern), coordinate filter, date precision filter, selected-location detail.
+- Note editor: Quick Add, City/Where/What/Who/Details, local field suggestions, Smart Convert, partial/flexible dates, weekday preview, manual/lookup coordinates, multiple icon tags. Quick Add defaults to the Wayfinder level when Wayfinder Mode is on.
 - Location Icon Tags: configurable active tags plus auto-discovered More Icons from `__*_CIRCLE` constants, generated labels/search tags, explicit aliases, aliased-first sorting.
-- Help/What's New/Roadmap live under Settings-style tabs.
-- Exports: JSON, Markdown, RTF, plain text.
-
-## Recent Release
-
-4.1.0 "Wayfinder" is cut — WISH-036. (Internal symbols use the original
-"BucketList" naming for schema preservation; user-facing strings are
-"Wayfinder".) It covers:
-
-- Per-level `isBucketList` role flag (only one at a time, must be excluded
-  from stats). New Wayfinder checkbox in the level editor and idempotent
-  seed pass that flags `want-to-visit` on first load and renames its
-  definition to "Wayfinder" (previous default "Bucket List" also migrates).
-- Mirrored quick-switch toggle: map header (next to `#mapMatchNotesBtn`)
-  and Notes header (next to `#copyNotesTextBtn`). Pressing either flips
-  both buttons + the status pill.
-- Orange "Bucket List" pill rendered inside `#mapLayerToggleBtn` under
-  the map name whenever `settings.bucketListView` is on (sticky across
-  reloads; pill is the visibility guardrail).
-- Activation snapshots `{ levelFilter, matchNotes }` to
-  `settings.bucketListFilterSnapshot`, scopes the level filter to the
-  bucket-list level, turns Match Notes on. Deactivation restores from
-  snapshot exactly. Activation guard with toast if no level is eligible;
-  self-heal at `syncBucketListUi()` if the flagged level disappears.
-- Orange highlights across legend swatch (`.legend-item.is-bucket-list`),
-  map regions (`.state-tile.is-bucket-target`,
-  `.world-tile.is-bucket-target`), pins
-  (`.map-location-marker.is-bucket-target .marker-ring`), and Notes rows
-  (`.compact-note-row.is-bucket-target`) — all scoped to
-  `html[data-bucket-mode="on"]`.
-- Quick Add defaults to the Bucket List level while the mode is on.
-- Per-row "Mark Visited" promote action on Bucket List notes opens the
-  editor pre-filled with `levelId: "visited"` + today's date (only if
-  blank) via `openNoteDialog(id, { promoteBucketVisited: true })`;
-  cancel preserves the original.
-- Markdown / RTF / Plain Text exports gained a Bucket List section
-  (omitted when empty); JSON unchanged. Helper:
-  `bucketListExportEntries()`.
-
-Prior:
-
-4.0.0 "Trail Atlas" — World / Country map (WISH-001). It covers:
-
-- A second map layer: "World Map" toggle in the map header (`#mapLayerToggleBtn`) flips between `#stateMap` and the embedded `#worldMap`; `settings.activeLayerId` persists.
-- World SVG: optimized BlankMap-World.svg embedded as `#worldMap` (~820 KB). Source files kept in `assets/` (`world-map_raw.svg`, `world-map.svg`, `optimize-world-svg.py`).
-- Layer seam: `MAP_LAYERS`, `activeLayerId`, `activeRegionStore`, `activeRegionCodes`, `regionName`, `isValidRegion`, `notesStoreForCode`, `regionStoreForCode`. US territories are a shared subset (level + notes in the US store on both maps).
-- Storage: new `state.world { regions, notes }` bucket (ISO-2 keys) + `countriesSeeded`; US `state.states`/`state.notes` unchanged. Old saves migrate cleanly.
-- Countries default to Not Interested (seeded once); the Not Interested level recolored `#111111` → `#9ca3af` (with legacy migration). Legend/stats, notes panel/search, and pins all scope to the active layer.
-- Notes work for countries (editor/list/pins); pins anchor on the largest sub-shape (mainland). Exports (MD/RTF/text) gained a Countries section; JSON carries `world`.
-- Completed-roadmap cleanup: removed WISH-001. Seeded WISH-054 (historical countries). New "country" location type.
-
-Prior: 3.3.0 "Basecamp Notes" (toolbar scratchpad). 3.2.0 "Trail Shorthand".
-
-Known follow-ups (not blocking): a higher-fidelity world SVG, historical countries (WISH-054), and per-country pin coordinates for finer placement.
+- Wayfinder: per-row "Mark Visited" promote action on Wayfinder notes (`openNoteDialog(id, { promoteBucketVisited: true })`) opens the editor pre-filled with `levelId: "visited"` + today's date when blank.
+- Help / What's New / Roadmap / Developer Tools (with grouped Keyboard Shortcuts Reference at `#keyboardShortcutsReference`) live under Settings tabs.
+- Exports: JSON, Markdown, RTF, Plain Text — MD/RTF/Text gain a Countries section (when engaged) and a Wayfinder section (when engaged); helper: `bucketListExportEntries()`.
 
 ## UX Preferences
 
