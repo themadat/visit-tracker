@@ -3,7 +3,7 @@
 Copy this into new chats:
 
 ```text
-Continue work in /Users/stripes/Documents/GitHub/visit-tracker. Read context/LLM_HANDOFF.md first. Respect manual edits. Run git status --short before editing. Use port 8018 for local preview. Current development line is Trail Log 4.0.0 "Trail Atlas".
+Continue work in /Users/stripes/Documents/GitHub/visit-tracker. Read context/LLM_HANDOFF.md first. Respect manual edits. Run git status --short before editing. Use port 8018 for local preview. Current development line is Trail Log 4.1.0 "Bucket List".
 ```
 
 ## Release Notes
@@ -29,10 +29,11 @@ For every completed change:
 - Main file: `index.html`
 - Docs: `README.md`, this handoff
 - Storage key: `usStateVisitMap.v1`
-- Current version: `APP_VERSION = "4.0.0"` — the 4.0.0 release is cut (semantic version, no build segment). Start the next change by opening a new release line (e.g. `4.0.1.1`) and a fresh `CHANGELOG` entry.
-- Latest public release: Trail Log 4.0.0 "Trail Atlas" (World map / Country Map — WISH-001 shipped)
-- Branch: `4-0-0-Trail-Atlas`.
-- Plan + full build log: `context/WISH-001-COUNTRY-MAP-PLAN.md` (layer architecture, data model, every phase + verification notes).
+- Current version: `APP_VERSION = "4.1.0"` — the 4.1.0 "Bucket List" release is cut (semantic version, no build segment). Start the next change by opening a new release line (e.g. `4.1.0.1` or `4.1.1.1`) and a fresh `CHANGELOG` entry.
+- Latest public release: Trail Log 4.1.0 "Wayfinder" (legend-level role + quick-switch mode — WISH-036 shipped)
+- Branch: `4-1-0-Bucket-List`.
+- Plan + full build log: `context/WISH-036-BUCKET-LIST-PLAN.md` (level-role design, mode behavior, every phase + verification notes).
+- Prior plan: `context/WISH-001-COUNTRY-MAP-PLAN.md` (layer architecture, data model from 4.0.0).
 - No build step, backend, or dependencies.
 - User data lives in browser localStorage. Locate is the only intentional online action and only runs when clicked.
 
@@ -82,6 +83,12 @@ State basics:
 ```
 
 Map layers (4.0.0): `MAP_LAYERS` (`us` | `world`) + runtime `activeLayerId`.
+Wayfinder (4.1.0): per-level `isBucketList` flag (only one, must be excluded
+from stats — internal symbol kept for schema; user-facing name is
+"Wayfinder"); `settings.bucketListView` + `settings.bucketListFilterSnapshot`
+power the quick-switch mode. Helpers: `bucketListLevel()`,
+`bucketListLevelId()`, `applyBucketListFlag()`, `setBucketListView()`,
+`syncBucketListUi()`. Highlights drive off `html[data-bucket-mode]` (teal).
 Region helpers resolve by active layer: `activeRegionStore`/`regionStoreForCode`
 (level data), `notesStoreForCode` (notes; territories → US store on both maps),
 `activeRegionCodes` (stats/list universe), `regionName`, `isValidRegion`,
@@ -109,7 +116,43 @@ Important invariants:
 
 ## Recent Release
 
-4.0.0 "Trail Atlas" is cut — the World / Country map (WISH-001). It covers:
+4.1.0 "Wayfinder" is cut — WISH-036. (Internal symbols use the original
+"BucketList" naming for schema preservation; user-facing strings are
+"Wayfinder".) It covers:
+
+- Per-level `isBucketList` role flag (only one at a time, must be excluded
+  from stats). New Wayfinder checkbox in the level editor and idempotent
+  seed pass that flags `want-to-visit` on first load and renames its
+  definition to "Wayfinder" (previous default "Bucket List" also migrates).
+- Mirrored quick-switch toggle: map header (next to `#mapMatchNotesBtn`)
+  and Notes header (next to `#copyNotesTextBtn`). Pressing either flips
+  both buttons + the status pill.
+- Orange "Bucket List" pill rendered inside `#mapLayerToggleBtn` under
+  the map name whenever `settings.bucketListView` is on (sticky across
+  reloads; pill is the visibility guardrail).
+- Activation snapshots `{ levelFilter, matchNotes }` to
+  `settings.bucketListFilterSnapshot`, scopes the level filter to the
+  bucket-list level, turns Match Notes on. Deactivation restores from
+  snapshot exactly. Activation guard with toast if no level is eligible;
+  self-heal at `syncBucketListUi()` if the flagged level disappears.
+- Orange highlights across legend swatch (`.legend-item.is-bucket-list`),
+  map regions (`.state-tile.is-bucket-target`,
+  `.world-tile.is-bucket-target`), pins
+  (`.map-location-marker.is-bucket-target .marker-ring`), and Notes rows
+  (`.compact-note-row.is-bucket-target`) — all scoped to
+  `html[data-bucket-mode="on"]`.
+- Quick Add defaults to the Bucket List level while the mode is on.
+- Per-row "Mark Visited" promote action on Bucket List notes opens the
+  editor pre-filled with `levelId: "visited"` + today's date (only if
+  blank) via `openNoteDialog(id, { promoteBucketVisited: true })`;
+  cancel preserves the original.
+- Markdown / RTF / Plain Text exports gained a Bucket List section
+  (omitted when empty); JSON unchanged. Helper:
+  `bucketListExportEntries()`.
+
+Prior:
+
+4.0.0 "Trail Atlas" — World / Country map (WISH-001). It covers:
 
 - A second map layer: "World Map" toggle in the map header (`#mapLayerToggleBtn`) flips between `#stateMap` and the embedded `#worldMap`; `settings.activeLayerId` persists.
 - World SVG: optimized BlankMap-World.svg embedded as `#worldMap` (~820 KB). Source files kept in `assets/` (`world-map_raw.svg`, `world-map.svg`, `optimize-world-svg.py`).

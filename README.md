@@ -218,3 +218,7 @@ SEE SCRATCHPAD
 Contains Color Notes, rejected/backup svgs, amongst other stuff.
 
 ## Future Prompt
+
+Mobile Cleanup: 
+- Better Auto Colors
+- Map buttons misaligned in scroll view
