@@ -4312,6 +4312,10 @@
       flex-wrap: nowrap;
       gap: .32rem;
       align-items: stretch;
+      /* Visual gap between the Notes header row (Quick Add / Copy / Wayfinder
+         / Search) and the secondary toggles below. Matches the rhythm in the
+         Map header area. */
+      margin-top: .7rem;
     }
 
     .notes-search {
@@ -12875,7 +12879,7 @@
           <h3>Developer JSON</h3>
           <div id="developerSettingsJson" class="developer-json" aria-label="Current export JSON"></div>
         </section>
-        <section class="settings-category">
+        <section id="keyboardShortcutsReference" class="settings-category">
           <h3>Keyboard Shortcuts Reference</h3>
           <ol class="shortcut-layers">
             <li><b>Global Chords</b> — Work from anywhere, including inside text fields.</li>
@@ -12889,7 +12893,9 @@
 
           <details class="shortcut-section" open>
             <summary>Global Chord Shortcuts <span class="muted">(work anywhere, including text inputs)</span></summary>
-            <div class="shortcut-list"><p class="muted shortcut-ref-intro">NONE</p></div>
+            <div class="shortcut-list">
+              <p class="muted shortcut-ref-intro">NONE</p>
+            </div>
           </details>
 
           <details class="shortcut-section" open>
@@ -12904,6 +12910,8 @@
                   again to jump to Roadmap.</span></div>
               <div class="shortcut-row is-direct"><kbd>\</kbd><span>Open Settings → Developer Tools (Developer Mode
                   only)</span></div>
+              <div class="shortcut-row is-direct"><kbd>\×2</kbd><span>Double-press \ to jump straight to this Keyboard
+                  Shortcuts Reference section.</span></div>
               <div class="shortcut-row is-direct"><kbd>A</kbd><span>Add as App <em>[addToHomeBtn]</em></span></div>
               <div class="shortcut-row is-direct"><kbd>P</kbd><span>Tip Jar <em>[tipJarBtn]</em></span></div>
               <div class="shortcut-row is-direct"><kbd>H×2</kbd><span>Double-press H to reset dismissed hints and the
@@ -12916,9 +12924,9 @@
           </details>
 
           <details class="shortcut-section">
-            <summary>Toolbar <span class="muted">(Shortcut Mode)</span></summary>
+            <summary>Toolbar<span class="muted">(Shortcut Mode)</span></summary>
             <div class="shortcut-list">
-              <div class="shortcut-row"><kbd>S</kbd><span>Save/Submit/Send: Add Note (location details); 
+              <div class="shortcut-row"><kbd>S</kbd><span>Save/Submit/Send: Add Note (location details);
                   Quick Add (Notes Panel); Send Payment (Tip Modal) <em>[notesPanelAddNoteBtn | quickAddNoteBtn |
                     tipOtherSendBtn]</em></span></div>
               <div class="shortcut-row"><kbd>E</kbd><span>Rename the map <em>[renameBtn]</em></span></div>
@@ -12931,7 +12939,7 @@
           </details>
 
           <details class="shortcut-section">
-            <summary>Map Panel Header <span class="muted">(Shortcut Mode)</span></summary>
+            <summary>Map<span class="muted">(Panel :: Header)</span></summary>
             <div class="shortcut-list">
               <div class="shortcut-row"><kbd>~</kbd><span>Switch US ⇄ World Map <em>[mapLayerToggleBtn]</em></span>
               </div>
@@ -12945,8 +12953,7 @@
               </div>
               <div class="shortcut-row"><kbd>7</kbd><span>Toggle Match Notes Filter <em>[mapMatchNotesBtn]</em></span>
               </div>
-              <div class="shortcut-row"><kbd>6</kbd><span>Toggle Wayfinder Mode <em>[mapBucketListBtn /
-                    notesBucketListBtn]</em></span></div>
+              <div class="shortcut-row"><kbd>6</kbd><span>Toggle Wayfinder Mode <em>[mapBucketListBtn]</em></span></div>
               <div class="shortcut-row"><kbd>4</kbd><span>Map Labels: Name <em>[labelsNameBtn]</em></span></div>
               <div class="shortcut-row"><kbd>3</kbd><span>Map Labels: Abbr <em>[labelsAbbrBtn]</em></span></div>
               <div class="shortcut-row"><kbd>2</kbd><span>Map Labels: None <em>[labelsNoneBtn]</em></span></div>
@@ -12954,13 +12961,13 @@
           </details>
 
           <details class="shortcut-section">
-            <summary>Legend Panel Header<span class="muted">(Shortcut Mode)</span></summary>
+            <summary>Legend<span class="muted">(Panel :: Header)</span></summary>
             <div class="shortcut-list">
               <div class="shortcut-row"><kbd>U</kbd><span>Open Legend Position Menu <em>[legendPositionBtn]</em></span>
               </div>
               <div class="shortcut-row"><kbd>V</kbd><span>Apply Auto Colors Palette <em>[smartColorsBtn]</em></span>
               </div>
-              <div class="shortcut-row"><kbd>W</kbd><span>Hide / Show Suggested Levels
+              <div class="shortcut-row"><kbd>W</kbd><span>Hide/Show Suggested Levels
                   <em>[suggestionsToggleBtn]</em></span></div>
               <div class="shortcut-row"><kbd>X</kbd><span>Add a New Legend Level <em>[addLevelBtn]</em></span></div>
               <div class="shortcut-row"><kbd>Y</kbd><span>Toggle Legend Edit Mode <em>[legendEditBtn]</em></span></div>
@@ -12968,39 +12975,43 @@
           </details>
 
           <details class="shortcut-section">
-            <summary>Notes Panel <span class="muted">(panel open, no location drilled in)</span></summary>
+            <summary>Notes<span class="muted">(Panel :: Overview)</span></summary>
             <div class="shortcut-list">
-              <div class="shortcut-row"><kbd>C</kbd><span>Copy notes text <em>[copyNotesTextBtn]</em></span></div>
+              <div class="shortcut-row"><kbd>S</kbd><span>Quick Add Location Note <em>[quickAddNoteBtn]</em></span>
+              </div>
+              <div class="shortcut-row"><kbd>C</kbd><span>Copy Plain Notes Text <em>[copyNotesTextBtn]</em></span></div>
+              <div class="shortcut-row"><kbd>6</kbd><span>Toggle Wayfinder Mode <em>[notesBucketListBtn]</em></span>
+              </div>
+              <div class="shortcut-row"><kbd>←</kbd><span>Notes View: Expanded <em>[notesViewExpandedBtn]</em></span>
+              </div>
+              <div class="shortcut-row"><kbd>↓</kbd><span>Notes View: Condensed <em>[notesViewCompactBtn]</em></span>
+              </div>
+              <div class="shortcut-row"><kbd>→</kbd><span>Notes View: Plain Text Only <em>[notesViewTextBtn]</em></span>
+              </div>
               <div class="shortcut-row"><kbd>Z</kbd><span>Sort Alphabetically <em>[notesSortAlphaBtn]</em></span></div>
-              <div class="shortcut-row"><kbd>T</kbd><span>Sort Chronologically (overrides the global theme toggle inside
-                  the Notes list) <em>[notesSortChronoBtn]</em></span></div>
-              <div class="shortcut-row"><kbd>←</kbd><span>Notes view: Expanded <em>[notesViewExpandedBtn]</em>
-                  &nbsp;<span class="muted">(routes to Back when drilled into a location)</span></span></div>
-              <div class="shortcut-row"><kbd>↓</kbd><span>Notes view: Condensed <em>[notesViewCompactBtn]</em></span>
+              <div class="shortcut-row"><kbd>T</kbd><span>Sort Chronologically <em>[notesSortChronoBtn]</em></span></div>
+              <div class="shortcut-row"><kbd>G</kbd><span>Categorical Grouping On/Off<em>[notesCategoryToggleBtn]</em></span>
               </div>
-              <div class="shortcut-row"><kbd>→</kbd><span>Notes view: Text Only <em>[notesViewTextBtn]</em></span></div>
-              <div class="shortcut-row"><kbd>G</kbd><span>Categorical grouping <em>[notesCategoryToggleBtn]</em></span>
-              </div>
-              <div class="shortcut-row"><kbd>H</kbd><span>Show / hide Excluded levels
+              <div class="shortcut-row"><kbd>H</kbd><span>Show/Hide Excluded Levels
                   <em>[notesExcludedToggleBtn]</em></span></div>
-              <div class="shortcut-row"><kbd>D</kbd><span>Date precision filter
+              <div class="shortcut-row"><kbd>D</kbd><span>Date Precision Filter
                   <em>[notesDatePrecisionFilterBtn]</em></span></div>
-              <div class="shortcut-row"><kbd>O</kbd><span>Coordinate filter <em>[notesCoordinateFilterBtn]</em></span>
+              <div class="shortcut-row"><kbd>O</kbd><span>Coordinate Filter <em>[notesCoordinateFilterBtn]</em></span>
               </div>
-              <div class="shortcut-row"><kbd>I</kbd><span>Tag Settings (•••) <em>[notesTagSettingsMiniBtn]</em></span>
+              <div class="shortcut-row"><kbd>I</kbd><span>Location Tag Settings (•••) <em>[notesTagSettingsMiniBtn]</em></span>
               </div>
             </div>
           </details>
 
           <details class="shortcut-section">
-            <summary>Notes — drilled into a location</summary>
+            <summary>Notes<span class="muted">(Panel :: Location Details)</span></summary>
             <div class="shortcut-list">
               <div class="shortcut-row"><kbd>←</kbd><span>Back to the full Notes list
                   <em>[notesPanelBackBtn]</em></span></div>
-              <div class="shortcut-row"><kbd>⌫</kbd><kbd>Delete</kbd><span>Clear applied levels at this location
+              <div class="shortcut-row"><kbd>⌫ (del)</kbd><span>Clear all location levels
                   <em>[notesPanelClearBtn]</em></span></div>
-              <div class="shortcut-row"><kbd>C</kbd><span>Copy this location's notes text
-                  <em>[copyNotesTextBtn]</em></span></div>
+              <div class="shortcut-row"><kbd>S</kbd><span>Add a Location Note
+                  <em>[notesPanelAddNoteBtn]</em></span></div>
             </div>
           </details>
 
@@ -15498,6 +15509,8 @@
     let noteVisitTypeFilters = new Set();
     let hiddenHintResetKeyTime = 0;
     let hiddenHintResetKeyTimer = 0;
+    let backslashShortcutKeyTime = 0;
+    let backslashShortcutKeyTimer = 0;
     let titleQuadTapCount = 0;
     let titleQuadTapTimer = 0;
     let noteIconLongPressTimer = 0;
@@ -16944,7 +16957,7 @@
       setButtonLabelBoth("#hintsOffBtn", ICON_SETTINGS_HINT_OFF__LIGHTBULB, "Off", "Hints off");
       setButtonLabelBoth("#cycleModeBtn", ICON_SETTINGS_MAP_CYCLE__ARROW_TRIANGLEHEAD_2_CLOCKWISE, "Cycle", "Tap to select then cycle");
       setButtonLabelBoth("#selectModeBtn", ICON_SETTINGS_MAP_SELECT__SCOPE, "Select", "Tap to select");
-      setButtonLabelBoth("#visitTagSettingsBtn", __CIRCLE_CIRCLE, "Choose, Order, Rename, Hotkeys");
+      setButtonLabelBoth("#visitTagSettingsBtn", __ELLIPSIS_CIRCLE, "Choose, Order, Rename, Hotkeys");
       setExportBtnLabel("#exportJsonBtn", ICON_SETTINGS_EXPORT_JSON__CURLYBRACES, "JSON", ".json");
       setExportBtnLabel("#exportMarkdownBtn", ICON_SETTINGS_EXPORT_MARKDOWN__RICHTEXT_PAGE, "Markdown", ".md");
       setExportBtnLabel("#exportRichTextBtn", ICON_SETTINGS_EXPORT_RICHTEXT__CHARACTER_TEXT_JUSTIFY, "Rich Text", ".rtf");
@@ -16971,10 +16984,7 @@
       $("#notesToggleBtn").setAttribute("aria-pressed", String(notesPanelOpen));
       $("#legendEditBtn").setAttribute("aria-pressed", String(legendEditMode));
       $("#mapFitBtn").setAttribute("aria-pressed", String(mapFitMode));
-      $("#mapZoomOutBtn").disabled = mapFitMode || mapZoom <= MAP_ZOOM_MIN + .001;
-      $("#mapZoomResetBtn").disabled = mapFitMode;
-      $("#mapZoomInBtn").disabled = mapFitMode || mapZoom >= MAP_ZOOM_MAX - .001;
-      if (document.activeElement !== $("#mapZoomReadout")) $("#mapZoomReadout").value = `${Math.round(mapZoom * 100)}%`;
+      syncMapZoomReadout();
       $("#mapFitBtn").title = shortcutsActive() ? `${fitTitle} (F)` : fitTitle;
     }
 
@@ -17258,8 +17268,24 @@
       document.documentElement.dataset.mapMode = mapFitMode ? "fit" : "scroll";
       document.documentElement.style.setProperty("--map-zoom", String(mapZoom));
       document.documentElement.style.setProperty("--map-zoom-width", `${Math.round(mapZoom * 100)}%`);
+      syncMapZoomReadout();
       renderMap();
       scheduleMainLayoutSync();
+    }
+
+    // Keep the on-screen zoom percentage and the +/-/reset button enable
+    // states in lock-step with the live mapZoom / mapFitMode values. Called
+    // from every zoom mutation path (button click, keyboard shortcut, wheel,
+    // reset, fit toggle) so the readout never drifts from reality.
+    function syncMapZoomReadout() {
+      const out = $("#mapZoomOutBtn");
+      const reset = $("#mapZoomResetBtn");
+      const inBtn = $("#mapZoomInBtn");
+      const readout = $("#mapZoomReadout");
+      if (out) out.disabled = mapFitMode || mapZoom <= MAP_ZOOM_MIN + .001;
+      if (reset) reset.disabled = mapFitMode;
+      if (inBtn) inBtn.disabled = mapFitMode || mapZoom >= MAP_ZOOM_MAX - .001;
+      if (readout && document.activeElement !== readout) readout.value = `${Math.round(mapZoom * 100)}%`;
     }
 
     function stateMatchesActiveNotesFilters(abbr) {
@@ -18104,12 +18130,28 @@
     }
 
     function toggleNoteLevelFilter(levelId) {
-      if (!levelById(levelId)) return;
+      const level = levelById(levelId);
+      if (!level) return;
       if (noteLevelFilters.has(levelId)) noteLevelFilters.delete(levelId);
       else noteLevelFilters.add(levelId);
+      // If any selected level is excluded from stats, flip Show Excluded on
+      // automatically — otherwise the matching notes would be hidden by the
+      // excluded-visibility filter and the legend toggle would look broken.
+      if (notesHideExcludedOnly === true && hasExcludedLevelSelected()) {
+        notesHideExcludedOnly = false;
+        state.settings.notesHideExcludedOnly = false;
+        syncButtonLabels();
+      }
       save();
       renderLegend();
       refreshAfterNotesFilterChange();
+    }
+
+    function hasExcludedLevelSelected() {
+      for (const id of noteLevelFilters) {
+        if (levelById(id)?.countsTowardStats === false) return true;
+      }
+      return false;
     }
 
     function setLegendPosition(position, persist = true) {
@@ -22173,22 +22215,53 @@
       if (event.defaultPrevented) return;
       if (event.altKey || event.ctrlKey || event.metaKey) return;
       if (isTypingTarget(event.target)) return;
-      // Don't pre-empt context-bound dialog shortcuts.
+      const key = (event.key || "").toLowerCase();
+
+      // "\" works even when Settings is open (the second tap inside the 850ms
+      // window jumps to the Keyboard Shortcuts Reference section).
+      if (key === "\\") {
+        if (!state.settings.developerMode) return;
+        event.preventDefault();
+        event.stopPropagation();
+        const now = performance.now();
+        const isSecondPress = backslashShortcutKeyTime && now - backslashShortcutKeyTime < 850;
+        backslashShortcutKeyTime = now;
+        if (backslashShortcutKeyTimer) clearTimeout(backslashShortcutKeyTimer);
+        backslashShortcutKeyTimer = window.setTimeout(() => {
+          backslashShortcutKeyTime = 0;
+          backslashShortcutKeyTimer = 0;
+        }, 850);
+        const dialog = $("#settingsDialog");
+        if (!dialog.open) dialog.showModal();
+        switchTab("developer");
+        if (isSecondPress) {
+          backslashShortcutKeyTime = 0;
+          clearTimeout(backslashShortcutKeyTimer);
+          backslashShortcutKeyTimer = 0;
+          const ref = $("#keyboardShortcutsReference");
+          if (ref) {
+            ref.querySelector("details.shortcut-section")?.setAttribute("open", "");
+            requestAnimationFrame(() => ref.scrollIntoView({ block: "start", behavior: "smooth" }));
+          }
+        }
+        return;
+      }
+
+      // The other universal keys are blocked while any modal dialog is open
+      // so they never pre-empt context-bound dialog shortcuts.
       if ($("#noteDialog").open || $("#levelDialog").open || $("#settingsDialog").open ||
         $("#renameDialog").open || $("#confirmDialog").open || $("#markerDialog").open ||
         $("#tagDialog").open || $("#paletteDialog").open || $("#addToHomeDialog").open ||
         $("#tipJarDialog").open) return;
-      const key = (event.key || "").toLowerCase();
       const clickIf = sel => { const el = $(sel); if (el && !el.disabled) el.click(); };
       const universal = {
         a: () => clickIf("#addToHomeBtn"),
         p: () => clickIf("#tipJarBtn"),
         ",": () => clickIf("#settingsBtn"),
         "<": () => clickIf("#settingsBtn"),
-        "?": () => { if (!$("#settingsDialog").open) $("#settingsDialog").showModal(); switchTab("help"); },
+        "?": () => { if (!$("#settingsDialog").open) $("#settingsDialog").showModal(); switchTab("help"); }
         // "/" is handled by handleGlobalShortcut (focusNotesSearchShortcut)
         // already; not re-listed here to avoid double-firing.
-        "\\": () => { if (!state.settings.developerMode) return; if (!$("#settingsDialog").open) $("#settingsDialog").showModal(); switchTab("developer"); }
       };
       if (!universal[key]) return;
       event.preventDefault();
@@ -22746,6 +22819,20 @@
       });
       $("#notesExcludedToggleBtn").addEventListener("click", () => {
         notesHideExcludedOnly = !notesHideExcludedOnly;
+        // Turning Show Excluded back off should drop any excluded-level
+        // filter pills the user had selected — otherwise the legend would
+        // still show "filtered by excluded" pills that immediately produce
+        // an empty result set.
+        if (notesHideExcludedOnly === true) {
+          let dropped = false;
+          for (const id of [...noteLevelFilters]) {
+            if (levelById(id)?.countsTowardStats === false) {
+              noteLevelFilters.delete(id);
+              dropped = true;
+            }
+          }
+          if (dropped) renderLegend();
+        }
         save();
         syncButtonLabels();
         refreshAfterNotesFilterChange();
