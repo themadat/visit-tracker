@@ -12465,7 +12465,7 @@
 
   <dialog id="tagDialog">
     <header>
-      <h2>Location Icon Tags</h2>
+      <h2>Location Tags</h2>
       <div class="dialog-head-actions">
         <button id="tagDialogBackBtn" type="button" data-shortcut="B">Back to Settings</button>
         <button id="tagDialogCloseBtn" class="dialog-close" type="button" data-close="tagDialog"
@@ -12474,8 +12474,8 @@
     </header>
     <div class="dialog-body">
       <small data-hint data-hint-key="tag-editor-help">
-        Selected tags appear in the note editor. Select/Drag icons to change order/name/hotkey,
-        click icons to add/remove them, and search More Available Icons from the catalog.
+        Selected tags appear in the note editor. Select/Drag tags to change order/name/hotkey,
+        click tags to add/remove them, and search More Available Tags from the catalog.
       </small>
       <div id="tagEditorList" class="tag-editor-list"></div>
     </div>
@@ -14594,37 +14594,41 @@
         version: "4.1.0",
         date: "2026-05-29",
         title: "Wayfinder",
-        summary: "Flag any excluded legend level as your Wayfinder and flip into a focused planning view.",
+        summary: "Wayfinder Feature to act as a Bucket List or Planning Mode along with Power User Keyboard Shortcut updates.",
         highlights: [
           "Pick which legend level is your Wayfinder, with any name you want.",
-          "Wayfinder buttons on the map header and the Notes panel flip the mode.",
-          "Teal Wayfinder pill rides under the map name while the mode is on.",
-          "Mark Visited promotes a planned spot into a real visit in one click."
+          "Teal accents on legend, map, pins, and Notes rows highlight your plans.",
+          "Mark Visited promotes a planned spot into a real visit in one click.",
+          "Refreshed keyboard shortcut system with a grouped in-app reference."
         ],
         notice: {
           version: "4.1.0",
           title: "Wayfinder",
-          summary: "Pick a Wayfinder level, flip into the mode, and plan your next adventure.",
+          summary: "Set a legend level as your Wayfinder and flip into a focused mode to plan your next adventure.",
           cta: "Start Planning!"
         },
         updates: [
-          "Wayfinder is a role you assign to any single legend level: each level now has an isBucketList flag, and the level editor gained a Wayfinder checkbox.",
-          "Only one level can be the Wayfinder at a time, and it must be excluded from stats; checking the Wayfinder box auto-activates Exclude from Stats in the same level dialog, and the toggle spans the full width of the level editor for a roomier hint.",
-          "Existing 'Want to Visit' levels are auto-flagged on first load after this update and their definition is set to 'Wayfinder' (custom definitions are preserved).",
-          "Added mirrored Wayfinder quick-switch buttons — one on the map header next to Match Notes, and one in the Notes panel next to Copy — both using a Backpack icon. Pressing either flips the mode and both buttons stay in sync. Press W from the home screen to flip the mode, or Shift+Ctrl+Option+B (Shift+Cmd+Option+B on macOS) to flip from anywhere, even inside text fields.",
-          "Reorganized the home-screen shortcut map so every primary toolbar, map, legend, and notes button has a dedicated key. Map header controls moved onto the number row (0–9 plus 2/3/4 for labels), Legend keys grouped on U/V/W/X/Y, and S now means 'Save / Submit' across contexts (Add Note when drilled into a location, Quick Add in the Notes list, otherwise Settings). Notes view modes use the arrow keys (↑ Expanded, ↓ Condensed, → Text Only) and ← / Delete handle Back / Clear in the drilled-in view. New discoverable symbols: / focuses the Notes filter, ? opens Help Center, and \\ jumps to Developer Tools. A second global chord, Shift+Ctrl+Option+/ (Shift+Cmd+Option+/ also works), focuses the Notes filter from inside any text field.",
-          "The Notes filter input now shows a small / shortcut chip on its right edge so the keyboard hint is discoverable without opening Settings.",
-          "Developer Tools gained a grouped, expandable Keyboard Shortcuts Reference that lists every shortcut by area of the app (Map Header, Toolbar, Legend, Notes, Note Dialog, Settings, etc.) with the matching button id in de-emphasized brackets so you can cross-reference quickly.",
-          "Activating Wayfinder Mode snapshots your current level filter, Match Notes state, and excluded-locations visibility, then scopes the level filter to your Wayfinder level, turns Match Notes on, and flips excluded locations to Shown (so your Wayfinder notes always appear even though the level is excluded from stats). Deactivating restores the snapshot exactly.",
-          "A teal 'Wayfinder' pill renders inside the map-switch button, floating just below the map name only (not under the icon), so the focused state is visible at a glance after a reload without making the button taller.",
-          "Wayfinder Mode persists across reloads; the pill is the guardrail. If no level is eligible, a clear toast explains how to set one up.",
-          "Self-heal: deleting the flagged Wayfinder level while the mode is on quietly restores filters and turns the mode off so the UI never claims an active state with no level.",
-          "Teal accents make the Wayfinder easy to spot across the app: the entire flagged legend row tints teal (overriding the blue filter treatment), matching map regions get a teal outline, pins gain a teal halo, and Notes rows for Wayfinder items show a teal left accent strip. The status pill under the map name sits clean without a border.",
+          "Wayfinder is a role you can assign to any single legend level: each level row in the level editor gained a Wayfinder checkbox that spans the full dialog width, and ticking it auto-activates Exclude from Stats so the chord stays consistent. Only one level can be the Wayfinder at a time.",
+          "Existing 'Want to Visit' levels are auto-flagged as the default Wayfinder on first load after this update, and their definition is renamed to 'Wayfinder' (custom definitions are preserved).",
+          "Added mirrored Wayfinder quick-switch buttons — one on the map header next to Match Notes, one in the Notes panel next to Copy — both wearing a Backpack icon. Pressing either flips the mode and both buttons stay in sync.",
+          "Activating Wayfinder Mode snapshots your current level filter, Match Notes state, and excluded-locations visibility, then scopes the level filter to your Wayfinder level, turns Match Notes on, and flips Excluded locations to Shown so your Wayfinder notes always appear. Deactivating restores the snapshot exactly.",
+          "A teal 'Wayfinder' pill rides inside the map-switch button, floating just below the map name, whenever the mode is on. The mode persists across reloads and the pill is the guardrail; if no level is eligible to be the Wayfinder, a clear toast explains how to set one up.",
+          "Self-heal: deleting the flagged Wayfinder level while the mode is on quietly restores filters and turns the mode off, so the UI never claims an active state with no level.",
+          "Teal accents make the Wayfinder easy to spot across the app: the entire flagged legend row tints teal (overriding the blue filter treatment), matching map regions get a teal outline, pins gain a teal halo, and Notes rows for Wayfinder items show a teal left accent strip. All accents vanish the moment the mode flips off, so there's no visual leak.",
           "Quick Add defaults to the Wayfinder level while the mode is active, so planning a new spot is one click plus a region tap.",
-          "Added a Mark Visited action to every Wayfinder note row in the selected-location view; pressing it opens the note editor with the level swapped to Visited and the date set to today (only when the note's date was blank). Cancelling preserves the original Wayfinder note.",
-          "Markdown, Rich Text, and Plain Text exports gained a Wayfinder section that lists every note saved at your Wayfinder level, grouped by region; the section hides itself when there are no Wayfinder notes.",
-          "All highlights vanish the moment the mode is turned off (driven by an html[data-bucket-mode] attribute), so there's no visual leak.",
-          "Cleared the completed Wayfinder item (WISH-036) from the active roadmap."
+          "Added a Mark Visited action to every Wayfinder note row in the selected-location view. Pressing it opens the note editor with the level swapped to Visited and the date set to today (only when the note's date was blank). Cancelling preserves the original Wayfinder note.",
+          "Markdown, Rich Text, and Plain Text exports gained a Wayfinder section that lists every note saved at your Wayfinder level, grouped by region. The section hides itself when there are no Wayfinder notes.",
+          "Reorganized keyboard shortcuts around three layers: Universal Keys fire without enabling Shortcut Mode (only skipped while typing); Shortcut-Mode keys light up as on-button hints whenever Shortcut Mode is on; and a small set of chord shortcuts (Shift+Ctrl+Option+…) advertise their forms on the matching buttons.",
+          "Universal keys: / focuses the Notes filter input (with a discoverable / chip on the right edge of the field); , or < opens Settings (chord form Shift+Ctrl+Option+<); ? jumps to Settings → Help Center; \\ opens Settings → Developer Tools, and a quick double-tap \\\\ jumps straight to the new Keyboard Shortcuts Reference; R opens Release Notes; T toggles light/dark; A opens Add as App; P opens the Tip Jar; H×2 resets dismissed hints and the What's New banner.",
+          "Map Panel Header keys (Shortcut Mode): 0 reset zoom, 2/3/4 label modes, 5 switch US/World, 6 Wayfinder (chord form Shift+Ctrl+Option+6 — shown on the Notes-panel button), 7 Match Notes, 8 location pins, 9 Fit/Scroll, − and + zoom.",
+          "Toolbar (Shortcut Mode): S is Save/Submit context-aware (Add Note when drilled into a location → Quick Add on the Notes list → otherwise Settings); E renames the map; M, L, N toggle the Map, Legend, and Notes panels; B opens Basecamp, or Back when drilled into a Notes location.",
+          "Legend (Shortcut Mode, panel open): U Legend Position, V Auto Colors, W Hide/Show Suggestions, X Add Level, Y Legend Edit mode.",
+          "Notes Panel (Shortcut Mode, list view): C Copy, Z Alphabetical sort, T Chronological sort, G Categorical grouping, H Show/Hide Excluded, D Date precision filter, O Coordinate filter, I Tag Settings. Arrow keys swap views: ← Expanded, ↓ Condensed, → Text Only; ← also routes to Back when drilled into a location, and ⌫ / Delete clears applied levels there.",
+          "Developer Tools gained an expandable Keyboard Shortcuts Reference grouped by area (Universal, Toolbar, Map Panel Header, Legend, Notes Panel, Notes drilled-in, Note Dialog, Level Dialog, Settings Dialog, Confirm/Other). Each row shows the matching button id in de-emphasized brackets for quick cross-referencing.",
+          "Notes panel polish: the header buttons (Quick Add / Copy / Wayfinder / Search) now match the Map header's 40×40 size, a clear padding gap separates them from the secondary toggles below, and the Show Excluded toggle picks up the legend's neutral-gray + dashed-border 'excluded' look when on instead of an accent color.",
+          "Smart filter sync: selecting an excluded legend level automatically turns Show Excluded on so the matching notes appear; turning Show Excluded off automatically drops any excluded-level pills from the active filter so the legend never shows pills that produce zero results.",
+          "Fixed a map-zoom bug where keyboard +, −, 0 and wheel zooming updated the map but left the zoom percentage stale. The readout and the +/−/reset button enable states now sync on every zoom path, so the displayed value always matches reality.",
+          "Cleared the completed Wayfinder item (WISH-036) from the active roadmap and added WISH-060 (Further keyboard shortcut cleanup and integration, P3) to track ongoing polish like remappable bindings and a searchable shortcuts reference."
         ]
       },
       {
@@ -19700,15 +19704,15 @@
         <div class="tag-more-sticky">
           <label class="tag-search-row">
             <span class="tag-search-label">More Available Icons</span>
-            <input id="tagSearchInput" type="search" maxlength="80" placeholder="Search icons/tags" value="${escapeHtml(visitTagSearchQuery)}">
+            <input id="tagSearchInput" type="search" maxlength="80" placeholder="Search Tags (icons/labels)" value="${escapeHtml(visitTagSearchQuery)}">
           </label>
-          <div class="tag-category-strip" role="group" aria-label="Filter icons by category">
+          <div class="tag-category-strip" role="group" aria-label="Filter tags by category">
             <div class="tag-category-strip-track">${categoryChips}</div>
           </div>
           <p class="tag-category-count" aria-live="polite">${escapeHtml(countText)}</p>
         </div>
         <section class="tag-editor-section tag-more-section">
-          ${inactive.length ? `<div class="tag-more-grid">${inactive.map(moreIcon).join("")}</div>` : `<div class="empty">No icons match this filter.</div>`}
+          ${inactive.length ? `<div class="tag-more-grid">${inactive.map(moreIcon).join("")}</div>` : `<div class="empty">No tags match this filter.</div>`}
         </section>
       `;
       const nextStrip = $(".tag-category-strip");
