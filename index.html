@@ -12204,12 +12204,12 @@
       <section id="visitTypeRow" class="visit-type-row" aria-label="Visit labels">
       </section>
       <small data-hint data-hint-key="note-tag-settings-help">
-        Open Location Icon/Tags, choose which tags appear here, rename them, sort them, and set shortcuts.
+        Open Location Tags, choose which tags appear here, rename them, sort them, and set shortcuts.
       </small>
       <small data-hint data-hint-key="note-label-help">
-        Select Location Icon/Tags. First icon in this list order will be what this point renders as on the map.<br />
+        Select Location Tags. First icon in this list order will be what this point renders as on the map.<br />
         Recommend no more than 4 for a cleaner UX/UI.<br />
-        When the cursor is outside a text field, use the letter hotkeys to toggle Location Icon/Tags on/off.
+        When the cursor is outside a text field, use the letter hotkeys to toggle Location Tags on/off.
       </small>
       <section class="partial-date-picker" aria-label="Date">
         <div class="date-picker-head">
@@ -12569,7 +12569,7 @@
         <section class="settings-category">
           <h3>Location Notes</h3>
           <div class="setting-row">
-            <div class="setting-label">Location Icon/Tags</div>
+            <div class="setting-label">Location Tags</div>
             <button id="visitTagSettingsBtn" type="button" data-shortcut="Y"></button>
           </div>
           <small class="setting-hint" data-hint data-hint-key="settings-note-tags-help">
@@ -12668,8 +12668,8 @@
             <li>Sort Notes chronologically or alphabetically. Categorical groups City, State, and Territory locations
               with sticky headers.</li>
             <li>Use Expanded, Condensed, or Text Only view. Text Only is copy-ready for Apple Notes.</li>
-            <li>Use the icon chips to filter by Location Icon/Tags. Empty circle means notes without an icon; the ellipsis
-              opens Location Icon/Tag settings.</li>
+            <li>Use the icon chips to filter by Location Tags. Empty circle means notes without an icon; the ellipsis
+              opens Location Tag settings.</li>
             <li>Right-click or long-press an icon chip to show only that icon. Do it again when one icon is selected to
               restore all icons.</li>
             <li>Use the date filter to cycle between All Dates, Year Only, Year and Month Only, and Full Dates Only.
@@ -12750,13 +12750,13 @@
             Additional Details.</p>
           <p><b>Can one note have multiple visit icons?</b><br>Yes. Pick any labels that fit, though four or fewer keeps
             Notes rows easier to scan.</p>
-          <p><b>Where do extra Location Icon/Tags come from?</b><br>More Icons is built from the circle symbols bundled into
+          <p><b>Where do extra Location Tags come from?</b><br>More Icons is built from the circle symbols bundled into
             this file. Search by icon name, label, or related terms, then add the ones you want.</p>
           <p><b>How do icon categories work?</b><br>The chip strip under the search box scopes More Icons to one or more
             categories. Tap a chip to add or remove that category, tap All to clear, and right-click or long-press a
             chip
             to isolate just that category. Search is scoped to the chips you have selected.</p>
-          <p><b>Can two Location Icon/Tags use the same hotkey?</b><br>No. If a key is already assigned to another active
+          <p><b>Can two Location Tags use the same hotkey?</b><br>No. If a key is already assigned to another active
             tag, the app warns you and keeps the existing shortcut setup unchanged.</p>
         </section>
         <section class="help-section">
@@ -12998,7 +12998,7 @@
                   <em>[notesDatePrecisionFilterBtn]</em></span></div>
               <div class="shortcut-row"><kbd>O</kbd><span>Coordinate Filter <em>[notesCoordinateFilterBtn]</em></span>
               </div>
-              <div class="shortcut-row"><kbd>I</kbd><span>Location Icon/Tag Settings (•••) <em>[notesTagSettingsMiniBtn]</em></span>
+              <div class="shortcut-row"><kbd>I</kbd><span>Location Tag Settings (•••) <em>[notesTagSettingsMiniBtn]</em></span>
               </div>
             </div>
           </details>
@@ -19047,7 +19047,7 @@
       `).join("") + `
         <li class="notes-icon-settings-item">
           <button id="notesTagSettingsMiniBtn" class="hint-dot-btn notes-tag-settings-inline" type="button"
-            data-shortcut="I" aria-label="Open location icon/tag settings" title="Open location icon/tag settings"><span>•••</span></button>
+            data-shortcut="I" aria-label="Open location tag settings" title="Open location tag settings"><span>•••</span></button>
         </li>
       `;
       $$("[data-filter-visit-type]", list).forEach(button => {
@@ -19542,7 +19542,7 @@
       const selected = new Set(selectedIds);
       const tagSettingsButton = `
         <button id="noteTagSettingsInlineBtn" class="hint-dot-btn note-tag-settings-inline" type="button" data-shortcut="Y"
-          aria-label="Open location icon/tag settings" title="Open location icon/tag settings"><span>•••</span></button>
+          aria-label="Open location tag settings" title="Open location tag settings"><span>•••</span></button>
       `;
       const chips = activeVisitTypes().map(type => `
         <label class="visit-type-chip" role="checkbox" tabindex="0" aria-checked="${selected.has(type.id)}" title="${escapeHtml(type.label)} (${type.shortcut.toUpperCase()})">
