@@ -50,6 +50,18 @@
       --warning: #d97706;
       --accent-ring: #f59e0b;
       --accent-ring-secondary: #d97706;
+      --ring-60-stroke: #b45309;
+      --ring-300-stroke: #d97706;
+      --ring-600-stroke: #f59e0b;
+      --ring-900-stroke: #fbbf24;
+      --ring-1200-stroke: #fcd34d;
+      --ring-60-fill: rgba(180, 83, 9, .18);
+      --ring-300-fill: rgba(217, 119, 6, .14);
+      --ring-600-fill: rgba(245, 158, 11, .11);
+      --ring-900-fill: rgba(251, 191, 36, .09);
+      --ring-1200-fill: rgba(252, 211, 77, .07);
+      --ring-connector: #92400e;
+      --ring-label-bg: var(--bg);
       --state-empty: #d7dce3;
       --shadow: 0 18px 50px rgba(16, 24, 40, .14);
       --radius: 8px;
@@ -74,6 +86,18 @@
       --warning: #fbbf24;
       --accent-ring: #fbbf24;
       --accent-ring-secondary: #f59e0b;
+      --ring-60-stroke: #fde68a;
+      --ring-300-stroke: #fcd34d;
+      --ring-600-stroke: #fbbf24;
+      --ring-900-stroke: #f59e0b;
+      --ring-1200-stroke: #d97706;
+      --ring-60-fill: rgba(253, 230, 138, .18);
+      --ring-300-fill: rgba(252, 211, 77, .14);
+      --ring-600-fill: rgba(251, 191, 36, .11);
+      --ring-900-fill: rgba(245, 158, 11, .09);
+      --ring-1200-fill: rgba(217, 119, 6, .07);
+      --ring-connector: #fde68a;
+      --ring-label-bg: var(--bg);
       --state-empty: #3b4553;
       --shadow: 0 22px 60px rgba(0, 0, 0, .38);
       --focus: 0 0 0 3px rgba(106, 168, 255, .32);
@@ -1696,10 +1720,116 @@
       pointer-events: auto;
     }
 
+    .map-ring-overlay {
+      pointer-events: none;
+    }
+
+    .ring-connector {
+      stroke: var(--ring-connector);
+      stroke-width: 1.4;
+      stroke-linecap: round;
+      stroke-dasharray: 5 4;
+      opacity: .82;
+    }
+
+    .ring-ellipse {
+      fill-opacity: 1;
+      stroke-width: 1.55;
+      transition: fill-opacity .15s ease;
+    }
+
+    .map-ring-overlay[data-ring-fill="off"] .ring-ellipse {
+      fill-opacity: 0;
+    }
+
+    .ring-60 {
+      fill: var(--ring-60-fill);
+      stroke: var(--ring-60-stroke);
+    }
+
+    .ring-300 {
+      fill: var(--ring-300-fill);
+      stroke: var(--ring-300-stroke);
+    }
+
+    .ring-600 {
+      fill: var(--ring-600-fill);
+      stroke: var(--ring-600-stroke);
+    }
+
+    .ring-900 {
+      fill: var(--ring-900-fill);
+      stroke: var(--ring-900-stroke);
+    }
+
+    .ring-1200 {
+      fill: var(--ring-1200-fill);
+      stroke: var(--ring-1200-stroke);
+    }
+
+    .ring-label {
+      fill: color-mix(in srgb, var(--text) 86%, var(--ring-connector));
+      font-size: 7.2px;
+      font-weight: 900;
+      letter-spacing: 0;
+      paint-order: stroke fill;
+      pointer-events: none;
+      stroke: var(--ring-label-bg);
+      stroke-linejoin: round;
+      stroke-width: 3.2px;
+      text-anchor: middle;
+      dominant-baseline: central;
+    }
+
+    .ring-anchor-pin {
+      color: #2b1700;
+      filter: drop-shadow(0 2px 5px rgba(15, 23, 42, .32));
+    }
+
+    .ring-anchor-pin .ring-anchor-halo {
+      fill: var(--surface);
+      stroke-width: 2.1;
+    }
+
+    .ring-anchor-pin.is-anchor-1 .ring-anchor-halo {
+      stroke: var(--accent-ring);
+    }
+
+    .ring-anchor-pin.is-anchor-2 .ring-anchor-halo {
+      stroke: var(--accent-ring-secondary);
+    }
+
+    .ring-anchor-pin .ring-anchor-core {
+      fill: var(--accent-ring);
+    }
+
+    .ring-anchor-pin.is-anchor-2 .ring-anchor-core {
+      fill: var(--accent-ring-secondary);
+    }
+
+    .ring-anchor-icon {
+      width: 14px;
+      height: 14px;
+      color: #2b1700;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+    }
+
+    .ring-anchor-icon .sf-symbol {
+      width: 14px;
+      height: 14px;
+      display: block;
+    }
+
     .map-location-marker {
       cursor: pointer;
       color: white;
       filter: drop-shadow(0 2px 4px rgba(15, 23, 42, .28));
+    }
+
+    .map-location-marker foreignObject {
+      pointer-events: none;
     }
 
     [data-theme="dark"] .map-location-marker {
@@ -2053,6 +2183,44 @@
     .ring-anchor-clear .sf-symbol {
       width: 1rem;
       height: 1rem;
+    }
+
+    .ring-chip-row {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: .22rem;
+    }
+
+    .ring-distance-chip {
+      min-width: 0;
+      min-height: 2rem;
+      padding: .2rem .16rem;
+      border-color: color-mix(in srgb, var(--accent-ring) 42%, var(--line));
+      color: color-mix(in srgb, var(--accent-ring-secondary) 74%, var(--text));
+      font-size: .78rem;
+      font-weight: 850;
+      line-height: 1;
+    }
+
+    .ring-distance-chip[aria-pressed="true"] {
+      background: color-mix(in srgb, var(--accent-ring) 20%, var(--surface));
+      border-color: var(--accent-ring);
+      color: var(--text);
+    }
+
+    .ring-fill-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: .38rem;
+      width: fit-content;
+      color: var(--text);
+      font-size: .82rem;
+      font-weight: 760;
+      line-height: 1.1;
+    }
+
+    .ring-fill-toggle input {
+      accent-color: var(--accent-ring);
     }
 
     .ring-panel-status,
@@ -7919,6 +8087,7 @@
               </g>
               <path class="map-separator"
                 d="m 215,493 v 55 l 36,45 m -251,-168 h 147 l 68,68 h 85 l 54,54 v 46 m 206,0 v -78 h 122 v 78 m -47,-78 v 78 m -75,-37 h 122 m -84,0 v 37" />
+              <g id="mapRingOverlay" class="map-ring-overlay" aria-hidden="true"></g>
               <g id="mapLocationMarkers" class="map-location-markers"></g>
               <g id="mapLabels" class="map-labels"></g>
 
@@ -13301,7 +13470,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.2.0.1";
+    const APP_VERSION = "4.2.0.2";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -14791,20 +14960,20 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.2.0.1",
+        version: "4.2.0.2",
         date: "2026-06-01",
         title: "Rangefinder",
-        summary: "Rangefinder Mode begins with a US-only planning panel for choosing note-pin anchors before visual rings arrive.",
+        summary: "Rangefinder Mode now draws fixed-mile planning rings from saved note pins on the US map.",
         highlights: [
-          "Added a Rangefinder toggle beside Wayfinder in the map header.",
-          "Rangefinder panel pairs with the legend and follows its placement.",
-          "Pick anchor slots, then tap mapped note pins to save them.",
-          "Disclaimer explains straight-line distance and 60 mph estimates."
+          "Pick note-pin anchors from the Rangefinder panel.",
+          "Draw 60, 300, 600, 900, and 1200 mile rings.",
+          "Toggle each ring and switch between filled or stroke-only views.",
+          "Anchor pins, labels, and connector use an amber map overlay."
         ],
         notice: {
-          version: "4.2.0.1",
+          version: "4.2.0.2",
           title: "Rangefinder",
-          summary: "Pick note pins as Rangefinder anchors before visual rings arrive.",
+          summary: "Draw fixed-mile Rangefinder rings from saved note pins.",
           cta: "Find Your Range!"
         },
         updates: [
@@ -14812,7 +14981,11 @@
           "Added the Rangefinder panel beside the Legend. When the mode is on, the two panels share the same placement area and reflow from a 50/50 desktop split to a stacked mobile layout, so the panel rides along when the Legend is moved.",
           "Added persisted Rangefinder settings for mode state, anchor 1, optional anchor 2, enabled ring presets, and fill preference while preserving the existing local data key.",
           "Rangefinder anchor slots can now be armed from the panel; the next coordinate-backed note pin fills the chosen slot without opening the marker dialog. Anchor 1 can be replaced but not cleared, while anchor 2 has a clear button.",
-          "The first-use Rangefinder disclaimer is dismissable and uses the same hint system as the rest of the app. After dismissal, the panel keeps compact straight-line and 60 mph estimate microcopy."
+          "The first-use Rangefinder disclaimer is dismissable and uses the same hint system as the rest of the app. After dismissal, the panel keeps compact straight-line and 60 mph estimate microcopy.",
+          "Added map rendering for the fixed 60, 300, 600, 900, and 1200 mile Rangefinder rings, stacked from largest to smallest so the amber fills build toward the selected anchor.",
+          "Ring labels now sit north of each enabled ring and show the matching mile and 60 mph hour estimate.",
+          "Added panel chips for toggling individual ring distances plus a Fill rings checkbox that switches the overlay between soft filled bands and stroke-only mode.",
+          "Rangefinder anchors now render as target pins in the map overlay, with anchor 2 using the secondary amber color and a thin connector line back to anchor 1 when both anchors are set."
         ]
       },
       {
@@ -16819,6 +16992,50 @@
       render();
     }
 
+    function ringEnabledDistances() {
+      return Array.isArray(state.settings.ringEnabled)
+        ? RING_PRESETS.filter(miles => state.settings.ringEnabled.map(Number).includes(miles))
+        : [...RING_PRESETS];
+    }
+
+    function toggleRingDistance(miles) {
+      const distance = Number(miles);
+      if (!RING_PRESETS.includes(distance)) return;
+      const enabled = new Set(ringEnabledDistances());
+      if (enabled.has(distance)) enabled.delete(distance);
+      else enabled.add(distance);
+      state.settings.ringEnabled = RING_PRESETS.filter(item => enabled.has(item));
+      save();
+      render();
+    }
+
+    function setRingFill(on) {
+      state.settings.ringFill = on === true;
+      save();
+      render();
+    }
+
+    function anchorSvgPoint(anchor) {
+      if (!anchor?.abbr || activeLayerId !== "us") return null;
+      const note = ringAnchorNote(anchor) || { lat: anchor.lat, lng: anchor.lng };
+      return projectNoteLocation(anchor.abbr, note);
+    }
+
+    function milesToSvgScale(anchorLat, anchorAbbr) {
+      const center = stateTileCenter(anchorAbbr);
+      const bounds = LOCATION_GEO_BOUNDS[anchorAbbr];
+      if (!center?.box || !bounds) return null;
+      const [minLat, maxLat, minLng, maxLng] = bounds;
+      const latDegPerSvg = Math.abs(maxLat - minLat) / Math.max(.0001, center.box.height);
+      const lngDegPerSvg = Math.abs(maxLng - minLng) / Math.max(.0001, center.box.width);
+      const latMilesPerDeg = 69;
+      const lngMilesPerDeg = Math.max(8, latMilesPerDeg * Math.cos(Number(anchorLat) * Math.PI / 180));
+      return {
+        xPerMile: 1 / Math.max(.0001, lngDegPerSvg * lngMilesPerDeg),
+        yPerMile: 1 / Math.max(.0001, latDegPerSvg * latMilesPerDeg)
+      };
+    }
+
     function haversineMiles(aLat, aLng, bLat, bLng) {
       const toRad = value => Number(value) * Math.PI / 180;
       const lat1 = toRad(aLat);
@@ -16893,12 +17110,14 @@
       const armed = ringPickArmedSlot();
       const anchor1 = ringAnchorFor(1);
       const anchor2 = ringAnchorFor(2);
+      const enabled = new Set(ringEnabledDistances());
       const slotHtml = (slot, anchor) => {
         const label = anchor?.label || (slot === 1 ? "Pick a pin" : "____");
         const classes = ["ring-anchor-slot", anchor ? "is-filled" : "is-empty", armed === slot ? "is-armed" : ""].filter(Boolean).join(" ");
         const title = armed === slot ? "Cancel anchor pick" : `Pick Rangefinder anchor ${slot}`;
         return `<button class="${classes}" type="button" data-ring-slot="${slot}" title="${escapeHtml(title)}">${escapeHtml(label)}</button>`;
       };
+      const ringChips = RING_PRESETS.map(miles => `<button class="ring-distance-chip" type="button" data-ring-distance="${miles}" aria-pressed="${enabled.has(miles) ? "true" : "false"}" title="Toggle ${miles} mile ring">${miles}</button>`).join("");
       const dismissed = new Set(state.dismissedHints || []);
       const hint = armed
         ? `Tap a mapped note pin to set anchor ${armed}.`
@@ -16921,6 +17140,8 @@
             ${anchor2 ? `<button class="ring-anchor-clear" type="button" data-ring-clear="2" aria-label="Clear Rangefinder anchor 2" title="Clear anchor 2">${__XMARK}</button>` : ""}
           </span>
         </div>
+        <div class="ring-chip-row" aria-label="Visible Rangefinder rings">${ringChips}</div>
+        <label class="ring-fill-toggle"><input id="ringFillToggle" type="checkbox" ${state.settings.ringFill !== false ? "checked" : ""}>Fill rings</label>
         <div class="ring-panel-status">${escapeHtml(hint)}</div>
         ${disclaimer}
       `;
@@ -17878,6 +18099,7 @@
       // Labels + pins render for the active layer.
       if (isUS) renderMapLabels();
       else renderWorldMapLabels();
+      renderRingOverlay();
       renderLocationMarkers();
     }
 
@@ -18065,6 +18287,76 @@
       // Grow gently (1/sqrt) at low zoom, but cap on-screen size at ~3x base by
       // falling back to 1/z so pins keep shrinking and never dominate at high zoom.
       return Math.min(1, 1 / Math.sqrt(z), 3 / z);
+    }
+
+    function ringAnchorPinGroup(anchor, slot, point) {
+      const svgNS = "http://www.w3.org/2000/svg";
+      const group = document.createElementNS(svgNS, "g");
+      const scale = markerZoomScale() * (slot === 1 ? 1.18 : .96);
+      const label = anchor?.label || `Anchor ${slot}`;
+      group.classList.add("ring-anchor-pin", `is-anchor-${slot}`);
+      group.setAttribute("transform", `matrix(${scale.toFixed(3)} 0 0 ${scale.toFixed(3)} ${point.x.toFixed(1)} ${point.y.toFixed(1)})`);
+      group.innerHTML = `
+        <title>${escapeHtml(label)}</title>
+        <circle class="ring-anchor-halo" r="10.6"></circle>
+        <circle class="ring-anchor-core" r="7.4"></circle>
+      `;
+      const foreign = document.createElementNS(svgNS, "foreignObject");
+      foreign.setAttribute("x", "-7");
+      foreign.setAttribute("y", "-7");
+      foreign.setAttribute("width", "14");
+      foreign.setAttribute("height", "14");
+      const icon = document.createElement("div");
+      icon.className = "ring-anchor-icon";
+      icon.innerHTML = __TARGET;
+      foreign.append(icon);
+      group.append(foreign);
+      return group;
+    }
+
+    function renderRingOverlay() {
+      const overlay = $("#mapRingOverlay");
+      if (!overlay) return;
+      overlay.innerHTML = "";
+      overlay.dataset.ringFill = state.settings.ringFill === false ? "off" : "on";
+      if (!ringModeActive()) return;
+      repairRingAnchors();
+      const anchor1 = ringAnchorFor(1);
+      if (!anchor1) return;
+      const point1 = anchorSvgPoint(anchor1);
+      const scale = milesToSvgScale(anchor1.lat, anchor1.abbr);
+      if (!point1 || !scale) return;
+      const svgNS = "http://www.w3.org/2000/svg";
+      ringEnabledDistances().slice().sort((a, b) => b - a).forEach(miles => {
+        const rx = Math.max(1, miles * scale.xPerMile);
+        const ry = Math.max(1, miles * scale.yPerMile);
+        const ellipse = document.createElementNS(svgNS, "ellipse");
+        ellipse.classList.add("ring-ellipse", `ring-${miles}`);
+        ellipse.setAttribute("cx", point1.x.toFixed(2));
+        ellipse.setAttribute("cy", point1.y.toFixed(2));
+        ellipse.setAttribute("rx", rx.toFixed(2));
+        ellipse.setAttribute("ry", ry.toFixed(2));
+        overlay.append(ellipse);
+        const label = document.createElementNS(svgNS, "text");
+        label.classList.add("ring-label", `ring-label-${miles}`);
+        label.setAttribute("x", point1.x.toFixed(2));
+        label.setAttribute("y", (point1.y - ry - 5).toFixed(2));
+        label.textContent = RING_LABEL_TEXT[miles] || `${miles}mi`;
+        overlay.append(label);
+      });
+      const anchor2 = ringAnchorFor(2);
+      const point2 = anchor2 ? anchorSvgPoint(anchor2) : null;
+      if (anchor2 && point2) {
+        const connector = document.createElementNS(svgNS, "line");
+        connector.classList.add("ring-connector");
+        connector.setAttribute("x1", point1.x.toFixed(2));
+        connector.setAttribute("y1", point1.y.toFixed(2));
+        connector.setAttribute("x2", point2.x.toFixed(2));
+        connector.setAttribute("y2", point2.y.toFixed(2));
+        overlay.append(connector);
+      }
+      overlay.append(ringAnchorPinGroup(anchor1, 1, point1));
+      if (anchor2 && point2) overlay.append(ringAnchorPinGroup(anchor2, 2, point2));
     }
 
     function renderLocationMarkers() {
@@ -23314,8 +23606,16 @@
           clearRingAnchor2();
           return;
         }
+        const distance = event.target.closest("[data-ring-distance]");
+        if (distance) {
+          toggleRingDistance(distance.dataset.ringDistance);
+          return;
+        }
         const slot = event.target.closest("[data-ring-slot]");
         if (slot) armRingSlot(Number(slot.dataset.ringSlot));
+      });
+      $("#ringPanel").addEventListener("change", event => {
+        if (event.target.id === "ringFillToggle") setRingFill(event.target.checked);
       });
       $("#notesBucketListBtn").addEventListener("click", toggleBucketListView);
       $("#notesPanelBackBtn").addEventListener("click", () => {
