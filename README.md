@@ -196,7 +196,7 @@ Contains Color Notes, rejected/backup svgs, amongst other stuff.
 ## Future Prompt
 
 Mobile Cleanup: 
-- Better Auto Colors
+- Better Auto Colors single liner
 - Map buttons misaligned in scroll view
 - Double scroll with tip jar
 - Base camp causes scrolling problems and should just fit on mobile screen
