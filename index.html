@@ -1051,7 +1051,7 @@
     }
 
     .legend-panel-group[data-ring-open="1"][data-ring-layout="map"] {
-      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+      grid-template-columns: minmax(0, var(--ring-legend-width, 50%)) 10px minmax(0, 1fr);
       gap: 0;
       align-items: stretch;
     }
@@ -1068,12 +1068,53 @@
       box-shadow: none;
     }
 
+    .ring-panel-resize-handle {
+      display: none;
+      position: relative;
+      align-self: stretch;
+      width: 10px;
+      min-width: 10px;
+      min-height: 120px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      cursor: col-resize;
+      touch-action: none;
+      z-index: 1;
+    }
+
+    .legend-panel-group[data-ring-open="1"][data-ring-layout="map"]>.ring-panel-resize-handle {
+      display: block;
+    }
+
+    .ring-panel-resize-handle::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 4px;
+      height: min(72px, calc(100% - 2rem));
+      min-height: 42px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--line) 72%, var(--accent-ring) 18%);
+      transform: translate(-50%, -50%);
+      transition: width .16s ease, background .16s ease, box-shadow .16s ease;
+    }
+
+    .ring-panel-resize-handle:hover::before,
+    .ring-panel-resize-handle:focus-visible::before,
+    html[data-resizing-ring-panels="true"] .ring-panel-resize-handle::before {
+      width: 6px;
+      background: var(--accent-ring);
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-ring) 16%, transparent);
+    }
+
     .legend-panel-group[data-ring-open="1"][data-ring-layout="map"]>#legendPanel {
       border-radius: var(--radius) 0 0 var(--radius);
     }
 
     .legend-panel-group[data-ring-open="1"][data-ring-layout="map"]>#ringPanel {
-      border-left: 0;
       border-radius: 0 var(--radius) var(--radius) 0;
     }
 
@@ -2108,13 +2149,13 @@
     }
 
     #ringPanel {
-      gap: .58rem;
+      gap: .2rem;
     }
 
     .ring-panel-title-row {
       display: grid;
       grid-template-columns: auto minmax(0, 1fr);
-      gap: .18rem .34rem;
+      gap: .3rem;
       align-items: center;
     }
 
@@ -2122,12 +2163,49 @@
       margin: 0;
     }
 
+    .ring-title-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: .32rem;
+      min-width: 0;
+    }
+
+    .ring-header-btn {
+      display: inline-grid;
+      place-items: center;
+      width: 40px;
+      min-width: 40px;
+      height: 40px;
+      min-height: 40px;
+      padding: 0;
+      font-size: .82rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .ring-header-btn .sf-symbol {
+      width: 20px;
+      height: 20px;
+    }
+
+    .ring-header-btn[aria-pressed="true"] {
+      background: color-mix(in srgb, var(--accent-ring) 88%, #fff 12%);
+      border-color: var(--accent-ring);
+      color: #2b1700;
+    }
+
+    [data-theme="dark"] .ring-header-btn[aria-pressed="true"] {
+      color: #211300;
+    }
+
     .ring-anchor-expression {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
       align-items: center;
-      gap: .34rem;
+      gap: .2rem;
       min-width: 0;
+      min-height: 32px;
       font-size: .9rem;
       font-weight: 780;
     }
@@ -2138,9 +2216,9 @@
       justify-content: center;
       width: 100%;
       min-width: 0;
-      min-height: 2rem;
+      min-height: 32px;
       max-width: 100%;
-      padding: .28rem .36rem;
+      padding: .2rem .34rem;
       border: 0;
       border-bottom: 2px solid color-mix(in srgb, var(--accent-ring) 64%, var(--line));
       border-radius: 0;
@@ -2172,7 +2250,7 @@
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
       align-items: center;
-      gap: .18rem;
+      gap: .16rem;
       min-width: 0;
     }
 
@@ -2197,7 +2275,7 @@
     .ring-chip-row {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: .3rem;
+      gap: .2rem;
     }
 
     .ring-config-row {
@@ -2205,13 +2283,14 @@
       grid-template-columns: minmax(0, 1fr) auto auto;
       gap: .16rem;
       align-items: center;
+      height: 32px;
       min-width: 0;
     }
 
     .ring-distance-chip {
       min-width: 0;
       width: 1.95rem;
-      min-height: 2rem;
+      min-height: 32px;
       padding: 0 .24rem;
       border-color: color-mix(in srgb, var(--ring-chip-color, var(--accent-ring)) 52%, var(--line));
       color: color-mix(in srgb, var(--ring-chip-color, var(--accent-ring)) 76%, var(--text));
@@ -2238,7 +2317,7 @@
     .ring-distance-field input {
       width: 100%;
       min-width: 0;
-      height: 2rem;
+      height: 30px;
       padding: .2rem .24rem;
       border: 0;
       background: transparent;
@@ -2255,8 +2334,7 @@
       box-shadow: var(--focus);
     }
 
-    .ring-remove-btn,
-    .ring-add-btn {
+    .ring-remove-btn {
       display: inline-grid;
       place-items: center;
       min-width: 1.38rem;
@@ -2266,26 +2344,22 @@
       padding: 0;
     }
 
-    .ring-remove-btn .sf-symbol,
-    .ring-add-btn .sf-symbol {
+    .ring-remove-btn .sf-symbol {
       width: .82rem;
       height: .82rem;
     }
 
     .ring-add-btn {
-      width: 100%;
-      min-width: 0;
-      height: 100%;
-      min-height: 1.8rem;
-      border-style: dashed;
-      color: color-mix(in srgb, var(--accent-ring-secondary) 70%, var(--text));
-      font-size: .78rem;
-      font-weight: 850;
+      background: color-mix(in srgb, var(--accent-ring-secondary) 88%, #fff 12%);
+      border-color: var(--accent-ring-secondary);
+      color: #2b1700;
     }
 
     .ring-add-btn:disabled {
-      opacity: .48;
-      cursor: not-allowed;
+      background: var(--surface-2);
+      border-color: var(--line);
+      color: var(--muted);
+      opacity: .65;
     }
 
     .ring-options-row {
@@ -2347,8 +2421,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 2.1rem;
-      padding: .42rem .5rem;
+      min-height: 32px;
+      padding: .28rem .42rem;
       border: 1px solid color-mix(in srgb, var(--accent-ring) 44%, var(--line));
       border-radius: var(--radius);
       background: color-mix(in srgb, var(--accent-ring) 14%, var(--surface));
@@ -2381,14 +2455,14 @@
     }
 
     .ring-panel-status {
-      justify-self: end;
-      text-align: right;
+      grid-column: 1 / -1;
+      justify-self: center;
+      text-align: center;
       font-weight: 720;
       color: color-mix(in srgb, var(--accent-ring-secondary) 76%, var(--text));
       min-width: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      min-height: 18px;
+      overflow-wrap: anywhere;
     }
 
     .ring-panel-status.is-warning {
@@ -2397,8 +2471,8 @@
 
     .legend-panel-group[data-ring-layout="stack"] .ring-panel-status {
       grid-column: 1 / -1;
-      justify-self: start;
-      text-align: left;
+      justify-self: center;
+      text-align: center;
     }
 
     .legend-title-row {
@@ -6989,8 +7063,8 @@
 
       .ring-panel-status {
         grid-column: 1 / -1;
-        justify-self: start;
-        text-align: left;
+        justify-self: center;
+        text-align: center;
       }
 
       .ring-chip-row {
@@ -12453,15 +12527,17 @@
                   <button id="smartColorsBtn" type="button" data-shortcut="V">Auto Colors</button>
                   <button id="suggestionsToggleBtn" class="toggle-btn" type="button" aria-pressed="false"
                     data-shortcut="W">Hide Suggestions</button>
-                  <button id="addLevelBtn" type="button" data-shortcut="X">Add Level</button>
                   <button id="legendEditBtn" class="toggle-btn" type="button" aria-pressed="false"
-                    data-shortcut="Y">Edit</button>
+                    data-shortcut="X">Edit</button>
+                  <button id="addLevelBtn" type="button" data-shortcut="Y">Add Level</button>
                 </div>
               </div>
               <div id="legendList" class="legend-list"></div>
               <div id="builtinLevels" class="levelAutosuggestionChips"></div>
             </section>
           </section>
+          <button id="ringPanelResizeHandle" class="ring-panel-resize-handle" type="button"
+            aria-label="Resize Legend and Rangefinder" title="Resize Legend and Rangefinder"></button>
           <section id="ringPanel" class="panel side-panel hidden" aria-label="Rangefinder"></section>
         </div>
         <section id="notesPanel" class="panel side-panel" aria-label="Notes">
@@ -13530,8 +13606,8 @@
               </div>
               <div class="shortcut-row"><kbd>W</kbd><span>Hide/Show Suggested Levels
                   <em>[suggestionsToggleBtn]</em></span></div>
-              <div class="shortcut-row"><kbd>X</kbd><span>Add a New Legend Level <em>[addLevelBtn]</em></span></div>
-              <div class="shortcut-row"><kbd>Y</kbd><span>Toggle Legend Edit Mode <em>[legendEditBtn]</em></span></div>
+              <div class="shortcut-row"><kbd>X</kbd><span>Toggle Legend Edit Mode <em>[legendEditBtn]</em></span></div>
+              <div class="shortcut-row"><kbd>Y</kbd><span>Add a New Legend Level <em>[addLevelBtn]</em></span></div>
             </div>
           </details>
 
@@ -13665,7 +13741,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.2.0.7";
+    const APP_VERSION = "4.2.0.8";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -15028,6 +15104,18 @@
         category: "Maps"
       },
       {
+        title: "Route-Based Rangefinder Times",
+        ticketId: "WISH-062",
+        description: "Improve Rangefinder estimates with route-aware drive times and optional driving-time radius bands. Scope includes preserving the current straight-line mode, clearly labeling routing assumptions, and avoiding any automatic network lookup.",
+        priority: "P1",
+        effort: "large",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 34,
+        prompt: "Add more accurate drive-time estimates and optional driving-time radius bands for Rangefinder. Keep the current straight-line rings available, make routing limits explicit, and require user action before any online route lookup.",
+        category: "Maps"
+      },
+      {
         title: "National Park Overlay Layer",
         ticketId: "WISH-004",
         description: "Add an optional national parks layer that can be viewed with state progress. Scope includes park data, visible markers or outlines, visit status, filtering, and exports that remain readable.",
@@ -15210,20 +15298,20 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.2.0.7",
+        version: "4.2.0.8",
         date: "2026-06-01",
         title: "Rangefinder",
-        summary: "Rangefinder rings now avoid inset overlap and use cleaner compact controls.",
+        summary: "Rangefinder gets header controls, seven default rings, and a resizable split.",
         highlights: [
-          "Keep rings off other inset land areas.",
-          "Toggle each ring by clicking its mi/km unit.",
-          "Ring labels move onto visible clipped ring segments.",
-          "Four desktop ring controls per row, two on mobile."
+          "Seven default rings now start at 60, 120, and 180 mi.",
+          "Rangefinder settings moved into the header.",
+          "Legend and Rangefinder can resize from a 50/50 split.",
+          "Legend Add/Edit buttons swapped with their shortcuts."
         ],
         notice: {
-          version: "4.2.0.7",
+          version: "4.2.0.8",
           title: "Rangefinder",
-          summary: "Safer inset clipping and cleaner controls.",
+          summary: "Header controls, seven rings, and a resizable split.",
           cta: "Find Your Range!"
         },
         updates: [
@@ -15256,6 +15344,12 @@
           "Stretched the Rangefinder bottom controls into full-width segmented buttons and centered the Start-to-End distance message.",
           "Set ring controls to four columns on desktop and two columns on mobile, with smaller delete buttons for denser scanning.",
           "Added a roadmap wishlist item for the Washington-to-Alaska cross-inset Rangefinder edge case.",
+          "Updated Rangefinder defaults to seven rings: 60, 120, 180, 300, 600, 900, and 1200 miles, leaving the eighth slot for a user-added ring.",
+          "Moved Fill, Clip, Time, mile/kilometer, and Add Ring controls into the Rangefinder header as compact icon buttons.",
+          "Matched Rangefinder ring row height and spacing to Legend rows, and colored ring delete controls with the same danger treatment as Legend deletes.",
+          "Restored the paired Legend and Rangefinder desktop layout to a 50/50 default split with a draggable divider for user resizing.",
+          "Swapped the Legend Add and Edit header buttons, including their Shortcut Mode keys.",
+          "Added a roadmap wishlist item for more accurate drive times and driving-time radius bands.",
           "Updated Help Center Rangefinder guidance and retargeted the active Add Drive Radius roadmap item to the 4.2.0 line."
         ]
       },
@@ -15291,7 +15385,7 @@
           "Universal keys: / focuses the Notes filter input (with a discoverable / chip on the right edge of the field); , or < opens Settings (chord form Shift+Ctrl+Option+<); ? jumps to Settings → Help Center; \\ opens Settings → Developer Tools, and a quick double-tap \\\\ jumps straight to the new Keyboard Shortcuts Reference; R opens Release Notes; T toggles light/dark; A opens Add as App; P opens the Tip Jar; H×2 resets dismissed hints and the What's New banner.",
           "Map Panel Header keys (Shortcut Mode): 0 reset zoom, 2/3/4 label modes, 5 switch US/World, 6 Wayfinder (chord form Shift+Ctrl+Option+6 — shown on the Notes-panel button), 7 Match Notes, 8 location pins, 9 Fit/Scroll, − and + zoom.",
           "Toolbar (Shortcut Mode): S is Save/Submit context-aware (Add Note when drilled into a location → Quick Add on the Notes list → otherwise Settings); E renames the map; M, L, N toggle the Map, Legend, and Notes panels; B opens Basecamp, or Back when drilled into a Notes location.",
-          "Legend (Shortcut Mode, panel open): U Legend Position, V Auto Colors, W Hide/Show Suggestions, X Add Level, Y Legend Edit mode.",
+          "Legend (Shortcut Mode, panel open): U Legend Position, V Auto Colors, W Hide/Show Suggestions, X Legend Edit mode, Y Add Level.",
           "Notes Panel (Shortcut Mode, list view): C Copy, Z Alphabetical sort, T Chronological sort, G Categorical grouping, H Show/Hide Excluded, D Date precision filter, O Coordinate filter, I Tag Settings. Arrow keys swap views: ← Expanded, ↓ Condensed, → Text Only; ← also routes to Back when drilled into a location, and ⌫ / Delete clears applied levels there.",
           "Developer Tools gained an expandable Keyboard Shortcuts Reference grouped by area (Universal, Toolbar, Map Panel Header, Legend, Notes Panel, Notes drilled-in, Note Dialog, Level Dialog, Settings Dialog, Confirm/Other). Each row shows the matching button id in de-emphasized brackets for quick cross-referencing.",
           "Notes panel polish: the header buttons (Quick Add / Copy / Wayfinder / Search) now match the Map header's 40×40 size, a clear padding gap separates them from the secondary toggles below, and the Show Excluded toggle picks up the legend's neutral-gray + dashed-border 'excluded' look when on instead of an accent color.",
@@ -16152,7 +16246,8 @@
     const LEGEND_POSITION_ORDER = ["right-top", "right-bottom", "left-bottom", "left-top"];
     const LEGEND_POSITION_MENU_ORDER = ["left-top", "right-top", "left-bottom", "right-bottom"];
     const INSTALL_PLATFORM_SEQUENCE = ["auto", "idevice", "android", "mac", "pc"];
-    const RING_PRESETS = Object.freeze([60, 300, 600, 900, 1200]);
+    const RING_PRESETS = Object.freeze([60, 120, 180, 300, 600, 900, 1200]);
+    const RING_LEGACY_PRESETS = Object.freeze([60, 300, 600, 900, 1200]);
     const RING_MAX_COUNT = 8;
     const RING_DISTANCE_MIN = 1;
     const RING_DISTANCE_MAX = 9999;
@@ -16217,6 +16312,7 @@
     let visitTagCategoryGestureSuppressUntil = 0;
     let visitTagReturnTarget = "settings";
     let mainResizeActive = false;
+    let ringPanelResizeActive = false;
     let legendEditMode = false;
     let legendPositionDragActive = false;
     let legendPositionPointerId = null;
@@ -16266,6 +16362,7 @@
           mapLocationPinsVisible: true,
           mapFollowsNotesFilters: true,
           mapSplitRatio: .66,
+          ringPanelSplitRatio: .5,
           mapViewMode: "fit",
           mapZoom: 1,
           mapPanCenter: { x: .5, y: .5 },
@@ -16670,6 +16767,12 @@
         : Number.isFinite(Number(savedSplitRatio))
           ? Math.max(.34, Math.min(.78, Number(savedSplitRatio)))
           : .66;
+      const savedRingPanelSplitRatio = next.settings.ringPanelSplitRatio;
+      next.settings.ringPanelSplitRatio = savedRingPanelSplitRatio === null || savedRingPanelSplitRatio === undefined || savedRingPanelSplitRatio === ""
+        ? .5
+        : Number.isFinite(Number(savedRingPanelSplitRatio))
+          ? Math.max(.35, Math.min(.72, Number(savedRingPanelSplitRatio)))
+          : .5;
       next.settings.textScale = normalizeTextScale(next.settings.textScale);
       if (typeof next.settings.hideSuggestedCategories !== "boolean") next.settings.hideSuggestedCategories = false;
       if (typeof next.settings.bucketListView !== "boolean") next.settings.bucketListView = false;
@@ -16688,8 +16791,11 @@
       next.settings.ringClip = next.settings.ringClip !== false;
       next.settings.ringShowTime = next.settings.ringShowTime !== false;
       next.settings.ringUnit = next.settings.ringUnit === "km" ? "km" : "mi";
-      next.settings.ringDistances = normalizeRingDistances(next.settings.ringDistances || next.settings.ringEnabled);
-      if (Array.isArray(next.settings.ringEnabled)) {
+      const useNewDefaultRings = isLegacyDefaultRingConfig(input.settings || {});
+      next.settings.ringDistances = normalizeRingDistances(useNewDefaultRings ? RING_PRESETS : next.settings.ringDistances || next.settings.ringEnabled);
+      if (useNewDefaultRings) {
+        next.settings.ringEnabled = [...next.settings.ringDistances];
+      } else if (Array.isArray(next.settings.ringEnabled)) {
         const enabledRings = new Set(next.settings.ringEnabled.map(ringDistanceKey).filter(Boolean));
         next.settings.ringEnabled = next.settings.ringDistances.filter(miles => enabledRings.has(ringDistanceKey(miles)));
       } else {
@@ -17295,6 +17401,16 @@
       return String(Math.round(miles * 1000) / 1000);
     }
 
+    function sameRingDistanceList(a, b) {
+      if (!Array.isArray(a) || a.length !== b.length) return false;
+      return a.every((value, index) => ringDistanceKey(value) === ringDistanceKey(b[index]));
+    }
+
+    function isLegacyDefaultRingConfig(settings = {}) {
+      return sameRingDistanceList(settings.ringDistances, RING_LEGACY_PRESETS)
+        && (!Array.isArray(settings.ringEnabled) || sameRingDistanceList(settings.ringEnabled, RING_LEGACY_PRESETS));
+    }
+
     function normalizeRingDistanceMiles(value) {
       const miles = Number(value);
       if (!Number.isFinite(miles)) return 0;
@@ -17347,7 +17463,7 @@
     }
 
     function ringSpeedLabel() {
-      return ringUnit() === "km" ? `${Math.round(RING_DEFAULT_MPH * RING_KM_PER_MILE)}km/h` : `${RING_DEFAULT_MPH}mph`;
+      return ringUnit() === "km" ? `${Math.round(RING_DEFAULT_MPH * RING_KM_PER_MILE)} kph` : `${RING_DEFAULT_MPH} mph`;
     }
 
     function ringLabelText(miles) {
@@ -17541,6 +17657,7 @@
       if (group) {
         group.dataset.ringOpen = on ? "1" : "0";
         group.dataset.ringLayout = ringPanelLayout();
+        syncRingPanelSplit();
       }
       if (panel) {
         panel.classList.toggle("hidden", !on);
@@ -17565,6 +17682,12 @@
       const compare = ringCompareReadout();
       const insetWarning = ringInsetWarning(anchor1);
       const unit = ringUnit();
+      const nextUnit = unit === "mi" ? "km" : "mi";
+      const speedUnitLabel = unit === "mi" ? "mph" : "kph";
+      const fillOn = state.settings.ringFill !== false;
+      const clipOn = ringClipEnabled();
+      const timeOn = ringShowTime();
+      const canAddRing = distances.length < RING_MAX_COUNT;
       const pointName = slot => slot === 1 ? "Start" : "End";
       const slotHtml = (slot, anchor) => {
         const label = anchor?.label || `Pick ${pointName(slot)}`;
@@ -17581,10 +17704,17 @@
             <input type="number" min="1" max="${unit === "km" ? Math.round(RING_DISTANCE_MAX * RING_KM_PER_MILE) : RING_DISTANCE_MAX}" step="1" value="${ringDistanceDisplayValue(miles, unit)}" data-ring-distance-input="${index}" aria-label="Ring ${index + 1} distance in ${unit}">
           </label>
           <button class="ring-distance-chip" type="button" data-ring-distance-toggle="${index}" aria-pressed="${pressed ? "true" : "false"}" aria-label="${pressed ? "Hide" : "Show"} ${escapeHtml(label)} ring" title="${pressed ? "Hide" : "Show"} ${escapeHtml(label)} ring">${unit}</button>
-          <button class="ring-remove-btn" type="button" data-ring-remove="${index}" aria-label="Remove ${escapeHtml(label)} ring" title="Remove ring" ${distances.length <= 1 ? "disabled" : ""}>${__DELETE_LEFT_FILL}</button>
+          <button class="ring-remove-btn danger" type="button" data-ring-remove="${index}" aria-label="Remove ${escapeHtml(label)} ring" title="Remove ring" ${distances.length <= 1 ? "disabled" : ""}>${__DELETE_LEFT_FILL}</button>
         </div>`;
       }).join("");
-      const addRing = `<button class="ring-add-btn" type="button" data-ring-add aria-label="${distances.length >= RING_MAX_COUNT ? "Maximum rings reached" : "Add ring"}" title="${distances.length >= RING_MAX_COUNT ? "8/8 rings" : "Add ring"}" ${distances.length >= RING_MAX_COUNT ? "disabled" : ""}>${__PLUS_APP_FILL}</button>`;
+      const headerActions = `
+        <div class="ring-title-actions" aria-label="Rangefinder settings">
+          <button class="ring-header-btn" type="button" data-ring-setting="fill" aria-pressed="${fillOn ? "true" : "false"}" aria-label="${fillOn ? "Turn fill rings off" : "Turn fill rings on"}" title="${fillOn ? "Fill rings on" : "Fill rings off"}">${fillOn ? __MOONPHASE_FULL_MOON : __RING}</button>
+          <button class="ring-header-btn" type="button" data-ring-setting="clip" aria-pressed="${clipOn ? "true" : "false"}" aria-label="${clipOn ? "Turn land clipping off" : "Turn land clipping on"}" title="${clipOn ? "Clip rings on" : "Clip rings off"}">${clipOn ? __GAUGE_OPEN : __CIRCLE}</button>
+          <button class="ring-header-btn" type="button" data-ring-setting="time" aria-pressed="${timeOn ? "true" : "false"}" aria-label="${timeOn ? "Hide estimated time" : "Show estimated time"}" title="${timeOn ? "Time estimates on" : "Time estimates off"}">${timeOn ? __STOPWATCH_FILL : __STOPWATCH}</button>
+          <button class="ring-header-btn" type="button" data-ring-unit="${nextUnit}" aria-pressed="true" aria-label="Using ${unit === "mi" ? "miles and mph" : "kilometers and kph"}; switch to ${nextUnit === "mi" ? "miles and mph" : "kilometers and kph"}" title="Switch to ${nextUnit === "mi" ? "mph" : "kph"}">${speedUnitLabel}</button>
+          <button class="ring-header-btn ring-add-btn" type="button" data-ring-add aria-label="${canAddRing ? "Add ring" : "Maximum rings reached"}" title="${canAddRing ? "Add ring" : "8/8 rings"}" ${canAddRing ? "" : "disabled"}>${__PLUS_APP_FILL}</button>
+        </div>`;
       const dismissed = new Set(state.dismissedHints || []);
       const hint = armed
         ? `Tap a mapped note pin for ${pointName(armed)}.`
@@ -17594,13 +17724,14 @@
       const status = ringPanelNotice || hint;
       const disclaimerText = ringShowTime() ? RING_DISCLAIMER_TEXT : RING_DISTANCE_ONLY_DISCLAIMER_TEXT;
       const disclaimer = dismissed.has(RING_HINT_KEY)
-        ? `<small class="ring-panel-footer">${ringShowTime() ? "Straight-line · 60 mph estimate." : "Straight-line distance."}</small>`
+        ? `<small class="ring-panel-footer">${ringShowTime() ? `Straight-line · ${ringSpeedLabel()} estimate.` : "Straight-line distance."}</small>`
         : `<small class="ring-disclaimer" data-hint data-hint-key="${RING_HINT_KEY}">${escapeHtml(disclaimerText)}</small>`;
       panel.innerHTML = `
         <div class="ring-panel-title-row">
           <h2>Rangefinder</h2>
-          <div class="ring-panel-status${ringPanelNotice ? " is-warning" : ""}">${escapeHtml(status)}</div>
+          ${headerActions}
         </div>
+        <div class="ring-panel-status${ringPanelNotice ? " is-warning" : ""}">${escapeHtml(status)}</div>
         <div class="ring-anchor-expression" aria-label="Rangefinder Start and End">
           ${slotHtml(1, anchor1)}
           <span class="muted">to</span>
@@ -17611,16 +17742,6 @@
         </div>
         ${compare ? `<div class="ring-compare-readout">${escapeHtml(compare)}</div>` : ""}
         <div class="ring-chip-row" aria-label="Visible Rangefinder rings">${ringChips}</div>
-        <div class="ring-options-row">
-          <button class="ring-option-toggle" type="button" data-ring-setting="fill" aria-pressed="${state.settings.ringFill !== false ? "true" : "false"}">Fill</button>
-          <button class="ring-option-toggle" type="button" data-ring-setting="clip" aria-pressed="${ringClipEnabled() ? "true" : "false"}">Clip</button>
-          <button class="ring-option-toggle" type="button" data-ring-setting="time" aria-pressed="${ringShowTime() ? "true" : "false"}">Time</button>
-          <div class="ring-unit-toggle" aria-label="Rangefinder distance unit">
-            <button type="button" data-ring-unit="mi" aria-pressed="${unit === "mi" ? "true" : "false"}">mi</button>
-            <button type="button" data-ring-unit="km" aria-pressed="${unit === "km" ? "true" : "false"}">km</button>
-          </div>
-          ${addRing}
-        </div>
         ${insetWarning ? `<div class="ring-inset-warning">${escapeHtml(insetWarning)}</div>` : ""}
         ${disclaimer}
       `;
@@ -18203,6 +18324,37 @@
       return DESKTOP_LAYOUT_QUERY.matches && !legendInSideColumn() ? "map" : "stack";
     }
 
+    function clampRingPanelSplitRatio(value) {
+      return Math.max(.35, Math.min(.72, Number.isFinite(Number(value)) ? Number(value) : .5));
+    }
+
+    function syncRingPanelSplit() {
+      const group = $("#legendPanelGroup");
+      if (!group) return;
+      const ratio = clampRingPanelSplitRatio(state.settings.ringPanelSplitRatio);
+      group.style.setProperty("--ring-legend-width", `${Math.round(ratio * 1000) / 10}%`);
+    }
+
+    function setRingPanelSplitFromClientX(clientX, persist = false) {
+      if (!ringModeActive() || ringPanelLayout() !== "map") return;
+      const group = $("#legendPanelGroup");
+      if (!group) return;
+      const rect = group.getBoundingClientRect();
+      const handleWidth = $("#ringPanelResizeHandle")?.getBoundingClientRect().width || 0;
+      const available = Math.max(320, group.clientWidth - handleWidth);
+      const legendWidth = Math.max(available * .35, Math.min(available * .72, clientX - rect.left));
+      state.settings.ringPanelSplitRatio = clampRingPanelSplitRatio(legendWidth / available);
+      syncRingPanelSplit();
+      if (persist) save();
+    }
+
+    function nudgeRingPanelSplit(delta) {
+      if (!ringModeActive() || ringPanelLayout() !== "map") return;
+      state.settings.ringPanelSplitRatio = clampRingPanelSplitRatio((Number(state.settings.ringPanelSplitRatio) || .5) + delta);
+      save();
+      syncRingPanelSplit();
+    }
+
     function legendPositionControlAvailable() {
       return DESKTOP_LAYOUT_QUERY.matches && legendPanelOpen;
     }
@@ -18258,6 +18410,7 @@
       group.dataset.ringLayout = ringPanelLayout();
       group.classList.toggle("is-position-dragging", legendPositionDragActive);
       panel.classList.toggle("is-position-dragging", legendPositionDragActive);
+      syncRingPanelSplit();
     }
 
     function legendPlacementPreview() {
@@ -23849,6 +24002,44 @@
       });
     }
 
+    function bindRingPanelResizeHandle() {
+      const handle = $("#ringPanelResizeHandle");
+      if (!handle) return;
+      handle.addEventListener("pointerdown", event => {
+        if (!ringModeActive() || ringPanelLayout() !== "map") return;
+        event.preventDefault();
+        ringPanelResizeActive = true;
+        document.documentElement.dataset.resizingRingPanels = "true";
+        handle.setPointerCapture?.(event.pointerId);
+        setRingPanelSplitFromClientX(event.clientX);
+      });
+      window.addEventListener("pointermove", event => {
+        if (!ringPanelResizeActive) return;
+        event.preventDefault();
+        setRingPanelSplitFromClientX(event.clientX);
+      });
+      window.addEventListener("pointerup", event => {
+        if (!ringPanelResizeActive) return;
+        event.preventDefault();
+        ringPanelResizeActive = false;
+        delete document.documentElement.dataset.resizingRingPanels;
+        setRingPanelSplitFromClientX(event.clientX, true);
+        scheduleMainLayoutSync();
+      });
+      handle.addEventListener("keydown", event => {
+        if (!["ArrowLeft", "ArrowRight", "Home"].includes(event.key)) return;
+        if (!ringModeActive() || ringPanelLayout() !== "map") return;
+        event.preventDefault();
+        if (event.key === "Home") {
+          state.settings.ringPanelSplitRatio = .5;
+          save();
+          syncRingPanelSplit();
+          return;
+        }
+        nudgeRingPanelSplit(event.key === "ArrowLeft" ? -.025 : .025);
+      });
+    }
+
     function bindMapPanZoom() {
       const wrap = $(".map-wrap");
       if (!wrap) return;
@@ -24130,8 +24321,8 @@
         u: () => legendPanelOpen && legendPositionControlAvailable() && toggleLegendPositionMenu(),
         v: () => clickIf("#smartColorsBtn"),
         w: () => clickIf("#suggestionsToggleBtn"),
-        x: () => clickIf("#addLevelBtn"),
-        y: () => legendPanelOpen && toggleLegendEditMode(),
+        x: () => legendPanelOpen && toggleLegendEditMode(),
+        y: () => clickIf("#addLevelBtn"),
 
         // Notes filters / actions.
         c: () => notesPanelOpen && clickIf("#copyNotesTextBtn"),
@@ -24191,6 +24382,7 @@
 
     function bindEvents() {
       bindMainResizeHandle();
+      bindRingPanelResizeHandle();
       bindMapPanZoom();
       $("#renameBtn").addEventListener("click", () => {
         $("#mapNameInput").value = state.mapName;
