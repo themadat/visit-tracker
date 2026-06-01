@@ -4,10 +4,14 @@ Trail Log is a local-first travel map for marking where you've been, where you w
 
 The app is still intentionally simple to run: one offline-capable `index.html`, plain HTML/CSS/JavaScript, browser localStorage, JSON import/export, and no backend. Optional coordinate lookup only goes online when you tap Locate; saved data and manual coordinates keep working offline.
 
-## Current Release
+## Releases
 
 | Version | Date | Title | Summary
 |---|---:|---|---|
+| 4.1.0 | 2026-05-29 | Wayfinder | Wayfinder Feature to act as a Bucket List or Planning Mode along with refreshed Keyboard Shortcuts approach for the Power Users. |
+| 4.0.0 | 2026-05-29 | Trail Atlas | A switchable World map — log every country right alongside your US states. |
+| 3.3.0 | 2026-05-28 | Basecamp Notes | A roomy Basecamp scratchpad for home-base notes that aren't tied to any one place. |
+| 3.2.0 | 2026-05-28 | Trail Shorthand | A much smarter, interactive Smart Convert that highlights and promotes note pieces as you type — plus browseable categories for the whole icon catalog. |
 | 3.1.0 | 2026-05-25 | Trail Echoes | Better note entry, smarter dates/location support, added a notes date precision filter, and richer icon search. |
 | 3.0.0 | 2026-05-25 | Meet Trail Log | A place to track where you've been, where you're going, and log memories with an outdoorsy, geeky vibe. |
 | 2.5.0 | 2026-05-23 | Legend Gets Legs | A Legend-focused release that makes levels easier to edit, reorder, position, and scan. |
@@ -118,35 +122,6 @@ Useful code regions in `index.html`:
 
 Current persisted settings include map layout state such as `mapSplitRatio`, `legendPosition`, `mapViewMode`, `mapZoom`, `mapPanCenter`, visible panels, selected Notes location, Notes sort/view/grouping/filter choices including date precision, and collapsed Notes categories.
 
-## Current 3.1 Release Surface
-
-Since `3.0.0`, the release work focused on faster note entry, date parsing polish, icon search, and Notes filters:
-
-- Note editor Where Specifically, What For, and Who With fields suggest saved note values locally while typing.
-- Suggestion lists prioritize the active note target before older values from other locations.
-- Flexible date parsing accepts weekday names/abbreviations beside year-only, month-year, numeric, and month-name dates.
-- Smart Convert removes weekday-adjacent date phrases cleanly instead of leaving weekdays behind in Additional Details.
-- Smart Convert treats both `@Place` and `@ Place` as `at Place`, including comma-plus-two-letter place suffixes like `Chapel Hill, NC`.
-- The note editor date preview pill shows weekday brackets like `[Fri]` for full dates.
-- Accepted note date formats include `YYYY`, `YYYY M`, `YYYY M D`, `YYYY-MM-DD`, `M/YYYY`, `M/D/YYYY`, `M/D/YY`, `Month YYYY`, `Month D YYYY`, `YYYY Month`, and `YYYY Month D`; weekdays are optional.
-- The note date picker uses a 40/60 preview-and-input row, keeps Today/Year Only beside the compact date controls, and marks Day as `--` until Month is selected.
-- Smart Convert placeholder text is visually quieter, and the date picker action buttons have clearer spacing from the date fields.
-- The note date picker groups quick actions, date fields, and status text explicitly; the preview pill keeps a fixed height even with a two-line weekday.
-- The note date picker aligns its pill, quick actions, date fields, and status text to the month-chip rhythm, with mobile month chips shown three across.
-- Location Icon Tag search uses richer generated aliases and travel/activity synonyms so More Icons are easier to find.
-- Mobile Quick Add moves the location picker to its own header row under the Add Note title and action buttons.
-- The date fields are centered between the quick action buttons and Month/Day optional status.
-- More Icons shows aliased symbols first and includes extra aliases for useful remaining travel, shopping, weather, pet, package, sport, gift, and medical icons.
-- More Icons also understands broader animal, object, food, and weather aliases for symbols such as ant, bird, coat, cricket ball, popcorn, pills, sunrise, and smoke.
-- More Icons includes appliance, utility, mail, paper, boating, and signpost aliases for symbols such as dishwasher, dryer, envelope, flashlight, lightbulb, newspaper, oar, paper plane, and paper clip.
-- More Icons includes media, fuel, hand/head, hourglass, search, restroom, trash, trophy, storm, phone, TV, video, and xmark-bin aliases.
-- Note date entry keeps the date pill, Year/Month/Day controls, Month/Day optional text, and Today/Year Only buttons on one desktop line; inactive month chips use a mid-contrast state.
-- Mapped-location status sits below Latitude/Longitude and above the shortened Move Where hint, and the Locate/Move SVG icons are centered inside their square buttons.
-- Date pill and Today/Year Only buttons fill their three-chip columns edge to edge, and mapped-location status no longer disappears when a nearby hint is dismissed.
-- Notes include a persisted Date Precision filter for All Dates, Year Only, Year and Month Only, and Full Dates Only; Match Notes map filtering follows it while selected-location detail views stay unfiltered, with a neutral/cyan/custom-blue/indigo precision scale.
-- Roadmap includes a P2 item for faster previous/next navigation between notes.
-- The completed City/Where split roadmap item was removed from seeded wishlist data.
-
 ## Persistence and Migration
 
 Keep saved-data compatibility as a first-class constraint. Existing users may already have custom levels, notes, colors, settings, and wishlist entries in localStorage.
@@ -214,7 +189,12 @@ git diff --check
 - Import a JSON backup only after confirming overwrite behavior.
 
 ## Notes
+
 SEE SCRATCHPAD
 Contains Color Notes, rejected/backup svgs, amongst other stuff.
 
 ## Future Prompt
+
+Mobile Cleanup: 
+- Better Auto Colors
+- Map buttons misaligned in scroll view
