@@ -48,6 +48,8 @@
       --danger: #b42318;
       --success: #157347;
       --warning: #d97706;
+      --accent-ring: #f59e0b;
+      --accent-ring-secondary: #d97706;
       --state-empty: #d7dce3;
       --shadow: 0 18px 50px rgba(16, 24, 40, .14);
       --radius: 8px;
@@ -70,6 +72,8 @@
       --danger: #ff8a7a;
       --success: #72d69a;
       --warning: #fbbf24;
+      --accent-ring: #fbbf24;
+      --accent-ring-secondary: #f59e0b;
       --state-empty: #3b4553;
       --shadow: 0 22px 60px rgba(0, 0, 0, .38);
       --focus: 0 0 0 3px rgba(106, 168, 255, .32);
@@ -1003,6 +1007,34 @@
       overflow: visible;
     }
 
+    .legend-panel-group {
+      display: grid;
+      gap: .4rem;
+      min-height: 0;
+      min-width: 0;
+    }
+
+    .legend-panel-group[data-ring-open="1"] {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 0;
+      align-items: stretch;
+    }
+
+    .legend-panel-group[data-ring-open="1"]>#legendPanel,
+    .legend-panel-group[data-ring-open="1"]>#ringPanel {
+      min-width: 0;
+      box-shadow: none;
+    }
+
+    .legend-panel-group[data-ring-open="1"]>#legendPanel {
+      border-radius: var(--radius) 0 0 var(--radius);
+    }
+
+    .legend-panel-group[data-ring-open="1"]>#ringPanel {
+      border-left: 0;
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+
     #legendPanel.is-position-dragging {
       position: fixed;
       inset: -10000px auto auto -10000px;
@@ -1069,13 +1101,24 @@
       line-height: 1.05;
     }
 
-    .bucket-list-pill {
+    .map-layer-mode-pills {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .24rem;
+      flex-wrap: wrap;
+    }
+
+    .map-layer-mode-pills.hidden {
+      display: none;
+    }
+
+    .bucket-list-pill,
+    .ring-pill {
       display: inline-block;
       align-self: center;
       padding: 0 .55rem;
       border-radius: 999px;
-      background: #14b8a6;
-      color: #fff;
       font-size: .65rem;
       font-weight: 700;
       letter-spacing: .04em;
@@ -1085,7 +1128,18 @@
       white-space: nowrap;
     }
 
-    .bucket-list-pill.hidden {
+    .bucket-list-pill {
+      background: #14b8a6;
+      color: #fff;
+    }
+
+    .ring-pill {
+      background: var(--accent-ring);
+      color: #2b1700;
+    }
+
+    .bucket-list-pill.hidden,
+    .ring-pill.hidden {
       display: none;
     }
 
@@ -1101,6 +1155,19 @@
     button[aria-pressed="true"].bucket-list-toggle-btn:hover {
       border-color: #0d9488;
       background: #0d9488;
+    }
+
+    button[aria-pressed="true"].ring-toggle-btn,
+    [data-theme="dark"] button[aria-pressed="true"].ring-toggle-btn {
+      background: var(--accent-ring);
+      border-color: var(--accent-ring);
+      color: #2b1700;
+    }
+
+    button[aria-pressed="true"].ring-toggle-btn:hover {
+      border-color: var(--accent-ring-secondary);
+      background: var(--accent-ring-secondary);
+      color: #fff;
     }
 
     /* Wayfinder highlight overlays. All activate only when the mode is on
@@ -1333,7 +1400,8 @@
        artboard is narrower than the icons it sits next to. Bump just the map
        button up so the backpack reads at parity with Match Notes / View
        Locations. The Notes-panel twin is sized to match Quick Add / Copy. */
-    #mapBucketListBtn .sf-symbol {
+    #mapBucketListBtn .sf-symbol,
+    #mapRingModeBtn .sf-symbol {
       width: 26px;
       height: 26px;
       overflow: visible;
@@ -1893,6 +1961,111 @@
     [data-button-style="text"] #legendPanel,
     [data-button-style="both"] #legendPanel {
       --legend-action-lane: calc(220px + .64rem);
+    }
+
+    #ringPanel {
+      gap: .58rem;
+    }
+
+    .ring-panel-title-row {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: .42rem;
+      align-items: center;
+    }
+
+    .ring-panel-icon {
+      display: inline-grid;
+      place-items: center;
+      width: 1.45rem;
+      height: 1.45rem;
+      color: var(--accent-ring);
+    }
+
+    .ring-panel-icon .sf-symbol {
+      width: 100%;
+      height: 100%;
+    }
+
+    .ring-anchor-expression {
+      display: flex;
+      align-items: center;
+      gap: .34rem;
+      min-width: 0;
+      flex-wrap: wrap;
+      font-size: .9rem;
+      font-weight: 780;
+    }
+
+    .ring-anchor-slot {
+      width: auto;
+      min-width: 0;
+      min-height: 2rem;
+      max-width: 100%;
+      padding: .28rem .36rem;
+      border: 0;
+      border-bottom: 2px solid color-mix(in srgb, var(--accent-ring) 64%, var(--line));
+      border-radius: 0;
+      background: transparent;
+      color: var(--text);
+      text-align: left;
+      overflow-wrap: anywhere;
+    }
+
+    .ring-anchor-slot.is-empty {
+      border-bottom-style: dashed;
+      color: var(--muted);
+    }
+
+    .ring-anchor-slot.is-armed {
+      border-radius: .42rem;
+      border: 1px solid var(--accent-ring);
+      background: color-mix(in srgb, var(--accent-ring) 16%, var(--surface));
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-ring) 18%, transparent);
+      color: var(--text);
+    }
+
+    .ring-anchor-slot:focus-visible {
+      outline: none;
+      box-shadow: var(--focus);
+    }
+
+    .ring-anchor-2-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: .18rem;
+      min-width: 0;
+    }
+
+    .ring-anchor-clear {
+      display: inline-grid;
+      place-items: center;
+      width: 1.45rem;
+      min-width: 1.45rem;
+      height: 1.45rem;
+      min-height: 1.45rem;
+      padding: 0;
+      border-radius: 999px;
+      color: var(--muted);
+      background: transparent;
+    }
+
+    .ring-anchor-clear .sf-symbol {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .ring-panel-status,
+    .ring-disclaimer,
+    .ring-panel-footer {
+      color: var(--muted);
+      font-size: .75rem;
+      line-height: 1.2;
+    }
+
+    .ring-panel-status {
+      font-weight: 720;
+      color: color-mix(in srgb, var(--accent-ring-secondary) 76%, var(--text));
     }
 
     .legend-title-row {
@@ -6463,6 +6636,21 @@
         grid-template-columns: 1fr;
       }
 
+      .legend-panel-group[data-ring-open="1"] {
+        grid-template-columns: 1fr;
+      }
+
+      .legend-panel-group[data-ring-open="1"]>#ringPanel {
+        order: -1;
+        border-left: 1px solid var(--line);
+        border-bottom: 0;
+        border-radius: var(--radius) var(--radius) 0 0;
+      }
+
+      .legend-panel-group[data-ring-open="1"]>#legendPanel {
+        border-radius: 0 0 var(--radius) var(--radius);
+      }
+
       .side-panel-wrap {
         max-height: none;
         overflow-y: visible;
@@ -7213,7 +7401,10 @@
               <span id="mapLayerIcon" class="map-layer-icon" aria-hidden="true"></span>
               <span class="map-layer-text-stack">
                 <h2 id="mapHeading">US Map</h2>
-                <span id="mapBucketListPill" class="bucket-list-pill hidden" aria-hidden="true">Wayfinder</span>
+                <span id="mapLayerModePills" class="map-layer-mode-pills hidden" aria-hidden="true">
+                  <span id="mapBucketListPill" class="bucket-list-pill hidden">Wayfinder</span>
+                  <span id="mapRingModePill" class="ring-pill hidden">Rangefinder</span>
+                </span>
               </span>
             </button>
             <small id="tapHint" data-hint>Tap a Location to select/cycle Log Level.<br />Tap map name to switch US/World
@@ -7251,9 +7442,13 @@
                   <button id="mapBucketListBtn" class="toggle-btn bucket-list-toggle-btn" type="button"
                     aria-pressed="false" aria-label="Toggle Wayfinder mode" data-shortcut="6">Wayfinder</button>
                 </div>
+                <div class="map-action-group map-toggle-group">
+                  <button id="mapRingModeBtn" class="toggle-btn ring-toggle-btn" type="button" aria-pressed="false"
+                    aria-label="Toggle Ring Mode" data-shortcut="5">Rangefinder</button>
+                </div>
               </div>
               <small data-hint data-hint-key="map-notes-controls">Toggle Location Notes<br />Visibility | Filter |
-                Wayfinder</small>
+                Wayfinder | Rangefinder</small>
             </div>
             <div class="map-control-stack">
               <div class="map-control-row">
@@ -11883,38 +12078,41 @@
         title="Resize map and cards"></button>
 
       <aside id="sidePanel" class="side-panel-wrap" aria-label="Visit tools">
-        <section id="legendPanel" class="panel side-panel" aria-label="Visit summary and editable legend">
-          <section>
-            <div class="legend-title-row">
-              <div class="legend-title-main">
-                <h2>Legend</h2>
-                <span id="legendTotals" class="legend-total-pills" aria-label="Overall completion"></span>
+        <div id="legendPanelGroup" class="legend-panel-group">
+          <section id="legendPanel" class="panel side-panel" aria-label="Visit summary and editable legend">
+            <section>
+              <div class="legend-title-row">
+                <div class="legend-title-main">
+                  <h2>Legend</h2>
+                  <span id="legendTotals" class="legend-total-pills" aria-label="Overall completion"></span>
+                </div>
+                <small class="legend-title-hint" data-hint data-hint-key="legend-help">
+                  <span class="legend-help-position">Drag Legend to Preferred Spot or use Position Button.<br /></span>
+                  Top Level Wins & Deleting Demotes in Multi-Levels.<br />
+                  Drag to Reorder | Swipe Left for Quick Actions.<br />
+                  Featured Palettes | Auto-Suggest | Add/Edit Levels.
+                </small>
+                <div class="legend-title-actions">
+                  <span class="legend-position-picker">
+                    <button id="legendPositionBtn" type="button" data-shortcut="U" aria-haspopup="true"
+                      aria-expanded="false">Position</button>
+                    <div id="legendPositionMenu" class="legend-position-menu hidden" role="menu"
+                      aria-label="Legend position options"></div>
+                  </span>
+                  <button id="smartColorsBtn" type="button" data-shortcut="V">Auto Colors</button>
+                  <button id="suggestionsToggleBtn" class="toggle-btn" type="button" aria-pressed="false"
+                    data-shortcut="W">Hide Suggestions</button>
+                  <button id="addLevelBtn" type="button" data-shortcut="X">Add Level</button>
+                  <button id="legendEditBtn" class="toggle-btn" type="button" aria-pressed="false"
+                    data-shortcut="Y">Edit</button>
+                </div>
               </div>
-              <small class="legend-title-hint" data-hint data-hint-key="legend-help">
-                <span class="legend-help-position">Drag Legend to Preferred Spot or use Position Button.<br /></span>
-                Top Level Wins & Deleting Demotes in Multi-Levels.<br />
-                Drag to Reorder | Swipe Left for Quick Actions.<br />
-                Featured Palettes | Auto-Suggest | Add/Edit Levels.
-              </small>
-              <div class="legend-title-actions">
-                <span class="legend-position-picker">
-                  <button id="legendPositionBtn" type="button" data-shortcut="U" aria-haspopup="true"
-                    aria-expanded="false">Position</button>
-                  <div id="legendPositionMenu" class="legend-position-menu hidden" role="menu"
-                    aria-label="Legend position options"></div>
-                </span>
-                <button id="smartColorsBtn" type="button" data-shortcut="V">Auto Colors</button>
-                <button id="suggestionsToggleBtn" class="toggle-btn" type="button" aria-pressed="false"
-                  data-shortcut="W">Hide Suggestions</button>
-                <button id="addLevelBtn" type="button" data-shortcut="X">Add Level</button>
-                <button id="legendEditBtn" class="toggle-btn" type="button" aria-pressed="false"
-                  data-shortcut="Y">Edit</button>
-              </div>
-            </div>
-            <div id="legendList" class="legend-list"></div>
-            <div id="builtinLevels" class="levelAutosuggestionChips"></div>
+              <div id="legendList" class="legend-list"></div>
+              <div id="builtinLevels" class="levelAutosuggestionChips"></div>
+            </section>
           </section>
-        </section>
+          <section id="ringPanel" class="panel side-panel hidden" aria-label="Rangefinder"></section>
+        </div>
         <section id="notesPanel" class="panel side-panel" aria-label="Notes">
           <div class="row notes-panel-head" style="justify-content: space-between;">
             <div class="notes-title-stack">
@@ -12954,6 +13152,8 @@
               <div class="shortcut-row"><kbd>7</kbd><span>Toggle Match Notes Filter <em>[mapMatchNotesBtn]</em></span>
               </div>
               <div class="shortcut-row"><kbd>6</kbd><span>Toggle Wayfinder Mode <em>[mapBucketListBtn]</em></span></div>
+              <div class="shortcut-row"><kbd>5</kbd><span>Toggle Rangefinder Mode <em>[mapRingModeBtn]</em></span>
+              </div>
               <div class="shortcut-row"><kbd>4</kbd><span>Map Labels: Name <em>[labelsNameBtn]</em></span></div>
               <div class="shortcut-row"><kbd>3</kbd><span>Map Labels: Abbr <em>[labelsAbbrBtn]</em></span></div>
               <div class="shortcut-row"><kbd>2</kbd><span>Map Labels: None <em>[labelsNoneBtn]</em></span></div>
@@ -13101,7 +13301,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.1.0";
+    const APP_VERSION = "4.2.0.1";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -14591,6 +14791,31 @@
     ];
     const CHANGELOG = [
       {
+        version: "4.2.0.1",
+        date: "2026-06-01",
+        title: "Rangefinder",
+        summary: "Rangefinder Mode begins with a US-only planning panel for choosing note-pin anchors before visual rings arrive.",
+        highlights: [
+          "Added a Rangefinder toggle beside Wayfinder in the map header.",
+          "Rangefinder panel pairs with the legend and follows its placement.",
+          "Pick anchor slots, then tap mapped note pins to save them.",
+          "Disclaimer explains straight-line distance and 60 mph estimates."
+        ],
+        notice: {
+          version: "4.2.0.1",
+          title: "Rangefinder",
+          summary: "Pick note pins as Rangefinder anchors before visual rings arrive.",
+          cta: "Find Your Range!"
+        },
+        updates: [
+          "Added the Rangefinder Mode toggle to the map header using the target icon and Shortcut Mode key 5, freeing that key from the old hidden map-layer alias while the map-title switch keeps its visible ~ shortcut.",
+          "Added the Rangefinder panel beside the Legend. When the mode is on, the two panels share the same placement area and reflow from a 50/50 desktop split to a stacked mobile layout, so the panel rides along when the Legend is moved.",
+          "Added persisted Rangefinder settings for mode state, anchor 1, optional anchor 2, enabled ring presets, and fill preference while preserving the existing local data key.",
+          "Rangefinder anchor slots can now be armed from the panel; the next coordinate-backed note pin fills the chosen slot without opening the marker dialog. Anchor 1 can be replaced but not cleared, while anchor 2 has a clear button.",
+          "The first-use Rangefinder disclaimer is dismissable and uses the same hint system as the rest of the app. After dismissal, the panel keeps compact straight-line and 60 mph estimate microcopy."
+        ]
+      },
+      {
         version: "4.1.0",
         date: "2026-05-29",
         title: "Wayfinder",
@@ -15483,6 +15708,17 @@
     const LEGEND_POSITION_ORDER = ["right-top", "right-bottom", "left-bottom", "left-top"];
     const LEGEND_POSITION_MENU_ORDER = ["left-top", "right-top", "left-bottom", "right-bottom"];
     const INSTALL_PLATFORM_SEQUENCE = ["auto", "idevice", "android", "mac", "pc"];
+    const RING_PRESETS = Object.freeze([60, 300, 600, 900, 1200]);
+    const RING_DEFAULT_MPH = 60;
+    const RING_HINT_KEY = "ring-mode-disclaimer";
+    const RING_DISCLAIMER_TEXT = "Distances are straight-line ('as the crow flies') and times assume 60 mph. Not actual driving distance.";
+    const RING_LABEL_TEXT = Object.freeze({
+      60: "60mi / 1hr",
+      300: "300mi / 5hr",
+      600: "600mi / 10hr",
+      900: "900mi / 15hr",
+      1200: "1200mi / 20hr"
+    });
     const LEGEND_POSITION_META = {
       "right-top": { label: "Upper Right", next: "right-bottom", icon: __INSET_FILLED_TOPRIGHT_RECTANGLE },
       "right-bottom": { label: "Lower Right", next: "left-bottom", icon: __INSET_FILLED_BOTTOMRIGHT_RECTANGLE },
@@ -15544,6 +15780,7 @@
     let draggedLegendLevelId = "";
     let legendDragCommitted = false;
     let legendSwipeSuppressClickUntil = 0;
+    let ringArmedSlot = null;
     let levelAutoSaveTimer = null;
     let layoutSyncFrame = 0;
     let pendingConfirm = null;
@@ -15605,7 +15842,12 @@
           developerMode: false,
           shortcutMode: false,
           bucketListView: false,
-          bucketListFilterSnapshot: null
+          bucketListFilterSnapshot: null,
+          ringMode: false,
+          ringAnchor1: null,
+          ringAnchor2: null,
+          ringEnabled: [...RING_PRESETS],
+          ringFill: true
         },
         levels,
         states: defaultTerritoryStates(levels),
@@ -15991,6 +16233,14 @@
       } else {
         next.settings.bucketListFilterSnapshot = null;
       }
+      next.settings.ringMode = next.settings.ringMode === true && next.settings.activeLayerId !== "world";
+      next.settings.ringFill = next.settings.ringFill !== false;
+      if (Array.isArray(next.settings.ringEnabled)) {
+        const enabledRings = new Set(next.settings.ringEnabled.map(Number).filter(miles => RING_PRESETS.includes(miles)));
+        next.settings.ringEnabled = RING_PRESETS.filter(miles => enabledRings.has(miles));
+      } else {
+        next.settings.ringEnabled = [...RING_PRESETS];
+      }
       next.settings.developerMode = next.settings.developerMode === true;
       next.settings.shortcutMode = next.settings.developerMode && next.settings.shortcutMode === true;
       next.settings.uiHints = next.settings.uiHints !== false;
@@ -16080,6 +16330,8 @@
         next.notes[abbr] = notes.map(note => normalizeNote(note, abbr, next, validLevelIds))
           .filter(note => noteHasContent(note) || note.date);
       });
+      next.settings.ringAnchor1 = normalizeRingAnchorRef(next.settings.ringAnchor1, next);
+      next.settings.ringAnchor2 = normalizeRingAnchorRef(next.settings.ringAnchor2, next);
       const inputWorld = input.world && typeof input.world === "object" ? input.world : {};
       next.world = { regions: {}, notes: {} };
       Object.entries(inputWorld.regions || {}).forEach(([code, raw]) => {
@@ -16120,6 +16372,23 @@
       if (trimmed === "") return "";
       const numeric = Number(trimmed);
       return Number.isFinite(numeric) && numeric >= -180 && numeric <= 180 ? Number(numeric.toFixed(6)) : "";
+    }
+
+    function normalizeRingAnchorRef(anchor, nextState = state) {
+      if (!anchor || typeof anchor !== "object") return null;
+      const abbr = String(anchor.abbr || "").toUpperCase();
+      const noteId = String(anchor.noteId || "");
+      if (!STATE_NAMES[abbr] || !noteId) return null;
+      const note = (nextState.notes?.[abbr] || []).find(item => item.id === noteId);
+      const coords = validNoteCoordinates(note);
+      if (!note || !coords) return null;
+      return {
+        noteId,
+        abbr,
+        lat: coords.lat,
+        lng: coords.lng,
+        label: ringAnchorLabelFromNote(abbr, note)
+      };
     }
 
     function normalizeNote(note, abbr, next, validLevelIds) {
@@ -16435,6 +16704,226 @@
       if (mapBtn) mapBtn.setAttribute("aria-pressed", on ? "true" : "false");
       if (notesBtn) notesBtn.setAttribute("aria-pressed", on ? "true" : "false");
       if (pill) pill.classList.toggle("hidden", !on);
+      syncLayerModePills();
+    }
+
+    function ringModeActive() {
+      return state.settings.ringMode === true && activeLayerId === "us";
+    }
+
+    function ringAnchorFor(slot) {
+      return slot === 1 ? state.settings.ringAnchor1 : slot === 2 ? state.settings.ringAnchor2 : null;
+    }
+
+    function ringPickArmedSlot() {
+      return ringArmedSlot === 1 || ringArmedSlot === 2 ? ringArmedSlot : null;
+    }
+
+    function ringAnchorLabelFromNote(abbr, note) {
+      return (noteLocationDisplay(note) || note.geocodeLabel || noteSummary(note) || STATE_NAMES[abbr] || abbr).slice(0, 120);
+    }
+
+    function ringAnchorNote(anchor) {
+      if (!anchor?.abbr || !anchor?.noteId || !STATE_NAMES[anchor.abbr]) return null;
+      const note = (state.notes[anchor.abbr] || []).find(item => item.id === anchor.noteId);
+      return validNoteCoordinates(note) ? note : null;
+    }
+
+    function repairRingAnchors() {
+      const a1 = normalizeRingAnchorRef(state.settings.ringAnchor1, state);
+      const a2 = normalizeRingAnchorRef(state.settings.ringAnchor2, state);
+      const changed = JSON.stringify(a1) !== JSON.stringify(state.settings.ringAnchor1 || null)
+        || JSON.stringify(a2) !== JSON.stringify(state.settings.ringAnchor2 || null);
+      state.settings.ringAnchor1 = a1;
+      state.settings.ringAnchor2 = a2;
+      if (ringModeActive() && !a1 && !ringPickArmedSlot()) ringArmedSlot = 1;
+      return changed;
+    }
+
+    function setRingMode(on) {
+      const wantOn = on === true;
+      if (wantOn && activeLayerId !== "us") {
+        showOverlayWarning("US Map Only", "Rangefinder Mode is available on the US map.");
+        syncRingUi();
+        return;
+      }
+      state.settings.ringMode = wantOn;
+      if (wantOn) {
+        legendPanelOpen = true;
+        if (!legendInSideColumn()) mapPanelOpen = true;
+        ensurePanelVisible("legend");
+        repairRingAnchors();
+        if (!ringAnchorFor(1)) ringArmedSlot = 1;
+      } else {
+        ringArmedSlot = null;
+      }
+      save();
+      render();
+    }
+
+    function toggleRingMode() {
+      setRingMode(!ringModeActive());
+    }
+
+    function armRingSlot(slot) {
+      if (slot !== 1 && slot !== 2) return;
+      ringArmedSlot = ringArmedSlot === slot ? null : slot;
+      renderRingPanel();
+      enhanceHints();
+    }
+
+    function disarmRingSlot() {
+      if (!ringPickArmedSlot()) return false;
+      ringArmedSlot = null;
+      renderRingPanel();
+      enhanceHints();
+      return true;
+    }
+
+    function handleRingKeydown(event) {
+      if (event.key !== "Escape" || !ringPickArmedSlot()) return;
+      if ($$("dialog").some(dialog => dialog.open)) return;
+      event.preventDefault();
+      disarmRingSlot();
+    }
+
+    function setRingAnchorFromNote(slot, abbr, noteId) {
+      if (slot !== 1 && slot !== 2) return false;
+      if (activeLayerId !== "us" || !STATE_NAMES[abbr]) {
+        showOverlayWarning("US Map Only", "Rangefinder anchors need US-map note pins.");
+        return false;
+      }
+      const note = (state.notes[abbr] || []).find(item => item.id === noteId);
+      const coords = validNoteCoordinates(note);
+      if (!note || !coords) {
+        showOverlayWarning("Coordinates Needed", "Rangefinder anchors need saved latitude and longitude. Use Locate or enter coordinates first.");
+        return false;
+      }
+      state.settings[`ringAnchor${slot}`] = {
+        noteId: String(note.id),
+        abbr,
+        lat: coords.lat,
+        lng: coords.lng,
+        label: ringAnchorLabelFromNote(abbr, note)
+      };
+      ringArmedSlot = null;
+      save();
+      render();
+      return true;
+    }
+
+    function clearRingAnchor2() {
+      state.settings.ringAnchor2 = null;
+      if (ringArmedSlot === 2) ringArmedSlot = null;
+      save();
+      render();
+    }
+
+    function haversineMiles(aLat, aLng, bLat, bLng) {
+      const toRad = value => Number(value) * Math.PI / 180;
+      const lat1 = toRad(aLat);
+      const lat2 = toRad(bLat);
+      const dLat = toRad(Number(bLat) - Number(aLat));
+      const dLng = toRad(Number(bLng) - Number(aLng));
+      const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+      return 3958.7613 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    function ringTimeLabel(miles) {
+      const totalMinutes = Math.round((Number(miles) / RING_DEFAULT_MPH) * 60);
+      if (!Number.isFinite(totalMinutes) || totalMinutes < 0) return "";
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+      return minutes ? `~${hours}h ${minutes}m` : `~${hours}h`;
+    }
+
+    function ringCompareReadout() {
+      const a1 = ringAnchorFor(1);
+      const a2 = ringAnchorFor(2);
+      if (!a1 || !a2) return "";
+      const miles = haversineMiles(a1.lat, a1.lng, a2.lat, a2.lng);
+      if (!Number.isFinite(miles)) return "";
+      return `${Math.round(miles).toLocaleString()} mi · ${ringTimeLabel(miles)} at ${RING_DEFAULT_MPH}mph`;
+    }
+
+    function syncLayerModePills() {
+      const bucketPill = $("#mapBucketListPill");
+      const ringPill = $("#mapRingModePill");
+      const wrap = $("#mapLayerModePills");
+      const bucketOn = bucketListViewActive();
+      const ringOn = ringModeActive();
+      if (bucketPill) bucketPill.classList.toggle("hidden", !bucketOn);
+      if (ringPill) ringPill.classList.toggle("hidden", !ringOn);
+      if (wrap) wrap.classList.toggle("hidden", !(bucketOn || ringOn));
+    }
+
+    function syncRingUi() {
+      if (state.settings.ringMode === true && activeLayerId !== "us") {
+        state.settings.ringMode = false;
+        ringArmedSlot = null;
+        save();
+      }
+      if (ringModeActive()) repairRingAnchors();
+      const on = ringModeActive();
+      const btn = $("#mapRingModeBtn");
+      const panel = $("#ringPanel");
+      const group = $("#legendPanelGroup");
+      if (btn) {
+        btn.setAttribute("aria-pressed", on ? "true" : "false");
+        btn.disabled = activeLayerId === "world";
+        btn.title = activeLayerId === "world" ? "Rangefinder Mode is US map only" : "Toggle Rangefinder Mode";
+        btn.setAttribute("aria-label", activeLayerId === "world" ? "Rangefinder Mode is US map only" : "Toggle Ring Mode");
+      }
+      if (group) group.dataset.ringOpen = on ? "1" : "0";
+      if (panel) {
+        panel.classList.toggle("hidden", !on);
+        panel.setAttribute("aria-hidden", on ? "false" : "true");
+      }
+      syncLayerModePills();
+    }
+
+    function renderRingPanel() {
+      const panel = $("#ringPanel");
+      if (!panel) return;
+      const on = ringModeActive();
+      panel.classList.toggle("hidden", !on);
+      panel.setAttribute("aria-hidden", on ? "false" : "true");
+      if (!on) return;
+      repairRingAnchors();
+      const armed = ringPickArmedSlot();
+      const anchor1 = ringAnchorFor(1);
+      const anchor2 = ringAnchorFor(2);
+      const slotHtml = (slot, anchor) => {
+        const label = anchor?.label || (slot === 1 ? "Pick a pin" : "____");
+        const classes = ["ring-anchor-slot", anchor ? "is-filled" : "is-empty", armed === slot ? "is-armed" : ""].filter(Boolean).join(" ");
+        const title = armed === slot ? "Cancel anchor pick" : `Pick Rangefinder anchor ${slot}`;
+        return `<button class="${classes}" type="button" data-ring-slot="${slot}" title="${escapeHtml(title)}">${escapeHtml(label)}</button>`;
+      };
+      const dismissed = new Set(state.dismissedHints || []);
+      const hint = armed
+        ? `Tap a mapped note pin to set anchor ${armed}.`
+        : !anchor1
+          ? "Pick a mapped note pin to start."
+          : "Tap a slot to replace an anchor.";
+      const disclaimer = dismissed.has(RING_HINT_KEY)
+        ? `<small class="ring-panel-footer">Straight-line · 60 mph estimate.</small>`
+        : `<small class="ring-disclaimer" data-hint data-hint-key="${RING_HINT_KEY}">${escapeHtml(RING_DISCLAIMER_TEXT)}</small>`;
+      panel.innerHTML = `
+        <div class="ring-panel-title-row">
+          <span class="ring-panel-icon" aria-hidden="true">${__TARGET}</span>
+          <h2>Rangefinder</h2>
+        </div>
+        <div class="ring-anchor-expression" aria-label="Rangefinder anchors">
+          ${slotHtml(1, anchor1)}
+          <span class="muted">to</span>
+          <span class="ring-anchor-2-wrap">
+            ${slotHtml(2, anchor2)}
+            ${anchor2 ? `<button class="ring-anchor-clear" type="button" data-ring-clear="2" aria-label="Clear Rangefinder anchor 2" title="Clear anchor 2">${__XMARK}</button>` : ""}
+          </span>
+        </div>
+        <div class="ring-panel-status">${escapeHtml(hint)}</div>
+        ${disclaimer}
+      `;
     }
 
     function activeLayer() {
@@ -16823,6 +17312,10 @@
     function setActiveLayer(id) {
       activeLayerId = MAP_LAYERS[id] ? id : "us";
       state.settings.activeLayerId = activeLayerId;
+      if (activeLayerId === "world" && state.settings.ringMode === true) {
+        state.settings.ringMode = false;
+        ringArmedSlot = null;
+      }
       applyActiveLayer();
       save();
       render();
@@ -16903,6 +17396,7 @@
       const bucketShortcutHint = "Toggle Wayfinder mode";
       setButtonLabel("#mapBucketListBtn", __BACKPACK, "Wayfinder", "Toggle Wayfinder mode", bucketShortcutHint);
       setButtonLabel("#notesBucketListBtn", __BACKPACK, "Wayfinder", "Toggle Wayfinder mode", bucketShortcutHint);
+      setButtonLabel("#mapRingModeBtn", __TARGET, "Rangefinder", activeLayerId === "world" ? "Rangefinder Mode is US map only" : "Toggle Ring Mode", activeLayerId === "world" ? "Rangefinder Mode is US map only" : "Toggle Rangefinder Mode");
       setButtonLabel("#mapZoomOutBtn", __MINUS_CIRCLE, "Zoom Out", "Zoom map out", "Zoom map out");
       setButtonLabel("#mapZoomResetBtn", __ARROW_COUNTERCLOCKWISE_CIRCLE, "Reset", "Reset map zoom", "Reset map zoom");
       setButtonLabel("#mapZoomInBtn", __PLUS_CIRCLE, "Zoom In", "Zoom map in", "Zoom map in");
@@ -17046,14 +17540,16 @@
 
     function placeLegendPanel() {
       const panel = $("#legendPanel");
-      if (!panel) return;
+      const group = $("#legendPanelGroup");
+      if (!panel || !group) return;
       const position = legendPosition();
       let target = $("#sidePanel");
       if (position === "left-top") target = $("#legendSlotTop");
       if (position === "left-bottom") target = $("#legendSlotBottom");
       if (!target) return;
-      if (position === "right-top" && $("#notesPanel")?.parentElement === target) target.insertBefore(panel, $("#notesPanel"));
-      else target.append(panel);
+      if (position === "right-top" && $("#notesPanel")?.parentElement === target) target.insertBefore(group, $("#notesPanel"));
+      else target.append(group);
+      group.dataset.ringOpen = ringModeActive() ? "1" : "0";
       panel.classList.toggle("is-position-dragging", legendPositionDragActive);
     }
 
@@ -17072,8 +17568,9 @@
     function placeLegendPreview(position) {
       if (!LEGEND_POSITION_ORDER.includes(position)) return;
       const panel = $("#legendPanel");
+      const group = $("#legendPanelGroup");
       const preview = legendPlacementPreview();
-      const height = Math.max(64, Math.ceil(panel?.getBoundingClientRect().height || 0));
+      const height = Math.max(64, Math.ceil((group || panel)?.getBoundingClientRect().height || 0));
       preview.style.minHeight = `${height}px`;
       preview.classList.toggle("is-current", position === legendPosition());
       document.documentElement.dataset.legendPreviewPosition = position;
@@ -17243,6 +17740,7 @@
       document.documentElement.dataset.legendEditing = legendEditMode ? "true" : "false";
       document.documentElement.dataset.mapMode = mapFitMode ? "fit" : "scroll";
       document.documentElement.dataset.bucketMode = bucketListViewActive() ? "on" : "off";
+      document.documentElement.dataset.ringMode = ringModeActive() ? "on" : "off";
       if (!legendPositionControlAvailable()) legendPositionMenuOpen = false;
       document.documentElement.style.setProperty("--app-text-scale", String(normalizeTextScale(state.settings.textScale)));
       document.documentElement.style.setProperty("--map-zoom", String(mapZoom));
@@ -17252,6 +17750,7 @@
       $("#devModePill").classList.toggle("hidden", state.settings.developerMode !== true);
       placeLegendPanel();
       syncButtonLabels();
+      renderRingPanel();
       renderMap();
       renderLegend();
       renderBuiltinLevels();
@@ -17259,6 +17758,7 @@
       renderSettingsControls();
       renderReleaseNotice();
       syncBucketListUi();
+      syncRingUi();
       enhanceHints();
       if ($("#stateDrawer").classList.contains("open")) closeDrawer();
       scheduleMainLayoutSync();
@@ -17643,6 +18143,12 @@
     }
 
     function handleLocationMarker(cluster) {
+      const armedSlot = ringPickArmedSlot();
+      if (armedSlot) {
+        const item = sortedMarkerItems(cluster.items).find(candidate => validNoteCoordinates(candidate.note)) || markerClusterRepresentative(cluster);
+        setRingAnchorFromNote(armedSlot, item.abbr, item.note.id);
+        return;
+      }
       if (cluster.items.length === 1) {
         openMappedNote(cluster.items[0]);
         return;
@@ -22452,6 +22958,11 @@
         event.preventDefault();
         event.stopPropagation();
       }, true);
+      wrap.addEventListener("click", event => {
+        if (!ringPickArmedSlot()) return;
+        if (event.target.closest?.(".map-location-marker, .state-tile, .world-tile")) return;
+        disarmRingSlot();
+      });
       wrap.addEventListener("wheel", event => {
         if (mapFitMode || !(event.ctrlKey || event.metaKey)) return;
         event.preventDefault();
@@ -22633,7 +23144,7 @@
         "8": () => clickIf("#mapLocationPinsBtn"),
         "7": () => clickIf("#mapMatchNotesBtn"),
         "6": toggleBucketListView,
-        "5": () => clickIf("#mapLayerToggleBtn"),
+        "5": () => clickIf("#mapRingModeBtn"),
         "4": () => updateSetting("mapLabels", "none"),
         "3": () => updateSetting("mapLabels", "abbr"),
         "2": () => updateSetting("mapLabels", "name"),
@@ -22796,6 +23307,16 @@
       $("#mapFitBtn").addEventListener("click", toggleMapFitMode);
       $("#mapLayerToggleBtn").addEventListener("click", () => setActiveLayer(activeLayerId === "world" ? "us" : "world"));
       $("#mapBucketListBtn").addEventListener("click", toggleBucketListView);
+      $("#mapRingModeBtn").addEventListener("click", toggleRingMode);
+      $("#ringPanel").addEventListener("click", event => {
+        const clear = event.target.closest("[data-ring-clear]");
+        if (clear) {
+          clearRingAnchor2();
+          return;
+        }
+        const slot = event.target.closest("[data-ring-slot]");
+        if (slot) armRingSlot(Number(slot.dataset.ringSlot));
+      });
       $("#notesBucketListBtn").addEventListener("click", toggleBucketListView);
       $("#notesPanelBackBtn").addEventListener("click", () => {
         notesPanelState = null;
@@ -23110,6 +23631,7 @@
       });
       $("#liquorKeyBtn").addEventListener("click", () => handleDeveloperGesture("liquor"));
       $("#coffeeKeyBtn").addEventListener("click", () => handleDeveloperGesture("coffee"));
+      document.addEventListener("keydown", handleRingKeydown);
       document.addEventListener("keydown", handlePowerShortcut);
       document.addEventListener("keyup", updatePowerOverlay);
       window.addEventListener("blur", () => setPowerOverlay(false));
