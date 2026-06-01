@@ -2223,6 +2223,33 @@
       accent-color: var(--accent-ring);
     }
 
+    .ring-compare-readout {
+      display: flex;
+      align-items: center;
+      min-height: 2.1rem;
+      padding: .42rem .5rem;
+      border: 1px solid color-mix(in srgb, var(--accent-ring) 44%, var(--line));
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--accent-ring) 14%, var(--surface));
+      color: color-mix(in srgb, var(--accent-ring-secondary) 70%, var(--text));
+      font-size: .86rem;
+      font-weight: 860;
+      line-height: 1.18;
+      overflow-wrap: anywhere;
+    }
+
+    .ring-inset-warning {
+      padding: .4rem .5rem;
+      border-left: 3px solid var(--warning);
+      border-radius: .42rem;
+      background: color-mix(in srgb, var(--warning) 12%, var(--surface));
+      color: color-mix(in srgb, var(--warning) 72%, var(--text));
+      font-size: .75rem;
+      font-weight: 720;
+      line-height: 1.22;
+      overflow-wrap: anywhere;
+    }
+
     .ring-panel-status,
     .ring-disclaimer,
     .ring-panel-footer {
@@ -2234,6 +2261,10 @@
     .ring-panel-status {
       font-weight: 720;
       color: color-mix(in srgb, var(--accent-ring-secondary) 76%, var(--text));
+    }
+
+    .ring-panel-status.is-warning {
+      color: var(--warning);
     }
 
     .legend-title-row {
@@ -13470,7 +13501,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.2.0.2";
+    const APP_VERSION = "4.2.0.3";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -14960,20 +14991,20 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.2.0.2",
+        version: "4.2.0.3",
         date: "2026-06-01",
         title: "Rangefinder",
-        summary: "Rangefinder Mode now draws fixed-mile planning rings from saved note pins on the US map.",
+        summary: "Rangefinder now compares saved pins with distance readouts and clearer map guardrails.",
         highlights: [
-          "Pick note-pin anchors from the Rangefinder panel.",
-          "Draw 60, 300, 600, 900, and 1200 mile rings.",
-          "Toggle each ring and switch between filled or stroke-only views.",
-          "Anchor pins, labels, and connector use an amber map overlay."
+          "Pick note-pin anchors and compare straight-line miles plus 60 mph time.",
+          "Draw toggleable 60-1200 mile rings with fill or stroke-only views.",
+          "Warn when AK, HI, or territory anchors use inset map scale.",
+          "Anchor cleanup and World-map guardrails keep the mode honest."
         ],
         notice: {
-          version: "4.2.0.2",
+          version: "4.2.0.3",
           title: "Rangefinder",
-          summary: "Draw fixed-mile Rangefinder rings from saved note pins.",
+          summary: "Compare Rangefinder anchors with distance readouts and inset warnings.",
           cta: "Find Your Range!"
         },
         updates: [
@@ -14985,7 +15016,11 @@
           "Added map rendering for the fixed 60, 300, 600, 900, and 1200 mile Rangefinder rings, stacked from largest to smallest so the amber fills build toward the selected anchor.",
           "Ring labels now sit north of each enabled ring and show the matching mile and 60 mph hour estimate.",
           "Added panel chips for toggling individual ring distances plus a Fill rings checkbox that switches the overlay between soft filled bands and stroke-only mode.",
-          "Rangefinder anchors now render as target pins in the map overlay, with anchor 2 using the secondary amber color and a thin connector line back to anchor 1 when both anchors are set."
+          "Rangefinder anchors now render as target pins in the map overlay, with anchor 2 using the secondary amber color and a thin connector line back to anchor 1 when both anchors are set.",
+          "Added the two-anchor compare readout with straight-line mileage and estimated time at 60 mph.",
+          "Added inset-scale warning copy for Alaska, Hawaii, Puerto Rico, the U.S. Virgin Islands, Guam, the Northern Mariana Islands, and American Samoa anchors.",
+          "If the primary anchor note is deleted while Rangefinder is active, the panel clears that slot, arms it again, and prompts for a replacement. Optional anchor 2 clears quietly.",
+          "Rangefinder stays US-map only: switching to the World map turns the mode off and disables the toggle until the US map is active again."
         ]
       },
       {
@@ -15892,6 +15927,8 @@
       900: "900mi / 15hr",
       1200: "1200mi / 20hr"
     });
+    const RING_INSET_IDS = new Set(["AK", "HI", ...TERRITORY_IDS]);
+    const RING_ANCHOR_REMOVED_TEXT = "Anchor note was removed — pick another pin.";
     const LEGEND_POSITION_META = {
       "right-top": { label: "Upper Right", next: "right-bottom", icon: __INSET_FILLED_TOPRIGHT_RECTANGLE },
       "right-bottom": { label: "Lower Right", next: "left-bottom", icon: __INSET_FILLED_BOTTOMRIGHT_RECTANGLE },
@@ -15954,6 +15991,7 @@
     let legendDragCommitted = false;
     let legendSwipeSuppressClickUntil = 0;
     let ringArmedSlot = null;
+    let ringPanelNotice = "";
     let levelAutoSaveTimer = null;
     let layoutSyncFrame = 0;
     let pendingConfirm = null;
@@ -16902,13 +16940,27 @@
       return validNoteCoordinates(note) ? note : null;
     }
 
+    function ringInsetWarning(anchor) {
+      if (!anchor?.abbr || !RING_INSET_IDS.has(anchor.abbr)) return "";
+      const name = STATE_NAMES[anchor.abbr] || anchor.abbr;
+      return `${name} is drawn as an inset on this map; rings stay inside that inset and are approximate.`;
+    }
+
     function repairRingAnchors() {
+      const previousA1 = state.settings.ringAnchor1 || null;
+      const previousA2 = state.settings.ringAnchor2 || null;
       const a1 = normalizeRingAnchorRef(state.settings.ringAnchor1, state);
       const a2 = normalizeRingAnchorRef(state.settings.ringAnchor2, state);
-      const changed = JSON.stringify(a1) !== JSON.stringify(state.settings.ringAnchor1 || null)
-        || JSON.stringify(a2) !== JSON.stringify(state.settings.ringAnchor2 || null);
+      const changed = JSON.stringify(a1) !== JSON.stringify(previousA1)
+        || JSON.stringify(a2) !== JSON.stringify(previousA2);
       state.settings.ringAnchor1 = a1;
       state.settings.ringAnchor2 = a2;
+      if (ringModeActive() && previousA1 && !a1) {
+        ringArmedSlot = 1;
+        ringPanelNotice = RING_ANCHOR_REMOVED_TEXT;
+      } else if (a1 && ringPanelNotice === RING_ANCHOR_REMOVED_TEXT) {
+        ringPanelNotice = "";
+      }
       if (ringModeActive() && !a1 && !ringPickArmedSlot()) ringArmedSlot = 1;
       return changed;
     }
@@ -16929,6 +16981,7 @@
         if (!ringAnchorFor(1)) ringArmedSlot = 1;
       } else {
         ringArmedSlot = null;
+        ringPanelNotice = "";
       }
       save();
       render();
@@ -16980,6 +17033,7 @@
         label: ringAnchorLabelFromNote(abbr, note)
       };
       ringArmedSlot = null;
+      ringPanelNotice = "";
       save();
       render();
       return true;
@@ -17078,6 +17132,7 @@
       if (state.settings.ringMode === true && activeLayerId !== "us") {
         state.settings.ringMode = false;
         ringArmedSlot = null;
+        ringPanelNotice = "";
         save();
       }
       if (ringModeActive()) repairRingAnchors();
@@ -17111,6 +17166,8 @@
       const anchor1 = ringAnchorFor(1);
       const anchor2 = ringAnchorFor(2);
       const enabled = new Set(ringEnabledDistances());
+      const compare = ringCompareReadout();
+      const insetWarning = ringInsetWarning(anchor1);
       const slotHtml = (slot, anchor) => {
         const label = anchor?.label || (slot === 1 ? "Pick a pin" : "____");
         const classes = ["ring-anchor-slot", anchor ? "is-filled" : "is-empty", armed === slot ? "is-armed" : ""].filter(Boolean).join(" ");
@@ -17124,6 +17181,7 @@
         : !anchor1
           ? "Pick a mapped note pin to start."
           : "Tap a slot to replace an anchor.";
+      const status = ringPanelNotice || hint;
       const disclaimer = dismissed.has(RING_HINT_KEY)
         ? `<small class="ring-panel-footer">Straight-line · 60 mph estimate.</small>`
         : `<small class="ring-disclaimer" data-hint data-hint-key="${RING_HINT_KEY}">${escapeHtml(RING_DISCLAIMER_TEXT)}</small>`;
@@ -17142,7 +17200,9 @@
         </div>
         <div class="ring-chip-row" aria-label="Visible Rangefinder rings">${ringChips}</div>
         <label class="ring-fill-toggle"><input id="ringFillToggle" type="checkbox" ${state.settings.ringFill !== false ? "checked" : ""}>Fill rings</label>
-        <div class="ring-panel-status">${escapeHtml(hint)}</div>
+        ${compare ? `<div class="ring-compare-readout">${escapeHtml(compare)}</div>` : ""}
+        ${insetWarning ? `<div class="ring-inset-warning">${escapeHtml(insetWarning)}</div>` : ""}
+        <div class="ring-panel-status${ringPanelNotice ? " is-warning" : ""}">${escapeHtml(status)}</div>
         ${disclaimer}
       `;
     }
@@ -17536,6 +17596,7 @@
       if (activeLayerId === "world" && state.settings.ringMode === true) {
         state.settings.ringMode = false;
         ringArmedSlot = null;
+        ringPanelNotice = "";
       }
       applyActiveLayer();
       save();
