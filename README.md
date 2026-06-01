@@ -198,3 +198,5 @@ Contains Color Notes, rejected/backup svgs, amongst other stuff.
 Mobile Cleanup: 
 - Better Auto Colors
 - Map buttons misaligned in scroll view
+- Double scroll with tip jar
+- Base camp causes scrolling problems and should just fit on mobile screen
