@@ -2123,17 +2123,20 @@
     }
 
     .ring-anchor-expression {
-      display: flex;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
       align-items: center;
       gap: .34rem;
       min-width: 0;
-      flex-wrap: wrap;
       font-size: .9rem;
       font-weight: 780;
     }
 
     .ring-anchor-slot {
-      width: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
       min-width: 0;
       min-height: 2rem;
       max-width: 100%;
@@ -2143,7 +2146,7 @@
       border-radius: 0;
       background: transparent;
       color: var(--text);
-      text-align: left;
+      text-align: center;
       overflow-wrap: anywhere;
     }
 
@@ -2166,7 +2169,8 @@
     }
 
     .ring-anchor-2-wrap {
-      display: inline-flex;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
       align-items: center;
       gap: .18rem;
       min-width: 0;
@@ -2175,10 +2179,10 @@
     .ring-anchor-clear {
       display: inline-grid;
       place-items: center;
-      width: 1.45rem;
-      min-width: 1.45rem;
-      height: 1.45rem;
-      min-height: 1.45rem;
+      width: 1.35rem;
+      min-width: 1.35rem;
+      height: 1.35rem;
+      min-height: 1.35rem;
       padding: 0;
       border-radius: 999px;
       color: var(--muted);
@@ -2192,26 +2196,29 @@
 
     .ring-chip-row {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(8.35rem, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: .3rem;
     }
 
     .ring-config-row {
       display: grid;
-      grid-template-columns: 2rem minmax(0, 1fr) auto;
-      gap: .22rem;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      gap: .16rem;
       align-items: center;
       min-width: 0;
     }
 
     .ring-distance-chip {
       min-width: 0;
-      width: 2rem;
+      width: 1.95rem;
       min-height: 2rem;
-      padding: 0;
+      padding: 0 .24rem;
       border-color: color-mix(in srgb, var(--ring-chip-color, var(--accent-ring)) 52%, var(--line));
       color: color-mix(in srgb, var(--ring-chip-color, var(--accent-ring)) 76%, var(--text));
       border-radius: var(--radius);
+      font-size: .68rem;
+      font-weight: 920;
+      line-height: 1;
     }
 
     .ring-distance-chip[aria-pressed="true"] {
@@ -2220,24 +2227,7 @@
       color: var(--text);
     }
 
-    .ring-toggle-mark {
-      display: block;
-      width: .78rem;
-      height: .78rem;
-      border: 2px solid currentColor;
-      border-radius: 999px;
-      background: transparent;
-      box-shadow: inset 0 0 0 2px var(--surface);
-    }
-
-    .ring-distance-chip[aria-pressed="true"] .ring-toggle-mark {
-      background: var(--ring-chip-color, var(--accent-ring));
-    }
-
     .ring-distance-field {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      align-items: center;
       min-width: 0;
       border: 1px solid var(--line);
       border-radius: var(--radius);
@@ -2249,7 +2239,7 @@
       width: 100%;
       min-width: 0;
       height: 2rem;
-      padding: .22rem .28rem .22rem .4rem;
+      padding: .2rem .24rem;
       border: 0;
       background: transparent;
       font-size: .8rem;
@@ -2265,34 +2255,28 @@
       box-shadow: var(--focus);
     }
 
-    .ring-unit-label {
-      padding: 0 .36rem 0 .12rem;
-      color: var(--muted);
-      font-size: .72rem;
-      font-weight: 850;
-      line-height: 1;
-    }
-
     .ring-remove-btn,
     .ring-add-btn {
       display: inline-grid;
       place-items: center;
-      min-width: 2rem;
-      width: 2rem;
-      height: 2rem;
-      min-height: 2rem;
+      min-width: 1.38rem;
+      width: 1.38rem;
+      height: 1.38rem;
+      min-height: 1.38rem;
       padding: 0;
     }
 
     .ring-remove-btn .sf-symbol,
     .ring-add-btn .sf-symbol {
-      width: 1rem;
-      height: 1rem;
+      width: .82rem;
+      height: .82rem;
     }
 
     .ring-add-btn {
-      width: 2rem;
-      min-width: 2rem;
+      width: 100%;
+      min-width: 0;
+      height: 100%;
+      min-height: 1.8rem;
       border-style: dashed;
       color: color-mix(in srgb, var(--accent-ring-secondary) 70%, var(--text));
       font-size: .78rem;
@@ -2305,26 +2289,33 @@
     }
 
     .ring-options-row {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, .95fr) minmax(1.9rem, .32fr);
       align-items: center;
-      justify-content: flex-start;
-      flex-wrap: wrap;
-      gap: .42rem;
+      gap: .3rem;
+      width: 100%;
     }
 
     .ring-option-toggle {
-      display: inline-flex;
-      align-items: center;
-      gap: .28rem;
-      width: fit-content;
-      color: var(--text);
+      display: inline-grid;
+      place-items: center;
+      width: 100%;
+      min-width: 0;
+      min-height: 1.8rem;
+      padding: .16rem .32rem;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: color-mix(in srgb, var(--surface-2) 55%, transparent);
+      color: var(--muted);
       font-size: .78rem;
-      font-weight: 760;
-      line-height: 1.1;
+      font-weight: 900;
+      line-height: 1;
     }
 
-    .ring-option-toggle input {
-      accent-color: var(--accent-ring);
+    .ring-option-toggle[aria-pressed="true"] {
+      background: color-mix(in srgb, var(--accent-ring) 24%, var(--surface));
+      border-color: var(--accent-ring);
+      color: var(--text);
     }
 
     .ring-unit-toggle {
@@ -2355,6 +2346,7 @@
     .ring-compare-readout {
       display: flex;
       align-items: center;
+      justify-content: center;
       min-height: 2.1rem;
       padding: .42rem .5rem;
       border: 1px solid color-mix(in srgb, var(--accent-ring) 44%, var(--line));
@@ -2364,6 +2356,7 @@
       font-size: .86rem;
       font-weight: 860;
       line-height: 1.18;
+      text-align: center;
       overflow-wrap: anywhere;
     }
 
@@ -6998,6 +6991,14 @@
         grid-column: 1 / -1;
         justify-self: start;
         text-align: left;
+      }
+
+      .ring-chip-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .ring-options-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .side-panel-wrap {
@@ -13184,14 +13185,14 @@
             <li>Use View Locations to show or hide note pins. Notes without coordinates sit at the center of their
               state or territory shape; exact coordinates place markers more precisely.</li>
             <li>Use Match Notes to dim map locations and pins that do not match the active Notes filters.</li>
-            <li>Use Rangefinder on the US map to pick saved note pins as Start and Destination points, draw planning rings, and compare the
+            <li>Use Rangefinder on the US map to pick saved note pins as Start and End points, draw planning rings, and compare the
               straight-line distance between two places.</li>
-            <li>Rangefinder rings can be filled or stroke-only, clipped to land shapes, shown in miles or kilometers,
+            <li>Rangefinder rings can be filled or stroke-only, clipped to the active land area, shown in miles or kilometers,
               customized up to eight distances, and shown with or without 60 mph time estimates.</li>
             <li>Mapped markers open the note when there is one note. Nearby markers cluster, zoom when they can split,
               or open a picker when they are too close.</li>
-            <li>Alaska, Hawaii, and territory points use inset map scale, so Rangefinder calls that out when those
-              places are selected.</li>
+            <li>Alaska, Hawaii, and territory points use inset map scale. Mainland rings clip away from those insets,
+              while inset starts clip to their own inset.</li>
             <li>On desktop, drag the divider between the map and cards to resize the working area.</li>
           </ol>
         </section>
@@ -13278,7 +13279,7 @@
             dimming locations and hiding note pins that do not match.</p>
           <p><b>Why are some pins grouped?</b><br>Nearby mapped notes cluster so the map stays readable. Click a cluster
             to zoom or open the picker when notes are too close to separate.</p>
-          <p><b>Are Rangefinder rings driving distance?</b><br>No. Rings and Start-to-Destination comparisons use straight-line
+          <p><b>Are Rangefinder rings driving distance?</b><br>No. Rings and Start-to-End comparisons use straight-line
             distance. Time estimates assume a steady 60 mph and are planning hints, not routing.</p>
         </section>
         <section class="help-section">
@@ -13659,7 +13660,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.2.0.5";
+    const APP_VERSION = "4.2.0.7";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -14967,6 +14968,18 @@
         category: "Maps"
       },
       {
+        title: "Rangefinder Cross-Inset Edge Cases",
+        ticketId: "WISH-061",
+        description: "Improve Rangefinder behavior when Start and End points cross between the contiguous map and inset regions, such as Washington to Alaska. Scope includes clearer visual treatment for clipped rings, inset-scale limitations, and long-distance comparisons that cross map projections.",
+        priority: "P2",
+        effort: "medium",
+        targetKind: "patch",
+        targetVersion: "",
+        tokenCostPct: 16,
+        prompt: "Polish Rangefinder cross-inset edge cases, especially a Washington Start pin with rings or an End point in Alaska. Make the visual treatment clear despite different inset scales, preserve current local settings, and keep limitations explicit.",
+        category: "Maps"
+      },
+      {
         title: "National Park Overlay Layer",
         ticketId: "WISH-004",
         description: "Add an optional national parks layer that can be viewed with state progress. Scope includes park data, visible markers or outlines, visit status, filtering, and exports that remain readable.",
@@ -15149,39 +15162,39 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.2.0.5",
+        version: "4.2.0.7",
         date: "2026-06-01",
         title: "Rangefinder",
-        summary: "Rangefinder controls are cleaner, more configurable, and easier to scan.",
+        summary: "Rangefinder rings now avoid inset overlap and use cleaner compact controls.",
         highlights: [
-          "Edit each ring in one compact row with no repeated distance.",
-          "Clip rings to land and toggle estimated time labels.",
-          "Start and Destination copy replaces anchor wording.",
-          "Deeper gold-to-amber rings improve contrast."
+          "Keep rings off other inset land areas.",
+          "Toggle each ring by clicking its mi/km unit.",
+          "Ring labels move onto visible clipped ring segments.",
+          "Four desktop ring controls per row, two on mobile."
         ],
         notice: {
-          version: "4.2.0.5",
+          version: "4.2.0.7",
           title: "Rangefinder",
-          summary: "Cleaner Rangefinder controls with land clipping and optional time labels.",
+          summary: "Safer inset clipping and cleaner controls.",
           cta: "Find Your Range!"
         },
         updates: [
           "Added the Rangefinder Mode toggle to the map header using the target icon and Shortcut Mode key 5, freeing that key from the old hidden map-layer alias while the map-title switch keeps its visible ~ shortcut.",
           "Added the Rangefinder panel beside the Legend. When the mode is on, the two panels share the same placement area and reflow from a 50/50 desktop split to a stacked mobile layout, so the panel rides along when the Legend is moved.",
-          "Added persisted Rangefinder settings for mode state, Start, optional Destination, enabled ring presets, and fill preference while preserving the existing local data key.",
-          "Rangefinder Start and Destination slots can now be armed from the panel; the next coordinate-backed note pin fills the chosen slot without opening the marker dialog. Start can be replaced but not cleared, while Destination has a clear button.",
+          "Added persisted Rangefinder settings for mode state, Start, optional End, enabled ring presets, and fill preference while preserving the existing local data key.",
+          "Rangefinder Start and End slots can now be armed from the panel; the next coordinate-backed note pin fills the chosen slot without opening the marker dialog. Start can be replaced but not cleared, while End has a clear button.",
           "The first-use Rangefinder disclaimer is dismissable and uses the same hint system as the rest of the app. After dismissal, the panel keeps compact straight-line and 60 mph estimate microcopy.",
           "Added map rendering for the fixed 60, 300, 600, 900, and 1200 mile Rangefinder rings, stacked from largest to smallest so the amber fills build toward the selected Start point.",
           "Ring labels now sit north of each enabled ring and show the matching mile and 60 mph hour estimate.",
-          "Added panel chips for toggling individual ring distances plus a Fill rings checkbox that switches the overlay between soft filled bands and stroke-only mode.",
-          "Rangefinder points now render as target pins in the map overlay, with Destination using the secondary amber color and a thin connector line back to Start when both points are set.",
-          "Added the Start-to-Destination compare readout with straight-line mileage and estimated time at 60 mph.",
+          "Added compact ring controls for toggling individual distances plus a Fill toggle that switches the overlay between soft filled bands and stroke-only mode.",
+          "Rangefinder points now render as target pins in the map overlay, with End using the secondary amber color and a thin connector line back to Start when both points are set.",
+          "Added the Start-to-End compare readout with straight-line mileage and estimated time at 60 mph.",
           "Added inset-scale warning copy for Alaska, Hawaii, Puerto Rico, the U.S. Virgin Islands, Guam, the Northern Mariana Islands, and American Samoa points.",
-          "If the Start note is deleted while Rangefinder is active, the panel clears that slot, arms it again, and prompts for a replacement. Destination clears quietly.",
+          "If the Start note is deleted while Rangefinder is active, the panel clears that slot, arms it again, and prompts for a replacement. End clears quietly.",
           "Rangefinder stays US-map only: switching to the World map turns the mode off and disables the toggle until the US map is active again.",
           "Rangefinder rings are now configurable: edit each distance, add or remove rings, and keep up to eight visible planning bands.",
-          "Added a miles/kilometers unit toggle beside Fill rings. Ring labels, distance inputs, and Start-to-Destination comparisons follow the selected unit while time stays based on the 60 mph estimate.",
-          "Moved the point-picking guidance message into the Rangefinder header area so the picker prompt stays close to the Start and Destination slots.",
+          "Added a miles/kilometers unit toggle beside Fill rings. Ring labels, distance inputs, and Start-to-End comparisons follow the selected unit while time stays based on the 60 mph estimate.",
+          "Moved the point-picking guidance message into the Rangefinder header area so the picker prompt stays close to the Start and End slots.",
           "Adjusted the paired Legend and Rangefinder layout: map placements split 60/40 on desktop, while side-column placements stack Rangefinder above the Legend like mobile.",
           "Restored reliable Legend drag placement while Rangefinder is open by moving the paired panel group out of the way during desktop drag previews.",
           "Refined the Rangefinder palette so rings start with deeper gold near Start and fade through amber across longer distances, with matching gradient-colored ring controls.",
@@ -15189,6 +15202,12 @@
           "Added Clip and Time toggles: Clip trims ring fills/strokes to the US map shapes, while Time controls whether ring labels and comparisons include 60 mph estimates.",
           "Moved the add-ring button into the options row so reaching the eight-ring limit does not add an extra panel row.",
           "Removed the Rangefinder header icon and tightened the header spacing so picker instructions stay on one line.",
+          "Changed each ring row so clicking its mi/km unit toggles that ring on or off, keeping the numeric distance as the only repeated value.",
+          "Refined ring rendering so mainland Start pins never paint over Alaska, Hawaii, or territory land even when ocean clipping is off. If Start is inside an inset, rings stay out of the other map regions.",
+          "When clipping is on, Rangefinder labels now search for a visible point along each clipped ring instead of staying above the uncut circle.",
+          "Stretched the Rangefinder bottom controls into full-width segmented buttons and centered the Start-to-End distance message.",
+          "Set ring controls to four columns on desktop and two columns on mobile, with smaller delete buttons for denser scanning.",
+          "Added a roadmap wishlist item for the Washington-to-Alaska cross-inset Rangefinder edge case.",
           "Updated Help Center Rangefinder guidance and retargeted the active Add Drive Radius roadmap item to the 4.2.0 line."
         ]
       },
@@ -17439,7 +17458,7 @@
       const miles = haversineMiles(a1.lat, a1.lng, a2.lat, a2.lng);
       if (!Number.isFinite(miles)) return "";
       const distance = ringDistanceDisplayText(miles);
-      return ringShowTime() ? `${distance} · ${ringTimeLabel(miles)} at ${ringSpeedLabel()}` : `${distance} straight-line`;
+      return ringShowTime() ? `${distance} · ${ringTimeLabel(miles)}` : `${distance} straight-line`;
     }
 
     function syncLayerModePills() {
@@ -17498,7 +17517,7 @@
       const compare = ringCompareReadout();
       const insetWarning = ringInsetWarning(anchor1);
       const unit = ringUnit();
-      const pointName = slot => slot === 1 ? "Start" : "Destination";
+      const pointName = slot => slot === 1 ? "Start" : "End";
       const slotHtml = (slot, anchor) => {
         const label = anchor?.label || `Pick ${pointName(slot)}`;
         const classes = ["ring-anchor-slot", anchor ? "is-filled" : "is-empty", armed === slot ? "is-armed" : ""].filter(Boolean).join(" ");
@@ -17509,12 +17528,11 @@
         const label = ringDistanceDisplayText(miles, unit);
         const pressed = enabled.has(ringDistanceKey(miles));
         return `<div class="ring-config-row" style="${ringStepStyle(index, "ring-chip")}" data-ring-index="${index}">
-          <button class="ring-distance-chip" type="button" data-ring-distance-toggle="${index}" aria-pressed="${pressed ? "true" : "false"}" aria-label="${pressed ? "Hide" : "Show"} ${escapeHtml(label)} ring" title="${pressed ? "Hide" : "Show"} ${escapeHtml(label)} ring"><span class="ring-toggle-mark" aria-hidden="true"></span></button>
           <label class="ring-distance-field">
             <span class="sr-only">Ring ${index + 1} distance</span>
             <input type="number" min="1" max="${unit === "km" ? Math.round(RING_DISTANCE_MAX * RING_KM_PER_MILE) : RING_DISTANCE_MAX}" step="1" value="${ringDistanceDisplayValue(miles, unit)}" data-ring-distance-input="${index}" aria-label="Ring ${index + 1} distance in ${unit}">
-            <span class="ring-unit-label">${unit}</span>
           </label>
+          <button class="ring-distance-chip" type="button" data-ring-distance-toggle="${index}" aria-pressed="${pressed ? "true" : "false"}" aria-label="${pressed ? "Hide" : "Show"} ${escapeHtml(label)} ring" title="${pressed ? "Hide" : "Show"} ${escapeHtml(label)} ring">${unit}</button>
           <button class="ring-remove-btn" type="button" data-ring-remove="${index}" aria-label="Remove ${escapeHtml(label)} ring" title="Remove ring" ${distances.length <= 1 ? "disabled" : ""}>${__DELETE_LEFT_FILL}</button>
         </div>`;
       }).join("");
@@ -17524,7 +17542,7 @@
         ? `Tap a mapped note pin for ${pointName(armed)}.`
         : !anchor1
           ? "Pick a mapped note pin for Start."
-          : "Tap Start or Destination to replace a point.";
+          : "Tap Start or End to replace a point.";
       const status = ringPanelNotice || hint;
       const disclaimerText = ringShowTime() ? RING_DISCLAIMER_TEXT : RING_DISTANCE_ONLY_DISCLAIMER_TEXT;
       const disclaimer = dismissed.has(RING_HINT_KEY)
@@ -17535,20 +17553,20 @@
           <h2>Rangefinder</h2>
           <div class="ring-panel-status${ringPanelNotice ? " is-warning" : ""}">${escapeHtml(status)}</div>
         </div>
-        <div class="ring-anchor-expression" aria-label="Rangefinder Start and Destination">
+        <div class="ring-anchor-expression" aria-label="Rangefinder Start and End">
           ${slotHtml(1, anchor1)}
           <span class="muted">to</span>
           <span class="ring-anchor-2-wrap">
             ${slotHtml(2, anchor2)}
-            ${anchor2 ? `<button class="ring-anchor-clear" type="button" data-ring-clear="2" aria-label="Clear Rangefinder Destination" title="Clear Destination">${__DELETE_LEFT_FILL}</button>` : ""}
+            ${anchor2 ? `<button class="ring-anchor-clear" type="button" data-ring-clear="2" aria-label="Clear Rangefinder End" title="Clear End">${__DELETE_LEFT_FILL}</button>` : ""}
           </span>
         </div>
         ${compare ? `<div class="ring-compare-readout">${escapeHtml(compare)}</div>` : ""}
         <div class="ring-chip-row" aria-label="Visible Rangefinder rings">${ringChips}</div>
         <div class="ring-options-row">
-          <label class="ring-option-toggle"><input id="ringFillToggle" type="checkbox" ${state.settings.ringFill !== false ? "checked" : ""}>Fill</label>
-          <label class="ring-option-toggle"><input id="ringClipToggle" type="checkbox" ${ringClipEnabled() ? "checked" : ""}>Clip</label>
-          <label class="ring-option-toggle"><input id="ringTimeToggle" type="checkbox" ${ringShowTime() ? "checked" : ""}>Time</label>
+          <button class="ring-option-toggle" type="button" data-ring-setting="fill" aria-pressed="${state.settings.ringFill !== false ? "true" : "false"}">Fill</button>
+          <button class="ring-option-toggle" type="button" data-ring-setting="clip" aria-pressed="${ringClipEnabled() ? "true" : "false"}">Clip</button>
+          <button class="ring-option-toggle" type="button" data-ring-setting="time" aria-pressed="${ringShowTime() ? "true" : "false"}">Time</button>
           <div class="ring-unit-toggle" aria-label="Rangefinder distance unit">
             <button type="button" data-ring-unit="mi" aria-pressed="${unit === "mi" ? "true" : "false"}">mi</button>
             <button type="button" data-ring-unit="km" aria-pressed="${unit === "km" ? "true" : "false"}">km</button>
@@ -18722,7 +18740,7 @@
       const svgNS = "http://www.w3.org/2000/svg";
       const group = document.createElementNS(svgNS, "g");
       const scale = markerZoomScale() * (slot === 1 ? 1.18 : .96);
-      const label = anchor?.label || (slot === 1 ? "Start" : "Destination");
+      const label = anchor?.label || (slot === 1 ? "Start" : "End");
       group.classList.add("ring-anchor-pin", `is-anchor-${slot}`);
       group.setAttribute("transform", `matrix(${scale.toFixed(3)} 0 0 ${scale.toFixed(3)} ${point.x.toFixed(1)} ${point.y.toFixed(1)})`);
       group.innerHTML = `
@@ -18743,11 +18761,20 @@
       return group;
     }
 
-    function ensureRingLandClipPath() {
+    function ringClipTilesForAnchor(anchorAbbr) {
       const svg = $("#stateMap");
-      if (!svg) return "";
-      const tiles = $$(".state-tile", svg);
-      if (!tiles.length) return "";
+      if (!svg) return [];
+      const insetAnchor = RING_INSET_IDS.has(anchorAbbr);
+      return $$(".state-tile", svg).filter(tile => {
+        const abbr = tile.dataset.abbr || "";
+        return insetAnchor ? abbr === anchorAbbr : !RING_INSET_IDS.has(abbr);
+      });
+    }
+
+    function ensureRingLandClipPath(anchorAbbr) {
+      const svg = $("#stateMap");
+      const tiles = ringClipTilesForAnchor(anchorAbbr);
+      if (!svg || !tiles.length) return "";
       const svgNS = "http://www.w3.org/2000/svg";
       let defs = $("#stateMapDefs");
       if (!defs) {
@@ -18757,11 +18784,13 @@
       }
       const id = "ringLandClip";
       let clip = $(`#${id}`, defs);
-      if (clip && clip.dataset.tileCount === String(tiles.length)) return id;
+      const regionKey = RING_INSET_IDS.has(anchorAbbr) ? anchorAbbr : "contiguous";
+      if (clip && clip.dataset.tileCount === String(tiles.length) && clip.dataset.regionKey === regionKey) return id;
       clip?.remove();
       clip = document.createElementNS(svgNS, "clipPath");
       clip.id = id;
       clip.dataset.tileCount = String(tiles.length);
+      clip.dataset.regionKey = regionKey;
       clip.setAttribute("clipPathUnits", "userSpaceOnUse");
       tiles.forEach(tile => {
         const clone = tile.cloneNode(false);
@@ -18773,6 +18802,96 @@
       });
       defs.append(clip);
       return id;
+    }
+
+    function ensureRingInsetMask(anchorAbbr) {
+      const svg = $("#stateMap");
+      if (!svg) return "";
+      const insetAnchor = RING_INSET_IDS.has(anchorAbbr);
+      const excludedTiles = $$(".state-tile", svg).filter(tile => {
+        const abbr = tile.dataset.abbr || "";
+        return insetAnchor ? abbr !== anchorAbbr : RING_INSET_IDS.has(abbr);
+      });
+      if (!excludedTiles.length) return "";
+      const svgNS = "http://www.w3.org/2000/svg";
+      let defs = $("#stateMapDefs");
+      if (!defs) {
+        defs = document.createElementNS(svgNS, "defs");
+        defs.id = "stateMapDefs";
+        svg.prepend(defs);
+      }
+      const id = "ringInsetMask";
+      const regionKey = insetAnchor ? `only-${anchorAbbr}` : "contiguous-no-insets";
+      let mask = $(`#${id}`, defs);
+      if (mask && mask.dataset.tileCount === String(excludedTiles.length) && mask.dataset.regionKey === regionKey) return id;
+      mask?.remove();
+      mask = document.createElementNS(svgNS, "mask");
+      mask.id = id;
+      mask.dataset.tileCount = String(excludedTiles.length);
+      mask.dataset.regionKey = regionKey;
+      mask.setAttribute("maskUnits", "userSpaceOnUse");
+      mask.setAttribute("mask-type", "luminance");
+      const viewBox = svg.viewBox?.baseVal;
+      const rect = document.createElementNS(svgNS, "rect");
+      rect.setAttribute("x", String(viewBox?.x || 0));
+      rect.setAttribute("y", String(viewBox?.y || 0));
+      rect.setAttribute("width", String(viewBox?.width || 934));
+      rect.setAttribute("height", String(viewBox?.height || 589));
+      rect.setAttribute("fill", "white");
+      mask.append(rect);
+      excludedTiles.forEach(tile => {
+        const clone = tile.cloneNode(false);
+        ["id", "class", "style", "tabindex", "role", "aria-label"].forEach(attr => clone.removeAttribute(attr));
+        [...clone.attributes].forEach(attr => {
+          if (attr.name.startsWith("data-")) clone.removeAttribute(attr.name);
+        });
+        clone.setAttribute("fill", "black");
+        clone.setAttribute("stroke", "black");
+        mask.append(clone);
+      });
+      defs.append(mask);
+      return id;
+    }
+
+    function ringPointInsideClipTiles(x, y, tiles) {
+      if (!tiles.length) return false;
+      const svg = $("#stateMap");
+      let point = null;
+      if (svg?.createSVGPoint) {
+        point = svg.createSVGPoint();
+        point.x = x;
+        point.y = y;
+      } else if (typeof DOMPoint === "function") {
+        point = new DOMPoint(x, y);
+      }
+      return tiles.some(tile => {
+        if (point && typeof tile.isPointInFill === "function") {
+          try { return tile.isPointInFill(point); } catch (e) { }
+        }
+        try {
+          const box = tile.getBBox();
+          return x >= box.x && x <= box.x + box.width && y >= box.y && y <= box.y + box.height;
+        } catch (e) {
+          return false;
+        }
+      });
+    }
+
+    function ringLabelPoint(anchorPoint, rx, ry, clipTiles) {
+      const defaultPoint = { x: anchorPoint.x, y: anchorPoint.y - ry - 5 };
+      if (!ringClipEnabled() || !clipTiles.length) return defaultPoint;
+      const preferred = [-90, -68, -112, -45, -135, -22, -158, 0, 180, 22, 158, 45, 135, 68, 112, 90];
+      const angles = [...preferred];
+      for (let angle = 0; angle < 360; angle += 10) {
+        if (!angles.includes(angle) && !angles.includes(angle - 360)) angles.push(angle);
+      }
+      for (const degrees of angles) {
+        const radians = degrees * Math.PI / 180;
+        const x = anchorPoint.x + Math.cos(radians) * rx * .96;
+        const y = anchorPoint.y + Math.sin(radians) * ry * .96;
+        if (ringPointInsideClipTiles(x, y, clipTiles)) return { x, y };
+      }
+      return defaultPoint;
     }
 
     function renderRingOverlay() {
@@ -18789,11 +18908,16 @@
       const scale = milesToSvgScale(anchor1.lat, anchor1.abbr);
       if (!point1 || !scale) return;
       const svgNS = "http://www.w3.org/2000/svg";
+      const clipOn = ringClipEnabled();
+      const clipTiles = clipOn ? ringClipTilesForAnchor(anchor1.abbr) : [];
       const ringShapes = document.createElementNS(svgNS, "g");
       ringShapes.classList.add("ring-shapes");
-      if (ringClipEnabled()) {
-        const clipId = ensureRingLandClipPath();
+      if (clipOn) {
+        const clipId = ensureRingLandClipPath(anchor1.abbr);
         if (clipId) ringShapes.setAttribute("clip-path", `url(#${clipId})`);
+      } else {
+        const maskId = ensureRingInsetMask(anchor1.abbr);
+        if (maskId) ringShapes.setAttribute("mask", `url(#${maskId})`);
       }
       overlay.append(ringShapes);
       const distanceIndex = Object.fromEntries(ringDistances().map((miles, index) => [ringDistanceKey(miles), index]));
@@ -18810,10 +18934,11 @@
         ellipse.setAttribute("ry", ry.toFixed(2));
         ringShapes.append(ellipse);
         const label = document.createElementNS(svgNS, "text");
+        const labelPoint = ringLabelPoint(point1, rx, ry, clipTiles);
         label.classList.add("ring-label");
         label.setAttribute("style", ringStepStyle(ringIndex));
-        label.setAttribute("x", point1.x.toFixed(2));
-        label.setAttribute("y", (point1.y - ry - 5).toFixed(2));
+        label.setAttribute("x", labelPoint.x.toFixed(2));
+        label.setAttribute("y", labelPoint.y.toFixed(2));
         label.textContent = ringLabelText(miles);
         overlay.append(label);
       });
@@ -24112,6 +24237,13 @@
           setRingUnit(unit.dataset.ringUnit);
           return;
         }
+        const setting = event.target.closest("[data-ring-setting]");
+        if (setting) {
+          if (setting.dataset.ringSetting === "fill") setRingFill(state.settings.ringFill === false);
+          if (setting.dataset.ringSetting === "clip") setRingClip(!ringClipEnabled());
+          if (setting.dataset.ringSetting === "time") setRingShowTime(!ringShowTime());
+          return;
+        }
         const distance = event.target.closest("[data-ring-distance-toggle]");
         if (distance) {
           toggleRingDistance(distance.dataset.ringDistanceToggle);
@@ -24121,9 +24253,6 @@
         if (slot) armRingSlot(Number(slot.dataset.ringSlot));
       });
       $("#ringPanel").addEventListener("change", event => {
-        if (event.target.id === "ringFillToggle") setRingFill(event.target.checked);
-        if (event.target.id === "ringClipToggle") setRingClip(event.target.checked);
-        if (event.target.id === "ringTimeToggle") setRingShowTime(event.target.checked);
         if (event.target.matches("[data-ring-distance-input]")) setRingDistanceAt(event.target.dataset.ringDistanceInput, event.target.value);
       });
       $("#notesBucketListBtn").addEventListener("click", toggleBucketListView);
