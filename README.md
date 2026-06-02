@@ -8,6 +8,7 @@ The app is still intentionally simple to run: one offline-capable `index.html`, 
 
 | Version | Date | Title | Summary
 |---|---:|---|---|
+| 4.2.0 | 2026-06-02 | Rangefinder | Rangefinder adds straight-line planning rings, per-map settings, and travel-time estimates. |
 | 4.1.0 | 2026-05-29 | Wayfinder | Wayfinder Feature to act as a Bucket List or Planning Mode along with refreshed Keyboard Shortcuts approach for the Power Users. |
 | 4.0.0 | 2026-05-29 | Trail Atlas | A switchable World map — log every country right alongside your US states. |
 | 3.3.0 | 2026-05-28 | Basecamp Notes | A roomy Basecamp scratchpad for home-base notes that aren't tied to any one place. |

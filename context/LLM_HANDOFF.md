@@ -103,10 +103,10 @@ For every completed change:
 - Trail Log is a single-file, local-first HTML/CSS/JS app.
 - Main file: `index.html`. `STORAGE_KEY = "usStateVisitMap.v1"`, version in `APP_VERSION`.
 - Docs: `README.md` (public/run/build), this handoff (all dev + LLM context).
-- Current version: `APP_VERSION = "4.2.0.28"` — **active dev line 4.2.0 "Rangefinder"** (working title, unreleased; bump the fourth build number per change). Latest **cut** release is 4.1.0 "Wayfinder".
-- The 4.2.0 line adds **Rangefinder Mode**: a map mode (Shortcut Mode key `5`, `__TARGET` button) that picks two note pins as Start/End, draws concentric planning rings, and shows straight-line distance + estimated time. Drive/Plane travel modes, per-map settings (`settings.ringByLayer.{us,world}`), configurable average speed (Drive 30–120, Plane 120–760 mph), fill/clip/unit/time toggles, and US + World support. Internal symbols use the `ring*` prefix.
-- Latest public releases (newest first): 4.1.0 "Wayfinder", 4.0.0 "Trail Atlas", 3.3.0 "Basecamp Notes", 3.2.0 "Trail Shorthand". Full notes in the in-app CHANGELOG; full history table in `README.md`.
-- Plan docs live in `context/` only while their line is in flight, then are deleted on ship. Active until 4.2.0 ships: `context/WISH-010-RADIUS-PLAN.md` (Rangefinder / Drive Radius). Shipped plans (World map 4.0.0, Wayfinder 4.1.0) were removed after release.
+- Current version: `APP_VERSION = "4.2.0"` — latest cut release is 4.2.0 "Rangefinder". No active dev line; the next change begins with `start`.
+- 4.2.0 adds **Rangefinder Mode**: a map mode (Shortcut Mode key `5`, `__TARGET` button) that picks two note pins as Start/End, draws concentric planning rings, and shows straight-line distance + estimated time. Drive/Plane travel modes, per-map settings (`settings.ringByLayer.{us,world}`), configurable average speed (Drive 30–120, Plane 120–760 mph), fill/clip/unit/time toggles, and US + World support. Internal symbols use the `ring*` prefix.
+- Latest public releases (newest first): 4.2.0 "Rangefinder", 4.1.0 "Wayfinder", 4.0.0 "Trail Atlas", 3.3.0 "Basecamp Notes". Full notes in the in-app CHANGELOG; full history table in `README.md`.
+- Plan docs live in `context/` only while their line is in flight, then are deleted on ship. No active plan docs. Shipped plans (Rangefinder 4.2.0, Wayfinder 4.1.0, World map 4.0.0) were removed after release.
 - No build step (other than the optional macOS icon pipeline — see README), backend, or dependencies.
 - User data lives in browser localStorage. Locate is the only intentional online action and only runs when clicked.
 
