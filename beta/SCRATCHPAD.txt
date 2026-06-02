@@ -1,3 +1,11 @@
+## Future Prompt
+
+Mobile Cleanup: 
+- Better Auto Colors single liner
+- Map buttons misaligned in scroll view
+- Double scroll with tip jar
+- Base camp causes scrolling problems and should just fit on mobile screen
+
 ## Names
 
 Ferrari (Rosso Corsa) corresponds to hex code #FF2800 (or sometimes #E80020 for the Formula 1 team)
