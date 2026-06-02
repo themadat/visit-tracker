@@ -48,25 +48,25 @@
       --danger: #b42318;
       --success: #157347;
       --warning: #d97706;
-      --accent-ring: #c96a2b;
-      --accent-ring-secondary: #8f3d16;
-      --ring-step-1-stroke: #c96a2b;
-      --ring-step-2-stroke: #bd6126;
-      --ring-step-3-stroke: #b45622;
-      --ring-step-4-stroke: #a94e1f;
-      --ring-step-5-stroke: #9f461b;
-      --ring-step-6-stroke: #954018;
-      --ring-step-7-stroke: #8f3d16;
-      --ring-step-8-stroke: #743014;
-      --ring-step-1-fill: rgba(201, 106, 43, .2);
-      --ring-step-2-fill: rgba(189, 97, 38, .17);
-      --ring-step-3-fill: rgba(180, 86, 34, .14);
-      --ring-step-4-fill: rgba(169, 78, 31, .12);
-      --ring-step-5-fill: rgba(159, 70, 27, .1);
-      --ring-step-6-fill: rgba(149, 64, 24, .085);
-      --ring-step-7-fill: rgba(143, 61, 22, .07);
-      --ring-step-8-fill: rgba(116, 48, 20, .06);
-      --ring-connector: #8f3d16;
+      --accent-ring: #d4a017;
+      --accent-ring-secondary: #b45309;
+      --ring-step-1-stroke: #d4a017;
+      --ring-step-2-stroke: #d19700;
+      --ring-step-3-stroke: #c98505;
+      --ring-step-4-stroke: #bd7208;
+      --ring-step-5-stroke: #ad6108;
+      --ring-step-6-stroke: #9f5309;
+      --ring-step-7-stroke: #92400e;
+      --ring-step-8-stroke: #7c2d12;
+      --ring-step-1-fill: rgba(212, 160, 23, .2);
+      --ring-step-2-fill: rgba(209, 151, 0, .17);
+      --ring-step-3-fill: rgba(201, 133, 5, .14);
+      --ring-step-4-fill: rgba(189, 114, 8, .12);
+      --ring-step-5-fill: rgba(173, 97, 8, .1);
+      --ring-step-6-fill: rgba(159, 83, 9, .085);
+      --ring-step-7-fill: rgba(146, 64, 14, .07);
+      --ring-step-8-fill: rgba(124, 45, 18, .06);
+      --ring-connector: #b45309;
       --ring-label-bg: var(--bg);
       --state-empty: #d7dce3;
       --shadow: 0 18px 50px rgba(16, 24, 40, .14);
@@ -90,25 +90,25 @@
       --danger: #ff8a7a;
       --success: #72d69a;
       --warning: #fbbf24;
-      --accent-ring: #e58a4a;
-      --accent-ring-secondary: #c96a2b;
-      --ring-step-1-stroke: #e58a4a;
-      --ring-step-2-stroke: #d67838;
-      --ring-step-3-stroke: #c96a2b;
-      --ring-step-4-stroke: #bd5f25;
-      --ring-step-5-stroke: #ad521d;
-      --ring-step-6-stroke: #9e4619;
-      --ring-step-7-stroke: #8f3d16;
-      --ring-step-8-stroke: #733014;
-      --ring-step-1-fill: rgba(229, 138, 74, .2);
-      --ring-step-2-fill: rgba(214, 120, 56, .17);
-      --ring-step-3-fill: rgba(201, 106, 43, .14);
-      --ring-step-4-fill: rgba(189, 95, 37, .12);
-      --ring-step-5-fill: rgba(173, 82, 29, .1);
-      --ring-step-6-fill: rgba(158, 70, 25, .085);
-      --ring-step-7-fill: rgba(143, 61, 22, .075);
-      --ring-step-8-fill: rgba(115, 48, 20, .065);
-      --ring-connector: #e58a4a;
+      --accent-ring: #e0aa1a;
+      --accent-ring-secondary: #f59e0b;
+      --ring-step-1-stroke: #e0aa1a;
+      --ring-step-2-stroke: #d99a00;
+      --ring-step-3-stroke: #d08700;
+      --ring-step-4-stroke: #c87505;
+      --ring-step-5-stroke: #b96308;
+      --ring-step-6-stroke: #a9550a;
+      --ring-step-7-stroke: #9a460c;
+      --ring-step-8-stroke: #873a0d;
+      --ring-step-1-fill: rgba(224, 170, 26, .2);
+      --ring-step-2-fill: rgba(217, 154, 0, .17);
+      --ring-step-3-fill: rgba(208, 135, 0, .14);
+      --ring-step-4-fill: rgba(200, 117, 5, .12);
+      --ring-step-5-fill: rgba(185, 99, 8, .1);
+      --ring-step-6-fill: rgba(169, 85, 10, .085);
+      --ring-step-7-fill: rgba(154, 70, 12, .075);
+      --ring-step-8-fill: rgba(135, 58, 13, .065);
+      --ring-connector: #e0aa1a;
       --ring-label-bg: var(--bg);
       --state-empty: #3b4553;
       --shadow: 0 22px 60px rgba(0, 0, 0, .38);
@@ -1232,7 +1232,7 @@
 
     .bucket-list-pill {
       background: #14b8a6;
-      color: #fff;
+      color: #000;
     }
 
     .ring-pill {
@@ -1251,12 +1251,18 @@
     [data-theme="dark"] button[aria-pressed="true"].bucket-list-toggle-btn {
       background: #14b8a6;
       border-color: #14b8a6;
-      color: #fff;
+      color: #000;
+    }
+
+    button[aria-pressed="true"].bucket-list-toggle-btn .sf-symbol,
+    [data-theme="dark"] button[aria-pressed="true"].bucket-list-toggle-btn .sf-symbol {
+      color: #000;
     }
 
     button[aria-pressed="true"].bucket-list-toggle-btn:hover {
       border-color: #0d9488;
       background: #0d9488;
+      color: #000;
     }
 
     button[aria-pressed="true"].ring-toggle-btn,
@@ -1810,6 +1816,26 @@
       opacity: .82;
     }
 
+    .ring-connector.is-cross-inset {
+      stroke-dasharray: 2 5;
+      stroke-width: 1.8;
+      opacity: .68;
+    }
+
+    .ring-cross-inset-label {
+      fill: color-mix(in srgb, var(--ring-connector) 78%, var(--text));
+      font-size: 8px;
+      font-weight: 900;
+      letter-spacing: 0;
+      paint-order: stroke fill;
+      pointer-events: none;
+      stroke: var(--ring-label-bg);
+      stroke-linejoin: round;
+      stroke-width: 3px;
+      text-anchor: middle;
+      dominant-baseline: central;
+    }
+
     .ring-ellipse {
       fill: var(--ring-fill, var(--ring-step-3-fill));
       fill-opacity: 1;
@@ -1824,7 +1850,7 @@
 
     .ring-label {
       fill: color-mix(in srgb, var(--text) 82%, var(--ring-stroke, var(--ring-connector)));
-      font-size: 8.6px;
+      font-size: 10px;
       font-weight: 900;
       letter-spacing: 0;
       paint-order: stroke fill;
@@ -2173,7 +2199,7 @@
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: .2rem;
+      gap: .14rem;
       justify-self: end;
       min-width: 0;
     }
@@ -2194,6 +2220,15 @@
     .ring-header-btn .sf-symbol {
       width: 22px;
       height: 22px;
+    }
+
+    .ring-style-picker {
+      position: relative;
+      display: inline-flex;
+    }
+
+    .ring-style-picker .gauge-fill {
+      fill: transparent;
     }
 
     .ring-header-btn[aria-pressed="true"] {
@@ -2218,6 +2253,75 @@
 
     .ring-header-btn[data-ring-setting="fill"][aria-pressed="true"] .sf-symbol path:last-of-type {
       fill: var(--accent-ring-secondary);
+    }
+
+    .ring-header-btn[data-ring-setting="clip"][aria-pressed="true"] .sf-symbol .gauge-fill {
+      fill: color-mix(in srgb, var(--accent-ring) 66%, #fff 34%);
+    }
+
+    .ring-header-btn[data-ring-setting="clip"][aria-pressed="true"] .sf-symbol .gauge-outline {
+      fill: var(--accent-ring-secondary);
+    }
+
+    .ring-style-picker.is-fill-on .ring-style-btn .sf-symbol path:first-of-type,
+    .ring-style-picker.is-fill-on .ring-style-menu [data-ring-style-menu-option="fill"] .sf-symbol path:first-of-type,
+    .ring-style-picker.is-fill-on .ring-style-menu [data-ring-style-menu-option="clip"] .sf-symbol .gauge-fill {
+      fill: color-mix(in srgb, var(--accent-ring) 66%, #fff 34%);
+    }
+
+    .ring-style-picker.is-fill-on .ring-style-btn .sf-symbol path:last-of-type,
+    .ring-style-picker.is-fill-on .ring-style-menu [data-ring-style-menu-option="fill"] .sf-symbol path:last-of-type,
+    .ring-style-picker.is-clip-on .ring-style-btn .sf-symbol .gauge-outline,
+    .ring-style-picker.is-clip-on .ring-style-menu [data-ring-style-menu-option="clip"] .sf-symbol .gauge-outline {
+      fill: var(--accent-ring-secondary);
+    }
+
+    .ring-style-menu {
+      position: absolute;
+      top: calc(100% + .32rem);
+      right: 0;
+      z-index: 25;
+      display: grid;
+      gap: .32rem;
+      min-width: 11.5rem;
+      padding: .36rem;
+      border: 1px solid var(--line);
+      border-radius: .62rem;
+      background: color-mix(in srgb, var(--surface) 94%, var(--accent-ring) 6%);
+      box-shadow: 0 12px 28px rgba(15, 23, 42, .18);
+      transform-origin: top right;
+      animation: miniPop .12s ease-out;
+    }
+
+    .ring-style-menu-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .24rem;
+    }
+
+    .ring-style-menu button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: .28rem;
+      height: 34px;
+      min-height: 34px;
+      padding: .14rem .32rem;
+      font-size: .72rem;
+      font-weight: 860;
+      white-space: nowrap;
+    }
+
+    .ring-style-menu .sf-symbol {
+      flex: 0 0 18px;
+      width: 18px;
+      height: 18px;
+    }
+
+    .ring-style-menu button[aria-pressed="true"] {
+      border-color: var(--accent-ring);
+      background: color-mix(in srgb, var(--accent-ring) 18%, var(--surface));
+      color: var(--text);
     }
 
     .ring-anchor-expression {
@@ -2340,9 +2444,20 @@
       box-shadow: var(--focus);
     }
 
+    .ring-distance-combo[data-ring-distance-toggle] {
+      cursor: pointer;
+    }
+
+    .ring-distance-combo[data-ring-distance-toggle] .ring-distance-field,
+    .ring-distance-combo[data-ring-distance-toggle] .ring-distance-field input {
+      cursor: pointer;
+    }
+
     .ring-distance-chip {
+      display: inline-grid;
+      place-items: center;
       min-width: 0;
-      width: 1.72rem;
+      width: 2.12rem;
       height: 100%;
       min-height: 0;
       padding: 0 .12rem;
@@ -2356,6 +2471,7 @@
       line-height: 1;
     }
 
+    .ring-distance-combo.is-enabled .ring-distance-chip,
     .ring-distance-chip[aria-pressed="true"] {
       background: color-mix(in srgb, var(--ring-chip-color, var(--accent-ring)) 18%, transparent);
       border-color: var(--ring-chip-color, var(--accent-ring));
@@ -2379,7 +2495,7 @@
       width: 100%;
       min-width: 0;
       height: 30px;
-      padding: .2rem .6rem .2rem .2rem;
+      padding: .2rem .42rem .2rem .2rem;
       border: 0;
       background: transparent;
       font-size: .8rem;
@@ -13397,16 +13513,17 @@
             <li>Use View Locations to show or hide note pins. Notes without coordinates sit at the center of their
               state or territory shape; exact coordinates place markers more precisely.</li>
             <li>Use Match Notes to dim map locations and pins that do not match the active Notes filters.</li>
-            <li>Use Rangefinder on the US map to pick saved note pins as Start and End points, draw planning rings, and
+            <li>Use Rangefinder on the US or World map to pick saved note pins as Start and End points, draw planning rings, and
               compare the
               straight-line distance between two places.</li>
             <li>Rangefinder rings can be filled or stroke-only, clipped to the active land area, shown in miles or
               kilometers,
-              customized up to eight distances, and shown with or without 60 mph time estimates.</li>
+              customized up to eight distances, and shown with or without Drive or Plane time estimates.</li>
             <li>Mapped markers open the note when there is one note. Nearby markers cluster, zoom when they can split,
               or open a picker when they are too close.</li>
             <li>Alaska, Hawaii, and territory points use inset map scale. Mainland rings clip away from those insets,
-              while inset starts clip to their own inset.</li>
+              inset starts clip to their own inset, and cross-inset Start-to-End comparisons use real coordinates with a
+              broken map cue instead of a route line.</li>
             <li>On desktop, drag the divider between the map and cards to resize the working area.</li>
           </ol>
         </section>
@@ -13493,8 +13610,8 @@
             dimming locations and hiding note pins that do not match.</p>
           <p><b>Why are some pins grouped?</b><br>Nearby mapped notes cluster so the map stays readable. Click a cluster
             to zoom or open the picker when notes are too close to separate.</p>
-          <p><b>Are Rangefinder rings driving distance?</b><br>No. Rings and Start-to-End comparisons use straight-line
-            distance. Time estimates assume a steady 60 mph and are planning hints, not routing.</p>
+          <p><b>Are Rangefinder rings routing distance?</b><br>No. Rings and Start-to-End comparisons use straight-line
+            distance. Drive estimates assume 60 mph, Plane estimates assume 600 mph, and both are planning hints.</p>
         </section>
         <section class="help-section">
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ: Legend
@@ -13877,7 +13994,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.2.0.16";
+    const APP_VERSION = "4.2.0.23";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -13917,6 +14034,9 @@
       WI: [42.5, 47.1, -92.9, -86.8], WY: [41.0, 45.0, -111.1, -104.0], DC: [38.79, 39.0, -77.12, -76.91],
       PR: [17.9, 18.6, -67.3, -65.2], VI: [17.6, 18.5, -65.2, -64.5], GU: [13.2, 13.7, 144.6, 145.0],
       MP: [14.0, 20.7, 144.8, 146.2], AS: [-14.6, -11.0, -171.1, -168.0]
+    };
+    const LOCATION_PROJECTION_BOX_OVERRIDES = {
+      AK: { x: 31, y: 462, width: 176, height: 103 }
     };
     const MAP_LABEL_OVERRIDES = {
       // dx/dy nudge bbox center (SVG units). x/y overrides to absolute position.
@@ -13996,6 +14116,10 @@
     };
 
     // Find Free Custom SVGs: https://www.svgrepo.com
+    const __SQUARE_3_LAYERS_3D = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.7031 28.0957"><g><rect height="28.0957" opacity="0" width="25.7031" x="0" y="0"/><path d="M24.082 18.7207C24.9707 19.2383 25.3418 19.6484 25.3418 20.2832C25.3418 20.9082 24.9707 21.3184 24.082 21.8457L14.0918 27.627C13.5547 27.9492 13.125 28.0957 12.666 28.0957C12.2168 28.0957 11.7871 27.9492 11.2402 27.627L1.25977 21.8457C0.361328 21.3184 0 20.9082 0 20.2832C0 19.6484 0.361328 19.2383 1.25977 18.7207L3.64969 17.334L5.41249 18.3568L2.35352 20.1074C2.28516 20.1465 2.22656 20.1953 2.22656 20.2832C2.22656 20.3613 2.28516 20.4102 2.35352 20.4492L12.1484 26.0547C12.3438 26.1719 12.5 26.2305 12.666 26.2305C12.8418 26.2305 12.9883 26.1719 13.1836 26.0547L22.9785 20.4492C23.0566 20.4102 23.1055 20.3613 23.1055 20.2832C23.1055 20.1953 23.0566 20.1465 22.9785 20.1074L19.9224 18.3585L21.6898 17.334Z"/><path d="M24.082 12.8223C24.9707 13.3496 25.3418 13.7598 25.3418 14.3848C25.3418 15.0195 24.9707 15.4297 24.082 15.9473L14.0918 21.7383C13.5547 22.0508 13.125 22.207 12.666 22.207C12.2168 22.207 11.7871 22.0508 11.2402 21.7383L1.25977 15.9473C0.361328 15.4297 0 15.0195 0 14.3848C0 13.7598 0.361328 13.3496 1.25977 12.8223L3.95264 11.2598L5.72309 12.287L2.35352 14.2188C2.28516 14.2578 2.22656 14.3066 2.22656 14.3848C2.22656 14.4727 2.28516 14.5117 2.35352 14.5605L12.1484 20.166C12.3438 20.2734 12.5 20.332 12.666 20.332C12.8418 20.332 12.9883 20.2734 13.1836 20.166L22.9785 14.5605C23.0566 14.5117 23.1055 14.4727 23.1055 14.3848C23.1055 14.3066 23.0566 14.2578 22.9785 14.2188L19.6117 12.2886L21.3865 11.2598Z"/><path d="M12.666 15.957C13.125 15.957 13.5547 15.8008 14.0918 15.4883L24.082 9.69727C24.9707 9.17969 25.3418 8.76953 25.3418 8.13477C25.3418 7.50977 24.9707 7.09961 24.082 6.57227L14.0918 0.791016C13.5547 0.46875 13.125 0.322266 12.666 0.322266C12.2168 0.322266 11.7871 0.46875 11.2402 0.791016L1.25977 6.57227C0.361328 7.09961 0 7.50977 0 8.13477C0 8.76953 0.361328 9.17969 1.25977 9.69727L11.2402 15.4883C11.7871 15.8008 12.2168 15.957 12.666 15.957ZM12.666 14.082C12.5 14.082 12.3438 14.0234 12.1484 13.916L2.35352 8.31055C2.28516 8.26172 2.22656 8.22266 2.22656 8.13477C2.22656 8.05664 2.28516 8.00781 2.35352 7.96875L12.1484 2.35352C12.3438 2.24609 12.5 2.1875 12.666 2.1875C12.8418 2.1875 12.9883 2.24609 13.1836 2.35352L22.9785 7.96875C23.0566 8.00781 23.1055 8.05664 23.1055 8.13477C23.1055 8.22266 23.0566 8.26172 22.9785 8.31055L13.1836 13.916C12.9883 14.0234 12.8418 14.082 12.666 14.082Z"/></g></svg>`;
+const __CAR_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 29.8535 23.1543"><g><rect height="23.1543" opacity="0" width="29.8535" x="0" y="0"/><path d="M5.03906 7.22656C5.36133 5.74219 5.9668 4.00391 6.37695 3.28125C6.72852 2.67578 7.14844 2.36328 7.90039 2.26562C8.86719 2.12891 11.0449 2.05078 14.7461 2.05078C18.4473 2.05078 20.625 2.10938 21.5918 2.26562C22.3438 2.37305 22.7539 2.67578 23.1152 3.28125C23.5352 3.99414 24.1016 5.74219 24.4531 7.22656C24.5605 7.65625 24.3848 7.86133 23.9062 7.82227C21.7773 7.68555 19.3164 7.56836 14.7461 7.56836C10.1758 7.56836 7.71484 7.68555 5.58594 7.82227C5.10742 7.86133 4.94141 7.65625 5.03906 7.22656ZM5.66406 16.3184C4.56055 16.3184 3.73047 15.498 3.73047 14.3945C3.73047 13.3008 4.56055 12.4707 5.66406 12.4707C6.75781 12.4707 7.58789 13.3008 7.58789 14.3945C7.58789 15.498 6.75781 16.3184 5.66406 16.3184ZM11.4746 15.8984C10.6543 15.8984 10.0977 15.332 10.0977 14.5215C10.0977 13.7012 10.6543 13.1348 11.4746 13.1348L18.0176 13.1348C18.8379 13.1348 19.4043 13.7012 19.4043 14.5215C19.4043 15.332 18.8379 15.8984 18.0176 15.8984ZM23.8379 16.3184C22.7344 16.3184 21.9043 15.498 21.9043 14.3945C21.9043 13.3008 22.7344 12.4707 23.8379 12.4707C24.9316 12.4707 25.7617 13.3008 25.7617 14.3945C25.7617 15.498 24.9316 16.3184 23.8379 16.3184ZM14.7461 19.7461C18.9258 19.7461 24.541 19.5312 26.9238 19.2578C28.5645 19.0723 29.4922 18.1934 29.4922 16.6113L29.4922 14.3945C29.4922 12.2363 29.0332 11.084 27.9199 9.63867L26.8457 8.24219C26.3867 5.97656 25.5469 3.58398 25.1074 2.65625C24.4434 1.24023 23.1445 0.449219 21.543 0.234375C20.6934 0.117188 17.9004 0.0488281 14.7461 0.0488281C11.5918 0.0488281 8.79883 0.126953 7.94922 0.234375C6.34766 0.429688 5.04883 1.24023 4.38477 2.65625C3.94531 3.58398 3.11523 5.97656 2.64648 8.24219L1.57227 9.63867C0.458984 11.084 0 12.2363 0 14.3945L0 16.6113C0 18.1934 0.927734 19.0723 2.56836 19.2578C4.95117 19.5312 10.5664 19.7461 14.7461 19.7461ZM1.64062 23.1543L3.10547 23.1543C4.0332 23.1543 4.74609 22.4414 4.74609 21.5234L4.74609 18.4375L0 16.1621L0 21.5234C0 22.4414 0.712891 23.1543 1.64062 23.1543ZM26.3867 23.1543L27.8516 23.1543C28.7793 23.1543 29.4922 22.4414 29.4922 21.5234L29.4922 16.1621L24.7461 18.4375L24.7461 21.5234C24.7461 22.4414 25.459 23.1543 26.3867 23.1543Z"/></g></svg>`;
+
+const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 30.6445 25.0098"><g><rect height="25.0098" opacity="0" width="30.6445" x="0" y="0"/><path d="M30.6445 12.5C30.6348 11.0645 28.6719 10.0195 26.3281 10.0195L21.3086 10.0195C20.625 10.0195 20.3711 9.90234 19.9512 9.44336L11.709 0.439453C11.4551 0.15625 11.1328 0 10.7812 0L9.3457 0C9.02344 0 8.84766 0.283203 9.00391 0.625L13.2422 10.0195L6.875 10.7227L4.6582 6.65039C4.48242 6.34766 4.23828 6.2207 3.83789 6.2207L3.29102 6.2207C2.96875 6.2207 2.76367 6.40625 2.76367 6.73828L2.76367 18.2617C2.76367 18.584 2.96875 18.7793 3.29102 18.7793L3.83789 18.7793C4.23828 18.7793 4.48242 18.6426 4.6582 18.3496L6.875 14.2773L13.2422 14.9805L9.00391 24.375C8.84766 24.707 9.02344 24.9902 9.3457 24.9902L10.7812 24.9902C11.1328 24.9902 11.4551 24.834 11.709 24.5508L19.9512 15.5469C20.3711 15.0879 20.625 14.9805 21.3086 14.9805L26.3281 14.9805C28.6719 14.9805 30.6348 13.9258 30.6445 12.5Z"/></g></svg>`;
 
     // Common
     // Common :: Edit
@@ -14104,7 +14228,7 @@
     // Legend :: Edit Levels :: Delete :: __DELETE_LEFT_FILL
     
     const __MOONPHASE_FULL_MOON = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/></g></svg>`;
-    const __GAUGE_OPEN = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 28.1543 24.0332"><g><rect height="24.0332" opacity="0" width="28.1543" x="0" y="0"/><path d="M13.8965 0C6.2207 0 0 6.21094 0 13.8965C0 17.6953 1.52344 21.1621 4.0332 23.6816C4.41406 24.0625 4.98047 24.082 5.39062 23.7012C5.71289 23.3691 5.6543 22.793 5.21484 22.334C3.125 20.1758 1.8457 17.1582 1.8457 13.8965C1.8457 7.16797 7.1875 1.81641 13.8965 1.81641C20.6152 1.81641 25.9473 7.16797 25.9473 13.8965C25.9473 17.1582 24.6777 20.1758 22.5781 22.334C22.1484 22.793 22.0801 23.3691 22.4121 23.7012C22.8125 24.082 23.3887 24.0625 23.7598 23.6816C26.2695 21.1719 27.793 17.6953 27.793 13.8965C27.793 6.21094 21.582 0 13.8965 0Z"/></g></svg>`;
+    const __GAUGE_OPEN = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 28.1543 24.0332"><g><rect height="24.0332" opacity="0" width="28.1543" x="0" y="0"/><path class="gauge-fill" d="M4.6484 20.0586C2.9492 18.291 2.0508 16.123 2.0508 13.8965C2.0508 7.2559 7.334 2.0508 13.8965 2.0508C20.459 2.0508 25.7422 7.2559 25.7422 13.8965C25.7422 16.123 24.8438 18.291 23.1445 20.0586C21.3379 17.6953 18.0371 16.2207 13.8965 16.2207C9.7559 16.2207 6.4551 17.6953 4.6484 20.0586Z"/><path class="gauge-outline" d="M13.8965 0C6.2207 0 0 6.21094 0 13.8965C0 17.6953 1.52344 21.1621 4.0332 23.6816C4.41406 24.0625 4.98047 24.082 5.39062 23.7012C5.71289 23.3691 5.6543 22.793 5.21484 22.334C3.125 20.1758 1.8457 17.1582 1.8457 13.8965C1.8457 7.16797 7.1875 1.81641 13.8965 1.81641C20.6152 1.81641 25.9473 7.16797 25.9473 13.8965C25.9473 17.1582 24.6777 20.1758 22.5781 22.334C22.1484 22.793 22.0801 23.3691 22.4121 23.7012C22.8125 24.082 23.3887 24.0625 23.7598 23.6816C26.2695 21.1719 27.793 17.6953 27.793 13.8965C27.793 6.21094 21.582 0 13.8965 0Z"/></g></svg>`;
     const __MPH_CIRCLE_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M25.4395 12.7246C25.4395 19.7266 19.7266 25.4395 12.7148 25.4395C5.71289 25.4395 0 19.7266 0 12.7246C0 5.71289 5.71289 0 12.7148 0C19.7266 0 25.4395 5.71289 25.4395 12.7246ZM8.33008 9.27734L7.12891 15.0391L7.10938 15.0391L5.86914 9.27734C5.74219 8.69141 5.42969 8.48633 4.92188 8.48633C4.24805 8.48633 3.94531 8.95508 3.94531 9.44336L3.94531 16.3184C3.94531 16.6895 4.16992 16.9434 4.55078 16.9434C4.93164 16.9434 5.14648 16.6992 5.14648 16.3184L5.14648 10.4883L5.18555 10.4883L6.39648 16.123C6.48438 16.5234 6.71875 16.8066 7.10938 16.8066C7.51953 16.8066 7.74414 16.5234 7.82227 16.1133L9.04297 10.4883L9.0918 10.4883L9.0918 16.3184C9.0918 16.6895 9.30664 16.9434 9.67773 16.9434C10.0586 16.9434 10.2637 16.6992 10.2637 16.3184L10.2637 9.44336C10.2637 8.84766 9.88281 8.48633 9.29688 8.48633C8.76953 8.48633 8.44727 8.73047 8.33008 9.27734ZM20.2832 9.19922L20.2832 12.0801L18.125 12.0801L18.125 9.19922C18.125 8.76953 17.8809 8.48633 17.4609 8.48633C17.0215 8.48633 16.7969 8.76953 16.7969 9.19922L16.7969 16.2305C16.7969 16.6504 17.0215 16.9434 17.4609 16.9434C17.8809 16.9434 18.125 16.6504 18.125 16.2305L18.125 13.2031L20.2832 13.2031L20.2832 16.2305C20.2832 16.6113 20.498 16.9434 20.9473 16.9434C21.3672 16.9434 21.6016 16.6699 21.6016 16.2305L21.6016 9.19922C21.6016 8.75 21.3574 8.48633 20.9473 8.48633C20.5078 8.48633 20.2832 8.7793 20.2832 9.19922ZM12.0703 8.60352C11.6992 8.60352 11.4258 8.83789 11.4258 9.29688L11.4258 16.2402C11.4258 16.7285 11.748 16.9238 12.0801 16.9238C12.4707 16.9238 12.7441 16.6895 12.7441 16.2402L12.7441 14.0234L13.6719 14.0234C15.1465 14.0234 15.8984 12.7246 15.8984 11.3086C15.8984 9.86328 15.166 8.60352 13.75 8.60352ZM14.5996 11.3086C14.5996 12.1973 14.2773 12.9492 13.4082 12.9492L12.7441 12.9492L12.7441 9.67773L13.418 9.67773C14.2773 9.67773 14.5996 10.4395 14.5996 11.3086Z"/></g></svg>`;
     const __KPH_CIRCLE_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M25.4395 12.7246C25.4395 19.7266 19.7266 25.4395 12.7148 25.4395C5.71289 25.4395 0 19.7266 0 12.7246C0 5.71289 5.71289 0 12.7148 0C19.7266 0 25.4395 5.71289 25.4395 12.7246ZM4.78516 9.18945L4.78516 16.2598C4.78516 16.7578 5.09766 16.9531 5.43945 16.9531C5.86914 16.9531 6.11328 16.6895 6.11328 16.2598L6.11328 14.3164L6.70898 13.2812L8.38867 16.5234C8.50586 16.7676 8.74023 16.9336 9.04297 16.9336C9.33594 16.9336 9.62891 16.6992 9.62891 16.3281C9.62891 16.1621 9.58984 15.9961 9.52148 15.8594L7.64648 12.3438L9.27734 9.58008C9.375 9.41406 9.41406 9.29688 9.41406 9.11133C9.41406 8.81836 9.20898 8.51562 8.82812 8.51562C8.49609 8.51562 8.35938 8.66211 8.23242 8.91602L6.17188 12.5293L6.10352 12.5293L6.10352 9.18945C6.10352 8.75977 5.86914 8.49609 5.42969 8.49609C5.01953 8.49609 4.78516 8.76953 4.78516 9.18945ZM19.2676 9.20898L19.2676 12.0898L17.0898 12.0898L17.0898 9.20898C17.0898 8.75977 16.8555 8.49609 16.4355 8.49609C16.0059 8.49609 15.7715 8.75977 15.7715 9.20898L15.7715 16.2402C15.7715 16.6797 16.0059 16.9531 16.4355 16.9531C16.8652 16.9531 17.0898 16.6797 17.0898 16.2402L17.0898 13.2129L19.2676 13.2129L19.2676 16.2402C19.2676 16.6797 19.4922 16.9531 19.9219 16.9531C20.3613 16.9531 20.5859 16.6797 20.5859 16.2402L20.5859 9.20898C20.5859 8.75977 20.3613 8.49609 19.9219 8.49609C19.502 8.49609 19.2676 8.75977 19.2676 9.20898ZM11.0547 8.61328C10.6543 8.61328 10.4102 8.88672 10.4102 9.30664L10.4102 16.25C10.4102 16.6504 10.6641 16.9336 11.0645 16.9336C11.4746 16.9336 11.7285 16.6504 11.7285 16.25L11.7285 14.0332L12.6562 14.0332C14.1699 14.0332 14.8828 12.7051 14.8828 11.3184C14.8828 9.83398 14.1211 8.61328 12.7246 8.61328ZM13.584 11.3184C13.584 12.2168 13.252 12.959 12.3828 12.959L11.7285 12.959L11.7285 9.6875L12.3926 9.6875C13.2617 9.6875 13.584 10.4297 13.584 11.3184Z"/></g></svg>`;
     const __STOPWATCH_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 30.7129"><g><rect height="30.7129" opacity="0" width="25.8008" x="0" y="0"/><path d="M13.8867 1.21094L13.8867 2.68776C16.5985 2.93919 19.0788 4.0667 21.0325 5.78653L22.168 4.6582C22.4316 4.4043 22.7051 4.29688 23.0664 4.29688C23.7109 4.29688 24.209 4.79492 24.209 5.41016C24.209 5.71289 24.0625 6.04492 23.8086 6.29883L22.6498 7.47198C24.3943 9.64295 25.4395 12.3885 25.4395 15.3516C25.4395 22.3047 19.6777 28.0664 12.7148 28.0664C5.76172 28.0664 0 22.3047 0 15.3516C0 8.78446 5.11663 3.28585 11.5332 2.68735L11.5332 1.21094C11.5332 0.546875 12.0605 0 12.7051 0C13.3691 0 13.8867 0.546875 13.8867 1.21094ZM11.9531 7.05078L11.9531 13.6621C11.2793 14.0039 10.8496 14.6289 10.8496 15.3613C10.8496 16.3965 11.6699 17.2363 12.7148 17.2363C13.75 17.2363 14.5703 16.3965 14.5703 15.3613C14.5703 14.6289 14.1602 14.0039 13.4668 13.6719L13.4668 7.05078C13.4668 6.63086 13.1348 6.30859 12.7051 6.30859C12.2949 6.30859 11.9531 6.63086 11.9531 7.05078Z"/></g></svg>`;
@@ -15207,7 +15331,7 @@
         title: "Choose Condensed Notes Date Summary",
         ticketId: "WISH-024",
         description: "Add a user setting for how Condensed Notes chooses the date shown on parent location rows. Options should include single date, earliest, latest, and highest-level-based behavior.",
-        priority: "P3",
+        priority: "P2",
         effort: "small",
         targetKind: "minor",
         targetVersion: "",
@@ -15228,18 +15352,6 @@
         category: "Maps"
       },
       {
-        title: "Rangefinder Cross-Inset Edge Cases",
-        ticketId: "WISH-061",
-        description: "Improve Rangefinder behavior when Start and End points cross between the contiguous map and inset regions, such as Washington to Alaska. Scope includes clearer visual treatment for clipped rings, inset-scale limitations, and long-distance comparisons that cross map projections.",
-        priority: "P2",
-        effort: "medium",
-        targetKind: "patch",
-        targetVersion: "",
-        tokenCostPct: 16,
-        prompt: "Polish Rangefinder cross-inset edge cases, especially a Washington Start pin with rings or an End point in Alaska. Make the visual treatment clear despite different inset scales, preserve current local settings, and keep limitations explicit.",
-        category: "Maps"
-      },
-      {
         title: "Route-Based Rangefinder Times",
         ticketId: "WISH-062",
         description: "Improve Rangefinder estimates with route-aware drive times and optional driving-time radius bands. Scope includes preserving the current straight-line mode, clearly labeling routing assumptions, and avoiding any automatic network lookup.",
@@ -15255,7 +15367,7 @@
         title: "Selectable Color Themes",
         ticketId: "WISH-063",
         description: "Let users pick color themes for Wayfinder, Rangefinder, and the overall app. Scope includes theme presets, accessible contrast checks, and preserving existing colors as defaults.",
-        priority: "P1",
+        priority: "P0",
         effort: "medium",
         targetKind: "minor",
         targetVersion: "",
@@ -15264,16 +15376,16 @@
         category: "UI"
       },
       {
-        title: "Align Legend and Rangefinder Controls",
-        ticketId: "WISH-064",
-        description: "Better align Legend and Rangefinder button sizing, icon scale, spacing, and active/disabled treatments so the paired panels feel like one control system.",
-        priority: "P2",
-        effort: "small",
+        title: "Rangefinder Cross-Inset Edge Cases",
+        ticketId: "WISH-061",
+        description: "Improve Rangefinder behavior when Start and End points cross between the contiguous map and inset regions, such as Washington to Alaska. Scope includes clearer visual treatment for clipped rings, inset-scale limitations, and long-distance comparisons that cross map projections.",
+        priority: "P1",
+        effort: "medium",
         targetKind: "patch",
         targetVersion: "",
-        tokenCostPct: 12,
-        prompt: "Polish Legend and Rangefinder panel controls so button sizes, icon scale, spacing, active states, and disabled states align across the paired panels without disrupting compact rows.",
-        category: "UI"
+        tokenCostPct: 16,
+        prompt: "Polish Rangefinder cross-inset edge cases, especially a Washington Start pin with rings or an End point in Alaska. Make the visual treatment clear despite different inset scales, preserve current local settings, and keep limitations explicit.",
+        category: "Maps"
       },
       {
         title: "National Park Overlay Layer",
@@ -15291,7 +15403,7 @@
         title: "Historical & Defunct Countries",
         ticketId: "WISH-054",
         description: "Extend the world map to recognize historical/defunct countries (for example USSR, Yugoslavia, Czechoslovakia, East Germany) so trips to places that no longer exist can be recorded. Scope includes stable internal ids that survive ISO code reuse, a way to surface or group former countries without cluttering the modern list, and notes/exports that keep working. Builds on the shipped world-map layer system.",
-        priority: "P3",
+        priority: "P2",
         effort: "large",
         targetKind: "minor",
         targetVersion: "",
@@ -15303,7 +15415,7 @@
         title: "Continent & Region Maps",
         ticketId: "WISH-056",
         description: "Add focused continent/region maps (Europe, South America, Asia, Africa, etc.) as additional map layers so users can zoom into a region at a larger scale than the whole-world view. Reuses the shipped map-layer system (levels, notes, pins, exports). Each region shares country identities with the world map so a country marked once shows everywhere it appears.",
-        priority: "P2",
+        priority: "P1",
         effort: "large",
         targetKind: "minor",
         targetVersion: "",
@@ -15327,7 +15439,7 @@
         title: "Search All Locations in Quick Add",
         ticketId: "WISH-058",
         description: "Let the note Quick Add location search reach every location across all map layers, not just the open map. Today the location list is scoped to the active layer (US states/territories or world countries), so adding a country while viewing the US map (or vice versa) is not possible without switching maps first. Scope: search the full union of states, territories, and countries, show which layer each result belongs to, and route the saved note into the correct store so it appears on the right map.",
-        priority: "P3",
+        priority: "P2",
         effort: "small",
         targetKind: "patch",
         targetVersion: "",
@@ -15339,7 +15451,7 @@
         title: "Add Manual Locations",
         ticketId: "WISH-059",
         description: "Let users add their own custom locations that aren't tied to a predefined map region — international cities, sub-national regions, points of interest, landmarks, or anywhere a coordinate can pin. Scope: a way to name and place a manual location (typed coordinates or map lookup), attach notes/levels to it like any other location, show it as a pin on the appropriate map, persist it locally, and include it in exports/backups. Should fit the location-is-a-location model so manual places coexist with states and countries.",
-        priority: "P1",
+        priority: "P0",
         effort: "large",
         targetKind: "minor",
         targetVersion: "",
@@ -15363,7 +15475,7 @@
         title: "Better Sharing/Exports and Celebrations/Badges",
         ticketId: "WISH-002",
         description: "Add share/export variants that make completed progress easier to show off. Scope includes share-ready image/text outputs, progress milestone copy, and no network-dependent sharing.",
-        priority: "P2",
+        priority: "P1",
         effort: "medium",
         targetKind: "minor",
         targetVersion: "",
@@ -15387,7 +15499,7 @@
         title: "Add More Legend Levels",
         ticketId: "WISH-041",
         description: "Allow more than the current five Legend levels while keeping the map, stats, color palettes, mobile layout, imports, and exports readable.",
-        priority: "P3",
+        priority: "P2",
         effort: "medium",
         targetKind: "minor",
         targetVersion: "",
@@ -15399,7 +15511,7 @@
         title: "Multiple Named Basecamp Pads",
         ticketId: "WISH-053",
         description: "Extend Basecamp Notes from a single scratchpad to multiple named pads (for example Packing, Gear, or a per-trip pad), with a pad list, add/rename/delete/reorder, a large editor per pad, and search across pads. Migrate the existing single scratchpad into the first pad without data loss.",
-        priority: "P3",
+        priority: "P2",
         effort: "medium",
         targetKind: "minor",
         targetVersion: "",
@@ -15435,7 +15547,7 @@
         title: "More Date Formats and Spelled-Out Months",
         ticketId: "WISH-049",
         description: "Broaden the date parser used by Smart Convert and manual date entry to accept more natural date formats — long and short spelled-out months (January / Jan), ordinals (1st, 2nd), comma variants, weekday prefixes/suffixes, ISO-like and locale-flexible orderings — without breaking the current accepted formats.",
-        priority: "P3",
+        priority: "P2",
         effort: "small",
         targetKind: "minor",
         targetVersion: "",
@@ -15458,20 +15570,20 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.2.0.16",
-        date: "2026-06-01",
+        version: "4.2.0.23",
+        date: "2026-06-02",
         title: "Rangefinder",
-        summary: "Rangefinder gets Copper/Sienna polish and selectable release CTA breaks.",
+        summary: "Rangefinder works globally with independent Plane rings.",
         highlights: [
-          "Rangefinder now uses a Copper-to-Sienna palette.",
-          "Ring edit mode keeps the pencil with active styling.",
-          "Legend Add stays icon-shaped when maxed.",
-          "Rangefinder hints explain unit toggles."
+          "Rangefinder now works on the World map too.",
+          "Plane rings use independent 600-7800 mile defaults.",
+          "Drive and Plane estimates use separate 60/600 mph speeds.",
+          "Ring Style combines fill and clip in one popup."
         ],
         notice: {
-          version: "4.2.0.16",
+          version: "4.2.0.23",
           title: "Rangefinder",
-          summary: "Copper rings, clearer hints, and calmer controls.",
+          summary: "Global Rangefinder adds Plane rings at 600 mph.",
           cta: "Find Your|Range!"
         },
         updates: [
@@ -15487,7 +15599,7 @@
           "Added the Start-to-End compare readout with straight-line mileage and estimated time at 60 mph.",
           "Added inset-scale warning copy for Alaska, Hawaii, Puerto Rico, the U.S. Virgin Islands, Guam, the Northern Mariana Islands, and American Samoa points.",
           "If the Start note is deleted while Rangefinder is active, the panel clears that slot, arms it again, and prompts for a replacement. End clears quietly.",
-          "Rangefinder stays US-map only: switching to the World map turns the mode off and disables the toggle until the US map is active again.",
+          "Rangefinder now works on both the US and World maps instead of disabling itself on the global layer.",
           "Rangefinder rings are now configurable: edit each distance, add or remove rings, and keep up to eight visible planning bands.",
           "Added a miles/kilometers unit toggle beside Fill rings. Ring labels, distance inputs, and Start-to-End comparisons follow the selected unit while time stays based on the 60 mph estimate.",
           "Moved the point-picking guidance message into the Rangefinder header area so the picker prompt stays close to the Start and End slots.",
@@ -15532,6 +15644,16 @@
           "Removed active accent fills from Rangefinder header toggles other than Add Ring, leaving their icons to communicate state.",
           "Shrank the per-level Legend edit pencil icon and added a roadmap wishlist item for broader Legend and Rangefinder control alignment.",
           "Shrank compact Legend row button symbols, restored the Rangefinder edit accent when active, and enlarged map ring labels.",
+          "Restored the pre-coral gold-to-amber Rangefinder palette, made the whole non-edit ring distance chip toggle that ring, widened the mi/km segment, and added more spacing around the distance-time separator.",
+          "Implemented the first WISH-061 pass by giving cross-inset Rangefinder comparisons a broken dashed map cue, explicit inset-scale warning copy, and updated Help Center guidance.",
+          "Set active Wayfinder toggle text, symbols, and the Wayfinder mode pill to black for stronger contrast on teal.",
+          "Added a dedicated Alaska inset projection box so ordinary note pins and Rangefinder anchor pins land on the visible Alaska inset, including dateline-safe longitude handling.",
+          "Tested a filled interior treatment for the active Rangefinder Clip gauge icon while keeping the gauge outline separately colored.",
+          "Combined Rangefinder Fill and Clip into one Ring Style header button with a popup menu for No Fill, Fill, No Clip, and Clipped states.",
+          "Left-aligned Ring Style menu icons and labels so the popup options scan in clean columns.",
+          "Added Plane rings with independent defaults of 600, 1200, 1800, 3000, 4800, and 7800 miles, plus 600 mph time estimates.",
+          "Added a Drive/Plane mode button beside the Ring Style control, followed by mph/kph and Time controls in the Rangefinder header.",
+          "Rangefinder note pins and overlays now render on the World map with a dedicated global ring overlay.",
           "Updated Help Center Rangefinder guidance and retargeted the active Add Drive Radius roadmap item to the 4.2.0 line."
         ]
       },
@@ -16429,14 +16551,16 @@
     const LEGEND_POSITION_MENU_ORDER = ["left-top", "right-top", "left-bottom", "right-bottom"];
     const INSTALL_PLATFORM_SEQUENCE = ["auto", "idevice", "android", "mac", "pc"];
     const RING_PRESETS = Object.freeze([60, 120, 180, 300, 600, 900, 1200]);
+    const RING_PLANE_PRESETS = Object.freeze([600, 1200, 1800, 3000, 4800, 7800]);
     const RING_LEGACY_PRESETS = Object.freeze([60, 300, 600, 900, 1200]);
     const RING_MAX_COUNT = 8;
     const RING_DISTANCE_MIN = 1;
     const RING_DISTANCE_MAX = 9999;
     const RING_KM_PER_MILE = 1.609344;
     const RING_DEFAULT_MPH = 60;
+    const RING_PLANE_MPH = 600;
     const RING_HINT_KEY = "ring-mode-disclaimer";
-    const RING_DISCLAIMER_TEXT = "Distances are straight-line and times assume 60 mph. Click a ring unit to show or hide that ring.";
+    const RING_DISCLAIMER_TEXT = "Distances are straight-line. Drive assumes 60 mph; Plane assumes 600 mph. Click a ring unit to show or hide that ring.";
     const RING_DISTANCE_ONLY_DISCLAIMER_TEXT = "Distances are straight-line. Click a ring unit to show or hide that ring.";
     const RING_INSET_IDS = new Set(["AK", "HI", ...TERRITORY_IDS]);
     const RING_ANCHOR_REMOVED_TEXT = "Start pin was removed - pick another pin.";
@@ -16499,6 +16623,7 @@
     let legendPositionDragActive = false;
     let legendPositionPointerId = null;
     let legendPositionMenuOpen = false;
+    let ringStyleMenuOpen = false;
     let draggedLegendLevelId = "";
     let legendDragCommitted = false;
     let legendSwipeSuppressClickUntil = 0;
@@ -16521,8 +16646,8 @@
     let worldRegionCodes = [];
     const worldRegionNames = {};
     const MAP_LAYERS = {
-      us: { id: "us", svgId: "stateMap", tileSelector: ".state-tile", codeAttr: "abbr", markersId: "mapLocationMarkers", heading: "US Map", icon: __US_MAP, regionStore: () => state.states },
-      world: { id: "world", svgId: "worldMap", tileSelector: ".world-tile", codeAttr: "region", markersId: "worldMapMarkers", heading: "World Map", icon: __WORLD_MAP, regionStore: () => state.world.regions }
+      us: { id: "us", svgId: "stateMap", tileSelector: ".state-tile", codeAttr: "abbr", markersId: "mapLocationMarkers", ringOverlayId: "mapRingOverlay", heading: "US Map", icon: __US_MAP, regionStore: () => state.states },
+      world: { id: "world", svgId: "worldMap", tileSelector: ".world-tile", codeAttr: "region", markersId: "worldMapMarkers", ringOverlayId: "worldMapRingOverlay", heading: "World Map", icon: __WORLD_MAP, regionStore: () => state.world.regions }
     };
     let state = loadState();
     syncRuntimeUiFromSettings();
@@ -16572,8 +16697,11 @@
           ringMode: false,
           ringAnchor1: null,
           ringAnchor2: null,
+          ringTravelMode: "drive",
           ringDistances: [...RING_PRESETS],
           ringEnabled: [...RING_PRESETS],
+          ringPlaneDistances: [...RING_PLANE_PRESETS],
+          ringPlaneEnabled: [...RING_PLANE_PRESETS],
           ringFill: true,
           ringClip: true,
           ringShowTime: true,
@@ -16969,13 +17097,14 @@
       } else {
         next.settings.bucketListFilterSnapshot = null;
       }
-      next.settings.ringMode = next.settings.ringMode === true && next.settings.activeLayerId !== "world";
+      next.settings.ringMode = next.settings.ringMode === true;
       next.settings.ringFill = next.settings.ringFill !== false;
       next.settings.ringClip = next.settings.ringClip !== false;
       next.settings.ringShowTime = next.settings.ringShowTime !== false;
       next.settings.ringUnit = next.settings.ringUnit === "km" ? "km" : "mi";
+      next.settings.ringTravelMode = next.settings.ringTravelMode === "plane" ? "plane" : "drive";
       const useNewDefaultRings = isLegacyDefaultRingConfig(input.settings || {});
-      next.settings.ringDistances = normalizeRingDistances(useNewDefaultRings ? RING_PRESETS : next.settings.ringDistances || next.settings.ringEnabled);
+      next.settings.ringDistances = normalizeRingDistances(useNewDefaultRings ? RING_PRESETS : next.settings.ringDistances || next.settings.ringEnabled, RING_PRESETS);
       if (useNewDefaultRings) {
         next.settings.ringEnabled = [...next.settings.ringDistances];
       } else if (Array.isArray(next.settings.ringEnabled)) {
@@ -16983,6 +17112,13 @@
         next.settings.ringEnabled = next.settings.ringDistances.filter(miles => enabledRings.has(ringDistanceKey(miles)));
       } else {
         next.settings.ringEnabled = [...next.settings.ringDistances];
+      }
+      next.settings.ringPlaneDistances = normalizeRingDistances(next.settings.ringPlaneDistances || next.settings.ringPlaneEnabled, RING_PLANE_PRESETS);
+      if (Array.isArray(next.settings.ringPlaneEnabled)) {
+        const enabledPlaneRings = new Set(next.settings.ringPlaneEnabled.map(ringDistanceKey).filter(Boolean));
+        next.settings.ringPlaneEnabled = next.settings.ringPlaneDistances.filter(miles => enabledPlaneRings.has(ringDistanceKey(miles)));
+      } else {
+        next.settings.ringPlaneEnabled = [...next.settings.ringPlaneDistances];
       }
       next.settings.developerMode = next.settings.developerMode === true;
       next.settings.shortcutMode = next.settings.developerMode && next.settings.shortcutMode === true;
@@ -17121,16 +17257,24 @@
       if (!anchor || typeof anchor !== "object") return null;
       const abbr = String(anchor.abbr || "").toUpperCase();
       const noteId = String(anchor.noteId || "");
-      if (!STATE_NAMES[abbr] || !noteId) return null;
-      const note = (nextState.notes?.[abbr] || []).find(item => item.id === noteId);
+      const layer = anchor.layer === "world" ? "world" : anchor.layer === "us" ? "us" : STATE_NAMES[abbr] ? "us" : "world";
+      if (!noteId) return null;
+      if (layer === "us" && !STATE_NAMES[abbr]) return null;
+      if (layer === "world") {
+        ensureWorldRegions();
+        if (!worldRegionCodes.includes(abbr) && !TERRITORY_IDS.includes(abbr)) return null;
+      }
+      const store = TERRITORY_IDS.includes(abbr) ? nextState.notes : layer === "world" ? nextState.world?.notes : nextState.notes;
+      const note = (store?.[abbr] || []).find(item => item.id === noteId);
       const coords = validNoteCoordinates(note);
       if (!note || !coords) return null;
       return {
         noteId,
+        layer,
         abbr,
         lat: coords.lat,
         lng: coords.lng,
-        label: ringAnchorLabelFromNote(abbr, note)
+        label: ringAnchorLabelFromNote(abbr, note, layer)
       };
     }
 
@@ -17452,28 +17596,62 @@
     }
 
     function ringModeActive() {
-      return state.settings.ringMode === true && activeLayerId === "us";
+      return state.settings.ringMode === true;
+    }
+
+    function ringAnchorVisibleOnActiveLayer(anchor) {
+      if (!anchor?.abbr) return false;
+      const layer = anchor.layer === "world" ? "world" : "us";
+      return layer === activeLayerId || (activeLayerId === "world" && TERRITORY_IDS.includes(anchor.abbr));
     }
 
     function ringAnchorFor(slot) {
-      return slot === 1 ? state.settings.ringAnchor1 : slot === 2 ? state.settings.ringAnchor2 : null;
+      const anchor = slot === 1 ? state.settings.ringAnchor1 : slot === 2 ? state.settings.ringAnchor2 : null;
+      return ringAnchorVisibleOnActiveLayer(anchor) ? anchor : null;
     }
 
     function ringPickArmedSlot() {
       return ringArmedSlot === 1 || ringArmedSlot === 2 ? ringArmedSlot : null;
     }
 
-    function ringAnchorLabelFromNote(abbr, note) {
-      return (noteLocationDisplay(note) || note.geocodeLabel || noteSummary(note) || STATE_NAMES[abbr] || abbr).slice(0, 120);
+    function ringRegionName(abbr, layer = activeLayerId) {
+      if (layer === "world") return worldRegionNames[abbr] || STATE_NAMES[abbr] || abbr;
+      return STATE_NAMES[abbr] || worldRegionNames[abbr] || abbr;
+    }
+
+    function ringAnchorLabelFromNote(abbr, note, layer = activeLayerId) {
+      return (noteLocationDisplay(note) || note.geocodeLabel || noteSummary(note) || ringRegionName(abbr, layer) || abbr).slice(0, 120);
     }
 
     function ringAnchorNote(anchor) {
-      if (!anchor?.abbr || !anchor?.noteId || !STATE_NAMES[anchor.abbr]) return null;
-      const note = (state.notes[anchor.abbr] || []).find(item => item.id === anchor.noteId);
+      if (!anchor?.abbr || !anchor?.noteId) return null;
+      const layer = anchor.layer === "world" ? "world" : "us";
+      const store = TERRITORY_IDS.includes(anchor.abbr) ? state.notes : layer === "world" ? state.world.notes : state.notes;
+      const note = (store[anchor.abbr] || []).find(item => item.id === anchor.noteId);
       return validNoteCoordinates(note) ? note : null;
     }
 
-    function ringInsetWarning(anchor) {
+    function ringMapRegionKey(abbr) {
+      if (!abbr) return "";
+      if (activeLayerId === "world") return "world";
+      return RING_INSET_IDS.has(abbr) ? abbr : "contiguous";
+    }
+
+    function ringMapRegionName(abbr) {
+      if (!abbr) return "";
+      if (activeLayerId === "world") return "the world map";
+      return RING_INSET_IDS.has(abbr) ? (STATE_NAMES[abbr] || abbr) : "the contiguous map";
+    }
+
+    function ringAnchorsCrossMapRegions(anchorA, anchorB) {
+      return Boolean(anchorA?.abbr && anchorB?.abbr && ringMapRegionKey(anchorA.abbr) !== ringMapRegionKey(anchorB.abbr));
+    }
+
+    function ringInsetWarning(anchor, compareAnchor = null) {
+      if (ringAnchorsCrossMapRegions(anchor, compareAnchor)) {
+        return `Start and End are drawn in different map regions (${ringMapRegionName(anchor.abbr)} to ${ringMapRegionName(compareAnchor.abbr)}). Distance uses real coordinates; the dashed map cue is not a route and rings stay in the Start region.`;
+      }
+      if (activeLayerId === "world") return "World Rangefinder rings are approximate straight-line flight bands on the global map.";
       if (!anchor?.abbr || !RING_INSET_IDS.has(anchor.abbr)) return "";
       const name = STATE_NAMES[anchor.abbr] || anchor.abbr;
       return `${name} is drawn as an inset on this map; rings stay inside that inset and are approximate.`;
@@ -17494,17 +17672,12 @@
       } else if (a1 && ringPanelNotice === RING_ANCHOR_REMOVED_TEXT) {
         ringPanelNotice = "";
       }
-      if (ringModeActive() && !a1 && !ringPickArmedSlot()) ringArmedSlot = 1;
+      if (ringModeActive() && !ringAnchorFor(1) && !ringPickArmedSlot()) ringArmedSlot = 1;
       return changed;
     }
 
     function setRingMode(on) {
       const wantOn = on === true;
-      if (wantOn && activeLayerId !== "us") {
-        showOverlayWarning("US Map Only", "Rangefinder Mode is available on the US map.");
-        syncRingUi();
-        return;
-      }
       state.settings.ringMode = wantOn;
       if (wantOn) {
         legendPanelOpen = true;
@@ -17549,11 +17722,11 @@
 
     function setRingAnchorFromNote(slot, abbr, noteId) {
       if (slot !== 1 && slot !== 2) return false;
-      if (activeLayerId !== "us" || !STATE_NAMES[abbr]) {
-        showOverlayWarning("US Map Only", "Rangefinder needs US-map note pins.");
+      if (!isValidRegion(abbr)) {
+        showOverlayWarning("Map Pin Needed", "Rangefinder needs a note pin on the active map.");
         return false;
       }
-      const note = (state.notes[abbr] || []).find(item => item.id === noteId);
+      const note = (notesStoreForCode(abbr)[abbr] || []).find(item => item.id === noteId);
       const coords = validNoteCoordinates(note);
       if (!note || !coords) {
         showOverlayWarning("Coordinates Needed", "Rangefinder points need saved latitude and longitude. Use Locate or enter coordinates first.");
@@ -17561,10 +17734,11 @@
       }
       state.settings[`ringAnchor${slot}`] = {
         noteId: String(note.id),
+        layer: activeLayerId,
         abbr,
         lat: coords.lat,
         lng: coords.lng,
-        label: ringAnchorLabelFromNote(abbr, note)
+        label: ringAnchorLabelFromNote(abbr, note, activeLayerId)
       };
       ringArmedSlot = null;
       ringPanelNotice = "";
@@ -17602,8 +17776,9 @@
       return Math.round(Math.max(RING_DISTANCE_MIN, Math.min(RING_DISTANCE_MAX, miles)) * 1000) / 1000;
     }
 
-    function normalizeRingDistances(value) {
-      const raw = Array.isArray(value) && value.length ? value : RING_PRESETS;
+    function normalizeRingDistances(value, defaults = RING_PRESETS) {
+      const fallback = Array.isArray(defaults) && defaults.length ? defaults : RING_PRESETS;
+      const raw = Array.isArray(value) && value.length ? value : fallback;
       const seen = new Set();
       const distances = [];
       raw.forEach(item => {
@@ -17613,11 +17788,29 @@
         seen.add(key);
         distances.push(miles);
       });
-      return (distances.length ? distances : [...RING_PRESETS]).sort((a, b) => a - b).slice(0, RING_MAX_COUNT);
+      return (distances.length ? distances : [...fallback]).sort((a, b) => a - b).slice(0, RING_MAX_COUNT);
+    }
+
+    function ringTravelMode() {
+      return state.settings.ringTravelMode === "plane" ? "plane" : "drive";
+    }
+
+    function ringTravelIsPlane() {
+      return ringTravelMode() === "plane";
+    }
+
+    function ringSpeedMph() {
+      return ringTravelIsPlane() ? RING_PLANE_MPH : RING_DEFAULT_MPH;
+    }
+
+    function ringActiveDefaults() {
+      return ringTravelIsPlane() ? RING_PLANE_PRESETS : RING_PRESETS;
     }
 
     function ringDistances() {
-      return normalizeRingDistances(state.settings.ringDistances);
+      return ringTravelIsPlane()
+        ? normalizeRingDistances(state.settings.ringPlaneDistances, RING_PLANE_PRESETS)
+        : normalizeRingDistances(state.settings.ringDistances, RING_PRESETS);
     }
 
     function ringUnit() {
@@ -17654,12 +17847,12 @@
     }
 
     function ringSpeedLabel() {
-      return ringUnit() === "km" ? `${Math.round(RING_DEFAULT_MPH * RING_KM_PER_MILE)} kph` : `${RING_DEFAULT_MPH} mph`;
+      return ringUnit() === "km" ? `${Math.round(ringSpeedMph() * RING_KM_PER_MILE)} kph` : `${ringSpeedMph()} mph`;
     }
 
     function ringLabelText(miles) {
       const distance = ringDistanceDisplayText(miles);
-      return ringShowTime() ? `${distance}  ·  ${ringTimeLabel(miles).replace(/^~/, "")}` : distance;
+      return ringShowTime() ? `${distance}\u00a0\u00a0\u00a0·\u00a0\u00a0\u00a0${ringTimeLabel(miles).replace(/^~/, "")}` : distance;
     }
 
     function ringStepStyle(index, prop = "ring") {
@@ -17668,13 +17861,19 @@
     }
 
     function ringEnabledKeySet() {
-      return new Set((Array.isArray(state.settings.ringEnabled) ? state.settings.ringEnabled : ringDistances()).map(ringDistanceKey).filter(Boolean));
+      const enabled = ringTravelIsPlane() ? state.settings.ringPlaneEnabled : state.settings.ringEnabled;
+      return new Set((Array.isArray(enabled) ? enabled : ringDistances()).map(ringDistanceKey).filter(Boolean));
     }
 
     function persistRingDistances(distances, enabledKeys = ringEnabledKeySet()) {
-      const normalized = normalizeRingDistances(distances);
-      state.settings.ringDistances = normalized;
-      state.settings.ringEnabled = normalized.filter(miles => enabledKeys.has(ringDistanceKey(miles)));
+      const normalized = normalizeRingDistances(distances, ringActiveDefaults());
+      if (ringTravelIsPlane()) {
+        state.settings.ringPlaneDistances = normalized;
+        state.settings.ringPlaneEnabled = normalized.filter(miles => enabledKeys.has(ringDistanceKey(miles)));
+      } else {
+        state.settings.ringDistances = normalized;
+        state.settings.ringEnabled = normalized.filter(miles => enabledKeys.has(ringDistanceKey(miles)));
+      }
     }
 
     function ringEnabledDistances() {
@@ -17717,7 +17916,7 @@
     function addRingDistance() {
       const distances = ringDistances();
       if (distances.length >= RING_MAX_COUNT) return;
-      const step = ringUnit() === "km" ? 500 / RING_KM_PER_MILE : 300;
+      const step = ringTravelIsPlane() ? 1200 : ringUnit() === "km" ? 500 / RING_KM_PER_MILE : 300;
       let nextMiles = normalizeRingDistanceMiles((distances[distances.length - 1] || 0) + step);
       const existing = new Set(distances.map(ringDistanceKey));
       while (existing.has(ringDistanceKey(nextMiles)) && nextMiles < RING_DISTANCE_MAX) {
@@ -17754,6 +17953,25 @@
       render();
     }
 
+    function closeRingStyleMenu() {
+      ringStyleMenuOpen = false;
+      renderRingPanel();
+    }
+
+    function toggleRingStyleMenu(event) {
+      event?.stopPropagation();
+      ringStyleMenuOpen = !ringStyleMenuOpen;
+      renderRingPanel();
+    }
+
+    function setRingStyleOption(kind, on) {
+      if (kind === "fill") state.settings.ringFill = on === true;
+      if (kind === "clip") state.settings.ringClip = on === true;
+      ringStyleMenuOpen = false;
+      save();
+      render();
+    }
+
     function setRingShowTime(on) {
       state.settings.ringShowTime = on === true;
       save();
@@ -17767,19 +17985,54 @@
       render();
     }
 
+    function setRingTravelMode(mode) {
+      if (mode !== "drive" && mode !== "plane") return;
+      state.settings.ringTravelMode = mode;
+      save();
+      render();
+    }
+
     function anchorSvgPoint(anchor) {
-      if (!anchor?.abbr || activeLayerId !== "us") return null;
+      if (!anchor?.abbr) return null;
+      const anchorLayer = anchor.layer === "world" ? "world" : "us";
+      if (anchorLayer !== activeLayerId && !(TERRITORY_IDS.includes(anchor.abbr) && activeLayerId === "world")) return null;
       const note = ringAnchorNote(anchor) || { lat: anchor.lat, lng: anchor.lng };
       return projectNoteLocation(anchor.abbr, note);
     }
 
+    function locationProjectionBox(abbr, fallbackBox) {
+      const override = LOCATION_PROJECTION_BOX_OVERRIDES[abbr];
+      return override || fallbackBox;
+    }
+
+    function projectionLongitudeForBounds(lng, bounds) {
+      const value = Number(lng);
+      if (!Number.isFinite(value) || !Array.isArray(bounds)) return value;
+      const minLng = bounds[2];
+      const maxLng = bounds[3];
+      if (minLng < 0 && maxLng < 0 && value > 0) return value - 360;
+      return value;
+    }
+
     function milesToSvgScale(anchorLat, anchorAbbr) {
+      if (activeLayerId === "world") {
+        const svg = $("#worldMap");
+        const viewBox = svg?.viewBox?.baseVal;
+        if (!viewBox) return null;
+        const latMilesPerDeg = 69;
+        const lngMilesPerDeg = Math.max(8, latMilesPerDeg * Math.cos(Number(anchorLat) * Math.PI / 180));
+        return {
+          xPerMile: viewBox.width / Math.max(.0001, 360 * lngMilesPerDeg),
+          yPerMile: viewBox.height / Math.max(.0001, 180 * latMilesPerDeg)
+        };
+      }
       const center = stateTileCenter(anchorAbbr);
       const bounds = LOCATION_GEO_BOUNDS[anchorAbbr];
       if (!center?.box || !bounds) return null;
+      const box = locationProjectionBox(anchorAbbr, center.box);
       const [minLat, maxLat, minLng, maxLng] = bounds;
-      const latDegPerSvg = Math.abs(maxLat - minLat) / Math.max(.0001, center.box.height);
-      const lngDegPerSvg = Math.abs(maxLng - minLng) / Math.max(.0001, center.box.width);
+      const latDegPerSvg = Math.abs(maxLat - minLat) / Math.max(.0001, box.height);
+      const lngDegPerSvg = Math.abs(maxLng - minLng) / Math.max(.0001, box.width);
       const latMilesPerDeg = 69;
       const lngMilesPerDeg = Math.max(8, latMilesPerDeg * Math.cos(Number(anchorLat) * Math.PI / 180));
       return {
@@ -17799,7 +18052,7 @@
     }
 
     function ringTimeLabel(miles) {
-      const totalMinutes = Math.round((Number(miles) / RING_DEFAULT_MPH) * 60);
+      const totalMinutes = Math.round((Number(miles) / ringSpeedMph()) * 60);
       if (!Number.isFinite(totalMinutes) || totalMinutes < 0) return "";
       const hours = Math.floor(totalMinutes / 60);
       const minutes = totalMinutes % 60;
@@ -17813,7 +18066,7 @@
       const miles = haversineMiles(a1.lat, a1.lng, a2.lat, a2.lng);
       if (!Number.isFinite(miles)) return "";
       const distance = ringDistanceDisplayText(miles);
-      return ringShowTime() ? `${distance}  ·  ${ringTimeLabel(miles)}` : `${distance} straight-line`;
+      return ringShowTime() ? `${distance}\u00a0\u00a0\u00a0·\u00a0\u00a0\u00a0${ringTimeLabel(miles)}` : `${distance} straight-line`;
     }
 
     function syncLayerModePills() {
@@ -17828,22 +18081,17 @@
     }
 
     function syncRingUi() {
-      if (state.settings.ringMode === true && activeLayerId !== "us") {
-        state.settings.ringMode = false;
-        ringArmedSlot = null;
-        ringPanelNotice = "";
-        save();
-      }
       if (ringModeActive()) repairRingAnchors();
       const on = ringModeActive();
+      if (!on) ringStyleMenuOpen = false;
       const btn = $("#mapRingModeBtn");
       const panel = $("#ringPanel");
       const group = $("#legendPanelGroup");
       if (btn) {
         btn.setAttribute("aria-pressed", on ? "true" : "false");
-        btn.disabled = activeLayerId === "world";
-        btn.title = activeLayerId === "world" ? "Rangefinder Mode is US map only" : "Toggle Rangefinder Mode";
-        btn.setAttribute("aria-label", activeLayerId === "world" ? "Rangefinder Mode is US map only" : "Toggle Ring Mode");
+        btn.disabled = false;
+        btn.title = "Toggle Rangefinder Mode";
+        btn.setAttribute("aria-label", "Toggle Ring Mode");
       }
       if (group) {
         group.dataset.ringOpen = on ? "1" : "0";
@@ -17871,16 +18119,22 @@
       const distances = ringDistances();
       const enabled = ringEnabledKeySet();
       const compare = ringCompareReadout();
-      const insetWarning = ringInsetWarning(anchor1);
+      const insetWarning = ringInsetWarning(anchor1, anchor2);
       const unit = ringUnit();
       const nextUnit = unit === "mi" ? "km" : "mi";
       const speedUnitIcon = unit === "mi" ? __MPH_CIRCLE_FILL : __KPH_CIRCLE_FILL;
       const fillOn = state.settings.ringFill !== false;
       const clipOn = ringClipEnabled();
       const timeOn = ringShowTime();
+      const planeOn = ringTravelIsPlane();
+      const nextTravelMode = planeOn ? "drive" : "plane";
+      const travelIcon = planeOn ? __AIRPLANE_CIRCLE : __CAR_CIRCLE;
+      const travelLabel = planeOn ? "Plane rings" : "Drive rings";
       const editOn = ringEditMode;
       const canAddRing = distances.length < RING_MAX_COUNT;
       const addRingStyle = canAddRing ? ringStepStyle(distances.length, "ring-add") : "";
+      const ringStyleIcon = clipOn ? __GAUGE_OPEN : fillOn ? __MOONPHASE_FULL_MOON : __RING;
+      const ringStyleState = `${fillOn ? "Fill" : "No fill"}, ${clipOn ? "clipped" : "no clip"}`;
       const pointName = slot => slot === 1 ? "Start" : "End";
       const slotHtml = (slot, anchor) => {
         const label = anchor?.label || `Pick ${pointName(slot)}`;
@@ -17892,24 +18146,40 @@
         const label = ringDistanceDisplayText(miles, unit);
         const pressed = enabled.has(ringDistanceKey(miles));
         const editAttrs = editOn ? "" : ` readonly tabindex="-1" aria-readonly="true"`;
+        const toggleAttrs = editOn ? "" : ` data-ring-distance-toggle="${index}" role="button" tabindex="0" aria-pressed="${pressed ? "true" : "false"}" aria-label="${pressed ? "Hide" : "Show"} ${escapeHtml(label)} ring" title="${pressed ? "Hide" : "Show"} ${escapeHtml(label)} ring"`;
+        const unitControl = editOn
+          ? `<button class="ring-distance-chip" type="button" data-ring-distance-toggle="${index}" aria-pressed="${pressed ? "true" : "false"}" aria-label="${pressed ? "Hide" : "Show"} ${escapeHtml(label)} ring" title="${pressed ? "Hide" : "Show"} ${escapeHtml(label)} ring">${unit}</button>`
+          : `<span class="ring-distance-chip" aria-hidden="true">${unit}</span>`;
         const removeButton = editOn ? `<button class="ring-remove-btn danger" type="button" data-ring-remove="${index}" aria-label="Remove ${escapeHtml(label)} ring" title="Remove ring" ${distances.length <= 1 ? "disabled" : ""}>${__DELETE_LEFT_FILL}</button>` : "";
         return `<div class="ring-config-row ${editOn ? "is-editing" : ""}" style="${ringStepStyle(index, "ring-chip")}" data-ring-index="${index}">
-          <div class="ring-distance-combo ${pressed ? "is-enabled" : "is-disabled"}">
+          <div class="ring-distance-combo ${pressed ? "is-enabled" : "is-disabled"}"${toggleAttrs}>
             <label class="ring-distance-field">
               <span class="sr-only">Ring ${index + 1} distance</span>
               <input type="number" min="1" max="${unit === "km" ? Math.round(RING_DISTANCE_MAX * RING_KM_PER_MILE) : RING_DISTANCE_MAX}" step="1" value="${ringDistanceDisplayValue(miles, unit)}" data-ring-distance-input="${index}" aria-label="Ring ${index + 1} distance in ${unit}"${editAttrs}>
             </label>
-            <button class="ring-distance-chip" type="button" data-ring-distance-toggle="${index}" aria-pressed="${pressed ? "true" : "false"}" aria-label="${pressed ? "Hide" : "Show"} ${escapeHtml(label)} ring" title="${pressed ? "Hide" : "Show"} ${escapeHtml(label)} ring">${unit}</button>
+            ${unitControl}
           </div>
           ${removeButton}
         </div>`;
       }).join("");
       const headerActions = `
         <div class="ring-title-actions" aria-label="Rangefinder settings">
-          <button class="ring-header-btn" type="button" data-ring-setting="fill" aria-pressed="${fillOn ? "true" : "false"}" aria-label="${fillOn ? "Turn fill rings off" : "Turn fill rings on"}" title="${fillOn ? "Fill rings on" : "Fill rings off"}">${fillOn ? __MOONPHASE_FULL_MOON : __RING}</button>
-          <button class="ring-header-btn" type="button" data-ring-setting="clip" aria-pressed="${clipOn ? "true" : "false"}" aria-label="${clipOn ? "Turn land clipping off" : "Turn land clipping on"}" title="${clipOn ? "Clip rings on" : "Clip rings off"}">${clipOn ? __GAUGE_OPEN : __CIRCLE}</button>
-          <button class="ring-header-btn" type="button" data-ring-setting="time" aria-pressed="${timeOn ? "true" : "false"}" aria-label="${timeOn ? "Hide estimated time" : "Show estimated time"}" title="${timeOn ? "Time estimates on" : "Time estimates off"}">${timeOn ? __STOPWATCH_FILL : __STOPWATCH}</button>
+          <span class="ring-style-picker ${fillOn ? "is-fill-on" : ""} ${clipOn ? "is-clip-on" : ""}">
+            <button class="ring-header-btn ring-style-btn" type="button" data-ring-style-menu aria-haspopup="true" aria-expanded="${ringStyleMenuOpen ? "true" : "false"}" aria-label="Ring style: ${ringStyleState}" title="Ring style: ${ringStyleState}">${ringStyleIcon}</button>
+            <span class="ring-style-menu ${ringStyleMenuOpen ? "" : "hidden"}" role="menu" aria-label="Rangefinder ring style">
+              <span class="ring-style-menu-row">
+                <button type="button" role="menuitemradio" data-ring-style-menu-option="fill" data-ring-style-menu-value="false" aria-pressed="${fillOn ? "false" : "true"}" aria-label="No fill" title="No fill">${__RING}<span>No Fill</span></button>
+                <button type="button" role="menuitemradio" data-ring-style-menu-option="fill" data-ring-style-menu-value="true" aria-pressed="${fillOn ? "true" : "false"}" aria-label="Fill" title="Fill">${__MOONPHASE_FULL_MOON}<span>Fill</span></button>
+              </span>
+              <span class="ring-style-menu-row">
+                <button type="button" role="menuitemradio" data-ring-style-menu-option="clip" data-ring-style-menu-value="false" aria-pressed="${clipOn ? "false" : "true"}" aria-label="No clip" title="No clip">${__CIRCLE}<span>No Clip</span></button>
+                <button type="button" role="menuitemradio" data-ring-style-menu-option="clip" data-ring-style-menu-value="true" aria-pressed="${clipOn ? "true" : "false"}" aria-label="Clipped" title="Clipped">${__GAUGE_OPEN}<span>Clipped</span></button>
+              </span>
+            </span>
+          </span>
+          <button class="ring-header-btn" type="button" data-ring-travel-mode="${nextTravelMode}" aria-pressed="${planeOn ? "true" : "false"}" aria-label="${travelLabel}; switch to ${planeOn ? "Drive rings" : "Plane rings"}" title="${travelLabel} at ${ringSpeedLabel()}">${travelIcon}</button>
           <button class="ring-header-btn" type="button" data-ring-unit="${nextUnit}" aria-pressed="true" aria-label="Using ${unit === "mi" ? "miles and mph" : "kilometers and kph"}; switch to ${nextUnit === "mi" ? "miles and mph" : "kilometers and kph"}" title="Switch to ${nextUnit === "mi" ? "mph" : "kph"}">${speedUnitIcon}</button>
+          <button class="ring-header-btn" type="button" data-ring-setting="time" aria-pressed="${timeOn ? "true" : "false"}" aria-label="${timeOn ? "Hide estimated time" : "Show estimated time"}" title="${timeOn ? "Time estimates on" : "Time estimates off"}">${timeOn ? __STOPWATCH_FILL : __STOPWATCH}</button>
           <button class="ring-header-btn" type="button" data-ring-setting="edit" aria-pressed="${editOn ? "true" : "false"}" aria-label="${editOn ? "Hide ring edit controls" : "Edit ring distances"}" title="${editOn ? "Hide ring edit controls" : "Edit ring distances"}">${__PENCIL}</button>
           <button class="ring-header-btn ring-add-btn" type="button" data-ring-add style="${addRingStyle}" aria-label="${canAddRing ? "Add ring" : "Maximum rings reached"}" title="${canAddRing ? "Add ring" : "8/8 rings"}" ${canAddRing ? "" : "disabled"}>${__PLUS_APP_FILL}</button>
         </div>`;
@@ -18279,6 +18549,13 @@
         markerLayer.setAttribute("class", "map-location-markers");
         svg.append(markerLayer);
       }
+      if (!svg.querySelector("#worldMapRingOverlay")) {
+        const ringLayer = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        ringLayer.id = "worldMapRingOverlay";
+        ringLayer.setAttribute("class", "map-ring-overlay");
+        ringLayer.setAttribute("aria-hidden", "true");
+        svg.insertBefore(ringLayer, svg.querySelector("#worldMapMarkers"));
+      }
       if (!svg.querySelector("#worldMapLabels")) {
         const labelLayer = document.createElementNS("http://www.w3.org/2000/svg", "g");
         labelLayer.id = "worldMapLabels";
@@ -18334,11 +18611,6 @@
     function setActiveLayer(id) {
       activeLayerId = MAP_LAYERS[id] ? id : "us";
       state.settings.activeLayerId = activeLayerId;
-      if (activeLayerId === "world" && state.settings.ringMode === true) {
-        state.settings.ringMode = false;
-        ringArmedSlot = null;
-        ringPanelNotice = "";
-      }
       applyActiveLayer();
       save();
       render();
@@ -18419,7 +18691,7 @@
       const bucketShortcutHint = "Toggle Wayfinder mode";
       setButtonLabel("#mapBucketListBtn", __BACKPACK, "Wayfinder", "Toggle Wayfinder mode", bucketShortcutHint);
       setButtonLabel("#notesBucketListBtn", __BACKPACK, "Wayfinder", "Toggle Wayfinder mode", bucketShortcutHint);
-      setButtonLabel("#mapRingModeBtn", __TARGET, "Rangefinder", activeLayerId === "world" ? "Rangefinder Mode is US map only" : "Toggle Ring Mode", activeLayerId === "world" ? "Rangefinder Mode is US map only" : "Toggle Rangefinder Mode");
+      setButtonLabel("#mapRingModeBtn", __TARGET, "Rangefinder", "Toggle Ring Mode", "Toggle Rangefinder Mode");
       setButtonLabel("#mapZoomOutBtn", __MINUS_CIRCLE, "Zoom Out", "Zoom map out", "Zoom map out");
       setButtonLabel("#mapZoomResetBtn", __ARROW_COUNTERCLOCKWISE_CIRCLE, "Reset", "Reset map zoom", "Reset map zoom");
       setButtonLabel("#mapZoomInBtn", __PLUS_CIRCLE, "Zoom In", "Zoom map in", "Zoom map in");
@@ -18996,16 +19268,34 @@
       return result;
     }
 
+    function worldCoordinatePoint(coords) {
+      const svg = $("#worldMap");
+      const viewBox = svg?.viewBox?.baseVal;
+      if (!viewBox || !coords) return null;
+      const lat = Math.max(-90, Math.min(90, Number(coords.lat)));
+      const lng = Math.max(-180, Math.min(180, Number(coords.lng)));
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+      return {
+        x: viewBox.x + ((lng + 180) / 360) * viewBox.width,
+        y: viewBox.y + ((90 - lat) / 180) * viewBox.height
+      };
+    }
+
     function projectNoteLocation(abbr, note) {
       const coords = validNoteCoordinates(note);
+      if (activeLayerId === "world" && coords) {
+        const point = worldCoordinatePoint(coords);
+        if (point) return point;
+      }
       const center = stateTileCenter(abbr);
       if (!center) return null;
-      if (!coords) return { x: center.x, y: center.y };
-      const { box } = center;
+      const box = locationProjectionBox(abbr, center.box);
+      if (!coords) return { x: box.x + box.width / 2, y: box.y + box.height / 2 };
       const bounds = LOCATION_GEO_BOUNDS[abbr];
       if (!bounds) return { x: center.x, y: center.y };
       const [minLat, maxLat, minLng, maxLng] = bounds;
-      const xRatio = (coords.lng - minLng) / Math.max(.0001, maxLng - minLng);
+      const lng = projectionLongitudeForBounds(coords.lng, bounds);
+      const xRatio = (lng - minLng) / Math.max(.0001, maxLng - minLng);
       const yRatio = (maxLat - coords.lat) / Math.max(.0001, maxLat - minLat);
       const padX = Math.min(4, box.width / 3);
       const padY = Math.min(4, box.height / 3);
@@ -19164,8 +19454,9 @@
     }
 
     function ringClipTilesForAnchor(anchorAbbr) {
-      const svg = $("#stateMap");
+      const svg = $("#" + activeLayer().svgId);
       if (!svg) return [];
+      if (activeLayerId === "world") return $$(".world-tile", svg);
       const insetAnchor = RING_INSET_IDS.has(anchorAbbr);
       return $$(".state-tile", svg).filter(tile => {
         const abbr = tile.dataset.abbr || "";
@@ -19173,20 +19464,37 @@
       });
     }
 
+    function activeMapDefs() {
+      const svg = $("#" + activeLayer().svgId);
+      if (!svg) return null;
+      const svgNS = "http://www.w3.org/2000/svg";
+      let defs = svg.querySelector("defs");
+      if (!defs) {
+        defs = document.createElementNS(svgNS, "defs");
+        svg.prepend(defs);
+      }
+      return defs;
+    }
+
+    function sanitizeClipClone(node) {
+      ["id", "class", "style", "tabindex", "role", "aria-label"].forEach(attr => node.removeAttribute?.(attr));
+      [...(node.attributes || [])].forEach(attr => {
+        if (attr.name.startsWith("data-")) node.removeAttribute(attr.name);
+      });
+      Array.from(node.children || []).forEach(sanitizeClipClone);
+      return node;
+    }
+
     function ensureRingLandClipPath(anchorAbbr) {
-      const svg = $("#stateMap");
+      const svg = $("#" + activeLayer().svgId);
       const tiles = ringClipTilesForAnchor(anchorAbbr);
       if (!svg || !tiles.length) return "";
       const svgNS = "http://www.w3.org/2000/svg";
-      let defs = $("#stateMapDefs");
-      if (!defs) {
-        defs = document.createElementNS(svgNS, "defs");
-        defs.id = "stateMapDefs";
-        svg.prepend(defs);
-      }
-      const id = "ringLandClip";
+      const defs = activeMapDefs();
+      if (!defs) return "";
+      const id = activeLayerId === "world" ? "worldRingLandClip" : "ringLandClip";
       let clip = $(`#${id}`, defs);
-      const regionKey = RING_INSET_IDS.has(anchorAbbr) ? anchorAbbr : "contiguous";
+      const regionKey = activeLayerId === "world" ? "world" : RING_INSET_IDS.has(anchorAbbr) ? anchorAbbr : "contiguous";
       if (clip && clip.dataset.tileCount === String(tiles.length) && clip.dataset.regionKey === regionKey) return id;
       clip?.remove();
       clip = document.createElementNS(svgNS, "clipPath");
@@ -19195,11 +19503,7 @@
       clip.dataset.regionKey = regionKey;
       clip.setAttribute("clipPathUnits", "userSpaceOnUse");
       tiles.forEach(tile => {
-        const clone = tile.cloneNode(false);
-        ["id", "class", "style", "tabindex", "role", "aria-label"].forEach(attr => clone.removeAttribute(attr));
-        [...clone.attributes].forEach(attr => {
-          if (attr.name.startsWith("data-")) clone.removeAttribute(attr.name);
-        });
+        const clone = sanitizeClipClone(tile.cloneNode(true));
         clip.append(clone);
       });
       defs.append(clip);
@@ -19207,6 +19511,7 @@
     }
 
     function ensureRingInsetMask(anchorAbbr) {
+      if (activeLayerId !== "us") return "";
       const svg = $("#stateMap");
       if (!svg) return "";
       const insetAnchor = RING_INSET_IDS.has(anchorAbbr);
@@ -19257,7 +19562,7 @@
 
     function ringPointInsideClipTiles(x, y, tiles) {
       if (!tiles.length) return false;
-      const svg = $("#stateMap");
+      const svg = $("#" + activeLayer().svgId);
       let point = null;
       if (svg?.createSVGPoint) {
         point = svg.createSVGPoint();
@@ -19296,8 +19601,46 @@
       return defaultPoint;
     }
 
+    function appendRingConnectorLine(parent, from, to, className = "") {
+      const svgNS = "http://www.w3.org/2000/svg";
+      const connector = document.createElementNS(svgNS, "line");
+      connector.classList.add("ring-connector");
+      if (className) connector.classList.add(className);
+      connector.setAttribute("x1", from.x.toFixed(2));
+      connector.setAttribute("y1", from.y.toFixed(2));
+      connector.setAttribute("x2", to.x.toFixed(2));
+      connector.setAttribute("y2", to.y.toFixed(2));
+      parent.append(connector);
+    }
+
+    function pointToward(from, to, length) {
+      const dx = to.x - from.x;
+      const dy = to.y - from.y;
+      const distance = Math.hypot(dx, dy);
+      if (!Number.isFinite(distance) || distance <= .001) return { x: from.x, y: from.y };
+      const scale = Math.min(length, distance / 3) / distance;
+      return { x: from.x + dx * scale, y: from.y + dy * scale };
+    }
+
+    function appendRingConnector(parent, anchorA, pointA, anchorB, pointB) {
+      const crossInset = ringAnchorsCrossMapRegions(anchorA, anchorB);
+      if (!crossInset) {
+        appendRingConnectorLine(parent, pointA, pointB);
+        return;
+      }
+      appendRingConnectorLine(parent, pointA, pointToward(pointA, pointB, 52), "is-cross-inset");
+      appendRingConnectorLine(parent, pointB, pointToward(pointB, pointA, 52), "is-cross-inset");
+      const svgNS = "http://www.w3.org/2000/svg";
+      const label = document.createElementNS(svgNS, "text");
+      label.classList.add("ring-cross-inset-label");
+      label.setAttribute("x", ((pointA.x + pointB.x) / 2).toFixed(2));
+      label.setAttribute("y", ((pointA.y + pointB.y) / 2).toFixed(2));
+      label.textContent = "inset scale";
+      parent.append(label);
+    }
+
     function renderRingOverlay() {
-      const overlay = $("#mapRingOverlay");
+      const overlay = $("#" + activeLayer().ringOverlayId);
       if (!overlay) return;
       overlay.innerHTML = "";
       overlay.dataset.ringFill = state.settings.ringFill === false ? "off" : "on";
@@ -19347,13 +19690,7 @@
       const anchor2 = ringAnchorFor(2);
       const point2 = anchor2 ? anchorSvgPoint(anchor2) : null;
       if (anchor2 && point2) {
-        const connector = document.createElementNS(svgNS, "line");
-        connector.classList.add("ring-connector");
-        connector.setAttribute("x1", point1.x.toFixed(2));
-        connector.setAttribute("y1", point1.y.toFixed(2));
-        connector.setAttribute("x2", point2.x.toFixed(2));
-        connector.setAttribute("y2", point2.y.toFixed(2));
-        overlay.append(connector);
+        appendRingConnector(overlay, anchor1, point1, anchor2, point2);
       }
       overlay.append(ringAnchorPinGroup(anchor1, 1, point1));
       if (anchor2 && point2) overlay.append(ringAnchorPinGroup(anchor2, 2, point2));
@@ -24673,15 +25010,29 @@
           addRingDistance();
           return;
         }
+        const styleMenu = event.target.closest("[data-ring-style-menu]");
+        if (styleMenu) {
+          toggleRingStyleMenu(event);
+          return;
+        }
+        const styleOption = event.target.closest("[data-ring-style-menu-option]");
+        if (styleOption) {
+          event.stopPropagation();
+          setRingStyleOption(styleOption.dataset.ringStyleMenuOption, styleOption.dataset.ringStyleMenuValue === "true");
+          return;
+        }
         const unit = event.target.closest("[data-ring-unit]");
         if (unit) {
           setRingUnit(unit.dataset.ringUnit);
           return;
         }
+        const travelMode = event.target.closest("[data-ring-travel-mode]");
+        if (travelMode) {
+          setRingTravelMode(travelMode.dataset.ringTravelMode);
+          return;
+        }
         const setting = event.target.closest("[data-ring-setting]");
         if (setting) {
-          if (setting.dataset.ringSetting === "fill") setRingFill(state.settings.ringFill === false);
-          if (setting.dataset.ringSetting === "clip") setRingClip(!ringClipEnabled());
           if (setting.dataset.ringSetting === "time") setRingShowTime(!ringShowTime());
           if (setting.dataset.ringSetting === "edit") setRingEditMode(!ringEditMode);
           return;
@@ -24696,6 +25047,12 @@
       });
       $("#ringPanel").addEventListener("change", event => {
         if (event.target.matches("[data-ring-distance-input]") && ringEditMode) setRingDistanceAt(event.target.dataset.ringDistanceInput, event.target.value);
+      });
+      $("#ringPanel").addEventListener("keydown", event => {
+        const distance = event.target.closest("[data-ring-distance-toggle]");
+        if (!distance || event.target.matches("button, input") || (event.key !== "Enter" && event.key !== " ")) return;
+        event.preventDefault();
+        toggleRingDistance(distance.dataset.ringDistanceToggle);
       });
       $("#notesBucketListBtn").addEventListener("click", toggleBucketListView);
       $("#notesPanelBackBtn").addEventListener("click", () => {
@@ -25017,12 +25374,17 @@
       window.addEventListener("blur", () => setPowerOverlay(false));
       window.addEventListener("resize", () => {
         if (!legendPositionControlAvailable()) closeLegendPositionMenu();
+        if (ringStyleMenuOpen) closeRingStyleMenu();
         syncButtonLabels();
         scheduleMainLayoutSync();
       });
       document.addEventListener("click", event => {
         if (!legendPositionMenuOpen || event.target.closest(".legend-position-picker")) return;
         closeLegendPositionMenu();
+      });
+      document.addEventListener("click", event => {
+        if (!ringStyleMenuOpen || event.target.closest(".ring-style-picker")) return;
+        closeRingStyleMenu();
       });
       const handleLayoutModeChange = () => {
         if (!legendPositionControlAvailable()) closeLegendPositionMenu();
