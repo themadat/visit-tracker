@@ -48,25 +48,25 @@
       --danger: #b42318;
       --success: #157347;
       --warning: #d97706;
-      --accent-ring: #d4a017;
-      --accent-ring-secondary: #b45309;
-      --ring-step-1-stroke: #d4a017;
-      --ring-step-2-stroke: #d19700;
-      --ring-step-3-stroke: #c98505;
-      --ring-step-4-stroke: #bd7208;
-      --ring-step-5-stroke: #ad6108;
-      --ring-step-6-stroke: #9f5309;
-      --ring-step-7-stroke: #92400e;
+      --accent-ring: #ff6f61;
+      --accent-ring-secondary: #c2410c;
+      --ring-step-1-stroke: #ff6f61;
+      --ring-step-2-stroke: #f9735b;
+      --ring-step-3-stroke: #ef6c3f;
+      --ring-step-4-stroke: #e85d2a;
+      --ring-step-5-stroke: #d94f16;
+      --ring-step-6-stroke: #c2410c;
+      --ring-step-7-stroke: #a9360a;
       --ring-step-8-stroke: #7c2d12;
-      --ring-step-1-fill: rgba(212, 160, 23, .2);
-      --ring-step-2-fill: rgba(209, 151, 0, .17);
-      --ring-step-3-fill: rgba(201, 133, 5, .14);
-      --ring-step-4-fill: rgba(189, 114, 8, .12);
-      --ring-step-5-fill: rgba(173, 97, 8, .1);
-      --ring-step-6-fill: rgba(159, 83, 9, .085);
-      --ring-step-7-fill: rgba(146, 64, 14, .07);
+      --ring-step-1-fill: rgba(255, 111, 97, .2);
+      --ring-step-2-fill: rgba(249, 115, 91, .17);
+      --ring-step-3-fill: rgba(239, 108, 63, .14);
+      --ring-step-4-fill: rgba(232, 93, 42, .12);
+      --ring-step-5-fill: rgba(217, 79, 22, .1);
+      --ring-step-6-fill: rgba(194, 65, 12, .085);
+      --ring-step-7-fill: rgba(169, 54, 10, .07);
       --ring-step-8-fill: rgba(124, 45, 18, .06);
-      --ring-connector: #b45309;
+      --ring-connector: #c2410c;
       --ring-label-bg: var(--bg);
       --state-empty: #d7dce3;
       --shadow: 0 18px 50px rgba(16, 24, 40, .14);
@@ -90,25 +90,25 @@
       --danger: #ff8a7a;
       --success: #72d69a;
       --warning: #fbbf24;
-      --accent-ring: #e0aa1a;
-      --accent-ring-secondary: #f59e0b;
-      --ring-step-1-stroke: #e0aa1a;
-      --ring-step-2-stroke: #d99a00;
-      --ring-step-3-stroke: #d08700;
-      --ring-step-4-stroke: #c87505;
-      --ring-step-5-stroke: #b96308;
-      --ring-step-6-stroke: #a9550a;
-      --ring-step-7-stroke: #9a460c;
-      --ring-step-8-stroke: #873a0d;
-      --ring-step-1-fill: rgba(224, 170, 26, .2);
-      --ring-step-2-fill: rgba(217, 154, 0, .17);
-      --ring-step-3-fill: rgba(208, 135, 0, .14);
-      --ring-step-4-fill: rgba(200, 117, 5, .12);
-      --ring-step-5-fill: rgba(185, 99, 8, .1);
-      --ring-step-6-fill: rgba(169, 85, 10, .085);
-      --ring-step-7-fill: rgba(154, 70, 12, .075);
-      --ring-step-8-fill: rgba(135, 58, 13, .065);
-      --ring-connector: #e0aa1a;
+      --accent-ring: #ff8a7a;
+      --accent-ring-secondary: #fb923c;
+      --ring-step-1-stroke: #ff8a7a;
+      --ring-step-2-stroke: #fb7c5f;
+      --ring-step-3-stroke: #f9734d;
+      --ring-step-4-stroke: #ea6a2e;
+      --ring-step-5-stroke: #d95b19;
+      --ring-step-6-stroke: #c84a12;
+      --ring-step-7-stroke: #aa3c0f;
+      --ring-step-8-stroke: #8a2e0d;
+      --ring-step-1-fill: rgba(255, 138, 122, .2);
+      --ring-step-2-fill: rgba(251, 124, 95, .17);
+      --ring-step-3-fill: rgba(249, 115, 77, .14);
+      --ring-step-4-fill: rgba(234, 106, 46, .12);
+      --ring-step-5-fill: rgba(217, 91, 25, .1);
+      --ring-step-6-fill: rgba(200, 74, 18, .085);
+      --ring-step-7-fill: rgba(170, 60, 15, .075);
+      --ring-step-8-fill: rgba(138, 46, 13, .065);
+      --ring-connector: #ff8a7a;
       --ring-label-bg: var(--bg);
       --state-empty: #3b4553;
       --shadow: 0 22px 60px rgba(0, 0, 0, .38);
@@ -2149,35 +2149,41 @@
     }
 
     #ringPanel {
-      gap: .2rem;
+      gap: 2.88px;
     }
 
     .ring-panel-title-row {
       display: grid;
-      grid-template-columns: auto minmax(0, 1fr);
-      gap: .3rem;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 2.88px;
       align-items: center;
+      margin-bottom: 6.46px;
     }
 
     .ring-panel-title-row h2 {
       margin: 0;
+      font-size: .82rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .ring-title-actions {
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: .32rem;
+      gap: 2.88px;
+      justify-self: end;
       min-width: 0;
     }
 
     .ring-header-btn {
       display: inline-grid;
       place-items: center;
-      width: 40px;
-      min-width: 40px;
-      height: 40px;
-      min-height: 40px;
+      width: 39px;
+      min-width: 39px;
+      height: 39px;
+      min-height: 39px;
       padding: 0;
       font-size: .82rem;
       font-weight: 900;
@@ -2203,7 +2209,8 @@
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
       align-items: center;
-      gap: .2rem;
+      gap: 2.88px;
+      height: 32px;
       min-width: 0;
       min-height: 32px;
       font-size: .9rem;
@@ -2216,6 +2223,7 @@
       justify-content: center;
       width: 100%;
       min-width: 0;
+      height: 32px;
       min-height: 32px;
       max-width: 100%;
       padding: .2rem .34rem;
@@ -2225,6 +2233,9 @@
       background: transparent;
       color: var(--text);
       text-align: center;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
       overflow-wrap: anywhere;
     }
 
@@ -2250,7 +2261,8 @@
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
       align-items: center;
-      gap: .16rem;
+      gap: 2.88px;
+      height: 32px;
       min-width: 0;
     }
 
@@ -2275,42 +2287,76 @@
     .ring-chip-row {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: .2rem;
+      gap: 2.88px;
     }
 
     .ring-config-row {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto auto;
-      gap: .16rem;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 2.88px;
       align-items: center;
       height: 32px;
       min-width: 0;
     }
 
+    .ring-config-row:not(.is-editing) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .ring-distance-combo {
+      display: grid;
+      grid-template-columns: minmax(2.25rem, 1fr) auto;
+      align-items: stretch;
+      height: 32px;
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid color-mix(in srgb, var(--ring-chip-color, var(--accent-ring)) 66%, var(--line));
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--ring-chip-color, var(--accent-ring)) 15%, var(--surface));
+    }
+
+    .ring-distance-combo.is-disabled {
+      border-color: color-mix(in srgb, var(--ring-chip-color, var(--accent-ring)) 34%, var(--line));
+      background: color-mix(in srgb, var(--surface) 88%, var(--ring-chip-color, var(--accent-ring)) 12%);
+      opacity: .68;
+    }
+
+    .ring-distance-combo:focus-within {
+      box-shadow: var(--focus);
+    }
+
     .ring-distance-chip {
       min-width: 0;
-      width: 1.95rem;
-      min-height: 32px;
-      padding: 0 .24rem;
-      border-color: color-mix(in srgb, var(--ring-chip-color, var(--accent-ring)) 52%, var(--line));
+      width: 1.72rem;
+      height: 100%;
+      min-height: 0;
+      padding: 0 .12rem;
+      border: 0;
+      border-left: 1px solid color-mix(in srgb, var(--ring-chip-color, var(--accent-ring)) 46%, var(--line));
       color: color-mix(in srgb, var(--ring-chip-color, var(--accent-ring)) 76%, var(--text));
-      border-radius: var(--radius);
-      font-size: .68rem;
+      border-radius: 0;
+      background: transparent;
+      font-size: .64rem;
       font-weight: 920;
       line-height: 1;
     }
 
     .ring-distance-chip[aria-pressed="true"] {
-      background: color-mix(in srgb, var(--ring-chip-color, var(--accent-ring)) 22%, var(--surface));
+      background: color-mix(in srgb, var(--ring-chip-color, var(--accent-ring)) 18%, transparent);
       border-color: var(--ring-chip-color, var(--accent-ring));
       color: var(--text);
     }
 
+    .ring-distance-chip .sf-symbol {
+      width: 1.34rem;
+      height: 1.34rem;
+    }
+
     .ring-distance-field {
       min-width: 0;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--surface);
+      border: 0;
+      border-radius: 0;
+      background: transparent;
       overflow: hidden;
     }
 
@@ -2318,7 +2364,7 @@
       width: 100%;
       min-width: 0;
       height: 30px;
-      padding: .2rem .24rem;
+      padding: .2rem .16rem .2rem .2rem;
       border: 0;
       background: transparent;
       font-size: .8rem;
@@ -2326,12 +2372,24 @@
       text-align: right;
     }
 
-    .ring-distance-field input:focus {
-      outline: none;
+    .ring-distance-field input[readonly] {
+      cursor: default;
+      color: var(--text);
     }
 
-    .ring-distance-field:focus-within {
-      box-shadow: var(--focus);
+    .ring-distance-field input::-webkit-outer-spin-button,
+    .ring-distance-field input::-webkit-inner-spin-button {
+      margin: 0;
+      -webkit-appearance: none;
+    }
+
+    .ring-distance-field input[type="number"] {
+      appearance: textfield;
+      -moz-appearance: textfield;
+    }
+
+    .ring-distance-field input:focus {
+      outline: none;
     }
 
     .ring-remove-btn {
@@ -2349,13 +2407,26 @@
       height: .82rem;
     }
 
+    .ring-remove-btn.danger {
+      background: color-mix(in srgb, var(--danger) 12%, var(--surface));
+      border-color: color-mix(in srgb, var(--danger) 60%, var(--line));
+      color: var(--danger);
+    }
+
+    .ring-remove-btn.danger:not(:disabled):hover {
+      background: var(--danger);
+      border-color: var(--danger);
+      color: #fff;
+    }
+
     .ring-add-btn {
       background: color-mix(in srgb, var(--accent-ring-secondary) 88%, #fff 12%);
       border-color: var(--accent-ring-secondary);
       color: #2b1700;
     }
 
-    .ring-add-btn:disabled {
+    .ring-add-btn:disabled,
+    #addLevelBtn:disabled {
       background: var(--surface-2);
       border-color: var(--line);
       color: var(--muted);
@@ -2421,6 +2492,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      height: 32px;
       min-height: 32px;
       padding: .28rem .42rem;
       border: 1px solid color-mix(in srgb, var(--accent-ring) 44%, var(--line));
@@ -2435,6 +2507,9 @@
     }
 
     .ring-inset-warning {
+      display: flex;
+      align-items: center;
+      min-height: 32px;
       padding: .4rem .5rem;
       border-left: 3px solid var(--warning);
       border-radius: .42rem;
@@ -2455,14 +2530,21 @@
     }
 
     .ring-panel-status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       grid-column: 1 / -1;
       justify-self: center;
       text-align: center;
       font-weight: 720;
       color: color-mix(in srgb, var(--accent-ring-secondary) 76%, var(--text));
       min-width: 0;
-      min-height: 18px;
-      overflow-wrap: anywhere;
+      width: 100%;
+      height: 32px;
+      min-height: 32px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .ring-panel-status.is-warning {
@@ -2472,6 +2554,24 @@
     .legend-panel-group[data-ring-layout="stack"] .ring-panel-status {
       grid-column: 1 / -1;
       justify-self: center;
+      text-align: center;
+    }
+
+    .ring-disclaimer {
+      justify-content: center;
+      min-height: 32px;
+      padding: .18rem .4rem;
+      border: 1px solid color-mix(in srgb, var(--accent-ring) 26%, var(--line));
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--accent-ring) 7%, var(--surface));
+      text-align: center;
+    }
+
+    .ring-panel-footer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 32px;
       text-align: center;
     }
 
@@ -13741,7 +13841,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.2.0.8";
+    const APP_VERSION = "4.2.0.9";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -15116,6 +15216,18 @@
         category: "Maps"
       },
       {
+        title: "Selectable Color Themes",
+        ticketId: "WISH-063",
+        description: "Let users pick color themes for Wayfinder, Rangefinder, and the overall app. Scope includes theme presets, accessible contrast checks, and preserving existing colors as defaults.",
+        priority: "P2",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 22,
+        prompt: "Add user-selectable color themes for Wayfinder, Rangefinder, and the overall app. Keep existing colors as defaults, preserve local settings, and ensure selected themes remain readable in light and dark modes.",
+        category: "UI"
+      },
+      {
         title: "National Park Overlay Layer",
         ticketId: "WISH-004",
         description: "Add an optional national parks layer that can be viewed with state progress. Scope includes park data, visible markers or outlines, visit status, filtering, and exports that remain readable.",
@@ -15298,20 +15410,20 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.2.0.8",
+        version: "4.2.0.9",
         date: "2026-06-01",
         title: "Rangefinder",
-        summary: "Rangefinder gets header controls, seven default rings, and a resizable split.",
+        summary: "Rangefinder gets coral rings, quieter edit controls, and Legend-matched rows.",
         highlights: [
-          "Seven default rings now start at 60, 120, and 180 mi.",
-          "Rangefinder settings moved into the header.",
-          "Legend and Rangefinder can resize from a 50/50 split.",
-          "Legend Add/Edit buttons swapped with their shortcuts."
+          "Rangefinder now uses a coral-to-burnt-orange palette.",
+          "Ring rows match the Legend's 32px rhythm.",
+          "Ring editing now lives behind a header pencil.",
+          "Maxed Legend Add now grays out."
         ],
         notice: {
-          version: "4.2.0.8",
+          version: "4.2.0.9",
           title: "Rangefinder",
-          summary: "Header controls, seven rings, and a resizable split.",
+          summary: "Coral rings, cleaner editing, and matched row rhythm.",
           cta: "Find Your Range!"
         },
         updates: [
@@ -15350,6 +15462,14 @@
           "Restored the paired Legend and Rangefinder desktop layout to a 50/50 default split with a draggable divider for user resizing.",
           "Swapped the Legend Add and Edit header buttons, including their Shortcut Mode keys.",
           "Added a roadmap wishlist item for more accurate drive times and driving-time radius bands.",
+          "Changed the Rangefinder palette from deep gold to coral rings that progress into burnt orange.",
+          "Matched Rangefinder rows to the Legend's 32px item height, tightened row gaps to 2.88px, and aligned the header spacing with the Legend header.",
+          "Turned the straight-line distance warning into a bordered dismissable Rangefinder hint.",
+          "Rendered the Fill header control with the full-moon symbol and the speed-unit control with the filled MPH/KPH circle symbols.",
+          "Combined each ring number and mi/km unit into one bordered, color-shaded control while keeping the unit as the ring visibility toggle.",
+          "Added a Rangefinder edit button: distance fields unlock only in edit mode, and ring delete buttons appear only while editing.",
+          "Updated maxed-out Legend Add styling so it grays out like the Rangefinder Add button.",
+          "Added a roadmap wishlist item for selectable Wayfinder, Rangefinder, and overall app color themes.",
           "Updated Help Center Rangefinder guidance and retargeted the active Add Drive Radius roadmap item to the 4.2.0 line."
         ]
       },
@@ -16321,6 +16441,7 @@
     let legendDragCommitted = false;
     let legendSwipeSuppressClickUntil = 0;
     let ringArmedSlot = null;
+    let ringEditMode = false;
     let ringPanelNotice = "";
     let ringPanelRenderTimer = 0;
     let levelAutoSaveTimer = null;
@@ -17330,6 +17451,7 @@
         if (!ringAnchorFor(1)) ringArmedSlot = 1;
       } else {
         ringArmedSlot = null;
+        ringEditMode = false;
         ringPanelNotice = "";
       }
       save();
@@ -17445,6 +17567,12 @@
 
     function ringShowTime() {
       return state.settings.ringShowTime !== false;
+    }
+
+    function setRingEditMode(on) {
+      ringEditMode = on === true;
+      renderRingPanel();
+      scheduleMainLayoutSync();
     }
 
     function ringDistanceDisplayValue(miles, unit = ringUnit()) {
@@ -17683,10 +17811,11 @@
       const insetWarning = ringInsetWarning(anchor1);
       const unit = ringUnit();
       const nextUnit = unit === "mi" ? "km" : "mi";
-      const speedUnitLabel = unit === "mi" ? "mph" : "kph";
+      const speedUnitIcon = unit === "mi" ? __MPH_CIRCLE_FILL : __KPH_CIRCLE_FILL;
       const fillOn = state.settings.ringFill !== false;
       const clipOn = ringClipEnabled();
       const timeOn = ringShowTime();
+      const editOn = ringEditMode;
       const canAddRing = distances.length < RING_MAX_COUNT;
       const pointName = slot => slot === 1 ? "Start" : "End";
       const slotHtml = (slot, anchor) => {
@@ -17698,13 +17827,17 @@
       const ringChips = distances.map((miles, index) => {
         const label = ringDistanceDisplayText(miles, unit);
         const pressed = enabled.has(ringDistanceKey(miles));
-        return `<div class="ring-config-row" style="${ringStepStyle(index, "ring-chip")}" data-ring-index="${index}">
-          <label class="ring-distance-field">
-            <span class="sr-only">Ring ${index + 1} distance</span>
-            <input type="number" min="1" max="${unit === "km" ? Math.round(RING_DISTANCE_MAX * RING_KM_PER_MILE) : RING_DISTANCE_MAX}" step="1" value="${ringDistanceDisplayValue(miles, unit)}" data-ring-distance-input="${index}" aria-label="Ring ${index + 1} distance in ${unit}">
-          </label>
-          <button class="ring-distance-chip" type="button" data-ring-distance-toggle="${index}" aria-pressed="${pressed ? "true" : "false"}" aria-label="${pressed ? "Hide" : "Show"} ${escapeHtml(label)} ring" title="${pressed ? "Hide" : "Show"} ${escapeHtml(label)} ring">${unit}</button>
-          <button class="ring-remove-btn danger" type="button" data-ring-remove="${index}" aria-label="Remove ${escapeHtml(label)} ring" title="Remove ring" ${distances.length <= 1 ? "disabled" : ""}>${__DELETE_LEFT_FILL}</button>
+        const editAttrs = editOn ? "" : ` readonly tabindex="-1" aria-readonly="true"`;
+        const removeButton = editOn ? `<button class="ring-remove-btn danger" type="button" data-ring-remove="${index}" aria-label="Remove ${escapeHtml(label)} ring" title="Remove ring" ${distances.length <= 1 ? "disabled" : ""}>${__DELETE_LEFT_FILL}</button>` : "";
+        return `<div class="ring-config-row ${editOn ? "is-editing" : ""}" style="${ringStepStyle(index, "ring-chip")}" data-ring-index="${index}">
+          <div class="ring-distance-combo ${pressed ? "is-enabled" : "is-disabled"}">
+            <label class="ring-distance-field">
+              <span class="sr-only">Ring ${index + 1} distance</span>
+              <input type="number" min="1" max="${unit === "km" ? Math.round(RING_DISTANCE_MAX * RING_KM_PER_MILE) : RING_DISTANCE_MAX}" step="1" value="${ringDistanceDisplayValue(miles, unit)}" data-ring-distance-input="${index}" aria-label="Ring ${index + 1} distance in ${unit}"${editAttrs}>
+            </label>
+            <button class="ring-distance-chip" type="button" data-ring-distance-toggle="${index}" aria-pressed="${pressed ? "true" : "false"}" aria-label="${pressed ? "Hide" : "Show"} ${escapeHtml(label)} ring" title="${pressed ? "Hide" : "Show"} ${escapeHtml(label)} ring">${unit}</button>
+          </div>
+          ${removeButton}
         </div>`;
       }).join("");
       const headerActions = `
@@ -17712,7 +17845,8 @@
           <button class="ring-header-btn" type="button" data-ring-setting="fill" aria-pressed="${fillOn ? "true" : "false"}" aria-label="${fillOn ? "Turn fill rings off" : "Turn fill rings on"}" title="${fillOn ? "Fill rings on" : "Fill rings off"}">${fillOn ? __MOONPHASE_FULL_MOON : __RING}</button>
           <button class="ring-header-btn" type="button" data-ring-setting="clip" aria-pressed="${clipOn ? "true" : "false"}" aria-label="${clipOn ? "Turn land clipping off" : "Turn land clipping on"}" title="${clipOn ? "Clip rings on" : "Clip rings off"}">${clipOn ? __GAUGE_OPEN : __CIRCLE}</button>
           <button class="ring-header-btn" type="button" data-ring-setting="time" aria-pressed="${timeOn ? "true" : "false"}" aria-label="${timeOn ? "Hide estimated time" : "Show estimated time"}" title="${timeOn ? "Time estimates on" : "Time estimates off"}">${timeOn ? __STOPWATCH_FILL : __STOPWATCH}</button>
-          <button class="ring-header-btn" type="button" data-ring-unit="${nextUnit}" aria-pressed="true" aria-label="Using ${unit === "mi" ? "miles and mph" : "kilometers and kph"}; switch to ${nextUnit === "mi" ? "miles and mph" : "kilometers and kph"}" title="Switch to ${nextUnit === "mi" ? "mph" : "kph"}">${speedUnitLabel}</button>
+          <button class="ring-header-btn" type="button" data-ring-unit="${nextUnit}" aria-pressed="true" aria-label="Using ${unit === "mi" ? "miles and mph" : "kilometers and kph"}; switch to ${nextUnit === "mi" ? "miles and mph" : "kilometers and kph"}" title="Switch to ${nextUnit === "mi" ? "mph" : "kph"}">${speedUnitIcon}</button>
+          <button class="ring-header-btn" type="button" data-ring-setting="edit" aria-pressed="${editOn ? "true" : "false"}" aria-label="${editOn ? "Hide ring edit controls" : "Edit ring distances"}" title="${editOn ? "Hide ring edit controls" : "Edit ring distances"}">${editOn ? __PENCIL_CIRCLE : __PENCIL}</button>
           <button class="ring-header-btn ring-add-btn" type="button" data-ring-add aria-label="${canAddRing ? "Add ring" : "Maximum rings reached"}" title="${canAddRing ? "Add ring" : "8/8 rings"}" ${canAddRing ? "" : "disabled"}>${__PLUS_APP_FILL}</button>
         </div>`;
       const dismissed = new Set(state.dismissedHints || []);
@@ -17722,7 +17856,9 @@
           ? "Pick a mapped note pin for Start."
           : "Tap Start or End to replace a point.";
       const status = ringPanelNotice || hint;
-      const disclaimerText = ringShowTime() ? RING_DISCLAIMER_TEXT : RING_DISTANCE_ONLY_DISCLAIMER_TEXT;
+      const disclaimerText = ringShowTime()
+        ? `Distances are straight-line ('as the crow flies') and times assume ${ringSpeedLabel()}. Not actual driving distance.`
+        : RING_DISTANCE_ONLY_DISCLAIMER_TEXT;
       const disclaimer = dismissed.has(RING_HINT_KEY)
         ? `<small class="ring-panel-footer">${ringShowTime() ? `Straight-line · ${ringSpeedLabel()} estimate.` : "Straight-line distance."}</small>`
         : `<small class="ring-disclaimer" data-hint data-hint-key="${RING_HINT_KEY}">${escapeHtml(disclaimerText)}</small>`;
@@ -24482,6 +24618,7 @@
           if (setting.dataset.ringSetting === "fill") setRingFill(state.settings.ringFill === false);
           if (setting.dataset.ringSetting === "clip") setRingClip(!ringClipEnabled());
           if (setting.dataset.ringSetting === "time") setRingShowTime(!ringShowTime());
+          if (setting.dataset.ringSetting === "edit") setRingEditMode(!ringEditMode);
           return;
         }
         const distance = event.target.closest("[data-ring-distance-toggle]");
@@ -24493,7 +24630,7 @@
         if (slot) armRingSlot(Number(slot.dataset.ringSlot));
       });
       $("#ringPanel").addEventListener("change", event => {
-        if (event.target.matches("[data-ring-distance-input]")) setRingDistanceAt(event.target.dataset.ringDistanceInput, event.target.value);
+        if (event.target.matches("[data-ring-distance-input]") && ringEditMode) setRingDistanceAt(event.target.dataset.ringDistanceInput, event.target.value);
       });
       $("#notesBucketListBtn").addEventListener("click", toggleBucketListView);
       $("#notesPanelBackBtn").addEventListener("click", () => {
