@@ -13626,12 +13626,11 @@
             <li>Use View Locations to show or hide note pins. Notes without coordinates sit at the center of their
               state or territory shape; exact coordinates place markers more precisely.</li>
             <li>Use Match Notes to dim map locations and pins that do not match the active Notes filters.</li>
-            <li>Use Rangefinder on the US or World map to pick saved note pins as Start and End points, draw planning rings, and
-              compare the
-              straight-line distance between two places.</li>
+            <li>Use Rangefinder on the US or World map to pick saved note pins as Start and End points, draw Drive or
+              Plane planning rings, and compare the straight-line distance between two places.</li>
             <li>Rangefinder rings can be filled or stroke-only, clipped to the active land area, shown in miles or
-              kilometers,
-              customized up to eight distances, and shown with or without Drive or Plane time estimates.</li>
+              kilometers, customized up to eight distances, and shown with or without Drive or Plane time estimates.
+              The time menu lets you adjust the average speed for the current travel mode.</li>
             <li>Mapped markers open the note when there is one note. Nearby markers cluster, zoom when they can split,
               or open a picker when they are too close.</li>
             <li>Alaska, Hawaii, and territory points use inset map scale. Mainland rings clip away from those insets,
@@ -13724,7 +13723,8 @@
           <p><b>Why are some pins grouped?</b><br>Nearby mapped notes cluster so the map stays readable. Click a cluster
             to zoom or open the picker when notes are too close to separate.</p>
           <p><b>Are Rangefinder rings routing distance?</b><br>No. Rings and Start-to-End comparisons use straight-line
-            distance. Drive estimates assume 60 mph, Plane estimates assume 600 mph, and both are planning hints.</p>
+            distance. Drive and Plane times use your selected average speed, starting from 60 mph for Drive and 600 mph
+            for Plane, so both are planning hints.</p>
         </section>
         <section class="help-section">
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ: Legend
@@ -14107,7 +14107,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.2.0.27";
+    const APP_VERSION = "4.2.0.28";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -15683,96 +15683,42 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
     ];
     const CHANGELOG = [
       {
-        version: "4.2.0.27",
+        version: "4.2.0.28",
         date: "2026-06-02",
         title: "Rangefinder",
-        summary: "Rangefinder works globally with independent Plane rings.",
+        summary: "Rangefinder adds straight-line planning rings, per-map settings, and travel-time estimates.",
         highlights: [
-          "Rangefinder now works on the World map too.",
-          "US and World remember their own Rangefinder settings.",
-          "Set average Drive (30-120) and Plane (120-760) speeds.",
-          "Plane rings use independent 600-7800 mile defaults."
+          "Draw Drive or Plane planning rings on US and World maps.",
+          "US and World keep independent Rangefinder setups.",
+          "Adjust distances, units, fill, clipping, labels, and speed.",
+          "Compare Start-to-End distance with optional time estimates."
         ],
         notice: {
-          version: "4.2.0.27",
+          version: "4.2.0.28",
           title: "Rangefinder",
-          summary: "Per-map Rangefinder now with adjustable Drive and Plane speeds.",
+          summary: "Rangefinder adds per-map planning rings, speeds, and Start-to-End estimates.",
           cta: "Find Your|Range!"
         },
         updates: [
-          "Added the Rangefinder Mode toggle to the map header using the target icon and Shortcut Mode key 5, freeing that key from the old hidden map-layer alias while the map-title switch keeps its visible ~ shortcut.",
-          "Added the Rangefinder panel beside the Legend. When the mode is on, the two panels share the same placement area and reflow from a 50/50 desktop split to a stacked mobile layout, so the panel rides along when the Legend is moved.",
-          "Added persisted Rangefinder settings for mode state, Start, optional End, enabled ring presets, and fill preference while preserving the existing local data key.",
-          "Rangefinder Start and End slots can now be armed from the panel; the next coordinate-backed note pin fills the chosen slot without opening the marker dialog. Start can be replaced but not cleared, while End has a clear button.",
-          "The first-use Rangefinder disclaimer is dismissable and uses the same hint system as the rest of the app. After dismissal, the panel keeps compact straight-line and 60 mph estimate microcopy.",
-          "Added map rendering for the fixed 60, 300, 600, 900, and 1200 mile Rangefinder rings, stacked from largest to smallest so the amber fills build toward the selected Start point.",
-          "Ring labels now sit north of each enabled ring and show the matching mile and 60 mph hour estimate.",
-          "Added compact ring controls for toggling individual distances plus a Fill toggle that switches the overlay between soft filled bands and stroke-only mode.",
-          "Rangefinder points now render as target pins in the map overlay, with End using the secondary amber color and a thin connector line back to Start when both points are set.",
-          "Added the Start-to-End compare readout with straight-line mileage and estimated time at 60 mph.",
-          "Added inset-scale warning copy for Alaska, Hawaii, Puerto Rico, the U.S. Virgin Islands, Guam, the Northern Mariana Islands, and American Samoa points.",
-          "If the Start note is deleted while Rangefinder is active, the panel clears that slot, arms it again, and prompts for a replacement. End clears quietly.",
-          "Rangefinder now works on both the US and World maps instead of disabling itself on the global layer.",
-          "Rangefinder rings are now configurable: edit each distance, add or remove rings, and keep up to eight visible planning bands.",
-          "Added a miles/kilometers unit toggle beside Fill rings. Ring labels, distance inputs, and Start-to-End comparisons follow the selected unit while time stays based on the 60 mph estimate.",
-          "Moved the point-picking guidance message into the Rangefinder header area so the picker prompt stays close to the Start and End slots.",
-          "Adjusted the paired Legend and Rangefinder layout: map placements split 60/40 on desktop, while side-column placements stack Rangefinder above the Legend like mobile.",
-          "Restored reliable Legend drag placement while Rangefinder is open by moving the paired panel group out of the way during desktop drag previews.",
-          "Refined the Rangefinder palette so rings start with deeper gold near Start and fade through amber across longer distances, with matching gradient-colored ring controls.",
-          "Collapsed each ring into one compact row that combines visibility, distance editing, unit display, and delete controls without repeating the distance label.",
-          "Added Clip and Time toggles: Clip trims ring fills/strokes to the US map shapes, while Time controls whether ring labels and comparisons include 60 mph estimates.",
-          "Moved the add-ring button into the options row so reaching the eight-ring limit does not add an extra panel row.",
-          "Removed the Rangefinder header icon and tightened the header spacing so picker instructions stay on one line.",
-          "Changed each ring row so clicking its mi/km unit toggles that ring on or off, keeping the numeric distance as the only repeated value.",
-          "Refined ring rendering so mainland Start pins never paint over Alaska, Hawaii, or territory land even when ocean clipping is off. If Start is inside an inset, rings stay out of the other map regions.",
-          "When clipping is on, Rangefinder labels now search for a visible point along each clipped ring instead of staying above the uncut circle.",
-          "Stretched the Rangefinder bottom controls into full-width segmented buttons and centered the Start-to-End distance message.",
-          "Set ring controls to four columns on desktop and two columns on mobile, with smaller delete buttons for denser scanning.",
-          "Added a roadmap wishlist item for the Washington-to-Alaska cross-inset Rangefinder edge case.",
-          "Updated Rangefinder defaults to seven rings: 60, 120, 180, 300, 600, 900, and 1200 miles, leaving the eighth slot for a user-added ring.",
-          "Moved Fill, Clip, Time, mile/kilometer, and Add Ring controls into the Rangefinder header as compact icon buttons.",
-          "Matched Rangefinder ring row height and spacing to Legend rows, and colored ring delete controls with the same danger treatment as Legend deletes.",
-          "Restored the paired Legend and Rangefinder desktop layout to a 50/50 default split with a draggable divider for user resizing.",
-          "Swapped the Legend Add and Edit header buttons, including their Shortcut Mode keys.",
-          "Added a roadmap wishlist item for more accurate drive times and driving-time radius bands.",
-          "Changed the Rangefinder palette from deep gold to coral rings that progress into burnt orange.",
-          "Matched Rangefinder rows to the Legend's 32px item height, tightened row gaps to 2.88px, and aligned the header spacing with the Legend header.",
-          "Turned the straight-line distance warning into a bordered dismissable Rangefinder hint.",
-          "Rendered the Fill header control with the full-moon symbol and the speed-unit control with the filled MPH/KPH circle symbols.",
-          "Combined each ring number and mi/km unit into one bordered, color-shaded control while keeping the unit as the ring visibility toggle.",
-          "Added a Rangefinder edit button: distance fields unlock only in edit mode, and ring delete buttons appear only while editing.",
-          "Updated maxed-out Legend Add styling so it grays out like the Rangefinder Add button.",
-          "Added a roadmap wishlist item for selectable Wayfinder, Rangefinder, and overall app color themes.",
-          "Changed the Rangefinder palette from coral to Copper and Sienna so it complements Wayfinder without reading as a warning color.",
-          "Kept the Rangefinder edit button on the pencil icon in both states while using the same active-button background behavior as the Legend edit toggle.",
-          "Restored the Legend Add button to the plus icon when the five-level maximum is reached, with the disabled gray treatment carrying the state.",
-          "Expanded the dismissable Rangefinder straight-line hint to explain that clicking a ring unit turns that ring on or off, and re-applied hint dismiss controls after panel-only rerenders.",
-          "Adjusted the filled moon icon styling so Fill On reads as a copper moon with a sienna rim instead of a solid black dot.",
-          "Added an optional | marker in release notice CTAs so release copy can choose the banner button line break.",
-          "Standardized Legend button symbols to 22 by 22 pixels across header, position, row action, and swipe controls.",
-          "Gave Rangefinder ring numbers more breathing room before their unit toggles and simplified the dismissable straight-line hint so it no longer has a border or accent wash.",
-          "Top-aligned the Rangefinder panel title with the header controls for a cleaner compact split.",
-          "Set Legend header buttons to 40 by 40 pixels while keeping compact per-level row controls intact.",
-          "Made the Rangefinder Add Ring button preview the color of the next ring that will be added.",
-          "Removed active accent fills from Rangefinder header toggles other than Add Ring, leaving their icons to communicate state.",
-          "Shrank the per-level Legend edit pencil icon and added a roadmap wishlist item for broader Legend and Rangefinder control alignment.",
-          "Shrank compact Legend row button symbols, restored the Rangefinder edit accent when active, and enlarged map ring labels.",
-          "Restored the pre-coral gold-to-amber Rangefinder palette, made the whole non-edit ring distance chip toggle that ring, widened the mi/km segment, and added more spacing around the distance-time separator.",
-          "Implemented the first WISH-061 pass by giving cross-inset Rangefinder comparisons a broken dashed map cue, explicit inset-scale warning copy, and updated Help Center guidance.",
-          "Set active Wayfinder toggle text, symbols, and the Wayfinder mode pill to black for stronger contrast on teal.",
-          "Added a dedicated Alaska inset projection box so ordinary note pins and Rangefinder anchor pins land on the visible Alaska inset, including dateline-safe longitude handling.",
-          "Tested a filled interior treatment for the active Rangefinder Clip gauge icon while keeping the gauge outline separately colored.",
-          "Combined Rangefinder Fill and Clip into one Ring Style header button with a popup menu for No Fill, Fill, No Clip, and Clipped states.",
-          "Left-aligned Ring Style menu icons and labels so the popup options scan in clean columns.",
-          "Added Plane rings with independent defaults of 600, 1200, 1800, 3000, 4800, and 7800 miles, plus 600 mph time estimates.",
-          "Added a Drive/Plane mode button beside the Ring Style control, followed by mph/kph and Time controls in the Rangefinder header.",
-          "Rangefinder note pins and overlays now render on the World map with a dedicated global ring overlay.",
-          "Updated Help Center Rangefinder guidance and retargeted the active Add Drive Radius roadmap item to the 4.2.0 line.",
-          "Rangefinder now remembers separate settings for the US and World maps: anchors, distances, travel mode, ring style, units, and time toggle all save per map, so switching between Drive on the US map and Plane on the World map keeps each side's tuning intact. Existing settings carry over to both maps on first load so the upgrade is a no-op until you customize a side.",
-          "Added a roadmap wishlist item for Rangefinder rings that wrap around the antimeridian on the World map so a Start near the date line keeps drawing on the other side instead of clipping at the edge.",
-          "Made the Rangefinder average speed adjustable: tap the stopwatch to open a Time popup with a slider and number field for Drive (30-120 mph) and Plane (120-760 mph). Each travel mode keeps its own speed per map, the value follows the mph/kph unit toggle, and ring time labels plus the Start-to-End estimate update to match. The speed control is dimmed when time estimates are off.",
-          "Added a roadmap wishlist item for time-based Rangefinder rings so a ring can be set by hours and have its distance derived from the configured average speed.",
-          "Enlarged World map Rangefinder ring labels (distance and time) so they read at the same scale as the US map instead of shrinking on the larger global viewBox, and taught the labels to fall back onto a visible arc of each ring when the ring's north edge runs off the map, so big global rings keep a readable label on screen."
+          "Added Rangefinder Mode to the map header with the target icon and Shortcut Mode key 5.",
+          "Added a paired Rangefinder panel beside the Legend with responsive stacking, desktop placement support, and a resizable Legend/Rangefinder split.",
+          "Rangefinder can pick saved coordinate-backed note pins as Start and End points, render target markers, and show a connector when both points are set.",
+          "Added straight-line planning rings on both the US and World maps, with independent Drive and Plane travel modes.",
+          "Drive defaults to 60, 120, 180, 300, 600, 900, and 1200 mile rings; Plane defaults to 600, 1200, 1800, 3000, 4800, and 7800 mile rings.",
+          "US and World maps now remember their own Rangefinder anchors, ring distances, enabled rings, travel mode, units, fill/clip/time settings, and speeds.",
+          "Rangefinder rings can be edited, added, removed, enabled, or disabled up to eight bands, with four-column desktop controls and two-column mobile controls.",
+          "Ring controls now combine the number and unit into one compact chip; in non-edit mode, clicking the chip toggles that ring on or off.",
+          "Added miles/kilometers switching for ring labels, inputs, and Start-to-End comparisons.",
+          "Added a Ring Style menu for Fill versus No Fill and Clipped versus No Clip, with land clipping that respects the active map region.",
+          "Refined ring rendering so mainland starts do not paint Alaska, Hawaii, or territories, while inset starts keep rings inside their own inset.",
+          "Added optional time estimates with adjustable average speeds: Drive ranges from 30 to 120 mph, Plane ranges from 120 to 760 mph, and kph follows the unit toggle.",
+          "Range labels now use the restored gold-to-amber palette, larger text, and visible-arc placement when clipping or large world rings push the usual label point off screen.",
+          "Added cross-inset comparison cues for pairs such as the contiguous US to Alaska: distance uses real coordinates while the map cue stays visibly non-route.",
+          "Fixed Alaska note-pin projection so ordinary pins and Rangefinder target pins land on the visible Alaska inset.",
+          "Added dismissable straight-line Rangefinder guidance that explains the non-routing distance model and ring-unit toggles.",
+          "Updated Help Center and FAQ copy for Rangefinder, clipped rings, adjustable speeds, inset behavior, and global map support.",
+          "Refined Rangefinder and Legend header/button sizing, edit states, delete styling, and disabled Add behavior for denser panel alignment.",
+          "Added roadmap follow-ups for route-aware travel times, selectable app/Wayfinder/Rangefinder color themes, antimeridian ring wrapping, and time-based rings."
         ]
       },
       {
@@ -16683,7 +16629,7 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       plane: { min: 120, max: 760, default: RING_PLANE_MPH }
     };
     const RING_HINT_KEY = "ring-mode-disclaimer";
-    const RING_DISCLAIMER_TEXT = "Distances are straight-line. Drive assumes 60 mph; Plane assumes 600 mph. Click a ring unit to show or hide that ring.";
+    const RING_DISCLAIMER_TEXT = "Distances are straight-line. Times use your current Drive or Plane average speed. Click a ring unit to show or hide that ring.";
     const RING_DISTANCE_ONLY_DISCLAIMER_TEXT = "Distances are straight-line. Click a ring unit to show or hide that ring.";
     const RING_INSET_IDS = new Set(["AK", "HI", ...TERRITORY_IDS]);
     const RING_ANCHOR_REMOVED_TEXT = "Start pin was removed - pick another pin.";
