@@ -1,4 +1,58 @@
+## Future Prompt
+
+Mobile Cleanup: 
+- Better Auto Colors single liner
+- Map buttons misaligned in scroll view
+- Double scroll with tip jar
+- Base camp causes scrolling problems and should just fit on mobile screen
+
 ## Names
+
+Ferrari (Rosso Corsa) corresponds to hex code #FF2800 (or sometimes #E80020 for the Formula 1 team)
+Ferrari Yellow (Giallo Modena): #FFF200
+Ferrari Black (Cavallino/Scuderia): #000000
+Ferrari White (Bianco Avus): #FFFFFF
+Ferrari Green: #00A551
+
+Maclaren Blue #47CFFC
+Maclaren Oragne #FF8000
+
+vibrant: 
+Blue: #0046FF
+Orange: #FF8040
+
+Earhty
+Navy Blue: #0e3b5c
+Rust Orange: #d8897b 
+
+airy
+Light Blue: #00BFFF
+Light/Bright Orange: #FFA630
+
+Classic
+Deep Blue: #0050EF
+Vibrant Orange: #FF7900 
+
+Lamborghini might be the color pallette to go with (ferrari limiting and maclaren not quite the hues I want)
+
+#9B0E1F (Mercury Red)
+#A80115 (volcano red)
+#C82504 (volcano orange)
+#FFC43D (mclaren orange)
+#00B8EE (Curacao blue)
+#0149D3 (vegas blue)
+#172375 (aurora blue)
+#29324E (saffire Black)
+#63EA2E (mantis)
+#2F473A (Racing Green)
+#351175 (Lantana Purple)
+#C8659E (Colbalt Violet)
+#191A1E (Fire black)
+#9BA2B4 (titanium silver)
+#8C8D92 (Storm gray)
+#626876 (maclaren argon)
+#C4C8D4 (Ice silver)
+#EBEBEB (Pearl White)
 
 // Find Free Custom SVGs: https://www.svgrepo.com
 https://www.svgrepo.com/collection/travel-and-places-infographic-icons/5
