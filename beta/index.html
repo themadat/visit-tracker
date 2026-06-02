@@ -2324,6 +2324,111 @@
       color: var(--text);
     }
 
+    .ring-time-picker {
+      position: relative;
+      display: inline-flex;
+    }
+
+    .ring-time-picker.is-time-on .ring-time-btn {
+      border-color: var(--accent-ring);
+      background: color-mix(in srgb, var(--accent-ring) 16%, var(--surface));
+    }
+
+    .ring-time-menu {
+      position: absolute;
+      top: calc(100% + .32rem);
+      right: 0;
+      z-index: 25;
+      display: grid;
+      gap: .42rem;
+      min-width: 13.5rem;
+      padding: .5rem;
+      border: 1px solid var(--line);
+      border-radius: .62rem;
+      background: color-mix(in srgb, var(--surface) 94%, var(--accent-ring) 6%);
+      box-shadow: 0 12px 28px rgba(15, 23, 42, .18);
+      transform-origin: top right;
+      animation: miniPop .12s ease-out;
+    }
+
+    .ring-time-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: .34rem;
+      width: 100%;
+      height: 34px;
+      min-height: 34px;
+      padding: .14rem .4rem;
+      font-size: .74rem;
+      font-weight: 860;
+      white-space: nowrap;
+    }
+
+    .ring-time-toggle .sf-symbol {
+      flex: 0 0 18px;
+      width: 18px;
+      height: 18px;
+    }
+
+    .ring-time-toggle[aria-checked="true"] {
+      border-color: var(--accent-ring);
+      background: color-mix(in srgb, var(--accent-ring) 18%, var(--surface));
+      color: var(--text);
+    }
+
+    .ring-speed-control {
+      display: grid;
+      gap: .3rem;
+    }
+
+    .ring-speed-control.is-disabled {
+      opacity: .5;
+    }
+
+    .ring-speed-label {
+      font-size: .68rem;
+      font-weight: 820;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .ring-speed-control input[type="range"] {
+      width: 100%;
+      margin: 0;
+      accent-color: var(--accent-ring);
+      cursor: pointer;
+    }
+
+    .ring-speed-control.is-disabled input[type="range"] {
+      cursor: not-allowed;
+    }
+
+    .ring-speed-value {
+      display: inline-flex;
+      align-items: baseline;
+      gap: .28rem;
+    }
+
+    .ring-speed-value input[type="number"] {
+      width: 4.2rem;
+      height: 30px;
+      padding: .1rem .36rem;
+      border: 1px solid var(--line);
+      border-radius: .42rem;
+      background: var(--surface);
+      color: var(--text);
+      font-size: .82rem;
+      font-weight: 820;
+      text-align: right;
+    }
+
+    .ring-speed-unit {
+      font-size: .72rem;
+      font-weight: 820;
+      color: var(--muted);
+    }
+
     .ring-anchor-expression {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
@@ -13994,7 +14099,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.2.0.24";
+    const APP_VERSION = "4.2.0.25";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -15582,20 +15687,20 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
     ];
     const CHANGELOG = [
       {
-        version: "4.2.0.24",
+        version: "4.2.0.25",
         date: "2026-06-02",
         title: "Rangefinder",
         summary: "Rangefinder works globally with independent Plane rings.",
         highlights: [
           "Rangefinder now works on the World map too.",
           "US and World remember their own Rangefinder settings.",
-          "Plane rings use independent 600-7800 mile defaults.",
-          "Drive and Plane estimates use separate 60/600 mph speeds."
+          "Set average Drive (30-120) and Plane (120-760) speeds.",
+          "Plane rings use independent 600-7800 mile defaults."
         ],
         notice: {
-          version: "4.2.0.24",
+          version: "4.2.0.25",
           title: "Rangefinder",
-          summary: "Global Rangefinder remembers settings per map.",
+          summary: "Per-map Rangefinder now with adjustable Drive and Plane speeds.",
           cta: "Find Your|Range!"
         },
         updates: [
@@ -15668,7 +15773,8 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
           "Rangefinder note pins and overlays now render on the World map with a dedicated global ring overlay.",
           "Updated Help Center Rangefinder guidance and retargeted the active Add Drive Radius roadmap item to the 4.2.0 line.",
           "Rangefinder now remembers separate settings for the US and World maps: anchors, distances, travel mode, ring style, units, and time toggle all save per map, so switching between Drive on the US map and Plane on the World map keeps each side's tuning intact. Existing settings carry over to both maps on first load so the upgrade is a no-op until you customize a side.",
-          "Added a roadmap wishlist item for Rangefinder rings that wrap around the antimeridian on the World map so a Start near the date line keeps drawing on the other side instead of clipping at the edge."
+          "Added a roadmap wishlist item for Rangefinder rings that wrap around the antimeridian on the World map so a Start near the date line keeps drawing on the other side instead of clipping at the edge.",
+          "Made the Rangefinder average speed adjustable: tap the stopwatch to open a Time popup with a slider and number field for Drive (30-120 mph) and Plane (120-760 mph). Each travel mode keeps its own speed per map, the value follows the mph/kph unit toggle, and ring time labels plus the Start-to-End estimate update to match. The speed control is dimmed when time estimates are off."
         ]
       },
       {
@@ -16573,6 +16679,11 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
     const RING_KM_PER_MILE = 1.609344;
     const RING_DEFAULT_MPH = 60;
     const RING_PLANE_MPH = 600;
+    // Configurable average speed per travel mode (stored in mph, clamped to range).
+    const RING_SPEED_RANGE = {
+      drive: { min: 30, max: 120, default: RING_DEFAULT_MPH },
+      plane: { min: 120, max: 760, default: RING_PLANE_MPH }
+    };
     const RING_HINT_KEY = "ring-mode-disclaimer";
     const RING_DISCLAIMER_TEXT = "Distances are straight-line. Drive assumes 60 mph; Plane assumes 600 mph. Click a ring unit to show or hide that ring.";
     const RING_DISTANCE_ONLY_DISCLAIMER_TEXT = "Distances are straight-line. Click a ring unit to show or hide that ring.";
@@ -16592,6 +16703,8 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
         enabled: [...RING_PRESETS],
         planeDistances: [...RING_PLANE_PRESETS],
         planeEnabled: [...RING_PLANE_PRESETS],
+        driveSpeed: RING_SPEED_RANGE.drive.default,
+        planeSpeed: RING_SPEED_RANGE.plane.default,
         fill: true,
         clip: true,
         showTime: true,
@@ -16661,6 +16774,7 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
     let legendPositionPointerId = null;
     let legendPositionMenuOpen = false;
     let ringStyleMenuOpen = false;
+    let ringTimeMenuOpen = false;
     let draggedLegendLevelId = "";
     let legendDragCommitted = false;
     let legendSwipeSuppressClickUntil = 0;
@@ -17355,11 +17469,22 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
         enabled: driveEnabled,
         planeDistances,
         planeEnabled,
+        driveSpeed: clampRingSpeed(bag.driveSpeed, "drive"),
+        planeSpeed: clampRingSpeed(bag.planeSpeed, "plane"),
         fill: pickBool("fill", "ringFill", defaults.fill),
         clip: pickBool("clip", "ringClip", defaults.clip),
         showTime: pickBool("showTime", "ringShowTime", defaults.showTime),
         unit
       };
+    }
+
+    function clampRingSpeed(value, mode) {
+      const range = RING_SPEED_RANGE[mode === "plane" ? "plane" : "drive"];
+      const mph = Number(value);
+      // null/""/0 coerce to 0 via Number(); treat any non-positive or non-finite
+      // value as "unset" and fall back to the mode default rather than the min.
+      if (!Number.isFinite(mph) || mph <= 0) return range.default;
+      return Math.round(Math.max(range.min, Math.min(range.max, mph)));
     }
 
     function normalizeRingByLayer(inputSettings) {
@@ -17943,7 +18068,34 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
     }
 
     function ringSpeedMph() {
-      return ringTravelIsPlane() ? RING_PLANE_MPH : RING_DEFAULT_MPH;
+      const bag = ringSettings();
+      return ringTravelIsPlane()
+        ? clampRingSpeed(bag.planeSpeed, "plane")
+        : clampRingSpeed(bag.driveSpeed, "drive");
+    }
+
+    function ringSpeedRange() {
+      return RING_SPEED_RANGE[ringTravelIsPlane() ? "plane" : "drive"];
+    }
+
+    // Speed is stored in mph but shown/edited in the active unit (mph or kph).
+    function ringSpeedDisplayValue(mph, unit = ringUnit()) {
+      return Math.round(unit === "km" ? Number(mph) * RING_KM_PER_MILE : Number(mph));
+    }
+
+    function ringSpeedMphFromDisplay(value, unit = ringUnit()) {
+      const display = Number(value);
+      if (!Number.isFinite(display)) return ringSpeedMph();
+      return unit === "km" ? display / RING_KM_PER_MILE : display;
+    }
+
+    function setRingSpeed(displayValue) {
+      const bag = ringSettings();
+      const mode = ringTravelIsPlane() ? "plane" : "drive";
+      const mph = clampRingSpeed(ringSpeedMphFromDisplay(displayValue), mode);
+      bag[mode === "plane" ? "planeSpeed" : "driveSpeed"] = mph;
+      save();
+      render();
     }
 
     function ringActiveDefaults() {
@@ -18107,7 +18259,34 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
     function toggleRingStyleMenu(event) {
       event?.stopPropagation();
       ringStyleMenuOpen = !ringStyleMenuOpen;
+      ringTimeMenuOpen = false;
       renderRingPanel();
+    }
+
+    function closeRingTimeMenu() {
+      ringTimeMenuOpen = false;
+      renderRingPanel();
+    }
+
+    function toggleRingTimeMenu(event) {
+      event?.stopPropagation();
+      ringTimeMenuOpen = !ringTimeMenuOpen;
+      ringStyleMenuOpen = false;
+      renderRingPanel();
+    }
+
+    // Live slider feedback without rebuilding the panel mid-drag (which would
+    // break the pointer grab). Mirrors the slider value into the companion number
+    // field; the actual commit (state + map redraw) happens on the slider's
+    // change event when the drag ends.
+    function previewRingSpeedDisplay(displayValue) {
+      const range = ringSpeedRange();
+      const unit = ringUnit();
+      const minD = ringSpeedDisplayValue(range.min, unit);
+      const maxD = ringSpeedDisplayValue(range.max, unit);
+      const clamped = Math.round(Math.max(minD, Math.min(maxD, Number(displayValue) || minD)));
+      const field = $("#ringSpeedNumber");
+      if (field && document.activeElement !== field) field.value = String(clamped);
     }
 
     function setRingStyleOption(kind, on) {
@@ -18230,7 +18409,7 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
     function syncRingUi() {
       if (ringModeActive()) repairRingAnchors();
       const on = ringModeActive();
-      if (!on) ringStyleMenuOpen = false;
+      if (!on) { ringStyleMenuOpen = false; ringTimeMenuOpen = false; }
       const btn = $("#mapRingModeBtn");
       const panel = $("#ringPanel");
       const group = $("#legendPanelGroup");
@@ -18277,6 +18456,12 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       const nextTravelMode = planeOn ? "drive" : "plane";
       const travelIcon = planeOn ? __AIRPLANE_CIRCLE : __CAR_CIRCLE;
       const travelLabel = planeOn ? "Plane rings" : "Drive rings";
+      const travelWord = planeOn ? "Plane" : "Drive";
+      const speedRange = ringSpeedRange();
+      const speedUnitLabel = unit === "km" ? "kph" : "mph";
+      const speedDisplay = ringSpeedDisplayValue(ringSpeedMph(), unit);
+      const speedMinDisplay = ringSpeedDisplayValue(speedRange.min, unit);
+      const speedMaxDisplay = ringSpeedDisplayValue(speedRange.max, unit);
       const editOn = ringEditMode;
       const canAddRing = distances.length < RING_MAX_COUNT;
       const addRingStyle = canAddRing ? ringStepStyle(distances.length, "ring-add") : "";
@@ -18326,7 +18511,20 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
           </span>
           <button class="ring-header-btn" type="button" data-ring-travel-mode="${nextTravelMode}" aria-pressed="${planeOn ? "true" : "false"}" aria-label="${travelLabel}; switch to ${planeOn ? "Drive rings" : "Plane rings"}" title="${travelLabel} at ${ringSpeedLabel()}">${travelIcon}</button>
           <button class="ring-header-btn" type="button" data-ring-unit="${nextUnit}" aria-pressed="true" aria-label="Using ${unit === "mi" ? "miles and mph" : "kilometers and kph"}; switch to ${nextUnit === "mi" ? "miles and mph" : "kilometers and kph"}" title="Switch to ${nextUnit === "mi" ? "mph" : "kph"}">${speedUnitIcon}</button>
-          <button class="ring-header-btn" type="button" data-ring-setting="time" aria-pressed="${timeOn ? "true" : "false"}" aria-label="${timeOn ? "Hide estimated time" : "Show estimated time"}" title="${timeOn ? "Time estimates on" : "Time estimates off"}">${timeOn ? __STOPWATCH_FILL : __STOPWATCH}</button>
+          <span class="ring-time-picker ${timeOn ? "is-time-on" : ""}">
+            <button class="ring-header-btn ring-time-btn" type="button" data-ring-time-menu aria-haspopup="true" aria-expanded="${ringTimeMenuOpen ? "true" : "false"}" aria-label="Time and average speed settings" title="${timeOn ? `Time on · ${travelWord} ${speedDisplay} ${speedUnitLabel}` : "Time estimates off"}">${timeOn ? __STOPWATCH_FILL : __STOPWATCH}</button>
+            <span class="ring-time-menu ${ringTimeMenuOpen ? "" : "hidden"}" role="menu" aria-label="Rangefinder time and speed">
+              <button type="button" role="menuitemcheckbox" class="ring-time-toggle" data-ring-setting="time" aria-checked="${timeOn ? "true" : "false"}" aria-label="${timeOn ? "Hide estimated time" : "Show estimated time"}">${timeOn ? __STOPWATCH_FILL : __STOPWATCH}<span>Show time estimates</span></button>
+              <span class="ring-speed-control ${timeOn ? "" : "is-disabled"}">
+                <span class="ring-speed-label">${travelWord} avg speed</span>
+                <input type="range" id="ringSpeedSlider" min="${speedMinDisplay}" max="${speedMaxDisplay}" step="1" value="${speedDisplay}" data-ring-speed-slider aria-label="${travelWord} average speed in ${speedUnitLabel}" ${timeOn ? "" : "disabled"}>
+                <span class="ring-speed-value">
+                  <input type="number" id="ringSpeedNumber" min="${speedMinDisplay}" max="${speedMaxDisplay}" step="1" value="${speedDisplay}" data-ring-speed-input aria-label="${travelWord} average speed in ${speedUnitLabel}" ${timeOn ? "" : "disabled"}>
+                  <span class="ring-speed-unit">${speedUnitLabel}</span>
+                </span>
+              </span>
+            </span>
+          </span>
           <button class="ring-header-btn" type="button" data-ring-setting="edit" aria-pressed="${editOn ? "true" : "false"}" aria-label="${editOn ? "Hide ring edit controls" : "Edit ring distances"}" title="${editOn ? "Hide ring edit controls" : "Edit ring distances"}">${__PENCIL}</button>
           <button class="ring-header-btn ring-add-btn" type="button" data-ring-add style="${addRingStyle}" aria-label="${canAddRing ? "Add ring" : "Maximum rings reached"}" title="${canAddRing ? "Add ring" : "8/8 rings"}" ${canAddRing ? "" : "disabled"}>${__PLUS_APP_FILL}</button>
         </div>`;
@@ -25168,6 +25366,17 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
           setRingStyleOption(styleOption.dataset.ringStyleMenuOption, styleOption.dataset.ringStyleMenuValue === "true");
           return;
         }
+        const timeMenu = event.target.closest("[data-ring-time-menu]");
+        if (timeMenu) {
+          toggleRingTimeMenu(event);
+          return;
+        }
+        // Clicks inside the open Time popup (slider, number field, speed labels)
+        // must not bubble to the document-close handler or the panel's generic
+        // handlers below — only the explicit controls inside act.
+        if (event.target.closest(".ring-time-menu")) {
+          event.stopPropagation();
+        }
         const unit = event.target.closest("[data-ring-unit]");
         if (unit) {
           setRingUnit(unit.dataset.ringUnit);
@@ -25194,6 +25403,13 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       });
       $("#ringPanel").addEventListener("change", event => {
         if (event.target.matches("[data-ring-distance-input]") && ringEditMode) setRingDistanceAt(event.target.dataset.ringDistanceInput, event.target.value);
+        // Slider release or number-field commit persists the new speed and redraws.
+        if (event.target.matches("[data-ring-speed-slider], [data-ring-speed-input]")) setRingSpeed(event.target.value);
+      });
+      $("#ringPanel").addEventListener("input", event => {
+        // Live slider drag: mirror into the number field only (no rebuild) so the
+        // pointer grab survives; commit happens on the change event at drag end.
+        if (event.target.matches("[data-ring-speed-slider]")) previewRingSpeedDisplay(event.target.value);
       });
       $("#ringPanel").addEventListener("keydown", event => {
         const distance = event.target.closest("[data-ring-distance-toggle]");
@@ -25522,6 +25738,7 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       window.addEventListener("resize", () => {
         if (!legendPositionControlAvailable()) closeLegendPositionMenu();
         if (ringStyleMenuOpen) closeRingStyleMenu();
+        if (ringTimeMenuOpen) closeRingTimeMenu();
         syncButtonLabels();
         scheduleMainLayoutSync();
       });
@@ -25532,6 +25749,10 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       document.addEventListener("click", event => {
         if (!ringStyleMenuOpen || event.target.closest(".ring-style-picker")) return;
         closeRingStyleMenu();
+      });
+      document.addEventListener("click", event => {
+        if (!ringTimeMenuOpen || event.target.closest(".ring-time-picker")) return;
+        closeRingTimeMenu();
       });
       const handleLayoutModeChange = () => {
         if (!legendPositionControlAvailable()) closeLegendPositionMenu();
