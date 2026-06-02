@@ -13994,7 +13994,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.2.0.23";
+    const APP_VERSION = "4.2.0.24";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -15388,6 +15388,18 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
         category: "Maps"
       },
       {
+        title: "Rangefinder Rings Wrap Around Globe",
+        ticketId: "WISH-064",
+        description: "Wrap Rangefinder rings around the World map's antimeridian so a Start near the date line (for example Honolulu, Tokyo, or Sydney) keeps drawing its planning bands on the opposite side of the map instead of clipping at the edge. Scope includes continuous ring geometry across the seam, label placement that follows the visible arc, preserved clip-to-land and inset behaviors, and Start-to-End comparisons that pick the shorter great-circle path across the wrap.",
+        priority: "P1",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 22,
+        prompt: "Make Rangefinder rings wrap around the antimeridian on the World map so a Start pin near the date line shows the continuing arc on the opposite side instead of clipping. Preserve clip-to-land, label placement, inset handling, and existing US-map behavior. Keep the straight-line/great-circle math honest, and pick the shorter wrap for Start-to-End comparisons.",
+        category: "Maps"
+      },
+      {
         title: "National Park Overlay Layer",
         ticketId: "WISH-004",
         description: "Add an optional national parks layer that can be viewed with state progress. Scope includes park data, visible markers or outlines, visit status, filtering, and exports that remain readable.",
@@ -15570,20 +15582,20 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
     ];
     const CHANGELOG = [
       {
-        version: "4.2.0.23",
+        version: "4.2.0.24",
         date: "2026-06-02",
         title: "Rangefinder",
         summary: "Rangefinder works globally with independent Plane rings.",
         highlights: [
           "Rangefinder now works on the World map too.",
+          "US and World remember their own Rangefinder settings.",
           "Plane rings use independent 600-7800 mile defaults.",
-          "Drive and Plane estimates use separate 60/600 mph speeds.",
-          "Ring Style combines fill and clip in one popup."
+          "Drive and Plane estimates use separate 60/600 mph speeds."
         ],
         notice: {
-          version: "4.2.0.23",
+          version: "4.2.0.24",
           title: "Rangefinder",
-          summary: "Global Rangefinder adds Plane rings at 600 mph.",
+          summary: "Global Rangefinder remembers settings per map.",
           cta: "Find Your|Range!"
         },
         updates: [
@@ -15654,7 +15666,9 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
           "Added Plane rings with independent defaults of 600, 1200, 1800, 3000, 4800, and 7800 miles, plus 600 mph time estimates.",
           "Added a Drive/Plane mode button beside the Ring Style control, followed by mph/kph and Time controls in the Rangefinder header.",
           "Rangefinder note pins and overlays now render on the World map with a dedicated global ring overlay.",
-          "Updated Help Center Rangefinder guidance and retargeted the active Add Drive Radius roadmap item to the 4.2.0 line."
+          "Updated Help Center Rangefinder guidance and retargeted the active Add Drive Radius roadmap item to the 4.2.0 line.",
+          "Rangefinder now remembers separate settings for the US and World maps: anchors, distances, travel mode, ring style, units, and time toggle all save per map, so switching between Drive on the US map and Plane on the World map keeps each side's tuning intact. Existing settings carry over to both maps on first load so the upgrade is a no-op until you customize a side.",
+          "Added a roadmap wishlist item for Rangefinder rings that wrap around the antimeridian on the World map so a Start near the date line keeps drawing on the other side instead of clipping at the edge."
         ]
       },
       {
@@ -16564,6 +16578,29 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
     const RING_DISTANCE_ONLY_DISCLAIMER_TEXT = "Distances are straight-line. Click a ring unit to show or hide that ring.";
     const RING_INSET_IDS = new Set(["AK", "HI", ...TERRITORY_IDS]);
     const RING_ANCHOR_REMOVED_TEXT = "Start pin was removed - pick another pin.";
+    // Rangefinder settings live per-map so US (drive) and World (plane) defaults,
+    // distances, anchors, and display preferences are remembered independently.
+    // Mode itself stays global so toggling Rangefinder doesn't swap with the map.
+    const RING_LAYER_IDS = ["us", "world"];
+    function defaultRingLayerSettings(layerId) {
+      const isWorld = layerId === "world";
+      return {
+        anchor1: null,
+        anchor2: null,
+        travelMode: isWorld ? "plane" : "drive",
+        distances: [...RING_PRESETS],
+        enabled: [...RING_PRESETS],
+        planeDistances: [...RING_PLANE_PRESETS],
+        planeEnabled: [...RING_PLANE_PRESETS],
+        fill: true,
+        clip: true,
+        showTime: true,
+        unit: "mi"
+      };
+    }
+    function defaultRingByLayer() {
+      return Object.fromEntries(RING_LAYER_IDS.map(id => [id, defaultRingLayerSettings(id)]));
+    }
     const LEGEND_POSITION_META = {
       "right-top": { label: "Upper Right", next: "right-bottom", icon: __INSET_FILLED_TOPRIGHT_RECTANGLE },
       "right-bottom": { label: "Lower Right", next: "left-bottom", icon: __INSET_FILLED_BOTTOMRIGHT_RECTANGLE },
@@ -16695,17 +16732,7 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
           bucketListView: false,
           bucketListFilterSnapshot: null,
           ringMode: false,
-          ringAnchor1: null,
-          ringAnchor2: null,
-          ringTravelMode: "drive",
-          ringDistances: [...RING_PRESETS],
-          ringEnabled: [...RING_PRESETS],
-          ringPlaneDistances: [...RING_PLANE_PRESETS],
-          ringPlaneEnabled: [...RING_PLANE_PRESETS],
-          ringFill: true,
-          ringClip: true,
-          ringShowTime: true,
-          ringUnit: "mi"
+          ringByLayer: defaultRingByLayer()
         },
         levels,
         states: defaultTerritoryStates(levels),
@@ -17098,28 +17125,24 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
         next.settings.bucketListFilterSnapshot = null;
       }
       next.settings.ringMode = next.settings.ringMode === true;
-      next.settings.ringFill = next.settings.ringFill !== false;
-      next.settings.ringClip = next.settings.ringClip !== false;
-      next.settings.ringShowTime = next.settings.ringShowTime !== false;
-      next.settings.ringUnit = next.settings.ringUnit === "km" ? "km" : "mi";
-      next.settings.ringTravelMode = next.settings.ringTravelMode === "plane" ? "plane" : "drive";
-      const useNewDefaultRings = isLegacyDefaultRingConfig(input.settings || {});
-      next.settings.ringDistances = normalizeRingDistances(useNewDefaultRings ? RING_PRESETS : next.settings.ringDistances || next.settings.ringEnabled, RING_PRESETS);
-      if (useNewDefaultRings) {
-        next.settings.ringEnabled = [...next.settings.ringDistances];
-      } else if (Array.isArray(next.settings.ringEnabled)) {
-        const enabledRings = new Set(next.settings.ringEnabled.map(ringDistanceKey).filter(Boolean));
-        next.settings.ringEnabled = next.settings.ringDistances.filter(miles => enabledRings.has(ringDistanceKey(miles)));
-      } else {
-        next.settings.ringEnabled = [...next.settings.ringDistances];
-      }
-      next.settings.ringPlaneDistances = normalizeRingDistances(next.settings.ringPlaneDistances || next.settings.ringPlaneEnabled, RING_PLANE_PRESETS);
-      if (Array.isArray(next.settings.ringPlaneEnabled)) {
-        const enabledPlaneRings = new Set(next.settings.ringPlaneEnabled.map(ringDistanceKey).filter(Boolean));
-        next.settings.ringPlaneEnabled = next.settings.ringPlaneDistances.filter(miles => enabledPlaneRings.has(ringDistanceKey(miles)));
-      } else {
-        next.settings.ringPlaneEnabled = [...next.settings.ringPlaneDistances];
-      }
+      // Per-layer Rangefinder settings: US and World each keep their own anchors,
+      // distances, travel mode, and display toggles. Legacy flat ring* fields
+      // from older builds get folded into the matching bag (anchor1/2 honor the
+      // anchor's saved `layer`; other fields seed BOTH layers so the upgrade is
+      // a no-op until the user changes a setting per-map). The flat keys are
+      // then dropped from next.settings so they can't drift out of sync.
+      next.settings.ringByLayer = normalizeRingByLayer(input.settings || {});
+      delete next.settings.ringAnchor1;
+      delete next.settings.ringAnchor2;
+      delete next.settings.ringTravelMode;
+      delete next.settings.ringDistances;
+      delete next.settings.ringEnabled;
+      delete next.settings.ringPlaneDistances;
+      delete next.settings.ringPlaneEnabled;
+      delete next.settings.ringFill;
+      delete next.settings.ringClip;
+      delete next.settings.ringShowTime;
+      delete next.settings.ringUnit;
       next.settings.developerMode = next.settings.developerMode === true;
       next.settings.shortcutMode = next.settings.developerMode && next.settings.shortcutMode === true;
       next.settings.uiHints = next.settings.uiHints !== false;
@@ -17209,8 +17232,15 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
         next.notes[abbr] = notes.map(note => normalizeNote(note, abbr, next, validLevelIds))
           .filter(note => noteHasContent(note) || note.date);
       });
-      next.settings.ringAnchor1 = normalizeRingAnchorRef(next.settings.ringAnchor1, next);
-      next.settings.ringAnchor2 = normalizeRingAnchorRef(next.settings.ringAnchor2, next);
+      // Resolve anchor refs against the freshly-normalized notes store. Anchors
+      // live in their own layer's bag — repair touches both bags so a stale ref
+      // in the inactive map doesn't survive.
+      RING_LAYER_IDS.forEach(layerId => {
+        const bag = next.settings.ringByLayer[layerId];
+        if (!bag) return;
+        bag.anchor1 = normalizeRingAnchorRef(bag.anchor1, next);
+        bag.anchor2 = normalizeRingAnchorRef(bag.anchor2, next);
+      });
       const inputWorld = input.world && typeof input.world === "object" ? input.world : {};
       next.world = { regions: {}, notes: {} };
       Object.entries(inputWorld.regions || {}).forEach(([code, raw]) => {
@@ -17251,6 +17281,100 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       if (trimmed === "") return "";
       const numeric = Number(trimmed);
       return Number.isFinite(numeric) && numeric >= -180 && numeric <= 180 ? Number(numeric.toFixed(6)) : "";
+    }
+
+    function normalizeRingLayerBag(input, layerId, legacyFlat) {
+      // Build one layer's ring bag. Accepts:
+      //   1. input already in bag shape (input.anchor1, input.travelMode, …).
+      //   2. legacyFlat — the pre-4.2.0.24 flat settings object — used to seed
+      //      both bags so an upgrade doesn't lose any tuning. Anchor refs from
+      //      legacyFlat only land in the bag whose layer matches the anchor's
+      //      saved `layer` field; the other bag gets null and the user can pick
+      //      a fresh anchor for that map.
+      const bag = (input && typeof input === "object") ? input : {};
+      const defaults = defaultRingLayerSettings(layerId);
+      const fromLegacy = legacyFlat && typeof legacyFlat === "object" ? legacyFlat : {};
+      const pickLegacyAnchor = key => {
+        const candidate = fromLegacy[key];
+        if (!candidate || typeof candidate !== "object") return null;
+        const candidateLayer = candidate.layer === "world" ? "world"
+          : candidate.layer === "us" ? "us"
+          : STATE_NAMES[String(candidate.abbr || "").toUpperCase()] ? "us" : "world";
+        return candidateLayer === layerId ? candidate : null;
+      };
+      const anchor1 = bag.anchor1 !== undefined ? bag.anchor1 : pickLegacyAnchor("ringAnchor1");
+      const anchor2 = bag.anchor2 !== undefined ? bag.anchor2 : pickLegacyAnchor("ringAnchor2");
+      const travelMode = bag.travelMode === "plane" || bag.travelMode === "drive"
+        ? bag.travelMode
+        : (fromLegacy.ringTravelMode === "plane" || fromLegacy.ringTravelMode === "drive"
+          ? fromLegacy.ringTravelMode
+          : defaults.travelMode);
+      const driveSource = bag.distances !== undefined ? bag.distances
+        : fromLegacy.ringDistances !== undefined ? fromLegacy.ringDistances
+        : fromLegacy.ringEnabled;
+      const useLegacyDriveDefault = isLegacyDefaultRingConfig({
+        ringDistances: driveSource,
+        ringEnabled: bag.enabled !== undefined ? bag.enabled : fromLegacy.ringEnabled
+      });
+      const driveDistances = normalizeRingDistances(useLegacyDriveDefault ? RING_PRESETS : driveSource, RING_PRESETS);
+      const driveEnabledSource = bag.enabled !== undefined ? bag.enabled : fromLegacy.ringEnabled;
+      let driveEnabled;
+      if (useLegacyDriveDefault) {
+        driveEnabled = [...driveDistances];
+      } else if (Array.isArray(driveEnabledSource)) {
+        const keys = new Set(driveEnabledSource.map(ringDistanceKey).filter(Boolean));
+        driveEnabled = driveDistances.filter(miles => keys.has(ringDistanceKey(miles)));
+      } else {
+        driveEnabled = [...driveDistances];
+      }
+      const planeSource = bag.planeDistances !== undefined ? bag.planeDistances
+        : fromLegacy.ringPlaneDistances !== undefined ? fromLegacy.ringPlaneDistances
+        : fromLegacy.ringPlaneEnabled;
+      const planeDistances = normalizeRingDistances(planeSource, RING_PLANE_PRESETS);
+      const planeEnabledSource = bag.planeEnabled !== undefined ? bag.planeEnabled : fromLegacy.ringPlaneEnabled;
+      let planeEnabled;
+      if (Array.isArray(planeEnabledSource)) {
+        const keys = new Set(planeEnabledSource.map(ringDistanceKey).filter(Boolean));
+        planeEnabled = planeDistances.filter(miles => keys.has(ringDistanceKey(miles)));
+      } else {
+        planeEnabled = [...planeDistances];
+      }
+      const pickBool = (bagKey, legacyKey, dflt) => {
+        if (typeof bag[bagKey] === "boolean") return bag[bagKey];
+        if (typeof fromLegacy[legacyKey] === "boolean") return fromLegacy[legacyKey];
+        return dflt;
+      };
+      const unit = bag.unit === "km" || bag.unit === "mi"
+        ? bag.unit
+        : (fromLegacy.ringUnit === "km" ? "km" : fromLegacy.ringUnit === "mi" ? "mi" : defaults.unit);
+      return {
+        anchor1: anchor1 || null,
+        anchor2: anchor2 || null,
+        travelMode,
+        distances: driveDistances,
+        enabled: driveEnabled,
+        planeDistances,
+        planeEnabled,
+        fill: pickBool("fill", "ringFill", defaults.fill),
+        clip: pickBool("clip", "ringClip", defaults.clip),
+        showTime: pickBool("showTime", "ringShowTime", defaults.showTime),
+        unit
+      };
+    }
+
+    function normalizeRingByLayer(inputSettings) {
+      const inputByLayer = inputSettings && typeof inputSettings === "object" && inputSettings.ringByLayer && typeof inputSettings.ringByLayer === "object"
+        ? inputSettings.ringByLayer
+        : null;
+      // Legacy fields seed both bags only when the saved file pre-dates ringByLayer.
+      // When there's no user-provided bag, pass null per layer so normalizeRingLayerBag
+      // falls through to the legacy-flat reader instead of treating synthesized
+      // defaults as "the user already had this value set."
+      const legacyFlat = inputByLayer ? null : inputSettings;
+      return Object.fromEntries(RING_LAYER_IDS.map(layerId => [
+        layerId,
+        normalizeRingLayerBag(inputByLayer ? inputByLayer[layerId] : null, layerId, legacyFlat)
+      ]));
     }
 
     function normalizeRingAnchorRef(anchor, nextState = state) {
@@ -17599,15 +17723,24 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       return state.settings.ringMode === true;
     }
 
-    function ringAnchorVisibleOnActiveLayer(anchor) {
-      if (!anchor?.abbr) return false;
-      const layer = anchor.layer === "world" ? "world" : "us";
-      return layer === activeLayerId || (activeLayerId === "world" && TERRITORY_IDS.includes(anchor.abbr));
+    // Active-layer Rangefinder bag. All ring read/write helpers funnel through
+    // here so US and World keep independent distances, anchors, and toggles.
+    // Defensive: if migration somehow lost a bag, fall back to a fresh default
+    // so callers never crash on undefined.
+    function ringSettings() {
+      const byLayer = state.settings.ringByLayer;
+      if (!byLayer || typeof byLayer !== "object") {
+        state.settings.ringByLayer = defaultRingByLayer();
+        return state.settings.ringByLayer[activeLayerId];
+      }
+      if (!byLayer[activeLayerId]) byLayer[activeLayerId] = defaultRingLayerSettings(activeLayerId);
+      return byLayer[activeLayerId];
     }
 
     function ringAnchorFor(slot) {
-      const anchor = slot === 1 ? state.settings.ringAnchor1 : slot === 2 ? state.settings.ringAnchor2 : null;
-      return ringAnchorVisibleOnActiveLayer(anchor) ? anchor : null;
+      const bag = ringSettings();
+      const anchor = slot === 1 ? bag.anchor1 : slot === 2 ? bag.anchor2 : null;
+      return anchor && anchor.abbr ? anchor : null;
     }
 
     function ringPickArmedSlot() {
@@ -17658,18 +17791,28 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
     }
 
     function repairRingAnchors() {
-      const previousA1 = state.settings.ringAnchor1 || null;
-      const previousA2 = state.settings.ringAnchor2 || null;
-      const a1 = normalizeRingAnchorRef(state.settings.ringAnchor1, state);
-      const a2 = normalizeRingAnchorRef(state.settings.ringAnchor2, state);
-      const changed = JSON.stringify(a1) !== JSON.stringify(previousA1)
-        || JSON.stringify(a2) !== JSON.stringify(previousA2);
-      state.settings.ringAnchor1 = a1;
-      state.settings.ringAnchor2 = a2;
-      if (ringModeActive() && previousA1 && !a1) {
+      // Repair anchors in BOTH layers' bags. A note delete on either map can
+      // invalidate a saved anchor in either bag, and the inactive bag must stay
+      // valid so a layer switch doesn't expose a stale ref. Only surface the
+      // "anchor removed" notice when the ACTIVE layer's Start gets cleared.
+      const activeBag = ringSettings();
+      const previousActiveA1 = activeBag.anchor1 || null;
+      let changed = false;
+      RING_LAYER_IDS.forEach(layerId => {
+        const bag = state.settings.ringByLayer?.[layerId];
+        if (!bag) return;
+        const beforeA1 = JSON.stringify(bag.anchor1 || null);
+        const beforeA2 = JSON.stringify(bag.anchor2 || null);
+        bag.anchor1 = normalizeRingAnchorRef(bag.anchor1, state);
+        bag.anchor2 = normalizeRingAnchorRef(bag.anchor2, state);
+        if (JSON.stringify(bag.anchor1 || null) !== beforeA1) changed = true;
+        if (JSON.stringify(bag.anchor2 || null) !== beforeA2) changed = true;
+      });
+      const activeA1 = activeBag.anchor1;
+      if (ringModeActive() && previousActiveA1 && !activeA1) {
         ringArmedSlot = 1;
         ringPanelNotice = RING_ANCHOR_REMOVED_TEXT;
-      } else if (a1 && ringPanelNotice === RING_ANCHOR_REMOVED_TEXT) {
+      } else if (activeA1 && ringPanelNotice === RING_ANCHOR_REMOVED_TEXT) {
         ringPanelNotice = "";
       }
       if (ringModeActive() && !ringAnchorFor(1) && !ringPickArmedSlot()) ringArmedSlot = 1;
@@ -17732,7 +17875,7 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
         showOverlayWarning("Coordinates Needed", "Rangefinder points need saved latitude and longitude. Use Locate or enter coordinates first.");
         return false;
       }
-      state.settings[`ringAnchor${slot}`] = {
+      ringSettings()[`anchor${slot}`] = {
         noteId: String(note.id),
         layer: activeLayerId,
         abbr,
@@ -17748,7 +17891,7 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
     }
 
     function clearRingAnchor2() {
-      state.settings.ringAnchor2 = null;
+      ringSettings().anchor2 = null;
       if (ringArmedSlot === 2) ringArmedSlot = null;
       save();
       render();
@@ -17792,7 +17935,7 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
     }
 
     function ringTravelMode() {
-      return state.settings.ringTravelMode === "plane" ? "plane" : "drive";
+      return ringSettings().travelMode === "plane" ? "plane" : "drive";
     }
 
     function ringTravelIsPlane() {
@@ -17808,21 +17951,22 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
     }
 
     function ringDistances() {
+      const bag = ringSettings();
       return ringTravelIsPlane()
-        ? normalizeRingDistances(state.settings.ringPlaneDistances, RING_PLANE_PRESETS)
-        : normalizeRingDistances(state.settings.ringDistances, RING_PRESETS);
+        ? normalizeRingDistances(bag.planeDistances, RING_PLANE_PRESETS)
+        : normalizeRingDistances(bag.distances, RING_PRESETS);
     }
 
     function ringUnit() {
-      return state.settings.ringUnit === "km" ? "km" : "mi";
+      return ringSettings().unit === "km" ? "km" : "mi";
     }
 
     function ringClipEnabled() {
-      return state.settings.ringClip !== false;
+      return ringSettings().clip !== false;
     }
 
     function ringShowTime() {
-      return state.settings.ringShowTime !== false;
+      return ringSettings().showTime !== false;
     }
 
     function setRingEditMode(on) {
@@ -17861,18 +18005,20 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
     }
 
     function ringEnabledKeySet() {
-      const enabled = ringTravelIsPlane() ? state.settings.ringPlaneEnabled : state.settings.ringEnabled;
+      const bag = ringSettings();
+      const enabled = ringTravelIsPlane() ? bag.planeEnabled : bag.enabled;
       return new Set((Array.isArray(enabled) ? enabled : ringDistances()).map(ringDistanceKey).filter(Boolean));
     }
 
     function persistRingDistances(distances, enabledKeys = ringEnabledKeySet()) {
       const normalized = normalizeRingDistances(distances, ringActiveDefaults());
+      const bag = ringSettings();
       if (ringTravelIsPlane()) {
-        state.settings.ringPlaneDistances = normalized;
-        state.settings.ringPlaneEnabled = normalized.filter(miles => enabledKeys.has(ringDistanceKey(miles)));
+        bag.planeDistances = normalized;
+        bag.planeEnabled = normalized.filter(miles => enabledKeys.has(ringDistanceKey(miles)));
       } else {
-        state.settings.ringDistances = normalized;
-        state.settings.ringEnabled = normalized.filter(miles => enabledKeys.has(ringDistanceKey(miles)));
+        bag.distances = normalized;
+        bag.enabled = normalized.filter(miles => enabledKeys.has(ringDistanceKey(miles)));
       }
     }
 
@@ -17942,13 +18088,13 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
     }
 
     function setRingFill(on) {
-      state.settings.ringFill = on === true;
+      ringSettings().fill = on === true;
       save();
       render();
     }
 
     function setRingClip(on) {
-      state.settings.ringClip = on === true;
+      ringSettings().clip = on === true;
       save();
       render();
     }
@@ -17965,29 +18111,30 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
     }
 
     function setRingStyleOption(kind, on) {
-      if (kind === "fill") state.settings.ringFill = on === true;
-      if (kind === "clip") state.settings.ringClip = on === true;
+      const bag = ringSettings();
+      if (kind === "fill") bag.fill = on === true;
+      if (kind === "clip") bag.clip = on === true;
       ringStyleMenuOpen = false;
       save();
       render();
     }
 
     function setRingShowTime(on) {
-      state.settings.ringShowTime = on === true;
+      ringSettings().showTime = on === true;
       save();
       render();
     }
 
     function setRingUnit(unit) {
       if (unit !== "mi" && unit !== "km") return;
-      state.settings.ringUnit = unit;
+      ringSettings().unit = unit;
       save();
       render();
     }
 
     function setRingTravelMode(mode) {
       if (mode !== "drive" && mode !== "plane") return;
-      state.settings.ringTravelMode = mode;
+      ringSettings().travelMode = mode;
       save();
       render();
     }
@@ -18123,7 +18270,7 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       const unit = ringUnit();
       const nextUnit = unit === "mi" ? "km" : "mi";
       const speedUnitIcon = unit === "mi" ? __MPH_CIRCLE_FILL : __KPH_CIRCLE_FILL;
-      const fillOn = state.settings.ringFill !== false;
+      const fillOn = ringSettings().fill !== false;
       const clipOn = ringClipEnabled();
       const timeOn = ringShowTime();
       const planeOn = ringTravelIsPlane();
@@ -19643,7 +19790,7 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       const overlay = $("#" + activeLayer().ringOverlayId);
       if (!overlay) return;
       overlay.innerHTML = "";
-      overlay.dataset.ringFill = state.settings.ringFill === false ? "off" : "on";
+      overlay.dataset.ringFill = ringSettings().fill === false ? "off" : "on";
       overlay.dataset.ringClip = ringClipEnabled() ? "on" : "off";
       if (!ringModeActive()) return;
       repairRingAnchors();
