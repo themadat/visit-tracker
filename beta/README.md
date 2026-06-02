@@ -200,3 +200,5 @@ Mobile Cleanup:
 - Map buttons misaligned in scroll view
 - Double scroll with tip jar
 - Base camp causes scrolling problems and should just fit on mobile screen
+
+I want to make average speed configurable: 30 to 120 for car and 120 to 760 for plane. what is best UX for this?
