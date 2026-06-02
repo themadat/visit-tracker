@@ -1,6 +1,6 @@
 # Trail Log
 
-Trail Log is a local-first travel map for marking where you've been, where you want to go next, and the little memories worth keeping along the way. It started as a US state visit tracker and now layers in DC, territories, custom legend levels, location notes, icon tags, mapped memories, and copy-friendly exports, all with a slightly outdoorsy, geeky vibe.
+Trail Log is a local-first travel map for marking where you've been, where you want to go next, and the little memories worth keeping along the way. It started as a US state visit tracker and now layers in DC, territories, a switchable World map, custom legend levels, location notes, icon tags, mapped memories, and copy-friendly exports, all with a slightly outdoorsy, geeky vibe.
 
 The app is still intentionally simple to run: one offline-capable `index.html`, plain HTML/CSS/JavaScript, browser localStorage, JSON import/export, and no backend. Optional coordinate lookup only goes online when you tap Locate; saved data and manual coordinates keep working offline.
 
@@ -52,13 +52,7 @@ Or serve it locally for browser testing:
 python3 -m http.server 8018
 ```
 
-Use port `8018` by convention so smoke-test startup and cleanup stay predictable. If that port is occupied, use the next nearby port, note it, and stop the server when checks are done.
-
-Then visit:
-
-```text
-http://127.0.0.1:8018/index.html
-```
+Use port `8018` by convention so smoke-test startup and cleanup stay predictable. If that port is occupied, use the next nearby port, note it, and stop the server when checks are done. Then visit `http://127.0.0.1:8018/index.html`.
 
 ### Build the icon assets (optional, macOS only)
 
@@ -88,7 +82,7 @@ Commit the regenerated PNGs and `favicon.svg` alongside any SVG source edits.
 
 ```text
 index.html             Complete app: markup, styles, inline SVG map, app state, and UI logic.
-README.md              Developer notes (this file).
+README.md              Project overview, releases, run/build, and repo map (this file).
 manifest.webmanifest   PWA manifest (light icon set).
 manifest-dark.webmanifest  PWA manifest (dark icon set).
 favicon.svg            Browser-tab favicon, light + dark via @media.
@@ -97,108 +91,12 @@ icon-*.png             Manifest icons at 192 and 512, light and dark.
 favicon-*.png          Legacy 16 / 32 favicon fallbacks, light and dark.
 build/                 Optional macOS icon build pipeline (generate-icons.sh + generate-favicon.py). Excluded from deploys.
 icon/                  Source SVGs the build pipeline consumes. `trail-log-{light,dark}.svg` are also fetched at runtime by the Install dialog's icon-picker thumbnails, so this folder ships with the deploy.
-context/               LLM handoff context for future development sessions. Excluded from deploys.
+context/               LLM handoff, dev context, and in-flight plan docs. Excluded from deploys.
 .github/workflows/     GitHub Actions; deploys main to /visit-tracker/ and 3-0-0-Trail-Log to /visit-tracker/beta/. Excluded from deploys.
 ```
 
-## App Architecture
+## Development
 
-The app is organized as one self-contained document:
+All development context — architecture internals, persistence/migration rules, roadmap format, code map, verification steps, known issues, and the release-note conventions — lives in **`context/LLM_HANDOFF.md`**. Start there for any code work.
 
-- CSS lives in the `<style>` block and uses CSS variables for light/dark themes.
-- Static HTML contains the app shell, dialogs, settings, documents, notes, and inline SVG map.
-- JavaScript uses a small head boot script for install icons plus the main app `<script>` with centralized state and render functions.
-- State is persisted with `localStorage` under `STORAGE_KEY = "usStateVisitMap.v1"`.
-- App version is controlled by `APP_VERSION`.
-
-Useful code regions in `index.html`:
-
-- Constants: `APP_VERSION`, `STORAGE_KEY`, `STATES`, `BUILT_INS`, `THEMES`, `WISHLIST_SEEDS`, `CHANGELOG`
-- Persistence: `defaultState`, `loadState`, `normalizeState`, `save`
-- Map behavior: `initMap`, `handleStateTap`, `cycleState`, `renderMap`, `renderLocationMarkers`, `bindMapPanZoom`, `setMapZoom`, `toggleMapFitMode`
-- Legend: `renderLegend`, `moveLevel`, `deleteLevel`, `smartApplyPalette`, `setLegendPosition`
-- Notes: `renderNotesPanel`, `openNoteDialog`, `lookupNoteCoordinates`, `saveNoteFromForm`, note sorting/filter helpers
-- Settings/import/export: `renderSettingsControls`, `exportMarkdown`, `exportRichText`, `importJson`
-
-Current persisted settings include map layout state such as `mapSplitRatio`, `legendPosition`, `mapViewMode`, `mapZoom`, `mapPanCenter`, visible panels, selected Notes location, Notes sort/view/grouping/filter choices including date precision, and collapsed Notes categories.
-
-## Persistence and Migration
-
-Keep saved-data compatibility as a first-class constraint. Existing users may already have custom levels, notes, colors, settings, and wishlist entries in localStorage.
-
-When changing the data shape:
-
-1. Add new defaults in `defaultState`.
-2. Merge or repair old saved data in `normalizeState`.
-3. Do not overwrite existing user-created arrays or settings unless the user explicitly resets.
-4. For every completed change, bump the fourth `APP_VERSION` number and update `CHANGELOG` using the release-note format below.
-5. If changing built-in roadmap items, bump `WISHLIST_SEED_VERSION`; append missing seeds and refresh existing `seed-*` entries by ticket ID without overwriting user-created entries.
-
-## Roadmap Format
-
-Roadmap items live in `WISHLIST_SEEDS` and render in the Roadmap tab.
-
-- Target is either `targetKind: "exact"` with `targetVersion`, or a release bucket: `major`, `minor`, or `patch`.
-- Priority values are `P0`, `P1`, `P2`, `P3`; effort values are `small`, `medium`, `large`, `x-large`.
-- Title should be a human-readable summary.
-- Description should state behavior and scope, without wandering.
-- Cost is `tokenCostPct`, an estimated implementation-token share.
-- Prompt is a compact implementation prompt for an LLM. Minimum useful tokens wins.
-- When adding roadmap items, ask concise clarifying questions with default answers the user can accept unchanged.
-
-## Development Guidelines
-
-- Keep the app single-file unless there is a strong reason not to.
-- Prefer small, readable functions over new abstractions.
-- Preserve manual edits in `index.html`; do not reformat the whole file.
-- Use semantic HTML and accessible labels for new controls.
-- Use CSS variables for theme-aware colors.
-- Keep destructive actions behind confirmations.
-- Keep all features offline and local-only.
-- Update this README and `context/LLM_HANDOFF.md` when a change affects development rules, repo context, or future handoff instructions.
-
-## Manual QA Checklist
-
-Run these after meaningful changes:
-
-1. Parse check:
-
-```sh
-node -e "const fs=require('fs'); const html=fs.readFileSync('index.html','utf8'); const scripts=[...html.matchAll(/<script>([\\s\\S]*?)<\\/script>/g)].map(m=>m[1]); new Function(scripts.at(-1)); console.log('main script parses');"
-```
-
-2. Whitespace check:
-
-```sh
-git diff --check
-```
-
-3. Browser smoke test:
-
-- Load the app through a local server.
-- Use port `8018` by default; if occupied, use the next nearby port and stop the server after checks.
-- On desktop, confirm the main page does not vertically scroll and the Notes panel content scrolls internally to the map bottom without stretching note rows/cards.
-- Confirm the map renders and every visible state is clickable.
-- Mark a state, open Notes, add/edit/delete a note.
-- Try year-only, month/year, and full-date note entries.
-- Toggle Notes sort/view controls.
-- Add a note with Where Specifically, use Locate when online, confirm latitude/longitude fields save, then reload and confirm a map marker appears.
-- Toggle Settings date format options.
-- Apply a smart color palette.
-- Export JSON, Markdown, and Simple Rich Text.
-- Import a JSON backup only after confirming overwrite behavior.
-
-## Notes
-
-SEE SCRATCHPAD
-Contains Color Notes, rejected/backup svgs, amongst other stuff.
-
-## Future Prompt
-
-Mobile Cleanup: 
-- Better Auto Colors single liner
-- Map buttons misaligned in scroll view
-- Double scroll with tip jar
-- Base camp causes scrolling problems and should just fit on mobile screen
-
-I want to make average speed configurable: 30 to 120 for car and 120 to 760 for plane. what is best UX for this?
+It also defines the version-lifecycle shorthands: **`start`** (open a new version with a plan or feature), **`prep`** (make a version release-ready), and **`ship`** (condense and cut the release).
