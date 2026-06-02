@@ -14,7 +14,8 @@ Three shorthand commands drive the version lifecycle: `start` opens a line,
 `prep` makes it release-ready, `ship` condenses it into a cut release. Always
 run `git status --short` first and preserve in-flight manual edits. End every
 working session with a push commit summary + description in two distinct
-copy-paste containers.
+copy-paste containers, then finish with one copyable checkpoint command:
+`` `_vt-checkpoint <short commit message>` ``.
 
 ### `start` — open a new version line
 
@@ -38,8 +39,11 @@ Begin a plan, or implement a specific feature.
 ### `prep` — get the version release-ready
 
 Polish every user-facing surface for the in-progress build line. Do **not**
-collapse the build entries yet — that is `ship`.
+collapse the build entries, drop the `.N` build segment, or create the final
+release cut yet — that is `ship`.
 
+- Inventory dirty files before editing. Treat manual changes as authoritative;
+  fold their user-facing effect into the current release notes when relevant.
 - Walk the line's shipped behavior and update everything that describes it:
   - **Help Center** entries and the **FAQ** (Settings → Help).
   - **Hints** and dismissable-hint copy (`data-hint` text + hint keys).
@@ -53,7 +57,8 @@ collapse the build entries yet — that is `ship`.
   - **This handoff**: refresh Snapshot, Current Surface, invariants, and UX as
     needed, and condense it so it stays lean.
 - Lock the release theme name and the final `notice.cta`.
-- Verify the app parses and the new flows work.
+- Verify the app parses and the new flows work. Leave the line in active-dev
+  form (`APP_VERSION` still `x.y.z.N`) when prep is done.
 
 ### `ship` — condense the version (finalize the cut)
 
@@ -63,10 +68,17 @@ Collapse the dev build line into one released entry.
   segment (e.g. `4.2.0.27` → `4.2.0`).
 - Collapse the active `CHANGELOG` entry's per-build notes into a single clean
   release: `Major.Minor.Patch :: YYYY-mm-dd :: Theme`, bold one-line summary,
-  ≤4 highlights, dense `updates`. Sync `notice.version` to the cut version.
+  ≤4 highlights, dense `updates`. Sync `notice.version` to the cut version so
+  release notice dismissal keys match the shipped release.
+- Sync public surfaces one last time: `README.md` release/history table,
+  Help/FAQ/hints, release notice copy, and any Roadmap shipped/retargeted state.
 - Update the Snapshot's **Current version** and **Latest public releases**
-  lines, and move any shipped plan docs into the historical (reference-only)
-  list.
+  lines. Delete/retire in-flight plan docs from `context/` and remove active
+  plan references from this handoff unless the user explicitly asks to keep a
+  historical reference file.
+- Run final verification: parse, `git diff --check`, preview on port 8018,
+  smoke the shipped flows, stop the local server, then re-run
+  `git status --short`.
 - Leave no active dev line; the next change begins with `start`.
 
 ## Release Notes
@@ -94,7 +106,7 @@ For every completed change:
 - Current version: `APP_VERSION = "4.2.0.27"` — **active dev line 4.2.0 "Rangefinder"** (working title, unreleased; bump the fourth build number per change). Latest **cut** release is 4.1.0 "Wayfinder".
 - The 4.2.0 line adds **Rangefinder Mode**: a map mode (Shortcut Mode key `5`, `__TARGET` button) that picks two note pins as Start/End, draws concentric planning rings, and shows straight-line distance + estimated time. Drive/Plane travel modes, per-map settings (`settings.ringByLayer.{us,world}`), configurable average speed (Drive 30–120, Plane 120–760 mph), fill/clip/unit/time toggles, and US + World support. Internal symbols use the `ring*` prefix.
 - Latest public releases (newest first): 4.1.0 "Wayfinder", 4.0.0 "Trail Atlas", 3.3.0 "Basecamp Notes", 3.2.0 "Trail Shorthand". Full notes in the in-app CHANGELOG; full history table in `README.md`.
-- Plan docs live in `context/` only while their line is in flight, then are deleted on ship. Active: `context/WISH-010-RADIUS-PLAN.md` (Rangefinder / Drive Radius). Shipped plans (World map 4.0.0, Wayfinder 4.1.0) were removed after release.
+- Plan docs live in `context/` only while their line is in flight, then are deleted on ship. Active until 4.2.0 ships: `context/WISH-010-RADIUS-PLAN.md` (Rangefinder / Drive Radius). Shipped plans (World map 4.0.0, Wayfinder 4.1.0) were removed after release.
 - No build step (other than the optional macOS icon pipeline — see README), backend, or dependencies.
 - User data lives in browser localStorage. Locate is the only intentional online action and only runs when clicked.
 
@@ -107,6 +119,7 @@ For every completed change:
 - Edit surgically, especially in `index.html`; do not reformat the file.
 - App behavior changes usually require `APP_VERSION`/`CHANGELOG` updates. Docs-only, handoff-only, or planning-only edits do not need release churn unless the user asks.
 - When a change affects dev rules, repo context, or future handoff instructions, update this file. Keep `README.md` for public/run/build info only — do not duplicate dev rules there.
+- End every final reply with a short copyable checkpoint command in the exact format `` `_vt-checkpoint <message>` ``. This signals the prompt is done and lets the user run their local commit/push/beta update helper.
 
 **Code**
 
@@ -168,7 +181,8 @@ State basics:
   settings: {
     ..., activeLayerId, mapLabels,
     selectedState, notesPanelState, collapsedNoteCategories, legendPosition,
-    bucketListView, bucketListFilterSnapshot   // Wayfinder mode + snapshot
+    bucketListView, bucketListFilterSnapshot,  // Wayfinder mode + snapshot
+    ringMode, ringPanelSplitRatio, ringByLayer // Rangefinder mode + per-map bags
   },
   levels: [{ id, name, definition, color, countsTowardStats, isBucketList }],
   visitTypes: [{ id, label, icon, shortcut, enabled, searchTags }],
@@ -198,6 +212,14 @@ inside `#mapLayerToggleBtn`. Activation snapshots `{ levelFilter, matchNotes,
 hideExcluded }` to `settings.bucketListFilterSnapshot`, scopes filters to the
 Wayfinder level, and restores from snapshot on deactivation.
 
+Rangefinder (internal symbols use `ring*`): global `settings.ringMode` toggles
+the mode, while `settings.ringByLayer.{us,world}` stores each map's Start/End,
+ring distances, enabled rings, travel mode, units, fill/clip/time settings, and
+Drive/Plane speeds. `settings.ringPanelSplitRatio` controls the paired
+Legend/Rangefinder split when both panels share the map placement. Helpers
+funnel through the active layer bag; legacy flat ring settings seed both bags
+only when upgrading older saved data.
+
 Keyboard shortcut layers (see Developer Tools → Keyboard Shortcuts Reference
 for the full grouped list):
 
@@ -217,6 +239,8 @@ Important invariants:
   `countsTowardStats: false`.
 - `visitTypes` are configurable icon tags; shortcuts should stay unique among active tags.
 - Saved Notes filters are repaired against current level/tag ids.
+- Rangefinder settings are repaired per layer. Ring arrays allow up to 8 rings;
+  US and World settings remain independent after migration.
 - Selected-location Notes detail ignores main-list filters.
 - Match Notes map filtering follows active Notes filters.
 - Selecting an excluded-from-stats legend level auto-enables Show Excluded;
@@ -229,6 +253,7 @@ Important invariants:
 
 - Map: SVG state/territory map + world map; layer toggle (`#mapLayerToggleBtn`); scroll/fit modes, pan/zoom persistence, labels, clustered note pins, Match Notes filtering. Wayfinder pill rides inside the layer toggle when active.
 - Legend: editable levels (name, color, definition, exclude-from-stats, Wayfinder), drag reorder, swipe quick actions, movable desktop placement.
+- Rangefinder: Shortcut Mode key `5` / target button opens a paired panel with the Legend, picks saved note pins as Start/End, draws straight-line Drive/Plane planning rings on US and World maps, and keeps per-map ring distances, units, fill/clip/time style, travel mode, and average speed settings.
 - Notes: search (with `/` hint chip + universal `/` shortcut), sort, compact/expanded/text views, category grouping, icon filters, Show Excluded toggle (styled like legend's excluded pattern), coordinate filter, date precision filter, selected-location detail.
 - Note editor: Quick Add, City/Where/What/Who/Details, local field suggestions, Smart Convert, partial/flexible dates, weekday preview, manual/lookup coordinates, multiple icon tags. Quick Add defaults to the Wayfinder level when Wayfinder Mode is on.
 - Location Icon Tags: configurable active tags plus auto-discovered More Icons from `__*_CIRCLE` constants, generated labels/search tags, explicit aliases, aliased-first sorting.
