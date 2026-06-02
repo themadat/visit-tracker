@@ -1862,6 +1862,14 @@
       dominant-baseline: central;
     }
 
+    /* The world viewBox (2754 wide) is ~2.95x the US one (934), so labels sized
+       in SVG user units render ~3x smaller on the world map. Scale the font and
+       halo up to read at a comparable size on the global layer. */
+    #worldMapRingOverlay .ring-label {
+      font-size: 30px;
+      stroke-width: 9px;
+    }
+
     .ring-anchor-pin {
       color: #2b1700;
       filter: drop-shadow(0 2px 5px rgba(15, 23, 42, .32));
@@ -14099,7 +14107,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.2.0.25";
+    const APP_VERSION = "4.2.0.27";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -15445,18 +15453,6 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
         category: "Notes"
       },
       {
-        title: "Add Drive Radius",
-        ticketId: "WISH-010",
-        description: "Show a planning radius from home or saved locations. Scope includes distance input, visual radius overlay where map geometry supports it, saved settings, and clear limitations for non-road distance.",
-        priority: "P0",
-        effort: "large",
-        targetKind: "exact",
-        targetVersion: "4.2.0",
-        tokenCostPct: 36,
-        prompt: "Add saved-place radius planning. Persist distance/settings and show clear non-road-distance limits.",
-        category: "Maps"
-      },
-      {
         title: "Route-Based Rangefinder Times",
         ticketId: "WISH-062",
         description: "Improve Rangefinder estimates with route-aware drive times and optional driving-time radius bands. Scope includes preserving the current straight-line mode, clearly labeling routing assumptions, and avoiding any automatic network lookup.",
@@ -15502,6 +15498,18 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
         targetVersion: "",
         tokenCostPct: 22,
         prompt: "Make Rangefinder rings wrap around the antimeridian on the World map so a Start pin near the date line shows the continuing arc on the opposite side instead of clipping. Preserve clip-to-land, label placement, inset handling, and existing US-map behavior. Keep the straight-line/great-circle math honest, and pick the shorter wrap for Start-to-End comparisons.",
+        category: "Maps"
+      },
+      {
+        title: "Time-Based Rangefinder Rings",
+        ticketId: "WISH-065",
+        description: "Let users define Rangefinder rings by travel time instead of distance, so a ring can be entered as '2 hours' and the distance is derived from the current average speed. Scope includes a per-ring distance/time input mode, rings that recompute their radius when the Drive or Plane speed changes, labels that lead with the time value, sensible defaults (for example 1/2/3/5 hour bands), and round-tripping with the existing distance-based rings so switching modes does not lose a user's configuration. Keep the straight-line/'as the crow flies' limitations explicit since time still assumes the configured average speed, not routing.",
+        priority: "P1",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 24,
+        prompt: "Add a time-based ring mode to Rangefinder so users can set rings by hours instead of miles, deriving each ring's distance from the active average speed. Rings should recompute when the Drive/Plane speed changes, labels should lead with the time, and the choice should persist per map alongside the existing distance rings. Preserve distance-based rings as an option, keep unit (mph/kph) handling consistent, and keep the straight-line/non-routing limits explicit.",
         category: "Maps"
       },
       {
@@ -15563,18 +15571,6 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
         tokenCostPct: 14,
         prompt: "Make the note Quick Add location search span every location across all map layers instead of only the active layer. Search the combined set of US states/territories and world countries, label each result with its map/layer, and save the note into the correct region store so it shows on the proper map. Do not change which pins/groupings each map displays.",
         category: "Notes"
-      },
-      {
-        title: "Add Manual Locations",
-        ticketId: "WISH-059",
-        description: "Let users add their own custom locations that aren't tied to a predefined map region — international cities, sub-national regions, points of interest, landmarks, or anywhere a coordinate can pin. Scope: a way to name and place a manual location (typed coordinates or map lookup), attach notes/levels to it like any other location, show it as a pin on the appropriate map, persist it locally, and include it in exports/backups. Should fit the location-is-a-location model so manual places coexist with states and countries.",
-        priority: "P0",
-        effort: "large",
-        targetKind: "minor",
-        targetVersion: "",
-        tokenCostPct: 38,
-        prompt: "Add user-created manual locations (international cities, regions, points of interest, landmarks) that are not bound to a predefined map region. Let users name and place them via coordinates or lookup, attach notes and levels, render them as pins on the right map, persist them in localStorage with defaults/normalization, and include them in JSON/Markdown/RTF/text exports. Fit the existing location-is-a-location model so manual places coexist with states and countries without breaking current behavior.",
-        category: "Maps"
       },
       {
         title: "Further Keyboard Shortcut Cleanup and Integration",
@@ -15687,7 +15683,7 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
     ];
     const CHANGELOG = [
       {
-        version: "4.2.0.25",
+        version: "4.2.0.27",
         date: "2026-06-02",
         title: "Rangefinder",
         summary: "Rangefinder works globally with independent Plane rings.",
@@ -15698,7 +15694,7 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
           "Plane rings use independent 600-7800 mile defaults."
         ],
         notice: {
-          version: "4.2.0.25",
+          version: "4.2.0.27",
           title: "Rangefinder",
           summary: "Per-map Rangefinder now with adjustable Drive and Plane speeds.",
           cta: "Find Your|Range!"
@@ -15774,7 +15770,9 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
           "Updated Help Center Rangefinder guidance and retargeted the active Add Drive Radius roadmap item to the 4.2.0 line.",
           "Rangefinder now remembers separate settings for the US and World maps: anchors, distances, travel mode, ring style, units, and time toggle all save per map, so switching between Drive on the US map and Plane on the World map keeps each side's tuning intact. Existing settings carry over to both maps on first load so the upgrade is a no-op until you customize a side.",
           "Added a roadmap wishlist item for Rangefinder rings that wrap around the antimeridian on the World map so a Start near the date line keeps drawing on the other side instead of clipping at the edge.",
-          "Made the Rangefinder average speed adjustable: tap the stopwatch to open a Time popup with a slider and number field for Drive (30-120 mph) and Plane (120-760 mph). Each travel mode keeps its own speed per map, the value follows the mph/kph unit toggle, and ring time labels plus the Start-to-End estimate update to match. The speed control is dimmed when time estimates are off."
+          "Made the Rangefinder average speed adjustable: tap the stopwatch to open a Time popup with a slider and number field for Drive (30-120 mph) and Plane (120-760 mph). Each travel mode keeps its own speed per map, the value follows the mph/kph unit toggle, and ring time labels plus the Start-to-End estimate update to match. The speed control is dimmed when time estimates are off.",
+          "Added a roadmap wishlist item for time-based Rangefinder rings so a ring can be set by hours and have its distance derived from the configured average speed.",
+          "Enlarged World map Rangefinder ring labels (distance and time) so they read at the same scale as the US map instead of shrinking on the larger global viewBox, and taught the labels to fall back onto a visible arc of each ring when the ring's north edge runs off the map, so big global rings keep a readable label on screen."
         ]
       },
       {
@@ -19929,21 +19927,47 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       });
     }
 
+    // Gap between the ring's north edge and the floating label. Scaled up on the
+    // world map so the larger label clears the ring stroke.
+    function ringLabelGap() {
+      return activeLayerId === "world" ? 16 : 5;
+    }
+
+    function ringPointInViewBox(x, y, viewBox, margin) {
+      return x >= viewBox.x + margin && x <= viewBox.x + viewBox.width - margin
+        && y >= viewBox.y + margin && y <= viewBox.y + viewBox.height - margin;
+    }
+
     function ringLabelPoint(anchorPoint, rx, ry, clipTiles) {
-      const defaultPoint = { x: anchorPoint.x, y: anchorPoint.y - ry - 5 };
-      if (!ringClipEnabled() || !clipTiles.length) return defaultPoint;
+      const aboveRing = { x: anchorPoint.x, y: anchorPoint.y - ry - ringLabelGap() };
+      const svg = $("#" + activeLayer().svgId);
+      const viewBox = svg?.viewBox?.baseVal || null;
+      // Keep the label fully on the drawn map. The world map is large enough that
+      // a ring around a high-latitude Start pushes its north point off the top
+      // edge, so the label must fall back onto a visible arc point.
+      const margin = activeLayerId === "world" ? 44 : 12;
+      const inView = (x, y) => !viewBox || ringPointInViewBox(x, y, viewBox, margin);
+      const clipActive = ringClipEnabled() && clipTiles.length > 0;
+      // With no clipping, float the label just above the ring's north point —
+      // unless that point is off the visible map, in which case fall through to
+      // the arc search below.
+      if (!clipActive && inView(aboveRing.x, aboveRing.y)) return aboveRing;
       const preferred = [-90, -68, -112, -45, -135, -22, -158, 0, 180, 22, 158, 45, 135, 68, 112, 90];
       const angles = [...preferred];
       for (let angle = 0; angle < 360; angle += 10) {
         if (!angles.includes(angle) && !angles.includes(angle - 360)) angles.push(angle);
       }
+      // Walk the ring from north outward for the first point that's both on the
+      // visible map and (when clipping) over land.
       for (const degrees of angles) {
         const radians = degrees * Math.PI / 180;
         const x = anchorPoint.x + Math.cos(radians) * rx * .96;
         const y = anchorPoint.y + Math.sin(radians) * ry * .96;
-        if (ringPointInsideClipTiles(x, y, clipTiles)) return { x, y };
+        if (!inView(x, y)) continue;
+        if (clipActive && !ringPointInsideClipTiles(x, y, clipTiles)) continue;
+        return { x, y };
       }
-      return defaultPoint;
+      return aboveRing;
     }
 
     function appendRingConnectorLine(parent, from, to, className = "") {
