@@ -2157,12 +2157,13 @@
       grid-template-columns: minmax(0, 1fr) auto;
       gap: .38rem .62rem;
       align-items: center;
-      margin-bottom: .45rem;
+      margin-bottom: .85rem;
     }
 
     .ring-panel-title-row h2 {
       margin: 0;
-      font-size: .82rem;
+      align-self: start;
+      font-size: 1.0rem;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -2191,28 +2192,14 @@
     }
 
     .ring-header-btn .sf-symbol {
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
     }
 
     .ring-header-btn[aria-pressed="true"] {
-      background: color-mix(in srgb, var(--accent-ring) 88%, #fff 12%);
-      border-color: var(--accent-ring);
-      color: #2b1700;
-    }
-
-    [data-theme="dark"] .ring-header-btn[aria-pressed="true"] {
-      color: #211300;
-    }
-
-    .ring-header-btn[data-ring-setting="edit"][aria-pressed="true"] {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: white;
-    }
-
-    [data-theme="dark"] .ring-header-btn[data-ring-setting="edit"][aria-pressed="true"] {
-      color: #07111f;
+      background: var(--surface);
+      border-color: var(--line);
+      color: inherit;
     }
 
     .ring-header-btn[data-ring-setting="fill"][aria-pressed="true"] .sf-symbol path:first-of-type {
@@ -2382,7 +2369,7 @@
       width: 100%;
       min-width: 0;
       height: 30px;
-      padding: .2rem .16rem .2rem .2rem;
+      padding: .2rem .6rem .2rem .2rem;
       border: 0;
       background: transparent;
       font-size: .8rem;
@@ -2438,8 +2425,8 @@
     }
 
     .ring-add-btn {
-      background: color-mix(in srgb, var(--accent-ring-secondary) 88%, #fff 12%);
-      border-color: var(--accent-ring-secondary);
+      background: color-mix(in srgb, var(--ring-add-color, var(--accent-ring-secondary)) 88%, #fff 12%);
+      border-color: var(--ring-add-color, var(--accent-ring-secondary));
       color: #2b1700;
     }
 
@@ -2578,16 +2565,12 @@
     .ring-disclaimer {
       justify-content: center;
       min-height: 32px;
-      padding: .18rem .4rem;
-      border: 1px solid color-mix(in srgb, var(--accent-ring) 26%, var(--line));
-      border-radius: var(--radius);
-      background: color-mix(in srgb, var(--accent-ring) 7%, var(--surface));
+      padding: .18rem 0;
       text-align: center;
     }
 
     .ring-disclaimer .hint-dismiss-btn {
-      background: color-mix(in srgb, var(--accent-ring) 12%, var(--surface));
-      color: var(--accent-ring-secondary);
+      color: var(--muted);
     }
 
     .ring-panel-footer {
@@ -2647,6 +2630,16 @@
       justify-content: flex-end;
       justify-self: end;
       min-width: 0;
+    }
+
+    .legend-title-actions button {
+      display: inline-grid;
+      place-items: center;
+      width: 40px;
+      min-width: 40px;
+      height: 40px;
+      min-height: 40px;
+      padding: 0;
     }
 
     [data-button-style="text"] .legend-title-actions {
@@ -2864,6 +2857,16 @@
     .legend-swipe-dismiss .sf-symbol {
       width: .92rem;
       height: .92rem;
+    }
+
+    #legendPanel button .sf-symbol {
+      width: 22px;
+      height: 22px;
+    }
+
+    #legendPanel [data-level-edit] .sf-symbol {
+      width: 14px;
+      height: 14px;
     }
 
     .legend-help-position {
@@ -13864,7 +13867,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.2.0.10";
+    const APP_VERSION = "4.2.0.15";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -15251,6 +15254,18 @@
         category: "UI"
       },
       {
+        title: "Align Legend and Rangefinder Controls",
+        ticketId: "WISH-064",
+        description: "Better align Legend and Rangefinder button sizing, icon scale, spacing, and active/disabled treatments so the paired panels feel like one control system.",
+        priority: "P2",
+        effort: "small",
+        targetKind: "patch",
+        targetVersion: "",
+        tokenCostPct: 12,
+        prompt: "Polish Legend and Rangefinder panel controls so button sizes, icon scale, spacing, active states, and disabled states align across the paired panels without disrupting compact rows.",
+        category: "UI"
+      },
+      {
         title: "National Park Overlay Layer",
         ticketId: "WISH-004",
         description: "Add an optional national parks layer that can be viewed with state progress. Scope includes park data, visible markers or outlines, visit status, filtering, and exports that remain readable.",
@@ -15433,10 +15448,10 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.2.0.10",
+        version: "4.2.0.15",
         date: "2026-06-01",
         title: "Rangefinder",
-        summary: "Rangefinder switches to Copper/Sienna with clearer controls and hints.",
+        summary: "Rangefinder gets Copper/Sienna polish and selectable release CTA breaks.",
         highlights: [
           "Rangefinder now uses a Copper-to-Sienna palette.",
           "Ring edit mode keeps the pencil with active styling.",
@@ -15444,10 +15459,10 @@
           "Rangefinder hints explain unit toggles."
         ],
         notice: {
-          version: "4.2.0.10",
+          version: "4.2.0.15",
           title: "Rangefinder",
           summary: "Copper rings, clearer hints, and calmer controls.",
-          cta: "Find Your Range!"
+          cta: "Find Your|Range!"
         },
         updates: [
           "Added the Rangefinder Mode toggle to the map header using the target icon and Shortcut Mode key 5, freeing that key from the old hidden map-layer alias while the map-title switch keeps its visible ~ shortcut.",
@@ -15498,6 +15513,14 @@
           "Restored the Legend Add button to the plus icon when the five-level maximum is reached, with the disabled gray treatment carrying the state.",
           "Expanded the dismissable Rangefinder straight-line hint to explain that clicking a ring unit turns that ring on or off, and re-applied hint dismiss controls after panel-only rerenders.",
           "Adjusted the filled moon icon styling so Fill On reads as a copper moon with a sienna rim instead of a solid black dot.",
+          "Added an optional | marker in release notice CTAs so release copy can choose the banner button line break.",
+          "Standardized Legend button symbols to 22 by 22 pixels across header, position, row action, and swipe controls.",
+          "Gave Rangefinder ring numbers more breathing room before their unit toggles and simplified the dismissable straight-line hint so it no longer has a border or accent wash.",
+          "Top-aligned the Rangefinder panel title with the header controls for a cleaner compact split.",
+          "Set Legend header buttons to 40 by 40 pixels while keeping compact per-level row controls intact.",
+          "Made the Rangefinder Add Ring button preview the color of the next ring that will be added.",
+          "Removed active accent fills from Rangefinder header toggles other than Add Ring, leaving their icons to communicate state.",
+          "Shrank the per-level Legend edit pencil icon and added a roadmap wishlist item for broader Legend and Rangefinder control alignment.",
           "Updated Help Center Rangefinder guidance and retargeted the active Add Drive Radius roadmap item to the 4.2.0 line."
         ]
       },
@@ -16402,8 +16425,8 @@
     const RING_KM_PER_MILE = 1.609344;
     const RING_DEFAULT_MPH = 60;
     const RING_HINT_KEY = "ring-mode-disclaimer";
-    const RING_DISCLAIMER_TEXT = "Distances are straight-line ('as the crow flies') and times assume 60 mph. Click a ring unit to show or hide that ring. Not actual driving distance.";
-    const RING_DISTANCE_ONLY_DISCLAIMER_TEXT = "Distances are straight-line ('as the crow flies'). Click a ring unit to show or hide that ring. Not actual driving distance.";
+    const RING_DISCLAIMER_TEXT = "Distances are straight-line and times assume 60 mph. Click a ring unit to show or hide that ring.";
+    const RING_DISTANCE_ONLY_DISCLAIMER_TEXT = "Distances are straight-line. Click a ring unit to show or hide that ring.";
     const RING_INSET_IDS = new Set(["AK", "HI", ...TERRITORY_IDS]);
     const RING_ANCHOR_REMOVED_TEXT = "Start pin was removed - pick another pin.";
     const LEGEND_POSITION_META = {
@@ -17283,10 +17306,11 @@
     function renderReleaseNotice() {
       const notice = latestFeatureNotice();
       const show = shouldShowReleaseNotice();
+      const ctaText = escapeHtml(notice.cta || "Learn More");
       $("#releaseNoticePill").textContent = `v${notice.version}`;
       $("#releaseNoticeTitle").textContent = notice.title;
       $("#releaseNoticeSummary").textContent = notice.summary;
-      $("#releaseNoticeCta").innerHTML = escapeHtml(notice.cta || "Learn More").replace(/\s+/, "<br>");
+      $("#releaseNoticeCta").innerHTML = ctaText.includes("|") ? ctaText.replace("|", "<br>") : ctaText.replace(/\s+/, "<br>");
       $("#whatsNewNotice")?.classList.toggle("hidden", !show);
       $("#settingsBtn")?.classList.toggle("has-release-dot", show);
       $("[data-tab='whatsnew']")?.classList.toggle("has-release-dot", show);
@@ -17845,6 +17869,7 @@
       const timeOn = ringShowTime();
       const editOn = ringEditMode;
       const canAddRing = distances.length < RING_MAX_COUNT;
+      const addRingStyle = canAddRing ? ringStepStyle(distances.length, "ring-add") : "";
       const pointName = slot => slot === 1 ? "Start" : "End";
       const slotHtml = (slot, anchor) => {
         const label = anchor?.label || `Pick ${pointName(slot)}`;
@@ -17875,7 +17900,7 @@
           <button class="ring-header-btn" type="button" data-ring-setting="time" aria-pressed="${timeOn ? "true" : "false"}" aria-label="${timeOn ? "Hide estimated time" : "Show estimated time"}" title="${timeOn ? "Time estimates on" : "Time estimates off"}">${timeOn ? __STOPWATCH_FILL : __STOPWATCH}</button>
           <button class="ring-header-btn" type="button" data-ring-unit="${nextUnit}" aria-pressed="true" aria-label="Using ${unit === "mi" ? "miles and mph" : "kilometers and kph"}; switch to ${nextUnit === "mi" ? "miles and mph" : "kilometers and kph"}" title="Switch to ${nextUnit === "mi" ? "mph" : "kph"}">${speedUnitIcon}</button>
           <button class="ring-header-btn" type="button" data-ring-setting="edit" aria-pressed="${editOn ? "true" : "false"}" aria-label="${editOn ? "Hide ring edit controls" : "Edit ring distances"}" title="${editOn ? "Hide ring edit controls" : "Edit ring distances"}">${__PENCIL}</button>
-          <button class="ring-header-btn ring-add-btn" type="button" data-ring-add aria-label="${canAddRing ? "Add ring" : "Maximum rings reached"}" title="${canAddRing ? "Add ring" : "8/8 rings"}" ${canAddRing ? "" : "disabled"}>${__PLUS_APP_FILL}</button>
+          <button class="ring-header-btn ring-add-btn" type="button" data-ring-add style="${addRingStyle}" aria-label="${canAddRing ? "Add ring" : "Maximum rings reached"}" title="${canAddRing ? "Add ring" : "8/8 rings"}" ${canAddRing ? "" : "disabled"}>${__PLUS_APP_FILL}</button>
         </div>`;
       const dismissed = new Set(state.dismissedHints || []);
       const hint = armed
@@ -17885,7 +17910,7 @@
           : "Tap Start or End to replace a point.";
       const status = ringPanelNotice || hint;
       const disclaimerText = ringShowTime()
-        ? `Distances are straight-line ('as the crow flies') and times assume ${ringSpeedLabel()}. Click a ring unit to show or hide that ring. Not actual driving distance.`
+        ? `Distances are straight-line ('as the crow flies') and times assume ${ringSpeedLabel()}. Click a ring unit to show or hide that ring.`
         : RING_DISTANCE_ONLY_DISCLAIMER_TEXT;
       const disclaimer = dismissed.has(RING_HINT_KEY)
         ? `<small class="ring-panel-footer">${ringShowTime() ? `Straight-line · ${ringSpeedLabel()} estimate.` : "Straight-line distance."}</small>`
