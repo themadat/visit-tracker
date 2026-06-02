@@ -1824,7 +1824,7 @@
 
     .ring-label {
       fill: color-mix(in srgb, var(--text) 82%, var(--ring-stroke, var(--ring-connector)));
-      font-size: 7.2px;
+      font-size: 8.6px;
       font-weight: 900;
       letter-spacing: 0;
       paint-order: stroke fill;
@@ -2200,6 +2200,16 @@
       background: var(--surface);
       border-color: var(--line);
       color: inherit;
+    }
+
+    .ring-header-btn[data-ring-setting="edit"][aria-pressed="true"] {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    [data-theme="dark"] .ring-header-btn[data-ring-setting="edit"][aria-pressed="true"] {
+      color: #07111f;
     }
 
     .ring-header-btn[data-ring-setting="fill"][aria-pressed="true"] .sf-symbol path:first-of-type {
@@ -2864,7 +2874,7 @@
       height: 22px;
     }
 
-    #legendPanel [data-level-edit] .sf-symbol {
+    #legendPanel .legend-item .icon-btn .sf-symbol {
       width: 14px;
       height: 14px;
     }
@@ -13867,7 +13877,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.2.0.15";
+    const APP_VERSION = "4.2.0.16";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -15245,7 +15255,7 @@
         title: "Selectable Color Themes",
         ticketId: "WISH-063",
         description: "Let users pick color themes for Wayfinder, Rangefinder, and the overall app. Scope includes theme presets, accessible contrast checks, and preserving existing colors as defaults.",
-        priority: "P2",
+        priority: "P1",
         effort: "medium",
         targetKind: "minor",
         targetVersion: "",
@@ -15317,7 +15327,7 @@
         title: "Search All Locations in Quick Add",
         ticketId: "WISH-058",
         description: "Let the note Quick Add location search reach every location across all map layers, not just the open map. Today the location list is scoped to the active layer (US states/territories or world countries), so adding a country while viewing the US map (or vice versa) is not possible without switching maps first. Scope: search the full union of states, territories, and countries, show which layer each result belongs to, and route the saved note into the correct store so it appears on the right map.",
-        priority: "P2",
+        priority: "P3",
         effort: "small",
         targetKind: "patch",
         targetVersion: "",
@@ -15389,7 +15399,7 @@
         title: "Multiple Named Basecamp Pads",
         ticketId: "WISH-053",
         description: "Extend Basecamp Notes from a single scratchpad to multiple named pads (for example Packing, Gear, or a per-trip pad), with a pad list, add/rename/delete/reorder, a large editor per pad, and search across pads. Migrate the existing single scratchpad into the first pad without data loss.",
-        priority: "P2",
+        priority: "P3",
         effort: "medium",
         targetKind: "minor",
         targetVersion: "",
@@ -15425,7 +15435,7 @@
         title: "More Date Formats and Spelled-Out Months",
         ticketId: "WISH-049",
         description: "Broaden the date parser used by Smart Convert and manual date entry to accept more natural date formats — long and short spelled-out months (January / Jan), ordinals (1st, 2nd), comma variants, weekday prefixes/suffixes, ISO-like and locale-flexible orderings — without breaking the current accepted formats.",
-        priority: "P2",
+        priority: "P3",
         effort: "small",
         targetKind: "minor",
         targetVersion: "",
@@ -15448,7 +15458,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.2.0.15",
+        version: "4.2.0.16",
         date: "2026-06-01",
         title: "Rangefinder",
         summary: "Rangefinder gets Copper/Sienna polish and selectable release CTA breaks.",
@@ -15459,7 +15469,7 @@
           "Rangefinder hints explain unit toggles."
         ],
         notice: {
-          version: "4.2.0.15",
+          version: "4.2.0.16",
           title: "Rangefinder",
           summary: "Copper rings, clearer hints, and calmer controls.",
           cta: "Find Your|Range!"
@@ -15521,6 +15531,7 @@
           "Made the Rangefinder Add Ring button preview the color of the next ring that will be added.",
           "Removed active accent fills from Rangefinder header toggles other than Add Ring, leaving their icons to communicate state.",
           "Shrank the per-level Legend edit pencil icon and added a roadmap wishlist item for broader Legend and Rangefinder control alignment.",
+          "Shrank compact Legend row button symbols, restored the Rangefinder edit accent when active, and enlarged map ring labels.",
           "Updated Help Center Rangefinder guidance and retargeted the active Add Drive Radius roadmap item to the 4.2.0 line."
         ]
       },
