@@ -1804,6 +1804,68 @@
       pointer-events: auto;
     }
 
+    .suggested-set-markers {
+      pointer-events: auto;
+    }
+
+    .suggested-set-marker {
+      cursor: pointer;
+      color: white;
+      filter: drop-shadow(0 2px 4px rgba(15, 23, 42, .24));
+    }
+
+    [data-theme="dark"] .suggested-set-marker {
+      color: #07111f;
+    }
+
+    .suggested-set-marker foreignObject {
+      pointer-events: none;
+    }
+
+    .suggested-set-marker .set-marker-ring {
+      fill: var(--surface);
+      stroke: var(--marker-color, var(--accent));
+      stroke-width: 2.1;
+    }
+
+    .suggested-set-marker .set-marker-core {
+      fill: color-mix(in srgb, var(--marker-color, var(--accent)) 82%, var(--surface));
+    }
+
+    .suggested-set-marker .set-marker-label,
+    .suggested-set-marker .set-marker-priority {
+      fill: var(--text);
+      font-weight: 900;
+      letter-spacing: 0;
+      pointer-events: none;
+      text-anchor: middle;
+      paint-order: stroke fill;
+      stroke: var(--surface);
+      stroke-linejoin: round;
+    }
+
+    .suggested-set-marker .set-marker-label {
+      font-size: 7px;
+      dominant-baseline: central;
+      stroke-width: 2.7px;
+    }
+
+    .suggested-set-marker .set-marker-label.is-name {
+      font-size: 6px;
+    }
+
+    .suggested-set-marker .set-marker-priority-bg {
+      fill: var(--surface);
+      stroke: var(--marker-color, var(--accent));
+      stroke-width: 1.4;
+    }
+
+    .suggested-set-marker .set-marker-priority {
+      font-size: 6px;
+      dominant-baseline: central;
+      stroke-width: 2px;
+    }
+
     .map-ring-overlay {
       pointer-events: none;
     }
@@ -1964,6 +2026,25 @@
     .map-marker-icon .sf-symbol {
       width: 12px;
       height: 12px;
+      display: block;
+    }
+
+    .set-marker-icon {
+      width: 13px;
+      height: 13px;
+      color: white;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+    }
+
+    [data-theme="dark"] .set-marker-icon {
+      color: #07111f;
+    }
+
+    .set-marker-icon .sf-symbol {
+      width: 13px;
+      height: 13px;
       display: block;
     }
 
@@ -4233,6 +4314,212 @@
       font-size: .78rem;
       line-height: 1.15;
       white-space: nowrap;
+    }
+
+    .priority-badge,
+    .source-set-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 1.4rem;
+      min-height: 1.2rem;
+      padding: .08rem .34rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--surface-2);
+      color: var(--accent-2);
+      font-size: .68rem;
+      font-weight: 900;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .source-set-badge {
+      color: var(--muted);
+      font-size: .64rem;
+      letter-spacing: .01em;
+    }
+
+    #setsDialog[open] {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      width: min(1040px, calc(100dvw - 1rem));
+      height: min(900px, calc(100dvh - 1rem));
+      overflow: hidden;
+    }
+
+    .sets-body {
+      min-height: 0;
+      max-height: none;
+      align-content: start;
+      gap: .8rem;
+    }
+
+    .sets-control-panel {
+      display: grid;
+      grid-template-columns: minmax(10rem, 1.2fr) minmax(9rem, 1fr) minmax(7rem, .72fr) auto;
+      gap: .5rem;
+      align-items: end;
+    }
+
+    .sets-overlay-check {
+      min-height: 40px;
+      align-self: end;
+      background: var(--surface-2);
+    }
+
+    .sets-summary {
+      display: flex;
+      align-items: center;
+      gap: .34rem;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    .sets-section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .6rem;
+      margin-bottom: .4rem;
+      flex-wrap: wrap;
+    }
+
+    .sets-section-head h3 {
+      margin: 0;
+    }
+
+    .sets-list-controls {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      flex-wrap: wrap;
+    }
+
+    .sets-list-controls select {
+      min-height: 34px;
+      max-width: 11rem;
+    }
+
+    .sets-preview-table,
+    .sets-item-list {
+      display: grid;
+      gap: .28rem;
+    }
+
+    .sets-preview-row,
+    .sets-item-row {
+      display: grid;
+      grid-template-columns: auto minmax(9rem, 1fr) minmax(4.8rem, .42fr) minmax(10rem, 1fr);
+      align-items: center;
+      gap: .42rem;
+      padding: .42rem;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+
+    .sets-preview-row.is-header {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: var(--surface-2);
+      color: var(--muted);
+      font-size: .72rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .sets-preview-row textarea {
+      min-height: 36px;
+      max-height: 86px;
+      resize: vertical;
+      font-size: .8rem;
+    }
+
+    .sets-preview-row select,
+    .sets-item-row select,
+    .note-set-section select {
+      min-height: 36px;
+    }
+
+    .sets-item-row {
+      grid-template-columns: minmax(11rem, 1fr) auto minmax(10rem, 1fr) auto;
+    }
+
+    .sets-item-main {
+      min-width: 0;
+      display: grid;
+      gap: .08rem;
+    }
+
+    .sets-item-main b,
+    .sets-preview-title b {
+      overflow-wrap: anywhere;
+    }
+
+    .sets-item-main small,
+    .sets-preview-title small {
+      color: var(--muted);
+      font-size: .74rem;
+      line-height: 1.15;
+    }
+
+    .sets-linked-pill {
+      color: var(--accent-2);
+      font-size: .72rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .note-set-section {
+      display: grid;
+      grid-template-columns: minmax(7rem, .44fr) minmax(12rem, 1fr);
+      gap: .45rem;
+      align-items: end;
+      padding: .55rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--surface-2) 70%, transparent);
+    }
+
+    .note-source-summary {
+      grid-column: 1 / -1;
+      color: var(--muted);
+      font-size: .78rem;
+      line-height: 1.25;
+    }
+
+    @media (max-width: 620px) {
+      .sets-control-panel,
+      .note-set-section {
+        grid-template-columns: 1fr;
+      }
+
+      .sets-overlay-check,
+      .sets-list-controls {
+        width: 100%;
+      }
+
+      .sets-list-controls select {
+        flex: 1 1 9rem;
+        max-width: none;
+      }
+
+      .sets-preview-row.is-header {
+        display: none;
+      }
+
+      .sets-preview-row,
+      .sets-item-row {
+        grid-template-columns: 1fr;
+        align-items: stretch;
+      }
+
+      .sets-item-row .ghost {
+        justify-self: start;
+      }
     }
 
     dialog {
@@ -8190,12 +8477,14 @@
               <span id="mapLayerIcon" class="map-layer-icon" aria-hidden="true"></span>
               <span class="map-layer-text-stack">
                 <h2 id="mapHeading">US Map</h2>
-                <span id="mapLayerModePills" class="map-layer-mode-pills hidden" aria-hidden="true">
+              <span id="mapLayerModePills" class="map-layer-mode-pills hidden" aria-hidden="true">
                   <span id="mapBucketListPill" class="bucket-list-pill hidden">Wayfinder</span>
                   <span id="mapRingModePill" class="ring-pill hidden">Rangefinder</span>
                 </span>
               </span>
             </button>
+            <button id="mapSetsBtn" class="toggle-btn sets-toggle-btn" type="button"
+              aria-label="Open Suggested Sets">Sets</button>
             <small id="tapHint" data-hint>Tap a Location to select/cycle Log Level.<br />Tap map name to switch US/World
               Maps.</small>
           </div>
@@ -8709,6 +8998,7 @@
               <path class="map-separator"
                 d="m 215,493 v 55 l 36,45 m -251,-168 h 147 l 68,68 h 85 l 54,54 v 46 m 206,0 v -78 h 122 v 78 m -47,-78 v 78 m -75,-37 h 122 m -84,0 v 37" />
               <g id="mapRingOverlay" class="map-ring-overlay" aria-hidden="true"></g>
+              <g id="suggestedSetMarkers" class="suggested-set-markers"></g>
               <g id="mapLocationMarkers" class="map-location-markers"></g>
               <g id="mapLabels" class="map-labels"></g>
 
@@ -12916,6 +13206,8 @@
               <button id="copyNotesTextBtn" class="notes-copy-btn" type="button" data-shortcut="C">Copy</button>
               <button id="notesBucketListBtn" class="toggle-btn bucket-list-toggle-btn" type="button"
                 aria-pressed="false" aria-label="Toggle Wayfinder mode" data-shortcut="6">Wayfinder</button>
+              <button id="notesSetsBtn" class="toggle-btn sets-toggle-btn" type="button"
+                aria-label="Open Suggested Sets">Sets</button>
               <span class="notes-search-input-wrap">
                 <input id="notesStateSearch" type="search" placeholder="Search / Filter" aria-label="Search notes">
                 <span class="notes-search-shortcut-hint" aria-hidden="true"
@@ -13144,6 +13436,70 @@
     </div>
   </dialog>
 
+  <dialog id="setsDialog" class="sets-dialog">
+    <header>
+      <div>
+        <h2>Suggested Sets</h2>
+        <small id="setsDialogSubtitle">Curated Wayfinder packs</small>
+      </div>
+      <button id="setsDialogCloseBtn" class="dialog-close" type="button" data-close="setsDialog"
+        data-shortcut="Q">Close</button>
+    </header>
+    <div class="dialog-body sets-body">
+      <section class="sets-control-panel" aria-label="Suggested set controls">
+        <label>Active set
+          <select id="setsActiveSelect"></select>
+        </label>
+        <label>Marker icon
+          <select id="setsIconSelect"></select>
+        </label>
+        <label>Labels
+          <select id="setsLabelModeSelect">
+            <option value="none">Off</option>
+            <option value="abbr">Abbr</option>
+            <option value="name">Name</option>
+            <option value="both">Both</option>
+          </select>
+        </label>
+        <label class="check-row sets-overlay-check">
+          <input id="setsOverlayVisible" type="checkbox">
+          <span>Show overlay</span>
+        </label>
+      </section>
+      <section id="setsSummary" class="sets-summary" aria-live="polite"></section>
+      <section>
+        <div class="sets-section-head">
+          <h3>Add / Refresh Set</h3>
+          <button id="setsBatchAddBtn" class="primary" type="button">Add Selected</button>
+        </div>
+        <div id="setsPreviewTable" class="sets-preview-table"></div>
+      </section>
+      <section>
+        <div class="sets-section-head">
+          <h3>Active Set Notes</h3>
+          <span class="sets-list-controls">
+            <select id="setsPriorityFilter" aria-label="Filter active set by priority">
+              <option value="all">All priorities</option>
+              <option value="1">Priority 1</option>
+              <option value="2">Priority 2</option>
+              <option value="3">Priority 3</option>
+              <option value="4">Priority 4</option>
+              <option value="5">Priority 5</option>
+              <option value="blank">Blank priority</option>
+            </select>
+            <select id="setsSortSelect" aria-label="Sort active set">
+              <option value="set">Set order</option>
+              <option value="priority">Priority</option>
+              <option value="name">Name</option>
+            </select>
+          </span>
+          <button id="setsRemoveBtn" class="danger" type="button">Remove Set</button>
+        </div>
+        <div id="setsItemList" class="sets-item-list"></div>
+      </section>
+    </div>
+  </dialog>
+
   <dialog id="noteDialog">
     <header class="note-dialog-head">
       <div class="note-dialog-title-wrap">
@@ -13192,6 +13548,25 @@
         </small>
       </div>
       <section id="visitTypeRow" class="visit-type-row" aria-label="Visit labels">
+      </section>
+      <section id="noteSetSection" class="note-set-section">
+        <input id="noteSourceSetId" type="hidden">
+        <input id="noteSourceItemId" type="hidden">
+        <input id="noteSourceGenerated" type="hidden">
+        <label>Priority
+          <select id="notePriority">
+            <option value="">Blank</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </label>
+        <label>Add to active set
+          <select id="noteSourceItemSelect"></select>
+        </label>
+        <div id="noteSourceSummary" class="note-source-summary"></div>
       </section>
       <small data-hint data-hint-key="note-tag-settings-help">
         Open Location Tags, choose which tags appear here, rename them, sort them, and set shortcuts.
@@ -14107,7 +14482,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.2.0";
+    const APP_VERSION = "4.3.0.1";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -15415,6 +15790,108 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
         }))
     ];
 
+    const SUGGESTED_SET_LABEL_MODES = ["none", "abbr", "name", "both"];
+    const SUGGESTED_SET_DEFAULT_ICON = "tree";
+    const SUGGESTED_SET_DEFAULT_ID = "national-parks";
+    const SUGGESTED_NATIONAL_PARKS = [
+      ["ACAD", "Acadia", "ME", ["ME"], 44.4093, -68.2475],
+      ["NPSA", "American Samoa", "AS", ["AS"], -14.2583, -170.6833],
+      ["ARCH", "Arches", "UT", ["UT"], 38.7331, -109.5925],
+      ["BADL", "Badlands", "SD", ["SD"], 43.8554, -102.3397],
+      ["BIBE", "Big Bend", "TX", ["TX"], 29.2499, -103.2502],
+      ["BISC", "Biscayne", "FL", ["FL"], 25.4824, -80.2083],
+      ["BLCA", "Black Canyon of the Gunnison", "CO", ["CO"], 38.5754, -107.7416],
+      ["BRCA", "Bryce Canyon", "UT", ["UT"], 37.5930, -112.1871],
+      ["CANY", "Canyonlands", "UT", ["UT"], 38.3269, -109.8783],
+      ["CARE", "Capitol Reef", "UT", ["UT"], 38.3670, -111.2615],
+      ["CAVE", "Carlsbad Caverns", "NM", ["NM"], 32.1479, -104.5567],
+      ["CHIS", "Channel Islands", "CA", ["CA"], 34.0069, -119.7785],
+      ["CONG", "Congaree", "SC", ["SC"], 33.7948, -80.7821],
+      ["CRLA", "Crater Lake", "OR", ["OR"], 42.9446, -122.109],
+      ["CUVA", "Cuyahoga Valley", "OH", ["OH"], 41.2808, -81.5678],
+      ["DEVA", "Death Valley", "CA", ["CA", "NV"], 36.5323, -116.9325],
+      ["DENA", "Denali", "AK", ["AK"], 63.1148, -151.1926],
+      ["DRTO", "Dry Tortugas", "FL", ["FL"], 24.6285, -82.8732],
+      ["EVER", "Everglades", "FL", ["FL"], 25.2866, -80.8987],
+      ["GAAR", "Gates of the Arctic", "AK", ["AK"], 67.8564, -153.594],
+      ["JEFF", "Gateway Arch", "MO", ["MO"], 38.6247, -90.1848],
+      ["GLAC", "Glacier", "MT", ["MT"], 48.7596, -113.787],
+      ["GLBA", "Glacier Bay", "AK", ["AK"], 58.6658, -136.9002],
+      ["GRCA", "Grand Canyon", "AZ", ["AZ"], 36.107, -112.1129],
+      ["GRTE", "Grand Teton", "WY", ["WY"], 43.7904, -110.6818],
+      ["GRBA", "Great Basin", "NV", ["NV"], 38.9833, -114.3],
+      ["GRSA", "Great Sand Dunes", "CO", ["CO"], 37.7329, -105.5121],
+      ["GRSM", "Great Smoky Mountains", "TN", ["TN", "NC"], 35.6131, -83.5532],
+      ["GUMO", "Guadalupe Mountains", "TX", ["TX"], 31.923, -104.8855],
+      ["HALE", "Haleakalā", "HI", ["HI"], 20.7204, -156.1552],
+      ["HAVO", "Hawaiʻi Volcanoes", "HI", ["HI"], 19.4194, -155.2885],
+      ["HOSP", "Hot Springs", "AR", ["AR"], 34.5217, -93.0423],
+      ["INDU", "Indiana Dunes", "IN", ["IN"], 41.6533, -87.0524],
+      ["ISRO", "Isle Royale", "MI", ["MI"], 48.0115, -88.8278],
+      ["JOTR", "Joshua Tree", "CA", ["CA"], 33.8734, -115.901],
+      ["KATM", "Katmai", "AK", ["AK"], 58.6126, -155.0631],
+      ["KEFJ", "Kenai Fjords", "AK", ["AK"], 59.848, -150.1879],
+      ["KICA", "Kings Canyon", "CA", ["CA"], 36.8879, -118.5551],
+      ["KOVA", "Kobuk Valley", "AK", ["AK"], 67.3357, -159.1222],
+      ["LACL", "Lake Clark", "AK", ["AK"], 60.4127, -154.3235],
+      ["LAVO", "Lassen Volcanic", "CA", ["CA"], 40.4977, -121.4207],
+      ["MACA", "Mammoth Cave", "KY", ["KY"], 37.1862, -86.1005],
+      ["MEVE", "Mesa Verde", "CO", ["CO"], 37.2309, -108.4618],
+      ["MORA", "Mount Rainier", "WA", ["WA"], 46.8797, -121.7269],
+      ["NERI", "New River Gorge", "WV", ["WV"], 37.9263, -81.1547],
+      ["NOCA", "North Cascades", "WA", ["WA"], 48.7718, -121.2985],
+      ["OLYM", "Olympic", "WA", ["WA"], 47.8021, -123.6044],
+      ["PEFO", "Petrified Forest", "AZ", ["AZ"], 34.9099, -109.8068],
+      ["PINN", "Pinnacles", "CA", ["CA"], 36.4906, -121.1825],
+      ["REDW", "Redwood", "CA", ["CA"], 41.2132, -124.0046],
+      ["ROMO", "Rocky Mountain", "CO", ["CO"], 40.3428, -105.6836],
+      ["SAGU", "Saguaro", "AZ", ["AZ"], 32.2967, -111.1666],
+      ["SEQU", "Sequoia", "CA", ["CA"], 36.4864, -118.5658],
+      ["SHEN", "Shenandoah", "VA", ["VA"], 38.5326, -78.356],
+      ["THRO", "Theodore Roosevelt", "ND", ["ND"], 46.979, -103.5387],
+      ["VIIS", "Virgin Islands", "VI", ["VI"], 18.3424, -64.7486],
+      ["VOYA", "Voyageurs", "MN", ["MN"], 48.4839, -92.8389],
+      ["WHSA", "White Sands", "NM", ["NM"], 32.7797, -106.1717],
+      ["WICA", "Wind Cave", "SD", ["SD"], 43.6046, -103.4213],
+      ["WRST", "Wrangell–St. Elias", "AK", ["AK"], 61.7104, -142.9857],
+      ["YELL", "Yellowstone", "WY", ["WY", "MT", "ID"], 44.428, -110.5885],
+      ["YOSE", "Yosemite", "CA", ["CA"], 37.8651, -119.5383],
+      ["ZION", "Zion", "UT", ["UT"], 37.2982, -113.0263]
+    ];
+    const SUGGESTED_SETS = [
+      {
+        id: "national-parks",
+        name: "National Parks",
+        shortName: "Parks",
+        description: "Official National Park-designated units bundled for Wayfinder planning.",
+        itemNoun: "park",
+        defaultIconId: SUGGESTED_SET_DEFAULT_ICON,
+        defaultLabelMode: "none",
+        items: SUGGESTED_NATIONAL_PARKS.map(([code, name, primaryState, states, lat, lng]) => {
+          const url = `https://www.nps.gov/${code.toLowerCase()}/index.htm`;
+          const fullName = code === "NPSA" ? "National Park of American Samoa" : `${name} National Park`;
+          return {
+            id: code.toLowerCase(),
+            code,
+            name,
+            fullName,
+            abbr: code,
+            labelAbbr: code,
+            primaryState,
+            states,
+            lat,
+            lng,
+            url,
+            noteTemplate: `Official National Park unit. Website: ${url}`
+          };
+        })
+      }
+    ];
+    const SUGGESTED_SET_BY_ID = Object.fromEntries(SUGGESTED_SETS.map(set => [set.id, set]));
+    const SUGGESTED_SET_ITEM_BY_KEY = Object.fromEntries(SUGGESTED_SETS.flatMap(set =>
+      set.items.map(item => [`${set.id}:${item.id}`, item])
+    ));
+
     const WISHLIST_SEEDS = [
       {
         title: "Split App into /src Folder with Build Step",
@@ -15513,15 +15990,15 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
         category: "Maps"
       },
       {
-        title: "National Park Overlay Layer",
+        title: "Suggested Sets + National Parks",
         ticketId: "WISH-004",
-        description: "Add an optional national parks layer that can be viewed with state progress. Scope includes park data, visible markers or outlines, visit status, filtering, and exports that remain readable.",
+        description: "Add curated Suggested Sets that can be previewed, prioritized, annotated, attached to existing notes, and batch-added as normal Wayfinder notes, starting with official National Parks. Set markers and labels stay separate from state progress.",
         priority: "P0",
         effort: "large",
         targetKind: "exact",
-        targetVersion: "4.0.0",
+        targetVersion: "4.3.0",
         tokenCostPct: 46,
-        prompt: "Add optional national parks overlay with visit state, filters, and export support. Keep state map behavior unchanged.",
+        prompt: "Implement Suggested Sets with National Parks as the first bundled set: static park data, preview Include/Priority/Note table, attach existing note flows, set marker labels, priority badges/filter/sort, export grouping, and no automatic state progress changes.",
         category: "Maps"
       },
       {
@@ -15682,6 +16159,39 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       },
     ];
     const CHANGELOG = [
+      {
+        version: "4.3.0.1",
+        date: "2026-06-03",
+        title: "Park Pack",
+        summary: "Suggested Sets turn National Parks into previewable, prioritized Wayfinder notes.",
+        highlights: [
+          "Add all official National Parks as Wayfinder notes.",
+          "Preview parks with Include, Priority, and Note fields.",
+          "Attach existing notes to a park without losing your details.",
+          "Set markers, labels, exports, and priority badges stay in sync."
+        ],
+        notice: {
+          version: "4.3.0.1",
+          title: "Park Pack",
+          summary: "Add National Parks as prioritized Wayfinder notes with Suggested Sets.",
+          cta: "Pack the Parks!"
+        },
+        updates: [
+          "Added a Suggested Sets drawer with National Parks as the first bundled set.",
+          "Bundled official National Park-designated units with stable NPS codes, labels, representative coordinates, state lists, URLs, and default note copy.",
+          "Added a Sets entry point from the map header and another from Wayfinder, both opening the same drawer.",
+          "The Add Set preview table lets each park be included or skipped, assigned priority 1-5, and annotated before batch creation.",
+          "Batch adding creates missing Wayfinder notes, refreshes managed set fields on existing linked notes, turns the chosen set icon on, enables the set overlay, and enters Wayfinder.",
+          "Suggested Set notes remain normal notes in Notes, filters, Wayfinder, backups, and exports, with lightweight source metadata for duplicate checks and refreshes.",
+          "Added optional note priority with compact badges, note search text, exported note text, and set-list filter/sort controls.",
+          "Added attach flows from the set drawer and note editor so an existing note can join the active set while preserving user-entered date, level, details, people, topics, and non-set tags.",
+          "Set markers render separately from normal note pins, use the selected set icon, take their status color from the linked note level, and do not recolor whole states.",
+          "Added a set label dropdown for marker icon family plus Off, Abbr, Name, and Both label modes; National Parks default to labels off.",
+          "Removing a set deletes untouched generated set notes and detaches edited or visited notes so user work is kept.",
+          "Markdown, Rich Text, and Plain Text exports group linked set notes under their set name while preserving the existing Wayfinder export flow.",
+          "JSON backups/imports normalize set metadata and priority while dropping unknown set or item ids."
+        ]
+      },
       {
         version: "4.2.0",
         date: "2026-06-02",
@@ -16730,6 +17240,8 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
     let layoutSyncFrame = 0;
     let pendingConfirm = null;
     let markerDialogItems = [];
+    let setsPriorityFilter = "all";
+    let setsSortMode = "set";
     let pendingNoteDefaults = null;
     let noteDialogBaseline = "";
     let noteDialogMode = "state";
@@ -16761,6 +17273,10 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
           dateOrder: "mdy",
           dateStyle: "alpha",
           mapLabels: "none",
+          suggestedSetsVisible: false,
+          activeSuggestedSetId: SUGGESTED_SET_DEFAULT_ID,
+          suggestedSetIcons: { [SUGGESTED_SET_DEFAULT_ID]: SUGGESTED_SET_DEFAULT_ICON },
+          suggestedSetLabelModes: { [SUGGESTED_SET_DEFAULT_ID]: "none" },
           activeLayerId: "us",
           mapLocationPinsVisible: true,
           mapFollowsNotesFilters: true,
@@ -17134,6 +17650,10 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       if (!["mdy", "dmy", "ymd"].includes(next.settings.dateOrder)) next.settings.dateOrder = "mdy";
       if (!["numeric", "alpha"].includes(next.settings.dateStyle)) next.settings.dateStyle = "alpha";
       if (!["none", "abbr", "name"].includes(next.settings.mapLabels)) next.settings.mapLabels = "none";
+      if (typeof next.settings.suggestedSetsVisible !== "boolean") next.settings.suggestedSetsVisible = false;
+      next.settings.activeSuggestedSetId = SUGGESTED_SET_BY_ID[next.settings.activeSuggestedSetId] ? next.settings.activeSuggestedSetId : SUGGESTED_SET_DEFAULT_ID;
+      next.settings.suggestedSetLabelModes = normalizeSuggestedSetLabelModes(next.settings.suggestedSetLabelModes);
+      next.settings.suggestedSetIcons = normalizeSuggestedSetIcons(next.settings.suggestedSetIcons);
       if (!MAP_LAYERS[next.settings.activeLayerId]) next.settings.activeLayerId = "us";
       if (typeof next.settings.mapLocationPinsVisible !== "boolean") next.settings.mapLocationPinsVisible = true;
       if (typeof next.settings.mapFollowsNotesFilters !== "boolean") next.settings.mapFollowsNotesFilters = true;
@@ -17341,6 +17861,38 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       return Number.isFinite(numeric) && numeric >= -180 && numeric <= 180 ? Number(numeric.toFixed(6)) : "";
     }
 
+    function normalizeNotePriority(value) {
+      const text = String(value ?? "").trim();
+      return /^[1-5]$/.test(text) ? text : "";
+    }
+
+    function normalizeSuggestedSetLabelModes(input) {
+      const raw = input && typeof input === "object" ? input : {};
+      return Object.fromEntries(SUGGESTED_SETS.map(set => {
+        const mode = String(raw[set.id] || set.defaultLabelMode || "none");
+        return [set.id, SUGGESTED_SET_LABEL_MODES.includes(mode) ? mode : "none"];
+      }));
+    }
+
+    function normalizeSuggestedSetIcons(input) {
+      const raw = input && typeof input === "object" ? input : {};
+      const known = new Set(VISIT_TYPES.map(type => type.id));
+      return Object.fromEntries(SUGGESTED_SETS.map(set => {
+        const requested = String(raw[set.id] || set.defaultIconId || SUGGESTED_SET_DEFAULT_ICON);
+        return [set.id, known.has(requested) ? requested : SUGGESTED_SET_DEFAULT_ICON];
+      }));
+    }
+
+    function suggestedSetItem(setId, itemId) {
+      const set = SUGGESTED_SET_BY_ID[setId] || null;
+      const item = SUGGESTED_SET_ITEM_BY_KEY[`${setId}:${itemId}`] || null;
+      return set && item ? { set, item } : null;
+    }
+
+    function suggestedSetSourceForNote(note) {
+      return suggestedSetItem(String(note?.sourceSetId || ""), String(note?.sourceItemId || ""));
+    }
+
     function normalizeRingLayerBag(input, layerId, legacyFlat) {
       // Build one layer's ring bag. Accepts:
       //   1. input already in bag shape (input.anchor1, input.travelMode, …).
@@ -17477,6 +18029,7 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       const visitTypes = Array.isArray(note.visitTypes)
         ? [...new Set(note.visitTypes.filter(id => validVisitTypeIds.has(id)))]
         : [];
+      const source = suggestedSetItem(String(note.sourceSetId || ""), String(note.sourceItemId || ""));
       return {
         id: String(note.id || uid()),
         date: normalizeStoredDate(note.date, next.settings.dateOrder) || "",
@@ -17490,7 +18043,13 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
         geocodeLabel: String(note.geocodeLabel || note.locationLabel || "").slice(0, 180),
         details,
         text: details,
-        visitTypes
+        visitTypes,
+        priority: normalizeNotePriority(note.priority),
+        ...(source ? {
+          sourceSetId: source.set.id,
+          sourceItemId: source.item.id,
+          sourceSetGenerated: note.sourceSetGenerated === true
+        } : {})
       };
     }
 
@@ -18591,6 +19150,219 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       setStateLevelIds(abbr, [...getStateLevelIds(abbr), levelId]);
     }
 
+    function activeSuggestedSet() {
+      return SUGGESTED_SET_BY_ID[state.settings.activeSuggestedSetId] || SUGGESTED_SET_BY_ID[SUGGESTED_SET_DEFAULT_ID];
+    }
+
+    function suggestedSetIconId(setId = activeSuggestedSet()?.id) {
+      const set = SUGGESTED_SET_BY_ID[setId] || activeSuggestedSet();
+      const requested = state.settings.suggestedSetIcons?.[set?.id] || set?.defaultIconId || SUGGESTED_SET_DEFAULT_ICON;
+      return visitTypeMeta(requested) ? requested : SUGGESTED_SET_DEFAULT_ICON;
+    }
+
+    function suggestedSetLabelMode(setId = activeSuggestedSet()?.id) {
+      const set = SUGGESTED_SET_BY_ID[setId] || activeSuggestedSet();
+      const mode = state.settings.suggestedSetLabelModes?.[set?.id] || set?.defaultLabelMode || "none";
+      return SUGGESTED_SET_LABEL_MODES.includes(mode) ? mode : "none";
+    }
+
+    function setSuggestedSetIcon(setId, iconId) {
+      const set = SUGGESTED_SET_BY_ID[setId];
+      if (!set || !visitTypeMeta(iconId)) return;
+      state.settings.suggestedSetIcons ||= {};
+      state.settings.suggestedSetIcons[set.id] = iconId;
+    }
+
+    function setSuggestedSetLabelMode(setId, mode) {
+      const set = SUGGESTED_SET_BY_ID[setId];
+      if (!set || !SUGGESTED_SET_LABEL_MODES.includes(mode)) return;
+      state.settings.suggestedSetLabelModes ||= {};
+      state.settings.suggestedSetLabelModes[set.id] = mode;
+    }
+
+    function suggestedSetPrimaryState(item) {
+      return STATE_NAMES[item?.primaryState] ? item.primaryState : "DC";
+    }
+
+    function suggestedSetItemRegionLabel(item) {
+      return (item.states || []).map(code => STATE_NAMES[code] || code).join(", ");
+    }
+
+    function setNoteMatchesSource(note, setId, itemId = "") {
+      return note?.sourceSetId === setId && (!itemId || note.sourceItemId === itemId);
+    }
+
+    function allSavedNoteRefs() {
+      const refs = [];
+      Object.entries(state.notes || {}).forEach(([abbr, notes]) => {
+        (notes || []).forEach(note => refs.push({ abbr, note, layer: "us", store: state.notes }));
+      });
+      Object.entries(state.world?.notes || {}).forEach(([abbr, notes]) => {
+        (notes || []).forEach(note => refs.push({ abbr, note, layer: "world", store: state.world.notes }));
+      });
+      return refs;
+    }
+
+    function suggestedSetLinkedNote(setId, itemId) {
+      return allSavedNoteRefs().find(ref => setNoteMatchesSource(ref.note, setId, itemId)) || null;
+    }
+
+    function suggestedSetLinkedEntries(setId = activeSuggestedSet()?.id) {
+      const set = SUGGESTED_SET_BY_ID[setId];
+      if (!set) return [];
+      const order = new Map(set.items.map((item, index) => [item.id, index]));
+      return allSavedNoteRefs()
+        .filter(ref => setNoteMatchesSource(ref.note, setId))
+        .map(ref => ({ ...ref, source: suggestedSetSourceForNote(ref.note) }))
+        .filter(ref => ref.source)
+        .sort((a, b) => (order.get(a.note.sourceItemId) ?? 999) - (order.get(b.note.sourceItemId) ?? 999)
+          || normalizeNotePriority(a.note.priority).localeCompare(normalizeNotePriority(b.note.priority))
+          || (a.note.date || "").localeCompare(b.note.date || ""));
+    }
+
+    function suggestedSetProgress(setId = activeSuggestedSet()?.id) {
+      const set = SUGGESTED_SET_BY_ID[setId];
+      const linked = suggestedSetLinkedEntries(setId);
+      const linkedItemIds = new Set(linked.map(ref => ref.note.sourceItemId));
+      return { total: set?.items.length || 0, linked: linkedItemIds.size, notes: linked.length };
+    }
+
+    function ensureSuggestedSetIconEnabled(setId = activeSuggestedSet()?.id) {
+      const iconId = suggestedSetIconId(setId);
+      const type = state.visitTypes.find(item => item.id === iconId);
+      if (type) type.enabled = true;
+      ensureNoteIconFilters();
+      return iconId;
+    }
+
+    function setManagedVisitTypes(note, setId) {
+      const iconId = suggestedSetIconId(setId);
+      const ids = new Set(note.visitTypes || []);
+      ids.add(iconId);
+      note.visitTypes = [...ids].filter(id => visitTypeMeta(id));
+    }
+
+    function refreshSuggestedSetManagedFields(note, set, item, { generated = false } = {}) {
+      note.sourceSetId = set.id;
+      note.sourceItemId = item.id;
+      note.sourceSetGenerated = generated === true;
+      note.where = item.fullName;
+      note.lat = normalizeLatitude(item.lat);
+      note.lng = normalizeLongitude(item.lng);
+      note.geocodeLabel = item.fullName;
+      setManagedVisitTypes(note, set.id);
+      return note;
+    }
+
+    function suggestedSetNoteLevelId() {
+      return bucketListLevelId()
+        || fallbackBucketListLevelId()
+        || state.levels.find(level => level.countsTowardStats === false)?.id
+        || state.levels[0]?.id
+        || "";
+    }
+
+    function createSuggestedSetNote(set, item, { priority = "", details = "" } = {}) {
+      const cleanPriority = normalizeNotePriority(priority);
+      const cleanDetails = String(details || "").trim().slice(0, 700);
+      const note = refreshSuggestedSetManagedFields({
+        id: uid(),
+        date: "",
+        levelId: suggestedSetNoteLevelId(),
+        city: "",
+        where: item.fullName,
+        what: "",
+        who: "",
+        lat: normalizeLatitude(item.lat),
+        lng: normalizeLongitude(item.lng),
+        geocodeLabel: item.fullName,
+        details: cleanDetails,
+        text: cleanDetails,
+        visitTypes: [],
+        priority: cleanPriority
+      }, set, item, { generated: !(cleanPriority || cleanDetails) });
+      const abbr = suggestedSetPrimaryState(item);
+      state.notes[abbr] ||= [];
+      state.notes[abbr].push(note);
+      return { abbr, note, layer: "us", store: state.notes };
+    }
+
+    function removeGeneratedDuplicateSetNotes(setId, itemId, keepId = "") {
+      [state.notes, state.world?.notes].filter(Boolean).forEach(store => {
+        Object.keys(store).forEach(abbr => {
+          store[abbr] = (store[abbr] || []).filter(note =>
+            !(setNoteMatchesSource(note, setId, itemId) && note.id !== keepId && note.sourceSetGenerated === true)
+          );
+          if (!store[abbr].length) delete store[abbr];
+        });
+      });
+    }
+
+    function moveNoteRefToSetPrimaryState(ref, item) {
+      const targetAbbr = suggestedSetPrimaryState(item);
+      if (ref.layer === "us" && ref.abbr === targetAbbr) return ref;
+      ref.store[ref.abbr] = (ref.store[ref.abbr] || []).filter(note => note.id !== ref.note.id);
+      if (!ref.store[ref.abbr].length) delete ref.store[ref.abbr];
+      state.notes[targetAbbr] ||= [];
+      state.notes[targetAbbr].push(ref.note);
+      return { abbr: targetAbbr, note: ref.note, layer: "us", store: state.notes };
+    }
+
+    function attachNoteToSuggestedSetItem(abbr, noteId, setId, itemId, { persist = true } = {}) {
+      const source = suggestedSetItem(setId, itemId);
+      const ref = allSavedNoteRefs().find(entry => entry.abbr === abbr && entry.note.id === noteId)
+        || allSavedNoteRefs().find(entry => entry.note.id === noteId);
+      if (!source || !ref) return null;
+      ensureSuggestedSetIconEnabled(setId);
+      const moved = moveNoteRefToSetPrimaryState(ref, source.item);
+      refreshSuggestedSetManagedFields(moved.note, source.set, source.item, { generated: false });
+      removeGeneratedDuplicateSetNotes(setId, itemId, moved.note.id);
+      if (persist) {
+        state.settings.activeSuggestedSetId = setId;
+        state.settings.suggestedSetsVisible = true;
+        save();
+        render();
+      }
+      return moved;
+    }
+
+    function detachSuggestedSetNote(note) {
+      delete note.sourceSetId;
+      delete note.sourceItemId;
+      delete note.sourceSetGenerated;
+    }
+
+    function removeSuggestedSet(setId = activeSuggestedSet()?.id) {
+      const set = SUGGESTED_SET_BY_ID[setId];
+      if (!set) return;
+      let deleted = 0;
+      let preserved = 0;
+      [state.notes, state.world?.notes].filter(Boolean).forEach(store => {
+        Object.keys(store).forEach(abbr => {
+          const kept = [];
+          (store[abbr] || []).forEach(note => {
+            if (!setNoteMatchesSource(note, setId)) {
+              kept.push(note);
+              return;
+            }
+            if (note.sourceSetGenerated === true) {
+              deleted += 1;
+              return;
+            }
+            detachSuggestedSetNote(note);
+            preserved += 1;
+            kept.push(note);
+          });
+          if (kept.length) store[abbr] = kept;
+          else delete store[abbr];
+        });
+      });
+      state.settings.suggestedSetsVisible = false;
+      save();
+      render();
+      showMessage("Set Removed", `${deleted} untouched note${deleted === 1 ? "" : "s"} removed. ${preserved} edited or visited note${preserved === 1 ? "" : "s"} preserved.`);
+    }
+
     function toggleStateLevel(abbr, levelId, enabled) {
       const ids = getStateLevelIds(abbr);
       setStateLevelIds(abbr, enabled ? [...ids, levelId] : ids.filter(id => id !== levelId));
@@ -18980,6 +19752,8 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       const bucketShortcutHint = "Toggle Wayfinder mode";
       setButtonLabel("#mapBucketListBtn", __BACKPACK, "Wayfinder", "Toggle Wayfinder mode", bucketShortcutHint);
       setButtonLabel("#notesBucketListBtn", __BACKPACK, "Wayfinder", "Toggle Wayfinder mode", bucketShortcutHint);
+      setButtonLabel("#mapSetsBtn", visitTypeIcon(suggestedSetIconId()), "Sets", "Open Suggested Sets", "Open Suggested Sets");
+      setButtonLabel("#notesSetsBtn", visitTypeIcon(suggestedSetIconId()), "Sets", "Open Suggested Sets", "Open Suggested Sets");
       setButtonLabel("#mapRingModeBtn", __TARGET, "Rangefinder", "Toggle Ring Mode", "Toggle Rangefinder Mode");
       setButtonLabel("#mapZoomOutBtn", __MINUS_CIRCLE, "Zoom Out", "Zoom map out", "Zoom map out");
       setButtonLabel("#mapZoomResetBtn", __ARROW_COUNTERCLOCKWISE_CIRCLE, "Reset", "Reset map zoom", "Reset map zoom");
@@ -19007,6 +19781,9 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       setButtonLabel("#quickAddNoteBtn", __TEXT_PAD_HEADER_BADGE_PLUS, "Quick Add", "Quick add note");
       setButtonLabel("#markerDialogCloseBtn", __XMARK, "Close");
       setButtonLabel("#markerAddNoteBtn", __PLUS_APP_FILL, "Add Note Here", "Add note at this mapped location");
+      setButtonLabel("#setsDialogCloseBtn", __XMARK, "Close");
+      setButtonLabel("#setsBatchAddBtn", __PLUS_APP_FILL, "Add Selected", "Add or refresh selected set notes");
+      setButtonLabel("#setsRemoveBtn", __DELETE_LEFT_FILL, "Remove Set", "Remove generated notes from this set");
       setButtonLabel("#noteDialogCloseBtn", __XMARK, "Close");
       setButtonLabel("#saveNoteBtn", __CHECKMARK, "Save Note");
       setButtonLabel("#saveAddNoteBtn", __CHECKMARK_CIRCLE_BADGE_PLUS_FILL, "Save + Add", "Save and add another note");
@@ -19510,6 +20287,7 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       if (isUS) renderMapLabels();
       else renderWorldMapLabels();
       renderRingOverlay();
+      renderSuggestedSetMarkers();
       renderLocationMarkers();
     }
 
@@ -19598,6 +20376,7 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       const isUS = activeLayerId === "us";
       const filterMode = isUS && state.settings.mapFollowsNotesFilters === true;
       return activeRegionCodes().flatMap(abbr => (notesStoreForCode(abbr)[abbr] || []).map(note => {
+        if (isUS && state.settings.suggestedSetsVisible === true && suggestedSetSourceForNote(note)) return null;
         if (filterMode && !(stateMatchesActiveNotesFilters(abbr) && noteMatchesAllFilters(note) && noteMatchesCoordinateFilter(note) && (stateMetaMatchesNotesSearch(abbr) || noteMatchesSearch(note)))) return null;
         const point = projectNoteLocation(abbr, note);
         if (!point) return null;
@@ -20011,6 +20790,113 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       if (anchor2 && point2) overlay.append(ringAnchorPinGroup(anchor2, 2, point2));
     }
 
+    function suggestedSetMarkerPoint(item) {
+      if (activeLayerId !== "us") return null;
+      return projectNoteLocation(suggestedSetPrimaryState(item), { lat: item.lat, lng: item.lng });
+    }
+
+    function appendSuggestedSetMarkerLabel(group, set, item, note) {
+      const mode = suggestedSetLabelMode(set.id);
+      if (mode === "none") return;
+      const svgNS = "http://www.w3.org/2000/svg";
+      const label = document.createElementNS(svgNS, "text");
+      label.classList.add("set-marker-label");
+      if (mode === "name") label.classList.add("is-name");
+      label.setAttribute("x", "0");
+      label.setAttribute("y", "14");
+      const parts = mode === "both" ? [item.labelAbbr, item.name] : [mode === "name" ? item.name : item.labelAbbr];
+      parts.forEach((part, index) => {
+        const tspan = document.createElementNS(svgNS, "tspan");
+        tspan.setAttribute("x", "0");
+        if (index) tspan.setAttribute("dy", "6.6");
+        tspan.textContent = part;
+        label.append(tspan);
+      });
+      group.append(label);
+    }
+
+    function appendSuggestedSetPriority(group, note) {
+      const priority = normalizeNotePriority(note?.priority);
+      if (!priority) return;
+      const svgNS = "http://www.w3.org/2000/svg";
+      const bg = document.createElementNS(svgNS, "circle");
+      bg.classList.add("set-marker-priority-bg");
+      bg.setAttribute("cx", "8.2");
+      bg.setAttribute("cy", "-8.2");
+      bg.setAttribute("r", "5");
+      group.append(bg);
+      const text = document.createElementNS(svgNS, "text");
+      text.classList.add("set-marker-priority");
+      text.setAttribute("x", "8.2");
+      text.setAttribute("y", "-8.2");
+      text.textContent = priority;
+      group.append(text);
+    }
+
+    function renderSuggestedSetMarkers() {
+      const markers = $("#suggestedSetMarkers");
+      if (markers) markers.innerHTML = "";
+      if (!markers || activeLayerId !== "us" || state.settings.suggestedSetsVisible !== true) return;
+      const set = activeSuggestedSet();
+      if (!set) return;
+      const svgNS = "http://www.w3.org/2000/svg";
+      const markerScale = markerZoomScale();
+      const iconId = suggestedSetIconId(set.id);
+      set.items.forEach(item => {
+        const point = suggestedSetMarkerPoint(item);
+        if (!point) return;
+        const linked = suggestedSetLinkedNote(set.id, item.id);
+        const note = linked?.note || null;
+        const level = levelById(note?.levelId);
+        const color = level?.color || "var(--accent)";
+        const label = `${item.fullName}. ${note ? `Linked note: ${noteSummary(note)}` : "Not added yet."}`;
+        const group = document.createElementNS(svgNS, "g");
+        group.classList.add("suggested-set-marker");
+        if (note) group.classList.add("is-linked");
+        group.dataset.setId = set.id;
+        group.dataset.setItem = item.id;
+        group.style.setProperty("--marker-color", color);
+        group.setAttribute("transform", `matrix(${markerScale.toFixed(3)} 0 0 ${markerScale.toFixed(3)} ${point.x.toFixed(1)} ${point.y.toFixed(1)})`);
+        group.setAttribute("role", "button");
+        group.setAttribute("tabindex", "0");
+        group.setAttribute("aria-label", label);
+        group.innerHTML = `
+          <title>${escapeHtml(label)}</title>
+          <circle class="set-marker-ring" r="10"></circle>
+          <circle class="set-marker-core" r="7"></circle>
+        `;
+        const foreign = document.createElementNS(svgNS, "foreignObject");
+        foreign.setAttribute("x", "-6.5");
+        foreign.setAttribute("y", "-6.5");
+        foreign.setAttribute("width", "13");
+        foreign.setAttribute("height", "13");
+        const icon = document.createElement("div");
+        icon.className = "set-marker-icon";
+        icon.innerHTML = visitTypeIcon(iconId);
+        foreign.append(icon);
+        group.append(foreign);
+        appendSuggestedSetPriority(group, note);
+        appendSuggestedSetMarkerLabel(group, set, item, note);
+        const open = event => {
+          event.preventDefault();
+          event.stopPropagation();
+          const armedSlot = ringPickArmedSlot();
+          if (armedSlot && linked) {
+            setRingAnchorFromNote(armedSlot, linked.abbr, linked.note.id);
+            return;
+          }
+          if (linked) openMappedNote({ abbr: linked.abbr, note: linked.note });
+          else openSetsDialog(set.id);
+        };
+        group.addEventListener("click", open);
+        group.addEventListener("keydown", event => {
+          if (event.key !== "Enter" && event.key !== " ") return;
+          open(event);
+        });
+        markers.append(group);
+      });
+    }
+
     function renderLocationMarkers() {
       const markers = $("#" + activeLayer().markersId);
       if (!markers) return;
@@ -20147,7 +21033,7 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       const level = levelById(item.note.levelId);
       const title = noteLocationDisplay(item.note) || item.note.geocodeLabel || noteSummary(item.note);
       const types = noteVisitTypeLabels(item.note).map(type => type.label).join(", ");
-      const meta = [regionName(item.abbr), level?.name, types].filter(Boolean).join(" :: ");
+      const meta = [regionName(item.abbr), level?.name, notePriorityLabel(item.note), noteSourceLabel(item.note), types].filter(Boolean).join(" :: ");
       return `
         <button class="marker-note-row" type="button" data-marker-item="${index}" style="--marker-row-color:${escapeHtml(item.color)}">
           <span class="marker-note-icon">${visitTypeIconStack(item.note, { color: item.color })}</span>
@@ -20198,6 +21084,207 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       render();
       if ($("#markerDialog").open) $("#markerDialog").close();
       openNoteDialog();
+    }
+
+    function notePriorityBadgeHtml(note) {
+      const priority = normalizeNotePriority(note?.priority);
+      return priority ? `<span class="priority-badge" title="Priority ${priority}">P${priority}</span>` : "";
+    }
+
+    function noteSourceBadgeHtml(note) {
+      const source = suggestedSetSourceForNote(note);
+      return source ? `<span class="source-set-badge" title="${escapeHtml(noteSourceLabel(note))}">${escapeHtml(source.item.code)}</span>` : "";
+    }
+
+    function noteAttachOptionLabel(ref) {
+      const level = levelById(ref.note.levelId)?.name || "No level";
+      const summary = noteSummary(ref.note);
+      const date = ref.note.date ? formatDateDisplay(ref.note.date) : "No date";
+      const layer = ref.layer === "world" ? "World" : "US";
+      return `${regionNameForLayer(ref.abbr, ref.layer)} (${layer}) - ${date} - ${level} - ${summary}`;
+    }
+
+    function regionNameForLayer(code, layer) {
+      if (layer === "world") return worldRegionNames[code] || STATE_NAMES[code] || code;
+      return STATE_NAMES[code] || worldRegionNames[code] || code;
+    }
+
+    function attachableNoteOptionsHtml(set, item) {
+      const refs = allSavedNoteRefs()
+        .filter(ref => !setNoteMatchesSource(ref.note, set.id, item.id))
+        .sort((a, b) => regionNameForLayer(a.abbr, a.layer).localeCompare(regionNameForLayer(b.abbr, b.layer))
+          || (b.note.date || "").localeCompare(a.note.date || "")
+          || noteSummary(a.note).localeCompare(noteSummary(b.note)));
+      return `<option value="">Attach existing note...</option>` + refs.map(ref =>
+        `<option value="${escapeHtml(`${ref.layer}|${ref.abbr}|${ref.note.id}`)}">${escapeHtml(noteAttachOptionLabel(ref))}</option>`
+      ).join("");
+    }
+
+    function renderSetIconOptions(selectedId) {
+      const sorted = allVisitTypes().slice().sort((a, b) =>
+        Number(b.enabled !== false) - Number(a.enabled !== false)
+        || String(a.label || a.id).localeCompare(String(b.label || b.id), undefined, { numeric: true })
+      );
+      return sorted.map(type =>
+        `<option value="${escapeHtml(type.id)}" ${type.id === selectedId ? "selected" : ""}>${escapeHtml(type.label)}${type.enabled === false ? " (hidden)" : ""}</option>`
+      ).join("");
+    }
+
+    function renderSetPreviewRow(set, item) {
+      const linked = suggestedSetLinkedNote(set.id, item.id);
+      const note = linked?.note;
+      return `
+        <div class="sets-preview-row" data-set-preview-item="${escapeHtml(item.id)}">
+          <label class="check-row" aria-label="Include ${escapeHtml(item.fullName)}">
+            <input type="checkbox" data-set-preview-include checked>
+            <span>Include</span>
+          </label>
+          <span class="sets-preview-title">
+            <b>${escapeHtml(item.fullName)}</b><br>
+            <small>${escapeHtml(item.code)} :: ${escapeHtml(suggestedSetItemRegionLabel(item))}${linked ? " :: linked" : ""}</small>
+          </span>
+          <label class="sr-only" for="setPriority-${escapeHtml(item.id)}">Priority</label>
+          <select id="setPriority-${escapeHtml(item.id)}" data-set-preview-priority aria-label="Priority for ${escapeHtml(item.fullName)}">
+            ${["", "1", "2", "3", "4", "5"].map(value => `<option value="${value}" ${normalizeNotePriority(note?.priority) === value ? "selected" : ""}>${value || "Blank"}</option>`).join("")}
+          </select>
+          <textarea data-set-preview-note maxlength="700" placeholder="Wish notes for ${escapeHtml(item.name)}">${escapeHtml(noteDetails(note) || "")}</textarea>
+        </div>
+      `;
+    }
+
+    function renderSetItemRow(set, item) {
+      const linked = suggestedSetLinkedNote(set.id, item.id);
+      const note = linked?.note;
+      const status = note
+        ? `<span class="sets-linked-pill">Linked ${notePriorityBadgeHtml(note)} ${noteSourceBadgeHtml(note)}</span>`
+        : `<span class="sets-linked-pill">Not added</span>`;
+      const attach = note
+        ? `<button type="button" data-set-edit-note="${escapeHtml(item.id)}">Edit</button>`
+        : `<select data-set-attach-item="${escapeHtml(item.id)}" aria-label="Attach an existing note to ${escapeHtml(item.fullName)}">${attachableNoteOptionsHtml(set, item)}</select>`;
+      return `
+        <div class="sets-item-row">
+          <span class="sets-item-main">
+            <b>${escapeHtml(item.fullName)}</b>
+            <small>${escapeHtml(item.code)} :: ${escapeHtml(suggestedSetItemRegionLabel(item))}</small>
+          </span>
+          ${status}
+          ${attach}
+          <a class="ghost" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">NPS</a>
+        </div>
+      `;
+    }
+
+    function suggestedSetItemPriority(set, item) {
+      return normalizeNotePriority(suggestedSetLinkedNote(set.id, item.id)?.note?.priority);
+    }
+
+    function setItemsForActiveList(set) {
+      const validFilter = ["all", "blank", "1", "2", "3", "4", "5"].includes(setsPriorityFilter)
+        ? setsPriorityFilter
+        : "all";
+      const validSort = ["set", "priority", "name"].includes(setsSortMode) ? setsSortMode : "set";
+      const items = set.items.filter(item => {
+        const priority = suggestedSetItemPriority(set, item);
+        if (validFilter === "all") return true;
+        if (validFilter === "blank") return !priority;
+        return priority === validFilter;
+      });
+      if (validSort === "name") {
+        return items.sort((a, b) => a.fullName.localeCompare(b.fullName));
+      }
+      if (validSort === "priority") {
+        return items.sort((a, b) => {
+          const priorityA = Number(suggestedSetItemPriority(set, a) || 9);
+          const priorityB = Number(suggestedSetItemPriority(set, b) || 9);
+          return priorityA - priorityB || a.fullName.localeCompare(b.fullName);
+        });
+      }
+      return items;
+    }
+
+    function renderSetsDialog() {
+      const set = activeSuggestedSet();
+      if (!set) return;
+      const progress = suggestedSetProgress(set.id);
+      const listItems = setItemsForActiveList(set);
+      $("#setsDialogSubtitle").textContent = `${set.description} ${progress.linked}/${progress.total} linked.`;
+      $("#setsActiveSelect").innerHTML = SUGGESTED_SETS.map(candidate =>
+        `<option value="${escapeHtml(candidate.id)}" ${candidate.id === set.id ? "selected" : ""}>${escapeHtml(candidate.name)}</option>`
+      ).join("");
+      $("#setsIconSelect").innerHTML = renderSetIconOptions(suggestedSetIconId(set.id));
+      $("#setsLabelModeSelect").value = suggestedSetLabelMode(set.id);
+      $("#setsOverlayVisible").checked = state.settings.suggestedSetsVisible === true;
+      $("#setsPriorityFilter").value = ["all", "blank", "1", "2", "3", "4", "5"].includes(setsPriorityFilter) ? setsPriorityFilter : "all";
+      $("#setsSortSelect").value = ["set", "priority", "name"].includes(setsSortMode) ? setsSortMode : "set";
+      $("#setsSummary").innerHTML = `
+        <span class="tag">${escapeHtml(set.items.length)} ${escapeHtml(set.itemNoun)}${set.items.length === 1 ? "" : "s"}</span>
+        <span class="tag">${escapeHtml(progress.linked)} linked</span>
+        <span class="tag">${escapeHtml(progress.notes)} note${progress.notes === 1 ? "" : "s"}</span>
+        <span class="tag">Labels: ${escapeHtml(suggestedSetLabelMode(set.id) === "none" ? "Off" : suggestedSetLabelMode(set.id))}</span>
+      `;
+      $("#setsPreviewTable").innerHTML = `
+        <div class="sets-preview-row is-header" aria-hidden="true">
+          <span>Include</span><span>Location</span><span>Priority</span><span>Note</span>
+        </div>
+        ${set.items.map(item => renderSetPreviewRow(set, item)).join("")}
+      `;
+      $("#setsItemList").innerHTML = listItems.length
+        ? listItems.map(item => renderSetItemRow(set, item)).join("")
+        : `<p class="muted">No ${escapeHtml(set.itemNoun)} notes match that priority filter.</p>`;
+    }
+
+    function openSetsDialog(setId = "") {
+      if (SUGGESTED_SET_BY_ID[setId]) state.settings.activeSuggestedSetId = setId;
+      renderSetsDialog();
+      closeOpenDialogs("setsDialog");
+      $("#setsDialog").showModal();
+    }
+
+    function setPreviewRowsFromDialog(set) {
+      return $$("[data-set-preview-item]", $("#setsPreviewTable")).map(row => {
+        const item = set.items.find(candidate => candidate.id === row.dataset.setPreviewItem);
+        return {
+          item,
+          include: $("[data-set-preview-include]", row)?.checked === true,
+          priority: normalizeNotePriority($("[data-set-preview-priority]", row)?.value),
+          details: String($("[data-set-preview-note]", row)?.value || "").trim().slice(0, 700)
+        };
+      }).filter(row => row.item);
+    }
+
+    function batchAddSuggestedSetFromDialog() {
+      const set = activeSuggestedSet();
+      if (!set) return;
+      ensureSuggestedSetIconEnabled(set.id);
+      let created = 0;
+      let refreshed = 0;
+      setPreviewRowsFromDialog(set).filter(row => row.include).forEach(row => {
+        const linked = suggestedSetLinkedNote(set.id, row.item.id);
+        if (!linked) {
+          createSuggestedSetNote(set, row.item, { priority: row.priority, details: row.details });
+          created += 1;
+          return;
+        }
+        refreshSuggestedSetManagedFields(linked.note, set, row.item, { generated: linked.note.sourceSetGenerated === true && !(row.priority || row.details) });
+        if (!linked.note.priority && row.priority) linked.note.priority = row.priority;
+        if (!noteDetails(linked.note) && row.details) {
+          linked.note.details = row.details;
+          linked.note.text = row.details;
+        }
+        if (row.priority || row.details) linked.note.sourceSetGenerated = false;
+        refreshed += 1;
+      });
+      state.settings.activeSuggestedSetId = set.id;
+      state.settings.suggestedSetsVisible = true;
+      activeLayerId = "us";
+      state.settings.activeLayerId = "us";
+      if ($("#setsDialog").open) $("#setsDialog").close();
+      if (!bucketListViewActive()) setBucketListView(true);
+      else {
+        save();
+        render();
+      }
+      showMessage("Set Added", `${created} note${created === 1 ? "" : "s"} created, ${refreshed} refreshed.`);
     }
 
     function syncMapLabelButtons(mode) {
@@ -20396,12 +21483,22 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
     }
 
     function noteDetails(note) {
-      return note.details ?? note.text ?? "";
+      return note?.details ?? note?.text ?? "";
     }
 
     function noteCoordinateText(note) {
       const coords = validNoteCoordinates(note);
       return coords ? `${coords.lat}, ${coords.lng}` : "";
+    }
+
+    function notePriorityLabel(note) {
+      const priority = normalizeNotePriority(note?.priority);
+      return priority ? `Priority ${priority}` : "";
+    }
+
+    function noteSourceLabel(note) {
+      const source = suggestedSetSourceForNote(note);
+      return source ? `${source.set.name} - ${source.item.fullName} (${source.item.code})` : "";
     }
 
     function noteLocationDisplay(note) {
@@ -20438,6 +21535,8 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
     function noteFieldLines(note, indent = "", includeTypes = true) {
       const visitTypes = noteVisitTypeLabels(note);
       return [
+        notePriorityLabel(note) ? `${indent}${notePriorityLabel(note)}` : "",
+        noteSourceLabel(note) ? `${indent}Suggested Set: ${noteSourceLabel(note)}` : "",
         includeTypes && visitTypes.length ? `${indent}Types: ${visitTypes.map(type => type.label).join(", ")}` : "",
         note.where ? `${indent}Where: ${note.where}` : "",
         note.city ? `${indent}City: ${note.city}` : "",
@@ -20488,6 +21587,8 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       if (dateText) parts.push(dateText);
       const level = levelById(note.levelId);
       if (level) parts.push(noSep(level.name));
+      if (notePriorityLabel(note)) parts.push(noSep(notePriorityLabel(note)));
+      if (noteSourceLabel(note)) parts.push(noSep(noteSourceLabel(note)));
       const tags = noteVisitTypeLabels(note).map(type => type.label);
       if (tags.length) parts.push(tags.map(noSep).join(", "));
       const details = noSep(noteDetails(note));
@@ -21110,6 +22211,8 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
         note.what,
         note.who,
         noteDetails(note),
+        notePriorityLabel(note),
+        noteSourceLabel(note),
         noteVisitTypeLabels(note).map(item => item.label).join(" ")
       ].join(" ").replace(/\s+/g, " ").toLowerCase();
     }
@@ -21757,7 +22860,7 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
           <button class="compact-note-row is-expanded is-expanded-child ${isBucket ? "is-bucket-target" : ""}" type="button" data-note-state="${abbr}" data-edit-note="${note.id}">
             <span class="compact-note-icon">${visitTypeIconStack(note, { color: noteLevel?.color })}</span>
             <span>${escapeHtml(formatDateDisplay(note.date))}</span>
-            <span class="compact-note-text">${escapeHtml(noteSummary(note))}</span>
+            <span class="compact-note-text">${notePriorityBadgeHtml(note)} ${noteSourceBadgeHtml(note)} ${escapeHtml(noteSummary(note))}</span>
             <span></span>
           </button>
         `;
@@ -21781,7 +22884,7 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
               <article class="compact-note-row ${isBucket ? "is-bucket-target" : ""}" role="button" tabindex="0" data-edit-note-row="${note.id}">
                 <span class="compact-note-icon">${visitTypeIconStack(note, { color: noteLevel?.color })}</span>
                 <time datetime="${escapeHtml(note.date)}">${escapeHtml(formatDateDisplay(note.date))}</time>
-                <span class="compact-note-text">${escapeHtml(noteSummary(note))}</span>
+                <span class="compact-note-text">${notePriorityBadgeHtml(note)} ${noteSourceBadgeHtml(note)} ${escapeHtml(noteSummary(note))}</span>
                 <span class="actions">
                   ${isBucket ? actionButtonHtml({ symbol: __CHECKMARK_CIRCLE, text: "Mark Visited", className: "icon-btn bucket-mark-visited-btn", attrs: `data-mark-visited-note="${note.id}"` }) : ""}
                   ${actionButtonHtml({ symbol: __PENCIL, text: "Edit", className: "icon-btn", attrs: `data-edit-note="${note.id}"` })}
@@ -21802,7 +22905,7 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
             <article class="compact-note-row is-expanded ${isBucket ? "is-bucket-target" : ""}" role="button" tabindex="0" data-edit-note-row="${note.id}">
               <span class="compact-note-icon">${visitTypeIconStack(note, { color: noteLevel?.color })}</span>
               <time datetime="${escapeHtml(note.date)}">${escapeHtml(formatDateDisplay(note.date))}</time>
-              <span class="compact-note-text">${escapeHtml(noteSummary(note))}</span>
+              <span class="compact-note-text">${notePriorityBadgeHtml(note)} ${noteSourceBadgeHtml(note)} ${escapeHtml(noteSummary(note))}</span>
               <span class="actions">
                 ${isBucket ? actionButtonHtml({ symbol: __CHECKMARK_CIRCLE, text: "Mark Visited", className: "icon-btn bucket-mark-visited-btn", attrs: `data-mark-visited-note="${note.id}"` }) : ""}
                 ${actionButtonHtml({ symbol: __PENCIL, text: "Edit", className: "icon-btn", attrs: `data-edit-note="${note.id}"` })}
@@ -22064,6 +23167,51 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
     function selectedNoteVisitTypes() {
       const hidden = JSON.parse($("#noteForm").dataset.hiddenVisitTypes || "[]");
       return [...new Set([...hidden, ...$$("input[name='visitType']:checked", $("#noteForm")).map(input => input.value)])];
+    }
+
+    function renderNoteSetControls(note = null) {
+      const source = suggestedSetSourceForNote(note);
+      if (source) state.settings.activeSuggestedSetId = source.set.id;
+      const set = activeSuggestedSet();
+      $("#notePriority").value = normalizeNotePriority(note?.priority);
+      $("#noteSourceSetId").value = source?.set.id || "";
+      $("#noteSourceItemId").value = source?.item.id || "";
+      $("#noteSourceGenerated").value = source && note?.sourceSetGenerated === true ? "true" : "";
+      $("#noteSourceItemSelect").innerHTML = `<option value="">Not linked to ${escapeHtml(set.name)}</option>` + set.items.map(item =>
+        `<option value="${escapeHtml(item.id)}" ${source?.set.id === set.id && source?.item.id === item.id ? "selected" : ""}>${escapeHtml(item.fullName)} (${escapeHtml(item.code)})</option>`
+      ).join("");
+      syncNoteSetSummary();
+    }
+
+    function syncNoteSetSummary() {
+      const source = suggestedSetItem($("#noteSourceSetId").value, $("#noteSourceItemId").value);
+      const priority = normalizeNotePriority($("#notePriority").value);
+      const generated = $("#noteSourceGenerated").value === "true";
+      $("#noteSourceSummary").textContent = source
+        ? `${source.set.name}: ${source.item.fullName} (${source.item.code})${priority ? ` :: Priority ${priority}` : ""}${generated ? " :: generated" : ""}`
+        : "Select an active set item to attach this note to that curated set.";
+    }
+
+    function applySuggestedSetItemToNoteForm(setId, itemId) {
+      const source = suggestedSetItem(setId, itemId);
+      if (!source) {
+        $("#noteSourceSetId").value = "";
+        $("#noteSourceItemId").value = "";
+        $("#noteSourceGenerated").value = "";
+        syncNoteSetSummary();
+        return;
+      }
+      ensureSuggestedSetIconEnabled(source.set.id);
+      $("#noteSourceSetId").value = source.set.id;
+      $("#noteSourceItemId").value = source.item.id;
+      $("#noteSourceGenerated").value = "";
+      $("#noteWhere").value = source.item.fullName;
+      $("#noteLat").value = normalizeLatitude(source.item.lat);
+      $("#noteLng").value = normalizeLongitude(source.item.lng);
+      setNoteGeocodeStatus(`Mapped: ${source.item.fullName}`, source.item.fullName);
+      setNoteVisitTypes([...new Set([...selectedNoteVisitTypes(), suggestedSetIconId(source.set.id)])]);
+      refreshNoteLocationButtons();
+      syncNoteSetSummary();
     }
 
     function openVisitTagSettings(returnTarget = "settings") {
@@ -23188,6 +24336,7 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       $("#noteSmartConvert").value = "";
       renderSmartConvertRecognition();
       setNoteVisitTypes(note?.visitTypes || defaults?.visitTypes || []);
+      renderNoteSetControls(note);
       $("#noteText").value = note ? noteDetails(note) : "";
       refreshNoteAutocompletes(noteTarget);
       refreshNoteLocationButtons();
@@ -23217,6 +24366,10 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
         lat: $("#noteLat").value,
         lng: $("#noteLng").value,
         geocodeLabel: $("#noteGeocodeStatus").dataset.geocodeLabel || "",
+        priority: $("#notePriority").value,
+        sourceSetId: $("#noteSourceSetId").value,
+        sourceItemId: $("#noteSourceItemId").value,
+        sourceGenerated: $("#noteSourceGenerated").value,
         details: $("#noteText").value,
         smart: $("#noteSmartConvert").value,
         visitTypes: selectedNoteVisitTypes().slice().sort()
@@ -23290,15 +24443,29 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
         geocodeLabel: $("#noteGeocodeStatus").dataset.geocodeLabel || "",
         details,
         text: details,
-        visitTypes: selectedNoteVisitTypes()
+        visitTypes: selectedNoteVisitTypes(),
+        priority: normalizeNotePriority($("#notePriority").value)
       };
-      selectedState = targetAbbr;
-      const noteStore = notesStoreForCode(targetAbbr);
-      noteStore[targetAbbr] ||= [];
-      const index = noteStore[targetAbbr].findIndex(item => item.id === id);
-      if (index >= 0) noteStore[targetAbbr][index] = note;
-      else noteStore[targetAbbr].push(note);
-      addStateLevel(targetAbbr, levelId);
+      const source = suggestedSetItem($("#noteSourceSetId").value, $("#noteSourceItemId").value);
+      if (source) {
+        ensureSuggestedSetIconEnabled(source.set.id);
+        refreshSuggestedSetManagedFields(note, source.set, source.item, { generated: false });
+      }
+      const saveAbbr = source ? suggestedSetPrimaryState(source.item) : targetAbbr;
+      selectedState = saveAbbr;
+      const noteStore = source ? state.notes : notesStoreForCode(saveAbbr);
+      if (source && id) {
+        allSavedNoteRefs().forEach(ref => {
+          if (ref.note.id !== id || (ref.store === noteStore && ref.abbr === saveAbbr)) return;
+          ref.store[ref.abbr] = (ref.store[ref.abbr] || []).filter(item => item.id !== id);
+          if (!ref.store[ref.abbr].length) delete ref.store[ref.abbr];
+        });
+      }
+      noteStore[saveAbbr] ||= [];
+      const index = noteStore[saveAbbr].findIndex(item => item.id === id);
+      if (index >= 0) noteStore[saveAbbr][index] = note;
+      else noteStore[saveAbbr].push(note);
+      if (!source) addStateLevel(saveAbbr, levelId);
       save();
       render();
       noteDialogBaseline = noteFormSnapshot();
@@ -23868,16 +25035,80 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       const entries = [];
       Object.entries(state.notes || {}).forEach(([abbr, notes]) => {
         (notes || []).filter(n => n.levelId === bucketId).forEach(note => {
-          entries.push({ note, region: STATE_NAMES[abbr] || abbr, code: abbr, layer: "us" });
+          entries.push({ note, region: STATE_NAMES[abbr] || abbr, code: abbr, layer: "us", source: suggestedSetSourceForNote(note) });
         });
       });
       ensureWorldRegions();
       Object.entries(state.world?.notes || {}).forEach(([code, notes]) => {
         (notes || []).filter(n => n.levelId === bucketId).forEach(note => {
-          entries.push({ note, region: worldRegionNames[code] || code, code, layer: "world" });
+          entries.push({ note, region: worldRegionNames[code] || code, code, layer: "world", source: suggestedSetSourceForNote(note) });
         });
       });
       return entries.sort((a, b) => a.region.localeCompare(b.region) || (a.note.date || "").localeCompare(b.note.date || ""));
+    }
+
+    function suggestedSetExportEntries() {
+      return SUGGESTED_SETS.flatMap(set => suggestedSetLinkedEntries(set.id)).map(ref => ({
+        ...ref,
+        region: regionNameForLayer(ref.abbr, ref.layer),
+        set: ref.source.set,
+        item: ref.source.item
+      }));
+    }
+
+    function groupedSetEntries(entries) {
+      return SUGGESTED_SETS.map(set => ({
+        set,
+        entries: entries.filter(entry => entry.source?.set?.id === set.id || entry.set?.id === set.id)
+      })).filter(group => group.entries.length);
+    }
+
+    function appendMarkdownWayfinder(lines, bucketEntries) {
+      lines.push("## Wayfinder", "");
+      const grouped = groupedSetEntries(bucketEntries);
+      const groupedIds = new Set(grouped.flatMap(group => group.entries.map(entry => entry.note.id)));
+      grouped.forEach(group => {
+        lines.push(`### ${group.set.name}`);
+        group.entries.forEach(({ note, region, source }) => {
+          const item = source?.item;
+          const label = item ? `${item.fullName} (${item.code})` : region;
+          lines.push(`- ${label}${note.date ? ` (${formatDateDisplay(note.date)})` : ""}: ${noteExportText(note)}`);
+        });
+        lines.push("");
+      });
+      const other = bucketEntries.filter(entry => !groupedIds.has(entry.note.id));
+      if (other.length) {
+        lines.push(grouped.length ? "### Other Wayfinder Notes" : "");
+        other.forEach(({ note, region }) => {
+          lines.push(`- ${region}${note.date ? ` (${formatDateDisplay(note.date)})` : ""}: ${noteExportText(note)}`);
+        });
+        lines.push("");
+      }
+    }
+
+    function appendSuggestedSetsMarkdown(lines) {
+      const grouped = groupedSetEntries(suggestedSetExportEntries());
+      if (!grouped.length) return;
+      lines.push("## Suggested Sets", "");
+      grouped.forEach(group => {
+        lines.push(`### ${group.set.name}`);
+        group.entries.forEach(({ note, item, region }) => {
+          lines.push(`- ${item.fullName} (${item.code}) - ${region}: ${noteExportText(note)}`);
+        });
+        lines.push("");
+      });
+    }
+
+    function appendSuggestedSetsTextLines(lines) {
+      const grouped = groupedSetEntries(suggestedSetExportEntries());
+      if (!grouped.length) return;
+      lines.push("", "Suggested Sets");
+      grouped.forEach(group => {
+        lines.push(group.set.name);
+        group.entries.forEach(({ note, item, region }) => {
+          lines.push(`  ${item.fullName} (${item.code}) - ${region} - ${noteToSmartConvertText(note)}`);
+        });
+      });
     }
 
     function exportMarkdown() {
@@ -23915,12 +25146,9 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       activeLayerId = savedLayer;
       const bucketEntries = bucketListExportEntries();
       if (bucketEntries.length) {
-        lines.push("## Wayfinder", "");
-        bucketEntries.forEach(({ note, region }) => {
-          lines.push(`- ${region}${note.date ? ` (${formatDateDisplay(note.date)})` : ""}: ${noteExportText(note)}`);
-        });
-        lines.push("");
+        appendMarkdownWayfinder(lines, bucketEntries);
       }
+      appendSuggestedSetsMarkdown(lines);
       const mdBasecamp = String(state.basecamp?.text || "").trim();
       if (mdBasecamp) lines.push("## Basecamp", mdBasecamp, "");
       lines.push("## Custom Levels and Definitions");
@@ -23973,10 +25201,20 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       const bucketEntries = bucketListExportEntries();
       if (bucketEntries.length) {
         lines.push("", "Wayfinder", "Location | Date | Notes");
-        bucketEntries.forEach(({ note, region }) => {
+        const grouped = groupedSetEntries(bucketEntries);
+        const groupedIds = new Set(grouped.flatMap(group => group.entries.map(entry => entry.note.id)));
+        grouped.forEach(group => {
+          lines.push(group.set.name);
+          group.entries.forEach(({ note, source, region }) => {
+            const item = source?.item;
+            lines.push(`${item ? item.fullName : region} | ${formatDateDisplay(note.date) || "—"} | ${noteExportText(note)}`);
+          });
+        });
+        bucketEntries.filter(entry => !groupedIds.has(entry.note.id)).forEach(({ note, region }) => {
           lines.push(`${region} | ${formatDateDisplay(note.date) || "—"} | ${noteExportText(note)}`);
         });
       }
+      appendSuggestedSetsTextLines(lines);
       const rtfBasecamp = String(state.basecamp?.text || "").trim();
       if (rtfBasecamp) lines.push("", "Basecamp", rtfBasecamp);
       activeLayerId = savedLayer;
@@ -24037,12 +25275,21 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       const bucketEntries = bucketListExportEntries();
       if (bucketEntries.length) {
         lines.push("", "Wayfinder", "(Notes saved at your Wayfinder level, grouped by region.)");
+        const grouped = groupedSetEntries(bucketEntries);
+        const groupedIds = new Set(grouped.flatMap(group => group.entries.map(entry => entry.note.id)));
+        grouped.forEach(group => {
+          lines.push(group.set.name);
+          group.entries.forEach(({ note, source }) => {
+            lines.push(`  ${source.item.fullName} (${source.item.code}) :: ${noteToSmartConvertText(note)}`);
+          });
+        });
         let lastRegion = "";
-        bucketEntries.forEach(({ note, region }) => {
+        bucketEntries.filter(entry => !groupedIds.has(entry.note.id)).forEach(({ note, region }) => {
           if (region !== lastRegion) { lines.push(region); lastRegion = region; }
           lines.push(`  ${noteToSmartConvertText(note)}`);
         });
       }
+      appendSuggestedSetsTextLines(lines);
       const txtBasecamp = String(state.basecamp?.text || "").trim();
       if (txtBasecamp) lines.push("", "Basecamp", txtBasecamp);
       downloadFile(`${slug(state.mapName)}-simple.txt`, "text/plain", lines.join("\n"));
@@ -24723,7 +25970,7 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       // so they never pre-empt context-bound dialog shortcuts.
       if ($("#noteDialog").open || $("#levelDialog").open || $("#settingsDialog").open ||
         $("#renameDialog").open || $("#confirmDialog").open || $("#markerDialog").open ||
-        $("#tagDialog").open || $("#paletteDialog").open || $("#addToHomeDialog").open ||
+        $("#setsDialog").open || $("#tagDialog").open || $("#paletteDialog").open || $("#addToHomeDialog").open ||
         $("#tipJarDialog").open) return;
       const clickIf = sel => { const el = $(sel); if (el && !el.disabled) el.click(); };
       const universal = {
@@ -25056,6 +26303,18 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
         markerActions[key]();
         return;
       }
+      if ($("#setsDialog").open) {
+        const setsActions = {
+          q: () => $("#setsDialog").close(),
+          x: () => $("#setsDialog").close(),
+          a: batchAddSuggestedSetFromDialog,
+          r: () => $("#setsRemoveBtn").click()
+        };
+        if (!setsActions[key]) return;
+        event.preventDefault();
+        setsActions[key]();
+        return;
+      }
       if ($("#tagDialog").open) {
         if (key === "b") {
           event.preventDefault();
@@ -25286,6 +26545,86 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       $("#markerAddNoteBtn").addEventListener("click", () => {
         if (markerDialogItems[0]) addNoteAtMappedLocation(markerDialogItems[0]);
       });
+      $("#setsDialog").addEventListener("change", event => {
+        const target = event.target;
+        if (target.id === "setsActiveSelect") {
+          state.settings.activeSuggestedSetId = SUGGESTED_SET_BY_ID[target.value] ? target.value : SUGGESTED_SET_DEFAULT_ID;
+          save();
+          renderSetsDialog();
+          renderMap();
+          syncButtonLabels();
+          return;
+        }
+        const set = activeSuggestedSet();
+        if (target.id === "setsIconSelect") {
+          setSuggestedSetIcon(set.id, target.value);
+          save();
+          renderSetsDialog();
+          renderMap();
+          syncButtonLabels();
+          return;
+        }
+        if (target.id === "setsLabelModeSelect") {
+          setSuggestedSetLabelMode(set.id, target.value);
+          save();
+          renderSetsDialog();
+          renderMap();
+          return;
+        }
+        if (target.id === "setsOverlayVisible") {
+          state.settings.suggestedSetsVisible = target.checked === true;
+          save();
+          renderSetsDialog();
+          renderMap();
+          return;
+        }
+        if (target.id === "setsPriorityFilter") {
+          setsPriorityFilter = target.value;
+          renderSetsDialog();
+          return;
+        }
+        if (target.id === "setsSortSelect") {
+          setsSortMode = target.value;
+          renderSetsDialog();
+          return;
+        }
+        const attach = target.closest("[data-set-attach-item]");
+        if (attach && attach.value) {
+          const [layer, abbr, noteId] = attach.value.split("|");
+          attachNoteToSuggestedSetItem(abbr, noteId, set.id, attach.dataset.setAttachItem);
+          renderSetsDialog();
+        }
+      });
+      $("#setsDialog").addEventListener("click", event => {
+        const edit = event.target.closest("[data-set-edit-note]");
+        if (edit) {
+          const linked = suggestedSetLinkedNote(activeSuggestedSet().id, edit.dataset.setEditNote);
+          if (!linked) return;
+          if ($("#setsDialog").open) $("#setsDialog").close();
+          selectedState = linked.abbr;
+          notesPanelState = linked.abbr;
+          notesPanelOpen = true;
+          openNoteDialog(linked.note.id);
+          return;
+        }
+        if (event.target.closest("#setsBatchAddBtn")) {
+          batchAddSuggestedSetFromDialog();
+          return;
+        }
+        if (event.target.closest("#setsRemoveBtn")) {
+          const set = activeSuggestedSet();
+          requestConfirm({
+            title: `Remove ${set.name}?`,
+            message: "Untouched generated notes from this set will be deleted. Edited or visited notes will stay as normal notes without the set link.",
+            actionLabel: "Remove Set",
+            preserveOpenDialogs: true,
+            onConfirm: () => {
+              if ($("#setsDialog").open) $("#setsDialog").close();
+              removeSuggestedSet(set.id);
+            }
+          });
+        }
+      });
       $("#confirmActionBtn").addEventListener("click", () => {
         const action = pendingConfirm;
         pendingConfirm = null;
@@ -25307,6 +26646,7 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       $("#basecampClearBtn").addEventListener("click", clearBasecampText);
       $("#mapFitBtn").addEventListener("click", toggleMapFitMode);
       $("#mapLayerToggleBtn").addEventListener("click", () => setActiveLayer(activeLayerId === "world" ? "us" : "world"));
+      $("#mapSetsBtn").addEventListener("click", () => openSetsDialog());
       $("#mapBucketListBtn").addEventListener("click", toggleBucketListView);
       $("#mapRingModeBtn").addEventListener("click", toggleRingMode);
       $("#ringPanel").addEventListener("click", event => {
@@ -25388,6 +26728,7 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
         toggleRingDistance(distance.dataset.ringDistanceToggle);
       });
       $("#notesBucketListBtn").addEventListener("click", toggleBucketListView);
+      $("#notesSetsBtn").addEventListener("click", () => openSetsDialog());
       $("#notesPanelBackBtn").addEventListener("click", () => {
         notesPanelState = null;
         save();
@@ -25502,6 +26843,10 @@ const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" ar
       ["#noteLat", "#noteLng"].forEach(selector => $(selector).addEventListener("input", () => {
         setNoteGeocodeStatus("Manual coordinates will be used for the map marker.");
       }));
+      $("#notePriority").addEventListener("change", syncNoteSetSummary);
+      $("#noteSourceItemSelect").addEventListener("change", event => {
+        applySuggestedSetItemToNoteForm(activeSuggestedSet().id, event.target.value);
+      });
       $("#quickAddNoteBtn").addEventListener("click", openQuickAddNoteDialog);
       $("#noteSmartConvertBtn").addEventListener("click", applySmartNoteConvert);
       const smartInput = $("#noteSmartConvert");
