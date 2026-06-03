@@ -103,8 +103,8 @@ For every completed change:
 - Trail Log is a single-file, local-first HTML/CSS/JS app.
 - Main file: `index.html`. `STORAGE_KEY = "usStateVisitMap.v1"`, version in `APP_VERSION`.
 - Docs: `README.md` (public/run/build), this handoff (all dev + LLM context).
-- Current version: `APP_VERSION = "4.3.0.2"` — active 4.3.0 dev line "Park Pack" for WISH-004 Waypoint Packs + National Parks. Latest cut release is 4.2.0 "Rangefinder".
-- 4.3.0.2 adds **Waypoint Packs** as a Wayfinder sub-feature: curated place packs that can be previewed, prioritized, annotated, attached to existing notes, and batch-added as normal Wayfinder notes. National Parks is the first bundled pack, with pack-aware markers/labels, note metadata, priority badges/filter/sort, and export grouping. Pack markers do not recolor state progress. The Packs button only appears in Wayfinder, uses `__CIRCLE_BADGE_PLUS`, and opens an inset panel over Notes instead of a modal.
+- Current version: `APP_VERSION = "4.3.0.3"` — active 4.3.0 dev line "Park Pack" for WISH-004 Waypoint Packs + National Parks. Latest cut release is 4.2.0 "Rangefinder".
+- 4.3.0.3 adds **Waypoint Packs** as a Wayfinder sub-feature: curated place packs that can be previewed, prioritized, annotated, attached to existing notes, and batch-added as normal Wayfinder notes. National Parks is the first bundled pack, with pack-aware markers/labels, note metadata, priority badges/filter/sort, and export grouping. Pack markers do not recolor state progress. The Packs button only appears in Wayfinder, uses `__CIRCLE_BADGE_PLUS`, and opens an inset panel over Notes instead of a modal.
 - 4.2.0 adds **Rangefinder Mode**: a map mode (Shortcut Mode key `5`, `__TARGET` button) that picks two note pins as Start/End, draws concentric planning rings, and shows straight-line distance + estimated time. Drive/Plane travel modes, per-map settings (`settings.ringByLayer.{us,world}`), configurable average speed (Drive 30–120, Plane 120–760 mph), fill/clip/unit/time toggles, and US + World support. Internal symbols use the `ring*` prefix.
 - Latest public releases (newest first): 4.2.0 "Rangefinder", 4.1.0 "Wayfinder", 4.0.0 "Trail Atlas", 3.3.0 "Basecamp Notes". Full notes in the in-app CHANGELOG; full history table in `README.md`.
 - Plan docs live in `context/` only while their line is in flight, then are deleted on ship. Active: `context/WISH-004-national-park-overlay-PLAN.md` (revised Waypoint Packs plan). Shipped plans (Rangefinder 4.2.0, Wayfinder 4.1.0, World map 4.0.0) were removed after release.
@@ -260,8 +260,11 @@ Important invariants:
 ## Current Surface
 
 - Map: SVG state/territory map + world map; layer toggle (`#mapLayerToggleBtn`); scroll/fit modes, pan/zoom persistence, labels, clustered note pins, Match Notes filtering. Wayfinder pill rides inside the layer toggle when active.
-- Waypoint Packs: Wayfinder-only Packs button (`__CIRCLE_BADGE_PLUS`) opens an
-  inset panel over Notes, with National Parks bundled as the first pack.
+- Waypoint Packs: Wayfinder-only Packs button `#notesAddWaypointsBtn`
+  (`__CIRCLE_BADGE_PLUS`) opens an inset panel over Notes, with National Parks
+  bundled as the first pack. Notes header Wayfinder button is
+  `#notesActivateWayfinderBtn`; both notes-header Wayfinder controls have teal
+  outlines.
   Available Packs cards, visual icon choices, overlay and label icon controls,
   preview Include/Priority/Note cards, batch add into Wayfinder, attach existing
   notes, priority filter/sort, pack-aware markers, and safe remove behavior.

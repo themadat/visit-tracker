@@ -68,8 +68,8 @@ keys, and no park boundary geometry.
     visited notes stay as normal linked/detached notes per confirmation copy.
   - Overlay uses `__SQUARE_3_LAYERS_3D` when off and
     `__SQUARE_3_LAYERS_3D_TOP_FILLED` when on.
-  - Label UI reuses the map label button style with `Off`, `Abbr`, `Name`, and
-    `Both`. National Parks default to labels off.
+  - Label UI reuses the map label button style with `Off`, `Abbr`, and `Name`.
+    National Parks default to labels off.
 - Add exports:
   - JSON includes normalized note metadata and priority naturally.
   - Markdown/RTF/Text add Waypoint Packs sections when linked pack notes exist.
@@ -168,7 +168,7 @@ multi-pack active state without crowding Wayfinder.
   color changes.
 - Remove the pack; confirm untouched generated notes are removed and
   edited/visited notes are preserved.
-- Verify label modes: Off, Abbr, Name, Both.
+- Verify label modes: Off, Abbr, Name.
 - Verify priority search/filter/sort/export behavior.
 - Verify JSON export/import round-trips pack metadata and priority.
 - Smoke US/World switching, normal note pins, Wayfinder, Rangefinder, and
