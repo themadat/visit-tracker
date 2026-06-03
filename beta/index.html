@@ -1879,8 +1879,8 @@
     }
 
     .suggested-set-marker .set-marker-priority-bg {
-      fill: var(--surface);
-      stroke: var(--marker-color, var(--accent));
+      fill: var(--priority-color, var(--surface));
+      stroke: var(--surface);
       stroke-width: 1.4;
     }
 
@@ -1888,6 +1888,8 @@
       font-size: 6px;
       dominant-baseline: central;
       stroke-width: 2px;
+      fill: #111827;
+      stroke: transparent;
     }
 
     .map-ring-overlay {
@@ -4362,6 +4364,12 @@
       color: var(--muted);
       font-size: .64rem;
       letter-spacing: .01em;
+    }
+
+    .priority-badge {
+      border-color: color-mix(in srgb, var(--priority-color, var(--line)) 72%, var(--line));
+      background: color-mix(in srgb, var(--priority-color, var(--surface-2)) 28%, var(--surface));
+      color: #111827;
     }
 
     #notesPanel {
@@ -7215,7 +7223,9 @@
       box-shadow: 0 1px 4px rgba(16, 24, 40, .24);
     }
 
-    [data-theme="dark"] .visit-priority-pill {
+    [data-theme="dark"] .visit-priority-pill,
+    [data-theme="dark"] .priority-badge,
+    [data-theme="dark"] .suggested-set-marker .set-marker-priority {
       color: #07111f;
     }
 
@@ -14811,7 +14821,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.3";
+    const APP_VERSION = "4.3.0.4";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -14854,6 +14864,12 @@
     };
     const LOCATION_PROJECTION_BOX_OVERRIDES = {
       AK: { x: 31, y: 462, width: 176, height: 103 }
+    };
+    const LOCATION_PROJECTION_FRAME_OVERRIDES = {
+      AK: [
+        { test: coords => Number(coords?.lng) <= -164, bounds: [51.2, 55.8, -179.2, -164.0], box: { x: 31, y: 526, width: 102, height: 30 } },
+        { bounds: [54.0, 71.4, -168.2, -129.9], box: { x: 86, y: 462, width: 121, height: 78 } }
+      ]
     };
     const MAP_LABEL_OVERRIDES = {
       // dx/dy nudge bbox center (SVG units). x/y overrides to absolute position.
@@ -16125,6 +16141,14 @@
     const SUGGESTED_SET_LABEL_MODES = ["none", "abbr", "name"];
     const SUGGESTED_SET_DEFAULT_ICON = "tree";
     const SUGGESTED_SET_DEFAULT_ID = "national-parks";
+    const WAYFINDER_TEAL = "#14b8a6";
+    const NOTE_PRIORITY_COLORS = {
+      "1": "#16a34a",
+      "2": "#84cc16",
+      "3": "#eab308",
+      "4": "#f59e0b",
+      "5": "#f97316"
+    };
     const SUGGESTED_NATIONAL_PARKS = [
       ["ACAD", "Acadia", "ME", ["ME"], 44.4093, -68.2475],
       ["NPSA", "American Samoa", "AS", ["AS"], -14.2583, -170.6833],
@@ -16190,13 +16214,154 @@
       ["YOSE", "Yosemite", "CA", ["CA"], 37.8651, -119.5383],
       ["ZION", "Zion", "UT", ["UT"], 37.2982, -113.0263]
     ];
+    const SUGGESTED_NATIONAL_MONUMENTS = [
+      ["AI", "Admiralty Island", "AK", ["AK"], 57.64, -134.35, "December 1, 1978", "Occupying most of Admiralty Island, the 7th largest in the United States, this monument is part of Tongass National Forest in Southeast Alaska. The monument protects the densest known population of brown bear on Earth, along with habitat for the Sitka black-tailed deer. Most of the monument has been designated as the Kootznoowoo Wilderness, restricting future development.", "Admiralty_Island_National_Monument"],
+      ["ABG", "African Burial Ground", "NY", ["NY"], 40.7144, -74.0042, "February 27, 2006", "Re-discovered in 1991 during excavations for a new federal building, this former burial ground that contains the remains of more than 400 free and enslaved Africans buried during the 17th and 18th centuries was designated a National Historic Landmark memorial in 1993.", "African_Burial_Ground_National_Monument"],
+      ["AFB", "Agate Fossil Beds", "NE", ["NE"], 42.416, -103.728, "June 14, 1997", "The valley of the Niobrara River is known for its large number of well-preserved Miocene mammal fossils which date from about 20 million years ago.", "Agate_Fossil_Beds_National_Monument"],
+      ["AF", "Agua Fria", "AZ", ["AZ"], 34.15, -112.08, "January 11, 2000", "Located around the canyon of the Agua Fria River, it contains more than 450 distinct Native American structures, including large pueblos with more than 100 rooms.", "Agua_Fria_National_Monument"],
+      ["AIWWI", "Aleutian Islands World War II", "AK", ["AK"], 52.87, -173.16, "December 5, 2008", "During World War II Japan briefly occupied Attu Island and Kiska Island in the Aleutian chain. The monument within the Alaska Maritime National Wildlife Refuge includes the site of the 19-day battle to reclaim Attu, artifacts of the occupation at Kiska, and the crash site of a U.S. B-24D Liberator on Atka Island. Originally designated as part of World War II Valor in the Pacific National Monument, which was divided and renamed March 12, 2019.", "Aleutian_Islands_World_War_II_National_Monument"],
+      ["AFQ", "Alibates Flint Quarries", "TX", ["TX"], 35.57, -101.67, "August 21, 1965", "Alibates was the quarry site for high-quality, rainbow-hued flint that was distributed throughout the Great Plains in pre-Columbian times. It is jointly operated with the Lake Meredith National Recreation Area and includes the ruins of several Plains Village Indian dwellings.", "Alibates_Flint_Quarries_National_Monument"],
+      ["ANIA", "Aniakchak", "AK", ["AK"], 56.9, -158.15, "December 1, 1978", "Mount Aniakchak, which erupted 3,500 years ago, and the surrounding region make up one of the least visited NPS sites. Surprise Lake, within the volcano's 6-mile (9.7 km) wide, 2,500-foot (760 m) deep caldera, is the source of the Aniakchak River.", "Aniakchak_National_Monument_and_Preserve"],
+      ["AKA", "Avi Kwa Ame", "NV", ["NV"], 35.4, -115.0, "March 21, 2023", "Spirit Mountain (Avi Kwa Ame) is the site of creation for the Yuman tribes, who hold the area sacred. Consisting of the Eldorado Valley, Piute Valley, and surrounding mountain ranges of the Mojave Desert, the area is home to expansive Joshua tree forests and provides important habitat for species such as the desert bighorn sheep, desert tortoise and Gila monster.", "Avi_Kwa_Ame_National_Monument"],
+      ["AR", "Aztec Ruins", "NM", ["NM"], 36.83, -107.0, "January 24, 1923", "The ruins contain Pueblo structures from the 11th to 13th centuries with more than 400 masonry rooms which were misidentified by early American settlers as Aztec. It has been included in the Chaco Culture World Heritage Site, which also includes Chaco Culture National Historical Park.", "Aztec_Ruins_National_Monument"],
+      ["BNIK", "Baaj Nwaavjo I'tah Kukveni – Ancestral Footprints of the Grand Canyon", "AZ", ["AZ"], 35.54, -112.0, "August 8, 2023", "This monument protects land on both sides of Grand Canyon National Park that is significant to several tribal nations. Includes part of Kaibab National Forest", "Baaj_Nwaavjo_I%27tah_Kukveni_%E2%80%93_Ancestral_Footprints_of_the_Grand_Canyon_National_Monument"],
+      ["BAND", "Bandelier", "NM", ["NM"], 35.78, -106.27, "February 11, 1916", "Frijoles Canyon contains Ancestral Pueblo homes, kivas, rock paintings and petroglyphs. The Pueblo structures made of volcanic tuff date to 1150 AD, with other artifacts more than 11,000 years old.", "Bandelier_National_Monument"],
+      ["BR", "Basin and Range", "NV", ["NV"], 37.9, -115.4, "July 10, 2015", "The remote Mount Irish, Seaman, and Golden Gate Ranges surround the Garden and Coal Valleys and White River Narrows and are home to many desert species and 4,000-year-old rock art.", "Basin_and_Range_National_Monument"],
+      ["BE", "Bears Ears", "UT", ["UT"], 37.63, -109.86, "December 28, 2016", "The Bears Ears are a pair of buttes that rise above sandstone canyons and mesas. Other points of geologic interest include the twin Six Shooter dome-shaped peaks, striated sandstone pinnacles, and natural arches. The wider region has tens of thousands of archaeological sites including rock art, ancient cliff dwellings, and ceremonial kivas. Part is in Manti–La Sal National Forest", "Bears_Ears_National_Monument"],
+      ["BPWE", "Belmont–Paul Women's Equality", "DC", ["DC"], 38.89, -77.0, "April 12, 2016", "Home of the National Woman's Party since 1929, this Adam Federal style house near the U.S. Capitol was the home where party leader Alice Paul and others lived and worked.", "Belmont%E2%80%93Paul_Women%27s_Equality_National_Monument"],
+      ["BSM", "Berryessa Snow Mountain", "CA", ["CA"], 39.22, -122.77, "July 10, 2015", "Less than 100 miles (160 km) from the San Francisco Bay Area, Berryessa Snow Mountain protects part of the California Coast Range, one of the most biodiverse regions in the state, home to elk, osprey, river otters, half the state's dragonfly species, and California's second-largest population of wintering bald eagles. Part is in Mendocino National Forest.", "Berryessa_Snow_Mountain_National_Monument"],
+      ["BCR", "Birmingham Civil Rights", "AL", ["AL"], 33.513, -86.815, "January 12, 2017", "This site preserves the A. G. Gaston Motel, which was bombed by the KKK after Martin Luther King Jr. and Birmingham campaign leaders had stayed there, inciting the Birmingham riot of 1963.", "Birmingham_Civil_Rights_National_Monument"],
+      ["BTW", "Booker T. Washington", "VA", ["VA"], 37.123, -79.766, "April 2, 1956", "This preserves portions of the 207-acre (0.84 km) tobacco farm on which educator and civil rights leader Booker T. Washington was born into slavery on April 5, 1856. The site contains replicas of the house Washington was born in, a smokehouse, a blacksmith shed, a tobacco barn, and a horse barn.", "Booker_T._Washington_National_Monument"],
+      ["BC", "Browns Canyon", "CO", ["CO"], 38.615, -106.059, "February 19, 2015", "Steep granite cliffs and colorful rock outcroppings overlook the Arkansas River, where visitors can go whitewater rafting. Prehistoric campsites and shelters date back 11,000 years, while sites from gold mining remain from the late 1800s. About half is in San Isabel National Forest.", "Browns_Canyon_National_Monument"],
+      ["BIR", "Buck Island Reef", "VI", ["VI"], 17.79, -64.62, "December 28, 1961", "Most of this monument is underwater, containing a large elkhorn coral barrier reef that provides cover for a great variety of reef fish, sea turtles and least terns. It is based around Buck Island, an uninhabited 176-acre (0.71 km) island.", "Buck_Island_Reef_National_Monument"],
+      ["CABR", "Cabrillo", "CA", ["CA"], 32.67, -117.24, "October 14, 1913", "This monument commemorates the landing of Juan Rodríguez Cabrillo at San Diego Bay on September 28, 1542, which was the first European expedition to what later became the West Coast of the U.S. The monument includes a statue of Cabrillo, a rocky intertidal zone, and 20th-century coastal artillery batteries built to protect the harbor of San Diego from enemy warships.", "Cabrillo_National_Monument"],
+      ["CC", "California Coastal", "CA", ["CA"], 36.89, -122.18, "January 11, 2000", "This monument ensures the protection of all of the more than 20,000 islets, reefs and rock outcroppings from the coast of California to a distance of 12 nautical miles (22 km), along the entire 840-mile (1,350 km) long California coastline.", "California_Coastal_National_Monument"],
+      ["CHCD", "Camp Hale — Continental Divide", "CO", ["CO"], 39.44, -106.37, "October 12, 2022", "Soldiers in the U.S. Army's 10th Mountain Division used Camp Hale to learn skiing, climbing, and snowshoeing to fight in the Italian Alps during World War II. Part of White River National Forest.", "Camp_Hale"],
+      ["CN", "Camp Nelson", "KY", ["KY"], 37.78, -84.6, "October 26, 2018", "Established in 1863 as a depot for the Union Army during the Civil War, Camp Nelson became a large recruitment center for African American Union soldiers: a key site of emancipation for those soldiers and a refugee camp for their families.", "Camp_Nelson_Heritage_National_Monument"],
+      ["CC2", "Canyon de Chelly", "AZ", ["AZ"], 36.13, -109.47, "April 1, 1931", "Located within the Navajo Nation, it preserves the valleys and rims of Canyon de Chelly, Canyon del Muerto, and Monument Canyon. Several Ancestral Puebloan cliff dwellings are built into the canyon walls.", "Canyon_de_Chelly_National_Monument"],
+      ["CA", "Canyons of the Ancients", "CO", ["CO"], 37.37, -109.0, "June 9, 2000", "Surrounding Hovenweep National Monument, it preserves and protects more than 6,000 archeological sites, the largest concentration in the U.S. These include Lowry Pueblo, dating to 1103 AD, and Painted Hand Pueblo built by the Ancestral Puebloans", "Canyons_of_the_Ancients_National_Monument"],
+      ["CK", "Cape Krusenstern", "AK", ["AK"], 67.41, -163.5, "December 1, 1978", "Co-located with the NHLD Cape Krusenstern Archeological District, this coastal plain contains large lagoons and rolling hills of limestone. The bluffs record thousands of years of change in the shorelines of the Chukchi Sea, as well as evidence of some 9,000 years of human habitation.", "Cape_Krusenstern_National_Monument"],
+      ["CV", "Capulin Volcano", "NM", ["NM"], 36.79, -103.96, "August 9, 1916", "Capulin is an extinct cinder cone volcano that is approximately 59,000 years old and part of the Raton-Clayton Volcanic Field. The crater is 400 feet (120 m) deep and its rim is more than 1,500 feet (460 m) in diameter.", "Capulin_Volcano_National_Monument"],
+      ["CFIBS", "Carlisle Federal Indian Boarding School", "PA", ["PA"], 40.21, -77.18, "December 9, 2024", "The United States Indian Industrial School (better known as the Carlisle Indian Industrial School) was the flagship Indian boarding school in the United States from its founding in 1879 through 1918, serving as an important symbol of efforts to culturally assimilate Native Americans by the federal government.", "Carlisle_Indian_Industrial_School"],
+      ["CP", "Carrizo Plain", "CA", ["CA"], 35.16, -119.75, "January 12, 2001", "Carrizo Plain is the largest single native grassland remaining in California. It contains part of the San Andreas Fault and is surrounded by the Temblor Range and the Caliente Range. At the center of the plain is Soda Lake, which is near Painted Rock.", "Carrizo_Plain"],
+      ["CGR", "Casa Grande Ruins", "AZ", ["AZ"], 32.99, -111.54, "August 3, 1918", "This monument preserves a group of structures surrounded by a compound wall in the Gila Valley that were built in the early 13th century. They were inhabited by the Hohokam people until they were abandoned in the mid-15th century.", "Casa_Grande_Ruins_National_Monument"],
+      ["CS", "Cascade–Siskiyou", "OR", ["OR", "CA"], 42.08, -122.46, "June 9, 2000", "One of the most diverse ecosystems found in the Cascade Range, it has more than 100 dwelling and root-gathering sites belonging to the Modoc, Klamath, and Shasta tribes.", "Cascade%E2%80%93Siskiyou_National_Monument"],
+      ["CSM", "Castillo de San Marcos", "FL", ["FL"], 29.898, -81.311, "October 15, 1924", "This Spanish fort near St. Augustine, called Fort Marion when first protected, served for 205 years under four different flags. Built in 1672, it was involved in sieges with the British while under Spanish command, the American Revolution under Britain, the Civil War under the Confederacy, and the Seminole Wars and the Spanish–American War under the United States.", "Castillo_de_San_Marcos"],
+      ["CC3", "Castle Clinton", "NY", ["NY"], 40.7036, -74.0169, "August 12, 1946", "A circular sandstone fort built in 1811 at the southern tip of Manhattan to protect New York City from the British, Castle Clinton is now located in Battery Park. It later became a beer garden, a theater, the first immigration station (predating Ellis Island), a public aquarium, and a ticket office for the Statue of Liberty National Monument.", "Castle_Clinton"],
+      ["CM", "Castle Mountains", "CA", ["CA"], 35.25, -115.11, "February 12, 2016", "The Castle Mountains sit in the Mojave Desert between the Nevada state line and Mojave National Preserve. It protects desert grasslands home to Joshua tree forests, wildlife including golden eagles and bighorn sheep, and historic Native American sites.", "Castle_Mountains_National_Monument"],
+      ["CR", "Castner Range", "TX", ["TX"], 31.9, -106.5, "March 21, 2023", "This portion of the Franklin Mountains of west Texas's Chihuahuan Desert includes 41 archaeological sites that show evidence of human presence dating to 6000 BC. The site was used as a weapons testing range for Fort Bliss for 40 years and is still undergoing remediation of munitions. Castner Range is the only land conservation national monument within the Department of Defense.", "Castner_Range_National_Monument"],
+      ["CB", "Cedar Breaks", "UT", ["UT"], 37.63, -112.85, "August 22, 1933", "A natural amphitheater canyon similar to formations at Bryce Canyon National Park, it stretches over 3 miles (4.8 km) and is more than 2,000 feet (610 m) deep.", "Cedar_Breaks_National_Monument"],
+      ["CEC", "César E. Chávez", "CA", ["CA"], 35.2273, -118.5614, "October 8, 2012", "This monument commemorates the life and work of labor leader and civil rights activist Cesar Chavez. Called La Paz, the site was Chavez's home for about 20 years, and his gravesite is on the premises. It is also the location of the headquarters of United Farm Workers, which was founded by Chavez.", "C%C3%A9sar_E._Ch%C3%A1vez_National_Monument"],
+      ["CYBS", "Charles Young Buffalo Soldiers", "OH", ["OH"], 39.7072, -83.8903, "March 25, 2013", "Charles Young was the first African American to reach the rank of colonel in the U.S. Army. He was also the first national park superintendent, of Sequoia and General Grant National Parks, and a professor at Wilberforce University. His home at Wilberforce is a museum commemorating his life.", "Charles_Young_Buffalo_Soldiers_National_Monument"],
+      ["CR2", "Chimney Rock", "CO", ["CO"], 37.1917, -107.3064, "September 21, 2012", "The jewel of San Juan National Forest, the site was once home to the ancestors of the modern Pueblos. Roughly 1,000 years ago, the Ancestral Pueblo People built more than 200 homes and ceremonial buildings high above the valley floor.", "Chimney_Rock_National_Monument"],
+      ["CHIR", "Chiricahua", "AZ", ["AZ"], 32.02, -109.35, "April 18, 1924", "These pillars of rhyolite tuff are the eroded remains of an immense volcanic eruption that shook the region some 27 million years ago. It was called the Land of the Standing-Up Rocks by the Apache.", "Chiricahua_National_Monument"],
+      ["CHUC", "Chuckwalla", "CA", ["CA"], 33.6, -115.3, "January 14, 2025", "A sweeping desert landscape in Southern California where the Mojave, Sonoran, and Colorado deserts converge, preserving jagged canyon ranges, ancient tribal trails and rock art, WWII military-training sites, rare desert tortoises and bighorn sheep, and dramatic geology.", "Chuckwalla_National_Monument"],
+      ["COLO", "Colorado", "CO", ["CO"], 39.04, -108.69, "May 24, 1911", "Monument Canyon runs the width of the park and includes rock formations formed by erosion. The monument covers semi-desert land high on the Colorado Plateau and has a wide range of wildlife including pinyon pines, juniper trees, ravens, jays, desert bighorn sheep, and coyotes as well as a range of recreational activities.", "Colorado_National_Monument"],
+      ["CM2", "Craters of the Moon", "ID", ["ID"], 43.42, -113.52, "May 2, 1924", "One of the best preserved flood basalt areas in the continental U.S. contains three lava fields along the Great Rift of Idaho. Among the volcanic cinder cones, lava tubes, and fissures created 15,000 to 2,000 years ago is the world's deepest open rift crack. The adjoining National Preserve protects an additional 410,000 acres.", "Craters_of_the_Moon_National_Monument_and_Preserve"],
+      ["DP", "Devils Postpile", "CA", ["CA"], 37.5, -119.08, "July 6, 1911", "Once part of Yosemite National Park, this monument is a dark cliff of columnar basalt created by a lava flow at least 100,000 years ago. It also has the 101-foot-high (31 m) Rainbow Falls.", "Devils_Postpile_National_Monument"],
+      ["DT", "Devils Tower", "WY", ["WY"], 44.59, -104.72, "September 24, 1906", "The tower is a monolithic igneous intrusion of volcanic neck rising dramatically 1,267 feet (386 m) above the surrounding terrain. Proclaimed by Theodore Roosevelt, this was the first national monument.", "Devils_Tower_National_Monument"],
+      ["DINO", "Dinosaur", "CO", ["CO", "UT"], 40.53, -108.98, "October 4, 1915", "This sandstone and conglomerate bed at the confluence of the Green and Yampa Rivers was formed in the Jurassic Period and contains fossils of dinosaurs including Allosaurus and various long-neck and long-tail sauropods.", "Dinosaur_National_Monument"],
+      ["EM", "Effigy Mounds", "IA", ["IA"], 43.09, -91.19, "October 25, 1949", "This monument preserves three prehistoric sites with 206 prehistoric mounds, notable for 31 unusual mounds in the shape of mammals, birds, or reptiles.", "Effigy_Mounds_National_Monument"],
+      ["EM2", "El Malpais", "NM", ["NM"], 34.88, -108.05, "December 31, 1987", "An extremely rough, rugged lava flow covers much of the park, filling a large basin rimmed by higher sandstone that forms large, wind-carved bluffs. It has lava tube caves that stretch over 17 miles (27 km) and the Cebolla Wilderness, a forested rimrock area that features prehistoric rock art and the Zuni-Acoma Trail, an ancient Pueblo trade route.", "El_Malpais_National_Monument"],
+      ["EM3", "El Morro", "NM", ["NM"], 35.04, -108.35, "December 8, 1906", "On the site of an ancient east–west trail is a great sandstone promontory with a pool of water at its base. There are inscriptions from the 17th century as well as older petroglyphs made by the Ancestral Puebloans.", "El_Morro_National_Monument"],
+      ["ETMTM", "Emmett Till and Mamie Till-Mobley", "IL", ["IL", "MS"], 33.86, -90.27, "July 25, 2023", "Three sites honor the memory of Emmett Till, an African American boy who was abducted, tortured, and lynched in Mississippi in 1955 at the age of 14, after being accused of offending a white woman, Carolyn Bryant, in her family's grocery store. The Roberts Temple Church of God in Christ, Bronzeville, Chicago, Illinois, was the site of Till's memorial service in September 1955, hosted by his mother Mamie Till. Graball Landing on the Tallahatchie River in Mississippi is believed to be where Till's body was retrieved from the river and the Tallahatchie County Second District Courthouse in Sumner was where the trial of and acquittal of Roy Bryant and J. W. Milam for Till's murder took place.", "Emmett_Till_and_Mamie_Till-Mobley_National_Monument"],
+      ["FFB", "Florissant Fossil Beds", "CO", ["CO"], 38.92, -105.27, "August 20, 1969", "Huge petrified redwoods and incredibly detailed fossils of ancient insects and plants reveal a very different landscape in Colorado of almost 35 million years ago in the Eocene age.", "Florissant_Fossil_Beds_National_Monument"],
+      ["FF", "Fort Frederica", "GA", ["GA"], 31.224, -81.393, "May 26, 1936", "Built by James Oglethorpe between 1736 and 1748, these remnants of a fort and town protected the southern boundary of the British colony of Georgia from Spanish raids. It was a few miles from the site of the Battle of Bloody Marsh.", "Fort_Frederica_National_Monument"],
+      ["FM", "Fort Matanzas", "FL", ["FL"], 29.715, -81.239, "October 15, 1924", "This 1740 Spanish fort guarded Matanzas Inlet, the southern mouth of the Matanzas River, which allowed access to St. Augustine. The monument is managed in conjunction with Castillo de San Marcos National Monument and also protects 100 acres (0.40 km) of salt marsh and barrier islands.", "Fort_Matanzas_National_Monument"],
+      ["FM2", "Fort McHenry", "MD", ["MD"], 39.263, -76.579, "March 3, 1925", "The only place designated a national monument and historic shrine, Fort McHenry is a star-shaped fort best known for its role in the War of 1812 when it successfully defended Baltimore Harbor from an attack by the British navy. The events inspired Francis Scott Key to write \"The Star-Spangled Banner\".", "Fort_McHenry"],
+      ["FM3", "Fort Monroe", "VA", ["VA"], 37.004, -76.308, "November 1, 2011", "The six-sided star fort spans the American story from the 17th to the 21st centuries: Captain John Smith's journeys, a haven of freedom for the enslaved during the Civil War, and a bastion of defense for the Chesapeake Bay.", "Fort_Monroe"],
+      ["FO", "Fort Ord", "CA", ["CA"], 36.63917, -121.73528, "April 20, 2012", "Fort Ord was an Army post from 1917 to 1994. It now has recreational trails and various wildlife in grassland, chaparral, and woodland ecosystems.", "Fort_Ord_National_Monument"],
+      ["FP", "Fort Pulaski", "GA", ["GA"], 32.027, -80.89, "October 15, 1924", "In 1862 during the American Civil War, the Union Army successfully tested a rifled cannon against the defending Confederates, rendering brick fortifications obsolete. Fort Pulaski was also used as a prisoner-of-war camp during the war. The national monument includes most of Cockspur Island (containing the fort) and all of adjacent McQueens Island.", "Fort_Pulaski_National_Monument"],
+      ["FS", "Fort Stanwix", "NY", ["NY"], 43.218, -75.459, "August 21, 1935", "Fort Stanwix guarded a strategic 18th century portage known as the Oneida Carrying Place. It was built during the French and Indian War (1754–1763). The fort successfully resisted the 1777 siege by a British invasion army during the Saratoga campaign of the American Revolutionary War. Erased by the development of Rome, New York, it was rebuilt as a national monument in the late 1970s.", "Fort_Stanwix"],
+      ["FU", "Fort Union", "NM", ["NM"], 35.925, -105.009, "April 5, 1956", "A frontier military post and supply depot in the late 19th century, it sat at the intersection of the Mountain and Cimarron Branches of the old Santa Fe Trail.", "Fort_Union_National_Monument"],
+      ["FB", "Fossil Butte", "WY", ["WY"], 41.86, -110.77, "October 23, 1972", "Fossil Butte preserves the 50-million-year-old Green River lake beds, the best paleontological record of tertiary aquatic communities in North America. Fossils including fish, alligators, bats, turtles, dog-sized horses, insects, and many other species of plants and animals suggest that the region was a low, subtropical, freshwater basin when the sediments accumulated, over about a 2-million-year period.", "Fossil_Butte_National_Monument"],
+      ["FP2", "Frances Perkins", "ME", ["ME"], 44.005, -69.556, "December 16, 2024", "Frances Perkins became the first female cabinet member when appointed Secretary of Labor in 1933. Serving until 1945, Perkins remains the longest-serving Secretary of Labor and longest-serving female cabinet member in United States history. Perkins lived at the site as a child as well as intermittently throughout her life.", "Frances_Perkins_National_Monument"],
+      ["FR", "Freedom Riders", "AL", ["AL"], 33.658, -85.831, "January 12, 2017", "Preserves two sites in and near Anniston, Alabama during the civil rights movement—a former Greyhound bus station in the town where Freedom Riders were attacked by a racist mob and the site outside town where their bus was burned.", "Freedom_Riders_National_Monument"],
+      ["GWB", "George Washington Birthplace", "VA", ["VA"], 38.1861, -76.9305, "January 23, 1930", "Representative of 18th-century Virginia tobacco farms, this site is the birthplace and boyhood environment of George Washington. The entrance includes a Memorial Shaft obelisk of Vermont marble that is a one-tenth scale replica of the Washington Monument in Washington, D.C. Also within the monument are the historic birthplace home area, a kitchen house, and the Washington family burial ground.", "George_Washington_Birthplace_National_Monument"],
+      ["GWC", "George Washington Carver", "MO", ["MO"], 36.986, -94.354, "July 14, 1943", "The site preserves Moses Carver's farm, which was the boyhood home of George Washington Carver, a scientist and educator who developed many uses for peanuts. It was the first national monument dedicated to an African American and first to a non-president.", "George_Washington_Carver_National_Monument"],
+      ["GS", "Giant Sequoia", "CA", ["CA"], 36.04, -118.5, "April 15, 2000", "The monument includes 38 of the 39 giant sequoia groves in the Sequoia National Forest, amounting to about half of the sequoia groves currently in existence. This includes one of the ten largest giant sequoias, the Boole Tree. Its two parts are around Kings Canyon and Sequoia National Parks in Sequoia National Forest.", "Giant_Sequoia_National_Monument"],
+      ["GCD", "Gila Cliff Dwellings", "NM", ["NM"], 33.24, -108.28, "November 16, 1907", "Located within the Gila Wilderness, the people of the Mogollon culture lived in these cliff dwellings 180 feet (55 m) above the canyon floor from the 1280s through the early 14th century. They lived in five caves with 46 rooms.", "Gila_Cliff_Dwellings_National_Monument"],
+      ["GB", "Gold Butte", "NV", ["NV"], 36.281, -114.201, "December 28, 2016", "This Mojave Desert landscape of dramatic red sandstone and canyons has forested mountains, ancient rock art, rock shelters, and a mining ghost town. It is an important habitat of the Mojave Desert tortoise.", "Gold_Butte_National_Monument"],
+      ["GI", "Governors Island", "NY", ["NY"], 40.691, -74.016, "January 19, 2001", "From 1783 to 1966, Governors Island in New York Harbor was an Army post, and from 1966 to 1996 it was a Coast Guard installation. Located on Governors Island are Castle Williams and Fort Jay, which served as outposts to protect New York City from sea attack.", "Governors_Island_National_Monument"],
+      ["GCP", "Grand Canyon–Parashant", "AZ", ["AZ"], 36.4, -113.7, "January 11, 2000", "Located on the northern rim of the Grand Canyon on the Shivwits Plateau, this diverse landscape includes geologic resources including millennia of eroded formations forming canyons, cliffs and buttes; abundant fossils of ancient marine invertebrates; and desert volcanic peaks. Archaeological sites preserve artifacts of the Ancestral Puebloans, while abandoned ranches and mills were left behind by early pioneers. A fifth of the monument is also within Lake Mead National Recreation Area; Grand Canyon-Parashant is not considered an official unit of the park system. There are no paved roads or visitor services but offroad vehicles can reach scenic viewpoints.", "Grand_Canyon%E2%80%93Parashant_National_Monument"],
+      ["GP", "Grand Portage", "MN", ["MN"], 47.96, -89.68, "January 27, 1960", "The Grand Portage itself is an 8.5-mile (13.7 km) footpath which bypasses a set of waterfalls on the Pigeon River near Lake Superior. The region was a vital trade route and center of fur trade activity as well as an Anishinaabeg Ojibwe heritage site.", "Grand_Portage_National_Monument"],
+      ["GSE", "Grand Staircase–Escalante", "UT", ["UT"], 37.4, -111.68, "September 18, 1996", "The Grand Staircase, the Kaiparowits Plateau, and the Canyons of the Escalante make up the three areas of the monument, home to unique dinosaur fossils, sandstone arches, and the sequence of layers of rock units spanning 400 million years. It is notable for its paleontological finds and geology, and it was the first monument to be maintained by the Bureau of Land Management.", "Grand_Staircase%E2%80%93Escalante_National_Monument"],
+      ["HFB", "Hagerman Fossil Beds", "ID", ["ID"], 42.79, -114.95, "November 18, 1988", "This monument contains the largest concentration of Hagerman horse fossils in North America. It protects the world's richest known fossil deposits from the late Pliocene epoch, 3.5 million years ago. These plants and animals represent the last glimpse of time that existed before the Ice Age, and the earliest appearances of modern flora and fauna.", "Hagerman_Fossil_Beds_National_Monument"],
+      ["HR", "Hanford Reach", "WA", ["WA"], 46.48, -119.53, "June 8, 2000", "Created from what used to be the security buffer surrounding the Hanford Nuclear Reservation, this area has been untouched by development or agriculture since 1943. The area is part of the Columbia River Plateau, formed by basalt lava flows and water erosion, and is named after the Hanford Reach, the last free flowing section of the Columbia River.", "Hanford_Reach_National_Monument"],
+      ["HTUR", "Harriet Tubman Underground Railroad", "MD", ["MD"], 38.4483, -76.1387, "March 25, 2013", "Harriet Tubman was a famed conductor on the Underground Railroad, leading dozens of slaves to freedom. This monument includes sites relating to Tubman's life, including the slave-built Stewart's Canal and the home of Jacob Jackson. The areas within the national monument that are managed by the NPS have been redesignated as a National Historical Park (NHP), and the FWS lands are in Blackwater National Wildlife Refuge.", "Harriet_Tubman_Underground_Railroad_National_Monument"],
+      ["HP", "Hohokam Pima", "AZ", ["AZ"], 33.19, -111.91, "October 21, 1972", "Hohokam Pima is part of the Gila River Indian Community and not open to the public. The monument includes the site of the Snaketown settlement, archeological remains of the Hohokam culture, which lived in the area until 1200. Excavations of pit houses, fields, and irrigation canals were refilled in the 1960s, leaving nothing above ground.", "Hohokam_Pima_National_Monument"],
+      ["HOVE", "Hovenweep", "CO", ["CO", "UT"], 37.38, -109.08, "March 2, 1923", "Hovenweep contains six clusters of Native American ruins. Holly Canyon, Hackberry Canyon, Cutthroat Castle and Goodman Point are in Colorado and Square Tower and Cajon are in Utah. Ancestral Puebloans lived in the Hovenweep area from 1150 to 1350.", "Hovenweep_National_Monument"],
+      ["IF", "Ironwood Forest", "AZ", ["AZ"], 32.46, -111.57, "June 9, 2000", "Located within the Sonoran Desert, significant concentrations of ironwood (Olneya tesota) trees and two endangered animal and plant species are found within the monument. More than 200 Hohokam and Paleoindian archeological sites have been identified from between 600 and 1450 AD", "Ironwood_Forest_National_Monument"],
+      ["JC", "Jewel Cave", "SD", ["SD"], 43.73, -103.83, "February 7, 1908", "Jewel Cave is the third longest cave in the world, with more than 215 miles (346 km) of mapped passageways beneath the Black Hills of South Dakota. The entrance was discovered by miners in 1900 and was named for its calcite crystals.", "Jewel_Cave_National_Monument"],
+      ["JDFB", "John Day Fossil Beds", "OR", ["OR"], 44.67, -120.05, "October 26, 1974", "Located within the John Day River Basin, the Fossil Beds have a well-preserved, complete record of fossil plants and animals from more than 40 of the 65 million years of the Cenozoic Era. The monument is divided into three units: Painted Hills, named for its delicately colored stratifications; Sheep Rock; and Clarno. Blue Basin near Sheep Rock is a volcanic ash bowl transformed into claystone by eons of erosion, colored pastel blue by minerals.", "John_Day_Fossil_Beds_National_Monument"],
+      ["JURA", "Jurassic", "UT", ["UT"], 39.32, -110.69, "March 12, 2019", "More than 12,000 bones from at least 74 dinosaurs have been found at the Cleveland-Lloyd Dinosaur Quarry so far, making it the paleontological site with the greatest concentration of bones from the Jurassic period. The bones come from a variety of mostly carnivorous species (more than half Allosaurus) and it is unknown why they are mixed together.", "Jurassic_National_Monument"],
+      ["KKTR", "Kasha-Katuwe Tent Rocks", "NM", ["NM"], 35.67, -106.42, "January 17, 2001", "Kasha-Katuwe is known for its geology of layers of volcanic rock and ash deposited by a volcanic explosion. Over time, weathering and erosion of these layers has created canyons and tent rocks. The tent rocks themselves are cones of soft pumice and tuff beneath harder caprocks.", "Kasha-Katuwe_Tent_Rocks_National_Monument"],
+      ["KWW", "Katahdin Woods and Waters", "ME", ["ME"], 45.97, -68.62, "August 24, 2016", "Katahdin Woods and Waters National Monument protects mountains and wilderness in the North Maine Woods, including a section of the East Branch Penobscot River. It borders the eastern side of Baxter State Park.", "Katahdin_Woods_and_Waters_National_Monument"],
+      ["LB", "Lava Beds", "CA", ["CA"], 41.71, -121.51, "November 21, 1925", "This is the site of the largest concentration of lava tube caves in North America. It also includes Petroglyph Point, one of the largest panels of Native American rock art. The monument lies on the northeast flank of the Medicine Lake Volcano, the largest volcano in the Cascade Range.", "Lava_Beds_National_Monument"],
+      ["LBB", "Little Bighorn Battlefield", "MT", ["MT"], 45.57, -107.43, "July 1, 1940", "The 1876 Battle of the Little Bighorn between George Armstrong Custer's 7th Cavalry and a combined Lakota Sioux, Northern Cheyenne and Arapaho force led by Sitting Bull and Crazy Horse took place here.", "Little_Bighorn_Battlefield_National_Monument"],
+      ["MTM", "Marianas Trench Marine", "MP", ["MP", "GU"], 20.0, 145.0, "January 6, 2009", "This marine monument includes the waters and submerged lands of the three northernmost islands of the Mariana Archipelago, the submerged lands of 21 designated volcanic features, and the Mariana Trench, the deepest place on Earth.", "Marianas_Trench_Marine_National_Monument"],
+      ["MMEH", "Medgar and Myrlie Evers Home", "MS", ["MS"], 32.341, -90.213, "December 10, 2020", "Medgar Evers was a civil rights activist who served as a field secretary for the NAACP to end segregation and promote voting rights in Mississippi. He was assassinated outside his home in Jackson by a white supremacist in 1963. His wife Myrlie moved away but owned the home until 1993 and later served as chairwoman of the NAACP.", "Medgar_and_Myrlie_Evers_Home_National_Monument"],
+      ["MWDT", "Military Working Dog Teams", "TX", ["TX"], 29.39, -98.617, "October 28, 2013", "The memorial at Lackland Air Force Base, the home of the U.S. Department of Defense Military Working Dog Program, honors the efforts and sacrifices of military working dogs in the service of the United States.", "Military_Working_Dog_Teams_National_Monument"],
+      ["MSB", "Mill Springs Battlefield", "KY", ["KY"], 37.07, -84.74, "September 22, 2020", "The Battle of Mill Springs was fought at this site in January 1862 and was the first major victory for the Union Army. The one-day battle saw Union forces led by George Henry Thomas defeat Confederate regiments led by Felix Zollicoffer, who died in action. The site is now largely an open field with a visitor center adjacent to Mill Springs National Cemetery.", "Mill_Springs_Battlefield_National_Monument"],
+      ["MF", "Misty Fjords", "AK", ["AK"], 55.62, -130.61, "December 1, 1978", "Called The Yosemite of the North for its similar geology, the monument has widespread light-colored granite, about 50 to 70 million years old (Eocene Epoch to Cretaceous Period), that has been sculpted by glaciers that gouged deep U-shaped troughs. Mountain goats live in the higher elevations, while brown and black bear are also common. Part of Tongass National Forest.", "Misty_Fjords_National_Monument"],
+      ["MT", "Mojave Trails", "CA", ["CA"], 34.6, -116.0, "February 12, 2016", "The Mojave Trails National Monument includes several rugged mountain ranges, ancient lava flows at the Amboy Crater, and the Cadiz Dunes. Human features are Native American trading routes, World War II-era training camps, and an undeveloped segment of Route 66.", "Mojave_Trails_National_Monument"],
+      ["MC", "Montezuma Castle", "AZ", ["AZ"], 34.61, -111.84, "December 8, 1906", "Montezuma Castle features cliff dwellings built by the Pre-Columbian Sinagua people between 1100 and 1400 AD. The site's name is a misnomer as is it has no connection to Montezuma. However, some modern day native tribes that do have connections to the site include the Yavapai, Hopi, and Zuni. The monument also includes Montezuma Well, which has been used for irrigation since the 8th century.", "Montezuma_Castle_National_Monument"],
+      ["MSHV", "Mount St. Helens Volcanic", "WA", ["WA"], 46.23, -122.18, "August 27, 1982", "Following the 1980 eruption of the now-8,363-foot-tall (2,549 m) Mount St. Helens, the environment was left to respond naturally to the disturbance. The volcanic crater is surrounded by a pumice plain with deposits from the landslide, preserved wind-blown trees, and the Ape Cave lava tube. Part of Gifford Pinchot National Forest.", "Mount_St._Helens_National_Volcanic_Monument"],
+      ["MW", "Muir Woods", "CA", ["CA"], 37.89, -122.58, "January 9, 1908", "Part of the Golden Gate National Recreation Area, it protects one of the last old growth Coast redwood (Sequoia sempervirens) groves in the San Francisco Bay Area as well as one of the most easily accessed.", "Muir_Woods_National_Monument"],
+      ["NB", "Natural Bridges", "UT", ["UT"], 37.58, -110.0, "April 16, 1908", "Located at the junction of White Canyon and Armstrong Canyon, it is part of the Colorado River drainage. It features the second- and third-largest natural bridges in the western hemisphere, carved from the white Triassic sandstone of the Cedar Mesa Formation that gives White Canyon its name.", "Natural_Bridges_National_Monument"],
+      ["NAVA", "Navajo", "AZ", ["AZ"], 36.68, -110.53, "March 20, 1909", "This monument preserves three of the most intact cliff dwellings of the Ancestral Puebloan people. The monument is high on the Shonto plateau, overlooking the Tsegi Canyon system on the Navajo Nation in Northern Arizona.", "Navajo_National_Monument"],
+      ["NV", "Newberry Volcanic", "OR", ["OR"], 43.69, -121.25, "November 5, 1990", "This monument protects the area around the Newberry Volcano and its geologic features including Lava Butte and the Lava River Cave. The volcanic site in the Cascades is still geothermally active and includes lakes and ancient lava flow fields. Part of Deschutes National Forest.", "Newberry_National_Volcanic_Monument"],
+      ["NCSM", "Northeast Canyons and Seamounts Marine", "MA", ["MA"], 40.4, -68.0, "September 15, 2016", "The monument protects four underwater seamounts and three very deep canyons in the continental shelf 100 miles (160 km) off the coast of Massachusetts, home to deep-water corals, endangered whales, and migratory fish and birds.", "Northeast_Canyons_and_Seamounts_Marine_National_Monument"],
+      ["OC", "Oregon Caves", "OR", ["OR"], 42.1, -123.41, "July 12, 1909", "The monument is known for its marble caves, as well as for the Pleistocene jaguar and grizzly bear fossils found in the deeper caves. There are four primary buildings: The Oregon Caves Chateau, The Ranger Residence, The Chalet, and the old Dormitory.", "Oregon_Caves_National_Monument"],
+      ["OMDP", "Organ Mountains–Desert Peaks", "NM", ["NM"], 32.3, -106.55, "May 21, 2014", "The protected area includes five mountain ranges that rise above the Chihuahua Desert: Robledo Mountains, Sierra de las Uvas, Doña Ana Mountains, Organ Mountains and Potrillo Mountains. There are approximately 870 vascular plant species, and the area is popular for hiking and climbing.", "Organ_Mountains%E2%80%93Desert_Peaks_National_Monument"],
+      ["OPC", "Organ Pipe Cactus", "AZ", ["AZ"], 32.04, -112.86, "April 13, 1937", "This monument is the only place in the United States where the organ pipe cactus grows wild. There are many other types of cacti and desert flora native to the Sonoran Desert. The Bates Well Ranch and Dos Lomitas Ranch are also within the monument.", "Organ_Pipe_Cactus_National_Monument"],
+      ["PIHM", "Pacific Islands Heritage Marine", "HI", ["HI"], 16.75, -169.52, "January 6, 2009", "The marine monument consists of Baker Island, Howland Island, Jarvis Island, Johnston Atoll, Kingman Reef, Palmyra Atoll, and Wake Island, which are scattered across the Pacific Ocean southwest of Hawaii. It was expanded in 2014 to include the oceans 200 nmi (370 km) offshore, approximately a 16-fold increase in size, to conserve vast populations of unique corals, fish, marine mammals, birds, and plants.", "Pacific_Islands_Heritage_Marine_National_Monument"],
+      ["PNKM", "Papahānaumokuākea Marine", "HI", ["HI"], 25.7, -171.73, "June 15, 2006", "The marine monument consists of ocean waters and 10 islands and atolls of the Northwestern Hawaiian Islands including Midway Atoll. The monument was created in 2006 with 139,797 square miles (362,070 km), and its boundaries were expanded on August 26, 2016, more than quadrupling in size to be the largest protected area on Earth, almost as large as the Gulf of Mexico. The Northwestern Hawaiian Islands archipelago \"is the planet's largest seabird gathering site, with more than 14 million birds from 22 species, and is home to nearly all Laysan albatrosses and the remaining endangered Hawaiian monk seals.\" It was declared a World Heritage Site in 2010.", "Papah%C4%81naumoku%C4%81kea_Marine_National_Monument"],
+      ["PETR", "Petroglyph", "NM", ["NM"], 35.16, -106.76, "June 27, 1990", "This monument protects a variety of cultural and natural resources, including five volcanic cones, hundreds of archeological sites and an estimated 25,000 images carved by native peoples and early Spanish settlers. It lies on West Mesa, a volcanic basalt escarpment.", "Petroglyph_National_Monument"],
+      ["PS", "Pipe Spring", "AZ", ["AZ"], 36.86, -112.73, "May 31, 1923", "Rich with Native American, early explorer, and Mormon pioneer history, this site shows Ancestral Puebloans and Kaibab Paiute Indian and pioneer life in the Old West, including the cabin where explorer John Wesley Powell's survey crew stayed in 1871. The water of Pipe Spring, discovered in 1858, made it possible for plants, animals, and people to live in this dry desert region.", "Pipe_Spring_National_Monument"],
+      ["PIPE", "Pipestone", "MN", ["MN"], 44.01, -96.33, "August 25, 1937", "This monument preserves traditional catlinite quarries used to make ceremonial pipes, vitally important to traditional Plains Indian culture. The quarries are sacred to the Sioux and Lakota people and are historically neutral territory where enrolled citizens of all tribes can quarry the stone.", "Pipestone_National_Monument"],
+      ["PP", "Pompeys Pillar", "MT", ["MT"], 45.99, -108.001, "January 17, 2001", "Pompeys Pillar is a 150-foot (46 m) sandstone pillar from the late Cretaceous Hell Creek Formation next to the Yellowstone River. It has an abundance of Native American petroglyphs, as well as the signature of William Clark, who named the formation after Sacagawea's infant son.", "Pompeys_Pillar_National_Monument"],
+      ["PP2", "Poverty Point", "LA", ["LA"], 32.63, -91.41, "October 31, 1988", "Poverty Point is a prehistoric archeological site that dates from between 1650 and 700 BC and consisting of six earthen rings and seven mounds. The diameter of the outside ridge is 0.75 miles (1.21 km), and the largest mound rises 51 feet (16 m). Although an NPS unit, the monument is owned and operated by the state of Louisiana. It was declared a World Heritage Site in 2014.", "Poverty_Point_National_Monument"],
+      ["PT", "Prehistoric Trackways", "NM", ["NM"], 32.35, -106.9, "March 30, 2009", "Prehistoric Trackways contains fossilized footprints of numerous Paleozoic amphibians, reptiles, and insects, as well as fossilized plants and petrified wood dating back approximately 280 million years.", "Prehistoric_Trackways_National_Monument"],
+      ["PLSH", "President Lincoln and Soldiers’ Home", "DC", ["DC"], 38.9416, -77.0117, "July 7, 2000", "President Abraham Lincoln and his family resided seasonally on the grounds of the Armed Forces Retirement Home, which was founded in 1851 for homeless and disabled war veterans. The national monument and visitor center are preserved and operated by President Lincoln's Cottage at the Soldiers’ Home on behalf of the Armed Forces Retirement Home.", "President_Lincoln_and_Soldiers%E2%80%99_Home_National_Monument"],
+      ["RB", "Rainbow Bridge", "UT", ["UT"], 37.08, -110.96, "May 30, 1910", "Rainbow Bridge is one of the world's largest natural bridges. It stands 290 feet (88 m) tall and spans 275 feet (84 m) wide; the top of the bridge is 42 feet (13 m) thick and 33 feet (10 m) wide. It was made from sandstone formed during the Triassic and the Jurassic periods.", "Rainbow_Bridge_National_Monument"],
+      ["ROGN", "Río Grande del Norte", "NM", ["NM"], 36.66667, -105.7, "March 25, 2013", "This site includes part of the Rio Grande Gorge and extinct volcanoes of the Taos Plateau volcanic field. There are a variety of archaeological and historical artifacts including petroglyphs and Hispanic settlement sites. It is home to an assortment of wildlife and recreation opportunities.", "R%C3%ADo_Grande_del_Norte_National_Monument"],
+      ["RAM", "Rose Atoll Marine", "AS", ["AS"], -14.55, -168.54, "January 6, 2009", "This marine monument consists of the two small islands of Rose Atoll, its lagoon, and waters surrounding it. The atoll's coral reef is colored by distinct pink coralline algae and provides habitat to nesting hawksbill and green turtles, large predators including whitetip reef shark, and endangered fish like the humphead wrasse. Seventeen species of protected seabirds nest on the island. It is east of American Samoa and the southernmost point in the U.S.", "Rose_Atoll_Marine_National_Monument"],
+      ["RC", "Russell Cave", "AL", ["AL"], 34.97, -85.8, "May 11, 1961", "Donated by the National Geographic Society, the cave's exceptionally large main entrance was used as a shelter by prehistoric Indians from the earliest known human settlement in the southeastern United States. The rock from which Russell Cave was formed originated in sediments deposited over 300 million years ago at the bottom of an inland sea that covered the region.", "Russell_Cave_National_Monument"],
+      ["SFDD", "Saint Francis Dam Disaster", "CA", ["CA"], 34.55, -118.51, "March 12, 2019", "The St. Francis Dam was a 700 ft-wide (210 m) dam that supported a reservoir for Los Angeles's water supply. It catastrophically failed in 1928 and the flood killed at least 431 people. The site now has ruins of the dam's concrete base in a forested valley. Part of Angeles National Forest.", "Saint_Francis_Dam_Disaster_National_Monument"],
+      ["SPM", "Salinas Pueblo Missions", "NM", ["NM"], 34.26, -106.06, "November 1, 1909", "Formerly known as Gran Quivira National Monument, it is where Native American trade communities of Tiwa- and Tompiro-speaking Puebloans lived when Spanish Franciscan missionaries made contact in the 17th century. What remains are the ruins of four mission churches, at Quarai, Abó, and Gran Quivira, and the partially excavated pueblo of Las Humanas.", "Salinas_Pueblo_Missions_National_Monument"],
+      ["SGM", "San Gabriel Mountains", "CA", ["CA"], 34.22, -118.06, "October 10, 2014", "The San Gabriel Mountains in northern Los Angeles County and western San Bernardino County, California, have peaks as high as 10,068 ft (3,069 m), providing a habitat for the endangered California condor and Nelson's bighorn sheep. It is an important watershed and recreation site for the Los Angeles area and contains more than 600 archaeological sites. Part of Angeles and San Bernardino National Forests.", "San_Gabriel_Mountains_National_Monument"],
+      ["SJI", "San Juan Islands", "WA", ["WA"], 48.53, -123.03, "March 25, 2013", "The rugged landscapes of the San Juan Islands, an archipelago in the Pacific Northwest, are a habitat for orcas, eagles, and seals and provide opportunities for kayaking, birdwatching, and other activities. The monument protects numerous small rocks, islands, and points, including the Cattle Point Light.", "San_Juan_Islands_National_Monument"],
+      ["SS", "Sand to Snow", "CA", ["CA"], 34.08, -116.68, "February 12, 2016", "This monument extends from the Mojave and Sonoran Desert floors up to over 10,000 feet in the San Bernardino Mountains, including the San Gorgonio Wilderness. The site protects 1,700 Native American petroglyphs and other archaeological sites. Part is in San Bernardino National Forest.", "Sand_to_Snow_National_Monument"],
+      ["SRSJM", "Santa Rosa and San Jacinto Mountains", "CA", ["CA"], 33.8, -116.7, "October 24, 2000", "This monument preserves large portions of the Santa Rosa and San Jacinto ranges, the northernmost of the Peninsular Ranges. Parts are within San Bernardino National Forest and the California Desert Conservation Area.", "Santa_Rosa_and_San_Jacinto_Mountains_National_Monument"],
+      ["STTH", "Sáttítla Highlands", "CA", ["CA"], 41.5, -121.5, "January 14, 2025", "A vast, remote volcanic landscape in Northern California centered on the immense Medicine Lake Volcano, where towering obsidian flows like Glass Mountain, sprawling lava fields, caves, and cinder cones coexist with rare relict forests, dark skies, critical aquifers that supply millions with clean water, and sacred Indigenous homelands now co-stewarded with tribes.", "S%C3%A1tt%C3%ADtla_Highlands_National_Monument"],
+      ["SB", "Scotts Bluff", "NE", ["NE"], 41.83, -103.7, "December 12, 1919", "Scotts Bluff is an important 19th century geologic formation and landmark on the Oregon Trail and Mormon Trail. It contains multiple bluffs on the south side of the North Platte River, but it is named after a prominent bluff called Scotts Bluff which rises more than 830 feet (250 m) above the plains at its highest point. The monument is composed of five rock formations named Crown Rock, Dome Rock, Eagle Rock, Saddle Rock, and Sentinel Rock.", "Scotts_Bluff_National_Monument"],
+      ["S1RR", "Springfield 1908 Race Riot", "IL", ["IL"], 39.804, -89.641, "August 16, 2024", "In 1908 a mob of 5,000 white residents attacked the Black community of Springfield, Illinois, destroyed several blocks of residences and business, and lynched two Black Americans. The mass racial violence was one of many such events of brutality and intimidation in that era, leading to the establishment of the NAACP. The monument includes the excavated foundations of several of the destroyed homes in the segregated neighborhood.", "Springfield_1908_Race_Riot_National_Monument"],
+      ["SD", "Sonoran Desert", "AZ", ["AZ"], 33.0, -112.46, "January 17, 2001", "This monument protects a small portion of the Sonoran Desert. It is home to several federally listed endangered species and also has three wilderness areas, many significant archeological and historic sites, and remnants of several important historic trails.", "Sonoran_Desert_National_Monument"],
+      ["SL", "Statue of Liberty", "NY", ["NY", "NJ"], 40.69, -74.04, "October 15, 1924", "This iconic statue, built in 1886 on Liberty Island and 151 feet (46 m) tall, commemorates the centennial of the signing of the United States Declaration of Independence and is a gesture of friendship from France to the U.S. Liberty Enlightening the World is a symbol of welcoming immigrants to the U.S. and is listed as a World Heritage Site. Ellis Island, where 12 million immigrants entering the U.S. passed through, is included in the monument.", "Statue_of_Liberty_National_Monument"],
+      ["STON", "Stonewall", "NY", ["NY"], 40.73364, -74.00212, "June 24, 2016", "The Stonewall Inn is a gay bar in New York City and the site of the Stonewall riots of 1969, which are widely considered to be the single most important event leading to the gay liberation movement and the modern fight for LGBT rights in the United States. Also included is Christopher Park across the street.", "Stonewall_National_Monument"],
+      ["SCV", "Sunset Crater Volcano", "AZ", ["AZ"], 35.36, -111.5, "May 30, 1930", "Sunset Crater is the youngest in a string of volcanoes in the San Francisco volcanic field that is related to the nearby San Francisco Peaks. Final volcanic activity in the 13th century painted the upper portion of the cone with bright red and orange rocks, giving the volcano its name. Hikers can walk through a black lava flow and on a second cinder crater.", "Sunset_Crater"],
+      ["TC", "Timpanogos Cave", "UT", ["UT"], 40.44, -111.71, "October 14, 1922", "The Timpanogos cave system is in the Wasatch Range in the American Fork Canyon. Three main chambers are accessible: Hansen Cave, Middle Cave, and Timpanogos Cave. Many colorful cave features or speleothems can be seen, including helictites, cave bacon, cave columns, flowstone, cave popcorn, and cave drapery.", "Timpanogos_Cave_National_Monument"],
+      ["TONT", "Tonto", "AZ", ["AZ"], 33.65, -111.09, "October 21, 1907", "Lying on the northeastern edge of the Sonoran Desert along the Salt River, Tonto preserves two cliff dwellings that were occupied by the Salado culture during the 13th to 15th centuries. The monument is surrounded by Tonto National Forest.", "Tonto_National_Monument"],
+      ["TL", "Tule Lake", "CA", ["CA"], 41.89, -121.37, "December 5, 2008", "Tule Lake Segregation Center was the largest of ten concentration camps used for the internment of Japanese Americans during World War II. 29,800 U.S. citizens and immigrants were held there, including those segregated from other camps for political reasons. The site includes the main segregation camp; Camp Tulelake, which was originally a Civilian Conservation Corps work site and later a prisoner-of-war camp and extension of the segregation center; and the Peninsula/Castle Rock bluff in Tule Lake National Wildlife Refuge. Originally designated as part of World War II Valor in the Pacific National Monument, which was divided and renamed March 12, 2019.", "Tule_Lake_National_Monument"],
+      ["TSFB", "Tule Springs Fossil Beds", "NV", ["NV"], 36.32, -115.27, "December 19, 2014", "A major archaeological site north of Las Vegas where thousands of prehistoric fossils, including mammoth, lion, and camel, have been found in an area that was once a wetland.", "Tule_Springs_Fossil_Beds_National_Monument"],
+      ["TUZI", "Tuzigoot", "AZ", ["AZ"], 34.79, -112.04, "July 25, 1939", "Tuzigoot preserves a two- to three-story pueblo ruin on the summit of a limestone and sandstone ridge in the Verde Valley. It was built by the Sinagua people between 1125 and 1400.", "Tuzigoot_National_Monument"],
+      ["UMRB", "Upper Missouri River Breaks", "MT", ["MT"], 47.78, -109.02, "January 17, 2001", "A series of badland areas characterized by rock outcroppings, steep bluffs and grassy plains along the 149-mile (240 km) Upper Missouri National Wild and Scenic River in central Montana, The Breaks is home to at least 60 mammal species and hundreds of bird species. Charles Marion Russell often painted here, and Lewis and Clark traveled on this pathway.", "Upper_Missouri_River_Breaks_National_Monument"],
+      ["VC", "Vermilion Cliffs", "AZ", ["AZ"], 36.81, -111.74, "November 9, 2000", "Steep eroded escarpments consisting primarily of sandstone, siltstone, limestone and shale rise as much as 3,000 feet (910 m) above their base. These sedimentary rocks have been deeply eroded for millions of years, exposing hundreds of layers of richly colored rock strata along Paria Canyon. The Coyote Buttes, across the Paria Plateau from the Canyon and Vermilion Cliffs, include undulating slopes like The Wave.", "Vermilion_Cliffs_National_Monument"],
+      ["VICR", "Virgin Islands Coral Reef", "VI", ["VI"], 18.31, -64.72, "January 17, 2001", "These coral reefs, sandy sea bottoms, seagrass beds, and mangrove forests are in a 3-mile (4.8 km) marine belt that surrounds St John and Virgin Islands National Park.", "Virgin_Islands_Coral_Reef_National_Monument"],
+      ["WM", "Waco Mammoth", "TX", ["TX"], 31.606, -97.174, "July 10, 2015", "The Waco Mammoth National Monument is a paleontological site and museum in Waco, Texas, where fossils of 24 Columbian mammoths (Mammuthus columbi) and other mammals from the Pleistocene Epoch have been uncovered. The site is the largest known concentration of a single herd of mammoths dying from the same event, which is believed to have been a flash flood.", "Waco_Mammoth_National_Monument"],
+      ["WC", "Walnut Canyon", "AZ", ["AZ"], 35.17, -111.51, "November 30, 1915", "Walnut Canyon protects dozens of cliff dwelling rooms constructed around the 12th century by the Sinagua people, who navigated the challenging cliffs to access sparse water. It lies on the Colorado Plateau and cuts through the Permian Kaibab Limestone, which exposes the Toroweap Formation and Coconino Sandstone.", "Walnut_Canyon_National_Monument"],
+      ["WUPA", "Wupatki", "AZ", ["AZ"], 35.52, -111.37, "December 9, 1924", "Several settlement sites built by the Sinagua, Cohonina, and Ancestral Puebloans are scattered throughout the monument, showing evidence of trade and agriculture from the 6th to 13th centuries. About 2,000 Ancient Pueblo People moved here to farm after an 11th century eruption of Sunset Crater spread ash forming fertile soil.", "Wupatki_National_Monument"],
+      ["YH", "Yucca House", "CO", ["CO"], 37.25, -108.69, "December 19, 1919", "Designated a research national monument, it is a large unexcavated Ancestral Puebloan archeological site. The site is one of many Ancestral Puebloan village sites in the Montezuma Valley occupied between 900 and 1300 AD.", "Yucca_House_National_Monument"],
+    ];
     const SUGGESTED_SETS = [
       {
         id: "national-parks",
         name: "National Parks",
         shortName: "Parks",
-        description: "Official National Park-designated units bundled for Wayfinder planning.",
+        description: "Official National Park-designated units.",
         itemNoun: "park",
+        linkLabel: "NPS",
         defaultIconId: SUGGESTED_SET_DEFAULT_ICON,
         defaultLabelMode: "none",
         items: SUGGESTED_NATIONAL_PARKS.map(([code, name, primaryState, states, lat, lng]) => {
@@ -16215,6 +16380,34 @@
             lng,
             url,
             noteTemplate: `Official National Park unit. Website: ${url}`
+          };
+        })
+      },
+      {
+        id: "national-monuments",
+        name: "National Monuments",
+        shortName: "Monuments",
+        description: "Current U.S. National Monuments.",
+        itemNoun: "monument",
+        linkLabel: "Wiki",
+        defaultIconId: "mountain_2",
+        defaultLabelMode: "none",
+        items: SUGGESTED_NATIONAL_MONUMENTS.map(([code, name, primaryState, states, lat, lng, dateEstablished, description, page]) => {
+          const url = `https://en.wikipedia.org/wiki/${page}`;
+          return {
+            id: `monument-${String(page).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`,
+            code,
+            name,
+            fullName: `${name} National Monument`,
+            abbr: code,
+            labelAbbr: code,
+            primaryState,
+            states,
+            lat,
+            lng,
+            url,
+            dateEstablished,
+            defaultDetails: `Date Established: ${dateEstablished} | Description: ${description}`
           };
         })
       }
@@ -16344,6 +16537,18 @@
         tokenCostPct: 30,
         prompt: "Expand Waypoint Packs from a single National Parks pack into a scalable pack library. Add category/search browsing, clearer multi-pack active state, multiple overlays/labels where practical, pack defaults, and import-ready data structures while keeping Wayfinder compact and map-first.",
         category: "Maps"
+      },
+      {
+        title: "Note Links and Photos",
+        ticketId: "WISH-067",
+        description: "Add first-class link and photo buttons to notes so a place can carry URLs, reference pages, and local/attached images without stuffing everything into Details. Scope includes note-editor controls, compact indicators in note rows, export behavior, import/backups, and local-first storage limits that avoid surprising large data saves.",
+        priority: "P0",
+        effort: "large",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 32,
+        prompt: "Add dedicated Links and Photos controls to notes. Include editor buttons, saved URL/photo metadata, row indicators, export/import/backups, and careful local-first storage limits so users can attach references and images without overloading Details.",
+        category: "Notes"
       },
       {
         title: "Historical & Defunct Countries",
@@ -16504,27 +16709,31 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.3",
+        version: "4.3.0.4",
         date: "2026-06-03",
-        title: "Park Pack",
-        summary: "Waypoint Packs turn National Parks into previewable, prioritized Wayfinder notes.",
+        title: "Waypoint Pack",
+        summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
         highlights: [
-          "Add all official National Parks as Wayfinder notes.",
-          "Preview parks with Include, Priority, and Note fields.",
-          "Attach existing notes to a park without losing your details.",
-          "Pack markers, labels, exports, and priority badges stay in sync."
+          "Add Parks and Monuments as Wayfinder notes.",
+          "Preview places with Include, Priority, and Note fields.",
+          "Attach existing notes without losing your details.",
+          "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.3",
-          title: "Park Pack",
-          summary: "Add National Parks as prioritized Wayfinder notes with Waypoint Packs.",
-          cta: "Pack the Parks!"
+          version: "4.3.0.4",
+          title: "Waypoint Pack",
+          summary: "Add Parks and Monuments as prioritized Wayfinder notes.",
+          cta: "Pack the Map!"
         },
         updates: [
           "Renamed Suggested Sets to Waypoint Packs and moved the entry point into Wayfinder as a compact Packs button.",
           "Renamed the Notes Wayfinder controls internally to notesActivateWayfinderBtn and notesAddWaypointsBtn, with teal outlines tying them to Wayfinder mode.",
           "Replaced the modal drawer with an inset Waypoint Packs panel over Notes so the map stays visible and interactive.",
           "Added Available Packs cards, visual icon choices, layer-button overlay controls, and map-label-style label controls.",
+          "Added National Monuments as a second Waypoint Pack using a static Wikipedia-sourced snapshot with coordinates, established dates, and description-prefilled notes.",
+          "Made the Waypoint Packs header generic so it describes the feature instead of the selected pack.",
+          "Adjusted Alaska coordinate projection with separate mainland and Aleutian frames so waypoint pins line up better on the inset.",
+          "Waypoint Pack overlay pins now use Wayfinder teal, while priority badges use the requested green-to-orange 1-5 scale.",
           "Pack icon choices now follow the user's active Location Tag order, omit hidden tags, and include a compact more button for opening Location Tags.",
           "Pack settings are more compact: overlay sits next to label options, helper labels are removed, the combined label option is gone, and label SVG sizing matches map label controls.",
           "Added a dismissible Waypoint Packs settings hint between Available Packs and the pack settings.",
@@ -18217,6 +18426,10 @@
       return /^[1-5]$/.test(text) ? text : "";
     }
 
+    function notePriorityColor(value) {
+      return NOTE_PRIORITY_COLORS[normalizeNotePriority(value)] || "";
+    }
+
     function normalizeSuggestedSetLabelModes(input) {
       const raw = input && typeof input === "object" ? input : {};
       return Object.fromEntries(SUGGESTED_SETS.map(set => {
@@ -19184,6 +19397,18 @@
     function locationProjectionBox(abbr, fallbackBox) {
       const override = LOCATION_PROJECTION_BOX_OVERRIDES[abbr];
       return override || fallbackBox;
+    }
+
+    function locationProjectionFrame(abbr, coords, fallbackBox) {
+      const frames = LOCATION_PROJECTION_FRAME_OVERRIDES[abbr];
+      if (Array.isArray(frames) && coords) {
+        const match = frames.find(frame => typeof frame.test !== "function" || frame.test(coords));
+        if (match?.box && match?.bounds) return match;
+      }
+      return {
+        box: locationProjectionBox(abbr, fallbackBox),
+        bounds: LOCATION_GEO_BOUNDS[abbr]
+      };
     }
 
     function projectionLongitudeForBounds(lng, bounds) {
@@ -20707,9 +20932,10 @@
       }
       const center = stateTileCenter(abbr);
       if (!center) return null;
-      const box = locationProjectionBox(abbr, center.box);
+      const frame = locationProjectionFrame(abbr, coords, center.box);
+      const box = frame.box;
       if (!coords) return { x: box.x + box.width / 2, y: box.y + box.height / 2 };
-      const bounds = LOCATION_GEO_BOUNDS[abbr];
+      const bounds = frame.bounds;
       if (!bounds) return { x: center.x, y: center.y };
       const [minLat, maxLat, minLng, maxLng] = bounds;
       const lng = projectionLongitudeForBounds(coords.lng, bounds);
@@ -21172,6 +21398,7 @@
       const svgNS = "http://www.w3.org/2000/svg";
       const bg = document.createElementNS(svgNS, "circle");
       bg.classList.add("set-marker-priority-bg");
+      bg.style.setProperty("--priority-color", notePriorityColor(priority));
       bg.setAttribute("cx", "8.2");
       bg.setAttribute("cy", "8.2");
       bg.setAttribute("r", "5");
@@ -21198,8 +21425,7 @@
         if (!point) return;
         const linked = suggestedSetLinkedNote(set.id, item.id);
         const note = linked?.note || null;
-        const level = levelById(note?.levelId);
-        const color = level?.color || "var(--accent)";
+        const color = WAYFINDER_TEAL;
         const label = `${item.fullName}. ${note ? `Linked note: ${noteSummary(note)}` : "Not added yet."}`;
         const group = document.createElementNS(svgNS, "g");
         group.classList.add("suggested-set-marker");
@@ -21439,7 +21665,8 @@
 
     function notePriorityBadgeHtml(note) {
       const priority = normalizeNotePriority(note?.priority);
-      return priority ? `<span class="priority-badge" title="Priority ${priority}">P${priority}</span>` : "";
+      const color = notePriorityColor(priority);
+      return priority ? `<span class="priority-badge" title="Priority ${priority}" style="--priority-color:${escapeHtml(color)}">P${priority}</span>` : "";
     }
 
     function noteSourceBadgeHtml(note) {
@@ -21495,13 +21722,13 @@
               <b>${escapeHtml(item.fullName)}</b>
               <small>${escapeHtml(item.code)} · ${escapeHtml(suggestedSetItemRegionLabel(item))}${linked ? " · linked" : ""}</small>
             </span>
-            <a class="ghost" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">NPS</a>
+            <a class="ghost" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">${escapeHtml(set.linkLabel || "Info")}</a>
           </div>
           <input type="hidden" data-set-preview-priority value="${escapeHtml(priority)}">
           <div class="waypoint-priority-row" aria-label="Priority for ${escapeHtml(item.fullName)}">
             ${waypointPriorityButtons(priority, "data-set-preview-priority-choice", item.id)}
           </div>
-          <textarea data-set-preview-note maxlength="700" placeholder="Wish notes for ${escapeHtml(item.name)}">${escapeHtml(note ? noteDetails(note) : "")}</textarea>
+          <textarea data-set-preview-note maxlength="700" placeholder="Wayfinder Notes for ${escapeHtml(item.name)}">${escapeHtml(note ? noteDetails(note) : item.defaultDetails || "")}</textarea>
         </article>
       `;
     }
@@ -21523,7 +21750,7 @@
               <small>${escapeHtml(item.code)} · ${escapeHtml(suggestedSetItemRegionLabel(item))}</small>
             </span>
             ${status}
-            <a class="ghost" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">NPS</a>
+            <a class="ghost" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">${escapeHtml(set.linkLabel || "Info")}</a>
           </div>
           <div class="waypoint-item-actions">${attach}</div>
         </article>
@@ -21585,7 +21812,7 @@
       `).join("");
       return `${iconButtons}
         <button class="waypoint-icon-choice waypoint-icon-more hint-dot-btn" type="button" data-waypoint-open-tags aria-label="Open Location Tags" title="Open Location Tags">
-          <span>(...)</span>
+          <span>•••</span>
         </button>`;
     }
 
@@ -21646,7 +21873,7 @@
       if (!set) return;
       const progress = suggestedSetProgress(set.id);
       const listItems = setItemsForActiveList(set);
-      $("#waypointPacksSubtitle").textContent = `${set.description} ${progress.linked}/${progress.total} linked.`;
+      $("#waypointPacksSubtitle").textContent = `Curated place packs for Wayfinder planning. ${progress.linked}/${progress.total} linked.`;
       $("#waypointPacksSummary").textContent = `${progress.linked}/${progress.total} linked · ${progress.notes} notes`;
       $("#waypointPackAvailableList").innerHTML = SUGGESTED_SETS.map(renderWaypointPackCard).join("");
       $("#waypointPackConfigure").innerHTML = renderWaypointPackConfigure(set);
@@ -23159,7 +23386,8 @@
       if (scope || icons) {
         const labelText = [hasLocation ? "Mapped location" : "", labels.map(type => type.label).join(", ")].filter(Boolean).join(", ");
         const priority = normalizeNotePriority(note?.priority);
-        const priorityPill = priority ? `<span class="visit-priority-pill" aria-label="Priority ${priority}">${escapeHtml(priority)}</span>` : "";
+        const priorityColor = notePriorityColor(priority);
+        const priorityPill = priority ? `<span class="visit-priority-pill" aria-label="Priority ${priority}" style="--priority-color:${escapeHtml(priorityColor)}">${escapeHtml(priority)}</span>` : "";
         return `<span class="visit-icon-stack" ${styleAttr} aria-label="${escapeHtml(labelText)}">${scope}${icons}${priorityPill}</span>`;
       }
       if (color) {
