@@ -1,17 +1,17 @@
-# WISH-004 4.3.0: Suggested Sets + National Parks
+# WISH-004 4.3.0: Waypoint Packs + National Parks
 
 Status: active implementation for 4.3.0
 Ticket: WISH-004
-Working title: Suggested Sets + National Parks
+Working title: Waypoint Packs + National Parks
 
 ## Summary
 
-Reframe WISH-004 from a one-off National Park overlay into **Suggested Sets**,
-with **National Parks** as the first bundled set. Suggested Sets are curated
-place packs that can be previewed, annotated, prioritized, and batch-added into
-Wayfinder as normal notes. They draw their own set-aware markers and labels,
-but they do not change state progress unless the user manually edits state
-levels.
+Reframe WISH-004 from a one-off National Park overlay into **Waypoint Packs**,
+a Wayfinder sub-feature for curated place packs. National Parks is the first
+bundled pack. Packs can be previewed, annotated, prioritized, attached to
+existing notes, and batch-added into Wayfinder as normal notes. They draw their
+own pack-aware markers and labels, but they do not change state progress unless
+the user manually edits state levels.
 
 National Parks v1 includes all official National Park-designated units,
 including Alaska, Hawaii, and territories. No runtime NPS API calls, no API
@@ -19,58 +19,68 @@ keys, and no park boundary geometry.
 
 ## Key Changes
 
-- Add bundled set data:
+- Add bundled pack data:
   - `SUGGESTED_SETS`, starting with `national-parks`.
   - Each item has stable id/code, name, label abbreviation, primary state,
     state list, coordinates, URL, and default note template.
   - National Parks abbreviation labels use official uppercase NPS codes like
     `ACAD`, `ZION`, `GRCA`.
 - Add lightweight note metadata:
-  - Normal notes may carry `sourceSetId`, `sourceItemId`, and managed set
-    fields.
-  - Set-created notes remain normal notes in Notes, exports, filters, and
+  - Normal notes may carry `sourceSetId`, `sourceItemId`, and managed pack
+    fields. Internal schema names keep `set` for compatibility.
+  - Pack-created notes remain normal notes in Notes, exports, filters, and
     Wayfinder.
-  - Set metadata is used for duplicate checks, refreshes, set labels, marker
-    styling, and "from this set" disclaimers.
-  - Normalize metadata in saved/imported notes and drop unknown set/item ids.
+  - Pack metadata is used for duplicate checks, refreshes, labels, marker
+    styling, and pack-source disclaimers.
+  - Normalize metadata in saved/imported notes and drop unknown pack/item ids.
 - Add optional note priority:
   - Any note can have `priority` from `1` to `5` or blank.
-  - Show priority as a compact badge on set markers and note rows where useful.
+  - Show priority as a compact badge on pack markers and note rows where useful.
   - Add priority to note search/export text and keep it sortable/filterable for
-    set views.
-- Add Suggested Sets UI:
-  - Add a Sets entrypoint next to the US/World map switch and another access
-    point from Wayfinder; both open the same Sets drawer/sheet.
-  - Sets drawer shows active sets, bundled available sets, active set controls,
-    and preview/add/remove actions.
-  - Add Set opens an editable preview table with `Include`, `Priority`, and
-    `Note` columns before creating notes.
-  - Batch add creates missing notes and refreshes existing set notes using
+    pack views.
+- Add Waypoint Packs UI:
+  - Packs is a Wayfinder sub-feature; the Packs button appears only while
+    Wayfinder is active and uses `__CIRCLE_BADGE_PLUS`.
+  - The button opens an inset panel over Notes, not a modal, so the map remains
+    visible and interactive.
+  - Panel shows Available Packs, selected-pack progress, visual icon choices,
+    overlay toggle, label mode buttons, add/refresh, remove, filter, and sort.
+  - Add/Refresh uses editable preview cards with `Include`, `Priority`, and
+    `Note` fields before creating notes.
+  - Batch add creates missing notes and refreshes existing pack notes using
     managed fields only.
-  - After adding, enable the chosen Location Tag, turn the set overlay on, and
+  - After adding, enable the chosen Location Tag, turn the pack overlay on, and
     enter Wayfinder.
 - Add attach/update flows:
-  - From a set item, allow "Attach existing note."
-  - From the note editor, allow "Add to active set" when a set item is selected.
+  - From a pack item, allow "Attach existing note."
+  - From the note editor, allow "Add to active pack" when a pack item is
+    selected.
   - Attaching sets source metadata, coordinates, chosen icon/tag, Where/geocode
-    basics, and set marker fields while preserving user level, date, details,
-    what/who, and non-set tags unless missing.
-- Add set marker and label behavior:
-  - Set markers use the set's chosen icon/logo with border/status color from
+    basics, and pack marker fields while preserving user level, date, details,
+    what/who, and non-pack tags unless missing.
+- Add pack marker and label behavior:
+  - Pack markers use the pack's chosen icon/logo with border/status color from
     the linked note's level.
-  - Adding set notes does **not** apply the Wayfinder level to entire states.
-  - Visited notes stay linked to the set; marker color changes with the note
+  - Adding pack notes does **not** apply the Wayfinder level to entire states.
+  - Visited notes stay linked to the pack; marker color changes with the note
     level.
-  - Removing a set deletes only untouched generated Wayfinder notes; edited or
+  - Removing a pack deletes only untouched generated Wayfinder notes; edited or
     visited notes stay as normal linked/detached notes per confirmation copy.
-  - Label UI is a dropdown: choose an icon/set marker family, then choose label
-    mode `Off`, `Abbr`, `Name`, or `Both`.
-  - Default label mode for National Parks is `Off`.
+  - Overlay uses `__SQUARE_3_LAYERS_3D` when off and
+    `__SQUARE_3_LAYERS_3D_TOP_FILLED` when on.
+  - Label UI reuses the map label button style with `Off`, `Abbr`, `Name`, and
+    `Both`. National Parks default to labels off.
 - Add exports:
   - JSON includes normalized note metadata and priority naturally.
-  - Markdown/RTF/Text add Suggested Sets sections when linked set notes exist.
-  - Wayfinder exports should group set-created notes under their set name while
-    preserving existing Wayfinder behavior.
+  - Markdown/RTF/Text add Waypoint Packs sections when linked pack notes exist.
+  - Wayfinder exports should group pack-created notes under their pack name
+    while preserving existing Wayfinder behavior.
+
+## Follow-Up Wish
+
+WISH-066 tracks better support for going from one pack to many: pack categories,
+search/filtering, multiple active overlays, import-ready data, and clearer
+multi-pack active state without crowding Wayfinder.
 
 ## National Parks Snapshot
 
@@ -142,33 +152,35 @@ keys, and no park boundary geometry.
 
 ## Test Plan
 
-- New map defaults: Sets overlay off, set labels off, no state recoloring.
-- Add National Parks set through preview; confirm one Wayfinder note per
-  included park.
+- New map defaults: pack overlay off, pack labels off, no state recoloring.
+- Open Packs from Wayfinder; confirm an inset panel appears over Notes and the
+  map remains visible.
+- Select National Parks from Available Packs; choose an icon, overlay state, and
+  label mode.
+- Add National Parks through preview; confirm one Wayfinder note per included
+  park.
 - Use preview priorities and notes; confirm priority badges and note details
   persist.
-- Re-run Add/Refresh Set; confirm managed fields update and user-entered fields
-  are preserved.
-- Attach an existing note from the set drawer and from the note editor.
-- Mark a set-created Wayfinder note visited; confirm it stays linked and marker
+- Re-run Add/Refresh; confirm managed fields update and user-entered fields are
+  preserved.
+- Attach an existing note from the pack panel and from the note editor.
+- Mark a pack-created Wayfinder note visited; confirm it stays linked and marker
   color changes.
-- Remove the set; confirm untouched generated notes are removed and
+- Remove the pack; confirm untouched generated notes are removed and
   edited/visited notes are preserved.
-- Verify label dropdown modes: Off, Abbr, Name, Both.
+- Verify label modes: Off, Abbr, Name, Both.
 - Verify priority search/filter/sort/export behavior.
-- Verify JSON export/import round-trips set metadata and priority.
+- Verify JSON export/import round-trips pack metadata and priority.
 - Smoke US/World switching, normal note pins, Wayfinder, Rangefinder, and
   existing exports.
 
 ## Assumptions
 
-- Suggested Sets are implemented inside the single-file app with no runtime
+- Waypoint Packs are implemented inside the single-file app with no runtime
   dependencies.
 - National Park data is a static bundled snapshot sourced from official NPS data
   outside runtime.
 - Priority is a note field, not a Location Tag.
-- Set identity is metadata on notes, not inferred from text.
-- Set markers are visually separate from state progress and should not recolor
+- Pack identity is metadata on notes, not inferred from text.
+- Pack markers are visually separate from state progress and should not recolor
   states automatically.
-- The current WISH-004 plan doc should be replaced with this revised Suggested
-  Sets plan when implementation/editing is allowed.
