@@ -759,7 +759,8 @@
        app headers read at a consistent altitude. */
     #quickAddNoteBtn,
     #copyNotesTextBtn,
-    #notesBucketListBtn {
+    #notesActivateWayfinderBtn,
+    #notesAddWaypointsBtn {
       flex: 0 0 40px;
       width: 40px;
       min-width: 40px;
@@ -770,11 +771,30 @@
       place-items: center;
     }
 
-    #quickAddNoteBtn .sf-symbol,
     #copyNotesTextBtn .sf-symbol,
-    #notesBucketListBtn .sf-symbol {
+    #notesActivateWayfinderBtn .sf-symbol {
       width: 24px;
       height: 24px;
+    }
+
+    #quickAddNoteBtn .sf-symbol,
+    #notesAddWaypointsBtn .sf-symbol {
+      width: 32px;
+      height: 32px;
+    }
+
+    #notesActivateWayfinderBtn,
+    #notesAddWaypointsBtn {
+      border-color: color-mix(in srgb, #14b8a6 72%, var(--line) 28%);
+      box-shadow: 0 0 0 1px color-mix(in srgb, #14b8a6 28%, transparent);
+    }
+
+    #notesActivateWayfinderBtn:hover,
+    #notesAddWaypointsBtn:hover,
+    #notesActivateWayfinderBtn:focus-visible,
+    #notesAddWaypointsBtn:focus-visible {
+      border-color: #14b8a6;
+      box-shadow: 0 0 0 2px color-mix(in srgb, #14b8a6 34%, transparent);
     }
 
     [data-button-style="text"] .toolbar-panel-toggle-group button,
@@ -4348,7 +4368,7 @@
       position: relative;
     }
 
-    html:not([data-bucket-mode="on"]) #notesSetsBtn {
+    html:not([data-bucket-mode="on"]) #notesAddWaypointsBtn {
       display: none;
     }
 
@@ -4479,17 +4499,38 @@
     }
 
     .waypoint-control-row {
-      display: grid;
-      grid-template-columns: auto minmax(0, 1fr);
+      display: flex;
       align-items: center;
+      flex-wrap: wrap;
+      min-width: 0;
       gap: .42rem;
     }
 
+    .waypoint-control-row.is-icon-grid {
+      align-items: flex-start;
+    }
+
+    .waypoint-control-combo {
+      flex-wrap: nowrap;
+      align-items: stretch;
+    }
+
     .waypoint-control-label {
-      color: var(--muted);
-      font-size: .7rem;
-      font-weight: 900;
-      text-transform: uppercase;
+      display: none;
+    }
+
+    .waypoint-pack-settings-hint {
+      display: block;
+      margin: -.26rem 0 -.22rem;
+    }
+
+    .waypoint-icon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(34px, 34px));
+      align-items: center;
+      min-width: 0;
+      width: 100%;
+      gap: .42rem;
     }
 
     .waypoint-icon-choice {
@@ -4518,11 +4559,28 @@
       justify-content: flex-start;
     }
 
+    .waypoint-label-toggle>span {
+      display: none;
+    }
+
     .waypoint-label-toggle button {
       min-width: 32px;
       padding: .25rem .4rem;
       font-size: .72rem;
       font-weight: 850;
+    }
+
+    .waypoint-label-toggle [data-waypoint-label-mode="none"] .sf-symbol,
+    .waypoint-label-toggle [data-waypoint-label-mode="abbr"] .sf-symbol {
+      width: 16px;
+      height: 16px;
+      overflow: visible;
+    }
+
+    .waypoint-label-toggle [data-waypoint-label-mode="name"] .sf-symbol {
+      width: 25px;
+      height: 16px;
+      overflow: visible;
     }
 
     .waypoint-pack-preview-list,
@@ -13499,9 +13557,9 @@
               <button id="quickAddNoteBtn" type="button" data-shortcut="S" aria-label="Quick add note">Quick
                 Add</button>
               <button id="copyNotesTextBtn" class="notes-copy-btn" type="button" data-shortcut="C">Copy</button>
-              <button id="notesBucketListBtn" class="toggle-btn bucket-list-toggle-btn" type="button"
+              <button id="notesActivateWayfinderBtn" class="toggle-btn bucket-list-toggle-btn" type="button"
                 aria-pressed="false" aria-label="Toggle Wayfinder mode" data-shortcut="6">Wayfinder</button>
-              <button id="notesSetsBtn" class="toggle-btn sets-toggle-btn" type="button" aria-expanded="false"
+              <button id="notesAddWaypointsBtn" class="toggle-btn sets-toggle-btn" type="button" aria-expanded="false"
                 aria-controls="waypointPacksPanel" aria-label="Open Waypoint Packs">Packs</button>
               <span class="notes-search-input-wrap">
                 <input id="notesStateSearch" type="search" placeholder="Search / Filter" aria-label="Search notes">
@@ -13566,6 +13624,9 @@
                 </div>
                 <div id="waypointPackAvailableList" class="waypoint-pack-available-list"></div>
               </section>
+              <small class="waypoint-pack-settings-hint" data-hint data-hint-key="waypoint-pack-settings-help">
+                Choose a Pack and its settings: Existing or New Icon; Show/Hide Overlay on Map; Label Preference
+              </small>
               <section id="waypointPackConfigure" class="waypoint-pack-configure"></section>
               <section>
                 <div class="waypoint-section-title">
@@ -14626,7 +14687,7 @@
               <div class="shortcut-row"><kbd>S</kbd><span>Quick Add Location Note <em>[quickAddNoteBtn]</em></span>
               </div>
               <div class="shortcut-row"><kbd>C</kbd><span>Copy Plain Notes Text <em>[copyNotesTextBtn]</em></span></div>
-              <div class="shortcut-row"><kbd>6</kbd><span>Toggle Wayfinder Mode <em>[notesBucketListBtn]</em></span>
+              <div class="shortcut-row"><kbd>6</kbd><span>Toggle Wayfinder Mode <em>[notesActivateWayfinderBtn]</em></span>
               </div>
               <div class="shortcut-row"><kbd>←</kbd><span>Notes View: Expanded <em>[notesViewExpandedBtn]</em></span>
               </div>
@@ -14750,7 +14811,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.2";
+    const APP_VERSION = "4.3.0.3";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -14873,13 +14934,12 @@
 
     // Find Free Custom SVGs: https://www.svgrepo.com
     const __SQUARE_3_LAYERS_3D = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.7031 28.0957"><g><rect height="28.0957" opacity="0" width="25.7031" x="0" y="0"/><path d="M24.082 18.7207C24.9707 19.2383 25.3418 19.6484 25.3418 20.2832C25.3418 20.9082 24.9707 21.3184 24.082 21.8457L14.0918 27.627C13.5547 27.9492 13.125 28.0957 12.666 28.0957C12.2168 28.0957 11.7871 27.9492 11.2402 27.627L1.25977 21.8457C0.361328 21.3184 0 20.9082 0 20.2832C0 19.6484 0.361328 19.2383 1.25977 18.7207L3.64969 17.334L5.41249 18.3568L2.35352 20.1074C2.28516 20.1465 2.22656 20.1953 2.22656 20.2832C2.22656 20.3613 2.28516 20.4102 2.35352 20.4492L12.1484 26.0547C12.3438 26.1719 12.5 26.2305 12.666 26.2305C12.8418 26.2305 12.9883 26.1719 13.1836 26.0547L22.9785 20.4492C23.0566 20.4102 23.1055 20.3613 23.1055 20.2832C23.1055 20.1953 23.0566 20.1465 22.9785 20.1074L19.9224 18.3585L21.6898 17.334Z"/><path d="M24.082 12.8223C24.9707 13.3496 25.3418 13.7598 25.3418 14.3848C25.3418 15.0195 24.9707 15.4297 24.082 15.9473L14.0918 21.7383C13.5547 22.0508 13.125 22.207 12.666 22.207C12.2168 22.207 11.7871 22.0508 11.2402 21.7383L1.25977 15.9473C0.361328 15.4297 0 15.0195 0 14.3848C0 13.7598 0.361328 13.3496 1.25977 12.8223L3.95264 11.2598L5.72309 12.287L2.35352 14.2188C2.28516 14.2578 2.22656 14.3066 2.22656 14.3848C2.22656 14.4727 2.28516 14.5117 2.35352 14.5605L12.1484 20.166C12.3438 20.2734 12.5 20.332 12.666 20.332C12.8418 20.332 12.9883 20.2734 13.1836 20.166L22.9785 14.5605C23.0566 14.5117 23.1055 14.4727 23.1055 14.3848C23.1055 14.3066 23.0566 14.2578 22.9785 14.2188L19.6117 12.2886L21.3865 11.2598Z"/><path d="M12.666 15.957C13.125 15.957 13.5547 15.8008 14.0918 15.4883L24.082 9.69727C24.9707 9.17969 25.3418 8.76953 25.3418 8.13477C25.3418 7.50977 24.9707 7.09961 24.082 6.57227L14.0918 0.791016C13.5547 0.46875 13.125 0.322266 12.666 0.322266C12.2168 0.322266 11.7871 0.46875 11.2402 0.791016L1.25977 6.57227C0.361328 7.09961 0 7.50977 0 8.13477C0 8.76953 0.361328 9.17969 1.25977 9.69727L11.2402 15.4883C11.7871 15.8008 12.2168 15.957 12.666 15.957ZM12.666 14.082C12.5 14.082 12.3438 14.0234 12.1484 13.916L2.35352 8.31055C2.28516 8.26172 2.22656 8.22266 2.22656 8.13477C2.22656 8.05664 2.28516 8.00781 2.35352 7.96875L12.1484 2.35352C12.3438 2.24609 12.5 2.1875 12.666 2.1875C12.8418 2.1875 12.9883 2.24609 13.1836 2.35352L22.9785 7.96875C23.0566 8.00781 23.1055 8.05664 23.1055 8.13477C23.1055 8.22266 23.0566 8.26172 22.9785 8.31055L13.1836 13.916C12.9883 14.0234 12.8418 14.082 12.666 14.082Z"/></g></svg>`;
-    const __SQUARE_3_LAYERS_3D_TOP_FILLED = __SQUARE_3_LAYERS_3D
-      .replace('<path d="M24.082 18.7207', '<path opacity="0.35" d="M24.082 18.7207')
-      .replace('<path d="M24.082 12.8223', '<path opacity="0.58" d="M24.082 12.8223');
-    const __CIRCLE_BADGE_PLUS = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 31.8 27.8"><g><rect height="27.8" opacity="0" width="31.8" x="0" y="0"/><path d="M12.8 25.4C5.8 25.4.1 19.7.1 12.7S5.8 0 12.8 0c5.2 0 9.7 3.1 11.7 7.6-.7-.2-1.5-.3-2.3-.3-4.3 0-7.9 3.5-7.9 7.9 0 3.2 1.9 5.9 4.6 7.2-1.8 1.8-4.1 3-6.1 3Zm0-2.1c2.2 0 4.3-.7 6-2-1.7-1.4-2.8-3.6-2.8-6 0-4.3 3.5-7.8 7.8-7.8h.2c-1.8-3.2-5.2-5.4-11.2-5.4C6.9 2.1 2.2 6.8 2.2 12.7s4.7 10.6 10.6 10.6Z"/><path d="M30.2 15.2c0 3.5-2.9 6.3-6.3 6.3s-6.3-2.8-6.3-6.3c0-3.4 2.8-6.3 6.3-6.3s6.3 2.9 6.3 6.3Zm-7.1-3.3v2.5h-2.5c-.4 0-.7.3-.7.8s.3.8.7.8h2.5v2.5c0 .4.3.7.8.7s.8-.3.8-.7V16h2.5c.4 0 .7-.3.7-.8s-.3-.8-.7-.8h-2.5v-2.5c0-.4-.3-.7-.8-.7s-.8.3-.8.7Z"/></g></svg>`;
+    const __SQUARE_3_LAYERS_3D_TOP_FILLED = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.7031 28.0957"><g><rect height="28.0957" opacity="0" width="25.7031" x="0" y="0"/><path d="M24.082 18.7207C24.9707 19.2383 25.3418 19.6484 25.3418 20.2832C25.3418 20.9082 24.9707 21.3184 24.082 21.8457L14.0918 27.627C13.5547 27.9492 13.125 28.0957 12.666 28.0957C12.2168 28.0957 11.7871 27.9492 11.2402 27.627L1.25977 21.8457C0.361328 21.3184 0 20.9082 0 20.2832C0 19.6484 0.361328 19.2383 1.25977 18.7207L3.64969 17.334L5.41249 18.3568L2.35352 20.1074C2.28516 20.1465 2.22656 20.1953 2.22656 20.2832C2.22656 20.3613 2.28516 20.4102 2.35352 20.4492L12.1484 26.0547C12.3438 26.1719 12.5 26.2305 12.666 26.2305C12.8418 26.2305 12.9883 26.1719 13.1836 26.0547L22.9785 20.4492C23.0566 20.4102 23.1055 20.3613 23.1055 20.2832C23.1055 20.1953 23.0566 20.1465 22.9785 20.1074L19.9224 18.3585L21.6898 17.334Z"/><path d="M5.72309 12.287L2.35352 14.2188C2.28516 14.2578 2.22656 14.3066 2.22656 14.3848C2.22656 14.4727 2.28516 14.5117 2.35352 14.5605L12.1484 20.166C12.3438 20.2734 12.5 20.332 12.666 20.332C12.8418 20.332 12.9883 20.2734 13.1836 20.166L22.9785 14.5605C23.0566 14.5117 23.1055 14.4727 23.1055 14.3848C23.1055 14.3066 23.0566 14.2578 22.9785 14.2188L19.6117 12.2886L21.3865 11.2598L24.082 12.8223C24.9707 13.3496 25.3418 13.7598 25.3418 14.3848C25.3418 15.0195 24.9707 15.4297 24.082 15.9473L14.0918 21.7383C13.5547 22.0508 13.125 22.207 12.666 22.207C12.2168 22.207 11.7871 22.0508 11.2402 21.7383L1.25977 15.9473C0.361328 15.4297 0 15.0195 0 14.3848C0 13.7598 0.361328 13.3496 1.25977 12.8223L3.95264 11.2598Z"/><path d="M12.666 15.957C13.125 15.957 13.5547 15.8008 14.0918 15.4883L24.082 9.69727C24.9707 9.17969 25.3418 8.76953 25.3418 8.13477C25.3418 7.50977 24.9707 7.09961 24.082 6.57227L14.0918 0.791016C13.5547 0.46875 13.125 0.322266 12.666 0.322266C12.2168 0.322266 11.7871 0.46875 11.2402 0.791016L1.25977 6.57227C0.361328 7.09961 0 7.50977 0 8.13477C0 8.76953 0.361328 9.17969 1.25977 9.69727L11.2402 15.4883C11.7871 15.8008 12.2168 15.957 12.666 15.957Z"/></g></svg>`;
     const __CAR_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 29.8535 23.1543"><g><rect height="23.1543" opacity="0" width="29.8535" x="0" y="0"/><path d="M5.03906 7.22656C5.36133 5.74219 5.9668 4.00391 6.37695 3.28125C6.72852 2.67578 7.14844 2.36328 7.90039 2.26562C8.86719 2.12891 11.0449 2.05078 14.7461 2.05078C18.4473 2.05078 20.625 2.10938 21.5918 2.26562C22.3438 2.37305 22.7539 2.67578 23.1152 3.28125C23.5352 3.99414 24.1016 5.74219 24.4531 7.22656C24.5605 7.65625 24.3848 7.86133 23.9062 7.82227C21.7773 7.68555 19.3164 7.56836 14.7461 7.56836C10.1758 7.56836 7.71484 7.68555 5.58594 7.82227C5.10742 7.86133 4.94141 7.65625 5.03906 7.22656ZM5.66406 16.3184C4.56055 16.3184 3.73047 15.498 3.73047 14.3945C3.73047 13.3008 4.56055 12.4707 5.66406 12.4707C6.75781 12.4707 7.58789 13.3008 7.58789 14.3945C7.58789 15.498 6.75781 16.3184 5.66406 16.3184ZM11.4746 15.8984C10.6543 15.8984 10.0977 15.332 10.0977 14.5215C10.0977 13.7012 10.6543 13.1348 11.4746 13.1348L18.0176 13.1348C18.8379 13.1348 19.4043 13.7012 19.4043 14.5215C19.4043 15.332 18.8379 15.8984 18.0176 15.8984ZM23.8379 16.3184C22.7344 16.3184 21.9043 15.498 21.9043 14.3945C21.9043 13.3008 22.7344 12.4707 23.8379 12.4707C24.9316 12.4707 25.7617 13.3008 25.7617 14.3945C25.7617 15.498 24.9316 16.3184 23.8379 16.3184ZM14.7461 19.7461C18.9258 19.7461 24.541 19.5312 26.9238 19.2578C28.5645 19.0723 29.4922 18.1934 29.4922 16.6113L29.4922 14.3945C29.4922 12.2363 29.0332 11.084 27.9199 9.63867L26.8457 8.24219C26.3867 5.97656 25.5469 3.58398 25.1074 2.65625C24.4434 1.24023 23.1445 0.449219 21.543 0.234375C20.6934 0.117188 17.9004 0.0488281 14.7461 0.0488281C11.5918 0.0488281 8.79883 0.126953 7.94922 0.234375C6.34766 0.429688 5.04883 1.24023 4.38477 2.65625C3.94531 3.58398 3.11523 5.97656 2.64648 8.24219L1.57227 9.63867C0.458984 11.084 0 12.2363 0 14.3945L0 16.6113C0 18.1934 0.927734 19.0723 2.56836 19.2578C4.95117 19.5312 10.5664 19.7461 14.7461 19.7461ZM1.64062 23.1543L3.10547 23.1543C4.0332 23.1543 4.74609 22.4414 4.74609 21.5234L4.74609 18.4375L0 16.1621L0 21.5234C0 22.4414 0.712891 23.1543 1.64062 23.1543ZM26.3867 23.1543L27.8516 23.1543C28.7793 23.1543 29.4922 22.4414 29.4922 21.5234L29.4922 16.1621L24.7461 18.4375L24.7461 21.5234C24.7461 22.4414 25.459 23.1543 26.3867 23.1543Z"/></g></svg>`;
     const __AIRPLANE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 30.6445 25.0098"><g><rect height="25.0098" opacity="0" width="30.6445" x="0" y="0"/><path d="M30.6445 12.5C30.6348 11.0645 28.6719 10.0195 26.3281 10.0195L21.3086 10.0195C20.625 10.0195 20.3711 9.90234 19.9512 9.44336L11.709 0.439453C11.4551 0.15625 11.1328 0 10.7812 0L9.3457 0C9.02344 0 8.84766 0.283203 9.00391 0.625L13.2422 10.0195L6.875 10.7227L4.6582 6.65039C4.48242 6.34766 4.23828 6.2207 3.83789 6.2207L3.29102 6.2207C2.96875 6.2207 2.76367 6.40625 2.76367 6.73828L2.76367 18.2617C2.76367 18.584 2.96875 18.7793 3.29102 18.7793L3.83789 18.7793C4.23828 18.7793 4.48242 18.6426 4.6582 18.3496L6.875 14.2773L13.2422 14.9805L9.00391 24.375C8.84766 24.707 9.02344 24.9902 9.3457 24.9902L10.7812 24.9902C11.1328 24.9902 11.4551 24.834 11.709 24.5508L19.9512 15.5469C20.3711 15.0879 20.625 14.9805 21.3086 14.9805L26.3281 14.9805C28.6719 14.9805 30.6348 13.9258 30.6445 12.5Z"/></g></svg>`;
     const __SQUARE_GRID_3X1_FOLDER_FILL_BADGE_PLUS = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 41.8262 26.9629"><g><rect height="26.9629" opacity="0" width="41.8262" x="0" y="0"/><path d="M15.6543 2.94922L16.3965 3.57422C17.041 4.14062 17.5488 4.33594 18.4668 4.33594L26.9417 4.33594C26.5389 5.10898 26.2683 5.95845 26.1583 6.85547L10.2441 6.85547C9.22852 6.85547 8.68164 7.38281 8.68164 8.17383L8.68164 8.75L26.1368 8.75C26.5749 12.6678 29.9262 15.7422 33.9551 15.7422C34.2826 15.7422 34.606 15.7214 34.9219 15.6745L34.9219 21.0547C34.9219 23.5352 33.6426 24.8145 31.416 24.8145L10.3516 24.8145C7.83203 24.8145 6.54297 23.5449 6.54297 21.0547L6.54297 5.58594C6.54297 3.19336 7.74414 2.01172 9.87305 2.01172L12.9688 2.01172C14.2188 2.01172 14.8242 2.22656 15.6543 2.94922ZM14.2871 15.8984C13.7793 15.8984 13.5254 16.1523 13.5254 16.6797L13.5254 18.6133C13.5254 19.1406 13.7793 19.3945 14.2871 19.3945L16.2402 19.3945C16.7578 19.3945 17.0117 19.1406 17.0117 18.6133L17.0117 16.6797C17.0117 16.1523 16.7578 15.8984 16.2402 15.8984ZM19.7754 15.8984C19.2676 15.8984 19.0137 16.1523 19.0137 16.6797L19.0137 18.6133C19.0137 19.1406 19.2676 19.3945 19.7754 19.3945L21.7285 19.3945C22.2363 19.3945 22.5 19.1406 22.5 18.6133L22.5 16.6797C22.5 16.1523 22.2363 15.8984 21.7285 15.8984ZM25.2539 15.8984C24.7461 15.8984 24.4824 16.1523 24.4824 16.6797L24.4824 18.6133C24.4824 19.1406 24.7461 19.3945 25.2539 19.3945L27.207 19.3945C27.7148 19.3945 27.9785 19.1406 27.9785 18.6133L27.9785 16.6797C27.9785 16.1523 27.7148 15.8984 27.207 15.8984Z"/><path d="M40.2734 7.87109C40.2734 11.3281 37.3828 14.1895 33.9551 14.1895C30.498 14.1895 27.6367 11.3477 27.6367 7.87109C27.6367 4.41406 30.498 1.55273 33.9551 1.55273C37.4219 1.55273 40.2734 4.4043 40.2734 7.87109ZM33.2422 4.59961L33.2422 7.1582L30.6738 7.1582C30.2637 7.1582 29.9707 7.43164 29.9707 7.87109C29.9707 8.30078 30.2637 8.58398 30.6738 8.58398L33.2422 8.58398L33.2422 11.1523C33.2422 11.5723 33.5254 11.8555 33.9551 11.8555C34.3945 11.8555 34.668 11.5723 34.668 11.1523L34.668 8.58398L37.2266 8.58398C37.6465 8.58398 37.9395 8.30078 37.9395 7.87109C37.9395 7.43164 37.6465 7.1582 37.2266 7.1582L34.668 7.1582L34.668 4.59961C34.668 4.17969 34.3945 3.88672 33.9551 3.88672C33.5254 3.88672 33.2422 4.17969 33.2422 4.59961Z"/></g></svg>`;
+    const __CIRCLE_BADGE_PLUS = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 37.666 28.8574"><g><rect height="28.8574" opacity="0" width="37.666" x="0" y="0"/><path d="M31.3185 13.2677C30.8255 13.1668 30.3158 13.1152 29.7949 13.1152C29.6846 13.1152 29.5747 13.1176 29.4677 13.132C28.8363 7.71578 24.2398 3.52539 18.6523 3.52539C12.627 3.52539 7.75391 8.39844 7.75391 14.4238C7.75391 20.4492 12.627 25.3223 18.6523 25.3223C20.1096 25.3223 21.4994 25.0372 22.7665 24.5145C23.04 25.0705 23.3838 25.5859 23.7839 26.0522C22.2168 26.7533 20.4792 27.1387 18.6523 27.1387C11.6309 27.1387 5.9375 21.4453 5.9375 14.4238C5.9375 7.40234 11.6309 1.69922 18.6523 1.69922C25.2836 1.69922 30.7389 6.78597 31.3185 13.2677Z"/><path d="M36.1035 20.9863C36.1035 24.4434 33.2227 27.3047 29.7949 27.3047C26.3281 27.3047 23.4766 24.4629 23.4766 20.9863C23.4766 17.5293 26.3281 14.668 29.7949 14.668C33.252 14.668 36.1035 17.5195 36.1035 20.9863ZM29.082 17.7148L29.082 20.2734L26.5137 20.2734C26.0938 20.2734 25.8008 20.5469 25.8008 20.9863C25.8008 21.416 26.0938 21.6992 26.5137 21.6992L29.082 21.6992L29.082 24.2676C29.082 24.6875 29.3555 24.9707 29.7949 24.9707C30.2246 24.9707 30.498 24.6875 30.498 24.2676L30.498 21.6992L33.0664 21.6992C33.4863 21.6992 33.7695 21.416 33.7695 20.9863C33.7695 20.5469 33.4863 20.2734 33.0664 20.2734L30.498 20.2734L30.498 17.7148C30.498 17.2949 30.2246 17.002 29.7949 17.002C29.3555 17.002 29.082 17.2949 29.082 17.7148Z"/></g></svg>`;
+    const __AT_BADGE_PLUS = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 41.8262 29.0918"><g><rect height="29.0918" opacity="0" width="41.8262" x="0" y="0"/><path d="M21.2891 26.7285C23.0859 26.7285 24.4629 26.4844 25.8984 26.1523C26.1523 26.0938 26.3574 26.0449 26.5137 26.0449C26.9238 26.0449 27.2363 26.3574 27.2363 26.7578C27.2363 27.168 26.9922 27.5391 26.2598 27.7734C25.0781 28.1543 23.1152 28.418 20.9766 28.418C13.4718 28.418 8.00414 23.5603 7.71487 15.7342C7.76578 15.7417 7.81838 15.7422 7.87109 15.7422C8.44287 15.7422 9.00202 15.6789 9.54028 15.5549C9.72527 22.5089 14.4546 26.7285 21.2891 26.7285ZM33.7793 13.7402C33.7793 18.6328 31.6895 21.9629 28.2715 21.9629C26.2598 21.9629 24.7852 20.8301 24.5215 18.9648L24.4238 18.9648C23.6719 20.8594 22.168 21.9531 20.166 21.9531C16.8457 21.9531 14.5801 19.1602 14.5801 15.1465C14.5801 11.1426 16.8555 8.35938 20.127 8.35938C22.0605 8.35938 23.6719 9.4043 24.2969 11.0547L24.4043 11.0547L24.4043 9.29688C24.4043 8.7207 24.7461 8.35938 25.2832 8.35938C25.8203 8.35938 26.1426 8.7207 26.1426 9.29688L26.1426 17.8613C26.1426 19.4629 27.0215 20.4102 28.5254 20.4102C30.7227 20.4102 32.0703 17.8125 32.0703 13.7988C32.0703 7.19727 27.1094 3.31055 20.9375 3.31055C18.7358 3.31055 16.7613 3.82538 15.1036 4.7638C14.8711 4.22273 14.5773 3.71373 14.2261 3.24901C16.1528 2.19923 18.4352 1.63086 20.957 1.63086C28.4277 1.63086 33.7793 6.44531 33.7793 13.7402ZM16.5039 15.1367C16.5039 18.2324 18.0469 20.2539 20.4297 20.2539C22.8223 20.2539 24.3848 18.2031 24.3848 15.0391C24.3848 11.9629 22.8613 10.0293 20.4395 10.0293C18.0664 10.0293 16.5039 12.0605 16.5039 15.1367Z"/><path d="M14.1895 7.87109C14.1895 11.3281 11.2988 14.1895 7.87109 14.1895C4.41406 14.1895 1.5625 11.3477 1.5625 7.87109C1.5625 4.41406 4.41406 1.55273 7.87109 1.55273C11.3379 1.55273 14.1895 4.4043 14.1895 7.87109ZM7.16797 4.59961L7.16797 7.1582L4.59961 7.1582C4.17969 7.1582 3.88672 7.44141 3.88672 7.87109C3.88672 8.30078 4.17969 8.58398 4.59961 8.58398L7.16797 8.58398L7.16797 11.1523C7.16797 11.5723 7.44141 11.8555 7.87109 11.8555C8.31055 11.8555 8.58398 11.5723 8.58398 11.1523L8.58398 8.58398L11.1426 8.58398C11.5625 8.58398 11.8555 8.30078 11.8555 7.87109C11.8555 7.44141 11.5625 7.1582 11.1426 7.1582L8.58398 7.1582L8.58398 4.59961C8.58398 4.17969 8.31055 3.88672 7.87109 3.88672C7.44141 3.88672 7.16797 4.17969 7.16797 4.59961Z"/></g></svg>`;
 
     // Common
     // Common :: Edit
@@ -16062,7 +16122,7 @@
         }))
     ];
 
-    const SUGGESTED_SET_LABEL_MODES = ["none", "abbr", "name", "both"];
+    const SUGGESTED_SET_LABEL_MODES = ["none", "abbr", "name"];
     const SUGGESTED_SET_DEFAULT_ICON = "tree";
     const SUGGESTED_SET_DEFAULT_ID = "national-parks";
     const SUGGESTED_NATIONAL_PARKS = [
@@ -16444,7 +16504,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.2",
+        version: "4.3.0.3",
         date: "2026-06-03",
         title: "Park Pack",
         summary: "Waypoint Packs turn National Parks into previewable, prioritized Wayfinder notes.",
@@ -16455,24 +16515,28 @@
           "Pack markers, labels, exports, and priority badges stay in sync."
         ],
         notice: {
-          version: "4.3.0.2",
+          version: "4.3.0.3",
           title: "Park Pack",
           summary: "Add National Parks as prioritized Wayfinder notes with Waypoint Packs.",
           cta: "Pack the Parks!"
         },
         updates: [
           "Renamed Suggested Sets to Waypoint Packs and moved the entry point into Wayfinder as a compact Packs button.",
+          "Renamed the Notes Wayfinder controls internally to notesActivateWayfinderBtn and notesAddWaypointsBtn, with teal outlines tying them to Wayfinder mode.",
           "Replaced the modal drawer with an inset Waypoint Packs panel over Notes so the map stays visible and interactive.",
           "Added Available Packs cards, visual icon choices, layer-button overlay controls, and map-label-style label controls.",
+          "Pack icon choices now follow the user's active Location Tag order, omit hidden tags, and include a compact more button for opening Location Tags.",
+          "Pack settings are more compact: overlay sits next to label options, helper labels are removed, the combined label option is gone, and label SVG sizing matches map label controls.",
+          "Added a dismissible Waypoint Packs settings hint between Available Packs and the pack settings.",
           "Bundled official National Park-designated units with stable NPS codes, labels, representative coordinates, state lists, URLs, and default note copy.",
           "The Add Selected preview cards let each park be included or skipped, assigned priority 1-5, and annotated before batch creation.",
           "Batch adding creates missing Wayfinder notes, refreshes managed pack fields on existing linked notes, turns the chosen pack icon on, enables the pack overlay, and enters Wayfinder.",
           "Waypoint Pack notes remain normal notes in Notes, filters, Wayfinder, backups, and exports, with lightweight source metadata for duplicate checks and refreshes.",
           "Added optional note priority with compact badges, note search text, exported note text, and pack-list filter/sort controls.",
-          "Priority now appears as a small number pill on the bottom-right of location icons and pack markers.",
+          "Priority now appears as a small number pill on the bottom-right of location icons and pack markers, and linked pack priority changes redraw the map marker immediately.",
           "Added attach flows from the pack panel and note editor so an existing note can join the active pack while preserving user-entered date, level, details, people, topics, and non-pack tags.",
           "Pack markers render separately from normal note pins, use the selected pack icon, take their status color from the linked note level, and do not recolor whole states.",
-          "National Parks default to labels off, with Off, Abbr, Name, and Both label modes available from the compact label control.",
+          "National Parks default to labels off, with Off, Abbr, and Name label modes available from the compact label control.",
           "Removing a pack deletes untouched generated pack notes and detaches edited or visited notes so user work is kept.",
           "Markdown, Rich Text, and Plain Text exports group linked pack notes under their pack name while preserving the existing Wayfinder export flow.",
           "JSON backups/imports normalize pack metadata and priority while dropping unknown pack or item ids."
@@ -18627,7 +18691,7 @@
       }
       const on = bucketListViewActive();
       const mapBtn = $("#mapBucketListBtn");
-      const notesBtn = $("#notesBucketListBtn");
+      const notesBtn = $("#notesActivateWayfinderBtn");
       const pill = $("#mapBucketListPill");
       if (mapBtn) mapBtn.setAttribute("aria-pressed", on ? "true" : "false");
       if (notesBtn) notesBtn.setAttribute("aria-pressed", on ? "true" : "false");
@@ -20039,8 +20103,8 @@
       $("#mapMatchNotesBtn").setAttribute("aria-pressed", matchOn ? "true" : "false");
       const bucketShortcutHint = "Toggle Wayfinder mode";
       setButtonLabel("#mapBucketListBtn", __BACKPACK, "Wayfinder", "Toggle Wayfinder mode", bucketShortcutHint);
-      setButtonLabel("#notesBucketListBtn", __BACKPACK, "Wayfinder", "Toggle Wayfinder mode", bucketShortcutHint);
-      setButtonLabel("#notesSetsBtn", __CIRCLE_BADGE_PLUS, "Packs", "Open Waypoint Packs", "Open Waypoint Packs");
+      setButtonLabel("#notesActivateWayfinderBtn", __BACKPACK, "Wayfinder", "Toggle Wayfinder mode", bucketShortcutHint);
+      setButtonLabel("#notesAddWaypointsBtn", __CIRCLE_BADGE_PLUS, "Packs", "Open Waypoint Packs", "Open Waypoint Packs");
       setButtonLabel("#mapRingModeBtn", __TARGET, "Rangefinder", "Toggle Ring Mode", "Toggle Rangefinder Mode");
       setButtonLabel("#mapZoomOutBtn", __MINUS_CIRCLE, "Zoom Out", "Zoom map out", "Zoom map out");
       setButtonLabel("#mapZoomResetBtn", __ARROW_COUNTERCLOCKWISE_CIRCLE, "Reset", "Reset map zoom", "Reset map zoom");
@@ -21510,18 +21574,19 @@
 
     function renderWaypointIconChoices(set) {
       const selectedId = suggestedSetIconId(set.id);
-      const sorted = allVisitTypes().slice().sort((a, b) =>
-        Number(b.enabled !== false) - Number(a.enabled !== false)
-        || String(a.label || a.id).localeCompare(String(b.label || b.id), undefined, { numeric: true })
-      );
-      const selectedType = sorted.find(type => type.id === selectedId);
-      const visible = sorted.slice(0, 18);
+      const active = activeVisitTypes();
+      const selectedType = active.find(type => type.id === selectedId);
+      const visible = active.slice();
       if (selectedType && !visible.some(type => type.id === selectedId)) visible[visible.length - 1] = selectedType;
-      return visible.map(type => `
+      const iconButtons = visible.map(type => `
         <button class="waypoint-icon-choice" type="button" data-waypoint-icon="${escapeHtml(type.id)}" aria-pressed="${type.id === selectedId ? "true" : "false"}" title="${escapeHtml(type.label)}">
           ${visitTypeIcon(type.id)}
         </button>
       `).join("");
+      return `${iconButtons}
+        <button class="waypoint-icon-choice waypoint-icon-more hint-dot-btn" type="button" data-waypoint-open-tags aria-label="Open Location Tags" title="Open Location Tags">
+          <span>(...)</span>
+        </button>`;
     }
 
     function renderWaypointPackConfigure(set) {
@@ -21531,24 +21596,21 @@
         <button type="button" data-waypoint-label-mode="${mode}" aria-pressed="${labelMode === mode ? "true" : "false"}" title="${escapeHtml(label)}">${icon}</button>
       `;
       return `
-        <div class="waypoint-control-row">
+        <div class="waypoint-control-row is-icon-grid">
           <span class="waypoint-control-label">Icon</span>
           <div class="waypoint-icon-grid" aria-label="Waypoint Pack icon">${renderWaypointIconChoices(set)}</div>
         </div>
-        <div class="waypoint-control-row">
+        <div class="waypoint-control-row waypoint-control-combo">
           <span class="waypoint-control-label">Overlay</span>
           <button class="waypoint-control-icon" type="button" data-waypoint-overlay aria-pressed="${overlayOn ? "true" : "false"}" title="${overlayOn ? "Hide overlay" : "Show overlay"}">
             ${overlayOn ? __SQUARE_3_LAYERS_3D_TOP_FILLED : __SQUARE_3_LAYERS_3D}
           </button>
-        </div>
-        <div class="waypoint-control-row">
           <span class="waypoint-control-label">Labels</span>
           <div class="segmented map-label-toggle waypoint-label-toggle" aria-label="Waypoint Pack labels">
             <span title="Waypoint label type">${__TAG_FILL}</span>
             ${labelButton("none", __CIRCLE_SLASH, "No labels")}
             ${labelButton("abbr", __CHARACTER, "Abbreviations")}
             ${labelButton("name", __TEXTFORMAT, "Names")}
-            ${labelButton("both", "A+", "Abbreviations and names")}
           </div>
         </div>
       `;
@@ -21579,7 +21641,7 @@
       const isOpen = waypointPacksPanelOpen && bucketListViewActive();
       panel.classList.toggle("hidden", !isOpen);
       panel.setAttribute("aria-hidden", isOpen ? "false" : "true");
-      $("#notesSetsBtn")?.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      $("#notesAddWaypointsBtn")?.setAttribute("aria-expanded", isOpen ? "true" : "false");
       const set = activeSuggestedSet();
       if (!set) return;
       const progress = suggestedSetProgress(set.id);
@@ -26955,6 +27017,10 @@
           syncButtonLabels();
           return;
         }
+        if (event.target.closest("[data-waypoint-open-tags]")) {
+          openVisitTagSettings("settings");
+          return;
+        }
         if (event.target.closest("[data-waypoint-overlay]")) {
           state.settings.suggestedSetsVisible = state.settings.suggestedSetsVisible !== true;
           save();
@@ -26986,10 +27052,19 @@
         if (priorityChoice) {
           const row = priorityChoice.closest("[data-set-preview-item]");
           const input = row ? $("[data-set-preview-priority]", row) : null;
-          if (input) input.value = priorityChoice.dataset.setPreviewPriorityChoice || "";
+          const priority = priorityChoice.dataset.setPreviewPriorityChoice || "";
+          if (input) input.value = priority;
           $$("[data-set-preview-priority-choice]", row).forEach(button => {
             button.setAttribute("aria-pressed", button === priorityChoice ? "true" : "false");
           });
+          const linked = row ? suggestedSetLinkedNote(activeSuggestedSet().id, row.dataset.setPreviewItem) : null;
+          if (linked) {
+            linked.note.priority = normalizeNotePriority(priority);
+            linked.note.sourceSetGenerated = false;
+            save();
+            renderMap();
+            renderNotesPanel();
+          }
           return;
         }
         const edit = event.target.closest("[data-set-edit-note]");
@@ -27123,8 +27198,8 @@
         event.preventDefault();
         toggleRingDistance(distance.dataset.ringDistanceToggle);
       });
-      $("#notesBucketListBtn").addEventListener("click", toggleBucketListView);
-      $("#notesSetsBtn").addEventListener("click", toggleWaypointPacksPanel);
+      $("#notesActivateWayfinderBtn").addEventListener("click", toggleBucketListView);
+      $("#notesAddWaypointsBtn").addEventListener("click", toggleWaypointPacksPanel);
       $("#notesPanelBackBtn").addEventListener("click", () => {
         notesPanelState = null;
         save();
