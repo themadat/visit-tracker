@@ -1,30 +1,36 @@
-# WISH-004 4.3.0: Waypoint Packs + National Parks
+# WISH-004 4.3.0: Waypoint Packs
 
 Status: active implementation for 4.3.0
 Ticket: WISH-004
-Working title: Waypoint Packs + National Parks
+Working title: Waypoint Packs
 
 ## Summary
 
 Reframe WISH-004 from a one-off National Park overlay into **Waypoint Packs**,
-a Wayfinder sub-feature for curated place packs. National Parks is the first
-bundled pack. Packs can be previewed, annotated, prioritized, attached to
-existing notes, and batch-added into Wayfinder as normal notes. They draw their
-own pack-aware markers and labels, but they do not change state progress unless
-the user manually edits state levels.
+a Wayfinder sub-feature for curated place packs. National Parks and National
+Monuments are the first bundled packs. Packs can be previewed, annotated,
+prioritized, attached to existing notes, and batch-added into Wayfinder as
+normal notes. They draw their own pack-aware markers and labels, but they do not
+change state progress unless the user manually edits state levels.
 
 National Parks v1 includes all official National Park-designated units,
 including Alaska, Hawaii, and territories. No runtime NPS API calls, no API
 keys, and no park boundary geometry.
 
+National Monuments v1 includes a static snapshot from Wikipedia's
+`List of national monuments of the United States`, with date established and
+description text prefilled into note details. No runtime Wikipedia calls.
+
 ## Key Changes
 
 - Add bundled pack data:
-  - `SUGGESTED_SETS`, starting with `national-parks`.
+  - `SUGGESTED_SETS`, starting with `national-parks` and `national-monuments`.
   - Each item has stable id/code, name, label abbreviation, primary state,
     state list, coordinates, URL, and default note template.
   - National Parks abbreviation labels use official uppercase NPS codes like
     `ACAD`, `ZION`, `GRCA`.
+  - National Monuments labels use generated uppercase codes and link to the
+    corresponding Wikipedia page.
 - Add lightweight note metadata:
   - Normal notes may carry `sourceSetId`, `sourceItemId`, and managed pack
     fields. Internal schema names keep `set` for compatibility.
@@ -59,11 +65,12 @@ keys, and no park boundary geometry.
     basics, and pack marker fields while preserving user level, date, details,
     what/who, and non-pack tags unless missing.
 - Add pack marker and label behavior:
-  - Pack markers use the pack's chosen icon/logo with border/status color from
-    the linked note's level.
+  - Pack markers use the pack's chosen icon/logo with Wayfinder teal overlay
+    styling.
+  - Priority markers use a 1-5 green, yellow-green, yellow, yellow-orange,
+    orange color scale.
   - Adding pack notes does **not** apply the Wayfinder level to entire states.
-  - Visited notes stay linked to the pack; marker color changes with the note
-    level.
+  - Visited notes stay linked to the pack.
   - Removing a pack deletes only untouched generated Wayfinder notes; edited or
     visited notes stay as normal linked/detached notes per confirmation copy.
   - Overlay uses `__SQUARE_3_LAYERS_3D` when off and
@@ -81,6 +88,8 @@ keys, and no park boundary geometry.
 WISH-066 tracks better support for going from one pack to many: pack categories,
 search/filtering, multiple active overlays, import-ready data, and clearer
 multi-pack active state without crowding Wayfinder.
+
+WISH-067 tracks first-class Links and Photos controls in notes.
 
 ## National Parks Snapshot
 
@@ -157,6 +166,8 @@ multi-pack active state without crowding Wayfinder.
   map remains visible.
 - Select National Parks from Available Packs; choose an icon, overlay state, and
   label mode.
+- Select National Monuments; confirm 138 items, Wikipedia links, and prefilled
+  `Date Established | Description` note details.
 - Add National Parks through preview; confirm one Wayfinder note per included
   park.
 - Use preview priorities and notes; confirm priority badges and note details
@@ -169,6 +180,9 @@ multi-pack active state without crowding Wayfinder.
 - Remove the pack; confirm untouched generated notes are removed and
   edited/visited notes are preserved.
 - Verify label modes: Off, Abbr, Name.
+- Verify pack overlay pins are teal and priority pills follow the requested
+  green-to-orange scale.
+- Verify Alaska pack pins line up against the Alaska inset and Aleutian frame.
 - Verify priority search/filter/sort/export behavior.
 - Verify JSON export/import round-trips pack metadata and priority.
 - Smoke US/World switching, normal note pins, Wayfinder, Rangefinder, and
