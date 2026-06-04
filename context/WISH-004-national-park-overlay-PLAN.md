@@ -15,7 +15,8 @@ change state progress unless the user manually edits state levels.
 
 National Parks v1 includes all official National Park-designated units,
 including Alaska, Hawaii, and territories. No runtime NPS API calls, no API
-keys, and no park boundary geometry.
+keys, and no park boundary geometry. Park note details include a static
+Wikipedia-sourced date established and description snapshot.
 
 National Monuments v1 includes a static snapshot from Wikipedia's
 `List of national monuments of the United States`, with date established and
@@ -90,6 +91,8 @@ search/filtering, multiple active overlays, import-ready data, and clearer
 multi-pack active state without crowding Wayfinder.
 
 WISH-067 tracks first-class Links and Photos controls in notes.
+
+WISH-068 tracks a small raptor easter egg.
 
 ## National Parks Snapshot
 
@@ -168,6 +171,10 @@ WISH-067 tracks first-class Links and Photos controls in notes.
   label mode.
 - Select National Monuments; confirm 138 items, Wikipedia links, and prefilled
   `Date Established | Description` note details.
+- Select National Parks; confirm prefilled `Date Established | Description`
+  note details.
+- Select a pack whose recommended icon is hidden; confirm the icon becomes
+  active at the end of the Location Tag order.
 - Add National Parks through preview; confirm one Wayfinder note per included
   park.
 - Use preview priorities and notes; confirm priority badges and note details
@@ -182,7 +189,8 @@ WISH-067 tracks first-class Links and Photos controls in notes.
 - Verify label modes: Off, Abbr, Name.
 - Verify pack overlay pins are teal and priority pills follow the requested
   green-to-orange scale.
-- Verify Alaska pack pins line up against the Alaska inset and Aleutian frame.
+- Verify Alaska pack pins spread across the Alaska inset and Aleutian frame
+  without bunching.
 - Verify priority search/filter/sort/export behavior.
 - Verify JSON export/import round-trips pack metadata and priority.
 - Smoke US/World switching, normal note pins, Wayfinder, Rangefinder, and
