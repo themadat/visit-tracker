@@ -20,7 +20,8 @@ Wikipedia-sourced date established and description snapshot.
 
 National Monuments v1 includes a static snapshot from Wikipedia's
 `List of national monuments of the United States`, with date established and
-description text prefilled into note details. No runtime Wikipedia calls.
+description text prefilled into note details. Runtime Wikipedia image lookup
+occurs only when the user clicks a location's Photo action.
 
 ## Key Changes
 
@@ -53,8 +54,12 @@ description text prefilled into note details. No runtime Wikipedia calls.
   - Panel shows Available Packs, selected-pack progress, visual icon choices,
     overlay toggle, label mode buttons, one unified Pack Locations list,
     add/refresh, and remove.
-  - Pack Locations uses short waypoint names with inline `Include`, `Priority`,
-    linked status, info, Attach/Edit/Unlink actions, and pre-link `Note` fields.
+  - Pack Locations uses full-height toolbar rows with a flexible wrapping
+    name/code/location block, Website and on-demand Wikipedia Photo actions,
+    inline Priority, fixed two-line status, contextual Edit/Link and Unlink,
+    and pre-link `Note` fields.
+  - Edit opens the state-scoped attach selector only when an unlinked location
+    has an available note; unavailable Edit/Link and Unlink actions are disabled.
   - Linked locations collapse status plus Edit/Unlink icon actions into one
     compact row; status/source badges may stack to conserve horizontal space.
   - Editing a linked note keeps the Waypoint Packs panel active behind the note
@@ -213,6 +218,12 @@ WISH-068 tracks a small raptor easter egg.
   duplicate list.
 - Verify linked locations use one compact row with stacked status/source badges,
   dedicated Edit/Unlink icons, and no second action row.
+- Verify long names do not clip and every row action/status/priority control
+  shares the full row height.
+- Verify Website opens the location source and Photo reveals only the Wikimedia
+  image inline; confirm fallback image lookup runs only after Photo is clicked.
+- Verify unlinked rows disable Unlink, disable Edit/Link when no state-scoped
+  notes are available, and reveal the attach selector from Edit/Link when one is.
 - Open a linked note from Pack Locations, close the note editor, and confirm the
   same Waypoint Packs panel and selected pack remain visible.
 - Verify National Monument silhouettes render inside map marker circles.
@@ -232,7 +243,7 @@ WISH-068 tracks a small raptor easter egg.
 - Waypoint Packs are implemented inside the single-file app with no runtime
   dependencies.
 - National Park data is a static bundled snapshot sourced from official NPS data
-  outside runtime.
+  outside runtime; clicked Photo actions may fetch a Wikipedia page image.
 - Priority is a note field, not a Location Tag.
 - Pack identity is metadata on notes, not inferred from text.
 - Pack markers are visually separate from state progress and should not recolor

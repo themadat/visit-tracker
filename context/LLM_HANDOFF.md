@@ -6,16 +6,38 @@ Copy this into new chats:
 Continue work in /Users/stripes/Documents/GitHub/visit-tracker. Read context/LLM_HANDOFF.md first. Respect manual edits. Run git status --short before editing. Use port 8018 for local preview.
 ```
 
-Shorthand commands: **`start`**, **`prep`**, **`ship`** — see Workflows below.
+Shorthand commands: **`wish`**, **`start`**, **`prep`**, **`ship`** — see
+Workflows below.
 
-## Workflows: `start` / `prep` / `ship`
+## Workflows: `wish` / `start` / `prep` / `ship`
 
-Three shorthand commands drive the version lifecycle: `start` opens a line,
-`prep` makes it release-ready, `ship` condenses it into a cut release. Always
-run `git status --short` first and preserve in-flight manual edits. End every
-working session with a push commit summary + description in two distinct
-copy-paste containers, then finish with one copyable checkpoint command:
-`` `_vt-checkpoint <short commit message>` ``.
+Four shorthand commands drive planning and the version lifecycle: `wish`
+captures a Roadmap idea, `start` opens a line, `prep` makes it release-ready,
+and `ship` condenses it into a cut release. Always run `git status --short`
+first and preserve in-flight manual edits. End every working session with two
+copy-paste containers: first the commit description in list form, then the
+commit command with title in the exact format
+`` `_vt-checkpoint APP_VERSION - <commit title>` ``.
+
+### `wish` — capture a Roadmap idea
+
+Record an idea for later without implementing it.
+
+- Check `WISHLIST_SEEDS` for duplicates and nearby wishes before assigning the
+  next unused `WISH-###` id.
+- Capture a complete seed: title, behavior-focused description, priority,
+  effort, target kind/version, estimated token cost, compact implementation
+  prompt, and category.
+- Use sensible defaults when the request is clear. Ask concise clarifying
+  questions only when an ambiguity materially changes scope, priority, or
+  architecture, and state any assumptions used.
+- Relate the new wish in an active plan doc when it is a direct follow-up to
+  that work.
+- Do not create a plan doc, retarget an exact version, or implement the wish
+  unless the user explicitly asks.
+- Since the Roadmap is visible in the app, bump the active build and add a
+  public-safe `CHANGELOG` update when a wish is added.
+- Verify the app parses and the new Roadmap item renders/searches correctly.
 
 ### `start` — open a new version line
 
@@ -96,20 +118,22 @@ For every completed change:
 - When manual or unexpected edits are present, identify their app/docs effect and include it in `CHANGELOG` alongside the current update.
 - Keep the current major/minor release entry updated unless intentionally opening a new release line.
 - Preserve the localStorage schema where possible.
-- Give me a push commit summary and description in two distinct containers that make copy and paste very easy.
+- Give me two copy-paste containers: the first contains the commit description in list form;
+  the second contains the commit command with title in this format: `_vt-checkpoint APP_VERSION - <commit title>`
 
 ## Snapshot
 
 - Trail Log is a single-file, local-first HTML/CSS/JS app.
 - Main file: `index.html`. `STORAGE_KEY = "usStateVisitMap.v1"`, version in `APP_VERSION`.
 - Docs: `README.md` (public/run/build), this handoff (all dev + LLM context).
-- Current version: `APP_VERSION = "4.3.0.10"` — active 4.3.0 dev line "Waypoint Pack" for WISH-004 Waypoint Packs. Latest cut release is 4.2.0 "Rangefinder".
-- 4.3.0.10 adds **Waypoint Packs** as a Wayfinder sub-feature: curated place packs that can be previewed, prioritized, annotated, attached to existing notes, and batch-added as normal Wayfinder notes. National Parks and National Monuments are bundled packs, with embedded SVG Location Tags, pack-aware markers/labels, note metadata, priority badges, and export grouping. Pack markers do not recolor state progress. The Packs button only appears in Wayfinder, uses `__CIRCLE_BADGE_PLUS`, and opens an inset panel over Notes instead of a modal. A single compact Pack Locations list combines short waypoint names, selection, inline priority, state-scoped Attach/Edit/Unlink actions, status, and notes before Add/Refresh Selected; linked rows hide the staging note field and collapse status plus icon actions into one row. Editing a linked note leaves the Waypoint Packs panel open behind the editor so closing it returns to the same pack context. Linking an existing note appends the waypoint note to Additional Details and updates City and coordinates. Monument artwork flips between map and Notes contrast treatments in light/dark modes. Park and Monument notes are prefilled as `Established on <date> | <description>` from static Wikipedia-sourced snapshots. Alaska waypoint projection has separate mainland/Aleutian frames, pack overlay pins are Wayfinder teal, and priority colors run green through orange. Preview priorities paint map badges before Add/Refresh; waypoint labels sit above markers. Preview inclusion uses a teal-bordered location selector instead of a checkbox. Selecting a pack temporarily enables its recommended Location Tag at the end of the active tag order; preview-added tags clean themselves up when the pack is left without linked notes.
+- Current version: `APP_VERSION = "4.3.0.12"` — active 4.3.0 dev line "Waypoint Pack" for WISH-004 Waypoint Packs. Latest cut release is 4.2.0 "Rangefinder".
+- 4.3.0.12 adds **Waypoint Packs** as a Wayfinder sub-feature: curated place packs that can be previewed, prioritized, annotated, attached to existing notes, and batch-added as normal Wayfinder notes. National Parks and National Monuments are bundled packs, with embedded SVG Location Tags, pack-aware markers/labels, note metadata, priority badges, and export grouping. Pack markers do not recolor state progress. The Packs button only appears in Wayfinder, uses `__CIRCLE_BADGE_PLUS`, and opens a wide inset panel while leaving part of the map visible. Pack Locations uses full-height toolbar rows: a flexible wrapping name/code/location block, Website and on-demand Wikipedia Photo actions, priority buttons, a fixed two-line status, Edit/Link, and Unlink. Unavailable Edit/Link and Unlink actions are disabled; Edit opens the state-scoped attach selector only when needed. Linked rows hide the staging note field. Editing a linked note leaves the Waypoint Packs panel open behind the editor so closing it returns to the same pack context. Linking an existing note appends the waypoint note to Additional Details and updates City and coordinates. Monument artwork flips between map and Notes contrast treatments in light/dark modes. Park and Monument notes are prefilled as `Established on <date> | <description>` from static Wikipedia-sourced snapshots. Alaska waypoint projection has separate mainland/Aleutian frames, pack overlay pins are Wayfinder teal, and priority colors run green through orange. Preview priorities paint map badges before Add/Refresh; waypoint labels sit above markers. Preview inclusion uses a teal-bordered location selector instead of a checkbox. Selecting a pack temporarily enables its recommended Location Tag at the end of the active tag order; preview-added tags clean themselves up when the pack is left without linked notes. WISH-069 tracks timezone-aware Rangefinder Start, End, departure, and arrival times.
 - 4.2.0 adds **Rangefinder Mode**: a map mode (Shortcut Mode key `5`, `__TARGET` button) that picks two note pins as Start/End, draws concentric planning rings, and shows straight-line distance + estimated time. Drive/Plane travel modes, per-map settings (`settings.ringByLayer.{us,world}`), configurable average speed (Drive 30–120, Plane 120–760 mph), fill/clip/unit/time toggles, and US + World support. Internal symbols use the `ring*` prefix.
 - Latest public releases (newest first): 4.2.0 "Rangefinder", 4.1.0 "Wayfinder", 4.0.0 "Trail Atlas", 3.3.0 "Basecamp Notes". Full notes in the in-app CHANGELOG; full history table in `README.md`.
 - Plan docs live in `context/` only while their line is in flight, then are deleted on ship. Active: `context/WISH-004-national-park-overlay-PLAN.md` (revised Waypoint Packs plan). Shipped plans (Rangefinder 4.2.0, Wayfinder 4.1.0, World map 4.0.0) were removed after release.
 - No build step (other than the optional macOS icon pipeline — see README), backend, or dependencies.
-- User data lives in browser localStorage. Locate is the only intentional online action and only runs when clicked.
+- User data lives in browser localStorage. Locate and Waypoint Pack Wikipedia
+  photo previews are intentional online actions and only run when clicked.
 
 ## Rules
 
@@ -120,7 +144,8 @@ For every completed change:
 - Edit surgically, especially in `index.html`; do not reformat the file.
 - App behavior changes usually require `APP_VERSION`/`CHANGELOG` updates. Docs-only, handoff-only, or planning-only edits do not need release churn unless the user asks.
 - When a change affects dev rules, repo context, or future handoff instructions, update this file. Keep `README.md` for public/run/build info only — do not duplicate dev rules there.
-- End every final reply with a short copyable checkpoint command in the exact format `` `_vt-checkpoint <message>` ``. This signals the prompt is done and lets the user run their local commit/push/beta update helper.
+- End every final reply with two copyable blocks: first the commit description
+  in list form, then `_vt-checkpoint APP_VERSION - <commit title>`.
 
 **Code**
 
@@ -140,7 +165,8 @@ For every completed change:
 - `priority`: `P0`–`P3`. `effort`: `small` | `medium` | `large` | `x-large`.
 - `targetKind`: `exact` (with a `targetVersion`) or a bucket — `major` | `minor` | `patch`.
 - `description` states behavior and scope; `prompt` is a compact, minimal-token implementation prompt for an LLM.
-- When adding items, ask concise clarifying questions with default answers the user can accept unchanged.
+- When adding items, use sensible defaults and state them; ask concise
+  clarifying questions only when ambiguity materially changes the wish.
 
 **Release notes** — keep public-facing: describe shipped behavior, not prompts, tickets, or internal workflow.
 
@@ -266,11 +292,12 @@ Important invariants:
   `#notesActivateWayfinderBtn`; the Packs button keeps a teal Wayfinder outline,
   while the Wayfinder mode button only highlights when active.
   Available Packs cards, visual icon choices, overlay and label icon controls,
-  a unified Pack Locations list with short names, selection/priority/pre-link
-  notes, and contextual state-scoped Attach/Edit/Unlink actions; linking appends
-  waypoint details and updates City/coordinates. Also includes batch add into
-  Wayfinder, dedicated pack SVG icons, pack-aware markers, preview priority map
-  badges, temporary-icon cleanup, and safe remove behavior.
+  a unified Pack Locations toolbar with flexible name/code/location, Website,
+  on-demand inline Wikipedia Photo, priority, fixed status, contextual
+  Edit/Link, Unlink, and pre-link notes. Linking appends waypoint details and
+  updates City/coordinates. Also includes batch add into Wayfinder, dedicated
+  pack SVG icons, pack-aware markers, preview priority map badges,
+  temporary-icon cleanup, and safe remove behavior.
 - Legend: editable levels (name, color, definition, exclude-from-stats, Wayfinder), drag reorder, swipe quick actions, movable desktop placement.
 - Rangefinder: Shortcut Mode key `5` / target button opens a paired panel with the Legend, picks saved note pins as Start/End, draws straight-line Drive/Plane planning rings on US and World maps, and keeps per-map ring distances, units, fill/clip/time style, travel mode, and average speed settings.
 - Notes: search (with `/` hint chip + universal `/` shortcut), sort, compact/expanded/text views, category grouping, icon filters, Show Excluded toggle (styled like legend's excluded pattern), coordinate filter, date precision filter, selected-location detail.
