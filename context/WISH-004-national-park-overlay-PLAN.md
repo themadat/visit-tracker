@@ -196,6 +196,11 @@ WISH-068 tracks a small raptor easter egg.
 - Verify waypoint labels sit above the icon and leave the priority badge clear.
 - Verify teal-bordered location headers replace preview checkboxes and toggle
   whether each location is included.
+- Verify the unified Pack Locations list combines selection, inline priority,
+  state-scoped Attach/Edit actions, status, and notes without a duplicate list.
+- Verify National Monument silhouettes render inside map marker circles.
+- Verify Attach Existing Note only offers available notes from the waypoint's
+  listed state or states.
 - Verify preview-added recommended icons disappear when an unlinked pack is
   closed or left, but stay available while linked pack notes exist.
 - Verify Alaska pack pins spread across the Alaska inset and Aleutian frame
