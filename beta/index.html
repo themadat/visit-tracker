@@ -4793,10 +4793,8 @@
 
     .waypoint-priority-menu,
     .note-waypoint-link-menu {
-      position: absolute;
+      position: fixed;
       z-index: 12;
-      top: calc(100% + .2rem);
-      right: 0;
       display: grid;
       gap: .24rem;
       min-width: 10.5rem;
@@ -4972,10 +4970,8 @@
     }
 
     .waypoint-attach-menu {
-      position: absolute;
+      position: fixed;
       z-index: 12;
-      top: calc(100% + .2rem);
-      right: 0;
       display: grid;
       gap: .24rem;
       width: min(28rem, calc(100vw - 3rem));
@@ -4997,7 +4993,7 @@
       white-space: normal;
     }
 
-    @container (min-width: 46rem) {
+    @container (min-width: 30rem) {
       .waypoint-preview-main {
         grid-template-columns: minmax(16rem, 1fr) auto;
         align-items: stretch;
@@ -15241,7 +15237,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.16";
+    const APP_VERSION = "4.3.0.17";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -17209,7 +17205,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.16",
+        version: "4.3.0.17",
         date: "2026-06-04",
         title: "Waypoint Pack",
         summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
@@ -17220,12 +17216,16 @@
           "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.16",
+          version: "4.3.0.17",
           title: "Waypoint Pack",
           summary: "Add Parks and Monuments as prioritized Wayfinder notes.",
           cta: "Pack the Map!"
         },
         updates: [
+          "Kept Waypoint link menus clamped to the viewport so wrapped-row popups are not cut off.",
+          "Let Waypoint Pack icon filters stay off after a user turns them off in Notes.",
+          "Merged waypoint default park details into Additional Details when linking from the note editor.",
+          "Preserved Pack Locations scroll position when opening or choosing Link Existing Note menus.",
           "Selecting a Waypoint Pack now turns its overlay on and defaults pack labels to full names.",
           "Converted Waypoint priority controls into single shaded popout buttons in pack rows and linked note headers.",
           "Moved linked note priority, Website, Photo, and Link to Waypoint controls into a teal note-header container.",
@@ -18902,6 +18902,8 @@
         ? [...new Set(next.settings.noteVisitTypeFilters.filter(id => validVisitFilterIds.has(id)))]
         : [];
       if (!next.settings.noteVisitTypeFilters.length) next.settings.noteVisitTypeFilters = [...validVisitFilterIds];
+      const noteFiltersWereAllSelected = next.settings.noteVisitTypeFilters.length === validVisitFilterIds.size
+        && [...validVisitFilterIds].every(id => next.settings.noteVisitTypeFilters.includes(id));
       next.states = {};
       Object.entries(input.states || {}).forEach(([abbr, raw]) => {
         if (!STATE_NAMES[abbr]) return;
@@ -18965,7 +18967,7 @@
           const hiddenIndex = next.visitTypes.findIndex(candidate => candidate.enabled === false);
           next.visitTypes.splice(hiddenIndex >= 0 ? hiddenIndex : next.visitTypes.length, 0, { ...type, enabled: true });
         }
-        if (!next.settings.noteVisitTypeFilters.includes(iconId)) next.settings.noteVisitTypeFilters.push(iconId);
+        if (noteFiltersWereAllSelected && !next.settings.noteVisitTypeFilters.includes(iconId)) next.settings.noteVisitTypeFilters.push(iconId);
         const legacyIconId = LEGACY_SUGGESTED_SET_DEFAULT_ICONS[setId];
         normalizedNotes.filter(note => note.sourceSetId === setId).forEach(note => {
           note.visitTypes = [...new Set((note.visitTypes || []).filter(id => id !== legacyIconId).concat(iconId))];
@@ -20430,13 +20432,14 @@
       const iconId = set?.defaultIconId || SUGGESTED_SET_DEFAULT_ICON;
       const index = state.visitTypes.findIndex(type => type.id === iconId);
       if (index < 0 || state.visitTypes[index]?.enabled !== false) return false;
+      const filtersWereAllSelected = allNoteIconFiltersSelected();
       const [type] = state.visitTypes.splice(index, 1);
       const enabledType = { ...type, enabled: true };
       const hiddenIndex = state.visitTypes.findIndex(item => item.enabled === false);
       if (hiddenIndex >= 0) state.visitTypes.splice(hiddenIndex, 0, enabledType);
       else state.visitTypes.push(enabledType);
       trackSuggestedSetPreviewIcon(iconId);
-      noteVisitTypeFilters.add(iconId);
+      if (filtersWereAllSelected) noteVisitTypeFilters.add(iconId);
       ensureNoteIconFilters();
       return true;
     }
@@ -20504,8 +20507,9 @@
     function ensureSuggestedSetIconEnabled(setId = activeSuggestedSet()?.id) {
       const iconId = suggestedSetIconId(setId);
       const type = state.visitTypes.find(item => item.id === iconId);
+      const filtersWereAllSelected = allNoteIconFiltersSelected();
       if (type) type.enabled = true;
-      noteVisitTypeFilters.add(iconId);
+      if (filtersWereAllSelected) noteVisitTypeFilters.add(iconId);
       ensureNoteIconFilters();
       return iconId;
     }
@@ -20537,6 +20541,12 @@
       note.details = merged;
       note.text = merged;
       return note;
+    }
+
+    function mergeSuggestedSetDetailsText(existing, details) {
+      const note = { details: String(existing || ""), text: String(existing || "") };
+      appendSuggestedSetDetails(note, details);
+      return noteDetails(note);
     }
 
     function suggestedSetNoteLevelId() {
@@ -22524,6 +22534,45 @@
         : "";
     }
 
+    function positionFloatingMenu(menu, anchor) {
+      if (!menu || !anchor || menu.hidden) return;
+      const anchorRect = anchor.getBoundingClientRect();
+      const menuRect = menu.getBoundingClientRect();
+      const margin = 8;
+      const width = Math.min(menuRect.width || menu.offsetWidth || 280, window.innerWidth - margin * 2);
+      const maxLeft = Math.max(margin, window.innerWidth - width - margin);
+      const preferredLeft = anchorRect.right - width;
+      const left = Math.min(Math.max(margin, preferredLeft), maxLeft);
+      const below = anchorRect.bottom + 4;
+      const maxTop = Math.max(margin, window.innerHeight - Math.min(menuRect.height || menu.offsetHeight || 240, window.innerHeight - margin * 2) - margin);
+      const top = Math.min(Math.max(margin, below), maxTop);
+      menu.style.width = `${width}px`;
+      menu.style.left = `${left}px`;
+      menu.style.top = `${top}px`;
+    }
+
+    function positionWaypointFloatingMenus() {
+      requestAnimationFrame(() => {
+        $$(".waypoint-attach-menu:not([hidden])").forEach(menu => {
+          positionFloatingMenu(menu, menu.closest(".waypoint-link-wrap")?.querySelector("[data-set-edit-note]"));
+        });
+        $$(".waypoint-priority-menu:not([hidden])").forEach(menu => {
+          positionFloatingMenu(menu, menu.closest(".waypoint-priority-popout")?.querySelector(".waypoint-priority-toggle"));
+        });
+        const noteMenu = $("#noteWaypointLinkMenu");
+        if (noteMenu && !noteMenu.hidden) positionFloatingMenu(noteMenu, $("#noteWaypointLinkBtn"));
+      });
+    }
+
+    function restoreWaypointPanelScroll(scrollTop) {
+      if (!Number.isFinite(scrollTop)) return;
+      requestAnimationFrame(() => {
+        const body = $(".waypoint-packs-body");
+        if (body) body.scrollTop = scrollTop;
+        positionWaypointFloatingMenus();
+      });
+    }
+
     function renderSetPreviewRow(set, item) {
       const linked = suggestedSetLinkedNote(set.id, item.id);
       const note = linked?.note;
@@ -22644,6 +22693,7 @@
       $("#waypointPackConfigure").innerHTML = renderWaypointPackConfigure(set);
       $("#waypointPackMapControls").innerHTML = renderWaypointPackMapControls(set);
       $("#setsPreviewTable").innerHTML = set.items.map(item => renderSetPreviewRow(set, item)).join("");
+      positionWaypointFloatingMenus();
     }
 
     function openSetsDialog(setId = "") {
@@ -24763,6 +24813,7 @@
       $("#noteSourceSetId").value = source.set.id;
       $("#noteSourceItemId").value = source.item.id;
       $("#noteSourceGenerated").value = "";
+      $("#noteText").value = mergeSuggestedSetDetailsText($("#noteText").value, source.item.defaultDetails);
       $("#noteWhere").value = source.item.fullName;
       $("#noteLat").value = normalizeLatitude(source.item.lat);
       $("#noteLng").value = normalizeLongitude(source.item.lng);
@@ -28164,6 +28215,7 @@
           if (menu) {
             menu.hidden = !open;
             priorityToggle.setAttribute("aria-expanded", open ? "true" : "false");
+            positionWaypointFloatingMenus();
           }
           return;
         }
@@ -28207,6 +28259,7 @@
         }
         const attachChoice = event.target.closest("[data-set-attach-note]");
         if (attachChoice) {
+          const scrollTop = $(".waypoint-packs-body")?.scrollTop;
           const set = activeSuggestedSet();
           const attach = attachChoice.closest("[data-set-attach-item]");
           const [layer, abbr, noteId] = attachChoice.dataset.setAttachNote.split("|");
@@ -28214,8 +28267,13 @@
           const source = suggestedSetItem(set.id, attach.dataset.setAttachItem);
           const details = source ? suggestedSetPreviewDetail(source.set, source.item, null) : "";
           waypointAttachMenuItemId = "";
-          attachNoteToSuggestedSetItem(abbr, noteId, set.id, attach.dataset.setAttachItem, { details });
-          renderSetsDialog();
+          attachNoteToSuggestedSetItem(abbr, noteId, set.id, attach.dataset.setAttachItem, { persist: false, details });
+          state.settings.activeSuggestedSetId = set.id;
+          state.settings.suggestedSetsVisible = true;
+          save();
+          renderMap();
+          renderNotesPanel();
+          restoreWaypointPanelScroll(scrollTop);
           return;
         }
         const edit = event.target.closest("[data-set-edit-note]");
@@ -28231,12 +28289,17 @@
           }
           const source = suggestedSetItem(set.id, edit.dataset.setEditNote);
           if (!source || !attachableNoteRefs(source.item).length) return;
+          const scrollTop = $(".waypoint-packs-body")?.scrollTop;
           waypointAttachMenuItemId = waypointAttachMenuItemId === edit.dataset.setEditNote ? "" : edit.dataset.setEditNote;
           renderSetsDialog();
+          restoreWaypointPanelScroll(scrollTop);
           if (waypointAttachMenuItemId) {
             const menu = $$("[data-set-attach-item]", $("#waypointPacksPanel"))
               .find(item => item.dataset.setAttachItem === waypointAttachMenuItemId);
-            if (menu) $("[data-set-attach-note]", menu)?.focus();
+            if (menu) {
+              positionWaypointFloatingMenus();
+              $("[data-set-attach-note]", menu)?.focus({ preventScroll: true });
+            }
           }
           return;
         }
@@ -28503,6 +28566,7 @@
           if (menu) {
             menu.hidden = !open;
             priorityToggle.setAttribute("aria-expanded", open ? "true" : "false");
+            positionWaypointFloatingMenus();
           }
           return;
         }
@@ -28519,6 +28583,7 @@
           $$("[data-note-priority-menu]", $("#noteDialog")).forEach(item => item.hidden = true);
           $$("[data-note-priority-toggle]", $("#noteDialog")).forEach(item => item.setAttribute("aria-expanded", "false"));
           refreshNoteWaypointControls({ menuOpen: open });
+          positionWaypointFloatingMenus();
           if (open) $("#noteWaypointLinkMenu [data-note-source-item-choice]")?.focus();
           return;
         }
