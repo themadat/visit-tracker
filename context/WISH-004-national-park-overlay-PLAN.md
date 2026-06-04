@@ -55,6 +55,10 @@ description text prefilled into note details. No runtime Wikipedia calls.
     add/refresh, and remove.
   - Pack Locations uses short waypoint names with inline `Include`, `Priority`,
     linked status, info, Attach/Edit/Unlink actions, and pre-link `Note` fields.
+  - Linked locations collapse status plus Edit/Unlink icon actions into one
+    compact row; status/source badges may stack to conserve horizontal space.
+  - Editing a linked note keeps the Waypoint Packs panel active behind the note
+    editor and returns to the same pack context when the editor closes.
   - Batch add creates missing notes and refreshes existing pack notes using
     managed fields only.
   - After adding, enable the chosen Location Tag, turn the pack overlay on, and
@@ -207,6 +211,10 @@ WISH-068 tracks a small raptor easter egg.
 - Verify the unified Pack Locations list combines selection, inline priority,
   state-scoped Attach/Edit/Unlink actions, status, and pre-link notes without a
   duplicate list.
+- Verify linked locations use one compact row with stacked status/source badges,
+  dedicated Edit/Unlink icons, and no second action row.
+- Open a linked note from Pack Locations, close the note editor, and confirm the
+  same Waypoint Packs panel and selected pack remain visible.
 - Verify National Monument silhouettes render inside map marker circles.
 - Verify Attach Existing Note only offers available notes from the waypoint's
   listed state or states.
