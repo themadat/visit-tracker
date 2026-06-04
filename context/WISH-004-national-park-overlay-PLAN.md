@@ -189,6 +189,10 @@ WISH-068 tracks a small raptor easter egg.
 - Verify label modes: Off, Abbr, Name.
 - Verify pack overlay pins are teal and priority pills follow the requested
   green-to-orange scale.
+- Verify preview priority choices draw a number badge before Add/Refresh.
+- Verify Parks and Monuments use their dedicated bundled SVG Location Tags.
+- Verify preview-added recommended icons disappear when an unlinked pack is
+  closed or left, but stay available while linked pack notes exist.
 - Verify Alaska pack pins spread across the Alaska inset and Aleutian frame
   without bunching.
 - Verify priority search/filter/sort/export behavior.
