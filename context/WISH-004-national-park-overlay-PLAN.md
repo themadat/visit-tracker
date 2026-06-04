@@ -58,8 +58,12 @@ occurs only when the user clicks a location's Photo action.
     name/code/location block, Website and on-demand Wikipedia Photo actions,
     inline Priority, fixed two-line status, contextual Edit/Link and Unlink,
     and pre-link `Note` fields.
+  - The location identity takes its own full-width first line. Every action
+    lives in a consistently sized square toolbar on the following line and may
+    wrap together when the Notes panel narrows.
   - Edit opens the state-scoped attach selector only when an unlinked location
-    has an available note; unavailable Edit/Link and Unlink actions are disabled.
+    has an available note; the selector expands immediately with no placeholder
+    option. Unavailable Edit/Link and Unlink actions are disabled.
   - Linked locations collapse status plus Edit/Unlink icon actions into one
     compact row; status/source badges may stack to conserve horizontal space.
   - Editing a linked note keeps the Waypoint Packs panel active behind the note
@@ -180,7 +184,8 @@ WISH-068 tracks a small raptor easter egg.
 
 - New map defaults: pack overlay off, pack labels off, no state recoloring.
 - Open Packs from Wayfinder; confirm an inset panel appears over Notes and the
-  map remains visible.
+  map remains visible. Resize Notes and confirm Packs remains slightly inset
+  without becoming larger than its parent.
 - Select National Parks from Available Packs; choose an icon, overlay state, and
   label mode.
 - Select National Monuments; confirm 138 items, Wikipedia links, and prefilled
@@ -219,11 +224,12 @@ WISH-068 tracks a small raptor easter egg.
 - Verify linked locations use one compact row with stacked status/source badges,
   dedicated Edit/Unlink icons, and no second action row.
 - Verify long names do not clip and every row action/status/priority control
-  shares the full row height.
+  shares the same square size on a wrapped second-line toolbar.
 - Verify Website opens the location source and Photo reveals only the Wikimedia
   image inline; confirm fallback image lookup runs only after Photo is clicked.
 - Verify unlinked rows disable Unlink, disable Edit/Link when no state-scoped
-  notes are available, and reveal the attach selector from Edit/Link when one is.
+  notes are available, and auto-expand the attach selector from Edit/Link with
+  no placeholder option when one is.
 - Open a linked note from Pack Locations, close the note editor, and confirm the
   same Waypoint Packs panel and selected pack remain visible.
 - Verify National Monument silhouettes render inside map marker circles.

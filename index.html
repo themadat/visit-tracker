@@ -679,6 +679,7 @@
     #saveAddNoteBtn,
     #deleteNoteFromDialogBtn,
     #noteDialogCloseBtn,
+    #waypointPacksCloseBtn,
     #tipJarBtn,
     #addToHomeBtn,
     #settingsBtn {
@@ -695,7 +696,8 @@
     }
 
     #saveNoteBtn .sf-symbol,
-    #noteDialogCloseBtn .sf-symbol {
+    #noteDialogCloseBtn .sf-symbol,
+    #waypointPacksCloseBtn .sf-symbol {
       width: 20px;
       height: 20px;
     }
@@ -4437,14 +4439,6 @@
       display: none;
     }
 
-    @media (min-width: 981px) {
-      .waypoint-packs-panel {
-        position: fixed;
-        inset: 5.25rem .75rem .75rem auto;
-        width: min(48rem, calc(100vw - 1.5rem));
-      }
-    }
-
     .waypoint-packs-head {
       display: flex;
       align-items: center;
@@ -4675,16 +4669,13 @@
 
     .waypoint-preview-main {
       display: grid;
-      grid-template-columns: minmax(12rem, 1fr) auto auto auto 3.25rem auto auto;
-      align-items: stretch;
+      grid-template-columns: minmax(0, 1fr);
       gap: .28rem;
-      min-height: 3rem;
     }
 
     .waypoint-preview-selection {
       width: 100%;
       min-width: 0;
-      min-height: 100%;
       padding: .38rem .46rem;
       border: 1px solid var(--line);
       border-radius: 6px;
@@ -4722,33 +4713,35 @@
       overflow-wrap: anywhere;
     }
 
-    .waypoint-preview-main .waypoint-priority-row {
-      flex-wrap: nowrap;
+    .waypoint-preview-actions {
+      display: flex;
+      flex-wrap: wrap;
       align-items: stretch;
-      gap: .16rem;
+      gap: .28rem;
     }
 
-    .waypoint-preview-main .waypoint-priority-row button {
-      width: 1.3rem;
-      min-width: 1.3rem;
-      height: 100%;
-      min-height: 100%;
-      padding: .1rem;
-      font-size: .66rem;
+    .waypoint-preview-actions .waypoint-priority-row {
+      display: contents;
     }
 
-    .waypoint-preview-link-status {
+    .waypoint-preview-actions .waypoint-priority-row button,
+    .waypoint-preview-link-status,
+    .waypoint-row-action {
       display: grid;
       place-content: center;
       place-items: center;
-      gap: .12rem;
-      width: 3.25rem;
-      min-width: 3.25rem;
-      min-height: 100%;
+      width: 3rem;
+      min-width: 3rem;
+      height: 3rem;
+      min-height: 3rem;
       padding: .2rem;
       border: 1px solid var(--line);
       border-radius: 8px;
       background: var(--surface-2);
+    }
+
+    .waypoint-preview-link-status {
+      gap: .12rem;
       line-height: 1;
     }
 
@@ -4758,16 +4751,6 @@
     }
 
     .waypoint-row-action {
-      display: inline-grid;
-      place-items: center;
-      width: 2.35rem;
-      min-width: 2.35rem;
-      height: 100%;
-      min-height: 100%;
-      padding: .28rem;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--surface-2);
       color: var(--text);
       text-decoration: none;
     }
@@ -4791,9 +4774,9 @@
     .waypoint-attach-menu {
       position: absolute;
       z-index: 4;
-      top: calc(.5rem + 3rem + .28rem);
-      right: 2.85rem;
-      width: min(26rem, calc(100% - 1rem));
+      top: calc(100% - .5rem);
+      right: .5rem;
+      width: calc(100% - 1rem);
       min-width: 0;
       box-shadow: 0 10px 24px rgba(16, 24, 40, .2);
     }
@@ -4995,11 +4978,6 @@
       .note-set-section {
         grid-template-columns: 1fr;
         align-items: stretch;
-      }
-
-      .waypoint-preview-main {
-        grid-template-columns: minmax(12rem, 1fr) auto auto auto 3.25rem auto auto;
-        overflow-x: auto;
       }
 
       .sets-overlay-check,
@@ -13821,7 +13799,7 @@
                 <h3>Waypoint Packs</h3>
                 <small id="waypointPacksSubtitle">Curated place packs for future endeavors</small>
               </div>
-              <button id="waypointPacksCloseBtn" class="icon-btn" type="button" aria-label="Close Waypoint Packs">
+              <button id="waypointPacksCloseBtn" class="dialog-close" type="button" aria-label="Close Waypoint Packs">
                 Close
               </button>
             </header>
@@ -15016,7 +14994,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.12";
+    const APP_VERSION = "4.3.0.13";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -16972,7 +16950,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.12",
+        version: "4.3.0.13",
         date: "2026-06-04",
         title: "Waypoint Pack",
         summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
@@ -16983,12 +16961,14 @@
           "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.12",
+          version: "4.3.0.13",
           title: "Waypoint Pack",
           summary: "Add Parks and Monuments as prioritized Wayfinder notes.",
           cta: "Pack the Map!"
         },
         updates: [
+          "Kept Waypoint Packs slightly inset within the resizable Notes panel and matched its close button to other modal close controls.",
+          "Moved every Pack Location control into a wrapped second-line square toolbar and opened link-note pickers without a placeholder option.",
           "Rebuilt Pack Locations as full-height toolbar rows with wide wrapping location names, Website and Photo actions, priority, fixed two-line status, Edit/Link, and Unlink.",
           "Added on-demand inline Wikipedia photo previews and moved state-scoped note attachment behind the Edit/Link button, with unavailable actions disabled.",
           "Added a Roadmap wish for timezone-aware Rangefinder Start, End, departure, and arrival times.",
@@ -22179,10 +22159,10 @@
           || noteSummary(a.note).localeCompare(noteSummary(b.note)));
     }
 
-    function attachableNoteOptionsHtml(item, refs = attachableNoteRefs(item)) {
+    function attachableNoteOptionsHtml(item, refs = attachableNoteRefs(item), { includePrompt = true } = {}) {
       const location = suggestedSetItemRegionLabel(item) || STATE_NAMES[suggestedSetPrimaryState(item)] || suggestedSetPrimaryState(item);
       const prompt = refs.length ? `Attach an available ${location} note...` : `No available ${location} notes`;
-      return `<option value="">${escapeHtml(prompt)}</option>` + refs.map(ref =>
+      return (includePrompt ? `<option value="">${escapeHtml(prompt)}</option>` : "") + refs.map(ref =>
         `<option value="${escapeHtml(`${ref.layer}|${ref.abbr}|${ref.note.id}`)}">${escapeHtml(noteAttachOptionLabel(ref))}</option>`
       ).join("");
     }
@@ -22264,7 +22244,7 @@
       const editLabel = note ? "Edit note" : "Link existing note";
       const editDisabled = !note && !refs.length;
       const attachMenu = attachMenuOpen
-        ? `<select class="waypoint-attach-menu" data-set-attach-item="${escapeHtml(item.id)}" aria-label="Attach an existing note to ${escapeHtml(item.name)}">${attachableNoteOptionsHtml(item, refs)}</select>`
+        ? `<select class="waypoint-attach-menu" data-set-attach-item="${escapeHtml(item.id)}" aria-label="Attach an existing note to ${escapeHtml(item.name)}">${attachableNoteOptionsHtml(item, refs, { includePrompt: false })}</select>`
         : "";
       const noteField = note ? "" : `<textarea data-set-preview-note maxlength="700" placeholder="Notes for ${escapeHtml(item.name)}">${escapeHtml(detail)}</textarea>`;
       return `
@@ -22276,14 +22256,16 @@
                 <small>${escapeHtml(item.code)} · ${escapeHtml(suggestedSetItemRegionLabel(item))}</small>
               </span>
             </button>
-            <a class="icon-btn waypoint-row-action" href="${escapeHtml(item.url)}" target="_blank" rel="noopener" aria-label="Open ${escapeHtml(item.name)} website" title="Website">${__RICHTEXT_PAGE_FILL}</a>
-            <button class="icon-btn waypoint-row-action" type="button" data-set-photo="${escapeHtml(item.id)}" aria-label="${photoOpen ? "Close" : "Open"} ${escapeHtml(item.name)} photo" aria-expanded="${photoOpen ? "true" : "false"}" title="${photoLoading ? "Loading photo" : "Photo"}" ${item.wikiPage && !photoLoading ? "" : "disabled"}>${__PHOTO_ARTFRAME}</button>
-            <div class="waypoint-priority-row" aria-label="Priority for ${escapeHtml(item.name)}">
-              ${waypointPriorityButtons(priority, "data-set-preview-priority-choice", item.id)}
+            <div class="waypoint-preview-actions">
+              <a class="icon-btn waypoint-row-action" href="${escapeHtml(item.url)}" target="_blank" rel="noopener" aria-label="Open ${escapeHtml(item.name)} website" title="Website">${__RICHTEXT_PAGE_FILL}</a>
+              <button class="icon-btn waypoint-row-action" type="button" data-set-photo="${escapeHtml(item.id)}" aria-label="${photoOpen ? "Close" : "Open"} ${escapeHtml(item.name)} photo" aria-expanded="${photoOpen ? "true" : "false"}" title="${photoLoading ? "Loading photo" : "Photo"}" ${item.wikiPage && !photoLoading ? "" : "disabled"}>${__PHOTO_ARTFRAME}</button>
+              <div class="waypoint-priority-row" aria-label="Priority for ${escapeHtml(item.name)}">
+                ${waypointPriorityButtons(priority, "data-set-preview-priority-choice", item.id)}
+              </div>
+              ${status}
+              <button class="icon-btn waypoint-row-action" type="button" data-set-edit-note="${escapeHtml(item.id)}" aria-label="${escapeHtml(editLabel)}" title="${escapeHtml(editDisabled ? "No available notes to link" : editLabel)}" ${editDisabled ? "disabled" : ""}>${__PENCIL_AND_LIST_CLIPBOARD}</button>
+              <button class="icon-btn waypoint-row-action danger" type="button" data-set-unlink-note="${escapeHtml(item.id)}" aria-label="Unlink note" title="${note ? "Unlink note" : "No linked note"}" ${note ? "" : "disabled"}>${__PERSONALHOTSPOT_SLASH}</button>
             </div>
-            ${status}
-            <button class="icon-btn waypoint-row-action" type="button" data-set-edit-note="${escapeHtml(item.id)}" aria-label="${escapeHtml(editLabel)}" title="${escapeHtml(editDisabled ? "No available notes to link" : editLabel)}" ${editDisabled ? "disabled" : ""}>${__PENCIL_AND_LIST_CLIPBOARD}</button>
-            <button class="icon-btn waypoint-row-action danger" type="button" data-set-unlink-note="${escapeHtml(item.id)}" aria-label="Unlink note" title="${note ? "Unlink note" : "No linked note"}" ${note ? "" : "disabled"}>${__PERSONALHOTSPOT_SLASH}</button>
           </div>
           <input type="hidden" data-set-preview-priority value="${escapeHtml(priority)}">
           ${attachMenu}
@@ -27832,6 +27814,7 @@
           if (waypointAttachMenuItemId) {
             const select = $$("[data-set-attach-item]", $("#waypointPacksPanel"))
               .find(item => item.dataset.setAttachItem === waypointAttachMenuItemId);
+            if (select) select.selectedIndex = -1;
             select?.focus();
             try { select?.showPicker?.(); } catch { }
           }
