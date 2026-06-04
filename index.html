@@ -4659,6 +4659,7 @@
 
     .waypoint-preview-card {
       position: relative;
+      container-type: inline-size;
       display: grid;
       gap: .38rem;
       padding: .5rem;
@@ -4724,7 +4725,6 @@
       display: contents;
     }
 
-    .waypoint-preview-actions .waypoint-priority-row button,
     .waypoint-preview-link-status,
     .waypoint-row-action {
       display: grid;
@@ -4738,6 +4738,30 @@
       border: 1px solid var(--line);
       border-radius: 8px;
       background: var(--surface-2);
+    }
+
+    .waypoint-preview-actions .waypoint-priority-row button {
+      display: grid;
+      place-content: center;
+      place-items: center;
+      width: auto;
+      min-width: 1.85rem;
+      height: 3rem;
+      min-height: 3rem;
+      padding: .18rem .32rem;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface-2);
+      color: var(--text);
+      font-size: 1.44rem;
+      font-weight: 900;
+    }
+
+    .waypoint-preview-actions .waypoint-priority-row button[aria-pressed="true"] {
+      border-color: #14b8a6;
+      background: var(--surface-2);
+      color: var(--text);
+      box-shadow: inset 0 0 0 2px #14b8a6;
     }
 
     .waypoint-preview-link-status {
@@ -4756,8 +4780,8 @@
     }
 
     .waypoint-row-action .sf-symbol {
-      width: 1.05rem;
-      height: 1.05rem;
+      width: 1.55rem;
+      height: 1.55rem;
     }
 
     .waypoint-row-action[disabled] {
@@ -4776,9 +4800,36 @@
       z-index: 4;
       top: calc(100% - .5rem);
       right: .5rem;
+      display: grid;
+      gap: .24rem;
       width: calc(100% - 1rem);
       min-width: 0;
+      max-height: min(18rem, 50vh);
+      padding: .32rem;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
       box-shadow: 0 10px 24px rgba(16, 24, 40, .2);
+      overflow-y: auto;
+    }
+
+    .waypoint-attach-choice {
+      width: 100%;
+      min-width: 0;
+      padding: .42rem .5rem;
+      text-align: left;
+      white-space: normal;
+    }
+
+    @container (min-width: 46rem) {
+      .waypoint-preview-main {
+        grid-template-columns: minmax(16rem, 1fr) auto;
+        align-items: stretch;
+      }
+
+      .waypoint-preview-actions {
+        flex-wrap: nowrap;
+      }
     }
 
     .waypoint-photo-preview {
@@ -14994,7 +15045,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.13";
+    const APP_VERSION = "4.3.0.14";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -16950,7 +17001,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.13",
+        version: "4.3.0.14",
         date: "2026-06-04",
         title: "Waypoint Pack",
         summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
@@ -16961,14 +17012,16 @@
           "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.13",
+          version: "4.3.0.14",
           title: "Waypoint Pack",
           summary: "Add Parks and Monuments as prioritized Wayfinder notes.",
           cta: "Pack the Map!"
         },
         updates: [
+          "Made Pack Location rows share one line when space permits, enlarged action icons, and restyled priority choices as compact large-number outline controls.",
+          "Changed Link Existing Note into an immediately expanded real-note list so available choices are visible without another click.",
           "Kept Waypoint Packs slightly inset within the resizable Notes panel and matched its close button to other modal close controls.",
-          "Moved every Pack Location control into a wrapped second-line square toolbar and opened link-note pickers without a placeholder option.",
+          "Kept Pack Location actions aligned in a responsive toolbar and removed placeholder choices from link-note menus.",
           "Rebuilt Pack Locations as full-height toolbar rows with wide wrapping location names, Website and Photo actions, priority, fixed two-line status, Edit/Link, and Unlink.",
           "Added on-demand inline Wikipedia photo previews and moved state-scoped note attachment behind the Edit/Link button, with unavailable actions disabled.",
           "Added a Roadmap wish for timezone-aware Rangefinder Start, End, departure, and arrival times.",
@@ -22159,11 +22212,9 @@
           || noteSummary(a.note).localeCompare(noteSummary(b.note)));
     }
 
-    function attachableNoteOptionsHtml(item, refs = attachableNoteRefs(item), { includePrompt = true } = {}) {
-      const location = suggestedSetItemRegionLabel(item) || STATE_NAMES[suggestedSetPrimaryState(item)] || suggestedSetPrimaryState(item);
-      const prompt = refs.length ? `Attach an available ${location} note...` : `No available ${location} notes`;
-      return (includePrompt ? `<option value="">${escapeHtml(prompt)}</option>` : "") + refs.map(ref =>
-        `<option value="${escapeHtml(`${ref.layer}|${ref.abbr}|${ref.note.id}`)}">${escapeHtml(noteAttachOptionLabel(ref))}</option>`
+    function attachableNoteChoicesHtml(refs) {
+      return refs.map(ref =>
+        `<button class="waypoint-attach-choice" type="button" role="menuitem" data-set-attach-note="${escapeHtml(`${ref.layer}|${ref.abbr}|${ref.note.id}`)}">${escapeHtml(noteAttachOptionLabel(ref))}</button>`
       ).join("");
     }
 
@@ -22244,7 +22295,7 @@
       const editLabel = note ? "Edit note" : "Link existing note";
       const editDisabled = !note && !refs.length;
       const attachMenu = attachMenuOpen
-        ? `<select class="waypoint-attach-menu" data-set-attach-item="${escapeHtml(item.id)}" aria-label="Attach an existing note to ${escapeHtml(item.name)}">${attachableNoteOptionsHtml(item, refs, { includePrompt: false })}</select>`
+        ? `<div class="waypoint-attach-menu" data-set-attach-item="${escapeHtml(item.id)}" role="menu" aria-label="Attach an existing note to ${escapeHtml(item.name)}">${attachableNoteChoicesHtml(refs)}</div>`
         : "";
       const noteField = note ? "" : `<textarea data-set-preview-note maxlength="700" placeholder="Notes for ${escapeHtml(item.name)}">${escapeHtml(detail)}</textarea>`;
       return `
@@ -27700,20 +27751,6 @@
       $("#markerAddNoteBtn").addEventListener("click", () => {
         if (markerDialogItems[0]) addNoteAtMappedLocation(markerDialogItems[0]);
       });
-      $("#waypointPacksPanel").addEventListener("change", event => {
-        const target = event.target;
-        const set = activeSuggestedSet();
-        const attach = target.closest("[data-set-attach-item]");
-        if (attach && attach.value) {
-          const [layer, abbr, noteId] = attach.value.split("|");
-          void layer;
-          const source = suggestedSetItem(set.id, attach.dataset.setAttachItem);
-          const details = source ? suggestedSetPreviewDetail(source.set, source.item, null) : "";
-          waypointAttachMenuItemId = "";
-          attachNoteToSuggestedSetItem(abbr, noteId, set.id, attach.dataset.setAttachItem, { details });
-          renderSetsDialog();
-        }
-      });
       $("#waypointPacksPanel").addEventListener("input", event => {
         const note = event.target.closest("[data-set-preview-note]");
         const row = note?.closest("[data-set-preview-item]");
@@ -27796,6 +27833,19 @@
           renderNotesPanel();
           return;
         }
+        const attachChoice = event.target.closest("[data-set-attach-note]");
+        if (attachChoice) {
+          const set = activeSuggestedSet();
+          const attach = attachChoice.closest("[data-set-attach-item]");
+          const [layer, abbr, noteId] = attachChoice.dataset.setAttachNote.split("|");
+          void layer;
+          const source = suggestedSetItem(set.id, attach.dataset.setAttachItem);
+          const details = source ? suggestedSetPreviewDetail(source.set, source.item, null) : "";
+          waypointAttachMenuItemId = "";
+          attachNoteToSuggestedSetItem(abbr, noteId, set.id, attach.dataset.setAttachItem, { details });
+          renderSetsDialog();
+          return;
+        }
         const edit = event.target.closest("[data-set-edit-note]");
         if (edit) {
           const set = activeSuggestedSet();
@@ -27812,11 +27862,9 @@
           waypointAttachMenuItemId = waypointAttachMenuItemId === edit.dataset.setEditNote ? "" : edit.dataset.setEditNote;
           renderSetsDialog();
           if (waypointAttachMenuItemId) {
-            const select = $$("[data-set-attach-item]", $("#waypointPacksPanel"))
+            const menu = $$("[data-set-attach-item]", $("#waypointPacksPanel"))
               .find(item => item.dataset.setAttachItem === waypointAttachMenuItemId);
-            if (select) select.selectedIndex = -1;
-            select?.focus();
-            try { select?.showPicker?.(); } catch { }
+            if (menu) $("[data-set-attach-note]", menu)?.focus();
           }
           return;
         }
