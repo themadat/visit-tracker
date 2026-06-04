@@ -191,6 +191,11 @@ WISH-068 tracks a small raptor easter egg.
   green-to-orange scale.
 - Verify preview priority choices draw a number badge before Add/Refresh.
 - Verify Parks and Monuments use their dedicated bundled SVG Location Tags.
+- Verify the pack SVGs render from inline app constants with no runtime asset
+  request, and the National Monument glyph is white.
+- Verify waypoint labels sit above the icon and leave the priority badge clear.
+- Verify teal-bordered location headers replace preview checkboxes and toggle
+  whether each location is included.
 - Verify preview-added recommended icons disappear when an unlinked pack is
   closed or left, but stay available while linked pack notes exist.
 - Verify Alaska pack pins spread across the Alaska inset and Aleutian frame
