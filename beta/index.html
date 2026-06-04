@@ -1869,13 +1869,13 @@
     }
 
     .suggested-set-marker .set-marker-label {
-      font-size: 7px;
+      font-size: 8px;
       dominant-baseline: central;
       stroke-width: 2.7px;
     }
 
     .suggested-set-marker .set-marker-label.is-name {
-      font-size: 6px;
+      font-size: 6.8px;
     }
 
     .suggested-set-marker .set-marker-priority-bg {
@@ -13620,7 +13620,7 @@
             <header class="waypoint-packs-head">
               <div>
                 <h3>Waypoint Packs</h3>
-                <small id="waypointPacksSubtitle">Curated Wayfinder packs</small>
+                <small id="waypointPacksSubtitle">Curated place packs for future endeavors</small>
               </div>
               <button id="waypointPacksCloseBtn" class="icon-btn" type="button" aria-label="Close Waypoint Packs">
                 Close
@@ -14821,7 +14821,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.4";
+    const APP_VERSION = "4.3.0.5";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -14867,8 +14867,8 @@
     };
     const LOCATION_PROJECTION_FRAME_OVERRIDES = {
       AK: [
-        { test: coords => Number(coords?.lng) <= -164, bounds: [51.2, 55.8, -179.2, -164.0], box: { x: 31, y: 526, width: 102, height: 30 } },
-        { bounds: [54.0, 71.4, -168.2, -129.9], box: { x: 86, y: 462, width: 121, height: 78 } }
+        { test: coords => Number(coords?.lng) <= -164, bounds: [51.2, 55.8, -179.2, -164.0], box: { x: 24, y: 532, width: 116, height: 33 } },
+        { bounds: [55.0, 73.5, -165.0, -130.0], box: { x: 38, y: 470, width: 171, height: 98 } }
       ]
     };
     const MAP_LABEL_OVERRIDES = {
@@ -16150,69 +16150,69 @@
       "5": "#f97316"
     };
     const SUGGESTED_NATIONAL_PARKS = [
-      ["ACAD", "Acadia", "ME", ["ME"], 44.4093, -68.2475],
-      ["NPSA", "American Samoa", "AS", ["AS"], -14.2583, -170.6833],
-      ["ARCH", "Arches", "UT", ["UT"], 38.7331, -109.5925],
-      ["BADL", "Badlands", "SD", ["SD"], 43.8554, -102.3397],
-      ["BIBE", "Big Bend", "TX", ["TX"], 29.2499, -103.2502],
-      ["BISC", "Biscayne", "FL", ["FL"], 25.4824, -80.2083],
-      ["BLCA", "Black Canyon of the Gunnison", "CO", ["CO"], 38.5754, -107.7416],
-      ["BRCA", "Bryce Canyon", "UT", ["UT"], 37.5930, -112.1871],
-      ["CANY", "Canyonlands", "UT", ["UT"], 38.3269, -109.8783],
-      ["CARE", "Capitol Reef", "UT", ["UT"], 38.3670, -111.2615],
-      ["CAVE", "Carlsbad Caverns", "NM", ["NM"], 32.1479, -104.5567],
-      ["CHIS", "Channel Islands", "CA", ["CA"], 34.0069, -119.7785],
-      ["CONG", "Congaree", "SC", ["SC"], 33.7948, -80.7821],
-      ["CRLA", "Crater Lake", "OR", ["OR"], 42.9446, -122.109],
-      ["CUVA", "Cuyahoga Valley", "OH", ["OH"], 41.2808, -81.5678],
-      ["DEVA", "Death Valley", "CA", ["CA", "NV"], 36.5323, -116.9325],
-      ["DENA", "Denali", "AK", ["AK"], 63.1148, -151.1926],
-      ["DRTO", "Dry Tortugas", "FL", ["FL"], 24.6285, -82.8732],
-      ["EVER", "Everglades", "FL", ["FL"], 25.2866, -80.8987],
-      ["GAAR", "Gates of the Arctic", "AK", ["AK"], 67.8564, -153.594],
-      ["JEFF", "Gateway Arch", "MO", ["MO"], 38.6247, -90.1848],
-      ["GLAC", "Glacier", "MT", ["MT"], 48.7596, -113.787],
-      ["GLBA", "Glacier Bay", "AK", ["AK"], 58.6658, -136.9002],
-      ["GRCA", "Grand Canyon", "AZ", ["AZ"], 36.107, -112.1129],
-      ["GRTE", "Grand Teton", "WY", ["WY"], 43.7904, -110.6818],
-      ["GRBA", "Great Basin", "NV", ["NV"], 38.9833, -114.3],
-      ["GRSA", "Great Sand Dunes", "CO", ["CO"], 37.7329, -105.5121],
-      ["GRSM", "Great Smoky Mountains", "TN", ["TN", "NC"], 35.6131, -83.5532],
-      ["GUMO", "Guadalupe Mountains", "TX", ["TX"], 31.923, -104.8855],
-      ["HALE", "Haleakalā", "HI", ["HI"], 20.7204, -156.1552],
-      ["HAVO", "Hawaiʻi Volcanoes", "HI", ["HI"], 19.4194, -155.2885],
-      ["HOSP", "Hot Springs", "AR", ["AR"], 34.5217, -93.0423],
-      ["INDU", "Indiana Dunes", "IN", ["IN"], 41.6533, -87.0524],
-      ["ISRO", "Isle Royale", "MI", ["MI"], 48.0115, -88.8278],
-      ["JOTR", "Joshua Tree", "CA", ["CA"], 33.8734, -115.901],
-      ["KATM", "Katmai", "AK", ["AK"], 58.6126, -155.0631],
-      ["KEFJ", "Kenai Fjords", "AK", ["AK"], 59.848, -150.1879],
-      ["KICA", "Kings Canyon", "CA", ["CA"], 36.8879, -118.5551],
-      ["KOVA", "Kobuk Valley", "AK", ["AK"], 67.3357, -159.1222],
-      ["LACL", "Lake Clark", "AK", ["AK"], 60.4127, -154.3235],
-      ["LAVO", "Lassen Volcanic", "CA", ["CA"], 40.4977, -121.4207],
-      ["MACA", "Mammoth Cave", "KY", ["KY"], 37.1862, -86.1005],
-      ["MEVE", "Mesa Verde", "CO", ["CO"], 37.2309, -108.4618],
-      ["MORA", "Mount Rainier", "WA", ["WA"], 46.8797, -121.7269],
-      ["NERI", "New River Gorge", "WV", ["WV"], 37.9263, -81.1547],
-      ["NOCA", "North Cascades", "WA", ["WA"], 48.7718, -121.2985],
-      ["OLYM", "Olympic", "WA", ["WA"], 47.8021, -123.6044],
-      ["PEFO", "Petrified Forest", "AZ", ["AZ"], 34.9099, -109.8068],
-      ["PINN", "Pinnacles", "CA", ["CA"], 36.4906, -121.1825],
-      ["REDW", "Redwood", "CA", ["CA"], 41.2132, -124.0046],
-      ["ROMO", "Rocky Mountain", "CO", ["CO"], 40.3428, -105.6836],
-      ["SAGU", "Saguaro", "AZ", ["AZ"], 32.2967, -111.1666],
-      ["SEQU", "Sequoia", "CA", ["CA"], 36.4864, -118.5658],
-      ["SHEN", "Shenandoah", "VA", ["VA"], 38.5326, -78.356],
-      ["THRO", "Theodore Roosevelt", "ND", ["ND"], 46.979, -103.5387],
-      ["VIIS", "Virgin Islands", "VI", ["VI"], 18.3424, -64.7486],
-      ["VOYA", "Voyageurs", "MN", ["MN"], 48.4839, -92.8389],
-      ["WHSA", "White Sands", "NM", ["NM"], 32.7797, -106.1717],
-      ["WICA", "Wind Cave", "SD", ["SD"], 43.6046, -103.4213],
-      ["WRST", "Wrangell–St. Elias", "AK", ["AK"], 61.7104, -142.9857],
-      ["YELL", "Yellowstone", "WY", ["WY", "MT", "ID"], 44.428, -110.5885],
-      ["YOSE", "Yosemite", "CA", ["CA"], 37.8651, -119.5383],
-      ["ZION", "Zion", "UT", ["UT"], 37.2982, -113.0263]
+      ["ACAD", "Acadia", "ME", ["ME"], 44.4093, -68.2475, "February 26, 1919", "Covering most of Mount Desert Island and other coastal islands, Acadia features the tallest mountain on the Atlantic coast of the United States, granite peaks, ocean shoreline, woodlands, and lakes. There are freshwater, estuary, forest, and intertidal habitats.", "Acadia_National_Park"],
+      ["NPSA", "American Samoa", "AS", ["AS"], -14.2583, -170.6833, "October 31, 1988", "The southernmost national park is on three Samoan islands in the South Pacific. It protects coral reefs, rainforests, volcanic mountains, and white beaches. The area is also home to flying foxes, brown boobies, sea turtles, and 900 species of fish.", "National_Park_of_American_Samoa"],
+      ["ARCH", "Arches", "UT", ["UT"], 38.7331, -109.5925, "November 12, 1971", "This site features more than 2,000 natural sandstone arches, with some of the most popular arches in the park being Delicate Arch, Landscape Arch and Double Arch. Millions of years of erosion have created these structures in a desert climate where the arid ground has life-sustaining biological soil crusts and potholes that serve as natural water-collecting basins. Other geologic formations include stone pinnacles, fins, and balancing rocks.", "Arches_National_Park"],
+      ["BADL", "Badlands", "SD", ["SD"], 43.8554, -102.3397, "November 10, 1978", "The Badlands are a collection of buttes, pinnacles, spires, and mixed-grass prairies within the drainage basin of the White River, in southwestern South Dakota. They contain the largest known assemblage of late Eocene and Oligocene mammal fossils. Wildlife includes bison, bighorn sheep, black-footed ferrets, and prairie dogs.", "Badlands_National_Park"],
+      ["BIBE", "Big Bend", "TX", ["TX"], 29.2499, -103.2502, "June 12, 1944", "Named for the prominent bend in the Rio Grande along the U.S.–Mexico border, this park encompasses a large and remote part of the Chihuahuan Desert. Its main attraction is backcountry recreation in the arid Chisos Mountains and in canyons along the river. A wide variety of Cretaceous and Tertiary fossils as well as cultural artifacts of Native Americans also exist within its borders. (BR)", "Big_Bend_National_Park"],
+      ["BISC", "Biscayne", "FL", ["FL"], 25.4824, -80.2083, "June 28, 1980", "The central part of Biscayne Bay, this mostly underwater park at the north end of the Florida Keys has four interrelated marine ecosystems: mangrove forest, the Bay, the Keys, and coral reefs. Threatened animals include the West Indian manatee, American crocodile, various sea turtles, and the peregrine falcon.", "Biscayne_National_Park"],
+      ["BLCA", "Black Canyon of the Gunnison", "CO", ["CO"], 38.5754, -107.7416, "October 21, 1999", "The park protects a quarter of the Gunnison River, which slices sheer canyon walls from dark Precambrian-era rock. The canyon features some of the steepest cliffs and oldest rock in North America, and is a popular site for river rafting and rock climbing. The deep, narrow canyon is composed of gneiss and schist, which appears black when in shadow.", "Black_Canyon_of_the_Gunnison_National_Park"],
+      ["BRCA", "Bryce Canyon", "UT", ["UT"], 37.593, -112.1871, "February 25, 1928", "Bryce Canyon is a geological amphitheater on southern Utah's Paunsaugunt Plateau with hundreds of tall, multicolored sandstone hoodoos formed by erosion. The region was originally settled by Native Americans and later by Mormon pioneers.", "Bryce_Canyon_National_Park"],
+      ["CANY", "Canyonlands", "UT", ["UT"], 38.3269, -109.8783, "September 12, 1964", "This landscape was eroded into a maze of canyons, buttes, and mesas by the combined efforts of the Colorado River, Green River, and their tributaries, which divide the park into three districts. The park contains thousands of rock pinnacles and arches, as well as artifacts from Ancient Pueblo peoples.", "Canyonlands_National_Park"],
+      ["CARE", "Capitol Reef", "UT", ["UT"], 38.367, -111.2615, "December 18, 1971", "The park's Waterpocket Fold is a 100-mile (160 km) monocline that exhibits the earth's diverse geologic layers. Other natural features include monoliths, eroded buttes, and sandstone domes, including one shaped like the United States Capitol.", "Capitol_Reef_National_Park"],
+      ["CAVE", "Carlsbad Caverns", "NM", ["NM"], 32.1479, -104.5567, "May 14, 1930", "Carlsbad Caverns has 117 caves, the longest of which is over 120 miles (190 km) long. The Big Room is almost 4,000 feet (1,200 m) long, and the caves are home to over 400,000 Mexican free-tailed bats and sixteen other species. Above ground are the Chihuahuan Desert and Rattlesnake Springs. (WHS)", "Carlsbad_Caverns_National_Park"],
+      ["CHIS", "Channel Islands", "CA", ["CA"], 34.0069, -119.7785, "March 5, 1980", "Five of the eight Channel Islands are protected, with half of the park's area underwater. The islands have a unique Mediterranean ecosystem originally settled by the Chumash people. They are home to over 2,000 species of land plants and animals, 145 endemic to them, including the island fox. Ferry services offer transportation to the islands from the mainland. (BR)", "Channel_Islands_National_Park"],
+      ["CONG", "Congaree", "SC", ["SC"], 33.7948, -80.7821, "November 10, 2003", "On the Congaree River, this park is the largest portion of old-growth floodplain forest left in North America. Some of the trees are the tallest in the eastern United States. An elevated walkway called the Boardwalk Loop guides visitors through the swamp. (BR)", "Congaree_National_Park"],
+      ["CRLA", "Crater Lake", "OR", ["OR"], 42.9446, -122.109, "May 22, 1902", "Crater Lake lies in the caldera of an ancient volcano called Mount Mazama that collapsed 7,700 years ago. The lake is the deepest in the United States and is noted for its vivid blue color and water clarity. Wizard Island and the Phantom Ship are more recent volcanic formations within the caldera. As the lake has no inlets or outlets, it is replenished only by precipitation.", "Crater_Lake_National_Park"],
+      ["CUVA", "Cuyahoga Valley", "OH", ["OH"], 41.2808, -81.5678, "October 11, 2000", "This park along the Cuyahoga River has waterfalls, hills, trails, and exhibits on early rural living. The Ohio and Erie Canal Towpath Trail follows the Ohio and Erie Canal, where mules towed canal boats. The park has numerous historic homes, bridges, and structures, and also offers a scenic train ride.", "Cuyahoga_Valley_National_Park"],
+      ["DEVA", "Death Valley", "CA", ["CA", "NV"], 36.5323, -116.9325, "October 31, 1994", "Death Valley is the hottest, lowest, and driest place in the United States, with daytime temperatures that have exceeded 130 °F (54 °C). The park protects Badwater Basin and its vast salt flats at the lowest elevation in North America, −282 ft (−86 m), This geologic graben also protects numerous canyons, badlands, sand dunes, mountain ranges, historic mines, springs, and more than 1,000 species of plants that grow. (BR)", "Death_Valley_National_Park"],
+      ["DENA", "Denali", "AK", ["AK"], 63.1148, -151.1926, "February 26, 1917", "Centered on Denali, the tallest and most prominent mountain in North America, the park is serviced by a single road leading to Wonder Lake, most of which can only be accessed via scheduled tour buses. Denali and other peaks of the Alaska Range are covered with long glaciers and boreal forest. Wildlife includes grizzly bears, Dall sheep, moose, caribou, and wolves. (BR)", "Denali_National_Park_and_Preserve"],
+      ["DRTO", "Dry Tortugas", "FL", ["FL"], 24.6285, -82.8732, "October 26, 1992", "The islands of the Dry Tortugas, at the westernmost end of the Florida Keys, are the site of Fort Jefferson, a Civil War-era fort that is the largest masonry structure in the Americas. The park is home to undisturbed coral reefs and shipwrecks, and is only accessible by plane or boat. (BR)", "Dry_Tortugas_National_Park"],
+      ["EVER", "Everglades", "FL", ["FL"], 25.2866, -80.8987, "May 30, 1934", "The Everglades are the largest tropical wilderness in the United States. This mangrove and tropical rainforest ecosystem and marine estuary is home to 36 protected species, including the Florida panther, American crocodile, and West Indian manatee. Some areas have been drained and developed; restoration projects aim to restore the ecology. (WHS) (BR)", "Everglades_National_Park"],
+      ["GAAR", "Gates of the Arctic", "AK", ["AK"], 67.8564, -153.594, "December 2, 1980", "The country's northernmost park protects an expanse of pure wilderness in Alaska's Brooks Range and has no park facilities. The land is home to Alaska Natives who have relied on the land and caribou for 11,000 years.", "Gates_of_the_Arctic_National_Park_and_Preserve"],
+      ["JEFF", "Gateway Arch", "MO", ["MO"], 38.6247, -90.1848, "February 22, 2018", "The Gateway Arch is a 630-foot (192 m) (both high and wide) catenary arch built in the 1960s to commemorate the Lewis and Clark Expedition, initiated by Thomas Jefferson, and the subsequent westward expansion of the country. The nearby Old Courthouse, across a greenway to the west of the arch, was the original site of the landmark Dred Scott case about slavery. An underground museum describes the arch's construction and the country's westward expansion.", "Gateway_Arch_National_Park"],
+      ["GLAC", "Glacier", "MT", ["MT"], 48.7596, -113.787, "May 11, 1910", "The U.S. half of Waterton-Glacier International Peace Park, this park includes 26 rapidly receding glaciers and 130 named lakes surrounded by Rocky Mountain peaks. Historic hotels and the landmark Going-to-the-Sun Road accommodate visitors. The local mountains, formed by an overthrust, expose Paleozoic fossils including trilobites, mollusks, giant ferns and dinosaurs. The park is also home to Triple Divide Peak, which forms the boundary between the watersheds of the Atlantic, Pacific, and Arctic Oceans. (WHS) (BR)", "Glacier_National_Park_(U.S.)"],
+      ["GLBA", "Glacier Bay", "AK", ["AK"], 58.6658, -136.9002, "December 2, 1980", "Glacier Bay contains tidewater glaciers, mountains, fjords, and a temperate rainforest, and is home to large populations of grizzly bears, mountain goats, whales, seals, and eagles. When discovered in 1794 by George Vancouver, the entire bay was covered by ice, but the glaciers have since receded more than 65 miles (105 km). (WHS) (BR)", "Glacier_Bay_National_Park_and_Preserve"],
+      ["GRCA", "Grand Canyon", "AZ", ["AZ"], 36.107, -112.1129, "February 26, 1919", "The Grand Canyon, carved by the mighty Colorado River, is 277 miles (446 km) long, up to 1 mile (1.6 km) deep, and up to 15 miles (24 km) wide. Millions of years of erosion have resulted in a massive three-tiered canyon, exposing the multicolored layers of the Colorado Plateau in mesas and canyon walls, visible from trails that descend into the canyon from the north and south rims. (WHS)", "Grand_Canyon_National_Park"],
+      ["GRTE", "Grand Teton", "WY", ["WY"], 43.7904, -110.6818, "February 26, 1929", "Grand Teton is the tallest mountain in the scenic Teton Range. The park's historic Jackson Hole and reflective piedmont lakes teem with endemic wildlife, with a backdrop of craggy mountains that rise abruptly from the sage-covered valley below. (BR)", "Grand_Teton_National_Park"],
+      ["GRBA", "Great Basin", "NV", ["NV"], 38.9833, -114.3, "October 27, 1986", "Based around Nevada's second tallest mountain, Wheeler Peak, Great Basin National Park protects 5,000-year-old bristlecone pines, a rock glacier, and the limestone Lehman Caves. Due to its remote location, the park is home to some of the country's darkest night skies. Wildlife includes the Townsend's big-eared bat, pronghorn, and Bonneville cutthroat trout.", "Great_Basin_National_Park"],
+      ["GRSA", "Great Sand Dunes", "CO", ["CO"], 37.7329, -105.5121, "September 24, 2004", "The tallest sand dunes in North America, up to 750 feet (230 m) tall, were formed by deposits of the ancient Rio Grande in the San Luis Valley. Abutting a variety of grasslands, shrublands, and wetlands, the park also features alpine lakes, six 13,000-foot mountains, and old-growth forests.", "Great_Sand_Dunes_National_Park_and_Preserve"],
+      ["GRSM", "Great Smoky Mountains", "TN", ["TN", "NC"], 35.6131, -83.5532, "June 15, 1934", "The Great Smoky Mountains, part of the Appalachian Mountains, span a wide range of elevations, making them home to over 400 vertebrate species, 100 tree species, and 5,000 plant species. Hiking is the park's main attraction, with over 800 miles (1,300 km) of trails, including 70 miles (110 km) of the Appalachian Trail. Other activities include fishing, horseback riding, and touring nearly 80 historic structures. (WHS) (BR)", "Great_Smoky_Mountains_National_Park"],
+      ["GUMO", "Guadalupe Mountains", "TX", ["TX"], 31.923, -104.8855, "September 30, 1972", "This park contains Guadalupe Peak, the highest point in Texas, as well as the scenic McKittrick Canyon filled with bigtooth maples, a corner of the arid Chihuahuan Desert, and a fossilized coral reef from the Permian era.", "Guadalupe_Mountains_National_Park"],
+      ["HALE", "Haleakalā", "HI", ["HI"], 20.7204, -156.1552, "July 1, 1961", "The Haleakalā volcano on Maui features a very large crater with numerous cinder cones, a grove of non-native trees, the Kipahulu section's scenic pools of freshwater fish, and the endemic Hawaiian goose. The park protects the greatest number of endangered species within a U.S. national park. (BR)", "Haleakal%C4%81_National_Park"],
+      ["HAVO", "Hawaiʻi Volcanoes", "HI", ["HI"], 19.4194, -155.2885, "August 1, 1916", "This park on the Big Island protects the Kīlauea and Mauna Loa volcanoes, two of the world's most active geological features. Diverse ecosystems range from tropical forests at sea level to barren lava beds at more than 13,000 feet (4,000 m). (WHS) (BR)", "Hawai%CA%BBi_Volcanoes_National_Park"],
+      ["HOSP", "Hot Springs", "AR", ["AR"], 34.5217, -93.0423, "March 4, 1921", "Hot Springs was originally established by Congress as a federal reserve on April 20, 1832, making it the oldest area managed by the National Park Service. Natural thermal springs flow out of the Ouachita Mountains, providing opportunities for relaxation in a historic setting. Bathhouse Row preserves examples of 19th-century architecture. Hot Springs is the first national park within a city and was the smallest national park until 2018.", "Hot_Springs_National_Park"],
+      ["INDU", "Indiana Dunes", "IN", ["IN"], 41.6533, -87.0524, "February 15, 2019", "Previously designated a national lakeshore, parts of this 20-mile (32 km) stretch of the southern shore of Lake Michigan have sandy beaches and tall dunes. The park includes grassy prairies, peat bogs, and marsh wetlands home to over 2,000 species.", "Indiana_Dunes_National_Park"],
+      ["ISRO", "Isle Royale", "MI", ["MI"], 48.0115, -88.8278, "April 3, 1940", "The largest island in Lake Superior is a place of isolation and wilderness. Along with its many shipwrecks, waterways, and hiking trails, the park also includes over 400 smaller islands within 4.5 miles (7.2 km) of its shores. There are only 20 mammal species on the island, though the relationship between its wolf and moose populations is especially unique. (BR)", "Isle_Royale_National_Park"],
+      ["JOTR", "Joshua Tree", "CA", ["CA"], 33.8734, -115.901, "October 31, 1994", "Covering large areas of the Colorado and Mojave Deserts and the Little San Bernardino Mountains, this desert landscape is populated by vast stands of Joshua trees. Large changes in elevation reveal various contrasting environments including bleached sand dunes, dry lakes, rugged mountains, and maze-like clusters of monzogranite monoliths. (BR)", "Joshua_Tree_National_Park"],
+      ["KATM", "Katmai", "AK", ["AK"], 58.6126, -155.0631, "December 2, 1980", "This park on the Alaska Peninsula protects the Valley of Ten Thousand Smokes, an ash flow formed by the 1912 eruption of Novarupta, and the stratovolcano Mount Katmai. Over 2,000 grizzly bears come here each year to catch spawning salmon. Other wildlife includes caribou, wolves, moose, and wolverines.", "Katmai_National_Park_and_Preserve"],
+      ["KEFJ", "Kenai Fjords", "AK", ["AK"], 59.848, -150.1879, "December 2, 1980", "Near Seward on the Kenai Peninsula, this park protects the Harding Icefield and at least 38 glaciers and fjords stemming from it. The only area accessible to the public by road is the rapidly shrinking Exit Glacier. Boat and kayak tours offer views of tidewater glaciers, whales, sea lions, and marine birds.", "Kenai_Fjords_National_Park"],
+      ["KICA", "Kings Canyon", "CA", ["CA"], 36.8879, -118.5551, "March 4, 1940", "Home to several giant sequoia groves and the General Grant Tree, the world's second largest measured tree, this park also features part of the Kings River, sculptor of the dramatic granite canyon that is its namesake, and the San Joaquin River, as well as Boyden Cave. Although Kings Canyon National Park was designated as such in 1940, it subsumed General Grant National Park, which had been established on October 1, 1890, as the United States' fourth national park. (BR)", "Kings_Canyon_National_Park"],
+      ["KOVA", "Kobuk Valley", "AK", ["AK"], 67.3357, -159.1222, "December 2, 1980", "Kobuk Valley protects 61 miles (98 km) of the Kobuk River and three regions of sand dunes. Created by glaciers, the Great Kobuk, Little Kobuk, and Hunt River Sand Dunes can reach 100 feet (30 m) high and 100 °F (38 °C), and they are the largest dunes in the Arctic. Twice a year, half a million caribou migrate through the dunes and across river bluffs that expose well-preserved ice age fossils.", "Kobuk_Valley_National_Park"],
+      ["LACL", "Lake Clark", "AK", ["AK"], 60.4127, -154.3235, "December 2, 1980", "The region around Lake Clark features four active volcanoes, including Mount Redoubt, as well as an abundance of rivers, glaciers, and waterfalls. Temperate rainforests, a tundra plateau, and three mountain ranges complete the landscape.", "Lake_Clark_National_Park_and_Preserve"],
+      ["LAVO", "Lassen Volcanic", "CA", ["CA"], 40.4977, -121.4207, "August 9, 1916", "Lassen Peak, the largest lava dome volcano in the world, is joined by all three other types of volcanoes in this park: shield, cinder cone, and composite. Though Lassen itself last erupted in 1915, most of the rest of the park is continuously active. Numerous hydrothermal features, including fumaroles, boiling pools, and bubbling mud pots, are heated by molten rock from beneath the peak.", "Lassen_Volcanic_National_Park"],
+      ["MACA", "Mammoth Cave", "KY", ["KY"], 37.1862, -86.1005, "July 1, 1941", "With more than 400 miles (640 km) of passageways explored, Mammoth Cave is the world's longest known cave system. Subterranean wildlife includes eight bat species, Kentucky cave shrimp, Northern cavefish, and cave salamanders. Above ground, the park provides recreation on the Green River, 70 miles of hiking trails, and plenty of sinkholes and springs. (WHS) (BR)", "Mammoth_Cave_National_Park"],
+      ["MEVE", "Mesa Verde", "CO", ["CO"], 37.2309, -108.4618, "June 29, 1906", "This area constitutes over 4,000 archaeological sites of the Ancestral Puebloan people, who lived here and elsewhere in the Four Corners region for at least 700 years. Cliff dwellings built in the 12th and 13th centuries include Cliff Palace, which has 150 rooms and 23 kivas, and the Balcony House, with its many passages and tunnels. (WHS)", "Mesa_Verde_National_Park"],
+      ["MORA", "Mount Rainier", "WA", ["WA"], 46.8797, -121.7269, "March 2, 1899", "Mount Rainier, an active stratovolcano, is the most prominent peak in the Cascades and is covered by 26 named glaciers including Carbon Glacier and Emmons Glacier, the longest and largest in the contiguous United States respectively. The mountain is popular for climbing, and more than half of the park is covered by subalpine and alpine forests and meadows seasonally in bloom with wildflowers. Paradise on the south slope is among the snowiest places on Earth. The Longmire visitor center is the start of the Wonderland Trail, which encircles the mountain.", "Mount_Rainier_National_Park"],
+      ["NERI", "New River Gorge", "WV", ["WV"], 37.9263, -81.1547, "December 27, 2020", "The New River Gorge is the deepest river gorge east of the Mississippi River. The park primarily covers the lower gorge area around the New River Gorge Bridge, which features some of the country's best whitewater rafting. Smaller noncontiguous sections showcase the ghost town of Thurmond, the scenic Grandview vista, and Sandstone Falls. The other 65,165 acres (263.71 km) of the redesignated national river is now a national preserve, spanning 53 miles (85 km) of the New River.", "New_River_Gorge_National_Park_and_Preserve"],
+      ["NOCA", "North Cascades", "WA", ["WA"], 48.7718, -121.2985, "October 2, 1968", "The highly glaciated mountains of the North Cascades Range exhibit a spectacular and complex geologic history. Between the river valleys and high peaks there are eight diverse life zones with 75 mammal and 1,600 vascular plant species. Popular hiking and climbing areas of the Stephen Mather Wilderness include Cascade Pass, Mount Shuksan, Mount Triumph, and Eldorado Peak. Ross Lake and Lake Chelan National Recreation Areas adjoin the two segments of the park and are all administered together.", "North_Cascades_National_Park"],
+      ["OLYM", "Olympic", "WA", ["WA"], 47.8021, -123.6044, "June 29, 1938", "This park on the Olympic Peninsula includes a wide range of ecosystems from Pacific shoreline to temperate rainforests to the glaciated alpine peaks of the Olympic Mountains, the tallest of which is Mount Olympus. The Hoh and Quinault Rainforests are the wettest areas in the contiguous United States, with the Hoh receiving an average of almost 12 ft (3.7 m) of rain every year. (WHS) (BR)", "Olympic_National_Park"],
+      ["PEFO", "Petrified Forest", "AZ", ["AZ"], 34.9099, -109.8068, "December 9, 1962", "This portion of the Chinle Formation has a large concentration of 225-million-year-old petrified wood. The surrounding Painted Desert features eroded cliffs of red-hued volcanic rock called bentonite. Dinosaur fossils and over 350 Native American sites are also protected in this park.", "Petrified_Forest_National_Park"],
+      ["PINN", "Pinnacles", "CA", ["CA"], 36.4906, -121.1825, "January 10, 2013", "Named for the eroded leftovers of a portion of an extinct volcano, the park's massive black and gold monoliths of andesite and rhyolite are a popular destination for rock climbers. Hikers have access to trails crossing the Coast Range wilderness. The park is one of the few locations where the endangered California condor can be seen in the wild. Pinnacles also supports a dense population of prairie falcons and more than 13 species of bat that populate its talus caves.", "Pinnacles_National_Park"],
+      ["REDW", "Redwood", "CA", ["CA"], 41.2132, -124.0046, "October 2, 1968", "This park and the co-managed state parks protect almost half of all remaining coastal redwoods, the tallest trees on earth. There are three large river systems in this very seismically active area, and 37 miles (60 km) of protected coastline reveal tide pools and seastacks. The prairie, estuary, coast, river, and forest ecosystems contain a wide variety of animal and plant species. (WHS)", "Redwood_National_and_State_Parks"],
+      ["ROMO", "Rocky Mountain", "CO", ["CO"], 40.3428, -105.6836, "January 26, 1915", "Bisected north to south by the Continental Divide, this portion of the Rockies has ecosystems varying from over 150 riparian lakes to montane and subalpine forests to treeless alpine tundra. Wildlife including elk, moose, mule deer, bighorn sheep, black bears, and cougars inhabit its igneous mountains and glacial valleys. Longs Peak, a classic Colorado fourteener, and the scenic Bear Lake are popular destinations, as well as the historic Trail Ridge Road, which reaches an elevation of more than 12,000 feet (3,700 m). (BR)", "Rocky_Mountain_National_Park"],
+      ["SAGU", "Saguaro", "AZ", ["AZ"], 32.2967, -111.1666, "October 14, 1994", "Split into the separate Rincon Mountain and Tucson Mountain districts, this park is evidence that the dry Sonoran Desert is still home to a great variety of life spanning six biotic communities. Beyond the namesake giant saguaro cacti, there are barrel cacti, chollas, and prickly pears, as well as lesser long-nosed bats, spotted owls, and javelinas.", "Saguaro_National_Park"],
+      ["SEQU", "Sequoia", "CA", ["CA"], 36.4864, -118.5658, "September 25, 1890", "This park protects the Giant Forest, which boasts some of the world's largest trees, the General Sherman being the largest measured tree in the park. Other features include over 240 caves, a long segment of the Sierra Nevada including the tallest mountain in the contiguous United States, and Moro Rock, a large granite dome. (BR)", "Sequoia_National_Park"],
+      ["SHEN", "Shenandoah", "VA", ["VA"], 38.5326, -78.356, "December 26, 1935", "Shenandoah's Blue Ridge Mountains are covered by hardwood forests that teem with a wide variety of wildlife. The Skyline Drive and Appalachian Trail run the entire length of this narrow park, along with more than 500 miles (800 km) of hiking trails passing scenic overlooks and cataracts of the Shenandoah River.", "Shenandoah_National_Park"],
+      ["THRO", "Theodore Roosevelt", "ND", ["ND"], 46.979, -103.5387, "November 10, 1978", "This region that enticed and influenced President Theodore Roosevelt consists of a park of three units in the northern badlands. Besides Roosevelt's historic cabin, there are numerous scenic drives and backcountry hiking opportunities. Wildlife includes American bison, pronghorn, bighorn sheep, and wild horses.", "Theodore_Roosevelt_National_Park"],
+      ["VIIS", "Virgin Islands", "VI", ["VI"], 18.3424, -64.7486, "August 2, 1956", "This island park on Saint John preserves pristine beaches surrounded by mangrove forests, seagrass beds, and coral reefs. It also has Taíno archaeological sites and the ruins of sugar plantations from Columbus's time.", "Virgin_Islands_National_Park"],
+      ["VOYA", "Voyageurs", "MN", ["MN"], 48.4839, -92.8389, "April 8, 1975", "This park protecting four lakes near the Canada–US border is a site for canoeing, kayaking, and fishing. The park also preserves a history populated by Ojibwe Native Americans, French fur traders called voyageurs, and gold miners. Formed by glaciers, the region features tall bluffs, rock gardens, islands, bays, and several historic buildings.", "Voyageurs_National_Park"],
+      ["WHSA", "White Sands", "NM", ["NM"], 32.7797, -106.1717, "December 20, 2019", "Located in the mountain-ringed Tularosa Basin, White Sands consists of the southern part of a 275-square-mile (710 km) field of white sand dunes composed of gypsum crystals—the world's largest gypsum dunefield. The park is completely within the White Sands Missile Range and is subject to closure when tests are conducted.", "White_Sands_National_Park"],
+      ["WICA", "Wind Cave", "SD", ["SD"], 43.6046, -103.4213, "January 9, 1903", "Wind Cave is distinctive for its calcite fin formations called boxwork, a unique formation rarely found elsewhere, and needle-like growths called frostwork. It is one of the longest caves in the world and creates a wind as air pressure changes. Above ground is a mixed-grass prairie with animals such as bison, black-footed ferrets, and prairie dogs and ponderosa pine forests home to cougars and elk. The cave is culturally significant to the Lakota people as a creation site.", "Wind_Cave_National_Park"],
+      ["WRST", "Wrangell–St. Elias", "AK", ["AK"], 61.7104, -142.9857, "December 2, 1980", "The largest national park in the system protects the convergence of the Alaska, Chugach, Wrangell, and Saint Elias Ranges, which include many of the continent's tallest mountains and volcanoes, including the 18,008-foot Mount Saint Elias. More than a quarter of the park is covered with glaciers, including the tidewater Hubbard Glacier, piedmont Malaspina Glacier, and valley Nabesna Glacier. (WHS)", "Wrangell%E2%80%93St._Elias_National_Park_and_Preserve"],
+      ["YELL", "Yellowstone", "WY", ["WY", "MT", "ID"], 44.428, -110.5885, "March 1, 1872", "Situated on the Yellowstone Caldera, the park has an expansive network of geothermal areas including boiling mud pots, vividly colored hot springs such as Grand Prismatic Spring, and regularly erupting geysers, the best-known being Old Faithful. The yellow-hued Grand Canyon of the Yellowstone River contains several high waterfalls, and four mountain ranges traverse the park. More than 60 mammal species including timber wolves, grizzly bears, black bears, lynxes, bison, and elk make this park one of the best wildlife viewing spots in the country. (WHS) (BR)", "Yellowstone_National_Park"],
+      ["YOSE", "Yosemite", "CA", ["CA"], 37.8651, -119.5383, "October 1, 1890", "Yosemite features sheer granite cliffs, exceptionally tall waterfalls, and old-growth forests at a unique intersection of geology and hydrology. Half Dome and El Capitan rise from the park's centerpiece, the glacier-carved Yosemite Valley, and from its vertical walls drop Yosemite Falls, one of North America's tallest waterfalls at 2,425 feet (739 m) high. Three giant sequoia groves, along with a pristine wilderness in the heart of the Sierra Nevada, are home to a wide variety of rare plant and animal species. (WHS)", "Yosemite_National_Park"],
+      ["ZION", "Zion", "UT", ["UT"], 37.2982, -113.0263, "November 19, 1919", "Located at the junction of the Colorado Plateau, Great Basin, and Mojave Desert, this park contains sandstone features such as mesas, rock towers, and canyons, including the Virgin River Narrows. The various sandstone formations and the forks of the Virgin River create a wilderness divided into four ecosystems: desert, riparian, woodland, and coniferous forest.", "Zion_National_Park"],
     ];
     const SUGGESTED_NATIONAL_MONUMENTS = [
       ["AI", "Admiralty Island", "AK", ["AK"], 57.64, -134.35, "December 1, 1978", "Occupying most of Admiralty Island, the 7th largest in the United States, this monument is part of Tongass National Forest in Southeast Alaska. The monument protects the densest known population of brown bear on Earth, along with habitat for the Sitka black-tailed deer. Most of the monument has been designated as the Kootznoowoo Wilderness, restricting future development.", "Admiralty_Island_National_Monument"],
@@ -16364,7 +16364,7 @@
         linkLabel: "NPS",
         defaultIconId: SUGGESTED_SET_DEFAULT_ICON,
         defaultLabelMode: "none",
-        items: SUGGESTED_NATIONAL_PARKS.map(([code, name, primaryState, states, lat, lng]) => {
+        items: SUGGESTED_NATIONAL_PARKS.map(([code, name, primaryState, states, lat, lng, dateEstablished, description]) => {
           const url = `https://www.nps.gov/${code.toLowerCase()}/index.htm`;
           const fullName = code === "NPSA" ? "National Park of American Samoa" : `${name} National Park`;
           return {
@@ -16379,6 +16379,8 @@
             lat,
             lng,
             url,
+            dateEstablished,
+            defaultDetails: `Date Established: ${dateEstablished} | Description: ${description}`.slice(0, 700),
             noteTemplate: `Official National Park unit. Website: ${url}`
           };
         })
@@ -16551,6 +16553,18 @@
         category: "Notes"
       },
       {
+        title: "Raptor Easter Egg",
+        ticketId: "WISH-068",
+        description: "Add a small, discoverable raptor easter egg that rewards curious clicking or an obscure app interaction without disrupting map, notes, export, or accessibility workflows.",
+        priority: "P3",
+        effort: "small",
+        targetKind: "patch",
+        targetVersion: "",
+        tokenCostPct: 8,
+        prompt: "Add a subtle raptor easter egg that is discoverable through a playful but non-disruptive interaction. Keep it local-only, accessible, and harmless to normal map, notes, export, and keyboard workflows.",
+        category: "Fun"
+      },
+      {
         title: "Historical & Defunct Countries",
         ticketId: "WISH-054",
         description: "Extend the world map to recognize historical/defunct countries (for example USSR, Yugoslavia, Czechoslovakia, East Germany) so trips to places that no longer exist can be recorded. Scope includes stable internal ids that survive ISO code reuse, a way to surface or group former countries without cluttering the modern list, and notes/exports that keep working. Builds on the shipped world-map layer system.",
@@ -16709,7 +16723,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.4",
+        version: "4.3.0.5",
         date: "2026-06-03",
         title: "Waypoint Pack",
         summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
@@ -16720,12 +16734,18 @@
           "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.4",
+          version: "4.3.0.5",
           title: "Waypoint Pack",
           summary: "Add Parks and Monuments as prioritized Wayfinder notes.",
           cta: "Pack the Map!"
         },
         updates: [
+          "Enriched National Park preview notes with static Wikipedia-sourced established dates and descriptions.",
+          "Recalibrated Alaska waypoint projection so mainland and Aleutian pack pins spread farther left and lower across the inset.",
+          "Changed the Waypoint Packs subtitle to a generic future-endeavors line without linked status.",
+          "Selecting a pack now enables its recommended Location Tag and adds it to the end of the active tag order when needed.",
+          "Increased map label text for Waypoint Pack markers.",
+          "Added a roadmap wish for a small raptor easter egg.",
           "Renamed Suggested Sets to Waypoint Packs and moved the entry point into Wayfinder as a compact Packs button.",
           "Renamed the Notes Wayfinder controls internally to notesActivateWayfinderBtn and notesAddWaypointsBtn, with teal outlines tying them to Wayfinder mode.",
           "Replaced the modal drawer with an inset Waypoint Packs panel over Notes so the map stays visible and interactive.",
@@ -19750,6 +19770,28 @@
       state.settings.suggestedSetIcons[set.id] = iconId;
     }
 
+    function activateSuggestedSet(setId) {
+      const set = SUGGESTED_SET_BY_ID[setId] || SUGGESTED_SET_BY_ID[SUGGESTED_SET_DEFAULT_ID];
+      if (!set) return null;
+      state.settings.activeSuggestedSetId = set.id;
+      addSuggestedSetRecommendedIcon(set.id);
+      return set;
+    }
+
+    function addSuggestedSetRecommendedIcon(setId) {
+      const set = SUGGESTED_SET_BY_ID[setId];
+      const iconId = set?.defaultIconId || SUGGESTED_SET_DEFAULT_ICON;
+      const index = state.visitTypes.findIndex(type => type.id === iconId);
+      if (index < 0 || state.visitTypes[index]?.enabled !== false) return false;
+      const [type] = state.visitTypes.splice(index, 1);
+      const enabledType = { ...type, enabled: true };
+      const hiddenIndex = state.visitTypes.findIndex(item => item.enabled === false);
+      if (hiddenIndex >= 0) state.visitTypes.splice(hiddenIndex, 0, enabledType);
+      else state.visitTypes.push(enabledType);
+      ensureNoteIconFilters();
+      return true;
+    }
+
     function setSuggestedSetLabelMode(setId, mode) {
       const set = SUGGESTED_SET_BY_ID[setId];
       if (!set || !SUGGESTED_SET_LABEL_MODES.includes(mode)) return;
@@ -21873,7 +21915,7 @@
       if (!set) return;
       const progress = suggestedSetProgress(set.id);
       const listItems = setItemsForActiveList(set);
-      $("#waypointPacksSubtitle").textContent = `Curated place packs for Wayfinder planning. ${progress.linked}/${progress.total} linked.`;
+      $("#waypointPacksSubtitle").textContent = "Curated place packs for future endeavors";
       $("#waypointPacksSummary").textContent = `${progress.linked}/${progress.total} linked · ${progress.notes} notes`;
       $("#waypointPackAvailableList").innerHTML = SUGGESTED_SETS.map(renderWaypointPackCard).join("");
       $("#waypointPackConfigure").innerHTML = renderWaypointPackConfigure(set);
@@ -21885,7 +21927,9 @@
     }
 
     function openSetsDialog(setId = "") {
-      if (SUGGESTED_SET_BY_ID[setId]) state.settings.activeSuggestedSetId = setId;
+      const targetSetId = SUGGESTED_SET_BY_ID[setId] ? setId : activeSuggestedSet()?.id || SUGGESTED_SET_DEFAULT_ID;
+      activateSuggestedSet(targetSetId);
+      save();
       if (!bucketListViewActive()) setBucketListView(true);
       waypointPacksPanelOpen = true;
       notesPanelOpen = true;
@@ -27228,7 +27272,7 @@
       $("#waypointPacksPanel").addEventListener("click", event => {
         const pack = event.target.closest("[data-waypoint-pack]");
         if (pack) {
-          state.settings.activeSuggestedSetId = SUGGESTED_SET_BY_ID[pack.dataset.waypointPack] ? pack.dataset.waypointPack : SUGGESTED_SET_DEFAULT_ID;
+          activateSuggestedSet(pack.dataset.waypointPack);
           save();
           renderSetsDialog();
           renderMap();
