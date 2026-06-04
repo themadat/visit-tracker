@@ -51,9 +51,10 @@ description text prefilled into note details. No runtime Wikipedia calls.
   - The button opens an inset panel over Notes, not a modal, so the map remains
     visible and interactive.
   - Panel shows Available Packs, selected-pack progress, visual icon choices,
-    overlay toggle, label mode buttons, add/refresh, remove, filter, and sort.
-  - Add/Refresh uses editable preview cards with `Include`, `Priority`, and
-    `Note` fields before creating notes.
+    overlay toggle, label mode buttons, one unified Pack Locations list,
+    add/refresh, and remove.
+  - Pack Locations uses short waypoint names with inline `Include`, `Priority`,
+    linked status, info, Attach/Edit/Unlink actions, and pre-link `Note` fields.
   - Batch add creates missing notes and refreshes existing pack notes using
     managed fields only.
   - After adding, enable the chosen Location Tag, turn the pack overlay on, and
@@ -62,12 +63,16 @@ description text prefilled into note details. No runtime Wikipedia calls.
   - From a pack item, allow "Attach existing note."
   - From the note editor, allow "Add to active pack" when a pack item is
     selected.
-  - Attaching sets source metadata, coordinates, chosen icon/tag, Where/geocode
-    basics, and pack marker fields while preserving user level, date, details,
-    what/who, and non-pack tags unless missing.
+  - Attaching sets source metadata, coordinates, short waypoint City, chosen
+    icon/tag, Where/geocode basics, and pack marker fields; it appends the
+    waypoint note to Additional Details while preserving user level, date,
+    existing details, what/who, and non-pack tags.
+  - Linked notes can be unlinked from Pack Locations without deleting the note.
 - Add pack marker and label behavior:
   - Pack markers use the pack's chosen icon/logo with Wayfinder teal overlay
     styling.
+  - National Monument artwork is white on light maps and black on dark maps;
+    its Notes treatment is black in light mode and white in dark mode.
   - Priority markers use a 1-5 green, yellow-green, yellow, yellow-orange,
     orange color scale.
   - Adding pack notes does **not** apply the Wayfinder level to entire states.
@@ -181,7 +186,10 @@ WISH-068 tracks a small raptor easter egg.
   persist.
 - Re-run Add/Refresh; confirm managed fields update and user-entered fields are
   preserved.
-- Attach an existing note from the pack panel and from the note editor.
+- Attach an existing note from the pack panel and from the note editor; confirm
+  City and coordinates update and waypoint details append to Additional Details.
+- Unlink a linked note; confirm the note is preserved and becomes attachable
+  again.
 - Mark a pack-created Wayfinder note visited; confirm it stays linked and marker
   color changes.
 - Remove the pack; confirm untouched generated notes are removed and
@@ -192,12 +200,13 @@ WISH-068 tracks a small raptor easter egg.
 - Verify preview priority choices draw a number badge before Add/Refresh.
 - Verify Parks and Monuments use their dedicated bundled SVG Location Tags.
 - Verify the pack SVGs render from inline app constants with no runtime asset
-  request, and the National Monument glyph is white.
+  request, and the National Monument glyph follows the map/Notes theme contrast.
 - Verify waypoint labels sit above the icon and leave the priority badge clear.
 - Verify teal-bordered location headers replace preview checkboxes and toggle
   whether each location is included.
 - Verify the unified Pack Locations list combines selection, inline priority,
-  state-scoped Attach/Edit actions, status, and notes without a duplicate list.
+  state-scoped Attach/Edit/Unlink actions, status, and pre-link notes without a
+  duplicate list.
 - Verify National Monument silhouettes render inside map marker circles.
 - Verify Attach Existing Note only offers available notes from the waypoint's
   listed state or states.
