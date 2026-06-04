@@ -4625,14 +4625,12 @@
       overflow: visible;
     }
 
-    .waypoint-pack-preview-list,
-    .waypoint-pack-item-list {
+    .waypoint-pack-preview-list {
       display: grid;
       gap: .38rem;
     }
 
-    .waypoint-preview-card,
-    .waypoint-item-card {
+    .waypoint-preview-card {
       display: grid;
       gap: .38rem;
       padding: .5rem;
@@ -4641,10 +4639,9 @@
       background: var(--surface);
     }
 
-    .waypoint-preview-main,
-    .waypoint-item-main {
+    .waypoint-preview-main {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-columns: minmax(0, 1fr) auto auto;
       align-items: center;
       gap: .42rem;
     }
@@ -4671,25 +4668,43 @@
       opacity: .7;
     }
 
-    .waypoint-preview-title,
-    .waypoint-item-title {
+    .waypoint-preview-title {
       min-width: 0;
       display: grid;
       gap: .08rem;
     }
 
-    .waypoint-preview-title b,
-    .waypoint-item-title b {
+    .waypoint-preview-title b {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
-    .waypoint-preview-title small,
-    .waypoint-item-title small {
+    .waypoint-preview-title small {
       color: var(--muted);
       font-size: .72rem;
       line-height: 1.15;
+    }
+
+    .waypoint-preview-main .waypoint-priority-row {
+      flex-wrap: nowrap;
+      gap: .16rem;
+    }
+
+    .waypoint-preview-main .waypoint-priority-row button {
+      min-width: 1.42rem;
+      padding: .16rem .2rem;
+    }
+
+    .waypoint-location-status {
+      display: grid;
+      gap: .28rem;
+    }
+
+    .waypoint-location-status select,
+    .waypoint-location-status button {
+      width: 100%;
+      min-width: 0;
     }
 
     .waypoint-priority-row button {
@@ -4706,17 +4721,12 @@
       font-size: .8rem;
     }
 
-    .waypoint-item-actions {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: .35rem;
+    .waypoint-section-actions {
+      display: flex;
       align-items: center;
-    }
-
-    .waypoint-pack-list-controls {
-      display: grid;
-      gap: .38rem;
-      margin-bottom: .38rem;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: .3rem;
     }
 
     .waypoint-sort-row button {
@@ -4874,15 +4884,12 @@
       }
 
       .waypoint-control-row,
-      .waypoint-preview-main,
-      .waypoint-item-main,
-      .waypoint-item-actions {
+      .waypoint-preview-main {
         grid-template-columns: 1fr;
         align-items: stretch;
       }
 
-      .waypoint-preview-main .ghost,
-      .waypoint-item-main .ghost {
+      .waypoint-preview-main .ghost {
         justify-self: start;
       }
 
@@ -13728,18 +13735,13 @@
               <section id="waypointPackConfigure" class="waypoint-pack-configure"></section>
               <section>
                 <div class="waypoint-section-title">
-                  <h4>Add / Refresh</h4>
-                  <button id="setsBatchAddBtn" class="primary" type="button">Add Selected</button>
+                  <h4>Pack Locations</h4>
+                  <div class="waypoint-section-actions">
+                    <button id="setsBatchAddBtn" class="primary" type="button">Add / Refresh Selected</button>
+                    <button id="setsRemoveBtn" class="danger" type="button">Remove Pack</button>
+                  </div>
                 </div>
                 <div id="setsPreviewTable" class="waypoint-pack-preview-list"></div>
-              </section>
-              <section>
-                <div class="waypoint-section-title">
-                  <h4>Pack Notes</h4>
-                  <button id="setsRemoveBtn" class="danger" type="button">Remove Pack</button>
-                </div>
-                <div id="waypointPackListControls" class="waypoint-pack-list-controls"></div>
-                <div id="setsItemList" class="waypoint-pack-item-list"></div>
               </section>
             </div>
           </section>
@@ -14909,7 +14911,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.7";
+    const APP_VERSION = "4.3.0.8";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -16840,7 +16842,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.7",
+        version: "4.3.0.8",
         date: "2026-06-03",
         title: "Waypoint Pack",
         summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
@@ -16851,12 +16853,16 @@
           "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.7",
+          version: "4.3.0.8",
           title: "Waypoint Pack",
           summary: "Add Parks and Monuments as prioritized Wayfinder notes.",
           cta: "Pack the Map!"
         },
         updates: [
+          "Merged Add/Refresh and Pack Notes into one compact Pack Locations list with contextual Attach/Edit actions.",
+          "Moved each location's priority controls between its name and info link to reduce vertical space.",
+          "Limited Attach Existing Note choices to available notes in the waypoint's listed state or states.",
+          "Rendered the National Monument silhouette as native map SVG so it reliably appears inside waypoint circles.",
           "Embedded the National Park Service and National Monument artwork directly with the app's SVG constants.",
           "Made the National Monument glyph white and moved waypoint labels above markers so priority badges stay clear.",
           "Replaced preview checkboxes with bordered location selectors; teal-highlighted locations are included.",
@@ -17948,8 +17954,8 @@
     let markerDialogItems = [];
     let waypointPacksPanelOpen = false;
     let suggestedSetPreviewPriorities = new Map();
-    let setsPriorityFilter = "all";
-    let setsSortMode = "set";
+    let suggestedSetPreviewIncludes = new Map();
+    let suggestedSetPreviewDetails = new Map();
     let pendingNoteDefaults = null;
     let noteDialogBaseline = "";
     let noteDialogMode = "state";
@@ -19056,7 +19062,7 @@
         const activeSetId = activeSuggestedSet()?.id;
         if (activeSetId) {
           cleanupSuggestedSetPreviewIcon(activeSetId);
-          clearSuggestedSetPreviewPriorities(activeSetId);
+          clearSuggestedSetPreviewDrafts(activeSetId);
         }
         waypointPacksPanelOpen = false;
         const snap = state.settings.bucketListFilterSnapshot;
@@ -19982,9 +19988,31 @@
       else suggestedSetPreviewPriorities.delete(key);
     }
 
-    function clearSuggestedSetPreviewPriorities(setId) {
+    function suggestedSetPreviewInclude(setId, itemId) {
+      const key = suggestedSetPreviewPriorityKey(setId, itemId);
+      return suggestedSetPreviewIncludes.has(key) ? suggestedSetPreviewIncludes.get(key) === true : true;
+    }
+
+    function setSuggestedSetPreviewInclude(setId, itemId, include) {
+      suggestedSetPreviewIncludes.set(suggestedSetPreviewPriorityKey(setId, itemId), include === true);
+    }
+
+    function suggestedSetPreviewDetail(set, item, note) {
+      const key = suggestedSetPreviewPriorityKey(set.id, item.id);
+      return suggestedSetPreviewDetails.has(key)
+        ? suggestedSetPreviewDetails.get(key)
+        : note ? noteDetails(note) : item.defaultDetails || "";
+    }
+
+    function setSuggestedSetPreviewDetail(setId, itemId, detail) {
+      suggestedSetPreviewDetails.set(suggestedSetPreviewPriorityKey(setId, itemId), String(detail || "").slice(0, 700));
+    }
+
+    function clearSuggestedSetPreviewDrafts(setId) {
       const prefix = `${setId}:`;
       suggestedSetPreviewPriorities = new Map([...suggestedSetPreviewPriorities].filter(([key]) => !key.startsWith(prefix)));
+      suggestedSetPreviewIncludes = new Map([...suggestedSetPreviewIncludes].filter(([key]) => !key.startsWith(prefix)));
+      suggestedSetPreviewDetails = new Map([...suggestedSetPreviewDetails].filter(([key]) => !key.startsWith(prefix)));
     }
 
     function activateSuggestedSet(setId) {
@@ -19993,7 +20021,7 @@
       const previousId = activeSuggestedSet()?.id;
       if (previousId && previousId !== set.id) {
         cleanupSuggestedSetPreviewIcon(previousId);
-        clearSuggestedSetPreviewPriorities(previousId);
+        clearSuggestedSetPreviewDrafts(previousId);
       }
       state.settings.activeSuggestedSetId = set.id;
       addSuggestedSetRecommendedIcon(set.id);
@@ -20208,7 +20236,7 @@
         });
       });
       state.settings.suggestedSetsVisible = false;
-      clearSuggestedSetPreviewPriorities(setId);
+      clearSuggestedSetPreviewDrafts(setId);
       cleanupSuggestedSetPreviewIcon(setId);
       save();
       render();
@@ -21686,6 +21714,31 @@
       group.append(text);
     }
 
+    function appendSuggestedSetMarkerIcon(group, iconId) {
+      const svgNS = "http://www.w3.org/2000/svg";
+      if (iconId === "waypoint_national_monuments") {
+        const monument = document.createElementNS(svgNS, "polygon");
+        monument.classList.add("set-marker-monument");
+        monument.setAttribute("points", "91.7,111.4 91.7,102.5 83.2,102.5 77.9,18.3 65,3.7 52.2,18.3 46.9,102.5 38.4,102.5 38.4,111.4 29.8,111.4 29.8,126 100.3,126 100.3,111.4");
+        monument.setAttribute("transform", "translate(-7.8 -7.8) scale(.12)");
+        monument.setAttribute("fill", "#fff");
+        monument.setAttribute("stroke", "#0f766e");
+        monument.setAttribute("stroke-width", "3");
+        group.append(monument);
+        return;
+      }
+      const foreign = document.createElementNS(svgNS, "foreignObject");
+      foreign.setAttribute("x", "-6.5");
+      foreign.setAttribute("y", "-6.5");
+      foreign.setAttribute("width", "13");
+      foreign.setAttribute("height", "13");
+      const icon = document.createElement("div");
+      icon.className = "set-marker-icon";
+      icon.innerHTML = visitTypeIcon(iconId);
+      foreign.append(icon);
+      group.append(foreign);
+    }
+
     function renderSuggestedSetMarkers() {
       const markers = $("#suggestedSetMarkers");
       if (markers) markers.innerHTML = "";
@@ -21717,16 +21770,7 @@
           <circle class="set-marker-ring" r="10"></circle>
           <circle class="set-marker-core" r="7"></circle>
         `;
-        const foreign = document.createElementNS(svgNS, "foreignObject");
-        foreign.setAttribute("x", "-6.5");
-        foreign.setAttribute("y", "-6.5");
-        foreign.setAttribute("width", "13");
-        foreign.setAttribute("height", "13");
-        const icon = document.createElement("div");
-        icon.className = "set-marker-icon";
-        icon.innerHTML = visitTypeIcon(iconId);
-        foreign.append(icon);
-        group.append(foreign);
+        appendSuggestedSetMarkerIcon(group, iconId);
         appendSuggestedSetPriority(group, { priority: suggestedSetPreviewPriority(set.id, item.id) || note?.priority });
         appendSuggestedSetMarkerLabel(group, set, item, note);
         const open = event => {
@@ -21962,13 +22006,19 @@
       return STATE_NAMES[code] || worldRegionNames[code] || code;
     }
 
-    function attachableNoteOptionsHtml(set, item) {
-      const refs = allSavedNoteRefs()
-        .filter(ref => !setNoteMatchesSource(ref.note, set.id, item.id))
-        .sort((a, b) => regionNameForLayer(a.abbr, a.layer).localeCompare(regionNameForLayer(b.abbr, b.layer))
-          || (b.note.date || "").localeCompare(a.note.date || "")
+    function attachableNoteRefs(item) {
+      const locationStates = new Set((item.states || []).filter(code => STATE_NAMES[code]));
+      if (!locationStates.size) locationStates.add(suggestedSetPrimaryState(item));
+      return allSavedNoteRefs()
+        .filter(ref => ref.layer === "us" && locationStates.has(ref.abbr) && !suggestedSetSourceForNote(ref.note))
+        .sort((a, b) => (b.note.date || "").localeCompare(a.note.date || "")
           || noteSummary(a.note).localeCompare(noteSummary(b.note)));
-      return `<option value="">Attach existing note...</option>` + refs.map(ref =>
+    }
+
+    function attachableNoteOptionsHtml(item, refs = attachableNoteRefs(item)) {
+      const location = suggestedSetItemRegionLabel(item) || STATE_NAMES[suggestedSetPrimaryState(item)] || suggestedSetPrimaryState(item);
+      const prompt = refs.length ? `Attach an available ${location} note...` : `No available ${location} notes`;
+      return `<option value="">${escapeHtml(prompt)}</option>` + refs.map(ref =>
         `<option value="${escapeHtml(`${ref.layer}|${ref.abbr}|${ref.note.id}`)}">${escapeHtml(noteAttachOptionLabel(ref))}</option>`
       ).join("");
     }
@@ -21986,76 +22036,37 @@
       const linked = suggestedSetLinkedNote(set.id, item.id);
       const note = linked?.note;
       const priority = suggestedSetPreviewPriority(set.id, item.id) || normalizeNotePriority(note?.priority);
+      const include = suggestedSetPreviewInclude(set.id, item.id);
+      const detail = suggestedSetPreviewDetail(set, item, note);
+      const refs = note ? [] : attachableNoteRefs(item);
+      const status = note
+        ? `<span class="sets-linked-pill">Linked ${notePriorityBadgeHtml(note)} ${noteSourceBadgeHtml(note)}</span>`
+        : `<span class="sets-linked-pill">Not added</span>`;
+      const action = note
+        ? `<button type="button" data-set-edit-note="${escapeHtml(item.id)}">Edit Linked Note</button>`
+        : `<select data-set-attach-item="${escapeHtml(item.id)}" aria-label="Attach an existing note to ${escapeHtml(item.fullName)}" ${refs.length ? "" : "disabled"}>${attachableNoteOptionsHtml(item, refs)}</select>`;
       return `
         <article class="waypoint-preview-card" data-set-preview-item="${escapeHtml(item.id)}">
           <div class="waypoint-preview-main">
-            <button class="waypoint-preview-selection" type="button" data-set-preview-toggle aria-pressed="true" aria-label="Include ${escapeHtml(item.fullName)}">
+            <button class="waypoint-preview-selection" type="button" data-set-preview-toggle aria-pressed="${include ? "true" : "false"}" aria-label="Include ${escapeHtml(item.fullName)}">
               <span class="waypoint-preview-title">
                 <b>${escapeHtml(item.fullName)}</b>
                 <small>${escapeHtml(item.code)} · ${escapeHtml(suggestedSetItemRegionLabel(item))}${linked ? " · linked" : ""}</small>
               </span>
             </button>
+            <div class="waypoint-priority-row" aria-label="Priority for ${escapeHtml(item.fullName)}">
+              ${waypointPriorityButtons(priority, "data-set-preview-priority-choice", item.id)}
+            </div>
             <a class="ghost" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">${escapeHtml(set.linkLabel || "Info")}</a>
           </div>
           <input type="hidden" data-set-preview-priority value="${escapeHtml(priority)}">
-          <div class="waypoint-priority-row" aria-label="Priority for ${escapeHtml(item.fullName)}">
-            ${waypointPriorityButtons(priority, "data-set-preview-priority-choice", item.id)}
-          </div>
-          <textarea data-set-preview-note maxlength="700" placeholder="Wayfinder Notes for ${escapeHtml(item.name)}">${escapeHtml(note ? noteDetails(note) : item.defaultDetails || "")}</textarea>
-        </article>
-      `;
-    }
-
-    function renderSetItemRow(set, item) {
-      const linked = suggestedSetLinkedNote(set.id, item.id);
-      const note = linked?.note;
-      const status = note
-        ? `<span class="sets-linked-pill">Linked ${notePriorityBadgeHtml(note)} ${noteSourceBadgeHtml(note)}</span>`
-        : `<span class="sets-linked-pill">Not added</span>`;
-      const attach = note
-        ? `<button type="button" data-set-edit-note="${escapeHtml(item.id)}">Edit</button>`
-        : `<select data-set-attach-item="${escapeHtml(item.id)}" aria-label="Attach an existing note to ${escapeHtml(item.fullName)}">${attachableNoteOptionsHtml(set, item)}</select>`;
-      return `
-        <article class="waypoint-item-card">
-          <div class="waypoint-item-main">
-            <span class="waypoint-item-title">
-              <b>${escapeHtml(item.fullName)}</b>
-              <small>${escapeHtml(item.code)} · ${escapeHtml(suggestedSetItemRegionLabel(item))}</small>
-            </span>
+          <div class="waypoint-location-status">
             ${status}
-            <a class="ghost" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">${escapeHtml(set.linkLabel || "Info")}</a>
+            ${action}
           </div>
-          <div class="waypoint-item-actions">${attach}</div>
+          <textarea data-set-preview-note maxlength="700" placeholder="Wayfinder Notes for ${escapeHtml(item.name)}">${escapeHtml(detail)}</textarea>
         </article>
       `;
-    }
-
-    function suggestedSetItemPriority(set, item) {
-      return normalizeNotePriority(suggestedSetLinkedNote(set.id, item.id)?.note?.priority);
-    }
-
-    function setItemsForActiveList(set) {
-      const validFilter = ["all", "blank", "1", "2", "3", "4", "5"].includes(setsPriorityFilter)
-        ? setsPriorityFilter
-        : "all";
-      const validSort = ["set", "priority", "name"].includes(setsSortMode) ? setsSortMode : "set";
-      const items = set.items.filter(item => {
-        const priority = suggestedSetItemPriority(set, item);
-        if (validFilter === "all") return true;
-        if (validFilter === "blank") return !priority;
-        return priority === validFilter;
-      });
-      if (validSort === "name") {
-        return items.sort((a, b) => a.fullName.localeCompare(b.fullName));
-      }
-      if (validSort === "priority") {
-        return items.sort((a, b) => {
-          const priorityA = Number(suggestedSetItemPriority(set, a) || 9);
-          const priorityB = Number(suggestedSetItemPriority(set, b) || 9);
-          return priorityA - priorityB || a.fullName.localeCompare(b.fullName);
-        });
-      }
-      return items;
     }
 
     function renderWaypointPackCard(set) {
@@ -22116,25 +22127,6 @@
       `;
     }
 
-    function renderWaypointListControls() {
-      const validFilter = ["all", "blank", "1", "2", "3", "4", "5"].includes(setsPriorityFilter) ? setsPriorityFilter : "all";
-      const validSort = ["set", "priority", "name"].includes(setsSortMode) ? setsSortMode : "set";
-      const sortButton = (mode, label) => `<button type="button" data-waypoint-sort="${mode}" aria-pressed="${validSort === mode ? "true" : "false"}">${escapeHtml(label)}</button>`;
-      return `
-        <div class="waypoint-priority-row" aria-label="Filter pack notes by priority">
-          ${["all", "1", "2", "3", "4", "5", "blank"].map(value => {
-            const label = value === "all" ? "All" : value === "blank" ? "–" : value;
-            return `<button type="button" data-waypoint-priority-filter="${value}" aria-pressed="${validFilter === value ? "true" : "false"}">${escapeHtml(label)}</button>`;
-          }).join("")}
-        </div>
-        <div class="waypoint-sort-row" aria-label="Sort pack notes">
-          ${sortButton("set", "Pack")}
-          ${sortButton("priority", "Priority")}
-          ${sortButton("name", "Name")}
-        </div>
-      `;
-    }
-
     function renderSetsDialog() {
       const panel = $("#waypointPacksPanel");
       if (!panel) return;
@@ -22145,16 +22137,11 @@
       const set = activeSuggestedSet();
       if (!set) return;
       const progress = suggestedSetProgress(set.id);
-      const listItems = setItemsForActiveList(set);
       $("#waypointPacksSubtitle").textContent = "Curated place packs for future endeavors";
       $("#waypointPacksSummary").textContent = `${progress.linked}/${progress.total} linked · ${progress.notes} notes`;
       $("#waypointPackAvailableList").innerHTML = SUGGESTED_SETS.map(renderWaypointPackCard).join("");
       $("#waypointPackConfigure").innerHTML = renderWaypointPackConfigure(set);
-      $("#waypointPackListControls").innerHTML = renderWaypointListControls();
       $("#setsPreviewTable").innerHTML = set.items.map(item => renderSetPreviewRow(set, item)).join("");
-      $("#setsItemList").innerHTML = listItems.length
-        ? listItems.map(item => renderSetItemRow(set, item)).join("")
-        : `<p class="muted">No ${escapeHtml(set.itemNoun)} notes match that priority filter.</p>`;
     }
 
     function openSetsDialog(setId = "") {
@@ -22171,7 +22158,7 @@
     function closeWaypointPacksPanel() {
       const setId = activeSuggestedSet()?.id;
       const iconRemoved = setId ? cleanupSuggestedSetPreviewIcon(setId) : false;
-      if (setId) clearSuggestedSetPreviewPriorities(setId);
+      if (setId) clearSuggestedSetPreviewDrafts(setId);
       waypointPacksPanelOpen = false;
       if (iconRemoved) save();
       renderSetsDialog();
@@ -22185,15 +22172,15 @@
     }
 
     function setPreviewRowsFromDialog(set) {
-      return $$("[data-set-preview-item]", $("#setsPreviewTable")).map(row => {
-        const item = set.items.find(candidate => candidate.id === row.dataset.setPreviewItem);
+      return set.items.map(item => {
+        const note = suggestedSetLinkedNote(set.id, item.id)?.note;
         return {
           item,
-          include: $("[data-set-preview-toggle]", row)?.getAttribute("aria-pressed") === "true",
-          priority: normalizeNotePriority($("[data-set-preview-priority]", row)?.value),
-          details: String($("[data-set-preview-note]", row)?.value || "").trim().slice(0, 700)
+          include: suggestedSetPreviewInclude(set.id, item.id),
+          priority: suggestedSetPreviewPriority(set.id, item.id) || normalizeNotePriority(note?.priority),
+          details: String(suggestedSetPreviewDetail(set, item, note) || "").trim().slice(0, 700)
         };
-      }).filter(row => row.item);
+      });
     }
 
     function batchAddSuggestedSetFromDialog() {
@@ -22218,7 +22205,7 @@
         if (row.priority || row.details) linked.note.sourceSetGenerated = false;
         refreshed += 1;
       });
-      clearSuggestedSetPreviewPriorities(set.id);
+      clearSuggestedSetPreviewDrafts(set.id);
       cleanupSuggestedSetPreviewIcon(set.id);
       state.settings.activeSuggestedSetId = set.id;
       state.settings.suggestedSetsVisible = true;
@@ -27511,10 +27498,20 @@
           renderSetsDialog();
         }
       });
+      $("#waypointPacksPanel").addEventListener("input", event => {
+        const note = event.target.closest("[data-set-preview-note]");
+        const row = note?.closest("[data-set-preview-item]");
+        const set = activeSuggestedSet();
+        if (note && row && set) setSuggestedSetPreviewDetail(set.id, row.dataset.setPreviewItem, note.value);
+      });
       $("#waypointPacksPanel").addEventListener("click", event => {
         const includeToggle = event.target.closest("[data-set-preview-toggle]");
         if (includeToggle) {
-          includeToggle.setAttribute("aria-pressed", includeToggle.getAttribute("aria-pressed") === "true" ? "false" : "true");
+          const row = includeToggle.closest("[data-set-preview-item]");
+          const set = activeSuggestedSet();
+          const include = includeToggle.getAttribute("aria-pressed") !== "true";
+          includeToggle.setAttribute("aria-pressed", include ? "true" : "false");
+          if (row && set) setSuggestedSetPreviewInclude(set.id, row.dataset.setPreviewItem, include);
           return;
         }
         const pack = event.target.closest("[data-waypoint-pack]");
@@ -27553,18 +27550,6 @@
           save();
           renderSetsDialog();
           renderMap();
-          return;
-        }
-        const priorityFilter = event.target.closest("[data-waypoint-priority-filter]");
-        if (priorityFilter) {
-          setsPriorityFilter = priorityFilter.dataset.waypointPriorityFilter;
-          renderSetsDialog();
-          return;
-        }
-        const sort = event.target.closest("[data-waypoint-sort]");
-        if (sort) {
-          setsSortMode = sort.dataset.waypointSort;
-          renderSetsDialog();
           return;
         }
         const priorityChoice = event.target.closest("[data-set-preview-priority-choice]");
