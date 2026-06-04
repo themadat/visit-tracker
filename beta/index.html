@@ -4761,6 +4761,75 @@
       display: contents;
     }
 
+    .waypoint-priority-popout {
+      position: relative;
+      flex: 0 0 auto;
+      min-width: 2.5rem;
+      height: 2.5rem;
+    }
+
+    .waypoint-priority-toggle {
+      display: grid;
+      place-content: center;
+      width: 100%;
+      min-width: 2.5rem;
+      height: 2.5rem;
+      padding: .18rem .4rem;
+      border: 0;
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--priority-color, var(--line)) 42%, var(--surface));
+      color: #111827;
+      font-size: .95rem;
+      font-weight: 950;
+      line-height: 1;
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--priority-color, var(--line)) 35%, transparent);
+    }
+
+    .waypoint-priority-toggle[data-priority=""] {
+      background: var(--surface-2);
+      color: var(--muted);
+      box-shadow: none;
+    }
+
+    .waypoint-priority-menu,
+    .note-waypoint-link-menu {
+      position: absolute;
+      z-index: 12;
+      top: calc(100% + .2rem);
+      right: 0;
+      display: grid;
+      gap: .24rem;
+      min-width: 10.5rem;
+      padding: .32rem;
+      border: 2px solid #14b8a6;
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: 0 12px 28px rgba(16, 24, 40, .3), 0 0 0 3px color-mix(in srgb, #14b8a6 18%, transparent);
+    }
+
+    .waypoint-priority-menu[hidden],
+    .note-waypoint-link-menu[hidden] {
+      display: none;
+    }
+
+    .waypoint-priority-choice {
+      justify-content: space-between;
+      width: 100%;
+      min-height: 30px;
+      padding: .24rem .42rem;
+      border-color: color-mix(in srgb, var(--priority-color, var(--line)) 48%, var(--line));
+      background: color-mix(in srgb, var(--priority-color, var(--surface-2)) 18%, var(--surface));
+      color: var(--text);
+      font-size: .78rem;
+      font-weight: 850;
+      text-align: left;
+    }
+
+    .waypoint-priority-choice[aria-pressed="true"] {
+      background: color-mix(in srgb, var(--priority-color, var(--line)) 35%, var(--surface));
+      box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--priority-color, var(--line)) 70%, transparent);
+    }
+
     .waypoint-row-action {
       display: grid;
       place-content: center;
@@ -4777,7 +4846,7 @@
       background: var(--surface-2);
     }
 
-    .waypoint-preview-actions .waypoint-priority-row button {
+    .waypoint-preview-actions .waypoint-priority-row>button {
       display: grid;
       place-content: center;
       place-items: center;
@@ -4795,7 +4864,7 @@
       font-weight: 900;
     }
 
-    .waypoint-preview-actions .waypoint-priority-row button[aria-pressed="true"] {
+    .waypoint-preview-actions .waypoint-priority-row>button[aria-pressed="true"] {
       border-color: #14b8a6;
       background: var(--surface-2);
       color: var(--text);
@@ -4821,6 +4890,73 @@
       color: var(--muted);
       opacity: .42;
       cursor: not-allowed;
+    }
+
+    .note-waypoint-header-controls {
+      position: relative;
+      display: flex;
+      align-items: stretch;
+      gap: .24rem;
+      min-width: 0;
+      padding: .24rem;
+      border: 2px solid #14b8a6;
+      border-radius: 8px;
+      background: color-mix(in srgb, #14b8a6 9%, var(--surface));
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, #14b8a6 20%, transparent);
+    }
+
+    .note-waypoint-header-controls.hidden {
+      display: none;
+    }
+
+    .note-waypoint-header-controls .waypoint-row-action,
+    .note-waypoint-header-controls .waypoint-priority-popout,
+    .note-waypoint-header-controls .waypoint-priority-toggle {
+      width: 2.28rem;
+      min-width: 2.28rem;
+      max-width: 2.28rem;
+      height: 2.28rem;
+      min-height: 2.28rem;
+      max-height: 2.28rem;
+    }
+
+    .note-waypoint-link-wrap {
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .note-waypoint-link-menu {
+      width: min(25rem, calc(100vw - 3rem));
+      max-height: min(18rem, 50vh);
+      overflow-y: auto;
+    }
+
+    .note-waypoint-choice {
+      width: 100%;
+      min-width: 0;
+      padding: .42rem .5rem;
+      text-align: left;
+      white-space: normal;
+    }
+
+    .note-waypoint-photo-preview {
+      display: grid;
+      place-items: center;
+      min-width: 0;
+      overflow: hidden;
+      border-radius: 6px;
+      background: #000;
+    }
+
+    .note-waypoint-photo-preview:empty {
+      display: none;
+    }
+
+    .note-waypoint-photo-preview img {
+      display: block;
+      width: 100%;
+      max-height: 20rem;
+      object-fit: contain;
     }
 
     .waypoint-preview-card.is-linked {
@@ -4888,7 +5024,7 @@
       object-fit: contain;
     }
 
-    .waypoint-priority-row button {
+    .waypoint-priority-row>button {
       min-width: 1.85rem;
       padding: .18rem .34rem;
       font-size: .72rem;
@@ -6632,6 +6768,15 @@
       min-height: 40px;
     }
 
+    .note-place-grid .is-waypoint-override input,
+    .note-place-grid input.is-waypoint-override,
+    #noteGeocodeBtn.is-waypoint-override,
+    #noteWhereToCityBtn.is-waypoint-override {
+      border-color: #14b8a6;
+      background: color-mix(in srgb, #14b8a6 12%, var(--surface));
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, #14b8a6 28%, transparent);
+    }
+
     .note-geocode-status {
       display: flex;
       align-items: center;
@@ -6950,6 +7095,13 @@
       border-color: var(--accent);
       background: color-mix(in srgb, var(--accent) 12%, var(--surface));
       color: var(--accent-2);
+    }
+
+    .visit-type-chip.is-waypoint-pack-chip:has(input:checked) {
+      border-color: #14b8a6;
+      background: color-mix(in srgb, #14b8a6 15%, var(--surface));
+      color: #0f766e;
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, #14b8a6 34%, transparent);
     }
 
     .visit-type-chip .sf-symbol {
@@ -13860,6 +14012,7 @@
             <div class="segmented" aria-label="Notes sort order">
               <button id="notesSortAlphaBtn" type="button" aria-pressed="false" data-shortcut="Z">Alphabetical</button>
               <button id="notesSortChronoBtn" type="button" aria-pressed="true" data-shortcut="T">Chronological</button>
+              <button id="notesSortPriorityBtn" type="button" aria-pressed="false">Priority</button>
             </div>
             <button id="notesCategoryToggleBtn" class="notes-category-toggle" type="button" aria-pressed="true"
               data-shortcut="G">Categorical</button>
@@ -14116,6 +14269,7 @@
         <div id="noteLocationDropdown" class="note-location-dropdown" role="listbox" hidden></div>
       </label>
       <div class="dialog-head-actions">
+        <div id="noteWaypointHeaderControls" class="note-waypoint-header-controls hidden" aria-label="Waypoint controls"></div>
         <button id="saveNoteBtn" class="primary" type="submit" form="noteForm" data-shortcut="S">Save Note</button>
         <button id="saveAddNoteBtn" class="primary" type="button" data-shortcut="A">Save + Add</button>
         <button id="deleteNoteFromDialogBtn" class="danger hidden" type="button" data-shortcut="D">Delete</button>
@@ -14152,7 +14306,7 @@
       </div>
       <section id="visitTypeRow" class="visit-type-row" aria-label="Visit labels">
       </section>
-      <section id="noteSetSection" class="note-set-section">
+      <section id="noteSetSection" class="note-set-section hidden">
         <input id="noteSourceSetId" type="hidden">
         <input id="noteSourceItemId" type="hidden">
         <input id="noteSourceGenerated" type="hidden">
@@ -14171,6 +14325,7 @@
         </label>
         <div id="noteSourceSummary" class="note-source-summary"></div>
       </section>
+      <div id="noteWaypointPhotoPreview" class="note-waypoint-photo-preview"></div>
       <small data-hint data-hint-key="note-tag-settings-help">
         Open Location Tags, choose which tags appear here, rename them, sort them, and set shortcuts.
       </small>
@@ -15086,7 +15241,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.15";
+    const APP_VERSION = "4.3.0.16";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -16666,7 +16821,7 @@
         itemNoun: "park",
         linkLabel: "NPS",
         defaultIconId: "waypoint_national_parks",
-        defaultLabelMode: "none",
+        defaultLabelMode: "name",
         items: SUGGESTED_NATIONAL_PARKS.map(([code, name, primaryState, states, lat, lng, dateEstablished, description, page]) => {
           const url = `https://www.nps.gov/${code.toLowerCase()}/index.htm`;
           const fullName = code === "NPSA" ? "National Park of American Samoa" : `${name} National Park`;
@@ -16698,7 +16853,7 @@
         itemNoun: "monument",
         linkLabel: "Wiki",
         defaultIconId: "waypoint_national_monuments",
-        defaultLabelMode: "none",
+        defaultLabelMode: "name",
         items: SUGGESTED_NATIONAL_MONUMENTS.map(([code, name, primaryState, states, lat, lng, dateEstablished, description, page]) => {
           const url = `https://en.wikipedia.org/wiki/${page}`;
           return {
@@ -16827,13 +16982,25 @@
         title: "Rangefinder Timezone Support",
         ticketId: "WISH-069",
         description: "Add time zone awareness to Rangefinder so Start and End can show their local time and time zone, and a chosen departure time plus the current travel-time estimate can produce a destination-local arrival time. Scope includes daylight-saving-aware IANA zones, US and World support, manual correction when a location cannot be resolved offline, and no automatic network lookup.",
-        priority: "P2",
+        priority: "P1",
         effort: "medium",
         targetKind: "minor",
         targetVersion: "",
         tokenCostPct: 24,
         prompt: "Add offline-first time zone support to Rangefinder. Show the local time and IANA time zone for Start and End, let a user choose a departure time, and calculate the destination-local estimated arrival using the current Rangefinder travel-time estimate. Handle daylight saving time, support US and World points, allow manual correction when a zone cannot be resolved, and do not perform automatic network lookups.",
         category: "Maps"
+      },
+      {
+        title: "Location Ratings",
+        ticketId: "WISH-070",
+        description: "Add a first-class rating for saved locations so a place can be scored independently from visit level, note priority, or Wayfinder status, then let Notes and relevant location lists sort by that rating.",
+        priority: "P1",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 18,
+        prompt: "Add a persisted location rating field with editor controls and Notes sorting. Keep it distinct from note priority and visit levels, support unrated locations, show compact rating indicators, include ratings in exports/backups, and preserve existing notes during migration.",
+        category: "Notes"
       },
       {
         title: "Waypoint Packs + National Parks",
@@ -16875,7 +17042,7 @@
         title: "Raptor Easter Egg",
         ticketId: "WISH-068",
         description: "Add a small, discoverable raptor easter egg that rewards curious clicking or an obscure app interaction without disrupting map, notes, export, or accessibility workflows.",
-        priority: "P3",
+        priority: "P0",
         effort: "small",
         targetKind: "patch",
         targetVersion: "",
@@ -16983,7 +17150,7 @@
         title: "Multiple Named Basecamp Pads",
         ticketId: "WISH-053",
         description: "Extend Basecamp Notes from a single scratchpad to multiple named pads (for example Packing, Gear, or a per-trip pad), with a pad list, add/rename/delete/reorder, a large editor per pad, and search across pads. Migrate the existing single scratchpad into the first pad without data loss.",
-        priority: "P2",
+        priority: "P1",
         effort: "medium",
         targetKind: "minor",
         targetVersion: "",
@@ -17042,7 +17209,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.15",
+        version: "4.3.0.16",
         date: "2026-06-04",
         title: "Waypoint Pack",
         summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
@@ -17053,12 +17220,19 @@
           "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.15",
+          version: "4.3.0.16",
           title: "Waypoint Pack",
           summary: "Add Parks and Monuments as prioritized Wayfinder notes.",
           cta: "Pack the Map!"
         },
         updates: [
+          "Selecting a Waypoint Pack now turns its overlay on and defaults pack labels to full names.",
+          "Converted Waypoint priority controls into single shaded popout buttons in pack rows and linked note headers.",
+          "Moved linked note priority, Website, Photo, and Link to Waypoint controls into a teal note-header container.",
+          "Limited note-header waypoint choices to available pack places in the note's location and kept linked note cities intact.",
+          "Highlighted linked waypoint-managed Where, Locate, latitude, and longitude controls in teal.",
+          "Added Priority sorting to Notes and removed priority/source pills from expanded note rows.",
+          "Added Roadmap wish WISH-070 for first-class location ratings and rating-based sorting.",
           "Merged Pack Location link status into the contextual Link/Edit button, compacted square controls to 40px, and tightened priority type.",
           "Moved pack overlay and label controls into the Pack Locations header and anchored a stronger outlined note-choice menu directly below Link.",
           "Added live split-percentage pills above resize dividers in Developer Mode.",
@@ -18209,7 +18383,7 @@
           suggestedSetsVisible: false,
           activeSuggestedSetId: SUGGESTED_SET_DEFAULT_ID,
           suggestedSetIcons: { [SUGGESTED_SET_DEFAULT_ID]: SUGGESTED_SET_BY_ID[SUGGESTED_SET_DEFAULT_ID]?.defaultIconId || SUGGESTED_SET_DEFAULT_ICON },
-          suggestedSetLabelModes: { [SUGGESTED_SET_DEFAULT_ID]: "none" },
+          suggestedSetLabelModes: { [SUGGESTED_SET_DEFAULT_ID]: "name" },
           suggestedSetPreviewIconIds: [],
           activeLayerId: "us",
           mapLocationPinsVisible: true,
@@ -18602,7 +18776,7 @@
         if (typeof next.settings[key] !== "boolean") next.settings[key] = base.settings[key];
       });
       if (!next.settings.mapPanelOpen && !next.settings.legendPanelOpen && !next.settings.notesPanelOpen) next.settings.mapPanelOpen = true;
-      if (!["alpha", "chrono"].includes(next.settings.notesSortMode)) next.settings.notesSortMode = "chrono";
+      if (!["alpha", "chrono", "priority"].includes(next.settings.notesSortMode)) next.settings.notesSortMode = "chrono";
       if (!["expanded", "compact", "text"].includes(next.settings.notesViewMode)) next.settings.notesViewMode = "compact";
       if (typeof next.settings.notesCategoricalMode !== "boolean") next.settings.notesCategoricalMode = true;
       if (typeof next.settings.notesHideExcludedOnly !== "boolean") next.settings.notesHideExcludedOnly = true;
@@ -19061,7 +19235,7 @@
       state.settings.mapPanelOpen = mapPanelOpen !== false;
       state.settings.legendPanelOpen = legendPanelOpen !== false;
       state.settings.notesPanelOpen = notesPanelOpen !== false;
-      state.settings.notesSortMode = ["alpha", "chrono"].includes(notesSortMode) ? notesSortMode : "chrono";
+      state.settings.notesSortMode = ["alpha", "chrono", "priority"].includes(notesSortMode) ? notesSortMode : "chrono";
       state.settings.notesViewMode = ["expanded", "compact", "text"].includes(notesViewMode) ? notesViewMode : "compact";
       state.settings.notesCategoricalMode = notesCategoricalMode === true;
       state.settings.notesHideExcludedOnly = notesHideExcludedOnly === true;
@@ -19084,7 +19258,7 @@
       mapPanelOpen = state.settings.mapPanelOpen !== false;
       legendPanelOpen = state.settings.legendPanelOpen !== false;
       notesPanelOpen = state.settings.notesPanelOpen !== false;
-      notesSortMode = ["alpha", "chrono"].includes(state.settings.notesSortMode) ? state.settings.notesSortMode : "chrono";
+      notesSortMode = ["alpha", "chrono", "priority"].includes(state.settings.notesSortMode) ? state.settings.notesSortMode : "chrono";
       notesViewMode = ["expanded", "compact", "text"].includes(state.settings.notesViewMode) ? state.settings.notesViewMode : "compact";
       notesCategoricalMode = state.settings.notesCategoricalMode !== false;
       notesHideExcludedOnly = state.settings.notesHideExcludedOnly !== false;
@@ -20245,6 +20419,8 @@
         waypointPhotoPreviewKey = "";
       }
       state.settings.activeSuggestedSetId = set.id;
+      state.settings.suggestedSetsVisible = true;
+      setSuggestedSetLabelMode(set.id, "name");
       addSuggestedSetRecommendedIcon(set.id);
       return set;
     }
@@ -20345,7 +20521,6 @@
       note.sourceSetId = set.id;
       note.sourceItemId = item.id;
       note.sourceSetGenerated = generated === true;
-      note.city = item.name;
       note.where = item.fullName;
       note.lat = normalizeLatitude(item.lat);
       note.lng = normalizeLongitude(item.lng);
@@ -20891,6 +21066,7 @@
       setButtonLabel("#notesPanelBackBtn", __CHEVRON_BACKWARD, "All Notes");
       setButtonLabel("#notesSortAlphaBtn", __TEXTFORMAT_CHARACTERS_ARROW_LEFT_AND_RIGHT, "Alphabetical");
       setButtonLabel("#notesSortChronoBtn", __CLOCK_ARROW_TRIANGLEHEAD_2_COUNTERCLOCKWISE_ROTATE_90, "Chronological");
+      setButtonLabel("#notesSortPriorityBtn", __FLAG_CIRCLE, "Priority");
       setButtonLabel("#notesCategoryToggleBtn", __RECTANGLE_3_GROUP_FILL, "Categorical", "Group by Location Type");
       setButtonLabel("#notesExcludedToggleBtn", __CIRCLE_SLASH, notesHideExcludedOnly ? "Hidden" : "Shown", notesHideExcludedOnly ? "Excluded locations hidden" : "Excluded locations shown", notesHideExcludedOnly ? "Excluded locations hidden" : "Excluded locations shown");
       const dateFilter = datePrecisionFilterMeta();
@@ -22273,11 +22449,23 @@
 
     function waypointPriorityButtons(priority, attrName, itemId = "") {
       const current = normalizeNotePriority(priority);
-      return ["", "1", "2", "3", "4", "5"].map(value => {
-        const label = value || "–";
-        const title = value ? `Priority ${value}` : "Blank priority";
-        return `<button type="button" ${attrName}="${escapeHtml(value)}" ${itemId ? `data-priority-item="${escapeHtml(itemId)}"` : ""} aria-pressed="${current === value ? "true" : "false"}" title="${escapeHtml(title)}">${escapeHtml(label)}</button>`;
+      const toggleAttr = attrName === "data-note-priority-choice" ? "data-note-priority-toggle" : "data-set-preview-priority-toggle";
+      const menuAttr = attrName === "data-note-priority-choice" ? "data-note-priority-menu" : "data-set-preview-priority-menu";
+      const itemAttr = itemId ? `data-priority-item="${escapeHtml(itemId)}"` : "";
+      const color = notePriorityColor(current);
+      const label = current || "–";
+      const title = current ? `Priority ${current}` : "Blank priority";
+      const choices = ["", "1", "2", "3", "4", "5"].map(value => {
+        const choiceLabel = value ? `Priority ${value}` : "Blank priority";
+        const choiceColor = notePriorityColor(value) || "var(--line)";
+        return `<button class="waypoint-priority-choice" type="button" ${attrName}="${escapeHtml(value)}" ${itemAttr} aria-pressed="${current === value ? "true" : "false"}" title="${escapeHtml(choiceLabel)}" style="--priority-color:${escapeHtml(choiceColor)}"><span>${escapeHtml(choiceLabel)}</span><b>${escapeHtml(value || "–")}</b></button>`;
       }).join("");
+      return `
+        <div class="waypoint-priority-popout" ${itemAttr}>
+          <button class="waypoint-priority-toggle" type="button" ${toggleAttr} aria-haspopup="menu" aria-expanded="false" data-priority="${escapeHtml(current)}" title="${escapeHtml(title)}" style="--priority-color:${escapeHtml(color || "var(--line)")};">${escapeHtml(label)}</button>
+          <div class="waypoint-priority-menu" ${menuAttr} role="menu" hidden>${choices}</div>
+        </div>
+      `;
     }
 
     function waypointPhotoKey(setId, itemId) {
@@ -22290,23 +22478,28 @@
       return `https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&piprop=thumbnail&pithumbsize=1200&redirects=1&format=json&origin=*&titles=${encodeURIComponent(title)}`;
     }
 
+    function refreshWaypointPhotoConsumers() {
+      renderSetsDialog();
+      if ($("#noteDialog")?.open) refreshNoteWaypointControls();
+    }
+
     async function toggleWaypointPhotoPreview(setId, itemId) {
       const source = suggestedSetItem(setId, itemId);
       if (!source?.item?.wikiPage) return;
       const key = waypointPhotoKey(setId, itemId);
       if (waypointPhotoPreviewKey === key) {
         waypointPhotoPreviewKey = "";
-        renderSetsDialog();
+        refreshWaypointPhotoConsumers();
         return;
       }
       waypointPhotoPreviewKey = key;
       if (source.item.photoUrl) waypointPhotoUrlCache.set(key, source.item.photoUrl);
       if (waypointPhotoUrlCache.has(key)) {
-        renderSetsDialog();
+        refreshWaypointPhotoConsumers();
         return;
       }
       waypointPhotoLoadingKeys.add(key);
-      renderSetsDialog();
+      refreshWaypointPhotoConsumers();
       try {
         const response = await fetch(wikipediaPageImageEndpoint(source.item.wikiPage));
         if (!response.ok) throw new Error(`Wikipedia image request failed: ${response.status}`);
@@ -22319,7 +22512,7 @@
         showOverlayWarning("Photo Unavailable", `Wikipedia did not return an image for ${source.item.name}.`);
       } finally {
         waypointPhotoLoadingKeys.delete(key);
-        renderSetsDialog();
+        refreshWaypointPhotoConsumers();
       }
     }
 
@@ -23391,7 +23584,7 @@
       ].filter(Boolean);
       const modeParts = [
         `${notesViewMode === "compact" ? "Condensed" : notesViewMode === "text" ? "Text Only" : "Expanded"}`,
-        notesSortMode === "alpha" ? "Alphabetical" : "Chronological",
+        notesSortMode === "alpha" ? "Alphabetical" : notesSortMode === "priority" ? "Priority" : "Chronological",
         notesCategoricalMode ? "Grouped" : "Ungrouped"
       ].filter(Boolean);
       const countLabel = `<span class="summary-count" aria-label="${markedCount} location${markedCount === 1 ? "" : "s"}"><span>${markedCount}</span>${__LOCATION_FILL}</span> <span class="summary-count" aria-label="${notesCount} note${notesCount === 1 ? "" : "s"}"><span>${notesCount}</span>${__LIST_BULLET_RECTANGLE_PORTRAIT_FILL}</span>`;
@@ -23802,6 +23995,16 @@
       return dates[0] || "9999-99-99";
     }
 
+    function notePrioritySortRank(note) {
+      const priority = normalizeNotePriority(note?.priority);
+      return priority ? Number(priority) : 99;
+    }
+
+    function sortPriorityForState(abbr) {
+      const ranks = filteredNotesFor(abbr).map(notePrioritySortRank).sort((a, b) => a - b);
+      return ranks[0] ?? 99;
+    }
+
     function sortedMarkedStateAbbrs() {
       const marked = notesSearchQuery.trim()
         ? activeRegionCodes().filter(abbr =>
@@ -23809,6 +24012,10 @@
         )
         : markedStateAbbrs();
       return marked.sort((a, b) => {
+        if (notesSortMode === "priority") {
+          const prioritySort = sortPriorityForState(a) - sortPriorityForState(b);
+          if (prioritySort) return prioritySort;
+        }
         if (notesSortMode === "chrono") {
           const dateSort = sortDateForState(a).localeCompare(sortDateForState(b));
           if (dateSort) return dateSort;
@@ -23819,6 +24026,11 @@
 
     function sortedNotesFor(abbr) {
       return (notesStoreForCode(abbr)[abbr] || []).slice().sort((a, b) => {
+        if (notesSortMode === "priority") {
+          return notePrioritySortRank(a) - notePrioritySortRank(b)
+            || (a.date || "9999-99-99").localeCompare(b.date || "9999-99-99")
+            || noteSummary(a).localeCompare(noteSummary(b));
+        }
         if (notesSortMode === "alpha") {
           return noteSummary(a).localeCompare(noteSummary(b)) || (a.date || "").localeCompare(b.date || "");
         }
@@ -23829,6 +24041,7 @@
     function renderNotesPanelControls() {
       $("#notesSortAlphaBtn").setAttribute("aria-pressed", notesSortMode === "alpha");
       $("#notesSortChronoBtn").setAttribute("aria-pressed", notesSortMode === "chrono");
+      $("#notesSortPriorityBtn").setAttribute("aria-pressed", notesSortMode === "priority");
       $("#notesCategoryToggleBtn").setAttribute("aria-pressed", String(notesCategoricalMode));
       $("#notesExcludedToggleBtn").setAttribute("aria-pressed", String(!notesHideExcludedOnly));
       $("#notesExcludedToggleBtn").dataset.excludedVisibility = notesHideExcludedOnly ? "hidden" : "shown";
@@ -23968,7 +24181,7 @@
         : "";
       if (scope || icons) {
         const labelText = [hasLocation ? "Mapped location" : "", labels.map(type => type.label).join(", ")].filter(Boolean).join(", ");
-        const priority = normalizeNotePriority(note?.priority);
+        const priority = options.hidePriority ? "" : normalizeNotePriority(note?.priority);
         const priorityColor = notePriorityColor(priority);
         const priorityPill = priority ? `<span class="visit-priority-pill" aria-label="Priority ${priority}" style="--priority-color:${escapeHtml(priorityColor)}">${escapeHtml(priority)}</span>` : "";
         return `<span class="visit-icon-stack" ${styleAttr} aria-label="${escapeHtml(labelText)}">${scope}${icons}${priorityPill}</span>`;
@@ -24106,9 +24319,9 @@
         const isBucket = bucketId && note.levelId === bucketId;
         return `
           <button class="compact-note-row is-expanded is-expanded-child ${isBucket ? "is-bucket-target" : ""}" type="button" data-note-state="${abbr}" data-edit-note="${note.id}">
-            <span class="compact-note-icon">${visitTypeIconStack(note, { color: noteLevel?.color })}</span>
+            <span class="compact-note-icon">${visitTypeIconStack(note, { color: noteLevel?.color, hidePriority: true })}</span>
             <span>${escapeHtml(formatDateDisplay(note.date))}</span>
-            <span class="compact-note-text">${notePriorityBadgeHtml(note)} ${noteSourceBadgeHtml(note)} ${escapeHtml(noteSummary(note))}</span>
+            <span class="compact-note-text">${escapeHtml(noteSummary(note))}</span>
             <span></span>
           </button>
         `;
@@ -24151,9 +24364,9 @@
         const isBucket = bucketId && note.levelId === bucketId;
         return `
             <article class="compact-note-row is-expanded ${isBucket ? "is-bucket-target" : ""}" role="button" tabindex="0" data-edit-note-row="${note.id}">
-              <span class="compact-note-icon">${visitTypeIconStack(note, { color: noteLevel?.color })}</span>
+              <span class="compact-note-icon">${visitTypeIconStack(note, { color: noteLevel?.color, hidePriority: true })}</span>
               <time datetime="${escapeHtml(note.date)}">${escapeHtml(formatDateDisplay(note.date))}</time>
-              <span class="compact-note-text">${notePriorityBadgeHtml(note)} ${noteSourceBadgeHtml(note)} ${escapeHtml(noteSummary(note))}</span>
+              <span class="compact-note-text">${escapeHtml(noteSummary(note))}</span>
               <span class="actions">
                 ${isBucket ? actionButtonHtml({ symbol: __CHECKMARK_CIRCLE, text: "Mark Visited", className: "icon-btn bucket-mark-visited-btn", attrs: `data-mark-visited-note="${note.id}"` }) : ""}
                 ${actionButtonHtml({ symbol: __PENCIL, text: "Edit", className: "icon-btn", attrs: `data-edit-note="${note.id}"` })}
@@ -24372,7 +24585,7 @@
           aria-label="Open location tag settings" title="Open location tag settings"><span>•••</span></button>
       `;
       const chips = activeVisitTypes().map(type => `
-        <label class="visit-type-chip" role="checkbox" tabindex="0" aria-checked="${selected.has(type.id)}" title="${escapeHtml(type.label)} (${type.shortcut.toUpperCase()})">
+        <label class="visit-type-chip${PACK_ICON_ID_SET.has(type.id) ? " is-waypoint-pack-chip" : ""}" role="checkbox" tabindex="0" aria-checked="${selected.has(type.id)}" title="${escapeHtml(type.label)} (${type.shortcut.toUpperCase()})">
           <input type="checkbox" name="visitType" value="${type.id}" ${selected.has(type.id) ? "checked" : ""}>
           <span>${visitTypeIcon(type.id)}</span><span>${escapeHtml(type.label)}</span><span class="visit-type-key">${escapeHtml(type.shortcut)}</span>
         </label>
@@ -24414,11 +24627,104 @@
       if (selected.has(typeId)) selected.delete(typeId);
       else selected.add(typeId);
       setNoteVisitTypes([...selected]);
+      refreshNoteWaypointControls();
     }
 
     function selectedNoteVisitTypes() {
       const hidden = JSON.parse($("#noteForm").dataset.hiddenVisitTypes || "[]");
       return [...new Set([...hidden, ...$$("input[name='visitType']:checked", $("#noteForm")).map(input => input.value)])];
+    }
+
+    function noteSourceSelectableItems(set, targetAbbr = currentNoteTargetAbbr(), keepNoteId = $("#noteId")?.value || "") {
+      if (!set) return [];
+      return set.items.filter(item => {
+        const states = new Set((item.states || []).filter(code => STATE_NAMES[code]));
+        if (!states.size) states.add(suggestedSetPrimaryState(item));
+        if (targetAbbr && !states.has(targetAbbr)) return false;
+        const linked = suggestedSetLinkedNote(set.id, item.id);
+        return !linked || linked.note.id === keepNoteId || ($("#noteSourceSetId")?.value === set.id && $("#noteSourceItemId")?.value === item.id);
+      });
+    }
+
+    function noteWaypointChoiceLabel(item) {
+      return `${item.name} (${item.code})`;
+    }
+
+    function noteWaypointLinkMenuHtml(set, items, source) {
+      const clearLabel = `Not linked to ${set.shortName || set.name}`;
+      const clearPressed = !source;
+      const choices = [
+        `<button class="note-waypoint-choice" type="button" role="menuitemradio" data-note-source-item-choice="" aria-checked="${clearPressed ? "true" : "false"}">${escapeHtml(clearLabel)}</button>`,
+        ...items.map(item => {
+          const selected = source?.set.id === set.id && source?.item.id === item.id;
+          return `<button class="note-waypoint-choice" type="button" role="menuitemradio" data-note-source-item-choice="${escapeHtml(item.id)}" aria-checked="${selected ? "true" : "false"}">${escapeHtml(noteWaypointChoiceLabel(item))}</button>`;
+        })
+      ];
+      return choices.join("");
+    }
+
+    function noteHasActivePackTag(set) {
+      return Boolean(set && selectedNoteVisitTypes().includes(suggestedSetIconId(set.id)));
+    }
+
+    function syncNoteWaypointOverrideState() {
+      const linked = Boolean(suggestedSetItem($("#noteSourceSetId").value, $("#noteSourceItemId").value));
+      [
+        $("#noteWhere")?.closest("label"),
+        $("#noteLat")?.closest("label"),
+        $("#noteLng")?.closest("label"),
+        $("#noteWhere"),
+        $("#noteLat"),
+        $("#noteLng"),
+        $("#noteGeocodeBtn"),
+        $("#noteWhereToCityBtn")
+      ].filter(Boolean).forEach(element => element.classList.toggle("is-waypoint-override", linked));
+    }
+
+    function refreshNoteWaypointControls({ menuOpen = false } = {}) {
+      const wrap = $("#noteWaypointHeaderControls");
+      if (!wrap) return;
+      const source = suggestedSetItem($("#noteSourceSetId").value, $("#noteSourceItemId").value);
+      const set = source?.set || activeSuggestedSet();
+      const visible = noteHasActivePackTag(set);
+      wrap.classList.toggle("hidden", !visible);
+      if (!visible) {
+        wrap.innerHTML = "";
+        $("#noteWaypointPhotoPreview").innerHTML = "";
+        syncNoteWaypointOverrideState();
+        syncNoteSetSummary();
+        return;
+      }
+      const items = noteSourceSelectableItems(set);
+      const currentItem = source?.set.id === set.id ? source.item : null;
+      const photoKey = currentItem ? waypointPhotoKey(set.id, currentItem.id) : "";
+      const photoOpen = Boolean(photoKey && waypointPhotoPreviewKey === photoKey);
+      const photoLoading = photoKey ? waypointPhotoLoadingKeys.has(photoKey) : false;
+      const photoEnabled = Boolean(currentItem?.wikiPage && !photoLoading);
+      const urlButton = currentItem
+        ? `<a class="icon-btn waypoint-row-action" href="${escapeHtml(currentItem.url)}" target="_blank" rel="noopener" aria-label="Open ${escapeHtml(currentItem.name)} website" title="Website">${__RICHTEXT_PAGE_FILL}</a>`
+        : "";
+      const photoButton = currentItem
+        ? `<button id="noteWaypointPhotoBtn" class="icon-btn waypoint-row-action" type="button" data-note-waypoint-photo aria-label="${photoOpen ? "Close" : "Open"} ${escapeHtml(currentItem.name)} photo" aria-expanded="${photoOpen ? "true" : "false"}" title="${photoLoading ? "Loading photo" : "Photo"}" ${photoEnabled ? "" : "disabled"}>${__PHOTO_ARTFRAME}</button>`
+        : "";
+      const priority = normalizeNotePriority($("#notePriority").value);
+      const linkedClass = currentItem ? "is-linked" : "";
+      const linkDisabled = !items.length && !currentItem;
+      wrap.innerHTML = `
+        ${urlButton}
+        ${photoButton}
+        <div class="waypoint-priority-row" aria-label="Priority">${waypointPriorityButtons(priority, "data-note-priority-choice")}</div>
+        <div class="note-waypoint-link-wrap">
+          <button id="noteWaypointLinkBtn" class="icon-btn waypoint-row-action ${linkedClass}" type="button" data-note-waypoint-link aria-haspopup="menu" aria-expanded="${menuOpen ? "true" : "false"}" aria-label="Link to Waypoint" title="${currentItem ? `Linked: ${escapeHtml(noteWaypointChoiceLabel(currentItem))}` : "Link to Waypoint"}" ${linkDisabled ? "disabled" : ""}>${__LINK_CIRCLE}</button>
+          <div id="noteWaypointLinkMenu" class="note-waypoint-link-menu" role="menu" ${menuOpen ? "" : "hidden"}>${noteWaypointLinkMenuHtml(set, items, currentItem ? source : null)}</div>
+        </div>
+      `;
+      const previewUrl = currentItem && photoOpen ? waypointPhotoUrlCache.get(photoKey) : "";
+      $("#noteWaypointPhotoPreview").innerHTML = previewUrl
+        ? `<img src="${escapeHtml(previewUrl)}" alt="${escapeHtml(currentItem.name)}">`
+        : "";
+      syncNoteWaypointOverrideState();
+      syncNoteSetSummary();
     }
 
     function renderNoteSetControls(note = null) {
@@ -24429,10 +24735,10 @@
       $("#noteSourceSetId").value = source?.set.id || "";
       $("#noteSourceItemId").value = source?.item.id || "";
       $("#noteSourceGenerated").value = source && note?.sourceSetGenerated === true ? "true" : "";
-      $("#noteSourceItemSelect").innerHTML = `<option value="">Not linked to ${escapeHtml(set.name)}</option>` + set.items.map(item =>
+      $("#noteSourceItemSelect").innerHTML = `<option value="">Not linked to ${escapeHtml(set.name)}</option>` + noteSourceSelectableItems(set).map(item =>
         `<option value="${escapeHtml(item.id)}" ${source?.set.id === set.id && source?.item.id === item.id ? "selected" : ""}>${escapeHtml(item.name)} (${escapeHtml(item.code)})</option>`
       ).join("");
-      syncNoteSetSummary();
+      refreshNoteWaypointControls();
     }
 
     function syncNoteSetSummary() {
@@ -24450,21 +24756,20 @@
         $("#noteSourceSetId").value = "";
         $("#noteSourceItemId").value = "";
         $("#noteSourceGenerated").value = "";
-        syncNoteSetSummary();
+        refreshNoteWaypointControls();
         return;
       }
       ensureSuggestedSetIconEnabled(source.set.id);
       $("#noteSourceSetId").value = source.set.id;
       $("#noteSourceItemId").value = source.item.id;
       $("#noteSourceGenerated").value = "";
-      $("#noteCity").value = source.item.name;
       $("#noteWhere").value = source.item.fullName;
       $("#noteLat").value = normalizeLatitude(source.item.lat);
       $("#noteLng").value = normalizeLongitude(source.item.lng);
       setNoteGeocodeStatus(`Mapped: ${source.item.fullName}`, source.item.fullName);
       setNoteVisitTypes([...new Set([...selectedNoteVisitTypes(), suggestedSetIconId(source.set.id)])]);
       refreshNoteLocationButtons();
-      syncNoteSetSummary();
+      refreshNoteWaypointControls();
     }
 
     function openVisitTagSettings(returnTarget = "settings") {
@@ -27849,6 +28154,19 @@
           renderMap();
           return;
         }
+        const priorityToggle = event.target.closest("[data-set-preview-priority-toggle]");
+        if (priorityToggle) {
+          const popout = priorityToggle.closest(".waypoint-priority-popout");
+          const menu = popout ? $("[data-set-preview-priority-menu]", popout) : null;
+          const open = menu?.hidden !== false;
+          $$("[data-set-preview-priority-menu]", $("#waypointPacksPanel")).forEach(item => item.hidden = true);
+          $$("[data-set-preview-priority-toggle]", $("#waypointPacksPanel")).forEach(item => item.setAttribute("aria-expanded", "false"));
+          if (menu) {
+            menu.hidden = !open;
+            priorityToggle.setAttribute("aria-expanded", open ? "true" : "false");
+          }
+          return;
+        }
         const label = event.target.closest("[data-waypoint-label-mode]");
         if (label) {
           setSuggestedSetLabelMode(activeSuggestedSet().id, label.dataset.waypointLabelMode);
@@ -27879,6 +28197,8 @@
             linked.note.priority = normalizeNotePriority(priority);
             linked.note.sourceSetGenerated = false;
           }
+          const menu = priorityChoice.closest("[data-set-preview-priority-menu]");
+          if (menu) menu.hidden = true;
           save();
           renderSetsDialog();
           renderMap();
@@ -28066,6 +28386,11 @@
         save();
         renderNotesPanel();
       });
+      $("#notesSortPriorityBtn").addEventListener("click", () => {
+        notesSortMode = "priority";
+        save();
+        renderNotesPanel();
+      });
       $("#notesCategoryToggleBtn").addEventListener("click", () => {
         notesCategoricalMode = !notesCategoricalMode;
         save();
@@ -28161,9 +28486,52 @@
       ["#noteLat", "#noteLng"].forEach(selector => $(selector).addEventListener("input", () => {
         setNoteGeocodeStatus("Manual coordinates will be used for the map marker.");
       }));
-      $("#notePriority").addEventListener("change", syncNoteSetSummary);
+      $("#notePriority").addEventListener("change", () => refreshNoteWaypointControls());
       $("#noteSourceItemSelect").addEventListener("change", event => {
         applySuggestedSetItemToNoteForm(activeSuggestedSet().id, event.target.value);
+      });
+      $("#noteDialog").addEventListener("click", event => {
+        const priorityToggle = event.target.closest("[data-note-priority-toggle]");
+        if (priorityToggle) {
+          const popout = priorityToggle.closest(".waypoint-priority-popout");
+          const menu = popout ? $("[data-note-priority-menu]", popout) : null;
+          const open = menu?.hidden !== false;
+          $$("[data-note-priority-menu]", $("#noteDialog")).forEach(item => item.hidden = true);
+          $$("[data-note-priority-toggle]", $("#noteDialog")).forEach(item => item.setAttribute("aria-expanded", "false"));
+          $("#noteWaypointLinkMenu")?.setAttribute("hidden", "");
+          $("#noteWaypointLinkBtn")?.setAttribute("aria-expanded", "false");
+          if (menu) {
+            menu.hidden = !open;
+            priorityToggle.setAttribute("aria-expanded", open ? "true" : "false");
+          }
+          return;
+        }
+        const priorityChoice = event.target.closest("[data-note-priority-choice]");
+        if (priorityChoice) {
+          $("#notePriority").value = normalizeNotePriority(priorityChoice.dataset.notePriorityChoice || "");
+          refreshNoteWaypointControls();
+          return;
+        }
+        const link = event.target.closest("[data-note-waypoint-link]");
+        if (link) {
+          const menu = $("#noteWaypointLinkMenu");
+          const open = menu?.hidden !== false;
+          $$("[data-note-priority-menu]", $("#noteDialog")).forEach(item => item.hidden = true);
+          $$("[data-note-priority-toggle]", $("#noteDialog")).forEach(item => item.setAttribute("aria-expanded", "false"));
+          refreshNoteWaypointControls({ menuOpen: open });
+          if (open) $("#noteWaypointLinkMenu [data-note-source-item-choice]")?.focus();
+          return;
+        }
+        const choice = event.target.closest("[data-note-source-item-choice]");
+        if (choice) {
+          applySuggestedSetItemToNoteForm(activeSuggestedSet().id, choice.dataset.noteSourceItemChoice || "");
+          return;
+        }
+        const photo = event.target.closest("[data-note-waypoint-photo]");
+        if (photo) {
+          const source = suggestedSetItem($("#noteSourceSetId").value, $("#noteSourceItemId").value);
+          if (source) toggleWaypointPhotoPreview(source.set.id, source.item.id);
+        }
       });
       $("#quickAddNoteBtn").addEventListener("click", openQuickAddNoteDialog);
       $("#noteSmartConvertBtn").addEventListener("click", applySmartNoteConvert);

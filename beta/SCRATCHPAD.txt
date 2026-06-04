@@ -1,6 +1,4 @@
 ## Future Prompt
-P0: 068
-P1: 053,069
 
 Mobile Cleanup: 
 - Better Auto Colors single liner
