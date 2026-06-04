@@ -54,20 +54,20 @@ occurs only when the user clicks a location's Photo action.
   - Panel shows Available Packs, selected-pack progress, visual icon choices,
     overlay toggle, label mode buttons, one unified Pack Locations list,
     add/refresh, and remove.
-  - Pack Locations uses full-height toolbar rows with a flexible wrapping
+  - Pack Locations uses compact toolbar rows with a flexible wrapping
     name/code/location block, Website and on-demand Wikipedia Photo actions,
-    inline Priority, fixed two-line status, contextual Edit/Link and Unlink,
-    and pre-link `Note` fields.
+    inline Priority, contextual Link/Edit and Unlink, and pre-link `Note`
+    fields.
   - The location identity and actions share one line when the location name has
     enough room, then split into identity and action lines when the Notes panel
-    narrows. Website, Photo, Edit/Link, and Unlink use consistently sized square
-    icon buttons; Priority uses compact large-number buttons with outline-only
-    selected state.
+    narrows. Website, Photo, Edit/Link, and Unlink use square icon buttons capped
+    at 40px; Priority uses compact buttons with outline-only selected state.
+  - Link status is folded into the contextual Link/Edit action: Link represents
+    an unlinked location, while a teal-outlined Edit represents a linked note.
   - Edit opens an immediately expanded state-scoped attach list only when an
-    unlinked location has an available note. It shows no placeholder option;
-    unavailable Edit/Link and Unlink actions are disabled.
-  - Linked locations collapse status plus Edit/Unlink icon actions into one
-    compact row; status/source badges may stack to conserve horizontal space.
+    unlinked location has an available note. It is strongly outlined and
+    anchored directly beneath Link, with no placeholder option; unavailable
+    Edit/Link and Unlink actions are disabled.
   - Editing a linked note keeps the Waypoint Packs panel active behind the note
     editor and returns to the same pack context when the editor closes.
   - Batch add creates missing notes and refreshes existing pack notes using
@@ -221,14 +221,16 @@ WISH-068 tracks a small raptor easter egg.
 - Verify teal-bordered location headers replace preview checkboxes and toggle
   whether each location is included.
 - Verify the unified Pack Locations list combines selection, inline priority,
-  state-scoped Attach/Edit/Unlink actions, status, and pre-link notes without a
-  duplicate list.
-- Verify linked locations use one compact row with stacked status/source badges,
-  dedicated Edit/Unlink icons, and no second action row.
+  state-scoped Link/Edit/Unlink actions, and pre-link notes without a duplicate
+  list.
+- Verify linked locations use a teal-outlined contextual Edit action, dedicated
+  Unlink icon, and no separate status block.
 - Verify long names do not clip; rows join into one line only when the location
   name has room, while narrow rows split identity and controls cleanly.
 - Verify action icons are enlarged and square, while compact large-number
   Priority choices keep their text color and outline only the selected choice.
+- Verify linked state uses a teal-outlined Edit action with no separate status
+  block, and Link opens its outlined note-choice menu directly beneath itself.
 - Verify Website opens the location source and Photo reveals only the Wikimedia
   image inline; confirm fallback image lookup runs only after Photo is clicked.
 - Verify unlinked rows disable Unlink, disable Edit/Link when no state-scoped

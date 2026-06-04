@@ -997,6 +997,33 @@
       transition: width .16s ease, background .16s ease, box-shadow .16s ease;
     }
 
+    .main-resize-handle::after,
+    .ring-panel-resize-handle::after {
+      content: attr(data-resize-percentage);
+      position: absolute;
+      top: calc(50% - 44px);
+      left: 50%;
+      z-index: 3;
+      display: none;
+      min-width: 2.6rem;
+      padding: .18rem .38rem;
+      border: 1px solid color-mix(in srgb, var(--accent) 48%, var(--line));
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: 0 4px 12px rgba(16, 24, 40, .16);
+      font-size: .68rem;
+      font-weight: 900;
+      line-height: 1;
+      pointer-events: none;
+      transform: translate(-50%, -100%);
+    }
+
+    html[data-developer="on"] .main-resize-handle::after,
+    html[data-developer="on"] .ring-panel-resize-handle::after {
+      display: block;
+    }
+
     .main-resize-handle:hover::before,
     .main-resize-handle:focus-visible::before,
     html[data-resizing-main="true"] .main-resize-handle::before {
@@ -4584,6 +4611,12 @@
       align-items: stretch;
     }
 
+    .waypoint-location-map-controls {
+      display: flex;
+      align-items: stretch;
+      gap: .3rem;
+    }
+
     .waypoint-control-label {
       display: none;
     }
@@ -4677,7 +4710,10 @@
     .waypoint-preview-selection {
       width: 100%;
       min-width: 0;
-      padding: .38rem .46rem;
+      height: 2.5rem;
+      min-height: 2.5rem;
+      max-height: 2.5rem;
+      padding: .22rem .42rem;
       border: 1px solid var(--line);
       border-radius: 6px;
       background: var(--surface-2);
@@ -4718,22 +4754,23 @@
       display: flex;
       flex-wrap: wrap;
       align-items: stretch;
-      gap: .28rem;
+      gap: .2rem;
     }
 
     .waypoint-preview-actions .waypoint-priority-row {
       display: contents;
     }
 
-    .waypoint-preview-link-status,
     .waypoint-row-action {
       display: grid;
       place-content: center;
       place-items: center;
-      width: 3rem;
-      min-width: 3rem;
-      height: 3rem;
-      min-height: 3rem;
+      width: 2.5rem;
+      min-width: 2.5rem;
+      max-width: 2.5rem;
+      height: 2.5rem;
+      min-height: 2.5rem;
+      max-height: 2.5rem;
       padding: .2rem;
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -4745,15 +4782,16 @@
       place-content: center;
       place-items: center;
       width: auto;
-      min-width: 1.85rem;
-      height: 3rem;
-      min-height: 3rem;
+      min-width: 1.65rem;
+      height: 2.5rem;
+      min-height: 2.5rem;
+      max-height: 2.5rem;
       padding: .18rem .32rem;
       border: 1px solid var(--line);
       border-radius: 8px;
       background: var(--surface-2);
       color: var(--text);
-      font-size: 1.44rem;
+      font-size: 1.08rem;
       font-weight: 900;
     }
 
@@ -4764,24 +4802,19 @@
       box-shadow: inset 0 0 0 2px #14b8a6;
     }
 
-    .waypoint-preview-link-status {
-      gap: .12rem;
-      line-height: 1;
-    }
-
-    .waypoint-preview-link-status .sets-linked-pill {
-      white-space: normal;
-      text-align: center;
-    }
-
     .waypoint-row-action {
       color: var(--text);
       text-decoration: none;
     }
 
+    .waypoint-row-action.is-linked {
+      border-color: #14b8a6;
+      box-shadow: inset 0 0 0 2px #14b8a6;
+    }
+
     .waypoint-row-action .sf-symbol {
-      width: 1.55rem;
-      height: 1.55rem;
+      width: 1.38rem;
+      height: 1.38rem;
     }
 
     .waypoint-row-action[disabled] {
@@ -4795,21 +4828,28 @@
       padding-block: .38rem;
     }
 
+    .waypoint-link-wrap {
+      position: relative;
+      flex: 0 0 2.5rem;
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+
     .waypoint-attach-menu {
       position: absolute;
-      z-index: 4;
-      top: calc(100% - .5rem);
-      right: .5rem;
+      z-index: 12;
+      top: calc(100% + .2rem);
+      right: 0;
       display: grid;
       gap: .24rem;
-      width: calc(100% - 1rem);
+      width: min(28rem, calc(100vw - 3rem));
       min-width: 0;
       max-height: min(18rem, 50vh);
       padding: .32rem;
-      border: 1px solid var(--line);
+      border: 2px solid #14b8a6;
       border-radius: 8px;
       background: var(--surface);
-      box-shadow: 0 10px 24px rgba(16, 24, 40, .2);
+      box-shadow: 0 12px 28px rgba(16, 24, 40, .3), 0 0 0 3px color-mix(in srgb, #14b8a6 18%, transparent);
       overflow-y: auto;
     }
 
@@ -13870,6 +13910,7 @@
                 <div class="waypoint-section-title">
                   <h4>Pack Locations</h4>
                   <div class="waypoint-section-actions">
+                    <div id="waypointPackMapControls" class="waypoint-location-map-controls"></div>
                     <button id="setsBatchAddBtn" class="primary" type="button">Add / Refresh Selected</button>
                     <button id="setsRemoveBtn" class="danger" type="button">Remove Pack</button>
                   </div>
@@ -15045,7 +15086,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.14";
+    const APP_VERSION = "4.3.0.15";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -17001,7 +17042,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.14",
+        version: "4.3.0.15",
         date: "2026-06-04",
         title: "Waypoint Pack",
         summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
@@ -17012,23 +17053,26 @@
           "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.14",
+          version: "4.3.0.15",
           title: "Waypoint Pack",
           summary: "Add Parks and Monuments as prioritized Wayfinder notes.",
           cta: "Pack the Map!"
         },
         updates: [
+          "Merged Pack Location link status into the contextual Link/Edit button, compacted square controls to 40px, and tightened priority type.",
+          "Moved pack overlay and label controls into the Pack Locations header and anchored a stronger outlined note-choice menu directly below Link.",
+          "Added live split-percentage pills above resize dividers in Developer Mode.",
           "Made Pack Location rows share one line when space permits, enlarged action icons, and restyled priority choices as compact large-number outline controls.",
           "Changed Link Existing Note into an immediately expanded real-note list so available choices are visible without another click.",
           "Kept Waypoint Packs slightly inset within the resizable Notes panel and matched its close button to other modal close controls.",
           "Kept Pack Location actions aligned in a responsive toolbar and removed placeholder choices from link-note menus.",
-          "Rebuilt Pack Locations as full-height toolbar rows with wide wrapping location names, Website and Photo actions, priority, fixed two-line status, Edit/Link, and Unlink.",
+          "Rebuilt Pack Locations as responsive toolbar rows with wide wrapping names, Website and Photo actions, priority, contextual Link/Edit, and Unlink.",
           "Added on-demand inline Wikipedia photo previews and moved state-scoped note attachment behind the Edit/Link button, with unavailable actions disabled.",
           "Added a Roadmap wish for timezone-aware Rangefinder Start, End, departure, and arrival times.",
           "Kept Waypoint Packs open behind linked-note editing so closing the note returns to the same pack context.",
-          "Collapsed linked Pack Locations into one compact row with a capped name column, stacked status, and dedicated Edit and Unlink icons.",
+          "Collapsed linked Pack Locations into compact rows with dedicated contextual Edit and Unlink icons.",
           "Made National Monument artwork white on maps in light mode and black in dark mode, with the inverse treatment in Notes.",
-          "Shortened Pack Locations to waypoint names, moved linked status beside priority, hid linked-note drafts, and added Unlink.",
+          "Shortened Pack Locations to waypoint names, hid linked-note drafts, and added Unlink.",
           "Linking an existing note now appends the waypoint note to Additional Details and updates City and coordinates.",
           "Merged Add/Refresh and Pack Notes into one compact Pack Locations list with contextual Attach/Edit actions.",
           "Moved each location's priority controls between its name and info link to reduce vertical space.",
@@ -20951,6 +20995,7 @@
       if (!group) return;
       const ratio = clampRingPanelSplitRatio(state.settings.ringPanelSplitRatio);
       group.style.setProperty("--ring-legend-width", `${Math.round(ratio * 1000) / 10}%`);
+      syncResizePercentage("#ringPanelResizeHandle", ratio);
     }
 
     function setRingPanelSplitFromClientX(clientX, persist = false) {
@@ -21100,6 +21145,7 @@
       const mapColumn = clampMapColumn(clientX - metrics.contentLeft, metrics);
       state.settings.mapSplitRatio = Math.max(.34, Math.min(.78, mapColumn / metrics.available));
       metrics.main.style.setProperty("--map-column-width", `${Math.floor(mapColumn)}px`);
+      syncResizePercentage("#mainResizeHandle", state.settings.mapSplitRatio);
       renderDeveloperJson();
       renderDeviceDetectionReadout();
       if (persist) save();
@@ -21147,6 +21193,13 @@
         : heightBoundColumn;
       const mapColumn = clampMapColumn(targetColumn, metrics);
       main.style.setProperty("--map-column-width", `${Math.floor(mapColumn)}px`);
+      syncResizePercentage("#mainResizeHandle", mapColumn / metrics.available);
+    }
+
+    function syncResizePercentage(selector, ratio) {
+      const handle = $(selector);
+      if (!handle) return;
+      handle.dataset.resizePercentage = `${Math.round(Number(ratio || 0) * 100)}%`;
     }
 
     function syncNotesPanelLayout() {
@@ -22289,9 +22342,6 @@
       const photoKey = waypointPhotoKey(set.id, item.id);
       const photoOpen = waypointPhotoPreviewKey === photoKey;
       const photoLoading = waypointPhotoLoadingKeys.has(photoKey);
-      const status = note
-        ? `<span class="waypoint-preview-link-status"><span class="sets-linked-pill">Linked</span>${noteSourceBadgeHtml(note)}</span>`
-        : `<span class="waypoint-preview-link-status"><span class="sets-linked-pill">Not</span><span class="sets-linked-pill">added</span></span>`;
       const editLabel = note ? "Edit note" : "Link existing note";
       const editDisabled = !note && !refs.length;
       const attachMenu = attachMenuOpen
@@ -22313,13 +22363,14 @@
               <div class="waypoint-priority-row" aria-label="Priority for ${escapeHtml(item.name)}">
                 ${waypointPriorityButtons(priority, "data-set-preview-priority-choice", item.id)}
               </div>
-              ${status}
-              <button class="icon-btn waypoint-row-action" type="button" data-set-edit-note="${escapeHtml(item.id)}" aria-label="${escapeHtml(editLabel)}" title="${escapeHtml(editDisabled ? "No available notes to link" : editLabel)}" ${editDisabled ? "disabled" : ""}>${__PENCIL_AND_LIST_CLIPBOARD}</button>
+              <div class="waypoint-link-wrap">
+                <button class="icon-btn waypoint-row-action ${note ? "is-linked" : ""}" type="button" data-set-edit-note="${escapeHtml(item.id)}" aria-label="${escapeHtml(editLabel)}" title="${escapeHtml(editDisabled ? "No available notes to link" : note ? `Linked: ${editLabel}` : editLabel)}" ${editDisabled ? "disabled" : ""}>${note ? __PENCIL_AND_LIST_CLIPBOARD : __LINK_CIRCLE}</button>
+                ${attachMenu}
+              </div>
               <button class="icon-btn waypoint-row-action danger" type="button" data-set-unlink-note="${escapeHtml(item.id)}" aria-label="Unlink note" title="${note ? "Unlink note" : "No linked note"}" ${note ? "" : "disabled"}>${__PERSONALHOTSPOT_SLASH}</button>
             </div>
           </div>
           <input type="hidden" data-set-preview-priority value="${escapeHtml(priority)}">
-          ${attachMenu}
           ${waypointPhotoPreviewHtml(set, item)}
           ${noteField}
         </article>
@@ -22358,28 +22409,28 @@
     }
 
     function renderWaypointPackConfigure(set) {
+      return `
+        <div class="waypoint-control-row is-icon-grid">
+          <span class="waypoint-control-label">Icon</span>
+          <div class="waypoint-icon-grid" aria-label="Waypoint Pack icon">${renderWaypointIconChoices(set)}</div>
+        </div>
+      `;
+    }
+
+    function renderWaypointPackMapControls(set) {
       const overlayOn = state.settings.suggestedSetsVisible === true;
       const labelMode = suggestedSetLabelMode(set.id);
       const labelButton = (mode, icon, label) => `
         <button type="button" data-waypoint-label-mode="${mode}" aria-pressed="${labelMode === mode ? "true" : "false"}" title="${escapeHtml(label)}">${icon}</button>
       `;
       return `
-        <div class="waypoint-control-row is-icon-grid">
-          <span class="waypoint-control-label">Icon</span>
-          <div class="waypoint-icon-grid" aria-label="Waypoint Pack icon">${renderWaypointIconChoices(set)}</div>
-        </div>
-        <div class="waypoint-control-row waypoint-control-combo">
-          <span class="waypoint-control-label">Overlay</span>
-          <button class="waypoint-control-icon" type="button" data-waypoint-overlay aria-pressed="${overlayOn ? "true" : "false"}" title="${overlayOn ? "Hide overlay" : "Show overlay"}">
-            ${overlayOn ? __SQUARE_3_LAYERS_3D_TOP_FILLED : __SQUARE_3_LAYERS_3D}
-          </button>
-          <span class="waypoint-control-label">Labels</span>
-          <div class="segmented map-label-toggle waypoint-label-toggle" aria-label="Waypoint Pack labels">
-            <span title="Waypoint label type">${__TAG_FILL}</span>
-            ${labelButton("none", __CIRCLE_SLASH, "No labels")}
-            ${labelButton("abbr", __CHARACTER, "Abbreviations")}
-            ${labelButton("name", __TEXTFORMAT, "Names")}
-          </div>
+        <button class="waypoint-control-icon" type="button" data-waypoint-overlay aria-pressed="${overlayOn ? "true" : "false"}" title="${overlayOn ? "Hide overlay" : "Show overlay"}">
+          ${overlayOn ? __SQUARE_3_LAYERS_3D_TOP_FILLED : __SQUARE_3_LAYERS_3D}
+        </button>
+        <div class="segmented map-label-toggle waypoint-label-toggle" aria-label="Waypoint Pack labels">
+          ${labelButton("none", __CIRCLE_SLASH, "No labels")}
+          ${labelButton("abbr", __CHARACTER, "Abbreviations")}
+          ${labelButton("name", __TEXTFORMAT, "Names")}
         </div>
       `;
     }
@@ -22398,6 +22449,7 @@
       $("#waypointPacksSummary").textContent = `${progress.linked}/${progress.total} linked · ${progress.notes} notes`;
       $("#waypointPackAvailableList").innerHTML = SUGGESTED_SETS.map(renderWaypointPackCard).join("");
       $("#waypointPackConfigure").innerHTML = renderWaypointPackConfigure(set);
+      $("#waypointPackMapControls").innerHTML = renderWaypointPackMapControls(set);
       $("#setsPreviewTable").innerHTML = set.items.map(item => renderSetPreviewRow(set, item)).join("");
     }
 
