@@ -1853,6 +1853,16 @@
       fill: color-mix(in srgb, var(--marker-color, var(--accent)) 82%, var(--surface));
     }
 
+    .suggested-set-marker .set-marker-monument {
+      fill: #fff;
+      stroke: #0f766e;
+      stroke-width: 3;
+    }
+
+    [data-theme="dark"] .suggested-set-marker .set-marker-monument {
+      fill: #000;
+    }
+
     .suggested-set-marker .set-marker-label,
     .suggested-set-marker .set-marker-priority {
       fill: var(--text);
@@ -2079,7 +2089,22 @@
     }
 
     .pack-symbol.is-national-monument {
+      color: #000;
       filter: drop-shadow(0 0 1.2px #0f766e) drop-shadow(0 1px 1px rgba(15, 118, 110, .4));
+    }
+
+    [data-theme="dark"] .pack-symbol.is-national-monument {
+      color: #fff;
+    }
+
+    .map-marker-icon .pack-symbol.is-national-monument,
+    .set-marker-icon .pack-symbol.is-national-monument {
+      color: #fff;
+    }
+
+    [data-theme="dark"] .map-marker-icon .pack-symbol.is-national-monument,
+    [data-theme="dark"] .set-marker-icon .pack-symbol.is-national-monument {
+      color: #000;
     }
 
     .map-marker-icon .pack-symbol,
@@ -4641,7 +4666,7 @@
 
     .waypoint-preview-main {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto auto;
+      grid-template-columns: minmax(0, 1fr) auto auto auto;
       align-items: center;
       gap: .42rem;
     }
@@ -4692,12 +4717,29 @@
     }
 
     .waypoint-preview-main .waypoint-priority-row button {
-      min-width: 1.42rem;
-      padding: .16rem .2rem;
+      width: 1.1rem;
+      min-width: 1.1rem;
+      height: 1.5rem;
+      padding: .1rem;
+      font-size: .66rem;
     }
 
     .waypoint-location-status {
       display: grid;
+      gap: .28rem;
+    }
+
+    .waypoint-preview-link-status {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .2rem;
+      min-width: 0;
+    }
+
+    .waypoint-linked-actions {
+      display: grid;
+      grid-template-columns: 1fr auto;
       gap: .28rem;
     }
 
@@ -14911,7 +14953,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.8";
+    const APP_VERSION = "4.3.0.9";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -15050,7 +15092,7 @@
     <path fill="#888888" d="m97.114527 427.37899-.32911.16456h-.49365l-.16465.16455h-1.15185l-.16456-.16455h-.82285l-.49366-.16456h-.3291l-.49376-.16454h-.49366l-.16454-.16455h-1.97473l-.16455.16455c-3.78497.82275-13.32946 1.31651-19.41826 2.13927-1.31651.32909-1.48106.32909-7.56986.82285-3.62034.32911-7.40522.65822-8.39263.16455v.16456c.32911 1.3165 1.15196 3.29123 2.30393 5.92415 1.31641 3.12668 3.78488 11.68395 4.27853 13.65866.49365 1.97472-.3291 4.60764.16455 6.25335.6583 1.81017 2.63302 3.29123 3.29123 4.7722.65831 1.48106 5.92425 12.01305 8.22807 15.63338 1.97472 2.79758 7.89897 13.98768 10.69654 19.91193l.16455.16454c.49366-.16454 1.15196-.49365 1.64562-.65821 1.15196-.49374.98731-.82285-.49366-1.15195 1.15186-.16455 2.46838-1.31651 1.31642-1.81017 1.3165-.6582 2.46846-2.13926 1.3165-2.46846.82286-.65821 1.31652-3.45579 1.31652-3.45579s.3291 1.64562 1.48106 2.79758c-1.15196 0 .16455.65821.6582 1.15196-.6582.3291.32911.65821.98741 1.31651-.98741.3291-.6583.82276.3291 1.15186-.65821.49366.49366.82285 1.48107.3291-.49365.82286-.98741.82286-.98741.82286s5.1014-.49365 7.734423-2.30382c2.63302-1.81026 1.64561-2.46847-.493663-3.45588 1.974723-.6582 6.911563-2.13926 5.265953-3.62033 1.3165-.98732-.49366-1.64562-2.13927-1.97472 5.92416-1.31651 6.25326-2.30382 5.59505-2.63302 3.12667-1.81017-.65822-2.63293-1.64561-3.29123 3.94943.82286 3.12667-.49365 2.63302-1.48096 3.29123 1.48096 3.45578-1.97482 2.13926-2.96213 1.31652-.16456 1.48106-1.97472-.49365-3.12668 3.29123.3291 5.26594-.3291 2.63292-2.13926 1.64561-.65831 1.81017-1.48107 1.15196-2.13937 1.81017-1.15186.65821-2.30382-.16455-2.63292 1.81017-.82286 1.64561-2.79759.6582-3.29124 1.48107-1.81025 2.13928-5.92425 2.13928-5.92425s0 3.29123 2.30391 4.77229c-.82285.82277-.3291 2.46838.98732 2.46838-1.31642 1.97482-.49365 2.63303 1.81026 2.96212-.82285 1.15197-1.64561 2.30392 1.48106 2.30392-2.63302 1.81017-1.64571 2.96203.82276 2.63293-2.63302.9874-.98741 2.63302 1.81017 2.13936-1.97472 1.48096-1.97472 3.12659.98741 2.63292-2.79758 1.48106-3.12668 3.45579 1.31641 3.29124-1.48097 0-2.96203 3.94953 2.63302 5.10139.49365-4.44318 2.13927-35.05155 2.46847-40.48205.16454-6.25335-.16465-10.36743-.16465-10.36743s-.49366-.32911-3.12658-.16456c-2.46847.32911-3.62043 1.15197-7.56986-.16455-3.94944-1.31652-4.60775-.49365-7.40522-.16454-2.46847 0-3.78498-.32911-6.58246.6582-2.96213 1.15195-6.0888-.32911-7.40531-1.48106-1.31651-.98732 0-3.29124 2.13927-3.29124 3.45578.16465-4.443093-.3291-7.076113.6583z"/>
     </g>
 </svg>`;
-    const __NATIONAL_MONUMENT = `<svg class="pack-symbol is-national-monument" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 128 128" fill="#fff">
+    const __NATIONAL_MONUMENT = `<svg class="pack-symbol is-national-monument" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 128 128" fill="currentColor">
 <polygon points="91.7,111.4 91.7,102.5 83.2,102.5 77.9,18.3 65,3.7 52.2,18.3 46.9,102.5 38.4,102.5 38.4,111.4 29.8,111.4
 	29.8,126 100.3,126 100.3,111.4 "/>
 </svg>`;
@@ -16842,7 +16884,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.8",
+        version: "4.3.0.9",
         date: "2026-06-03",
         title: "Waypoint Pack",
         summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
@@ -16853,12 +16895,15 @@
           "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.8",
+          version: "4.3.0.9",
           title: "Waypoint Pack",
           summary: "Add Parks and Monuments as prioritized Wayfinder notes.",
           cta: "Pack the Map!"
         },
         updates: [
+          "Made National Monument artwork white on maps in light mode and black in dark mode, with the inverse treatment in Notes.",
+          "Shortened Pack Locations to waypoint names, moved linked status beside priority, hid linked-note drafts, and added Unlink.",
+          "Linking an existing note now appends the waypoint note to Additional Details and updates City and coordinates.",
           "Merged Add/Refresh and Pack Notes into one compact Pack Locations list with contextual Attach/Edit actions.",
           "Moved each location's priority controls between its name and info link to reduce vertical space.",
           "Limited Attach Existing Note choices to available notes in the waypoint's listed state or states.",
@@ -20124,11 +20169,22 @@
       note.sourceSetId = set.id;
       note.sourceItemId = item.id;
       note.sourceSetGenerated = generated === true;
+      note.city = item.name;
       note.where = item.fullName;
       note.lat = normalizeLatitude(item.lat);
       note.lng = normalizeLongitude(item.lng);
       note.geocodeLabel = item.fullName;
       setManagedVisitTypes(note, set.id);
+      return note;
+    }
+
+    function appendSuggestedSetDetails(note, details) {
+      const existing = String(noteDetails(note) || "").trim();
+      const addition = String(details || "").trim();
+      if (!addition || existing.includes(addition)) return note;
+      const merged = [existing, addition].filter(Boolean).join(existing ? "\n\n" : "").slice(0, 700);
+      note.details = merged;
+      note.text = merged;
       return note;
     }
 
@@ -20186,13 +20242,14 @@
       return { abbr: targetAbbr, note: ref.note, layer: "us", store: state.notes };
     }
 
-    function attachNoteToSuggestedSetItem(abbr, noteId, setId, itemId, { persist = true } = {}) {
+    function attachNoteToSuggestedSetItem(abbr, noteId, setId, itemId, { persist = true, details = "" } = {}) {
       const source = suggestedSetItem(setId, itemId);
       const ref = allSavedNoteRefs().find(entry => entry.abbr === abbr && entry.note.id === noteId)
         || allSavedNoteRefs().find(entry => entry.note.id === noteId);
       if (!source || !ref) return null;
       ensureSuggestedSetIconEnabled(setId);
       const moved = moveNoteRefToSetPrimaryState(ref, source.item);
+      appendSuggestedSetDetails(moved.note, details || source.item.defaultDetails);
       refreshSuggestedSetManagedFields(moved.note, source.set, source.item, { generated: false });
       removeGeneratedDuplicateSetNotes(setId, itemId, moved.note.id);
       if (persist) {
@@ -20208,6 +20265,17 @@
       delete note.sourceSetId;
       delete note.sourceItemId;
       delete note.sourceSetGenerated;
+    }
+
+    function unlinkSuggestedSetNote(setId, itemId) {
+      const linked = suggestedSetLinkedNote(setId, itemId);
+      if (!linked) return false;
+      detachSuggestedSetNote(linked.note);
+      cleanupSuggestedSetPreviewIcon(setId);
+      save();
+      render();
+      showMessage("Waypoint Unlinked", "The note was preserved and is no longer linked to this pack.");
+      return true;
     }
 
     function removeSuggestedSet(setId = activeSuggestedSet()?.id) {
@@ -21721,9 +21789,6 @@
         monument.classList.add("set-marker-monument");
         monument.setAttribute("points", "91.7,111.4 91.7,102.5 83.2,102.5 77.9,18.3 65,3.7 52.2,18.3 46.9,102.5 38.4,102.5 38.4,111.4 29.8,111.4 29.8,126 100.3,126 100.3,111.4");
         monument.setAttribute("transform", "translate(-7.8 -7.8) scale(.12)");
-        monument.setAttribute("fill", "#fff");
-        monument.setAttribute("stroke", "#0f766e");
-        monument.setAttribute("stroke-width", "3");
         group.append(monument);
         return;
       }
@@ -21754,7 +21819,7 @@
         const linked = suggestedSetLinkedNote(set.id, item.id);
         const note = linked?.note || null;
         const color = WAYFINDER_TEAL;
-        const label = `${item.fullName}. ${note ? `Linked note: ${noteSummary(note)}` : "Not added yet."}`;
+        const label = `${item.name}. ${note ? `Linked note: ${noteSummary(note)}` : "Not added yet."}`;
         const group = document.createElementNS(svgNS, "g");
         group.classList.add("suggested-set-marker");
         if (note) group.classList.add("is-linked");
@@ -22040,31 +22105,35 @@
       const detail = suggestedSetPreviewDetail(set, item, note);
       const refs = note ? [] : attachableNoteRefs(item);
       const status = note
-        ? `<span class="sets-linked-pill">Linked ${notePriorityBadgeHtml(note)} ${noteSourceBadgeHtml(note)}</span>`
+        ? `<span class="waypoint-preview-link-status"><span class="sets-linked-pill">Linked</span>${noteSourceBadgeHtml(note)}</span>`
         : `<span class="sets-linked-pill">Not added</span>`;
       const action = note
-        ? `<button type="button" data-set-edit-note="${escapeHtml(item.id)}">Edit Linked Note</button>`
-        : `<select data-set-attach-item="${escapeHtml(item.id)}" aria-label="Attach an existing note to ${escapeHtml(item.fullName)}" ${refs.length ? "" : "disabled"}>${attachableNoteOptionsHtml(item, refs)}</select>`;
+        ? `<div class="waypoint-linked-actions">
+            <button type="button" data-set-edit-note="${escapeHtml(item.id)}">Edit Linked Note</button>
+            <button type="button" data-set-unlink-note="${escapeHtml(item.id)}">Unlink</button>
+          </div>`
+        : `<select data-set-attach-item="${escapeHtml(item.id)}" aria-label="Attach an existing note to ${escapeHtml(item.name)}" ${refs.length ? "" : "disabled"}>${attachableNoteOptionsHtml(item, refs)}</select>`;
+      const noteField = note ? "" : `<textarea data-set-preview-note maxlength="700" placeholder="Notes for ${escapeHtml(item.name)}">${escapeHtml(detail)}</textarea>`;
       return `
         <article class="waypoint-preview-card" data-set-preview-item="${escapeHtml(item.id)}">
           <div class="waypoint-preview-main">
-            <button class="waypoint-preview-selection" type="button" data-set-preview-toggle aria-pressed="${include ? "true" : "false"}" aria-label="Include ${escapeHtml(item.fullName)}">
+            <button class="waypoint-preview-selection" type="button" data-set-preview-toggle aria-pressed="${include ? "true" : "false"}" aria-label="Include ${escapeHtml(item.name)}">
               <span class="waypoint-preview-title">
-                <b>${escapeHtml(item.fullName)}</b>
-                <small>${escapeHtml(item.code)} · ${escapeHtml(suggestedSetItemRegionLabel(item))}${linked ? " · linked" : ""}</small>
+                <b>${escapeHtml(item.name)}</b>
+                <small>${escapeHtml(item.code)} · ${escapeHtml(suggestedSetItemRegionLabel(item))}</small>
               </span>
             </button>
-            <div class="waypoint-priority-row" aria-label="Priority for ${escapeHtml(item.fullName)}">
+            <div class="waypoint-priority-row" aria-label="Priority for ${escapeHtml(item.name)}">
               ${waypointPriorityButtons(priority, "data-set-preview-priority-choice", item.id)}
             </div>
+            ${status}
             <a class="ghost" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">${escapeHtml(set.linkLabel || "Info")}</a>
           </div>
           <input type="hidden" data-set-preview-priority value="${escapeHtml(priority)}">
           <div class="waypoint-location-status">
-            ${status}
             ${action}
           </div>
-          <textarea data-set-preview-note maxlength="700" placeholder="Wayfinder Notes for ${escapeHtml(item.name)}">${escapeHtml(detail)}</textarea>
+          ${noteField}
         </article>
       `;
     }
@@ -22432,7 +22501,7 @@
 
     function noteSourceLabel(note) {
       const source = suggestedSetSourceForNote(note);
-      return source ? `${source.set.name} - ${source.item.fullName} (${source.item.code})` : "";
+      return source ? `${source.set.name} - ${source.item.name} (${source.item.code})` : "";
     }
 
     function noteLocationDisplay(note) {
@@ -24119,7 +24188,7 @@
       $("#noteSourceItemId").value = source?.item.id || "";
       $("#noteSourceGenerated").value = source && note?.sourceSetGenerated === true ? "true" : "";
       $("#noteSourceItemSelect").innerHTML = `<option value="">Not linked to ${escapeHtml(set.name)}</option>` + set.items.map(item =>
-        `<option value="${escapeHtml(item.id)}" ${source?.set.id === set.id && source?.item.id === item.id ? "selected" : ""}>${escapeHtml(item.fullName)} (${escapeHtml(item.code)})</option>`
+        `<option value="${escapeHtml(item.id)}" ${source?.set.id === set.id && source?.item.id === item.id ? "selected" : ""}>${escapeHtml(item.name)} (${escapeHtml(item.code)})</option>`
       ).join("");
       syncNoteSetSummary();
     }
@@ -24129,7 +24198,7 @@
       const priority = normalizeNotePriority($("#notePriority").value);
       const generated = $("#noteSourceGenerated").value === "true";
       $("#noteSourceSummary").textContent = source
-        ? `${source.set.name}: ${source.item.fullName} (${source.item.code})${priority ? ` :: Priority ${priority}` : ""}${generated ? " :: generated" : ""}`
+        ? `${source.set.name}: ${source.item.name} (${source.item.code})${priority ? ` :: Priority ${priority}` : ""}${generated ? " :: generated" : ""}`
         : "Select an active pack item to attach this note to that waypoint pack.";
     }
 
@@ -24146,6 +24215,7 @@
       $("#noteSourceSetId").value = source.set.id;
       $("#noteSourceItemId").value = source.item.id;
       $("#noteSourceGenerated").value = "";
+      $("#noteCity").value = source.item.name;
       $("#noteWhere").value = source.item.fullName;
       $("#noteLat").value = normalizeLatitude(source.item.lat);
       $("#noteLng").value = normalizeLongitude(source.item.lng);
@@ -25390,6 +25460,10 @@
       };
       const source = suggestedSetItem($("#noteSourceSetId").value, $("#noteSourceItemId").value);
       if (source) {
+        const existing = id ? allSavedNoteRefs().find(ref => ref.note.id === id)?.note : null;
+        if (!setNoteMatchesSource(existing, source.set.id, source.item.id)) {
+          appendSuggestedSetDetails(note, source.item.defaultDetails);
+        }
         ensureSuggestedSetIconEnabled(source.set.id);
         refreshSuggestedSetManagedFields(note, source.set, source.item, { generated: false });
       }
@@ -26013,7 +26087,7 @@
         lines.push(`### ${group.set.name}`);
         group.entries.forEach(({ note, region, source }) => {
           const item = source?.item;
-          const label = item ? `${item.fullName} (${item.code})` : region;
+          const label = item ? `${item.name} (${item.code})` : region;
           lines.push(`- ${label}${note.date ? ` (${formatDateDisplay(note.date)})` : ""}: ${noteExportText(note)}`);
         });
         lines.push("");
@@ -26035,7 +26109,7 @@
       grouped.forEach(group => {
         lines.push(`### ${group.set.name}`);
         group.entries.forEach(({ note, item, region }) => {
-          lines.push(`- ${item.fullName} (${item.code}) - ${region}: ${noteExportText(note)}`);
+          lines.push(`- ${item.name} (${item.code}) - ${region}: ${noteExportText(note)}`);
         });
         lines.push("");
       });
@@ -26048,7 +26122,7 @@
       grouped.forEach(group => {
         lines.push(group.set.name);
         group.entries.forEach(({ note, item, region }) => {
-          lines.push(`  ${item.fullName} (${item.code}) - ${region} - ${noteToSmartConvertText(note)}`);
+          lines.push(`  ${item.name} (${item.code}) - ${region} - ${noteToSmartConvertText(note)}`);
         });
       });
     }
@@ -26149,7 +26223,7 @@
           lines.push(group.set.name);
           group.entries.forEach(({ note, source, region }) => {
             const item = source?.item;
-            lines.push(`${item ? item.fullName : region} | ${formatDateDisplay(note.date) || "—"} | ${noteExportText(note)}`);
+            lines.push(`${item ? item.name : region} | ${formatDateDisplay(note.date) || "—"} | ${noteExportText(note)}`);
           });
         });
         bucketEntries.filter(entry => !groupedIds.has(entry.note.id)).forEach(({ note, region }) => {
@@ -26222,7 +26296,7 @@
         grouped.forEach(group => {
           lines.push(group.set.name);
           group.entries.forEach(({ note, source }) => {
-            lines.push(`  ${source.item.fullName} (${source.item.code}) :: ${noteToSmartConvertText(note)}`);
+            lines.push(`  ${source.item.name} (${source.item.code}) :: ${noteToSmartConvertText(note)}`);
           });
         });
         let lastRegion = "";
@@ -27494,7 +27568,9 @@
         if (attach && attach.value) {
           const [layer, abbr, noteId] = attach.value.split("|");
           void layer;
-          attachNoteToSuggestedSetItem(abbr, noteId, set.id, attach.dataset.setAttachItem);
+          const source = suggestedSetItem(set.id, attach.dataset.setAttachItem);
+          const details = source ? suggestedSetPreviewDetail(source.set, source.item, null) : "";
+          attachNoteToSuggestedSetItem(abbr, noteId, set.id, attach.dataset.setAttachItem, { details });
           renderSetsDialog();
         }
       });
@@ -27585,6 +27661,12 @@
           notesPanelOpen = true;
           renderSetsDialog();
           openNoteDialog(linked.note.id);
+          return;
+        }
+        const unlink = event.target.closest("[data-set-unlink-note]");
+        if (unlink) {
+          unlinkSuggestedSetNote(activeSuggestedSet().id, unlink.dataset.setUnlinkNote);
+          renderSetsDialog();
           return;
         }
         if (event.target.closest("#setsBatchAddBtn")) {
