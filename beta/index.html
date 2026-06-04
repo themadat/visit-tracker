@@ -783,15 +783,12 @@
       height: 32px;
     }
 
-    #notesActivateWayfinderBtn,
     #notesAddWaypointsBtn {
       border-color: color-mix(in srgb, #14b8a6 72%, var(--line) 28%);
       box-shadow: 0 0 0 1px color-mix(in srgb, #14b8a6 28%, transparent);
     }
 
-    #notesActivateWayfinderBtn:hover,
     #notesAddWaypointsBtn:hover,
-    #notesActivateWayfinderBtn:focus-visible,
     #notesAddWaypointsBtn:focus-visible {
       border-color: #14b8a6;
       box-shadow: 0 0 0 2px color-mix(in srgb, #14b8a6 34%, transparent);
@@ -1869,13 +1866,13 @@
     }
 
     .suggested-set-marker .set-marker-label {
-      font-size: 8px;
+      font-size: 9.2px;
       dominant-baseline: central;
       stroke-width: 2.7px;
     }
 
     .suggested-set-marker .set-marker-label.is-name {
-      font-size: 6.8px;
+      font-size: 7.8px;
     }
 
     .suggested-set-marker .set-marker-priority-bg {
@@ -2072,6 +2069,20 @@
       width: 13px;
       height: 13px;
       display: block;
+    }
+
+    .pack-symbol {
+      display: block;
+      width: 1em;
+      height: 1em;
+      object-fit: contain;
+      flex: 0 0 auto;
+    }
+
+    .map-marker-icon .pack-symbol,
+    .set-marker-icon .pack-symbol {
+      width: 13px;
+      height: 13px;
     }
 
     .state-tile:hover,
@@ -4471,6 +4482,7 @@
       place-items: center start;
       gap: .42rem;
       min-width: min(100%, 12rem);
+      min-height: 3.55rem;
       padding: .46rem .54rem;
       text-align: left;
       background: var(--surface);
@@ -4484,6 +4496,25 @@
     .waypoint-pack-card .sf-symbol,
     .waypoint-icon-choice .sf-symbol,
     .waypoint-control-icon .sf-symbol {
+      width: 1.16rem;
+      height: 1.16rem;
+    }
+
+    .waypoint-pack-card>span:first-child {
+      display: grid;
+      place-items: center;
+      width: 2.65rem;
+      height: 2.65rem;
+    }
+
+    .waypoint-pack-card>span:first-child .sf-symbol,
+    .waypoint-pack-card>span:first-child .pack-symbol {
+      width: 2.65rem;
+      height: 2.65rem;
+    }
+
+    .waypoint-icon-choice .pack-symbol,
+    .waypoint-control-icon .pack-symbol {
       width: 1.16rem;
       height: 1.16rem;
     }
@@ -6158,7 +6189,17 @@
       color: var(--accent);
     }
 
+    .notes-icon-filter.is-waypoint-pack-icon {
+      border-color: #14b8a6;
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, #14b8a6 34%, transparent);
+    }
+
     .notes-icon-filter .sf-symbol {
+      width: 1.14rem;
+      height: 1.14rem;
+    }
+
+    .notes-icon-filter .pack-symbol {
       width: 1.14rem;
       height: 1.14rem;
     }
@@ -6712,6 +6753,12 @@
       flex: 0 0 auto;
     }
 
+    .visit-type-chip .pack-symbol,
+    .visit-type-tag .pack-symbol {
+      width: 1.1em;
+      height: 1.1em;
+    }
+
     .visit-type-key {
       margin-left: auto;
       min-width: 1.15rem;
@@ -6873,7 +6920,17 @@
       height: 1.75rem;
     }
 
+    .tag-render-preview .pack-symbol {
+      width: 1.75rem;
+      height: 1.75rem;
+    }
+
     .tag-editor-row.is-enabled .tag-render-preview .sf-symbol {
+      width: 1.85rem;
+      height: 1.85rem;
+    }
+
+    .tag-editor-row.is-enabled .tag-render-preview .pack-symbol {
       width: 1.85rem;
       height: 1.85rem;
     }
@@ -6933,6 +6990,12 @@
       width: 2.4rem;
       height: 2.4rem;
       color: var(--accent-2);
+      justify-self: center;
+    }
+
+    .tag-more-option .pack-symbol {
+      width: 2.4rem;
+      height: 2.4rem;
       justify-self: center;
     }
 
@@ -14821,7 +14884,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.5";
+    const APP_VERSION = "4.3.0.6";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -14867,8 +14930,8 @@
     };
     const LOCATION_PROJECTION_FRAME_OVERRIDES = {
       AK: [
-        { test: coords => Number(coords?.lng) <= -164, bounds: [51.2, 55.8, -179.2, -164.0], box: { x: 24, y: 532, width: 116, height: 33 } },
-        { bounds: [55.0, 73.5, -165.0, -130.0], box: { x: 38, y: 470, width: 171, height: 98 } }
+        { test: coords => Number(coords?.lng) <= -164, bounds: [51.2, 55.8, -179.2, -164.0], box: { x: 36, y: 532, width: 116, height: 33 } },
+        { bounds: [55.0, 73.5, -165.0, -130.0], box: { x: 54, y: 470, width: 171, height: 98 } }
       ]
     };
     const MAP_LABEL_OVERRIDES = {
@@ -16123,9 +16186,19 @@
       { id: "bookmark", label: "Memorable", icon: "bookmark", shortcut: "b", enabled: true, searchTags: ["memory", "remember", "core"] },
       { id: "star", label: "First", icon: "star", shortcut: "f", enabled: true, searchTags: ["new", "initial"] },
     ];
-    const BASE_VISIT_TYPE_IDS = new Set(BASE_VISIT_TYPES.map(type => type.id));
+    const PACK_ICON_ASSETS = {
+      waypoint_national_parks: "assets/svgs/US-NationalParkService-Logo-gray.svg",
+      waypoint_national_monuments: "assets/svgs/!national-monument-landmark-distinctive-feature-prominent-feature-svgrepo-com.svg"
+    };
+    const PACK_ICON_ID_SET = new Set(Object.keys(PACK_ICON_ASSETS));
+    const PACK_VISIT_TYPES = [
+      { id: "waypoint_national_parks", label: "National Parks", icon: "waypoint_national_parks", shortcut: "", enabled: false, searchTags: ["national", "park", "nps", "waypoint", "pack"] },
+      { id: "waypoint_national_monuments", label: "National Monuments", icon: "waypoint_national_monuments", shortcut: "", enabled: false, searchTags: ["national", "monument", "landmark", "waypoint", "pack"] }
+    ];
+    const BASE_VISIT_TYPE_IDS = new Set([...BASE_VISIT_TYPES, ...PACK_VISIT_TYPES].map(type => type.id));
     const VISIT_TYPES = [
       ...BASE_VISIT_TYPES,
+      ...PACK_VISIT_TYPES,
       ...CIRCLE_ICON_IDS
         .filter(id => !BASE_VISIT_TYPE_IDS.has(id))
         .map(id => ({
@@ -16141,6 +16214,10 @@
     const SUGGESTED_SET_LABEL_MODES = ["none", "abbr", "name"];
     const SUGGESTED_SET_DEFAULT_ICON = "tree";
     const SUGGESTED_SET_DEFAULT_ID = "national-parks";
+    const LEGACY_SUGGESTED_SET_DEFAULT_ICONS = {
+      "national-parks": SUGGESTED_SET_DEFAULT_ICON,
+      "national-monuments": "mountain_2"
+    };
     const WAYFINDER_TEAL = "#14b8a6";
     const NOTE_PRIORITY_COLORS = {
       "1": "#16a34a",
@@ -16362,7 +16439,7 @@
         description: "Official National Park-designated units.",
         itemNoun: "park",
         linkLabel: "NPS",
-        defaultIconId: SUGGESTED_SET_DEFAULT_ICON,
+        defaultIconId: "waypoint_national_parks",
         defaultLabelMode: "none",
         items: SUGGESTED_NATIONAL_PARKS.map(([code, name, primaryState, states, lat, lng, dateEstablished, description]) => {
           const url = `https://www.nps.gov/${code.toLowerCase()}/index.htm`;
@@ -16380,7 +16457,7 @@
             lng,
             url,
             dateEstablished,
-            defaultDetails: `Date Established: ${dateEstablished} | Description: ${description}`.slice(0, 700),
+            defaultDetails: `Established on ${dateEstablished} | ${description}`.slice(0, 700),
             noteTemplate: `Official National Park unit. Website: ${url}`
           };
         })
@@ -16392,7 +16469,7 @@
         description: "Current U.S. National Monuments.",
         itemNoun: "monument",
         linkLabel: "Wiki",
-        defaultIconId: "mountain_2",
+        defaultIconId: "waypoint_national_monuments",
         defaultLabelMode: "none",
         items: SUGGESTED_NATIONAL_MONUMENTS.map(([code, name, primaryState, states, lat, lng, dateEstablished, description, page]) => {
           const url = `https://en.wikipedia.org/wiki/${page}`;
@@ -16409,7 +16486,7 @@
             lng,
             url,
             dateEstablished,
-            defaultDetails: `Date Established: ${dateEstablished} | Description: ${description}`
+            defaultDetails: `Established on ${dateEstablished} | ${description}`
           };
         })
       }
@@ -16723,7 +16800,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.5",
+        version: "4.3.0.6",
         date: "2026-06-03",
         title: "Waypoint Pack",
         summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
@@ -16734,14 +16811,21 @@
           "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.5",
+          version: "4.3.0.6",
           title: "Waypoint Pack",
           summary: "Add Parks and Monuments as prioritized Wayfinder notes.",
           cta: "Pack the Map!"
         },
         updates: [
+          "Added dedicated National Park Service and National Monument SVG Location Tags as each pack's recommended icon.",
+          "Existing linked Parks and Monuments migrate from their legacy default tags to the new dedicated SVG tags.",
+          "Temporary recommended pack icons now clean themselves out when a previewed pack is closed or left without linked notes.",
+          "Preview priority choices now show their numbered map badge immediately, before Add or Refresh creates notes.",
+          "Active pack icons receive a teal outline in Notes, while the inactive Wayfinder mode button keeps its normal styling.",
+          "Shifted Alaska pack pins east across the inset and increased pack-card artwork and map-label sizing.",
+          "Simplified bundled pack note copy to “Established on <date> | <description>”.",
           "Enriched National Park preview notes with static Wikipedia-sourced established dates and descriptions.",
-          "Recalibrated Alaska waypoint projection so mainland and Aleutian pack pins spread farther left and lower across the inset.",
+          "Recalibrated Alaska waypoint projection so mainland and Aleutian pack pins spread across the inset.",
           "Changed the Waypoint Packs subtitle to a generic future-endeavors line without linked status.",
           "Selecting a pack now enables its recommended Location Tag and adds it to the end of the active tag order when needed.",
           "Increased map label text for Waypoint Pack markers.",
@@ -17820,6 +17904,7 @@
     let pendingConfirm = null;
     let markerDialogItems = [];
     let waypointPacksPanelOpen = false;
+    let suggestedSetPreviewPriorities = new Map();
     let setsPriorityFilter = "all";
     let setsSortMode = "set";
     let pendingNoteDefaults = null;
@@ -17855,8 +17940,9 @@
           mapLabels: "none",
           suggestedSetsVisible: false,
           activeSuggestedSetId: SUGGESTED_SET_DEFAULT_ID,
-          suggestedSetIcons: { [SUGGESTED_SET_DEFAULT_ID]: SUGGESTED_SET_DEFAULT_ICON },
+          suggestedSetIcons: { [SUGGESTED_SET_DEFAULT_ID]: SUGGESTED_SET_BY_ID[SUGGESTED_SET_DEFAULT_ID]?.defaultIconId || SUGGESTED_SET_DEFAULT_ICON },
           suggestedSetLabelModes: { [SUGGESTED_SET_DEFAULT_ID]: "none" },
+          suggestedSetPreviewIconIds: [],
           activeLayerId: "us",
           mapLocationPinsVisible: true,
           mapFollowsNotesFilters: true,
@@ -18234,6 +18320,9 @@
       next.settings.activeSuggestedSetId = SUGGESTED_SET_BY_ID[next.settings.activeSuggestedSetId] ? next.settings.activeSuggestedSetId : SUGGESTED_SET_DEFAULT_ID;
       next.settings.suggestedSetLabelModes = normalizeSuggestedSetLabelModes(next.settings.suggestedSetLabelModes);
       next.settings.suggestedSetIcons = normalizeSuggestedSetIcons(next.settings.suggestedSetIcons);
+      next.settings.suggestedSetPreviewIconIds = [...new Set(Array.isArray(next.settings.suggestedSetPreviewIconIds)
+        ? next.settings.suggestedSetPreviewIconIds.map(String).filter(id => PACK_ICON_ID_SET.has(id))
+        : [])];
       if (!MAP_LAYERS[next.settings.activeLayerId]) next.settings.activeLayerId = "us";
       if (typeof next.settings.mapLocationPinsVisible !== "boolean") next.settings.mapLocationPinsVisible = true;
       if (typeof next.settings.mapFollowsNotesFilters !== "boolean") next.settings.mapFollowsNotesFilters = true;
@@ -18419,6 +18508,36 @@
         text: String(basecampInput.text || "").slice(0, BASECAMP_MAX_LENGTH),
         updated: String(basecampInput.updated || "")
       };
+      const linkedSetIds = new Set([
+        ...Object.values(next.notes).flat(),
+        ...Object.values(next.world.notes).flat()
+      ].map(note => note.sourceSetId).filter(Boolean));
+      const normalizedNotes = [...Object.values(next.notes).flat(), ...Object.values(next.world.notes).flat()];
+      linkedSetIds.forEach(setId => {
+        const set = SUGGESTED_SET_BY_ID[setId];
+        const iconId = next.settings.suggestedSetIcons[setId];
+        if (!set || !PACK_ICON_ID_SET.has(iconId)) return;
+        const index = next.visitTypes.findIndex(type => type.id === iconId);
+        if (index >= 0 && next.visitTypes[index].enabled === false) {
+          const [type] = next.visitTypes.splice(index, 1);
+          const hiddenIndex = next.visitTypes.findIndex(candidate => candidate.enabled === false);
+          next.visitTypes.splice(hiddenIndex >= 0 ? hiddenIndex : next.visitTypes.length, 0, { ...type, enabled: true });
+        }
+        if (!next.settings.noteVisitTypeFilters.includes(iconId)) next.settings.noteVisitTypeFilters.push(iconId);
+        const legacyIconId = LEGACY_SUGGESTED_SET_DEFAULT_ICONS[setId];
+        normalizedNotes.filter(note => note.sourceSetId === setId).forEach(note => {
+          note.visitTypes = [...new Set((note.visitTypes || []).filter(id => id !== legacyIconId).concat(iconId))];
+        });
+      });
+      next.settings.suggestedSetPreviewIconIds = next.settings.suggestedSetPreviewIconIds.filter(iconId => {
+        const set = SUGGESTED_SETS.find(candidate => candidate.defaultIconId === iconId);
+        if (set && !linkedSetIds.has(set.id)) {
+          const type = next.visitTypes.find(candidate => candidate.id === iconId);
+          if (type) type.enabled = false;
+          return false;
+        }
+        return true;
+      });
       pruneObsoleteBackupKeys(next);
       return next;
     }
@@ -18462,8 +18581,12 @@
       const raw = input && typeof input === "object" ? input : {};
       const known = new Set(VISIT_TYPES.map(type => type.id));
       return Object.fromEntries(SUGGESTED_SETS.map(set => {
-        const requested = String(raw[set.id] || set.defaultIconId || SUGGESTED_SET_DEFAULT_ICON);
-        return [set.id, known.has(requested) ? requested : SUGGESTED_SET_DEFAULT_ICON];
+        const saved = String(raw[set.id] || "");
+        const requested = saved === LEGACY_SUGGESTED_SET_DEFAULT_ICONS[set.id]
+          ? set.defaultIconId
+          : saved || set.defaultIconId || SUGGESTED_SET_DEFAULT_ICON;
+        const fallback = known.has(set.defaultIconId) ? set.defaultIconId : SUGGESTED_SET_DEFAULT_ICON;
+        return [set.id, known.has(requested) ? requested : fallback];
       }));
     }
 
@@ -18887,6 +19010,11 @@
         state.settings.notesHideExcludedOnly = false;
         state.settings.bucketListView = true;
       } else {
+        const activeSetId = activeSuggestedSet()?.id;
+        if (activeSetId) {
+          cleanupSuggestedSetPreviewIcon(activeSetId);
+          clearSuggestedSetPreviewPriorities(activeSetId);
+        }
         waypointPacksPanelOpen = false;
         const snap = state.settings.bucketListFilterSnapshot;
         if (snap) {
@@ -19768,11 +19896,62 @@
       if (!set || !visitTypeMeta(iconId)) return;
       state.settings.suggestedSetIcons ||= {};
       state.settings.suggestedSetIcons[set.id] = iconId;
+      if (iconId !== set.defaultIconId) cleanupSuggestedSetPreviewIcon(set.id);
+    }
+
+    function suggestedSetPreviewIconIds() {
+      return new Set(Array.isArray(state.settings.suggestedSetPreviewIconIds) ? state.settings.suggestedSetPreviewIconIds : []);
+    }
+
+    function trackSuggestedSetPreviewIcon(iconId) {
+      if (!PACK_ICON_ID_SET.has(iconId)) return;
+      state.settings.suggestedSetPreviewIconIds = [...suggestedSetPreviewIconIds(), iconId];
+    }
+
+    function untrackSuggestedSetPreviewIcon(iconId) {
+      state.settings.suggestedSetPreviewIconIds = [...suggestedSetPreviewIconIds()].filter(id => id !== iconId);
+    }
+
+    function cleanupSuggestedSetPreviewIcon(setId) {
+      const set = SUGGESTED_SET_BY_ID[setId];
+      const iconId = set?.defaultIconId || "";
+      if (!PACK_ICON_ID_SET.has(iconId) || !suggestedSetPreviewIconIds().has(iconId)) return false;
+      if (suggestedSetProgress(set.id).linked) return false;
+      const type = state.visitTypes.find(item => item.id === iconId);
+      if (type) type.enabled = false;
+      untrackSuggestedSetPreviewIcon(iconId);
+      ensureNoteIconFilters();
+      return true;
+    }
+
+    function suggestedSetPreviewPriorityKey(setId, itemId) {
+      return `${setId}:${itemId}`;
+    }
+
+    function suggestedSetPreviewPriority(setId, itemId) {
+      return normalizeNotePriority(suggestedSetPreviewPriorities.get(suggestedSetPreviewPriorityKey(setId, itemId)));
+    }
+
+    function setSuggestedSetPreviewPriority(setId, itemId, priority) {
+      const key = suggestedSetPreviewPriorityKey(setId, itemId);
+      const clean = normalizeNotePriority(priority);
+      if (clean) suggestedSetPreviewPriorities.set(key, clean);
+      else suggestedSetPreviewPriorities.delete(key);
+    }
+
+    function clearSuggestedSetPreviewPriorities(setId) {
+      const prefix = `${setId}:`;
+      suggestedSetPreviewPriorities = new Map([...suggestedSetPreviewPriorities].filter(([key]) => !key.startsWith(prefix)));
     }
 
     function activateSuggestedSet(setId) {
       const set = SUGGESTED_SET_BY_ID[setId] || SUGGESTED_SET_BY_ID[SUGGESTED_SET_DEFAULT_ID];
       if (!set) return null;
+      const previousId = activeSuggestedSet()?.id;
+      if (previousId && previousId !== set.id) {
+        cleanupSuggestedSetPreviewIcon(previousId);
+        clearSuggestedSetPreviewPriorities(previousId);
+      }
       state.settings.activeSuggestedSetId = set.id;
       addSuggestedSetRecommendedIcon(set.id);
       return set;
@@ -19788,6 +19967,8 @@
       const hiddenIndex = state.visitTypes.findIndex(item => item.enabled === false);
       if (hiddenIndex >= 0) state.visitTypes.splice(hiddenIndex, 0, enabledType);
       else state.visitTypes.push(enabledType);
+      trackSuggestedSetPreviewIcon(iconId);
+      noteVisitTypeFilters.add(iconId);
       ensureNoteIconFilters();
       return true;
     }
@@ -19846,10 +20027,17 @@
       return { total: set?.items.length || 0, linked: linkedItemIds.size, notes: linked.length };
     }
 
+    function suggestedSetIconInActiveUse(iconId) {
+      return SUGGESTED_SETS.some(set =>
+        suggestedSetIconId(set.id) === iconId && suggestedSetProgress(set.id).linked > 0
+      );
+    }
+
     function ensureSuggestedSetIconEnabled(setId = activeSuggestedSet()?.id) {
       const iconId = suggestedSetIconId(setId);
       const type = state.visitTypes.find(item => item.id === iconId);
       if (type) type.enabled = true;
+      noteVisitTypeFilters.add(iconId);
       ensureNoteIconFilters();
       return iconId;
     }
@@ -19977,6 +20165,8 @@
         });
       });
       state.settings.suggestedSetsVisible = false;
+      clearSuggestedSetPreviewPriorities(setId);
+      cleanupSuggestedSetPreviewIcon(setId);
       save();
       render();
       showMessage("Pack Removed", `${deleted} untouched note${deleted === 1 ? "" : "s"} removed. ${preserved} edited or visited note${preserved === 1 ? "" : "s"} preserved.`);
@@ -21494,7 +21684,7 @@
         icon.innerHTML = visitTypeIcon(iconId);
         foreign.append(icon);
         group.append(foreign);
-        appendSuggestedSetPriority(group, note);
+        appendSuggestedSetPriority(group, { priority: suggestedSetPreviewPriority(set.id, item.id) || note?.priority });
         appendSuggestedSetMarkerLabel(group, set, item, note);
         const open = event => {
           event.preventDefault();
@@ -21752,7 +21942,7 @@
     function renderSetPreviewRow(set, item) {
       const linked = suggestedSetLinkedNote(set.id, item.id);
       const note = linked?.note;
-      const priority = normalizeNotePriority(note?.priority);
+      const priority = suggestedSetPreviewPriority(set.id, item.id) || normalizeNotePriority(note?.priority);
       return `
         <article class="waypoint-preview-card" data-set-preview-item="${escapeHtml(item.id)}">
           <div class="waypoint-preview-main">
@@ -21938,8 +22128,14 @@
     }
 
     function closeWaypointPacksPanel() {
+      const setId = activeSuggestedSet()?.id;
+      const iconRemoved = setId ? cleanupSuggestedSetPreviewIcon(setId) : false;
+      if (setId) clearSuggestedSetPreviewPriorities(setId);
       waypointPacksPanelOpen = false;
+      if (iconRemoved) save();
       renderSetsDialog();
+      renderMap();
+      renderNotesPanel();
     }
 
     function toggleWaypointPacksPanel() {
@@ -21981,6 +22177,8 @@
         if (row.priority || row.details) linked.note.sourceSetGenerated = false;
         refreshed += 1;
       });
+      clearSuggestedSetPreviewPriorities(set.id);
+      cleanupSuggestedSetPreviewIcon(set.id);
       state.settings.activeSuggestedSetId = set.id;
       state.settings.suggestedSetsVisible = true;
       activeLayerId = "us";
@@ -22177,6 +22375,8 @@
     }
 
     function visitTypeIcon(id) {
+      const asset = PACK_ICON_ASSETS[id];
+      if (asset) return `<img class="pack-symbol" src="${escapeHtml(asset)}" alt="" aria-hidden="true">`;
       return circleIconSvg(id) || __MAPPIN_CIRCLE;
     }
 
@@ -23320,7 +23520,7 @@
       $("#notesIconFilterHint")?.classList.toggle("hidden", Boolean(notesPanelState) || !items.length);
       list.innerHTML = items.map(type => `
         <li>
-          <button class="notes-icon-filter" type="button" aria-pressed="${noteVisitTypeFilters.has(type.id)}"
+          <button class="notes-icon-filter${suggestedSetIconInActiveUse(type.id) ? " is-waypoint-pack-icon" : ""}" type="button" aria-pressed="${noteVisitTypeFilters.has(type.id)}"
             data-filter-visit-type="${type.id}" title="${escapeHtml(type.label)}" aria-label="Filter notes by ${escapeHtml(type.label)}">
             ${type.icon}
           </button>
@@ -24125,6 +24325,7 @@
     function updateVisitTag(id, patch, options = {}) {
       const index = state.visitTypes.findIndex(type => type.id === id);
       if (index < 0) return;
+      if (PACK_ICON_ID_SET.has(id)) untrackSuggestedSetPreviewIcon(id);
       const nextType = { ...state.visitTypes[index], ...patch };
       state.visitTypes[index] = nextType;
       if (options.moveToActiveEnd) {
@@ -27325,18 +27526,22 @@
           const row = priorityChoice.closest("[data-set-preview-item]");
           const input = row ? $("[data-set-preview-priority]", row) : null;
           const priority = priorityChoice.dataset.setPreviewPriorityChoice || "";
+          const set = activeSuggestedSet();
           if (input) input.value = priority;
           $$("[data-set-preview-priority-choice]", row).forEach(button => {
             button.setAttribute("aria-pressed", button === priorityChoice ? "true" : "false");
           });
-          const linked = row ? suggestedSetLinkedNote(activeSuggestedSet().id, row.dataset.setPreviewItem) : null;
+          if (row && set) setSuggestedSetPreviewPriority(set.id, row.dataset.setPreviewItem, priority);
+          state.settings.suggestedSetsVisible = true;
+          const linked = row && set ? suggestedSetLinkedNote(set.id, row.dataset.setPreviewItem) : null;
           if (linked) {
             linked.note.priority = normalizeNotePriority(priority);
             linked.note.sourceSetGenerated = false;
-            save();
-            renderMap();
-            renderNotesPanel();
           }
+          save();
+          renderSetsDialog();
+          renderMap();
+          renderNotesPanel();
           return;
         }
         const edit = event.target.closest("[data-set-edit-note]");
