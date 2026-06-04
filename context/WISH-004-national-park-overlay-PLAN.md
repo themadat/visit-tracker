@@ -58,12 +58,14 @@ occurs only when the user clicks a location's Photo action.
     name/code/location block, Website and on-demand Wikipedia Photo actions,
     inline Priority, fixed two-line status, contextual Edit/Link and Unlink,
     and pre-link `Note` fields.
-  - The location identity takes its own full-width first line. Every action
-    lives in a consistently sized square toolbar on the following line and may
-    wrap together when the Notes panel narrows.
-  - Edit opens the state-scoped attach selector only when an unlinked location
-    has an available note; the selector expands immediately with no placeholder
-    option. Unavailable Edit/Link and Unlink actions are disabled.
+  - The location identity and actions share one line when the location name has
+    enough room, then split into identity and action lines when the Notes panel
+    narrows. Website, Photo, Edit/Link, and Unlink use consistently sized square
+    icon buttons; Priority uses compact large-number buttons with outline-only
+    selected state.
+  - Edit opens an immediately expanded state-scoped attach list only when an
+    unlinked location has an available note. It shows no placeholder option;
+    unavailable Edit/Link and Unlink actions are disabled.
   - Linked locations collapse status plus Edit/Unlink icon actions into one
     compact row; status/source badges may stack to conserve horizontal space.
   - Editing a linked note keeps the Waypoint Packs panel active behind the note
@@ -223,8 +225,10 @@ WISH-068 tracks a small raptor easter egg.
   duplicate list.
 - Verify linked locations use one compact row with stacked status/source badges,
   dedicated Edit/Unlink icons, and no second action row.
-- Verify long names do not clip and every row action/status/priority control
-  shares the same square size on a wrapped second-line toolbar.
+- Verify long names do not clip; rows join into one line only when the location
+  name has room, while narrow rows split identity and controls cleanly.
+- Verify action icons are enlarged and square, while compact large-number
+  Priority choices keep their text color and outline only the selected choice.
 - Verify Website opens the location source and Photo reveals only the Wikimedia
   image inline; confirm fallback image lookup runs only after Photo is clicked.
 - Verify unlinked rows disable Unlink, disable Edit/Link when no state-scoped
