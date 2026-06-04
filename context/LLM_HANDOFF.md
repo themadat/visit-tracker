@@ -103,8 +103,8 @@ For every completed change:
 - Trail Log is a single-file, local-first HTML/CSS/JS app.
 - Main file: `index.html`. `STORAGE_KEY = "usStateVisitMap.v1"`, version in `APP_VERSION`.
 - Docs: `README.md` (public/run/build), this handoff (all dev + LLM context).
-- Current version: `APP_VERSION = "4.3.0.5"` — active 4.3.0 dev line "Waypoint Pack" for WISH-004 Waypoint Packs. Latest cut release is 4.2.0 "Rangefinder".
-- 4.3.0.5 adds **Waypoint Packs** as a Wayfinder sub-feature: curated place packs that can be previewed, prioritized, annotated, attached to existing notes, and batch-added as normal Wayfinder notes. National Parks and National Monuments are bundled packs, with pack-aware markers/labels, note metadata, priority badges/filter/sort, and export grouping. Pack markers do not recolor state progress. The Packs button only appears in Wayfinder, uses `__CIRCLE_BADGE_PLUS`, and opens an inset panel over Notes instead of a modal. Park and Monument notes are prefilled with Date Established and Description from static Wikipedia-sourced snapshots. Alaska waypoint projection has expanded mainland/Aleutian frames, pack overlay pins are Wayfinder teal, and priority colors run green through orange. Selecting a pack enables its recommended Location Tag at the end of the active tag order when needed.
+- Current version: `APP_VERSION = "4.3.0.6"` — active 4.3.0 dev line "Waypoint Pack" for WISH-004 Waypoint Packs. Latest cut release is 4.2.0 "Rangefinder".
+- 4.3.0.6 adds **Waypoint Packs** as a Wayfinder sub-feature: curated place packs that can be previewed, prioritized, annotated, attached to existing notes, and batch-added as normal Wayfinder notes. National Parks and National Monuments are bundled packs, with dedicated SVG Location Tags, pack-aware markers/labels, note metadata, priority badges/filter/sort, and export grouping. Pack markers do not recolor state progress. The Packs button only appears in Wayfinder, uses `__CIRCLE_BADGE_PLUS`, and opens an inset panel over Notes instead of a modal. Park and Monument notes are prefilled as `Established on <date> | <description>` from static Wikipedia-sourced snapshots. Alaska waypoint projection has separate mainland/Aleutian frames, pack overlay pins are Wayfinder teal, and priority colors run green through orange. Preview priorities paint map badges before Add/Refresh. Selecting a pack temporarily enables its recommended Location Tag at the end of the active tag order; preview-added tags clean themselves up when the pack is left without linked notes.
 - 4.2.0 adds **Rangefinder Mode**: a map mode (Shortcut Mode key `5`, `__TARGET` button) that picks two note pins as Start/End, draws concentric planning rings, and shows straight-line distance + estimated time. Drive/Plane travel modes, per-map settings (`settings.ringByLayer.{us,world}`), configurable average speed (Drive 30–120, Plane 120–760 mph), fill/clip/unit/time toggles, and US + World support. Internal symbols use the `ring*` prefix.
 - Latest public releases (newest first): 4.2.0 "Rangefinder", 4.1.0 "Wayfinder", 4.0.0 "Trail Atlas", 3.3.0 "Basecamp Notes". Full notes in the in-app CHANGELOG; full history table in `README.md`.
 - Plan docs live in `context/` only while their line is in flight, then are deleted on ship. Active: `context/WISH-004-national-park-overlay-PLAN.md` (revised Waypoint Packs plan). Shipped plans (Rangefinder 4.2.0, Wayfinder 4.1.0, World map 4.0.0) were removed after release.
@@ -263,11 +263,12 @@ Important invariants:
 - Waypoint Packs: Wayfinder-only Packs button `#notesAddWaypointsBtn`
   (`__CIRCLE_BADGE_PLUS`) opens an inset panel over Notes, with National Parks
   and National Monuments bundled as the first packs. Notes header Wayfinder button is
-  `#notesActivateWayfinderBtn`; both notes-header Wayfinder controls have teal
-  outlines.
+  `#notesActivateWayfinderBtn`; the Packs button keeps a teal Wayfinder outline,
+  while the Wayfinder mode button only highlights when active.
   Available Packs cards, visual icon choices, overlay and label icon controls,
   preview Include/Priority/Note cards, batch add into Wayfinder, attach existing
-  notes, priority filter/sort, pack-aware markers, and safe remove behavior.
+  notes, priority filter/sort, dedicated pack SVG icons, pack-aware markers,
+  preview priority map badges, temporary-icon cleanup, and safe remove behavior.
 - Legend: editable levels (name, color, definition, exclude-from-stats, Wayfinder), drag reorder, swipe quick actions, movable desktop placement.
 - Rangefinder: Shortcut Mode key `5` / target button opens a paired panel with the Legend, picks saved note pins as Start/End, draws straight-line Drive/Plane planning rings on US and World maps, and keeps per-map ring distances, units, fill/clip/time style, travel mode, and average speed settings.
 - Notes: search (with `/` hint chip + universal `/` shortcut), sort, compact/expanded/text views, category grouping, icon filters, Show Excluded toggle (styled like legend's excluded pattern), coordinate filter, date precision filter, selected-location detail.
