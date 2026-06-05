@@ -6,17 +6,20 @@ Copy this into new chats:
 Continue work in /Users/stripes/Documents/GitHub/visit-tracker. Read context/LLM_HANDOFF.md first. Respect manual edits. Run git status --short before editing. Use port 8018 for local preview.
 ```
 
-Shorthand commands: **`wish`**, **`start`**, **`prep`**, **`ship`** — see
+Shorthand commands: **`wish`**, **`plan`**, **`start`**, **`prep`**, **`ship`** — see
 Workflows below.
 
-## Workflows: `wish` / `start` / `prep` / `ship`
+## Workflows: `wish` / `plan` / `start` / `prep` / `ship`
 
-Four shorthand commands drive planning and the version lifecycle: `wish`
-captures a Roadmap idea, `start` opens a line, `prep` makes it release-ready,
-and `ship` condenses it into a cut release. Always run `git status --short`
-first and preserve in-flight manual edits. End every working session with two
-copy-paste containers: first the commit description in list form, then the
-commit command with title in the exact format
+Five shorthand commands drive planning and the version lifecycle: `wish`
+captures a Roadmap idea, `plan` explores and documents the feature, `start`
+implements from the plan and opens the version line, `prep` makes it
+release-ready, and `ship` condenses it into a cut release. This split is
+intentional: one LLM/session can produce the plan and handoff context, then a
+fresh LLM/session can run `start` to implement from that written plan. Always
+run `git status --short` first and preserve in-flight manual edits. End every
+working session with two copy-paste containers: first the commit description in
+list form, then the commit command with title in the exact format
 `` `_vt-checkpoint APP_VERSION - <commit title>` ``.
 
 ### `wish` — capture a Roadmap idea
@@ -39,19 +42,36 @@ Record an idea for later without implementing it.
   public-safe `CHANGELOG` update when a wish is added.
 - Verify the app parses and the new Roadmap item renders/searches correctly.
 
-### `start` — open a new version line
+### `plan` — explore and document a feature
 
-Begin a plan, or implement a specific feature.
+Talk through the feature before implementation.
 
 - Read the Snapshot for the latest cut release and any active dev line.
-- Pick the mode:
-  - **Plan**: write `context/WISH-<id>-<slug>-PLAN.md` capturing scope,
-    constraints, data-model/schema changes, phasing, and open questions.
-    Planning-only edits need no `APP_VERSION`/`CHANGELOG` churn.
-  - **Implement**: open the line by bumping `APP_VERSION` to a fresh build
-    (e.g. `4.2.0` → `4.2.1.1`, or a new minor `4.3.0.1`) and starting a new
-    `CHANGELOG` entry with a working (cheeky, on-theme) title. Bump the fourth
-    build number for each subsequent change on the line.
+- Dig into the feature: inspect relevant code, ask concise questions, identify
+  risks, data-model impacts, migration needs, UI states, exports, and tests.
+- Write or revise `context/WISH-<id>-<slug>-PLAN.md` with scope, constraints,
+  implementation phases, schema changes, UX behavior, open questions, and a
+  concrete test plan.
+- Update this handoff with any new context future implementers need, including
+  the active plan reference, important invariants, and where to start reading.
+- If the feature matches a `WISHLIST_SEEDS` ticket, reference it by `WISH-###`;
+  only retarget `targetVersion` when the user explicitly chooses a release.
+- Planning-only edits need no `APP_VERSION` or `CHANGELOG` churn unless the
+  user explicitly asks for user-visible Roadmap changes.
+- Do not implement the feature during `plan` unless the user explicitly changes
+  the request.
+
+### `start` — implement a planned feature
+
+Open or continue the implementation line from an existing plan.
+
+- Read the Snapshot, the active plan doc, and this handoff before editing.
+- If there is no clear plan doc for the requested feature, stop and run `plan`
+  first unless the user explicitly asks for a small direct implementation.
+- Open the line by bumping `APP_VERSION` to a fresh build (e.g. `4.2.0` →
+  `4.2.1.1`, or a new minor `4.3.0.1`) and starting a new `CHANGELOG` entry
+  with a working (cheeky, on-theme) title. Bump the fourth build number for
+  each subsequent change on the line.
 - If the feature matches a `WISHLIST_SEEDS` ticket, reference it by `WISH-###`
   and set/retarget its `targetVersion`.
 - New persisted fields: add defaults in `defaultState()` and repair in
@@ -101,7 +121,8 @@ Collapse the dev build line into one released entry.
 - Run final verification: parse, `git diff --check`, preview on port 8018,
   smoke the shipped flows, stop the local server, then re-run
   `git status --short`.
-- Leave no active dev line; the next change begins with `start`.
+- Leave no active dev line; the next substantial change begins with `plan`, or
+  `start` when a plan already exists.
 
 ## Release Notes
 
