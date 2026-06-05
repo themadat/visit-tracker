@@ -3609,6 +3609,11 @@
       line-height: 1;
     }
 
+    .no-stat-pill .sf-symbol {
+      width: .82rem;
+      height: .82rem;
+    }
+
     .empty {
       border: 1px dashed var(--line);
       border-radius: var(--radius);
@@ -15434,7 +15439,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.27";
+    const APP_VERSION = "4.3.0.28";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -15589,6 +15594,7 @@
     const __RICHTEXT_PAGE_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 21.3281 26.9238"><g><rect height="26.9238" opacity="0" width="21.3281" x="0" y="0"/><path d="M4.21875 11.4062C3.84766 11.4062 3.62305 11.1914 3.62305 10.8398C3.62305 10.752 3.65234 10.6152 3.70117 10.4785L5.68359 5.12695C5.83984 4.67773 6.10352 4.46289 6.54297 4.46289C6.99219 4.46289 7.26562 4.67773 7.42188 5.12695L9.4043 10.4785C9.45312 10.625 9.47266 10.752 9.47266 10.8398C9.47266 11.1914 9.26758 11.4062 8.88672 11.4062C8.60352 11.4062 8.4082 11.2402 8.31055 10.8887L7.7832 9.47266L5.3125 9.47266L4.79492 10.8887C4.69727 11.25 4.51172 11.4062 4.21875 11.4062ZM5.58594 8.52539L7.51953 8.52539L6.58203 5.77148L6.51367 5.77148ZM12.0996 6.5918C11.6992 6.5918 11.4062 6.28906 11.4062 5.9082C11.4062 5.52734 11.6992 5.23438 12.0996 5.23438L16.748 5.23438C17.1387 5.23438 17.4316 5.52734 17.4316 5.9082C17.4316 6.28906 17.1387 6.5918 16.748 6.5918ZM12.0996 11.0059C11.6992 11.0059 11.4062 10.7031 11.4062 10.3125C11.4062 9.94141 11.6992 9.64844 12.0996 9.64844L16.748 9.64844C17.1387 9.64844 17.4316 9.94141 17.4316 10.3125C17.4316 10.7031 17.1387 11.0059 16.748 11.0059ZM3.47656 22.1094L3.47656 15.6836C3.47656 14.5801 4.08203 14.0137 5.15625 14.0137L15.8203 14.0137C16.9238 14.0137 17.4902 14.5801 17.4902 15.6836L17.4902 22.0117L16.3281 22.0117L13.6328 18.9551C13.3887 18.6719 13.0371 18.5547 12.7148 18.5547C12.4023 18.5547 12.0898 18.6816 11.7773 18.9453L9.08203 21.3184L8.01758 20.3516C7.76367 20.1172 7.48047 20.0098 7.20703 20.0098C6.95312 20.0098 6.68945 20.1172 6.43555 20.3516L4.63867 22.1094ZM8.11523 18.9355C8.89648 18.9355 9.54102 18.291 9.54102 17.5195C9.54102 16.7383 8.89648 16.1133 8.11523 16.0938C7.33398 16.0742 6.69922 16.7383 6.69922 17.5195C6.69922 18.291 7.33398 18.9355 8.11523 18.9355ZM0 23.125C0 25.6445 1.25977 26.9238 3.75977 26.9238L17.207 26.9238C19.707 26.9238 20.9668 25.6445 20.9668 23.125L20.9668 3.80859C20.9668 1.28906 19.707 0.00976562 17.207 0.00976562L3.75977 0.00976562C1.25977 0.00976562 0 1.28906 0 3.80859Z"/></g></svg>`;
     const __MACWINDOW_AND_POINTER_ARROW = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 36.4118 33.1322"><g><rect height="33.1322" opacity="0" width="36.4118" x="0" y="0"/><path d="M16.4237 10.2624C16.4237 10.819 15.9549 11.2975 15.3787 11.2975C14.8026 11.2975 14.324 10.819 14.324 10.2624C14.324 9.70574 14.8026 9.20769 15.3787 9.20769C15.9549 9.20769 16.4237 9.70574 16.4237 10.2624Z"/><path d="M12.9959 10.2624C12.9959 10.819 12.5272 11.3073 11.951 11.3073C11.3748 11.3073 10.8963 10.819 10.8963 10.2624C10.8963 9.70574 11.3748 9.20769 11.951 9.20769C12.5272 9.20769 12.9959 9.70574 12.9959 10.2624Z"/><path d="M9.56819 10.2624C9.56819 10.8093 9.09944 11.3073 8.52326 11.3073C7.94709 11.3073 7.47834 10.8093 7.47834 10.2624C7.47834 9.70574 7.94709 9.20769 8.52326 9.20769C9.09944 9.20769 9.56819 9.70574 9.56819 10.2624Z"/><path d="M32.8201 10.1745L32.8201 20.4678L31.0819 18.6509L31.0819 10.1843C31.0819 8.06511 29.8416 6.81511 27.7225 6.81511L8.32795 6.81511C6.20881 6.81511 4.95881 8.06511 4.95881 10.1843L4.95881 22.9479C4.95881 25.0671 6.20881 26.3171 8.32795 26.3171L25.4628 26.3171L25.4569 27.8405C25.4557 27.9111 25.4578 27.9803 25.4685 28.0456L8.31819 28.0456C5.09553 28.0456 3.2303 26.1803 3.2303 22.9675L3.2303 10.1745C3.2303 6.95183 5.09553 5.0866 8.31819 5.0866L27.9764 5.0866C31.033 5.0866 32.8201 6.95183 32.8201 10.1745Z"/><path d="M33.0252 31.4928C33.5428 31.2878 33.7869 30.7116 33.5623 30.194L31.5604 25.5358L34.3631 25.4772C34.7928 25.4577 35.0076 25.028 34.7049 24.7057L27.8104 17.4889C27.5272 17.1862 27.0682 17.362 27.0584 17.7917L27.0096 27.8698C26.9998 28.319 27.5272 28.4655 27.8201 28.1725L29.7733 26.2096L31.6971 30.9655C31.9022 31.4635 32.5076 31.7077 33.0252 31.4928Z"/></g></svg>`;
     const __PHOTO_ARTFRAME = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 29.9512 22.959"><g><rect height="22.959" opacity="0" width="29.9512" x="0" y="0"/><path d="M0.908203 0C0.361328 0 0 0.361328 0 0.908203L0 22.0508C0 22.5977 0.361328 22.959 0.908203 22.959L28.6816 22.959C29.2285 22.959 29.5898 22.5977 29.5898 22.0508L29.5898 0.908203C29.5898 0.361328 29.2285 0 28.6816 0ZM2.07031 1.72852L27.5195 1.72852C27.7637 1.72852 27.8516 1.82617 27.8516 2.07031L27.8516 20.8887C27.8516 21.1328 27.7637 21.2305 27.5195 21.2305L2.07031 21.2305C1.82617 21.2305 1.72852 21.1328 1.72852 20.8887L1.72852 2.07031C1.72852 1.82617 1.82617 1.72852 2.07031 1.72852Z"/><path d="M3.80859 3.14453C3.38867 3.14453 3.14453 3.38867 3.14453 3.79883L3.14453 19.1602C3.14453 19.5703 3.38867 19.8145 3.80859 19.8145L25.7812 19.8145C26.2012 19.8145 26.4453 19.5703 26.4453 19.1602L26.4453 3.79883C26.4453 3.38867 26.2012 3.14453 25.7812 3.14453ZM4.54102 4.27734L25.0488 4.27734C25.2246 4.27734 25.3125 4.36523 25.3125 4.54102L25.3125 18.418C25.3125 18.5938 25.2246 18.6816 25.0488 18.6816L4.54102 18.6816C4.36523 18.6816 4.27734 18.5938 4.27734 18.418L4.27734 4.54102C4.27734 4.36523 4.36523 4.27734 4.54102 4.27734ZM25.6445 16.9531L19.6387 11.3672C19.1699 10.9375 18.6719 10.7324 18.0957 10.7324C17.5195 10.7324 17.0312 10.918 16.5625 11.3477L12.0117 15.4297L10.1367 13.7109C9.7168 13.3203 9.25781 13.125 8.76953 13.125C8.30078 13.125 7.90039 13.3203 7.48047 13.7012L3.68164 17.168L3.68164 18.291C3.68164 18.9941 4.08203 19.3164 4.67773 19.3164L24.6484 19.3164C25.2344 19.3164 25.6445 18.9941 25.6445 18.291Z"/><path d="M10.4004 11.3379C11.6895 11.3379 12.7539 10.2637 12.7539 8.96484C12.7539 7.66602 11.6895 6.5918 10.4004 6.5918C9.0918 6.5918 8.03711 7.66602 8.03711 8.96484C8.03711 10.2637 9.0918 11.3379 10.4004 11.3379Z"/></g></svg>`;
+    const __RAPTOR = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#000000" d="M21.357 56.129C23.914 184.67 98.5 288.625 195.225 318.419c-9.76-16.326-11.79-20.065-13.545-35.11 5.57 11.151 17.776 28.634 47.168 46.123-15.459 6.144-25.038 19.847-27.389 42.843-5.396 2.38-12.07-.661-15.805 8.78-7.575 18.099 8.399 33.481 12.643 50.216 14.08 6.437 13.144 15.724 16.855 24.6 12.993-5.169 25.986-2.705 38.979 0l-.701-14.416-21.774-3.162 3.865-8.777c-11.488-4.736-17.746-12.8-24.23-20.72.351-9.214.702-18.61 1.053-27.392 30.453-7.134 51.72-27.902 61.98-39.681 2.98-3.422-1.105-10.442-5.443-16.504 18.625-19.95 15.037-40.943 13.205-61.237 8.929 13.296 13.891 34.978 4.568 63.145 28.73-3.42 54.964-12.9 75.242-28.006-4.611-12.067-5.113-24.247-1.486-30.904 4.372 12.71 17.02 31.785 31.069 34.879 20.108 4.428 37.03-2.155 54.78-5.971-6.746 14.86-7.405 29.553-8.077 43.545 12.925-15.825 30.205-30.033 30.552-50.217.134-7.764-31.161-11.645-60.05-5.267-2.105-10.317-4.329-20.432-10.868-30.194 5.292-13.485 6.256-28.722 5.196-45.642-12.62-6.784-17.92-19.886-20.77-33.932 24.322 20.149 58.171 30.88 88.535 33.02.195-5.546 2.602-5.824-2.363-11.37-21.92-11.355-47.134-27.842-46.555-41.77 20.459.285 48.265 3.052 68.782 8.194-.673-7.697-.04-15.732-6.21-23.092-4.021-4.797-33.602-12.747-50.404-19.12-.627-3.643-2.934-12.138-9.437-12.167-36.318-.16-70.229 15.264-76.975 35.012-3.305 9.675-.1 41.943-.027 62.914-44.004-6.438-105.465 11.322-149.111 32.71C55.353 200.283 52.28 140.525 21.357 56.128zm392.815 64.396c5.525.056 8.536 6.67 7.517 10.3-.714 2.544-18.077-1.213-17.42-4.858.59-3.267 2.831-5.512 9.903-5.442zm56.062 198.188l-8.136 12c7.284 4.115 4.85 8.81 9.261 18.322 2.964-10.769 4.898-19.553-1.125-30.322zM242.24 401.98c-4.287.01-11.218 1.745-12.933 9.008l12.166 9.809c-2.176-13.427 14.83-6.788 27.318-2.36-3.928-6.695-19.406-16.471-26.55-16.457zm22.947 40.916l.995 12.975h22.595l-23.59-12.975z"/></svg>`;
 
     // Common
     // Common :: Edit
@@ -15664,6 +15670,7 @@
     const __TARGET = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 25.8008 25.459"><g><rect height="25.459" opacity="0" width="25.8008" x="0" y="0"/><path d="M12.7148 25.4395C19.7363 25.4395 25.4395 19.7461 25.4395 12.7246C25.4395 5.70312 19.7363 0 12.7148 0C5.69336 0 0 5.70312 0 12.7246C0 19.7461 5.69336 25.4395 12.7148 25.4395ZM12.7148 23.623C6.68945 23.623 1.81641 18.75 1.81641 12.7246C1.81641 6.69922 6.68945 1.82617 12.7148 1.82617C18.7402 1.82617 23.6133 6.69922 23.6133 12.7246C23.6133 18.75 18.7402 23.623 12.7148 23.623Z"/><path d="M12.7148 20.7129C17.1289 20.7129 20.7031 17.1387 20.7031 12.7246C20.7031 8.32031 17.1289 4.73633 12.7148 4.73633C8.31055 4.73633 4.72656 8.32031 4.72656 12.7246C4.72656 17.1387 8.31055 20.7129 12.7148 20.7129ZM12.7148 18.9844C9.25781 18.9844 6.46484 16.1914 6.46484 12.7246C6.46484 9.26758 9.25781 6.47461 12.7148 6.47461C16.1816 6.47461 18.9746 9.26758 18.9746 12.7246C18.9746 16.1914 16.1816 18.9844 12.7148 18.9844Z"/><path d="M12.7148 16.084C14.5801 16.084 16.084 14.5801 16.084 12.7148C16.084 10.8594 14.5801 9.35547 12.7148 9.35547C10.8594 9.35547 9.35547 10.8594 9.35547 12.7148C9.35547 14.5801 10.8594 16.084 12.7148 16.084Z"/></g></svg>`;
     // Map :: Labels :: Options
     const __TAG_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 28.2935 29.3042"><g><rect height="29.3042" opacity="0" width="28.2935" x="0" y="0"/><path d="M14.6399 27.9871L26.9739 15.6238C27.8626 14.7351 27.9309 14.2566 27.9309 12.9285L27.9309 8.13355C27.9309 6.86402 27.6672 6.48316 26.7102 5.53589L23.7805 2.6062C22.8333 1.64917 22.4524 1.3855 21.1829 1.3855L16.3879 1.3855C15.0598 1.3855 14.5813 1.45386 13.6926 2.34253L1.30982 14.6765C-0.428464 16.4148-0.447995 18.2312 1.31958 19.989L9.3274 27.9773C11.1047 29.7546 12.9016 29.7351 14.6399 27.9871ZM19.093 11.1804C18.1848 11.1804 17.4915 10.4773 17.4915 9.57886C17.4915 8.68042 18.1848 7.9773 19.093 7.9773C20.011 7.9773 20.7043 8.68042 20.7043 9.57886C20.7043 10.4773 20.011 11.1804 19.093 11.1804Z" /></g></svg>`;
+    const __CIRCLE_CIRCLE_FILL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24 24"><g><rect height="24" opacity="0" width="24" x="0" y="0"/><circle cx="12" cy="12" r="9.25" fill="currentColor"/><circle cx="12" cy="12" r="4.15" fill="none" stroke="var(--surface)" stroke-width="1.85"/></g></svg>`;
     // Map :: Labels :: None
     const __CIRCLE_SLASH = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 27.8809 27.4977"><g><rect height="27.4977" opacity="0" width="27.8809" x="0" y="0"/><path d="M4.65509 7.7562C3.5193 9.47141 2.86133 11.5299 2.86133 13.7439C2.86133 19.7693 7.73438 24.6424 13.7598 24.6424C15.9722 24.6424 18.0292 23.9854 19.7435 22.851L21.0462 24.1542C18.987 25.609 16.4725 26.4588 13.7598 26.4588C6.73828 26.4588 1.04492 20.7654 1.04492 13.7439C1.04492 11.0301 1.89542 8.51325 3.35132 6.45188ZM26.4746 13.7439C26.4746 16.4639 25.6203 18.9846 24.158 21.0464L22.8564 19.7449C23.9969 18.0268 24.6582 15.9635 24.6582 13.7439C24.6582 7.71855 19.7852 2.84551 13.7598 2.84551C11.5402 2.84551 9.47694 3.50678 7.75881 4.64729L6.45355 3.34202C8.51606 1.8762 11.0381 1.01933 13.7598 1.01933C20.7812 1.01933 26.4746 6.72246 26.4746 13.7439Z" /><path d="M24.6973 25.8826C25.0293 26.2146 25.5664 26.2049 25.8789 25.8729C26.2109 25.5408 26.2012 25.0232 25.8789 24.701L2.79297 1.60527C2.4707 1.28301 1.94336 1.27324 1.60156 1.60527C1.28906 1.91777 1.28906 2.46465 1.60156 2.78691Z" /></g></svg>`;
     // Map :: Labels :: ABBR
@@ -17414,7 +17421,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.27",
+        version: "4.3.0.28",
         date: "2026-06-05",
         title: "Waypoint Pack",
         summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
@@ -17425,12 +17432,15 @@
           "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.27",
+          version: "4.3.0.28",
           title: "Waypoint Pack",
           summary: "Add Parks and Monuments as prioritized Wayfinder notes.",
           cta: "Pack the Map!"
         },
         updates: [
+          "Changed the normal map Labels target icon from a tag to circle.circle.fill.",
+          "Made Wayfinder levels count in Legend denominators and row percentages without counting as completed.",
+          "Kept hard-excluded levels out of normal and Waypoint Pack Legend denominators while still showing their counts.",
           "Made Legend stats follow the selected map Labels target: normal labels use location stats, pack labels use linked pack note stats by level.",
           "Slightly enlarged the Labels target chevron and fixed linked waypoint label color in dark mode.",
           "Sized the map Labels target icon and chevron correctly and applied waypoint labels to existing linked note pins.",
@@ -21318,7 +21328,7 @@
       setButtonLabel("#notesToggleBtn", __LIST_BULLET_RECTANGLE_PORTRAIT_FILL, "Notes", "Toggle Notes Panel", "Toggle Notes Panel");
       setButtonLabel("#basecampBtn", __LONG_TEXT_PAGE_AND_PENCIL, "Basecamp", "Open Basecamp notes", "Open Basecamp notes");
       const mapLabelTargetIcon = $("[data-map-label-target-icon]");
-      if (mapLabelTargetIcon) mapLabelTargetIcon.innerHTML = prefersSymbols() ? __TAG_FILL : "Labels";
+      if (mapLabelTargetIcon) mapLabelTargetIcon.innerHTML = prefersSymbols() ? __CIRCLE_CIRCLE_FILL : "Labels";
       setButtonLabel("#labelsNoneBtn", __CIRCLE_SLASH, "None", "No map labels");
       setButtonLabel("#labelsAbbrBtn", __CHARACTER, "Abbr", "Show location abbreviations");
       setButtonLabel("#labelsNameBtn", __TEXTFORMAT, "Name", "Show location names");
@@ -22998,7 +23008,7 @@
       const labelIcon = $("[data-map-label-target-icon]");
       const selected = activeMapLabelTargetSet();
       if (labelIcon) {
-        labelIcon.innerHTML = selected ? visitTypeIcon(suggestedSetIconId(selected.id)) : prefersSymbols() ? __TAG_FILL : "Labels";
+        labelIcon.innerHTML = selected ? visitTypeIcon(suggestedSetIconId(selected.id)) : prefersSymbols() ? __CIRCLE_CIRCLE_FILL : "Labels";
         $("#labelsToggleLabel").title = selected ? `${selected.name} Label Type` : "Map Label Type";
       }
       syncMapLabelButtons(selected ? suggestedSetLabelMode(selected.id) : state.settings.mapLabels || "none");
@@ -23017,7 +23027,7 @@
           <div class="map-waypoint-pack-grid" aria-label="Map label targets">
             <button class="map-waypoint-pack-select" type="button" data-map-label-target=""
               aria-pressed="${selected ? "false" : "true"}" aria-label="States and territories" title="States and territories">
-              ${__TAG_FILL}
+              ${__CIRCLE_CIRCLE_FILL}
             </button>
             ${added.map(set => `
               <button class="map-waypoint-pack-select" type="button" data-map-waypoint-pack="${escapeHtml(set.id)}"
@@ -23462,35 +23472,47 @@
       return counts;
     }
 
+    function levelCountsAsCompleted(level) {
+      return Boolean(level && level.countsTowardStats !== false);
+    }
+
+    function levelExcludesFromStats(level) {
+      return Boolean(level && level.countsTowardStats === false && level.isBucketList !== true);
+    }
+
     function waypointLegendStats(set) {
       const counts = Object.fromEntries(state.levels.map(level => [level.id, 0]));
       const seenItems = new Set();
+      let counted = 0;
+      let excluded = 0;
       suggestedSetLinkedEntries(set.id).forEach(ref => {
         const itemId = ref.note.sourceItemId || "";
         if (!itemId || seenItems.has(itemId)) return;
         seenItems.add(itemId);
         const level = levelById(ref.note.levelId);
         if (level && counts[level.id] !== undefined) counts[level.id] += 1;
+        if (levelExcludesFromStats(level)) excluded += 1;
+        else if (levelCountsAsCompleted(level)) counted += 1;
       });
-      const total = Math.max(1, set.items.length);
+      const total = Math.max(1, set.items.length - excluded);
       return {
         counts,
-        counted: seenItems.size,
+        counted,
         total,
         denominator: total,
-        pct: Math.round((seenItems.size / total) * 100),
+        pct: Math.round((counted / total) * 100),
         set
       };
     }
 
     function stateCountsTowardStats(abbr) {
       const level = dominantLevel(abbr);
-      return Boolean(level && level.countsTowardStats !== false);
+      return levelCountsAsCompleted(level);
     }
 
     function stateIsOptedOut(abbr) {
       const level = dominantLevel(abbr);
-      return Boolean(level && level.countsTowardStats === false);
+      return levelExcludesFromStats(level);
     }
 
     function countedStateTotal() {
@@ -23511,7 +23533,7 @@
           counts: levelCounts(),
           counted: countedStateTotal(),
           total: completionRegionTotal(),
-          denominator: activeRegionCodes().length,
+          denominator: completionRegionTotal(),
           pct: Math.round((countedStateTotal() / completionRegionTotal()) * 100),
           set: null
         };
@@ -23519,12 +23541,12 @@
       $("#legendList").innerHTML = state.levels.map((level, index) => {
         const count = stats.counts[level.id] || 0;
         const pct = Math.round((count / Math.max(1, stats.denominator)) * 100);
-        const excludedFromNormalStats = !stats.set && level.countsTowardStats === false;
+        const excludedFromStats = levelExcludesFromStats(level);
         return `
         <div class="legend-item ${noteLevelFilters.has(level.id) ? "is-filtered" : ""} ${level.countsTowardStats === false ? "is-nonstat" : ""} ${level.isBucketList ? "is-bucket-list" : ""}" data-legend-item="${level.id}">
           <button class="legend-filter" type="button" aria-pressed="${noteLevelFilters.has(level.id)}" data-filter-level="${level.id}" title="${escapeHtml(level.definition)}">
             <span class="stat-color-pill ${level.countsTowardStats === false ? "is-nonstat" : ""}" style="--level-color:${level.color}" aria-label="${escapeHtml(level.name)}${stats.set ? ` in ${stats.set.name}` : ""} stats">
-              ${excludedFromNormalStats ? `<span class="percent-pill no-stat-pill" title="Excluded from stats">⊘</span>` : `<span class="percent-pill">${pct}%</span>`}
+              ${excludedFromStats ? `<span class="percent-pill no-stat-pill" title="Excluded from stats">${__CIRCLE_SLASH}</span>` : `<span class="percent-pill">${pct}%</span>`}
               <span class="count-pill">${count}</span>
             </span>
             <span class="level-copy">
