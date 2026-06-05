@@ -1533,6 +1533,7 @@
       place-items: center;
       width: 30px;
       min-width: 30px;
+      transform: translateX(1.5px);
     }
 
     .map-label-target-icon .sf-symbol,
@@ -1954,10 +1955,22 @@
       pointer-events: auto;
     }
 
+    .suggested-set-marker-labels,
+    .map-location-marker-labels {
+      pointer-events: none;
+    }
+
     .suggested-set-marker {
       cursor: pointer;
       color: white;
       filter: drop-shadow(0 2px 4px rgba(15, 23, 42, .24));
+    }
+
+    .suggested-set-marker.is-label-layer,
+    .map-location-marker.is-label-layer {
+      cursor: default;
+      filter: none;
+      pointer-events: none;
     }
 
     [data-theme="dark"] .suggested-set-marker {
@@ -3613,8 +3626,8 @@
     }
 
     #legendPanel .no-stat-pill .sf-symbol {
-      width: .82rem;
-      height: .82rem;
+      width: .76rem;
+      height: .76rem;
     }
 
     .empty {
@@ -15443,7 +15456,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.29";
+    const APP_VERSION = "4.3.0.30";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -17425,7 +17438,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.29",
+        version: "4.3.0.30",
         date: "2026-06-05",
         title: "Waypoint Pack",
         summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
@@ -17436,12 +17449,16 @@
           "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.29",
+          version: "4.3.0.30",
           title: "Waypoint Pack",
           summary: "Add Parks and Monuments as prioritized Wayfinder notes.",
           cta: "Pack the Map!"
         },
         updates: [
+          "Moved waypoint labels into a top draw layer so nearby marker icons cannot cover them.",
+          "Added dash-aware and three-line waypoint name wrapping with wider line spacing.",
+          "Let waypoint labels try below a marker when the preferred top placement would cover another icon.",
+          "Nudged the map Labels target icon to read centered inside its picker cell.",
           "Kept priority badges visible on map note pins whenever their icon is visible.",
           "Split long Waypoint Pack map names across space-balanced lines and kept visible pack labels inside the map bounds.",
           "Changed the normal map Labels target icon from a tag to circle.circle.fill.",
@@ -22060,17 +22077,43 @@
 
     function splitMapDisplayName(name) {
       const clean = String(name || "").trim().replace(/\s+/g, " ");
-      if (!clean || clean.length <= 10 || !clean.includes(" ")) return clean ? [clean] : [];
-      const words = clean.split(" ");
-      let best = null;
-      for (let index = 1; index < words.length; index += 1) {
-        const top = words.slice(0, index).join(" ");
-        const bottom = words.slice(index).join(" ");
-        const topIsShorterPenalty = top.length < bottom.length ? 1000 : 0;
-        const score = topIsShorterPenalty + Math.abs(top.length - bottom.length);
-        if (!best || score < best.score) best = { top, bottom, score };
+      if (!clean) return [];
+      const dashMatch = clean.match(/^(.+?[–—-])\s*(.+)$/);
+      if (clean.length > 10 && dashMatch && dashMatch[1].trim().length > 1 && dashMatch[2].trim().length > 1) {
+        return [dashMatch[1].trim(), dashMatch[2].trim()];
       }
-      return best ? [best.top, best.bottom] : [clean];
+      if (clean.length <= 10 || !clean.includes(" ")) return [clean];
+      const words = clean.split(" ");
+      const targetLines = clean.length > 24 && words.length >= 5 ? 3 : 2;
+      let best = null;
+      const scoreLines = lines => {
+        const lengths = lines.map(line => line.length);
+        const max = Math.max(...lengths);
+        const min = Math.min(...lengths);
+        const topIsShorterPenalty = lengths[0] < lengths[lengths.length - 1] ? 1000 : 0;
+        const tinyMiddlePenalty = lengths.length === 3 && lengths[1] < 4 ? 250 : 0;
+        return topIsShorterPenalty + tinyMiddlePenalty + (max - min) * 8 + max;
+      };
+      if (targetLines === 3) {
+        for (let firstBreak = 1; firstBreak < words.length - 1; firstBreak += 1) {
+          for (let secondBreak = firstBreak + 1; secondBreak < words.length; secondBreak += 1) {
+            const lines = [
+              words.slice(0, firstBreak).join(" "),
+              words.slice(firstBreak, secondBreak).join(" "),
+              words.slice(secondBreak).join(" ")
+            ];
+            const score = scoreLines(lines);
+            if (!best || score < best.score) best = { lines, score };
+          }
+        }
+      } else {
+        for (let index = 1; index < words.length; index += 1) {
+          const lines = [words.slice(0, index).join(" "), words.slice(index).join(" ")];
+          const score = scoreLines(lines);
+          if (!best || score < best.score) best = { lines, score };
+        }
+      }
+      return best ? best.lines : [clean];
     }
 
     function waypointLabelParts(mode, abbr, name) {
@@ -22079,38 +22122,85 @@
       return [abbr].filter(Boolean);
     }
 
-    function waypointMarkerLabelPosition(point, scale, parts) {
+    function waypointLabelBox(point, scale, parts, localX, localY, lineGap) {
+      const safeScale = Math.max(.001, Number(scale) || 1);
+      const maxChars = Math.max(...parts.map(part => String(part).length), 1);
+      const width = Math.max(16, maxChars * 4.9) * safeScale;
+      const height = (Math.max(1, parts.length) - 1) * lineGap * safeScale + 9.5 * safeScale;
+      const centerX = point.x + localX * safeScale;
+      const top = point.y + (localY - 4.8) * safeScale;
+      return {
+        left: centerX - width / 2,
+        right: centerX + width / 2,
+        top,
+        bottom: top + height,
+        width,
+        height
+      };
+    }
+
+    function labelBoxOverlapsIcon(box, icon) {
+      const radius = icon.r || 10;
+      return box.right >= icon.x - radius
+        && box.left <= icon.x + radius
+        && box.bottom >= icon.y - radius
+        && box.top <= icon.y + radius;
+    }
+
+    function waypointLabelCollides(box, iconFootprints = [], selfKey = "") {
+      return iconFootprints.some(icon => icon.key !== selfKey && labelBoxOverlapsIcon(box, icon));
+    }
+
+    function waypointMarkerLabelPosition(point, scale, parts, iconFootprints = [], selfKey = "") {
       const svg = $("#" + activeLayer().svgId);
       const viewBox = svg?.viewBox?.baseVal || null;
       const safeScale = Math.max(.001, Number(scale) || 1);
-      const lineGap = 6.8;
-      const bottomY = -13.5;
-      const firstY = bottomY - Math.max(0, parts.length - 1) * lineGap;
+      const lineGap = 9.2;
+      const aboveY = -15.2 - Math.max(0, parts.length - 1) * lineGap;
+      const belowY = 17.2;
       let x = 0;
-      let y = firstY;
+      let y = aboveY;
       if (!viewBox || !point) return { x, y, lineGap };
-      const topEdge = point.y + (y - 5) * safeScale;
-      const minY = viewBox.y + 5;
-      if (topEdge < minY) y += (minY - topEdge) / safeScale;
       const maxChars = Math.max(...parts.map(part => String(part).length), 1);
-      const estimatedWidth = maxChars * 4.8 * safeScale;
-      const leftEdge = point.x - estimatedWidth / 2;
-      const rightEdge = point.x + estimatedWidth / 2;
+      const estimatedWidth = Math.max(16, maxChars * 4.9) * safeScale;
       const minX = viewBox.x + 4;
       const maxX = viewBox.x + viewBox.width - 4;
-      if (leftEdge < minX) x += (minX - leftEdge) / safeScale;
-      if (rightEdge > maxX) x -= (rightEdge - maxX) / safeScale;
+      const clampX = localX => {
+        let nextX = localX;
+        const leftEdge = point.x + localX * safeScale - estimatedWidth / 2;
+        const rightEdge = point.x + localX * safeScale + estimatedWidth / 2;
+        if (leftEdge < minX) nextX += (minX - leftEdge) / safeScale;
+        if (rightEdge > maxX) nextX -= (rightEdge - maxX) / safeScale;
+        return nextX;
+      };
+      const clampY = localY => {
+        let nextY = localY;
+        const box = waypointLabelBox(point, safeScale, parts, x, localY, lineGap);
+        const minY = viewBox.y + 5;
+        const maxY = viewBox.y + viewBox.height - 5;
+        if (box.top < minY) nextY += (minY - box.top) / safeScale;
+        if (box.bottom > maxY) nextY -= (box.bottom - maxY) / safeScale;
+        return nextY;
+      };
+      const above = { x: clampX(0), y: clampY(aboveY) };
+      const aboveBox = waypointLabelBox(point, safeScale, parts, above.x, above.y, lineGap);
+      if (!waypointLabelCollides(aboveBox, iconFootprints, selfKey)) return { ...above, lineGap };
+      const below = { x: clampX(0), y: clampY(belowY) };
+      const belowBox = waypointLabelBox(point, safeScale, parts, below.x, below.y, lineGap);
+      if (!waypointLabelCollides(belowBox, iconFootprints, selfKey)) return { ...below, lineGap };
+      x = above.x;
+      y = above.y;
       return { x, y, lineGap };
     }
 
-    function appendWaypointMarkerLabel(group, { mode, abbr, name, className, point, scale }) {
+    function appendWaypointMarkerLabel(group, { mode, abbr, name, className, point, scale, iconFootprints = [], selfKey = "" }) {
       const parts = waypointLabelParts(mode, abbr, name);
       if (!parts.length) return;
       const svgNS = "http://www.w3.org/2000/svg";
       const label = document.createElementNS(svgNS, "text");
       label.classList.add(className);
       if (mode === "name") label.classList.add("is-name");
-      const pos = waypointMarkerLabelPosition(point, scale, parts);
+      const pos = waypointMarkerLabelPosition(point, scale, parts, iconFootprints, selfKey);
       label.setAttribute("x", pos.x.toFixed(2));
       label.setAttribute("y", pos.y.toFixed(2));
       parts.forEach((part, index) => {
@@ -22123,7 +22213,7 @@
       group.append(label);
     }
 
-    function appendLinkedWaypointMarkerLabel(group, cluster, point, scale) {
+    function appendLinkedWaypointMarkerLabel(group, cluster, point, scale, iconFootprints = [], selfKey = "") {
       const item = linkedWaypointLabelItem(cluster);
       if (!item) return;
       const source = suggestedSetSourceForNote(item.note);
@@ -22136,7 +22226,9 @@
         name: source.item.name,
         className: "marker-label",
         point,
-        scale
+        scale,
+        iconFootprints,
+        selfKey
       });
     }
 
@@ -22496,7 +22588,7 @@
       return projectNoteLocation(suggestedSetPrimaryState(item), { lat: item.lat, lng: item.lng });
     }
 
-    function appendSuggestedSetMarkerLabel(group, set, item, note, point, scale) {
+    function appendSuggestedSetMarkerLabel(group, set, item, note, point, scale, iconFootprints = [], selfKey = "") {
       if (state.settings.mapLabelTargetSetId !== set.id) return;
       const mode = suggestedSetLabelMode(set.id);
       if (mode === "none") return;
@@ -22506,7 +22598,9 @@
         name: item.name,
         className: "set-marker-label",
         point,
-        scale
+        scale,
+        iconFootprints,
+        selfKey
       });
     }
 
@@ -22564,9 +22658,18 @@
       const svgNS = "http://www.w3.org/2000/svg";
       const markerScale = markerZoomScale();
       const iconId = suggestedSetIconId(set.id);
-      set.items.forEach(item => {
-        const point = suggestedSetMarkerPoint(item);
-        if (!point) return;
+      const markerRows = set.items
+        .map(item => ({ item, point: suggestedSetMarkerPoint(item) }))
+        .filter(row => row.point);
+      const iconFootprints = markerRows.map(row => ({
+        x: row.point.x,
+        y: row.point.y,
+        r: 11 * markerScale,
+        key: row.item.id
+      }));
+      const labelLayer = document.createElementNS(svgNS, "g");
+      labelLayer.classList.add("suggested-set-marker-labels");
+      markerRows.forEach(({ item, point }) => {
         const linked = suggestedSetLinkedNote(set.id, item.id);
         const note = linked?.note || null;
         const color = WAYFINDER_TEAL;
@@ -22588,7 +22691,6 @@
         `;
         appendSuggestedSetMarkerIcon(group, iconId);
         appendSuggestedSetPriority(group, { priority: suggestedSetPreviewPriority(set.id, item.id) || note?.priority });
-        appendSuggestedSetMarkerLabel(group, set, item, note, point, markerScale);
         const open = event => {
           event.preventDefault();
           event.stopPropagation();
@@ -22606,7 +22708,13 @@
           open(event);
         });
         markers.append(group);
+        const labelGroup = document.createElementNS(svgNS, "g");
+        labelGroup.classList.add("suggested-set-marker", "is-label-layer");
+        labelGroup.setAttribute("transform", `matrix(${markerScale.toFixed(3)} 0 0 ${markerScale.toFixed(3)} ${point.x.toFixed(1)} ${point.y.toFixed(1)})`);
+        appendSuggestedSetMarkerLabel(labelGroup, set, item, note, point, markerScale, iconFootprints, item.id);
+        if (labelGroup.childNodes.length) labelLayer.append(labelGroup);
       });
+      if (labelLayer.childNodes.length) markers.append(labelLayer);
     }
 
     function renderLocationMarkers() {
@@ -22618,9 +22726,27 @@
       // Markers are authored for the US viewBox (~934 wide); scale them up on the
       // larger world viewBox (~2754 wide) so pins read at a comparable size.
       const markerScale = markerZoomScale() * (activeLayerId === "world" ? 2.95 : 1);
-      clusteredLocationMarkers(locationMarkerItems()).forEach(cluster => {
+      const markerRows = clusteredLocationMarkers(locationMarkerItems()).map((cluster, index) => {
         const first = markerClusterRepresentative(cluster);
         const count = cluster.items.length;
+        const markerIcon = count > 1 ? __CIRCLE_HEXAGONGRID_CIRCLE : first.iconId ? visitTypeIcon(first.iconId) : "";
+        return {
+          cluster,
+          first,
+          count,
+          markerIcon,
+          key: `${first.abbr}:${first.note.id || ""}:${index}`
+        };
+      });
+      const iconFootprints = markerRows.map(row => ({
+        x: row.first.x,
+        y: row.first.y,
+        r: 10 * markerScale,
+        key: row.key
+      }));
+      const labelLayer = document.createElementNS(svgNS, "g");
+      labelLayer.classList.add("map-location-marker-labels");
+      markerRows.forEach(({ cluster, first, count, markerIcon, key }) => {
         const label = count > 1 ? `${count} nearby locations. Top: ${first.label}` : first.label;
         const group = document.createElementNS(svgNS, "g");
         group.classList.add("map-location-marker");
@@ -22639,7 +22765,6 @@
           <circle class="marker-ring" r="9"></circle>
           <circle class="marker-core" r="6.3"></circle>
         `;
-        const markerIcon = count > 1 ? __CIRCLE_HEXAGONGRID_CIRCLE : first.iconId ? visitTypeIcon(first.iconId) : "";
         if (markerIcon) {
           const foreign = document.createElementNS(svgNS, "foreignObject");
           foreign.setAttribute("x", "-6");
@@ -22671,7 +22796,6 @@
           group.append(countText);
         }
         if (markerIcon) appendMarkerPriorityBadge(group, first.note?.priority, "marker");
-        appendLinkedWaypointMarkerLabel(group, cluster, first, markerScale);
         const open = event => {
           event.preventDefault();
           event.stopPropagation();
@@ -22683,7 +22807,13 @@
           open(event);
         });
         markers.append(group);
+        const labelGroup = document.createElementNS(svgNS, "g");
+        labelGroup.classList.add("map-location-marker", "is-label-layer");
+        labelGroup.setAttribute("transform", `matrix(${markerScale.toFixed(3)} 0 0 ${markerScale.toFixed(3)} ${first.x.toFixed(1)} ${first.y.toFixed(1)})`);
+        appendLinkedWaypointMarkerLabel(labelGroup, cluster, first, markerScale, iconFootprints, key);
+        if (labelGroup.childNodes.length) labelLayer.append(labelGroup);
       });
+      if (labelLayer.childNodes.length) markers.append(labelLayer);
     }
 
     function handleLocationMarker(cluster) {
