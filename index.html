@@ -1989,7 +1989,8 @@
     }
 
     .suggested-set-marker .set-marker-label,
-    .suggested-set-marker .set-marker-priority {
+    .suggested-set-marker .set-marker-priority,
+    .map-location-marker .marker-priority {
       fill: var(--text);
       font-weight: 900;
       letter-spacing: 0;
@@ -2010,13 +2011,15 @@
       font-size: 7.8px;
     }
 
-    .suggested-set-marker .set-marker-priority-bg {
+    .suggested-set-marker .set-marker-priority-bg,
+    .map-location-marker .marker-priority-bg {
       fill: var(--priority-color, var(--surface));
       stroke: var(--surface);
       stroke-width: 1.4;
     }
 
-    .suggested-set-marker .set-marker-priority {
+    .suggested-set-marker .set-marker-priority,
+    .map-location-marker .marker-priority {
       font-size: 6px;
       dominant-baseline: central;
       stroke-width: 2px;
@@ -3609,7 +3612,7 @@
       line-height: 1;
     }
 
-    .no-stat-pill .sf-symbol {
+    #legendPanel .no-stat-pill .sf-symbol {
       width: .82rem;
       height: .82rem;
     }
@@ -7838,7 +7841,8 @@
 
     [data-theme="dark"] .visit-priority-pill,
     [data-theme="dark"] .priority-badge,
-    [data-theme="dark"] .suggested-set-marker .set-marker-priority {
+    [data-theme="dark"] .suggested-set-marker .set-marker-priority,
+    [data-theme="dark"] .map-location-marker .marker-priority {
       color: #07111f;
     }
 
@@ -15439,7 +15443,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.28";
+    const APP_VERSION = "4.3.0.29";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -17421,7 +17425,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.28",
+        version: "4.3.0.29",
         date: "2026-06-05",
         title: "Waypoint Pack",
         summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
@@ -17432,12 +17436,14 @@
           "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.28",
+          version: "4.3.0.29",
           title: "Waypoint Pack",
           summary: "Add Parks and Monuments as prioritized Wayfinder notes.",
           cta: "Pack the Map!"
         },
         updates: [
+          "Kept priority badges visible on map note pins whenever their icon is visible.",
+          "Split long Waypoint Pack map names across space-balanced lines and kept visible pack labels inside the map bounds.",
           "Changed the normal map Labels target icon from a tag to circle.circle.fill.",
           "Made Wayfinder levels count in Legend denominators and row percentages without counting as completed.",
           "Kept hard-excluded levels out of normal and Waypoint Pack Legend denominators while still showing their counts.",
@@ -22052,28 +22058,86 @@
       }) || null;
     }
 
-    function appendLinkedWaypointMarkerLabel(group, cluster) {
+    function splitMapDisplayName(name) {
+      const clean = String(name || "").trim().replace(/\s+/g, " ");
+      if (!clean || clean.length <= 10 || !clean.includes(" ")) return clean ? [clean] : [];
+      const words = clean.split(" ");
+      let best = null;
+      for (let index = 1; index < words.length; index += 1) {
+        const top = words.slice(0, index).join(" ");
+        const bottom = words.slice(index).join(" ");
+        const topIsShorterPenalty = top.length < bottom.length ? 1000 : 0;
+        const score = topIsShorterPenalty + Math.abs(top.length - bottom.length);
+        if (!best || score < best.score) best = { top, bottom, score };
+      }
+      return best ? [best.top, best.bottom] : [clean];
+    }
+
+    function waypointLabelParts(mode, abbr, name) {
+      if (mode === "both") return [abbr, ...splitMapDisplayName(name)].filter(Boolean);
+      if (mode === "name") return splitMapDisplayName(name);
+      return [abbr].filter(Boolean);
+    }
+
+    function waypointMarkerLabelPosition(point, scale, parts) {
+      const svg = $("#" + activeLayer().svgId);
+      const viewBox = svg?.viewBox?.baseVal || null;
+      const safeScale = Math.max(.001, Number(scale) || 1);
+      const lineGap = 6.8;
+      const bottomY = -13.5;
+      const firstY = bottomY - Math.max(0, parts.length - 1) * lineGap;
+      let x = 0;
+      let y = firstY;
+      if (!viewBox || !point) return { x, y, lineGap };
+      const topEdge = point.y + (y - 5) * safeScale;
+      const minY = viewBox.y + 5;
+      if (topEdge < minY) y += (minY - topEdge) / safeScale;
+      const maxChars = Math.max(...parts.map(part => String(part).length), 1);
+      const estimatedWidth = maxChars * 4.8 * safeScale;
+      const leftEdge = point.x - estimatedWidth / 2;
+      const rightEdge = point.x + estimatedWidth / 2;
+      const minX = viewBox.x + 4;
+      const maxX = viewBox.x + viewBox.width - 4;
+      if (leftEdge < minX) x += (minX - leftEdge) / safeScale;
+      if (rightEdge > maxX) x -= (rightEdge - maxX) / safeScale;
+      return { x, y, lineGap };
+    }
+
+    function appendWaypointMarkerLabel(group, { mode, abbr, name, className, point, scale }) {
+      const parts = waypointLabelParts(mode, abbr, name);
+      if (!parts.length) return;
+      const svgNS = "http://www.w3.org/2000/svg";
+      const label = document.createElementNS(svgNS, "text");
+      label.classList.add(className);
+      if (mode === "name") label.classList.add("is-name");
+      const pos = waypointMarkerLabelPosition(point, scale, parts);
+      label.setAttribute("x", pos.x.toFixed(2));
+      label.setAttribute("y", pos.y.toFixed(2));
+      parts.forEach((part, index) => {
+        const tspan = document.createElementNS(svgNS, "tspan");
+        tspan.setAttribute("x", pos.x.toFixed(2));
+        if (index) tspan.setAttribute("dy", pos.lineGap.toFixed(1));
+        tspan.textContent = part;
+        label.append(tspan);
+      });
+      group.append(label);
+    }
+
+    function appendLinkedWaypointMarkerLabel(group, cluster, point, scale) {
       const item = linkedWaypointLabelItem(cluster);
       if (!item) return;
       const source = suggestedSetSourceForNote(item.note);
       if (!source) return;
       const mode = suggestedSetLabelMode(source.set.id);
       if (mode === "none") return;
-      const svgNS = "http://www.w3.org/2000/svg";
-      const label = document.createElementNS(svgNS, "text");
-      label.classList.add("marker-label");
-      if (mode === "name") label.classList.add("is-name");
-      label.setAttribute("x", "0");
-      label.setAttribute("y", "-14");
-      const parts = mode === "both" ? [source.item.labelAbbr, source.item.name] : [mode === "name" ? source.item.name : source.item.labelAbbr];
-      parts.filter(Boolean).forEach((part, index) => {
-        const tspan = document.createElementNS(svgNS, "tspan");
-        tspan.setAttribute("x", "0");
-        if (index) tspan.setAttribute("dy", "6.6");
-        tspan.textContent = part;
-        label.append(tspan);
+      appendWaypointMarkerLabel(group, {
+        mode,
+        abbr: source.item.labelAbbr,
+        name: source.item.name,
+        className: "marker-label",
+        point,
+        scale
       });
-      if (label.childNodes.length) group.append(label);
     }
 
     function markerClusterThresholdForZoom(zoom) {
@@ -22432,45 +22496,41 @@
       return projectNoteLocation(suggestedSetPrimaryState(item), { lat: item.lat, lng: item.lng });
     }
 
-    function appendSuggestedSetMarkerLabel(group, set, item, note) {
+    function appendSuggestedSetMarkerLabel(group, set, item, note, point, scale) {
       if (state.settings.mapLabelTargetSetId !== set.id) return;
-      if (!note) return;
       const mode = suggestedSetLabelMode(set.id);
       if (mode === "none") return;
-      const svgNS = "http://www.w3.org/2000/svg";
-      const label = document.createElementNS(svgNS, "text");
-      label.classList.add("set-marker-label");
-      if (mode === "name") label.classList.add("is-name");
-      label.setAttribute("x", "0");
-      label.setAttribute("y", "-14");
-      const parts = mode === "both" ? [item.labelAbbr, item.name] : [mode === "name" ? item.name : item.labelAbbr];
-      parts.forEach((part, index) => {
-        const tspan = document.createElementNS(svgNS, "tspan");
-        tspan.setAttribute("x", "0");
-        if (index) tspan.setAttribute("dy", "6.6");
-        tspan.textContent = part;
-        label.append(tspan);
+      appendWaypointMarkerLabel(group, {
+        mode,
+        abbr: item.labelAbbr,
+        name: item.name,
+        className: "set-marker-label",
+        point,
+        scale
       });
-      group.append(label);
     }
 
-    function appendSuggestedSetPriority(group, note) {
-      const priority = normalizeNotePriority(note?.priority);
+    function appendMarkerPriorityBadge(group, priorityValue, classPrefix = "set-marker") {
+      const priority = normalizeNotePriority(priorityValue);
       if (!priority) return;
       const svgNS = "http://www.w3.org/2000/svg";
       const bg = document.createElementNS(svgNS, "circle");
-      bg.classList.add("set-marker-priority-bg");
+      bg.classList.add(`${classPrefix}-priority-bg`);
       bg.style.setProperty("--priority-color", notePriorityColor(priority));
       bg.setAttribute("cx", "8.2");
       bg.setAttribute("cy", "8.2");
       bg.setAttribute("r", "5");
       group.append(bg);
       const text = document.createElementNS(svgNS, "text");
-      text.classList.add("set-marker-priority");
+      text.classList.add(`${classPrefix}-priority`);
       text.setAttribute("x", "8.2");
       text.setAttribute("y", "8.2");
       text.textContent = priority;
       group.append(text);
+    }
+
+    function appendSuggestedSetPriority(group, note) {
+      appendMarkerPriorityBadge(group, note?.priority, "set-marker");
     }
 
     function appendSuggestedSetMarkerIcon(group, iconId) {
@@ -22528,7 +22588,7 @@
         `;
         appendSuggestedSetMarkerIcon(group, iconId);
         appendSuggestedSetPriority(group, { priority: suggestedSetPreviewPriority(set.id, item.id) || note?.priority });
-        appendSuggestedSetMarkerLabel(group, set, item, note);
+        appendSuggestedSetMarkerLabel(group, set, item, note, point, markerScale);
         const open = event => {
           event.preventDefault();
           event.stopPropagation();
@@ -22610,7 +22670,8 @@
           countText.textContent = String(Math.min(count, 9));
           group.append(countText);
         }
-        appendLinkedWaypointMarkerLabel(group, cluster);
+        if (markerIcon) appendMarkerPriorityBadge(group, first.note?.priority, "marker");
+        appendLinkedWaypointMarkerLabel(group, cluster, first, markerScale);
         const open = event => {
           event.preventDefault();
           event.stopPropagation();
