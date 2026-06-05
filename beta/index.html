@@ -1019,8 +1019,8 @@
       transform: translate(-50%, -100%);
     }
 
-    html[data-developer="on"] .main-resize-handle::after,
-    html[data-developer="on"] .ring-panel-resize-handle::after {
+    html[data-developer="on"][data-resizing-main="true"] .main-resize-handle::after,
+    html[data-developer="on"][data-resizing-ring-panels="true"] .ring-panel-resize-handle::after {
       display: block;
     }
 
@@ -15456,7 +15456,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.30";
+    const APP_VERSION = "4.3.0.31";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -17438,7 +17438,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.30",
+        version: "4.3.0.31",
         date: "2026-06-05",
         title: "Waypoint Pack",
         summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
@@ -17449,12 +17449,13 @@
           "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.30",
+          version: "4.3.0.31",
           title: "Waypoint Pack",
           summary: "Add Parks and Monuments as prioritized Wayfinder notes.",
           cta: "Pack the Map!"
         },
         updates: [
+          "Show Developer Mode split-percentage pills only during active divider drags.",
           "Moved waypoint labels into a top draw layer so nearby marker icons cannot cover them.",
           "Added dash-aware and three-line waypoint name wrapping with wider line spacing.",
           "Let waypoint labels try below a marker when the preferred top placement would cover another icon.",
