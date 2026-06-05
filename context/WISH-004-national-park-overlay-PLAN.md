@@ -105,9 +105,10 @@ occurs only when the user clicks a location's Photo action.
   - Label UI reuses the map label button style with `Off`, `Abbr`, and `Name`.
     National Parks default to labels off.
   - Once a pack has linked notes, the existing map Labels segmented control
-    gains a compact dropdown immediately beside the tag icon. It lists linked
-    Waypoint Pack layers, switches the active one-pack overlay, and edits each layer's saved
-    `Off`, `Abbr`, or `Name` preference.
+    gains a compact chevron immediately beside the tag icon. It opens only a
+    pack-icon picker. Selecting a pack changes the tag icon to that pack's icon,
+    switches the active one-pack overlay, and makes the standard `Off`, `Abbr`,
+    and `Name` buttons edit that pack's label preference.
 - Add Legend pack stats:
   - Legend can switch between normal level stats and Waypoint Pack stats.
   - Pack stats preserve the same levels, colors, and level meanings; they only
@@ -266,9 +267,9 @@ maps.
 - Hide excluded locations with mixed visited/excluded notes; confirm
   excluded-level note pins disappear even when their location has a visited
   level.
-- Use the layer dropdown inside the map Labels segmented control; confirm it
-  opens beside the tag icon, lists linked waypoint layers, and changes the
-  selected pack's label mode.
+- Use the chevron inside the map Labels segmented control; confirm it opens
+  beside the tag icon, shows only linked pack icons, swaps the tag icon to the
+  selected pack, and lets the standard label buttons change that pack's labels.
 - Switch Legend to Pack Stats; confirm each pack shows linked/total percentage
   and level-colored breakdown chips without changing the user's levels.
 - Verify unlinked rows disable Unlink, disable Edit/Link when no state-scoped
