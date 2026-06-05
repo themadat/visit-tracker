@@ -1608,32 +1608,32 @@
 
     .map-waypoint-pack-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(34px, 1fr));
-      gap: .3rem;
+      grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+      gap: .36rem;
     }
 
     .map-head-actions .map-waypoint-pack-select {
       display: grid;
       place-items: center;
-      width: 34px;
-      min-width: 34px;
-      height: 34px;
-      min-height: 34px;
-      padding: .22rem;
+      width: 40px;
+      min-width: 40px;
+      height: 40px;
+      min-height: 40px;
+      padding: .25rem;
     }
 
     [data-button-style="symbols"] .map-head-actions .map-waypoint-pack-select {
-      width: 34px;
-      min-width: 34px;
+      width: 40px;
+      min-width: 40px;
       aspect-ratio: auto;
-      padding: .22rem;
+      padding: .25rem;
     }
 
     .map-waypoint-pack-select .pack-symbol,
     .map-waypoint-pack-select .sf-symbol {
       flex: 0 0 auto;
-      width: 1.15rem;
-      height: 1.15rem;
+      width: 1.35rem;
+      height: 1.35rem;
     }
 
     .map-waypoint-pack-select[aria-pressed="true"] {
@@ -3182,11 +3182,38 @@
       display: inline-flex;
     }
 
+    .legend-stats-picker {
+      position: relative;
+      display: inline-flex;
+    }
+
+    #legendStatsModeBtn.legend-stats-trigger {
+      display: inline-grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      justify-items: center;
+      column-gap: .08rem;
+      width: 44px;
+      min-width: 44px;
+      padding: 0 .18rem;
+    }
+
+    #legendStatsModeBtn .legend-stats-icon .sf-symbol {
+      width: 22px;
+      height: 22px;
+    }
+
+    #legendStatsModeBtn .legend-stats-chevron .sf-symbol {
+      width: 9px;
+      height: 9px;
+    }
+
     #legendPositionBtn:disabled {
       display: none;
     }
 
-    .legend-position-menu {
+    .legend-position-menu,
+    .legend-stats-menu {
       position: absolute;
       top: calc(100% + .32rem);
       right: 0;
@@ -3203,6 +3230,10 @@
       animation: miniPop .12s ease-out;
     }
 
+    .legend-stats-menu {
+      grid-template-columns: repeat(2, 40px);
+    }
+
     .legend-position-menu button {
       width: 34px;
       min-width: 34px;
@@ -3211,12 +3242,22 @@
       padding: .08rem;
     }
 
-    .legend-position-menu .sf-symbol {
+    .legend-stats-menu button {
+      width: 40px;
+      min-width: 40px;
+      height: 40px;
+      min-height: 40px;
+      padding: .12rem;
+    }
+
+    .legend-position-menu .sf-symbol,
+    .legend-stats-menu .sf-symbol {
       width: 100%;
       height: 100%;
     }
 
-    .legend-position-menu button[aria-pressed="true"] {
+    .legend-position-menu button[aria-pressed="true"],
+    .legend-stats-menu button[aria-pressed="true"] {
       border-color: var(--accent);
       background: var(--accent);
       color: #fff;
@@ -14164,7 +14205,12 @@
                       aria-label="Legend position options"></div>
                   </span>
                   <button id="smartColorsBtn" type="button" data-shortcut="V">Auto Colors</button>
-                  <button id="legendStatsModeBtn" class="toggle-btn" type="button" aria-pressed="false">Packs</button>
+                  <span class="legend-stats-picker">
+                    <button id="legendStatsModeBtn" class="toggle-btn legend-stats-trigger" type="button"
+                      aria-haspopup="true" aria-expanded="false">Stats View</button>
+                    <div id="legendStatsModeMenu" class="legend-stats-menu hidden" role="menu"
+                      aria-label="Legend stats view options"></div>
+                  </span>
                   <button id="suggestionsToggleBtn" class="toggle-btn" type="button" aria-pressed="false"
                     data-shortcut="W">Hide Suggestions</button>
                   <button id="legendEditBtn" class="toggle-btn" type="button" aria-pressed="false"
@@ -15445,7 +15491,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.24";
+    const APP_VERSION = "4.3.0.25";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -17425,7 +17471,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.24",
+        version: "4.3.0.25",
         date: "2026-06-04",
         title: "Waypoint Pack",
         summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
@@ -17436,12 +17482,13 @@
           "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.24",
+          version: "4.3.0.25",
           title: "Waypoint Pack",
           summary: "Add Parks and Monuments as prioritized Wayfinder notes.",
           cta: "Pack the Map!"
         },
         updates: [
+          "Replaced the Legend Packs toggle with a compact stats-view dropdown and enlarged map Labels target choices.",
           "Slightly enlarged the Labels target chevron and fixed linked waypoint label color in dark mode.",
           "Sized the map Labels target icon and chevron correctly and applied waypoint labels to existing linked note pins.",
           "Restored normal state and territory labels as an exclusive map Labels target beside linked waypoint packs.",
@@ -18560,6 +18607,7 @@
     let ringPanelResizeActive = false;
     let legendEditMode = false;
     let legendStatsMode = "levels";
+    let legendStatsMenuOpen = false;
     let legendPositionDragActive = false;
     let legendPositionPointerId = null;
     let legendPositionMenuOpen = false;
@@ -21429,14 +21477,14 @@
       syncVisitTypeIcons();
       const legendMeta = LEGEND_POSITION_META[legendPosition()];
       setButtonLabel("#legendPositionBtn", legendMeta.icon, legendMeta.label, `Legend position: ${legendMeta.label}`, "Choose Legend position");
-      setButtonLabel("#legendStatsModeBtn", legendStatsMode === "waypoints" ? __LIST_BULLET_CIRCLE : __TAG_CIRCLE, legendStatsMode === "waypoints" ? "Levels" : "Packs", legendStatsMode === "waypoints" ? "Show level legend" : "Show Waypoint Pack stats");
+      syncLegendStatsModeButton();
       setButtonLabel("#legendEditBtn", __PENCIL, "Edit", legendEditMode ? "Hide Legend edit controls" : "Show Legend edit controls");
       $("#legendPositionBtn").setAttribute("aria-expanded", String(legendPositionMenuOpen));
       $("#legendPositionBtn").disabled = !legendPositionControlAvailable();
       renderLegendPositionMenu();
+      renderLegendStatsModeMenu();
       $("#mapToggleBtn").setAttribute("aria-pressed", String(mapPanelOpen));
       $("#legendToggleBtn").setAttribute("aria-pressed", String(legendPanelOpen));
-      $("#legendStatsModeBtn").setAttribute("aria-pressed", String(legendStatsMode === "waypoints"));
       $("#notesToggleBtn").setAttribute("aria-pressed", String(notesPanelOpen));
       $("#legendEditBtn").setAttribute("aria-pressed", String(legendEditMode));
       $("#mapFitBtn").setAttribute("aria-pressed", String(mapFitMode));
@@ -21494,6 +21542,58 @@
 
     function legendPositionControlAvailable() {
       return DESKTOP_LAYOUT_QUERY.matches && legendPanelOpen;
+    }
+
+    const LEGEND_STATS_MODE_META = {
+      levels: { label: "Levels", icon: __TAG_CIRCLE, title: "Show level stats" },
+      waypoints: { label: "Waypoint Packs", icon: __LIST_BULLET_CIRCLE, title: "Show Waypoint Pack stats" }
+    };
+
+    function syncLegendStatsModeButton() {
+      const button = $("#legendStatsModeBtn");
+      if (!button) return;
+      const meta = LEGEND_STATS_MODE_META[legendStatsMode] || LEGEND_STATS_MODE_META.levels;
+      button.innerHTML = `<span class="legend-stats-icon" aria-hidden="true">${meta.icon}</span><span class="legend-stats-chevron" aria-hidden="true">${__CHEVRON_DOWN_CIRCLE}</span>`;
+      button.setAttribute("aria-label", `Legend stats: ${meta.label}`);
+      button.setAttribute("aria-expanded", String(legendStatsMenuOpen));
+      button.title = "Choose Legend stats view";
+    }
+
+    function closeLegendStatsMenu() {
+      legendStatsMenuOpen = false;
+      $("#legendStatsModeMenu")?.classList.add("hidden");
+      $("#legendStatsModeBtn")?.setAttribute("aria-expanded", "false");
+    }
+
+    function setLegendStatsMode(mode) {
+      if (!LEGEND_STATS_MODE_META[mode]) return;
+      legendStatsMode = mode;
+      legendStatsMenuOpen = false;
+      save();
+      syncButtonLabels();
+      renderLegend();
+    }
+
+    function renderLegendStatsModeMenu() {
+      const menu = $("#legendStatsModeMenu");
+      if (!menu) return;
+      menu.innerHTML = Object.entries(LEGEND_STATS_MODE_META).map(([mode, meta]) => `
+        <button type="button" role="menuitemradio" aria-pressed="${legendStatsMode === mode}" data-legend-stats-mode-option="${mode}" aria-label="${escapeHtml(meta.label)}" title="${escapeHtml(meta.label)}">${meta.icon}</button>
+      `).join("");
+      menu.classList.toggle("hidden", !legendStatsMenuOpen);
+      $$("[data-legend-stats-mode-option]", menu).forEach(button => {
+        button.addEventListener("click", event => {
+          event.stopPropagation();
+          setLegendStatsMode(button.dataset.legendStatsModeOption);
+        });
+      });
+    }
+
+    function toggleLegendStatsModeMenu(event) {
+      event?.stopPropagation();
+      legendStatsMenuOpen = !legendStatsMenuOpen;
+      renderLegendStatsModeMenu();
+      syncLegendStatsModeButton();
     }
 
     function closeLegendPositionMenu() {
@@ -23616,10 +23716,7 @@
     }
 
     function toggleLegendStatsMode() {
-      legendStatsMode = legendStatsMode === "waypoints" ? "levels" : "waypoints";
-      save();
-      syncButtonLabels();
-      renderLegend();
+      setLegendStatsMode(legendStatsMode === "waypoints" ? "levels" : "waypoints");
     }
 
     function toggleNoteLevelFilter(levelId) {
@@ -28800,7 +28897,7 @@
       $("#mapMatchNotesBtn").addEventListener("click", () => updateSetting("mapFollowsNotesFilters", state.settings.mapFollowsNotesFilters !== true));
       $("#mapToggleBtn").addEventListener("click", toggleMapPanel);
       $("#legendToggleBtn").addEventListener("click", toggleLegendPanel);
-      $("#legendStatsModeBtn").addEventListener("click", toggleLegendStatsMode);
+      $("#legendStatsModeBtn").addEventListener("click", toggleLegendStatsModeMenu);
       $("#notesToggleBtn").addEventListener("click", toggleNotesPanel);
       $("#basecampBtn").addEventListener("click", openBasecampDialog);
       $("#basecampText").addEventListener("input", handleBasecampInput);
@@ -29263,6 +29360,7 @@
       window.addEventListener("blur", () => setPowerOverlay(false));
       window.addEventListener("resize", () => {
         if (!legendPositionControlAvailable()) closeLegendPositionMenu();
+        closeLegendStatsMenu();
         if (ringStyleMenuOpen) closeRingStyleMenu();
         if (ringTimeMenuOpen) closeRingTimeMenu();
         syncButtonLabels();
@@ -29271,6 +29369,10 @@
       document.addEventListener("click", event => {
         if (!legendPositionMenuOpen || event.target.closest(".legend-position-picker")) return;
         closeLegendPositionMenu();
+      });
+      document.addEventListener("click", event => {
+        if (!legendStatsMenuOpen || event.target.closest(".legend-stats-picker")) return;
+        closeLegendStatsMenu();
       });
       document.addEventListener("click", event => {
         if (!ringStyleMenuOpen || event.target.closest(".ring-style-picker")) return;
