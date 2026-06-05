@@ -109,7 +109,8 @@ occurs only when the user clicks a location's Photo action.
     picker with normal state/territory labels plus linked pack icons. Selecting
     a pack changes the tag icon to that pack's icon, switches the active
     one-pack overlay, and makes the standard `Off`, `Abbr`, and `Name` buttons
-    edit labels for linked pins from that pack.
+    edit labels for linked overlay markers and existing linked note pins from
+    that pack.
 - Add Legend pack stats:
   - Legend can switch between normal level stats and Waypoint Pack stats.
   - Pack stats preserve the same levels, colors, and level meanings; they only
@@ -271,7 +272,7 @@ maps.
 - Use the chevron inside the map Labels icon cell; confirm it opens the target
   picker, can return to normal state/territory labels, swaps the icon for a
   selected pack, and lets the standard label buttons change labels for linked
-  pins from that pack.
+  overlay markers and existing linked note pins from that pack.
 - Switch Legend to Pack Stats; confirm each pack shows linked/total percentage
   and level-colored breakdown chips without changing the user's levels.
 - Verify unlinked rows disable Unlink, disable Edit/Link when no state-scoped
