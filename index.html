@@ -15456,7 +15456,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.31";
+    const APP_VERSION = "4.3.0.32";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -17232,6 +17232,18 @@
         category: "Maps"
       },
       {
+        title: "Link Multiple Notes to a Waypoint",
+        ticketId: "WISH-072",
+        description: "Allow a single Waypoint Pack location to link to multiple existing or generated notes, so repeat visits, separate trips, or different note entries can all belong to the same waypoint without forcing the user to merge details into one note.",
+        priority: "P1",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 22,
+        prompt: "Update Waypoint Packs so a waypoint item can link to multiple notes. Replace one-note assumptions with a collection-aware model, add attach/unlink controls for multiple linked notes, keep map markers/labels/stats/export behavior understandable, preserve existing single-linked notes through migration, and avoid duplicating generated notes.",
+        category: "Notes"
+      },
+      {
         title: "Waypoint Packs + National Parks",
         ticketId: "WISH-004",
         description: "Add curated Waypoint Packs inside Wayfinder that can be previewed, prioritized, annotated, attached to existing notes, and batch-added as normal Wayfinder notes, starting with official National Parks. Pack markers and labels stay separate from state progress.",
@@ -17438,7 +17450,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.31",
+        version: "4.3.0.32",
         date: "2026-06-05",
         title: "Waypoint Pack",
         summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
@@ -17449,12 +17461,13 @@
           "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.31",
+          version: "4.3.0.32",
           title: "Waypoint Pack",
           summary: "Add Parks and Monuments as prioritized Wayfinder notes.",
           cta: "Pack the Map!"
         },
         updates: [
+          "Added a Roadmap wish for linking multiple notes to one Waypoint Pack location.",
           "Show Developer Mode split-percentage pills only during active divider drags.",
           "Moved waypoint labels into a top draw layer so nearby marker icons cannot cover them.",
           "Added dash-aware and three-line waypoint name wrapping with wider line spacing.",
