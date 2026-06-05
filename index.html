@@ -1545,6 +1545,111 @@
       background: color-mix(in srgb, var(--surface) 54%, var(--surface-2) 46%);
     }
 
+    .map-waypoint-labels {
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .map-waypoint-labels.hidden,
+    .map-waypoint-labels-menu[hidden] {
+      display: none;
+    }
+
+    .map-head-actions .map-waypoint-labels-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: .18rem;
+      min-width: 38px;
+      min-height: 30px;
+      padding: .24rem .34rem;
+    }
+
+    .map-waypoint-labels-toggle .pack-symbol,
+    .map-waypoint-labels-toggle .sf-symbol {
+      width: 1rem;
+      height: 1rem;
+      overflow: visible;
+    }
+
+    .map-waypoint-labels-toggle .waypoint-map-chevron .sf-symbol {
+      width: .72rem;
+      height: .72rem;
+    }
+
+    .map-waypoint-labels-menu {
+      position: absolute;
+      z-index: 20;
+      top: calc(100% + .3rem);
+      right: 0;
+      display: grid;
+      gap: .3rem;
+      width: min(22rem, calc(100vw - 2rem));
+      padding: .4rem;
+      border: 2px solid #14b8a6;
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: 0 12px 28px rgba(16, 24, 40, .3), 0 0 0 3px color-mix(in srgb, #14b8a6 18%, transparent);
+    }
+
+    .map-waypoint-pack-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: .3rem;
+    }
+
+    .map-head-actions .map-waypoint-pack-select {
+      display: flex;
+      align-items: center;
+      gap: .34rem;
+      width: 100%;
+      min-width: 0;
+      padding: .28rem .4rem;
+      text-align: left;
+    }
+
+    [data-button-style="symbols"] .map-head-actions .map-waypoint-pack-select {
+      width: 100%;
+      min-width: 0;
+      aspect-ratio: auto;
+      padding: .28rem .4rem;
+      justify-content: flex-start;
+    }
+
+    .map-waypoint-pack-select span:last-child {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .map-waypoint-pack-select .pack-symbol,
+    .map-waypoint-pack-select .sf-symbol {
+      flex: 0 0 auto;
+      width: 1.15rem;
+      height: 1.15rem;
+    }
+
+    .map-waypoint-pack-select[aria-pressed="true"] {
+      border-color: #14b8a6;
+      box-shadow: inset 0 0 0 1px #14b8a6;
+    }
+
+    .map-waypoint-pack-label-modes {
+      display: flex;
+      gap: .18rem;
+    }
+
+    .map-waypoint-pack-label-modes button {
+      min-width: 32px;
+      min-height: 30px;
+      padding: .22rem .3rem;
+    }
+
+    .map-waypoint-pack-label-modes button[aria-pressed="true"] {
+      border-color: #14b8a6;
+      box-shadow: inset 0 0 0 1px #14b8a6;
+    }
+
 
     #mapLocationPinsBtn .sf-symbol,
     #mapMatchNotesBtn .sf-symbol,
@@ -4496,6 +4601,7 @@
       min-height: 0;
       padding: .62rem;
       overflow: auto;
+      overflow-anchor: none;
     }
 
     .waypoint-section-title {
@@ -5040,6 +5146,12 @@
       justify-content: flex-end;
       flex-wrap: wrap;
       gap: .3rem;
+    }
+
+    .waypoint-location-search {
+      width: min(15rem, 100%);
+      min-width: 8rem;
+      min-height: 34px;
     }
 
     .waypoint-sort-row button {
@@ -6528,7 +6640,20 @@
 
     .notes-icon-filter.is-waypoint-pack-icon {
       border-color: #14b8a6;
-      box-shadow: inset 0 0 0 1px color-mix(in srgb, #14b8a6 34%, transparent);
+    }
+
+    .notes-icon-filter.is-waypoint-pack-icon[aria-pressed="true"] {
+      background: color-mix(in srgb, #14b8a6 18%, var(--surface));
+      color: var(--text);
+      box-shadow: inset 0 0 0 2px color-mix(in srgb, #14b8a6 74%, transparent);
+    }
+
+    .notes-icon-filter.is-waypoint-pack-icon[aria-pressed="false"] {
+      border-style: dashed;
+      background: var(--surface);
+      color: var(--muted);
+      opacity: .44;
+      box-shadow: none;
     }
 
     .notes-icon-filter .sf-symbol {
@@ -9316,6 +9441,7 @@
                     <button id="labelsAbbrBtn" type="button" aria-pressed="false" data-shortcut="3">Abbr</button>
                     <button id="labelsNameBtn" type="button" aria-pressed="false" data-shortcut="2">Name</button>
                   </div>
+                  <div id="mapWaypointPackLabels" class="map-waypoint-labels hidden"></div>
                 </div>
               </div>
               <small data-hint data-hint-key="map-label-controls">Choose Map Labels:<br />none | ABBR | Full
@@ -14059,6 +14185,8 @@
                 <div class="waypoint-section-title">
                   <h4>Pack Locations</h4>
                   <div class="waypoint-section-actions">
+                    <input id="waypointPackLocationSearch" class="waypoint-location-search" type="search"
+                      placeholder="Search Pack Locations" aria-label="Search Waypoint Pack locations">
                     <div id="waypointPackMapControls" class="waypoint-location-map-controls"></div>
                     <button id="setsBatchAddBtn" class="primary" type="button">Add / Refresh Selected</button>
                     <button id="setsRemoveBtn" class="danger" type="button">Remove Pack</button>
@@ -15237,7 +15365,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.17";
+    const APP_VERSION = "4.3.0.18";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -16999,6 +17127,18 @@
         category: "Notes"
       },
       {
+        title: "Latitude / Longitude Map Lines",
+        ticketId: "WISH-071",
+        description: "Add an optional latitude/longitude line overlay to US and World maps, with readable interval labels and styling that remains secondary to locations, Wayfinder, and Rangefinder overlays.",
+        priority: "P2",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 16,
+        prompt: "Add a toggleable latitude/longitude graticule overlay for US and World maps. Include sensible line intervals and labels, theme-aware styling, and preserve map interaction and existing Wayfinder/Rangefinder overlays.",
+        category: "Maps"
+      },
+      {
         title: "Waypoint Packs + National Parks",
         ticketId: "WISH-004",
         description: "Add curated Waypoint Packs inside Wayfinder that can be previewed, prioritized, annotated, attached to existing notes, and batch-added as normal Wayfinder notes, starting with official National Parks. Pack markers and labels stay separate from state progress.",
@@ -17205,7 +17345,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.17",
+        version: "4.3.0.18",
         date: "2026-06-04",
         title: "Waypoint Pack",
         summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
@@ -17216,12 +17356,18 @@
           "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.17",
+          version: "4.3.0.18",
           title: "Waypoint Pack",
           summary: "Add Parks and Monuments as prioritized Wayfinder notes.",
           cta: "Pack the Map!"
         },
         updates: [
+          "Added Pack Locations search for quickly finding waypoints to link or edit.",
+          "Preserved Pack Locations scroll position when opening lower photo previews.",
+          "Turned Waypoint Pack overlays off when leaving Wayfinder and restored normal note pins.",
+          "Made active and inactive Waypoint Pack icon filters visually distinct in Notes.",
+          "Added an added-pack dropdown beside map labels for switching packs and changing pack label modes.",
+          "Added a Roadmap wish for optional latitude and longitude map lines.",
           "Kept Waypoint link menus clamped to the viewport so wrapped-row popups are not cut off.",
           "Let Waypoint Pack icon filters stay off after a user turns them off in Notes.",
           "Merged waypoint default park details into Additional Details when linking from the note editor.",
@@ -18344,6 +18490,8 @@
     let waypointPacksPanelOpen = false;
     let waypointAttachMenuItemId = "";
     let waypointPhotoPreviewKey = "";
+    let waypointPackSearchQuery = "";
+    let mapWaypointPackMenuOpen = false;
     const waypointPhotoUrlCache = new Map();
     const waypointPhotoLoadingKeys = new Set();
     let suggestedSetPreviewPriorities = new Map();
@@ -19460,6 +19608,8 @@
           clearSuggestedSetPreviewDrafts(activeSetId);
         }
         waypointPacksPanelOpen = false;
+        mapWaypointPackMenuOpen = false;
+        state.settings.suggestedSetsVisible = false;
         const snap = state.settings.bucketListFilterSnapshot;
         if (snap) {
           noteLevelFilters = new Set((snap.levelFilter || []).filter(id => levelById(id)));
@@ -19492,6 +19642,7 @@
         }
         state.settings.bucketListView = false;
         state.settings.bucketListFilterSnapshot = null;
+        state.settings.suggestedSetsVisible = false;
         save();
       }
       const on = bucketListViewActive();
@@ -20419,10 +20570,14 @@
         clearSuggestedSetPreviewDrafts(previousId);
         waypointAttachMenuItemId = "";
         waypointPhotoPreviewKey = "";
+        waypointPackSearchQuery = "";
       }
       state.settings.activeSuggestedSetId = set.id;
       state.settings.suggestedSetsVisible = true;
-      setSuggestedSetLabelMode(set.id, "name");
+      state.settings.suggestedSetLabelModes ||= {};
+      if (!SUGGESTED_SET_LABEL_MODES.includes(state.settings.suggestedSetLabelModes[set.id])) {
+        setSuggestedSetLabelMode(set.id, set.defaultLabelMode || "none");
+      }
       addSuggestedSetRecommendedIcon(set.id);
       return set;
     }
@@ -20496,6 +20651,10 @@
       const linked = suggestedSetLinkedEntries(setId);
       const linkedItemIds = new Set(linked.map(ref => ref.note.sourceItemId));
       return { total: set?.items.length || 0, linked: linkedItemIds.size, notes: linked.length };
+    }
+
+    function addedSuggestedSets() {
+      return SUGGESTED_SETS.filter(set => suggestedSetProgress(set.id).linked > 0);
     }
 
     function suggestedSetIconInActiveUse(iconId) {
@@ -21607,6 +21766,7 @@
       renderRingOverlay();
       renderSuggestedSetMarkers();
       renderLocationMarkers();
+      renderMapWaypointPackLabelsControl();
     }
 
     function validNoteCoordinates(note) {
@@ -21695,7 +21855,7 @@
       const isUS = activeLayerId === "us";
       const filterMode = isUS && state.settings.mapFollowsNotesFilters === true;
       return activeRegionCodes().flatMap(abbr => (notesStoreForCode(abbr)[abbr] || []).map(note => {
-        if (isUS && state.settings.suggestedSetsVisible === true && suggestedSetSourceForNote(note)) return null;
+        if (isUS && bucketListViewActive() && state.settings.suggestedSetsVisible === true && suggestedSetSourceForNote(note)) return null;
         if (filterMode && !(stateMatchesActiveNotesFilters(abbr) && noteMatchesAllFilters(note) && noteMatchesCoordinateFilter(note) && (stateMetaMatchesNotesSearch(abbr) || noteMatchesSearch(note)))) return null;
         const point = projectNoteLocation(abbr, note);
         if (!point) return null;
@@ -22178,7 +22338,7 @@
     function renderSuggestedSetMarkers() {
       const markers = $("#suggestedSetMarkers");
       if (markers) markers.innerHTML = "";
-      if (!markers || activeLayerId !== "us" || state.settings.suggestedSetsVisible !== true) return;
+      if (!markers || activeLayerId !== "us" || !bucketListViewActive() || state.settings.suggestedSetsVisible !== true) return;
       const set = activeSuggestedSet();
       if (!set) return;
       const svgNS = "http://www.w3.org/2000/svg";
@@ -22489,7 +22649,9 @@
     }
 
     function refreshWaypointPhotoConsumers() {
+      const scrollTop = $(".waypoint-packs-body")?.scrollTop;
       renderSetsDialog();
+      restoreWaypointPanelScroll(scrollTop);
       if ($("#noteDialog")?.open) refreshNoteWaypointControls();
     }
 
@@ -22677,6 +22839,46 @@
       `;
     }
 
+    function renderMapWaypointPackLabelsControl() {
+      const host = $("#mapWaypointPackLabels");
+      if (!host) return;
+      const added = addedSuggestedSets();
+      host.classList.toggle("hidden", !added.length);
+      if (!added.length) {
+        host.innerHTML = "";
+        mapWaypointPackMenuOpen = false;
+        return;
+      }
+      const labelButton = (set, mode, icon, label) => `
+        <button type="button" data-map-waypoint-label-mode="${mode}" data-set-id="${escapeHtml(set.id)}"
+          aria-pressed="${suggestedSetLabelMode(set.id) === mode ? "true" : "false"}" title="${escapeHtml(label)}">${icon}</button>
+      `;
+      host.innerHTML = `
+        <button class="map-waypoint-labels-toggle" type="button" data-map-waypoint-menu
+          aria-expanded="${mapWaypointPackMenuOpen ? "true" : "false"}" aria-label="Waypoint Pack label settings"
+          title="Waypoint Pack label settings">
+          ${added.slice(0, 3).map(set => visitTypeIcon(suggestedSetIconId(set.id))).join("")}
+          <span class="waypoint-map-chevron">${__CHEVRON_DOWN_CIRCLE}</span>
+        </button>
+        <div class="map-waypoint-labels-menu" ${mapWaypointPackMenuOpen ? "" : "hidden"}>
+          ${added.map(set => `
+            <div class="map-waypoint-pack-row">
+              <button class="map-waypoint-pack-select" type="button" data-map-waypoint-pack="${escapeHtml(set.id)}"
+                aria-pressed="${activeSuggestedSet()?.id === set.id ? "true" : "false"}" title="Use ${escapeHtml(set.name)} overlay">
+                ${visitTypeIcon(suggestedSetIconId(set.id))}
+                <span>${escapeHtml(set.name)}</span>
+              </button>
+              <div class="map-waypoint-pack-label-modes" aria-label="${escapeHtml(set.name)} labels">
+                ${labelButton(set, "none", __CIRCLE_SLASH, "No labels")}
+                ${labelButton(set, "abbr", __CHARACTER, "Abbreviations")}
+                ${labelButton(set, "name", __TEXTFORMAT, "Names")}
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
     function renderSetsDialog() {
       const panel = $("#waypointPacksPanel");
       if (!panel) return;
@@ -22692,7 +22894,15 @@
       $("#waypointPackAvailableList").innerHTML = SUGGESTED_SETS.map(renderWaypointPackCard).join("");
       $("#waypointPackConfigure").innerHTML = renderWaypointPackConfigure(set);
       $("#waypointPackMapControls").innerHTML = renderWaypointPackMapControls(set);
-      $("#setsPreviewTable").innerHTML = set.items.map(item => renderSetPreviewRow(set, item)).join("");
+      const search = waypointPackSearchQuery.trim().toLowerCase();
+      const visibleItems = search
+        ? set.items.filter(item => [item.name, item.fullName, item.code, suggestedSetItemRegionLabel(item)]
+          .some(value => String(value || "").toLowerCase().includes(search)))
+        : set.items;
+      $("#waypointPackLocationSearch").value = waypointPackSearchQuery;
+      $("#setsPreviewTable").innerHTML = visibleItems.length
+        ? visibleItems.map(item => renderSetPreviewRow(set, item)).join("")
+        : `<div class="empty">No pack locations match that search.</div>`;
       positionWaypointFloatingMenus();
     }
 
@@ -22714,6 +22924,7 @@
       waypointPacksPanelOpen = false;
       waypointAttachMenuItemId = "";
       waypointPhotoPreviewKey = "";
+      waypointPackSearchQuery = "";
       if (iconRemoved) save();
       renderSetsDialog();
       renderMap();
@@ -28160,6 +28371,11 @@
         if (markerDialogItems[0]) addNoteAtMappedLocation(markerDialogItems[0]);
       });
       $("#waypointPacksPanel").addEventListener("input", event => {
+        if (event.target.closest("#waypointPackLocationSearch")) {
+          waypointPackSearchQuery = event.target.value;
+          renderSetsDialog();
+          return;
+        }
         const note = event.target.closest("[data-set-preview-note]");
         const row = note?.closest("[data-set-preview-item]");
         const set = activeSuggestedSet();
@@ -28324,6 +28540,29 @@
               removeSuggestedSet(set.id);
             }
           });
+        }
+      });
+      $("#mapWaypointPackLabels").addEventListener("click", event => {
+        if (event.target.closest("[data-map-waypoint-menu]")) {
+          mapWaypointPackMenuOpen = !mapWaypointPackMenuOpen;
+          renderMapWaypointPackLabelsControl();
+          return;
+        }
+        const pack = event.target.closest("[data-map-waypoint-pack]");
+        if (pack) {
+          state.settings.activeSuggestedSetId = pack.dataset.mapWaypointPack;
+          if (bucketListViewActive()) state.settings.suggestedSetsVisible = true;
+          save();
+          renderMap();
+          return;
+        }
+        const label = event.target.closest("[data-map-waypoint-label-mode]");
+        if (label) {
+          state.settings.activeSuggestedSetId = label.dataset.setId;
+          setSuggestedSetLabelMode(label.dataset.setId, label.dataset.mapWaypointLabelMode);
+          if (bucketListViewActive()) state.settings.suggestedSetsVisible = true;
+          save();
+          renderMap();
         }
       });
       $("#waypointPacksCloseBtn").addEventListener("click", closeWaypointPacksPanel);
@@ -28819,6 +29058,11 @@
       document.addEventListener("click", event => {
         if (!ringTimeMenuOpen || event.target.closest(".ring-time-picker")) return;
         closeRingTimeMenu();
+      });
+      document.addEventListener("click", event => {
+        if (!mapWaypointPackMenuOpen || event.target.closest("#mapWaypointPackLabels")) return;
+        mapWaypointPackMenuOpen = false;
+        renderMapWaypointPackLabelsControl();
       });
       const handleLayoutModeChange = () => {
         if (!legendPositionControlAvailable()) closeLegendPositionMenu();

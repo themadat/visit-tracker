@@ -54,6 +54,8 @@ occurs only when the user clicks a location's Photo action.
   - Panel shows Available Packs, selected-pack progress, visual icon choices,
     overlay toggle, label mode buttons, one unified Pack Locations list,
     add/refresh, and remove.
+  - Pack Locations has a compact search field for quickly finding a waypoint
+    by name, code, full name, or listed location before linking or editing it.
   - Pack Locations uses compact toolbar rows with a flexible wrapping
     name/code/location block, Website and on-demand Wikipedia Photo actions,
     inline Priority, contextual Link/Edit and Unlink, and pre-link `Note`
@@ -96,8 +98,13 @@ occurs only when the user clicks a location's Photo action.
     visited notes stay as normal linked/detached notes per confirmation copy.
   - Overlay uses `__SQUARE_3_LAYERS_3D` when off and
     `__SQUARE_3_LAYERS_3D_TOP_FILLED` when on.
+  - Leaving Wayfinder always turns the active pack overlay off and restores
+    normal linked-note pins.
   - Label UI reuses the map label button style with `Off`, `Abbr`, and `Name`.
     National Parks default to labels off.
+  - Once a pack has linked notes, the map Labels group gains a compact added
+    pack dropdown. It lists added packs by icon, switches the active one-pack
+    overlay, and edits each pack's saved `Off`, `Abbr`, or `Name` preference.
 - Add exports:
   - JSON includes normalized note metadata and priority naturally.
   - Markdown/RTF/Text add Waypoint Packs sections when linked pack notes exist.
@@ -113,6 +120,9 @@ multi-pack active state without crowding Wayfinder.
 WISH-067 tracks first-class Links and Photos controls in notes.
 
 WISH-068 tracks a small raptor easter egg.
+
+WISH-071 tracks an optional latitude/longitude line overlay for US and World
+maps.
 
 ## National Parks Snapshot
 
@@ -233,6 +243,16 @@ WISH-068 tracks a small raptor easter egg.
   block, and Link opens its outlined note-choice menu directly beneath itself.
 - Verify Website opens the location source and Photo reveals only the Wikimedia
   image inline; confirm fallback image lookup runs only after Photo is clicked.
+- Open a Photo action near the bottom of Pack Locations and confirm the list
+  stays at the same scroll position while the preview opens and loads.
+- Search Pack Locations by name, abbreviation, and state; confirm matching
+  rows remain linkable/editable and clearing search restores the full list.
+- Turn a pack icon filter on and off in Notes; confirm both states are visually
+  unmistakable.
+- Add two packs, then use the map Labels pack dropdown to switch the active pack
+  and change each pack's saved Off/Abbr/Name setting.
+- Exit Wayfinder while a pack overlay is visible; confirm the overlay turns off
+  and normal linked-note pins return.
 - Verify unlinked rows disable Unlink, disable Edit/Link when no state-scoped
   notes are available, and auto-expand the attach selector from Edit/Link with
   no placeholder option when one is.
