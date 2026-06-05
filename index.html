@@ -3182,38 +3182,11 @@
       display: inline-flex;
     }
 
-    .legend-stats-picker {
-      position: relative;
-      display: inline-flex;
-    }
-
-    #legendStatsModeBtn.legend-stats-trigger {
-      display: inline-grid;
-      grid-template-columns: 1fr auto;
-      align-items: center;
-      justify-items: center;
-      column-gap: .08rem;
-      width: 44px;
-      min-width: 44px;
-      padding: 0 .18rem;
-    }
-
-    #legendStatsModeBtn .legend-stats-icon .sf-symbol {
-      width: 22px;
-      height: 22px;
-    }
-
-    #legendStatsModeBtn .legend-stats-chevron .sf-symbol {
-      width: 9px;
-      height: 9px;
-    }
-
     #legendPositionBtn:disabled {
       display: none;
     }
 
-    .legend-position-menu,
-    .legend-stats-menu {
+    .legend-position-menu {
       position: absolute;
       top: calc(100% + .32rem);
       right: 0;
@@ -3230,10 +3203,6 @@
       animation: miniPop .12s ease-out;
     }
 
-    .legend-stats-menu {
-      grid-template-columns: repeat(2, 40px);
-    }
-
     .legend-position-menu button {
       width: 34px;
       min-width: 34px;
@@ -3242,22 +3211,12 @@
       padding: .08rem;
     }
 
-    .legend-stats-menu button {
-      width: 40px;
-      min-width: 40px;
-      height: 40px;
-      min-height: 40px;
-      padding: .12rem;
-    }
-
-    .legend-position-menu .sf-symbol,
-    .legend-stats-menu .sf-symbol {
+    .legend-position-menu .sf-symbol {
       width: 100%;
       height: 100%;
     }
 
-    .legend-position-menu button[aria-pressed="true"],
-    .legend-stats-menu button[aria-pressed="true"] {
+    .legend-position-menu button[aria-pressed="true"] {
       border-color: var(--accent);
       background: var(--accent);
       color: #fff;
@@ -14195,12 +14154,6 @@
                       aria-label="Legend position options"></div>
                   </span>
                   <button id="smartColorsBtn" type="button" data-shortcut="V">Auto Colors</button>
-                  <span class="legend-stats-picker">
-                    <button id="legendStatsModeBtn" class="toggle-btn legend-stats-trigger" type="button"
-                      aria-haspopup="true" aria-expanded="false">Stats View</button>
-                    <div id="legendStatsModeMenu" class="legend-stats-menu hidden" role="menu"
-                      aria-label="Legend stats view options"></div>
-                  </span>
                   <button id="suggestionsToggleBtn" class="toggle-btn" type="button" aria-pressed="false"
                     data-shortcut="W">Hide Suggestions</button>
                   <button id="legendEditBtn" class="toggle-btn" type="button" aria-pressed="false"
@@ -15481,7 +15434,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.26";
+    const APP_VERSION = "4.3.0.27";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -17461,8 +17414,8 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.26",
-        date: "2026-06-04",
+        version: "4.3.0.27",
+        date: "2026-06-05",
         title: "Waypoint Pack",
         summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
         highlights: [
@@ -17472,14 +17425,13 @@
           "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.26",
+          version: "4.3.0.27",
           title: "Waypoint Pack",
           summary: "Add Parks and Monuments as prioritized Wayfinder notes.",
           cta: "Pack the Map!"
         },
         updates: [
-          "Reworked the Legend view dropdown to switch between Locations and Waypoint Packs, with pack rows reusing the level-row layout — the pack icon now sits in the left swatch beside linked progress, with the pack name and description.",
-          "Replaced the Legend Packs toggle with a compact stats-view dropdown and enlarged map Labels target choices.",
+          "Made Legend stats follow the selected map Labels target: normal labels use location stats, pack labels use linked pack note stats by level.",
           "Slightly enlarged the Labels target chevron and fixed linked waypoint label color in dark mode.",
           "Sized the map Labels target icon and chevron correctly and applied waypoint labels to existing linked note pins.",
           "Restored normal state and territory labels as an exclusive map Labels target beside linked waypoint packs.",
@@ -18597,8 +18549,6 @@
     let mainResizeActive = false;
     let ringPanelResizeActive = false;
     let legendEditMode = false;
-    let legendStatsMode = "levels";
-    let legendStatsMenuOpen = false;
     let legendPositionDragActive = false;
     let legendPositionPointerId = null;
     let legendPositionMenuOpen = false;
@@ -18685,7 +18635,6 @@
           notesPanelState: "",
           collapsedNoteCategories: [],
           legendPosition: "left-bottom",
-          legendStatsMode: "levels",
           hideSuggestedCategories: false,
           developerMode: false,
           shortcutMode: false,
@@ -19048,7 +18997,6 @@
       if (typeof next.settings.mapLocationPinsVisible !== "boolean") next.settings.mapLocationPinsVisible = true;
       if (typeof next.settings.mapFollowsNotesFilters !== "boolean") next.settings.mapFollowsNotesFilters = true;
       if (!LEGEND_POSITION_ORDER.includes(next.settings.legendPosition)) next.settings.legendPosition = "left-bottom";
-      if (!["levels", "waypoints"].includes(next.settings.legendStatsMode)) next.settings.legendStatsMode = "levels";
       if (!["scroll", "fit"].includes(next.settings.mapViewMode)) next.settings.mapViewMode = next.settings.mapFitMode === true ? "fit" : "scroll";
       next.settings.mapZoom = clampMapZoom(next.settings.mapZoom);
       next.settings.mapPanCenter = normalizeMapPanCenter(next.settings.mapPanCenter);
@@ -19101,6 +19049,7 @@
       // a no-op until the user changes a setting per-map). The flat keys are
       // then dropped from next.settings so they can't drift out of sync.
       next.settings.ringByLayer = normalizeRingByLayer(input.settings || {});
+      delete next.settings.legendStatsMode;
       delete next.settings.ringAnchor1;
       delete next.settings.ringAnchor2;
       delete next.settings.ringTravelMode;
@@ -19529,7 +19478,6 @@
       state.settings.selectedState = isValidRegion(selectedState) ? selectedState : "";
       state.settings.notesPanelState = isValidRegion(notesPanelState) ? notesPanelState : "";
       state.settings.collapsedNoteCategories = [...collapsedNoteCategories].filter(type => LOCATION_TYPES[type]);
-      state.settings.legendStatsMode = legendStatsMode === "waypoints" ? "waypoints" : "levels";
       state.settings.mapViewMode = mapFitMode ? "fit" : "scroll";
       state.settings.mapZoom = clampMapZoom(mapZoom);
       state.settings.mapPanCenter = normalizeMapPanCenter(state.settings.mapPanCenter);
@@ -19554,7 +19502,6 @@
       noteVisitTypeFilters = new Set(Array.isArray(state.settings.noteVisitTypeFilters) ? state.settings.noteVisitTypeFilters : []);
       ensureNoteIconFilters();
       collapsedNoteCategories = new Set((state.settings.collapsedNoteCategories || []).filter(type => LOCATION_TYPES[type]));
-      legendStatsMode = state.settings.legendStatsMode === "waypoints" ? "waypoints" : "levels";
       ensurePanelVisible("map");
       syncRuntimeUiSettingsToState({ captureMapPan: false });
     }
@@ -21468,12 +21415,10 @@
       syncVisitTypeIcons();
       const legendMeta = LEGEND_POSITION_META[legendPosition()];
       setButtonLabel("#legendPositionBtn", legendMeta.icon, legendMeta.label, `Legend position: ${legendMeta.label}`, "Choose Legend position");
-      syncLegendStatsModeButton();
       setButtonLabel("#legendEditBtn", __PENCIL, "Edit", legendEditMode ? "Hide Legend edit controls" : "Show Legend edit controls");
       $("#legendPositionBtn").setAttribute("aria-expanded", String(legendPositionMenuOpen));
       $("#legendPositionBtn").disabled = !legendPositionControlAvailable();
       renderLegendPositionMenu();
-      renderLegendStatsModeMenu();
       $("#mapToggleBtn").setAttribute("aria-pressed", String(mapPanelOpen));
       $("#legendToggleBtn").setAttribute("aria-pressed", String(legendPanelOpen));
       $("#notesToggleBtn").setAttribute("aria-pressed", String(notesPanelOpen));
@@ -21533,58 +21478,6 @@
 
     function legendPositionControlAvailable() {
       return DESKTOP_LAYOUT_QUERY.matches && legendPanelOpen;
-    }
-
-    const LEGEND_STATS_MODE_META = {
-      levels: { label: "Locations", icon: __TAG_CIRCLE, title: "Show location levels" },
-      waypoints: { label: "Waypoint Packs", icon: __LIST_BULLET_CIRCLE, title: "Show Waypoint Packs" }
-    };
-
-    function syncLegendStatsModeButton() {
-      const button = $("#legendStatsModeBtn");
-      if (!button) return;
-      const meta = LEGEND_STATS_MODE_META[legendStatsMode] || LEGEND_STATS_MODE_META.levels;
-      button.innerHTML = `<span class="legend-stats-icon" aria-hidden="true">${meta.icon}</span><span class="legend-stats-chevron" aria-hidden="true">${__CHEVRON_DOWN_CIRCLE}</span>`;
-      button.setAttribute("aria-label", `Legend stats: ${meta.label}`);
-      button.setAttribute("aria-expanded", String(legendStatsMenuOpen));
-      button.title = "Choose Legend stats view";
-    }
-
-    function closeLegendStatsMenu() {
-      legendStatsMenuOpen = false;
-      $("#legendStatsModeMenu")?.classList.add("hidden");
-      $("#legendStatsModeBtn")?.setAttribute("aria-expanded", "false");
-    }
-
-    function setLegendStatsMode(mode) {
-      if (!LEGEND_STATS_MODE_META[mode]) return;
-      legendStatsMode = mode;
-      legendStatsMenuOpen = false;
-      save();
-      syncButtonLabels();
-      renderLegend();
-    }
-
-    function renderLegendStatsModeMenu() {
-      const menu = $("#legendStatsModeMenu");
-      if (!menu) return;
-      menu.innerHTML = Object.entries(LEGEND_STATS_MODE_META).map(([mode, meta]) => `
-        <button type="button" role="menuitemradio" aria-pressed="${legendStatsMode === mode}" data-legend-stats-mode-option="${mode}" aria-label="${escapeHtml(meta.label)}" title="${escapeHtml(meta.label)}">${meta.icon}</button>
-      `).join("");
-      menu.classList.toggle("hidden", !legendStatsMenuOpen);
-      $$("[data-legend-stats-mode-option]", menu).forEach(button => {
-        button.addEventListener("click", event => {
-          event.stopPropagation();
-          setLegendStatsMode(button.dataset.legendStatsModeOption);
-        });
-      });
-    }
-
-    function toggleLegendStatsModeMenu(event) {
-      event?.stopPropagation();
-      legendStatsMenuOpen = !legendStatsMenuOpen;
-      renderLegendStatsModeMenu();
-      syncLegendStatsModeButton();
     }
 
     function closeLegendPositionMenu() {
@@ -23569,6 +23462,27 @@
       return counts;
     }
 
+    function waypointLegendStats(set) {
+      const counts = Object.fromEntries(state.levels.map(level => [level.id, 0]));
+      const seenItems = new Set();
+      suggestedSetLinkedEntries(set.id).forEach(ref => {
+        const itemId = ref.note.sourceItemId || "";
+        if (!itemId || seenItems.has(itemId)) return;
+        seenItems.add(itemId);
+        const level = levelById(ref.note.levelId);
+        if (level && counts[level.id] !== undefined) counts[level.id] += 1;
+      });
+      const total = Math.max(1, set.items.length);
+      return {
+        counts,
+        counted: seenItems.size,
+        total,
+        denominator: total,
+        pct: Math.round((seenItems.size / total) * 100),
+        set
+      };
+    }
+
     function stateCountsTowardStats(abbr) {
       const level = dominantLevel(abbr);
       return Boolean(level && level.countsTowardStats !== false);
@@ -23590,22 +23504,28 @@
 
     function renderLegend() {
       noteLevelFilters = new Set([...noteLevelFilters].filter(id => levelById(id)));
-      if (legendStatsMode === "waypoints") {
-        renderWaypointPackLegend();
-        return;
-      }
-      const counts = levelCounts();
-      const totalRegions = activeRegionCodes().length;
-      const counted = countedStateTotal();
-      const completionTotal = completionRegionTotal();
-      const completionPct = Math.round((counted / completionTotal) * 100);
-      $("#legendTotals").innerHTML = `<span class="percent-pill">${completionPct}%</span><span class="count-pill">${counted}/${completionTotal}</span>`;
-      $("#legendList").innerHTML = state.levels.map((level, index) => `
+      const targetSet = activeMapLabelTargetSet();
+      const stats = targetSet
+        ? waypointLegendStats(targetSet)
+        : {
+          counts: levelCounts(),
+          counted: countedStateTotal(),
+          total: completionRegionTotal(),
+          denominator: activeRegionCodes().length,
+          pct: Math.round((countedStateTotal() / completionRegionTotal()) * 100),
+          set: null
+        };
+      $("#legendTotals").innerHTML = `<span class="percent-pill">${stats.pct}%</span><span class="count-pill">${stats.counted}/${stats.total}</span>`;
+      $("#legendList").innerHTML = state.levels.map((level, index) => {
+        const count = stats.counts[level.id] || 0;
+        const pct = Math.round((count / Math.max(1, stats.denominator)) * 100);
+        const excludedFromNormalStats = !stats.set && level.countsTowardStats === false;
+        return `
         <div class="legend-item ${noteLevelFilters.has(level.id) ? "is-filtered" : ""} ${level.countsTowardStats === false ? "is-nonstat" : ""} ${level.isBucketList ? "is-bucket-list" : ""}" data-legend-item="${level.id}">
           <button class="legend-filter" type="button" aria-pressed="${noteLevelFilters.has(level.id)}" data-filter-level="${level.id}" title="${escapeHtml(level.definition)}">
-            <span class="stat-color-pill ${level.countsTowardStats === false ? "is-nonstat" : ""}" style="--level-color:${level.color}" aria-label="${escapeHtml(level.name)} stats">
-              ${level.countsTowardStats === false ? `<span class="percent-pill no-stat-pill" title="Excluded from stats">⊘</span>` : `<span class="percent-pill">${Math.round(((counts[level.id] || 0) / totalRegions) * 100)}%</span>`}
-              <span class="count-pill">${counts[level.id] || 0}</span>
+            <span class="stat-color-pill ${level.countsTowardStats === false ? "is-nonstat" : ""}" style="--level-color:${level.color}" aria-label="${escapeHtml(level.name)}${stats.set ? ` in ${stats.set.name}` : ""} stats">
+              ${excludedFromNormalStats ? `<span class="percent-pill no-stat-pill" title="Excluded from stats">⊘</span>` : `<span class="percent-pill">${pct}%</span>`}
+              <span class="count-pill">${count}</span>
             </span>
             <span class="level-copy">
               <span class="level-name">${escapeHtml(level.name)}</span><br>
@@ -23622,7 +23542,8 @@
           </span>
           <button class="icon-btn legend-swipe-dismiss" type="button" data-legend-swipe-close="${level.id}" aria-label="Dismiss ${escapeHtml(level.name)} quick actions" title="Dismiss quick actions">${buttonMarkup(__XMARK, "Close")}</button>
         </div>
-      `).join("");
+      `;
+      }).join("");
       $$("[data-filter-level]").forEach(button => button.addEventListener("click", event => {
         const item = event.currentTarget.closest("[data-legend-item]");
         if (Date.now() < legendSwipeSuppressClickUntil || item?.dataset.swipeSuppress === "true") {
@@ -23644,52 +23565,6 @@
       $("#addLevelBtn").disabled = atMax;
 
       setButtonLabel("#addLevelBtn", __PLUS_APP_FILL, "Add Level", atMax ? "Maximum levels reached" : "Add Level", atMax ? "Maximum levels reached" : "Add Level");
-    }
-
-    function renderWaypointPackLegend() {
-      const packs = SUGGESTED_SETS;
-      const totalItems = packs.reduce((sum, set) => sum + set.items.length, 0);
-      const totalLinked = packs.reduce((sum, set) => sum + suggestedSetProgress(set.id).linked, 0);
-      const totalPct = totalItems ? Math.round((totalLinked / totalItems) * 100) : 0;
-      $("#legendTotals").innerHTML = `<span class="percent-pill">${totalPct}%</span><span class="count-pill">${totalLinked}/${totalItems}</span>`;
-      // Mirror the level-row template so Locations and Waypoint Packs read the
-      // same — the only swap is the left swatch, which carries the pack icon
-      // (in a light chip) plus the linked %/count instead of a level color.
-      $("#legendList").innerHTML = packs.map(set => {
-        const progress = suggestedSetProgress(set.id);
-        const pct = progress.total ? Math.round((progress.linked / progress.total) * 100) : 0;
-        const active = activeSuggestedSet()?.id === set.id;
-        return `
-          <div class="legend-item is-waypoint-pack ${active ? "is-filtered" : ""}" data-legend-pack="${escapeHtml(set.id)}">
-            <button class="legend-filter" type="button" aria-pressed="${active ? "true" : "false"}" data-legend-pack-select="${escapeHtml(set.id)}" title="${escapeHtml(set.description || set.name)}">
-              <span class="stat-color-pill is-waypoint-pack" style="--level-color:#14b8a6" aria-label="${escapeHtml(set.name)} pack stats">
-                <span class="legend-pack-icon" aria-hidden="true">${visitTypeIcon(suggestedSetIconId(set.id))}</span>
-                <span class="percent-pill">${pct}%</span>
-                <span class="count-pill">${progress.linked}/${progress.total}</span>
-              </span>
-              <span class="level-copy">
-                <span class="level-name">${escapeHtml(set.name)}</span><br>
-                <small>${escapeHtml(set.description || `${set.itemNoun || "location"} pack`)}</small>
-              </span>
-            </button>
-          </div>
-        `;
-      }).join("");
-      $$("[data-legend-pack-select]").forEach(button => button.addEventListener("click", () => {
-        activateSuggestedSet(button.dataset.legendPackSelect);
-        if (bucketListViewActive()) state.settings.suggestedSetsVisible = true;
-        save();
-        renderLegend();
-        renderMap();
-        renderSetsDialog();
-        syncButtonLabels();
-      }));
-      $("#addLevelBtn").disabled = state.levels.length >= 5;
-      setButtonLabel("#addLevelBtn", __PLUS_APP_FILL, "Add Level", state.levels.length >= 5 ? "Maximum levels reached" : "Add Level", state.levels.length >= 5 ? "Maximum levels reached" : "Add Level");
-    }
-
-    function toggleLegendStatsMode() {
-      setLegendStatsMode(legendStatsMode === "waypoints" ? "levels" : "waypoints");
     }
 
     function toggleNoteLevelFilter(levelId) {
@@ -28870,7 +28745,6 @@
       $("#mapMatchNotesBtn").addEventListener("click", () => updateSetting("mapFollowsNotesFilters", state.settings.mapFollowsNotesFilters !== true));
       $("#mapToggleBtn").addEventListener("click", toggleMapPanel);
       $("#legendToggleBtn").addEventListener("click", toggleLegendPanel);
-      $("#legendStatsModeBtn").addEventListener("click", toggleLegendStatsModeMenu);
       $("#notesToggleBtn").addEventListener("click", toggleNotesPanel);
       $("#basecampBtn").addEventListener("click", openBasecampDialog);
       $("#basecampText").addEventListener("input", handleBasecampInput);
@@ -29333,7 +29207,6 @@
       window.addEventListener("blur", () => setPowerOverlay(false));
       window.addEventListener("resize", () => {
         if (!legendPositionControlAvailable()) closeLegendPositionMenu();
-        closeLegendStatsMenu();
         if (ringStyleMenuOpen) closeRingStyleMenu();
         if (ringTimeMenuOpen) closeRingTimeMenu();
         syncButtonLabels();
@@ -29342,10 +29215,6 @@
       document.addEventListener("click", event => {
         if (!legendPositionMenuOpen || event.target.closest(".legend-position-picker")) return;
         closeLegendPositionMenu();
-      });
-      document.addEventListener("click", event => {
-        if (!legendStatsMenuOpen || event.target.closest(".legend-stats-picker")) return;
-        closeLegendStatsMenu();
       });
       document.addEventListener("click", event => {
         if (!ringStyleMenuOpen || event.target.closest(".ring-style-picker")) return;
