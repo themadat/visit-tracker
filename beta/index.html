@@ -1531,13 +1531,18 @@
     .map-label-target-icon {
       display: grid;
       place-items: center;
-      width: 28px;
-      min-width: 28px;
+      width: 30px;
+      min-width: 30px;
     }
 
-    .map-label-toggle>span .sf-symbol {
-      width: 24px;
-      height: 24px;
+    .map-label-target-icon .sf-symbol,
+    .map-label-target-icon .pack-symbol {
+      width: 28px;
+      height: 28px;
+      overflow: visible;
+    }
+
+    .map-label-target-icon .sf-symbol {
       color: color-mix(in srgb, var(--text) 72%, var(--muted) 28%);
     }
 
@@ -1573,16 +1578,16 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 22px;
-      min-width: 22px;
+      width: 15px;
+      min-width: 15px;
       min-height: 30px;
-      padding: .18rem;
+      padding: .12rem .06rem;
       margin-block: 0;
     }
 
     .map-waypoint-labels-toggle .sf-symbol {
-      width: .9rem;
-      height: .9rem;
+      width: .48rem;
+      height: .48rem;
     }
 
     .map-label-toggle .map-waypoint-labels-menu {
@@ -2161,6 +2166,22 @@
 
     [data-theme="dark"] .map-location-marker text {
       fill: #07111f;
+    }
+
+    .map-location-marker .marker-label {
+      fill: var(--text);
+      stroke: var(--surface);
+      stroke-width: 2.8;
+      paint-order: stroke fill;
+      font-size: 8.8px;
+      font-weight: 940;
+      letter-spacing: 0;
+      text-anchor: middle;
+      dominant-baseline: central;
+    }
+
+    .map-location-marker .marker-label.is-name {
+      font-size: 7.9px;
     }
 
     .map-marker-icon {
@@ -15419,7 +15440,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.22";
+    const APP_VERSION = "4.3.0.23";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -17399,7 +17420,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.22",
+        version: "4.3.0.23",
         date: "2026-06-04",
         title: "Waypoint Pack",
         summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
@@ -17410,12 +17431,13 @@
           "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.22",
+          version: "4.3.0.23",
           title: "Waypoint Pack",
           summary: "Add Parks and Monuments as prioritized Wayfinder notes.",
           cta: "Pack the Map!"
         },
         updates: [
+          "Sized the map Labels target icon and chevron correctly and applied waypoint labels to existing linked note pins.",
           "Restored normal state and territory labels as an exclusive map Labels target beside linked waypoint packs.",
           "Made the map Labels pack chevron open only as a pack icon picker and moved pack labels to the standard label buttons.",
           "Kept Pack Locations search and actions on one header row with search stretching across the available space.",
@@ -22019,6 +22041,41 @@
       return sortedMarkerItems(cluster.items)[0] || cluster.items[0];
     }
 
+    function linkedWaypointLabelItem(cluster) {
+      const set = activeMapLabelTargetSet();
+      if (!set) return null;
+      const mode = suggestedSetLabelMode(set.id);
+      if (mode === "none") return null;
+      return sortedMarkerItems(cluster.items).find(item => {
+        const source = suggestedSetSourceForNote(item.note);
+        return source?.set?.id === set.id;
+      }) || null;
+    }
+
+    function appendLinkedWaypointMarkerLabel(group, cluster) {
+      const item = linkedWaypointLabelItem(cluster);
+      if (!item) return;
+      const source = suggestedSetSourceForNote(item.note);
+      if (!source) return;
+      const mode = suggestedSetLabelMode(source.set.id);
+      if (mode === "none") return;
+      const svgNS = "http://www.w3.org/2000/svg";
+      const label = document.createElementNS(svgNS, "text");
+      label.classList.add("marker-label");
+      if (mode === "name") label.classList.add("is-name");
+      label.setAttribute("x", "0");
+      label.setAttribute("y", "-14");
+      const parts = mode === "both" ? [source.item.labelAbbr, source.item.name] : [mode === "name" ? source.item.name : source.item.labelAbbr];
+      parts.filter(Boolean).forEach((part, index) => {
+        const tspan = document.createElementNS(svgNS, "tspan");
+        tspan.setAttribute("x", "0");
+        if (index) tspan.setAttribute("dy", "6.6");
+        tspan.textContent = part;
+        label.append(tspan);
+      });
+      if (label.childNodes.length) group.append(label);
+    }
+
     function markerClusterThresholdForZoom(zoom) {
       return Math.max(2.5, 14 / Math.max(1, zoom));
     }
@@ -22553,6 +22610,7 @@
           countText.textContent = String(Math.min(count, 9));
           group.append(countText);
         }
+        appendLinkedWaypointMarkerLabel(group, cluster);
         const open = event => {
           event.preventDefault();
           event.stopPropagation();
