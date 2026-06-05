@@ -140,6 +140,10 @@ WISH-068 tracks a small raptor easter egg.
 WISH-071 tracks an optional latitude/longitude line overlay for US and World
 maps.
 
+WISH-072 tracks linking multiple notes to one Waypoint Pack location, so repeat
+visits or separate trip notes can all belong to the same waypoint without being
+merged into a single note.
+
 ## National Parks Snapshot
 
 | Park | Code |
