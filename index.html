@@ -1495,7 +1495,8 @@
     }
 
     #labelsToggleLabel {
-      width: 40px;
+      width: auto;
+      min-width: 40px;
     }
 
     .map-label-toggle {
@@ -1509,13 +1510,15 @@
     }
 
     .map-label-toggle>span {
-      display: grid;
-      place-items: center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .08rem;
       align-self: stretch;
-      width: 40px;
+      width: auto;
       min-width: 40px;
       min-height: 30px;
-      padding: 0 .34rem;
+      padding: 0 .18rem;
       border: 0;
       border-radius: calc(var(--radius) - 1px) 0 0 calc(var(--radius) - 1px);
       background: color-mix(in srgb, var(--surface-3) 75%, var(--line) 45%);
@@ -1523,6 +1526,13 @@
       font-size: .78rem;
       font-weight: 820;
       box-shadow: inset -1px 0 0 color-mix(in srgb, var(--line) 62%, transparent);
+    }
+
+    .map-label-target-icon {
+      display: grid;
+      place-items: center;
+      width: 28px;
+      min-width: 28px;
     }
 
     .map-label-toggle>span .sf-symbol {
@@ -1563,10 +1573,11 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 30px;
-      min-width: 30px;
+      width: 22px;
+      min-width: 22px;
       min-height: 30px;
-      padding: .24rem;
+      padding: .18rem;
+      margin-block: 0;
     }
 
     .map-waypoint-labels-toggle .sf-symbol {
@@ -9476,8 +9487,10 @@
               <div class="map-control-row">
                 <div class="map-action-group map-label-group">
                   <div class="segmented map-label-toggle" aria-label="Map labels">
-                    <span id="labelsToggleLabel" title="Map Label Type">Labels</span>
-                    <div id="mapWaypointPackLabels" class="map-waypoint-labels hidden"></div>
+                    <span id="labelsToggleLabel" title="Map Label Type">
+                      <span class="map-label-target-icon" data-map-label-target-icon>Labels</span>
+                      <span id="mapWaypointPackLabels" class="map-waypoint-labels hidden"></span>
+                    </span>
                     <button id="labelsNoneBtn" type="button" aria-pressed="true" data-shortcut="4">None</button>
                     <button id="labelsAbbrBtn" type="button" aria-pressed="false" data-shortcut="3">Abbr</button>
                     <button id="labelsNameBtn" type="button" aria-pressed="false" data-shortcut="2">Name</button>
@@ -15406,7 +15419,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.21";
+    const APP_VERSION = "4.3.0.22";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -17386,7 +17399,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.21",
+        version: "4.3.0.22",
         date: "2026-06-04",
         title: "Waypoint Pack",
         summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
@@ -17397,12 +17410,13 @@
           "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.21",
+          version: "4.3.0.22",
           title: "Waypoint Pack",
           summary: "Add Parks and Monuments as prioritized Wayfinder notes.",
           cta: "Pack the Map!"
         },
         updates: [
+          "Restored normal state and territory labels as an exclusive map Labels target beside linked waypoint packs.",
           "Made the map Labels pack chevron open only as a pack icon picker and moved pack labels to the standard label buttons.",
           "Kept Pack Locations search and actions on one header row with search stretching across the available space.",
           "Made hidden excluded-location filters hide excluded-level note pins even inside visited locations.",
@@ -18575,6 +18589,7 @@
           dateOrder: "mdy",
           dateStyle: "alpha",
           mapLabels: "none",
+          mapLabelTargetSetId: "",
           suggestedSetsVisible: false,
           activeSuggestedSetId: SUGGESTED_SET_DEFAULT_ID,
           suggestedSetIcons: { [SUGGESTED_SET_DEFAULT_ID]: SUGGESTED_SET_BY_ID[SUGGESTED_SET_DEFAULT_ID]?.defaultIconId || SUGGESTED_SET_DEFAULT_ICON },
@@ -18954,6 +18969,7 @@
       if (!["mdy", "dmy", "ymd"].includes(next.settings.dateOrder)) next.settings.dateOrder = "mdy";
       if (!["numeric", "alpha"].includes(next.settings.dateStyle)) next.settings.dateStyle = "alpha";
       if (!["none", "abbr", "name"].includes(next.settings.mapLabels)) next.settings.mapLabels = "none";
+      next.settings.mapLabelTargetSetId = SUGGESTED_SET_BY_ID[next.settings.mapLabelTargetSetId] ? next.settings.mapLabelTargetSetId : "";
       if (typeof next.settings.suggestedSetsVisible !== "boolean") next.settings.suggestedSetsVisible = false;
       next.settings.activeSuggestedSetId = SUGGESTED_SET_BY_ID[next.settings.activeSuggestedSetId] ? next.settings.activeSuggestedSetId : SUGGESTED_SET_DEFAULT_ID;
       next.settings.suggestedSetLabelModes = normalizeSuggestedSetLabelModes(next.settings.suggestedSetLabelModes);
@@ -20708,24 +20724,35 @@
       return SUGGESTED_SETS.filter(set => suggestedSetProgress(set.id).linked > 0);
     }
 
-    function activeMapWaypointLabelSet() {
+    function activeMapLabelTargetSet() {
       if (activeLayerId !== "us") return null;
       const added = addedSuggestedSets();
       if (!added.length) return null;
-      return added.find(set => set.id === state.settings.activeSuggestedSetId) || added[0];
+      return added.find(set => set.id === state.settings.mapLabelTargetSetId) || null;
     }
 
     function setActiveMapLabelMode(mode) {
-      const set = activeMapWaypointLabelSet();
+      const set = activeMapLabelTargetSet();
       if (set) {
-        state.settings.activeSuggestedSetId = set.id;
         setSuggestedSetLabelMode(set.id, mode);
-        if (bucketListViewActive()) state.settings.suggestedSetsVisible = true;
         save();
         render();
         return;
       }
       updateSetting("mapLabels", mode);
+    }
+
+    function setMapLabelTarget(setId = "") {
+      const added = addedSuggestedSets();
+      const set = added.find(item => item.id === setId) || null;
+      state.settings.mapLabelTargetSetId = set?.id || "";
+      if (set) {
+        state.settings.activeSuggestedSetId = set.id;
+        if (bucketListViewActive()) state.settings.suggestedSetsVisible = true;
+      }
+      mapWaypointPackMenuOpen = false;
+      save();
+      render();
     }
 
     function suggestedSetIconInActiveUse(iconId) {
@@ -21276,7 +21303,8 @@
       setButtonLabel("#legendToggleBtn", __CHECKLIST_UNCHECKED, "Legend", "Toggle Legend Panel", "Toggle Legend Panel");
       setButtonLabel("#notesToggleBtn", __LIST_BULLET_RECTANGLE_PORTRAIT_FILL, "Notes", "Toggle Notes Panel", "Toggle Notes Panel");
       setButtonLabel("#basecampBtn", __LONG_TEXT_PAGE_AND_PENCIL, "Basecamp", "Open Basecamp notes", "Open Basecamp notes");
-      $("#labelsToggleLabel").innerHTML = prefersSymbols() ? __TAG_FILL : "Labels";
+      const mapLabelTargetIcon = $("[data-map-label-target-icon]");
+      if (mapLabelTargetIcon) mapLabelTargetIcon.innerHTML = prefersSymbols() ? __TAG_FILL : "Labels";
       setButtonLabel("#labelsNoneBtn", __CIRCLE_SLASH, "None", "No map labels");
       setButtonLabel("#labelsAbbrBtn", __CHARACTER, "Abbr", "Show location abbreviations");
       setButtonLabel("#labelsNameBtn", __TEXTFORMAT, "Name", "Show location names");
@@ -22348,6 +22376,8 @@
     }
 
     function appendSuggestedSetMarkerLabel(group, set, item, note) {
+      if (state.settings.mapLabelTargetSetId !== set.id) return;
+      if (!note) return;
       const mode = suggestedSetLabelMode(set.id);
       if (mode === "none") return;
       const svgNS = "http://www.w3.org/2000/svg";
@@ -22915,31 +22945,35 @@
     function renderMapWaypointPackLabelsControl() {
       const host = $("#mapWaypointPackLabels");
       if (!host) return;
-      const added = addedSuggestedSets();
+      const added = activeLayerId === "us" ? addedSuggestedSets() : [];
       host.classList.toggle("hidden", !added.length);
-      const labelIcon = $("#labelsToggleLabel");
+      const labelIcon = $("[data-map-label-target-icon]");
+      const selected = activeMapLabelTargetSet();
+      if (labelIcon) {
+        labelIcon.innerHTML = selected ? visitTypeIcon(suggestedSetIconId(selected.id)) : prefersSymbols() ? __TAG_FILL : "Labels";
+        $("#labelsToggleLabel").title = selected ? `${selected.name} Label Type` : "Map Label Type";
+      }
+      syncMapLabelButtons(selected ? suggestedSetLabelMode(selected.id) : state.settings.mapLabels || "none");
       if (!added.length) {
         host.innerHTML = "";
         mapWaypointPackMenuOpen = false;
         return;
       }
-      const selected = activeMapWaypointLabelSet() || added[0];
-      if (labelIcon) {
-        labelIcon.innerHTML = visitTypeIcon(suggestedSetIconId(selected.id));
-        labelIcon.title = `${selected.name} Label Type`;
-      }
-      syncMapLabelButtons(suggestedSetLabelMode(selected.id));
       host.innerHTML = `
         <button class="map-waypoint-labels-toggle" type="button" data-map-waypoint-menu
-          aria-expanded="${mapWaypointPackMenuOpen ? "true" : "false"}" aria-label="Choose waypoint label pack"
-          title="Choose waypoint label pack">
+          aria-expanded="${mapWaypointPackMenuOpen ? "true" : "false"}" aria-label="Choose label target"
+          title="Choose label target">
           ${__CHEVRON_DOWN_CIRCLE}
         </button>
         <div class="map-waypoint-labels-menu" ${mapWaypointPackMenuOpen ? "" : "hidden"}>
-          <div class="map-waypoint-pack-grid" aria-label="Waypoint label packs">
+          <div class="map-waypoint-pack-grid" aria-label="Map label targets">
+            <button class="map-waypoint-pack-select" type="button" data-map-label-target=""
+              aria-pressed="${selected ? "false" : "true"}" aria-label="States and territories" title="States and territories">
+              ${__TAG_FILL}
+            </button>
             ${added.map(set => `
               <button class="map-waypoint-pack-select" type="button" data-map-waypoint-pack="${escapeHtml(set.id)}"
-                aria-pressed="${selected.id === set.id ? "true" : "false"}" aria-label="${escapeHtml(set.name)}" title="${escapeHtml(set.name)}">
+                aria-pressed="${selected?.id === set.id ? "true" : "false"}" aria-label="${escapeHtml(set.name)}" title="${escapeHtml(set.name)}">
                 ${visitTypeIcon(suggestedSetIconId(set.id))}
               </button>
             `).join("")}
@@ -23091,6 +23125,7 @@
       const labels = $("#mapLabels");
       if (!labels) return;
       labels.innerHTML = "";
+      if (activeMapLabelTargetSet()) return;
       const mode = state.settings.mapLabels || "none";
       syncMapLabelButtons(mode);
       if (mode === "none") return;
@@ -29189,11 +29224,12 @@
         }
         const pack = event.target.closest("[data-map-waypoint-pack]");
         if (pack) {
-          state.settings.activeSuggestedSetId = pack.dataset.mapWaypointPack;
-          if (bucketListViewActive()) state.settings.suggestedSetsVisible = true;
-          mapWaypointPackMenuOpen = false;
-          save();
-          render();
+          setMapLabelTarget(pack.dataset.mapWaypointPack);
+          return;
+        }
+        const target = event.target.closest("[data-map-label-target]");
+        if (target) {
+          setMapLabelTarget("");
           return;
         }
         if (!mapWaypointPackMenuOpen || event.target.closest("#mapWaypointPackLabels")) return;
