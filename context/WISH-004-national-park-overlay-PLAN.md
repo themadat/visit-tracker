@@ -112,10 +112,11 @@ occurs only when the user clicks a location's Photo action.
     edit labels for linked overlay markers and existing linked note pins from
     that pack.
 - Add Legend pack stats:
-  - Legend can switch between normal level stats and Waypoint Pack stats.
-  - Pack stats preserve the same levels, colors, and level meanings; they only
-    summarize pack completion and show level-colored breakdown chips for linked
-    pack notes.
+  - Legend stats follow the selected map Labels target.
+  - Normal state/territory labels use normal location-level stats.
+  - Selecting a Waypoint Pack label target keeps the same level rows, names,
+    colors, descriptions, and actions, but changes only the counts and
+    percentages to summarize linked pack notes by level.
 - Add exports:
   - JSON includes normalized note metadata and priority naturally.
   - Markdown/RTF/Text add Waypoint Packs sections when linked pack notes exist.
@@ -273,8 +274,8 @@ maps.
   picker, can return to normal state/territory labels, swaps the icon for a
   selected pack, and lets the standard label buttons change labels for linked
   overlay markers and existing linked note pins from that pack.
-- Switch Legend to Pack Stats; confirm each pack shows linked/total percentage
-  and level-colored breakdown chips without changing the user's levels.
+- Select a Waypoint Pack in the map Labels target picker; confirm Legend keeps
+  the same level rows but changes counts and percentages to linked pack notes.
 - Verify unlinked rows disable Unlink, disable Edit/Link when no state-scoped
   notes are available, and auto-expand the attach selector from Edit/Link with
   no placeholder option when one is.
