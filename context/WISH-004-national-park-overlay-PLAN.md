@@ -117,6 +117,10 @@ occurs only when the user clicks a location's Photo action.
   - Selecting a Waypoint Pack label target keeps the same level rows, names,
     colors, descriptions, and actions, but changes only the counts and
     percentages to summarize linked pack notes by level.
+  - Wayfinder levels count toward Legend denominators and per-level
+    percentages, but not completed totals.
+  - Hard-excluded levels remain excluded from denominators for both normal
+    location stats and Waypoint Pack stats.
 - Add exports:
   - JSON includes normalized note metadata and priority naturally.
   - Markdown/RTF/Text add Waypoint Packs sections when linked pack notes exist.
