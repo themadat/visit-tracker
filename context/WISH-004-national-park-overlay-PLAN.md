@@ -56,6 +56,8 @@ occurs only when the user clicks a location's Photo action.
     add/refresh, and remove.
   - Pack Locations has a compact search field for quickly finding a waypoint
     by name, code, full name, or listed location before linking or editing it.
+  - Pack Locations header keeps its search field and all actions on one row,
+    with search stretching between the Pack Locations title and the controls.
   - Pack Locations uses compact toolbar rows with a flexible wrapping
     name/code/location block, Website and on-demand Wikipedia Photo actions,
     inline Priority, contextual Link/Edit and Unlink, and pre-link `Note`
@@ -102,9 +104,15 @@ occurs only when the user clicks a location's Photo action.
     normal linked-note pins.
   - Label UI reuses the map label button style with `Off`, `Abbr`, and `Name`.
     National Parks default to labels off.
-  - Once a pack has linked notes, the map Labels group gains a compact added
-    pack dropdown. It lists added packs by icon, switches the active one-pack
-    overlay, and edits each pack's saved `Off`, `Abbr`, or `Name` preference.
+  - Once a pack has linked notes, the existing map Labels segmented control
+    gains a compact pack dropdown beside the tag icon. It lists added packs by
+    icon, switches the active one-pack overlay, and edits each pack's saved
+    `Off`, `Abbr`, or `Name` preference.
+- Add Legend pack stats:
+  - Legend can switch between normal level stats and Waypoint Pack stats.
+  - Pack stats preserve the same levels, colors, and level meanings; they only
+    summarize pack completion and show level-colored breakdown chips for linked
+    pack notes.
 - Add exports:
   - JSON includes normalized note metadata and priority naturally.
   - Markdown/RTF/Text add Waypoint Packs sections when linked pack notes exist.
@@ -253,6 +261,15 @@ maps.
   and change each pack's saved Off/Abbr/Name setting.
 - Exit Wayfinder while a pack overlay is visible; confirm the overlay turns off
   and normal linked-note pins return.
+- Confirm Pack Locations search, overlay, label, Add/Refresh, and Remove
+  controls stay on a single header row and search takes the spare width.
+- Hide excluded locations with mixed visited/excluded notes; confirm
+  excluded-level note pins disappear even when their location has a visited
+  level.
+- Use the pack dropdown inside the map Labels segmented control; confirm it
+  opens beside the tag icon and changes the selected pack's label mode.
+- Switch Legend to Pack Stats; confirm each pack shows linked/total percentage
+  and level-colored breakdown chips without changing the user's levels.
 - Verify unlinked rows disable Unlink, disable Edit/Link when no state-scoped
   notes are available, and auto-expand the attach selector from Edit/Link with
   no placeholder option when one is.
