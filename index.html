@@ -3333,34 +3333,6 @@
       cursor: pointer;
     }
 
-    .legend-pack-levels {
-      display: flex;
-      flex-wrap: wrap;
-      gap: .18rem .24rem;
-      margin-top: .25rem;
-    }
-
-    .legend-pack-level-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: .18rem;
-      min-height: 1.2rem;
-      padding: .08rem .26rem;
-      border: 1px solid color-mix(in srgb, var(--level-color) 58%, var(--line));
-      border-radius: 999px;
-      background: color-mix(in srgb, var(--level-color) 16%, var(--surface));
-      color: var(--text);
-      font-size: .68rem;
-      font-weight: 820;
-      line-height: 1.1;
-    }
-
-    .legend-pack-level-chip.is-empty {
-      color: var(--muted);
-      border-style: dashed;
-      background: var(--surface-2);
-    }
-
     .legend-drag-placeholder {
       width: 100%;
       border: 2px solid var(--accent);
@@ -3589,6 +3561,24 @@
       min-width: 1.62rem;
       color: var(--muted);
       background: color-mix(in srgb, var(--surface) 82%, transparent);
+    }
+
+    /* Waypoint Pack swatch: the pack icon rides in a light chip (matching the
+       %/count chips) so it reads the same in both themes against the teal pill. */
+    .stat-color-pill.is-waypoint-pack .legend-pack-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.5rem;
+      min-width: 1.5rem;
+      height: 1.06rem;
+      padding: .04rem;
+      border: 1px solid color-mix(in srgb, var(--surface) 54%, transparent);
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--surface) 86%, transparent);
+      color: color-mix(in srgb, var(--text) 84%, var(--accent-2) 16%);
+      font-size: .92rem;
+      line-height: 1;
     }
 
     .dot {
@@ -15491,7 +15481,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.25";
+    const APP_VERSION = "4.3.0.26";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -17471,7 +17461,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.25",
+        version: "4.3.0.26",
         date: "2026-06-04",
         title: "Waypoint Pack",
         summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
@@ -17482,12 +17472,13 @@
           "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.25",
+          version: "4.3.0.26",
           title: "Waypoint Pack",
           summary: "Add Parks and Monuments as prioritized Wayfinder notes.",
           cta: "Pack the Map!"
         },
         updates: [
+          "Reworked the Legend view dropdown to switch between Locations and Waypoint Packs, with pack rows reusing the level-row layout — the pack icon now sits in the left swatch beside linked progress, with the pack name and description.",
           "Replaced the Legend Packs toggle with a compact stats-view dropdown and enlarged map Labels target choices.",
           "Slightly enlarged the Labels target chevron and fixed linked waypoint label color in dark mode.",
           "Sized the map Labels target icon and chevron correctly and applied waypoint labels to existing linked note pins.",
@@ -21545,8 +21536,8 @@
     }
 
     const LEGEND_STATS_MODE_META = {
-      levels: { label: "Levels", icon: __TAG_CIRCLE, title: "Show level stats" },
-      waypoints: { label: "Waypoint Packs", icon: __LIST_BULLET_CIRCLE, title: "Show Waypoint Pack stats" }
+      levels: { label: "Locations", icon: __TAG_CIRCLE, title: "Show location levels" },
+      waypoints: { label: "Waypoint Packs", icon: __LIST_BULLET_CIRCLE, title: "Show Waypoint Packs" }
     };
 
     function syncLegendStatsModeButton() {
@@ -23655,33 +23646,15 @@
       setButtonLabel("#addLevelBtn", __PLUS_APP_FILL, "Add Level", atMax ? "Maximum levels reached" : "Add Level", atMax ? "Maximum levels reached" : "Add Level");
     }
 
-    function waypointPackLegendLevelChips(set) {
-      const total = Math.max(1, set.items.length || 0);
-      const entries = suggestedSetLinkedEntries(set.id);
-      const counts = new Map();
-      entries.forEach(ref => {
-        const levelId = levelById(ref.note.levelId)?.id || "";
-        counts.set(levelId, (counts.get(levelId) || 0) + 1);
-      });
-      const chips = state.levels
-        .map(level => {
-          const count = counts.get(level.id) || 0;
-          if (!count) return "";
-          const pct = Math.round((count / total) * 100);
-          return `<span class="legend-pack-level-chip" style="--level-color:${escapeHtml(level.color)}" title="${escapeHtml(level.name)}: ${count}/${total}">${escapeHtml(level.name)} ${pct}% · ${count}</span>`;
-        })
-        .filter(Boolean);
-      const unassigned = counts.get("") || 0;
-      if (unassigned) chips.push(`<span class="legend-pack-level-chip is-empty" title="No level: ${unassigned}/${total}">No Level · ${unassigned}</span>`);
-      return chips.length ? `<span class="legend-pack-levels">${chips.join("")}</span>` : `<span class="legend-pack-levels"><span class="legend-pack-level-chip is-empty">No linked notes yet</span></span>`;
-    }
-
     function renderWaypointPackLegend() {
       const packs = SUGGESTED_SETS;
       const totalItems = packs.reduce((sum, set) => sum + set.items.length, 0);
       const totalLinked = packs.reduce((sum, set) => sum + suggestedSetProgress(set.id).linked, 0);
       const totalPct = totalItems ? Math.round((totalLinked / totalItems) * 100) : 0;
       $("#legendTotals").innerHTML = `<span class="percent-pill">${totalPct}%</span><span class="count-pill">${totalLinked}/${totalItems}</span>`;
+      // Mirror the level-row template so Locations and Waypoint Packs read the
+      // same — the only swap is the left swatch, which carries the pack icon
+      // (in a light chip) plus the linked %/count instead of a level color.
       $("#legendList").innerHTML = packs.map(set => {
         const progress = suggestedSetProgress(set.id);
         const pct = progress.total ? Math.round((progress.linked / progress.total) * 100) : 0;
@@ -23689,14 +23662,14 @@
         return `
           <div class="legend-item is-waypoint-pack ${active ? "is-filtered" : ""}" data-legend-pack="${escapeHtml(set.id)}">
             <button class="legend-filter" type="button" aria-pressed="${active ? "true" : "false"}" data-legend-pack-select="${escapeHtml(set.id)}" title="${escapeHtml(set.description || set.name)}">
-              <span class="stat-color-pill" style="--level-color:#14b8a6" aria-label="${escapeHtml(set.name)} pack stats">
+              <span class="stat-color-pill is-waypoint-pack" style="--level-color:#14b8a6" aria-label="${escapeHtml(set.name)} pack stats">
+                <span class="legend-pack-icon" aria-hidden="true">${visitTypeIcon(suggestedSetIconId(set.id))}</span>
                 <span class="percent-pill">${pct}%</span>
                 <span class="count-pill">${progress.linked}/${progress.total}</span>
               </span>
               <span class="level-copy">
-                <span class="level-name">${visitTypeIcon(suggestedSetIconId(set.id))} ${escapeHtml(set.name)}</span><br>
-                <small>${escapeHtml(progress.notes)} linked note${progress.notes === 1 ? "" : "s"} · ${escapeHtml(set.itemNoun || "location")} pack</small>
-                ${waypointPackLegendLevelChips(set)}
+                <span class="level-name">${escapeHtml(set.name)}</span><br>
+                <small>${escapeHtml(set.description || `${set.itemNoun || "location"} pack`)}</small>
               </span>
             </button>
           </div>
