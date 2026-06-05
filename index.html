@@ -1554,7 +1554,8 @@
     }
 
     .map-waypoint-labels.hidden,
-    .map-waypoint-labels-menu[hidden] {
+    .map-waypoint-labels-menu[hidden],
+    .map-label-toggle .map-waypoint-labels-menu[hidden] {
       display: none;
     }
 
@@ -1580,7 +1581,8 @@
       right: 0;
       display: grid;
       gap: .3rem;
-      width: min(22rem, calc(100vw - 2rem));
+      width: max-content;
+      max-width: min(18rem, calc(100vw - 2rem));
       padding: .4rem;
       border: 2px solid #14b8a6;
       border-radius: 8px;
@@ -1588,64 +1590,27 @@
       box-shadow: 0 12px 28px rgba(16, 24, 40, .3), 0 0 0 3px color-mix(in srgb, #14b8a6 18%, transparent);
     }
 
-    .map-waypoint-labels-menu-title {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: .5rem;
-      color: var(--muted);
-      font-size: .72rem;
-      font-weight: 840;
-      letter-spacing: 0;
-      text-transform: uppercase;
-    }
-
-    .map-waypoint-pack-row {
+    .map-waypoint-pack-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      align-items: center;
+      grid-template-columns: repeat(auto-fit, minmax(34px, 1fr));
       gap: .3rem;
     }
 
     .map-head-actions .map-waypoint-pack-select {
-      display: flex;
-      align-items: center;
-      gap: .34rem;
-      width: 100%;
-      min-width: 0;
-      padding: .28rem .4rem;
-      text-align: left;
+      display: grid;
+      place-items: center;
+      width: 34px;
+      min-width: 34px;
+      height: 34px;
+      min-height: 34px;
+      padding: .22rem;
     }
 
     [data-button-style="symbols"] .map-head-actions .map-waypoint-pack-select {
-      width: 100%;
-      min-width: 0;
+      width: 34px;
+      min-width: 34px;
       aspect-ratio: auto;
-      padding: .28rem .4rem;
-      justify-content: flex-start;
-    }
-
-    .map-waypoint-layer-copy {
-      display: grid;
-      gap: .04rem;
-      min-width: 0;
-    }
-
-    .map-waypoint-layer-copy strong,
-    .map-waypoint-layer-copy small {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .map-waypoint-layer-copy strong {
-      font-size: .8rem;
-    }
-
-    .map-waypoint-layer-copy small {
-      color: var(--muted);
-      font-size: .68rem;
-      font-weight: 760;
+      padding: .22rem;
     }
 
     .map-waypoint-pack-select .pack-symbol,
@@ -1656,22 +1621,6 @@
     }
 
     .map-waypoint-pack-select[aria-pressed="true"] {
-      border-color: #14b8a6;
-      box-shadow: inset 0 0 0 1px #14b8a6;
-    }
-
-    .map-waypoint-pack-label-modes {
-      display: flex;
-      gap: .18rem;
-    }
-
-    .map-waypoint-pack-label-modes button {
-      min-width: 32px;
-      min-height: 30px;
-      padding: .22rem .3rem;
-    }
-
-    .map-waypoint-pack-label-modes button[aria-pressed="true"] {
       border-color: #14b8a6;
       box-shadow: inset 0 0 0 1px #14b8a6;
     }
@@ -15457,7 +15406,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.20";
+    const APP_VERSION = "4.3.0.21";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -17437,7 +17386,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.20",
+        version: "4.3.0.21",
         date: "2026-06-04",
         title: "Waypoint Pack",
         summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
@@ -17448,13 +17397,13 @@
           "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.20",
+          version: "4.3.0.21",
           title: "Waypoint Pack",
           summary: "Add Parks and Monuments as prioritized Wayfinder notes.",
           cta: "Pack the Map!"
         },
         updates: [
-          "Turned the map Labels pack control into a linked-layer picker with per-pack label settings.",
+          "Made the map Labels pack chevron open only as a pack icon picker and moved pack labels to the standard label buttons.",
           "Kept Pack Locations search and actions on one header row with search stretching across the available space.",
           "Made hidden excluded-location filters hide excluded-level note pins even inside visited locations.",
           "Moved the Waypoint Pack label dropdown into the existing map Labels control beside the tag icon.",
@@ -20759,6 +20708,26 @@
       return SUGGESTED_SETS.filter(set => suggestedSetProgress(set.id).linked > 0);
     }
 
+    function activeMapWaypointLabelSet() {
+      if (activeLayerId !== "us") return null;
+      const added = addedSuggestedSets();
+      if (!added.length) return null;
+      return added.find(set => set.id === state.settings.activeSuggestedSetId) || added[0];
+    }
+
+    function setActiveMapLabelMode(mode) {
+      const set = activeMapWaypointLabelSet();
+      if (set) {
+        state.settings.activeSuggestedSetId = set.id;
+        setSuggestedSetLabelMode(set.id, mode);
+        if (bucketListViewActive()) state.settings.suggestedSetsVisible = true;
+        save();
+        render();
+        return;
+      }
+      updateSetting("mapLabels", mode);
+    }
+
     function suggestedSetIconInActiveUse(iconId) {
       return SUGGESTED_SETS.some(set =>
         suggestedSetIconId(set.id) === iconId && suggestedSetProgress(set.id).linked > 0
@@ -22948,47 +22917,33 @@
       if (!host) return;
       const added = addedSuggestedSets();
       host.classList.toggle("hidden", !added.length);
+      const labelIcon = $("#labelsToggleLabel");
       if (!added.length) {
         host.innerHTML = "";
         mapWaypointPackMenuOpen = false;
         return;
       }
-      const labelButton = (set, mode, icon, label) => `
-        <button type="button" data-map-waypoint-label-mode="${mode}" data-set-id="${escapeHtml(set.id)}"
-          aria-pressed="${suggestedSetLabelMode(set.id) === mode ? "true" : "false"}" title="${escapeHtml(label)}">${icon}</button>
-      `;
-      const renderLayerRow = set => {
-        const progress = suggestedSetProgress(set.id);
-        return `
-          <div class="map-waypoint-pack-row">
-            <button class="map-waypoint-pack-select" type="button" data-map-waypoint-pack="${escapeHtml(set.id)}"
-              aria-pressed="${activeSuggestedSet()?.id === set.id && state.settings.suggestedSetsVisible === true ? "true" : "false"}" title="Use ${escapeHtml(set.name)} overlay">
-              ${visitTypeIcon(suggestedSetIconId(set.id))}
-              <span class="map-waypoint-layer-copy">
-                <strong>${escapeHtml(set.name)}</strong>
-                <small>${progress.linked}/${progress.total} linked</small>
-              </span>
-            </button>
-            <div class="map-waypoint-pack-label-modes" aria-label="${escapeHtml(set.name)} labels">
-              ${labelButton(set, "none", __CIRCLE_SLASH, "No labels")}
-              ${labelButton(set, "abbr", __CHARACTER, "Abbreviations")}
-              ${labelButton(set, "name", __TEXTFORMAT, "Names")}
-            </div>
-          </div>
-        `;
-      };
+      const selected = activeMapWaypointLabelSet() || added[0];
+      if (labelIcon) {
+        labelIcon.innerHTML = visitTypeIcon(suggestedSetIconId(selected.id));
+        labelIcon.title = `${selected.name} Label Type`;
+      }
+      syncMapLabelButtons(suggestedSetLabelMode(selected.id));
       host.innerHTML = `
         <button class="map-waypoint-labels-toggle" type="button" data-map-waypoint-menu
-          aria-expanded="${mapWaypointPackMenuOpen ? "true" : "false"}" aria-label="Waypoint layer label settings"
-          title="Waypoint layer label settings">
+          aria-expanded="${mapWaypointPackMenuOpen ? "true" : "false"}" aria-label="Choose waypoint label pack"
+          title="Choose waypoint label pack">
           ${__CHEVRON_DOWN_CIRCLE}
         </button>
         <div class="map-waypoint-labels-menu" ${mapWaypointPackMenuOpen ? "" : "hidden"}>
-          <div class="map-waypoint-labels-menu-title">
-            <span>Waypoint layers</span>
-            <span>${added.length}</span>
+          <div class="map-waypoint-pack-grid" aria-label="Waypoint label packs">
+            ${added.map(set => `
+              <button class="map-waypoint-pack-select" type="button" data-map-waypoint-pack="${escapeHtml(set.id)}"
+                aria-pressed="${selected.id === set.id ? "true" : "false"}" aria-label="${escapeHtml(set.name)}" title="${escapeHtml(set.name)}">
+                ${visitTypeIcon(suggestedSetIconId(set.id))}
+              </button>
+            `).join("")}
           </div>
-          ${added.map(renderLayerRow).join("")}
         </div>
       `;
     }
@@ -28418,9 +28373,9 @@
         "7": () => clickIf("#mapMatchNotesBtn"),
         "6": toggleBucketListView,
         "5": () => clickIf("#mapRingModeBtn"),
-        "4": () => updateSetting("mapLabels", "none"),
-        "3": () => updateSetting("mapLabels", "abbr"),
-        "2": () => updateSetting("mapLabels", "name"),
+        "4": () => setActiveMapLabelMode("none"),
+        "3": () => setActiveMapLabelMode("abbr"),
+        "2": () => setActiveMapLabelMode("name"),
         "-": () => nudgeMapZoom(-MAP_ZOOM_STEP),
         "+": () => nudgeMapZoom(MAP_ZOOM_STEP),
         "=": () => nudgeMapZoom(MAP_ZOOM_STEP),
@@ -28739,9 +28694,9 @@
         if (action) action();
       });
       $("#confirmDialog").addEventListener("close", () => pendingConfirm = null);
-      $("#labelsNoneBtn").addEventListener("click", () => updateSetting("mapLabels", "none"));
-      $("#labelsAbbrBtn").addEventListener("click", () => updateSetting("mapLabels", "abbr"));
-      $("#labelsNameBtn").addEventListener("click", () => updateSetting("mapLabels", "name"));
+      $("#labelsNoneBtn").addEventListener("click", () => setActiveMapLabelMode("none"));
+      $("#labelsAbbrBtn").addEventListener("click", () => setActiveMapLabelMode("abbr"));
+      $("#labelsNameBtn").addEventListener("click", () => setActiveMapLabelMode("name"));
       $("#mapLocationPinsBtn").addEventListener("click", () => updateSetting("mapLocationPinsVisible", state.settings.mapLocationPinsVisible === false));
       $("#mapMatchNotesBtn").addEventListener("click", () => updateSetting("mapFollowsNotesFilters", state.settings.mapFollowsNotesFilters !== true));
       $("#mapToggleBtn").addEventListener("click", toggleMapPanel);
@@ -29236,17 +29191,9 @@
         if (pack) {
           state.settings.activeSuggestedSetId = pack.dataset.mapWaypointPack;
           if (bucketListViewActive()) state.settings.suggestedSetsVisible = true;
+          mapWaypointPackMenuOpen = false;
           save();
-          renderMap();
-          return;
-        }
-        const label = event.target.closest("[data-map-waypoint-label-mode]");
-        if (label) {
-          state.settings.activeSuggestedSetId = label.dataset.setId;
-          setSuggestedSetLabelMode(label.dataset.setId, label.dataset.mapWaypointLabelMode);
-          if (bucketListViewActive()) state.settings.suggestedSetsVisible = true;
-          save();
-          renderMap();
+          render();
           return;
         }
         if (!mapWaypointPackMenuOpen || event.target.closest("#mapWaypointPackLabels")) return;
