@@ -105,8 +105,8 @@ occurs only when the user clicks a location's Photo action.
   - Label UI reuses the map label button style with `Off`, `Abbr`, and `Name`.
     National Parks default to labels off.
   - Once a pack has linked notes, the existing map Labels segmented control
-    gains a compact pack dropdown beside the tag icon. It lists added packs by
-    icon, switches the active one-pack overlay, and edits each pack's saved
+    gains a compact dropdown immediately beside the tag icon. It lists linked
+    Waypoint Pack layers, switches the active one-pack overlay, and edits each layer's saved
     `Off`, `Abbr`, or `Name` preference.
 - Add Legend pack stats:
   - Legend can switch between normal level stats and Waypoint Pack stats.
@@ -257,8 +257,8 @@ maps.
   rows remain linkable/editable and clearing search restores the full list.
 - Turn a pack icon filter on and off in Notes; confirm both states are visually
   unmistakable.
-- Add two packs, then use the map Labels pack dropdown to switch the active pack
-  and change each pack's saved Off/Abbr/Name setting.
+- Add two packs, then use the map Labels layer dropdown to switch the active
+  waypoint overlay and change each pack's saved Off/Abbr/Name setting.
 - Exit Wayfinder while a pack overlay is visible; confirm the overlay turns off
   and normal linked-note pins return.
 - Confirm Pack Locations search, overlay, label, Add/Refresh, and Remove
@@ -266,8 +266,9 @@ maps.
 - Hide excluded locations with mixed visited/excluded notes; confirm
   excluded-level note pins disappear even when their location has a visited
   level.
-- Use the pack dropdown inside the map Labels segmented control; confirm it
-  opens beside the tag icon and changes the selected pack's label mode.
+- Use the layer dropdown inside the map Labels segmented control; confirm it
+  opens beside the tag icon, lists linked waypoint layers, and changes the
+  selected pack's label mode.
 - Switch Legend to Pack Stats; confirm each pack shows linked/total percentage
   and level-colored breakdown chips without changing the user's levels.
 - Verify unlinked rows disable Unlink, disable Edit/Link when no state-scoped

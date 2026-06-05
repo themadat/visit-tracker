@@ -1504,7 +1504,8 @@
       gap: .12rem;
       padding: 0 .16rem 0 0;
       min-width: 0;
-      overflow: hidden;
+      overflow: visible;
+      position: relative;
     }
 
     .map-label-toggle>span {
@@ -1560,29 +1561,23 @@
     .map-head-actions .map-waypoint-labels-toggle {
       display: inline-flex;
       align-items: center;
-      gap: .18rem;
-      min-width: 38px;
+      justify-content: center;
+      width: 30px;
+      min-width: 30px;
       min-height: 30px;
-      padding: .24rem .34rem;
+      padding: .24rem;
     }
 
-    .map-waypoint-labels-toggle .pack-symbol,
     .map-waypoint-labels-toggle .sf-symbol {
-      width: 1rem;
-      height: 1rem;
-      overflow: visible;
-    }
-
-    .map-waypoint-labels-toggle .waypoint-map-chevron .sf-symbol {
-      width: .72rem;
-      height: .72rem;
+      width: .9rem;
+      height: .9rem;
     }
 
     .map-label-toggle .map-waypoint-labels-menu {
       position: absolute;
       z-index: 20;
       top: calc(100% + .3rem);
-      left: 0;
+      right: 0;
       display: grid;
       gap: .3rem;
       width: min(22rem, calc(100vw - 2rem));
@@ -1591,6 +1586,18 @@
       border-radius: 8px;
       background: var(--surface);
       box-shadow: 0 12px 28px rgba(16, 24, 40, .3), 0 0 0 3px color-mix(in srgb, #14b8a6 18%, transparent);
+    }
+
+    .map-waypoint-labels-menu-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .5rem;
+      color: var(--muted);
+      font-size: .72rem;
+      font-weight: 840;
+      letter-spacing: 0;
+      text-transform: uppercase;
     }
 
     .map-waypoint-pack-row {
@@ -1618,10 +1625,27 @@
       justify-content: flex-start;
     }
 
-    .map-waypoint-pack-select span:last-child {
+    .map-waypoint-layer-copy {
+      display: grid;
+      gap: .04rem;
+      min-width: 0;
+    }
+
+    .map-waypoint-layer-copy strong,
+    .map-waypoint-layer-copy small {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+
+    .map-waypoint-layer-copy strong {
+      font-size: .8rem;
+    }
+
+    .map-waypoint-layer-copy small {
+      color: var(--muted);
+      font-size: .68rem;
+      font-weight: 760;
     }
 
     .map-waypoint-pack-select .pack-symbol,
@@ -15433,7 +15457,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.19";
+    const APP_VERSION = "4.3.0.20";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -17413,7 +17437,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.19",
+        version: "4.3.0.20",
         date: "2026-06-04",
         title: "Waypoint Pack",
         summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
@@ -17424,12 +17448,13 @@
           "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.19",
+          version: "4.3.0.20",
           title: "Waypoint Pack",
           summary: "Add Parks and Monuments as prioritized Wayfinder notes.",
           cta: "Pack the Map!"
         },
         updates: [
+          "Turned the map Labels pack control into a linked-layer picker with per-pack label settings.",
           "Kept Pack Locations search and actions on one header row with search stretching across the available space.",
           "Made hidden excluded-location filters hide excluded-level note pins even inside visited locations.",
           "Moved the Waypoint Pack label dropdown into the existing map Labels control beside the tag icon.",
@@ -22932,28 +22957,38 @@
         <button type="button" data-map-waypoint-label-mode="${mode}" data-set-id="${escapeHtml(set.id)}"
           aria-pressed="${suggestedSetLabelMode(set.id) === mode ? "true" : "false"}" title="${escapeHtml(label)}">${icon}</button>
       `;
+      const renderLayerRow = set => {
+        const progress = suggestedSetProgress(set.id);
+        return `
+          <div class="map-waypoint-pack-row">
+            <button class="map-waypoint-pack-select" type="button" data-map-waypoint-pack="${escapeHtml(set.id)}"
+              aria-pressed="${activeSuggestedSet()?.id === set.id && state.settings.suggestedSetsVisible === true ? "true" : "false"}" title="Use ${escapeHtml(set.name)} overlay">
+              ${visitTypeIcon(suggestedSetIconId(set.id))}
+              <span class="map-waypoint-layer-copy">
+                <strong>${escapeHtml(set.name)}</strong>
+                <small>${progress.linked}/${progress.total} linked</small>
+              </span>
+            </button>
+            <div class="map-waypoint-pack-label-modes" aria-label="${escapeHtml(set.name)} labels">
+              ${labelButton(set, "none", __CIRCLE_SLASH, "No labels")}
+              ${labelButton(set, "abbr", __CHARACTER, "Abbreviations")}
+              ${labelButton(set, "name", __TEXTFORMAT, "Names")}
+            </div>
+          </div>
+        `;
+      };
       host.innerHTML = `
         <button class="map-waypoint-labels-toggle" type="button" data-map-waypoint-menu
-          aria-expanded="${mapWaypointPackMenuOpen ? "true" : "false"}" aria-label="Waypoint Pack label settings"
-          title="Waypoint Pack label settings">
-          ${visitTypeIcon(suggestedSetIconId(activeSuggestedSet()?.id || added[0]?.id))}
-          <span class="waypoint-map-chevron">${__CHEVRON_DOWN_CIRCLE}</span>
+          aria-expanded="${mapWaypointPackMenuOpen ? "true" : "false"}" aria-label="Waypoint layer label settings"
+          title="Waypoint layer label settings">
+          ${__CHEVRON_DOWN_CIRCLE}
         </button>
         <div class="map-waypoint-labels-menu" ${mapWaypointPackMenuOpen ? "" : "hidden"}>
-          ${added.map(set => `
-            <div class="map-waypoint-pack-row">
-              <button class="map-waypoint-pack-select" type="button" data-map-waypoint-pack="${escapeHtml(set.id)}"
-                aria-pressed="${activeSuggestedSet()?.id === set.id ? "true" : "false"}" title="Use ${escapeHtml(set.name)} overlay">
-                ${visitTypeIcon(suggestedSetIconId(set.id))}
-                <span>${escapeHtml(set.name)}</span>
-              </button>
-              <div class="map-waypoint-pack-label-modes" aria-label="${escapeHtml(set.name)} labels">
-                ${labelButton(set, "none", __CIRCLE_SLASH, "No labels")}
-                ${labelButton(set, "abbr", __CHARACTER, "Abbreviations")}
-                ${labelButton(set, "name", __TEXTFORMAT, "Names")}
-              </div>
-            </div>
-          `).join("")}
+          <div class="map-waypoint-labels-menu-title">
+            <span>Waypoint layers</span>
+            <span>${added.length}</span>
+          </div>
+          ${added.map(renderLayerRow).join("")}
         </div>
       `;
     }
