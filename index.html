@@ -15456,7 +15456,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.32";
+    const APP_VERSION = "4.3.0.33";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -17136,15 +17136,15 @@
         category: "Notes"
       },
       {
-        title: "Route-Based Rangefinder Times",
+        title: "Time- and Route-Based Rangefinder Rings",
         ticketId: "WISH-062",
-        description: "Improve Rangefinder estimates with route-aware drive times and optional driving-time radius bands. Scope includes preserving the current straight-line mode, clearly labeling routing assumptions, and avoiding any automatic network lookup.",
+        description: "Make Rangefinder rings express travel time, not just straight-line distance. (1) Time-based rings: let users define a ring by hours (for example 1/2/3/5-hour bands) with the distance derived from the current average speed, rings that recompute when the Drive or Plane speed changes, time-led labels, and round-tripping with the existing distance-based rings so switching modes loses nothing. (2) Route-aware drive times: optionally improve estimates with route-based drive times and driving-time radius bands. Keep the current straight-line mode available, label routing assumptions clearly, keep mph/kph handling consistent, persist the choice per map, and require explicit user action before any online route lookup.",
         priority: "P1",
         effort: "large",
         targetKind: "minor",
         targetVersion: "",
-        tokenCostPct: 34,
-        prompt: "Add more accurate drive-time estimates and optional driving-time radius bands for Rangefinder. Keep the current straight-line rings available, make routing limits explicit, and require user action before any online route lookup.",
+        tokenCostPct: 40,
+        prompt: "Extend Rangefinder rings to express travel time. Add a time-based ring mode (set rings by hours, derive distance from the active average speed, recompute on speed change, lead labels with time, persist per map, and round-trip with the existing distance rings). Optionally add route-aware drive-time estimates and driving-time radius bands. Keep straight-line rings available, keep unit (mph/kph) handling consistent, make routing limits explicit, and require user action before any online route lookup.",
         category: "Maps"
       },
       {
@@ -17160,51 +17160,15 @@
         category: "UI"
       },
       {
-        title: "Rangefinder Cross-Inset Edge Cases",
+        title: "Rangefinder Edge Cases, Globe Wrap, and Time Zones",
         ticketId: "WISH-061",
-        description: "Improve Rangefinder behavior when Start and End points cross between the contiguous map and inset regions, such as Washington to Alaska. Scope includes clearer visual treatment for clipped rings, inset-scale limitations, and long-distance comparisons that cross map projections.",
-        priority: "P1",
-        effort: "medium",
-        targetKind: "patch",
-        targetVersion: "",
-        tokenCostPct: 16,
-        prompt: "Polish Rangefinder cross-inset edge cases, especially a Washington Start pin with rings or an End point in Alaska. Make the visual treatment clear despite different inset scales, preserve current local settings, and keep limitations explicit.",
-        category: "Maps"
-      },
-      {
-        title: "Rangefinder Rings Wrap Around Globe",
-        ticketId: "WISH-064",
-        description: "Wrap Rangefinder rings around the World map's antimeridian so a Start near the date line (for example Honolulu, Tokyo, or Sydney) keeps drawing its planning bands on the opposite side of the map instead of clipping at the edge. Scope includes continuous ring geometry across the seam, label placement that follows the visible arc, preserved clip-to-land and inset behaviors, and Start-to-End comparisons that pick the shorter great-circle path across the wrap.",
-        priority: "P1",
-        effort: "medium",
+        description: "Round out Rangefinder with three related upgrades. (1) Cross-inset edge cases: clearer treatment when Start and End cross between the contiguous map and inset regions (for example Washington to Alaska), including clipped-ring visuals, inset-scale limits, and honest long-distance comparisons across projections. (2) Antimeridian wrap on the World map: rings around a Start near the date line (Honolulu, Tokyo, Sydney) keep drawing on the opposite side instead of clipping, with continuous geometry across the seam, arc-following labels, preserved clip-to-land and inset behavior, and shorter-great-circle Start-to-End paths. (3) Offline time zones: show local time and IANA zone for Start and End, let a user pick a departure time, and compute the destination-local arrival from the current travel-time estimate, with daylight-saving handling, US and World support, and manual correction when a zone cannot be resolved offline.",
+        priority: "P0",
+        effort: "large",
         targetKind: "minor",
         targetVersion: "",
-        tokenCostPct: 22,
-        prompt: "Make Rangefinder rings wrap around the antimeridian on the World map so a Start pin near the date line shows the continuing arc on the opposite side instead of clipping. Preserve clip-to-land, label placement, inset handling, and existing US-map behavior. Keep the straight-line/great-circle math honest, and pick the shorter wrap for Start-to-End comparisons.",
-        category: "Maps"
-      },
-      {
-        title: "Time-Based Rangefinder Rings",
-        ticketId: "WISH-065",
-        description: "Let users define Rangefinder rings by travel time instead of distance, so a ring can be entered as '2 hours' and the distance is derived from the current average speed. Scope includes a per-ring distance/time input mode, rings that recompute their radius when the Drive or Plane speed changes, labels that lead with the time value, sensible defaults (for example 1/2/3/5 hour bands), and round-tripping with the existing distance-based rings so switching modes does not lose a user's configuration. Keep the straight-line/'as the crow flies' limitations explicit since time still assumes the configured average speed, not routing.",
-        priority: "P1",
-        effort: "medium",
-        targetKind: "minor",
-        targetVersion: "",
-        tokenCostPct: 24,
-        prompt: "Add a time-based ring mode to Rangefinder so users can set rings by hours instead of miles, deriving each ring's distance from the active average speed. Rings should recompute when the Drive/Plane speed changes, labels should lead with the time, and the choice should persist per map alongside the existing distance rings. Preserve distance-based rings as an option, keep unit (mph/kph) handling consistent, and keep the straight-line/non-routing limits explicit.",
-        category: "Maps"
-      },
-      {
-        title: "Rangefinder Timezone Support",
-        ticketId: "WISH-069",
-        description: "Add time zone awareness to Rangefinder so Start and End can show their local time and time zone, and a chosen departure time plus the current travel-time estimate can produce a destination-local arrival time. Scope includes daylight-saving-aware IANA zones, US and World support, manual correction when a location cannot be resolved offline, and no automatic network lookup.",
-        priority: "P1",
-        effort: "medium",
-        targetKind: "minor",
-        targetVersion: "",
-        tokenCostPct: 24,
-        prompt: "Add offline-first time zone support to Rangefinder. Show the local time and IANA time zone for Start and End, let a user choose a departure time, and calculate the destination-local estimated arrival using the current Rangefinder travel-time estimate. Handle daylight saving time, support US and World points, allow manual correction when a zone cannot be resolved, and do not perform automatic network lookups.",
+        tokenCostPct: 48,
+        prompt: "Deliver three related Rangefinder upgrades. (1) Polish cross-inset edge cases (e.g. a Washington Start with rings or an Alaska End): clear visuals despite differing inset scales, explicit limits, preserved local settings. (2) Wrap rings around the World-map antimeridian so a date-line Start continues on the opposite side instead of clipping; keep clip-to-land, labels, inset handling, US-map behavior, and honest great-circle math, picking the shorter wrap for comparisons. (3) Add offline-first time zones: local time and IANA zone for Start/End, a chosen departure time, destination-local arrival from the current estimate, daylight-saving handling, US and World support, manual correction, and no automatic network lookups.",
         category: "Maps"
       },
       {
@@ -17319,7 +17283,7 @@
         title: "Smarter World Map Labels",
         ticketId: "WISH-057",
         description: "Improve world-map label readability. At the whole-world (fit) zoom all ~248 country labels render, so dense regions (Europe, Caribbean, microstates) overlap into an unreadable cluster. Scope: collision/declutter handling (hide or thin overlapping labels), zoom-aware density (show more labels as the user zooms in), leader lines or circle labels for tiny/microstate countries, and optionally an 'engaged only' mode that labels only countries with a level or notes.",
-        priority: "P1",
+        priority: "P0",
         effort: "medium",
         targetKind: "minor",
         targetVersion: "",
@@ -17388,15 +17352,15 @@
         category: "Legend"
       },
       {
-        title: "Multiple Named Basecamp Pads",
+        title: "Multiple Named Basecamp Pads with Rich Text",
         ticketId: "WISH-053",
-        description: "Extend Basecamp Notes from a single scratchpad to multiple named pads (for example Packing, Gear, or a per-trip pad), with a pad list, add/rename/delete/reorder, a large editor per pad, and search across pads. Migrate the existing single scratchpad into the first pad without data loss.",
-        priority: "P1",
-        effort: "medium",
+        description: "Extend Basecamp Notes from a single scratchpad to multiple named pads (for example Packing, Gear, or a per-trip pad), with a pad list, add/rename/delete/reorder, a large editor per pad, and search across pads. Add rich text formatting within each pad (bold, italic, headings, bullet/numbered lists, and links). Migrate the existing single scratchpad into the first pad without data loss.",
+        priority: "P0",
+        effort: "large",
         targetKind: "minor",
         targetVersion: "",
-        tokenCostPct: 18,
-        prompt: "Extend Basecamp Notes to multiple named pads: a pad list with add/rename/delete/reorder, a large markdown editor per pad, and search across pads. Migrate the existing single Basecamp scratchpad into the first pad without data loss. Keep it local/offline, exportable, and visually distinct from location notes.",
+        tokenCostPct: 26,
+        prompt: "Extend Basecamp Notes to multiple named pads: a pad list with add/rename/delete/reorder, a large rich-text editor per pad supporting bold, italic, headings, bullet/numbered lists, and links, plus search across pads. Migrate the existing single Basecamp scratchpad into the first pad without data loss. Keep it local/offline, exportable, and visually distinct from location notes.",
         category: "Notes"
       },
       {
@@ -17450,7 +17414,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.32",
+        version: "4.3.0.33",
         date: "2026-06-05",
         title: "Waypoint Pack",
         summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
@@ -17461,12 +17425,13 @@
           "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.32",
+          version: "4.3.0.33",
           title: "Waypoint Pack",
           summary: "Add Parks and Monuments as prioritized Wayfinder notes.",
           cta: "Pack the Map!"
         },
         updates: [
+          "Reprioritized and tidied the Roadmap: Basecamp now plans rich text formatting across named pads, Rangefinder edge cases/globe wrap/time zones merged into one priority item, drive-time and time-based rings merged, and smarter World map labels raised in priority.",
           "Added a Roadmap wish for linking multiple notes to one Waypoint Pack location.",
           "Show Developer Mode split-percentage pills only during active divider drags.",
           "Moved waypoint labels into a top draw layer so nearby marker icons cannot cover them.",
