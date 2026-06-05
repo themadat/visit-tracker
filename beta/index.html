@@ -1586,8 +1586,8 @@
     }
 
     .map-waypoint-labels-toggle .sf-symbol {
-      width: .48rem;
-      height: .48rem;
+      width: .62rem;
+      height: .62rem;
     }
 
     .map-label-toggle .map-waypoint-labels-menu {
@@ -2178,6 +2178,11 @@
       letter-spacing: 0;
       text-anchor: middle;
       dominant-baseline: central;
+    }
+
+    [data-theme="dark"] .map-location-marker .marker-label {
+      fill: var(--text);
+      stroke: var(--surface);
     }
 
     .map-location-marker .marker-label.is-name {
@@ -15440,7 +15445,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.23";
+    const APP_VERSION = "4.3.0.24";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -17420,7 +17425,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.23",
+        version: "4.3.0.24",
         date: "2026-06-04",
         title: "Waypoint Pack",
         summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
@@ -17431,12 +17436,13 @@
           "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.23",
+          version: "4.3.0.24",
           title: "Waypoint Pack",
           summary: "Add Parks and Monuments as prioritized Wayfinder notes.",
           cta: "Pack the Map!"
         },
         updates: [
+          "Slightly enlarged the Labels target chevron and fixed linked waypoint label color in dark mode.",
           "Sized the map Labels target icon and chevron correctly and applied waypoint labels to existing linked note pins.",
           "Restored normal state and territory labels as an exclusive map Labels target beside linked waypoint packs.",
           "Made the map Labels pack chevron open only as a pack icon picker and moved pack labels to the standard label buttons.",
