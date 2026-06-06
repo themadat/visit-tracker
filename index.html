@@ -1533,6 +1533,9 @@
       place-items: center;
       width: 30px;
       min-width: 30px;
+    }
+
+    #labelsToggleLabel.has-target-picker .map-label-target-icon {
       transform: translateX(1.5px);
     }
 
@@ -6277,6 +6280,64 @@
       gap: .5rem;
     }
 
+    #wayfinderLevelDialog {
+      width: min(560px, calc(100vw - 1.6rem));
+    }
+
+    .wayfinder-level-options {
+      display: grid;
+      gap: .5rem;
+    }
+
+    .wayfinder-level-option {
+      display: grid;
+      grid-template-columns: 18px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: .65rem;
+      width: 100%;
+      min-height: 56px;
+      padding: .65rem .75rem;
+      text-align: left;
+      border: 1px solid var(--line);
+      background: var(--surface-2);
+    }
+
+    .wayfinder-level-option:hover,
+    .wayfinder-level-option:focus-visible {
+      border-color: #14b8a6;
+      box-shadow: 0 0 0 2px color-mix(in srgb, #14b8a6 22%, transparent);
+    }
+
+    .wayfinder-level-option-color {
+      width: 18px;
+      height: 18px;
+      border: 2px solid color-mix(in srgb, var(--level-color) 72%, var(--text) 28%);
+      border-radius: 50%;
+      background: var(--level-color);
+    }
+
+    .wayfinder-level-option-copy {
+      display: grid;
+      gap: .12rem;
+      min-width: 0;
+    }
+
+    .wayfinder-level-option-copy small {
+      color: var(--muted);
+      line-height: 1.25;
+    }
+
+    .wayfinder-level-recommended {
+      padding: .22rem .42rem;
+      border: 1px solid color-mix(in srgb, #14b8a6 62%, var(--line) 38%);
+      border-radius: 999px;
+      color: color-mix(in srgb, #0f766e 82%, var(--text) 18%);
+      background: color-mix(in srgb, #14b8a6 14%, var(--surface) 86%);
+      font-size: .7rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
     #basecampDialog[open] {
       display: grid;
       grid-template-rows: auto minmax(0, 1fr);
@@ -9535,8 +9596,7 @@
                   </div>
                 </div>
               </div>
-              <small data-hint data-hint-key="map-label-controls">Choose Labels:<br />State/Pack Target | None | Abbr |
-                Name</small>
+              <small data-hint data-hint-key="map-label-controls">Choose Labels:<br />Locations | None | Abbr | Name</small>
             </div>
           </div>
         </div>
@@ -14703,6 +14763,22 @@
     </form>
   </dialog>
 
+  <dialog id="wayfinderLevelDialog">
+    <header>
+      <div>
+        <h2>Choose a Wayfinder Level</h2>
+        <small>Select the Legend level that represents places you want to visit.</small>
+      </div>
+      <button id="wayfinderLevelDialogCloseBtn" type="button" data-close="wayfinderLevelDialog"
+        data-shortcut="Q">Close</button>
+    </header>
+    <div class="dialog-body">
+      <p class="muted">The selected level becomes your Wayfinder and is excluded from completion totals. Your level
+        name, color, and existing locations stay intact.</p>
+      <div id="wayfinderLevelOptions" class="wayfinder-level-options"></div>
+    </div>
+  </dialog>
+
   <dialog id="paletteDialog">
     <header>
       <h2>Smart Color Swatches</h2>
@@ -14997,6 +15073,8 @@
             </li>
             <li>Use the Legend to edit level names, definitions, colors, order, and whether a level is excluded from
               stats.</li>
+            <li>If no level is assigned to Wayfinder, turning Wayfinder on opens a picker for your existing levels and
+              recommends Want to Visit. The chosen level is automatically excluded from completion totals.</li>
             <li>Drag levels anytime to reorder them. Turn Edit on to reveal row controls, or swipe a row right-to-left
               for quick Edit/Delete.</li>
             <li>Deleting a level moves affected locations down to the next lowest level.</li>
@@ -15469,7 +15547,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.34";
+    const APP_VERSION = "4.3.0.35";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -17427,23 +17505,25 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.34",
+        version: "4.3.0.35",
         date: "2026-06-05",
         title: "Waypoint Pack",
         summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
         highlights: [
-          "Add Parks and Monuments as Wayfinder notes.",
-          "Preview places with Include, Priority, and Note fields.",
+          "Add currated collections (National Parks and Monuments) as Wayfinder notes.",
+          "Preview places with Photo, Link, Priority, and Note fields.",
           "Attach existing notes without losing your details.",
           "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.34",
-          title: "Waypoint Pack",
-          summary: "Add Parks and Monuments as prioritized Wayfinder notes.",
-          cta: "Pack the Map!"
+          version: "4.3.0.35",
+          title: "Waypoint Packs",
+          summary: "Add Currated Collections as prioritized Wayfinder Notes and view progress on the Map.",
+          cta: "Pack the|Map!"
         },
         updates: [
+          "Centered the Map Labels target icon when no linked Waypoint Pack picker is present.",
+          "Added a Wayfinder setup popup for choosing an existing Legend level or adding the recommended Want to Visit level.",
           "Refreshed Help Center, FAQ, hints, README, and release-prep context for Waypoint Packs.",
           "Reprioritized and tidied the Roadmap: Basecamp now plans rich text formatting across named pads, Rangefinder edge cases/globe wrap/time zones merged into one priority item, drive-time and time-based rings merged, and smarter World map labels raised in priority.",
           "Added a Roadmap wish for linking multiple notes to one Waypoint Pack location.",
@@ -19125,22 +19205,15 @@
         if (wantLevel && wantLevel.countsTowardStats === true) wantLevel.countsTowardStats = false;
       }
       next.wantToVisitExcludedMigrated = true;
-      // Bucket List role: at most one level may be flagged, and only an
-      // excluded-from-stats level qualifies. Seed onto Want to Visit when
-      // nothing carries the flag yet. Idempotent.
+      // Wayfinder role: at most one level may be flagged, and only an
+      // excluded-from-stats level qualifies. When none qualifies, activation
+      // opens the level picker instead of silently assigning one during load.
       let bucketSeen = false;
       next.levels.forEach(level => {
         if (!level.isBucketList) return;
         if (bucketSeen || level.countsTowardStats !== false) level.isBucketList = false;
         else bucketSeen = true;
       });
-      if (!bucketSeen) {
-        const wantLevel = next.levels.find(level => level.id === "want-to-visit" && level.countsTowardStats === false);
-        if (wantLevel) {
-          wantLevel.isBucketList = true;
-          if (WANT_TO_VISIT_LEGACY_DEFINITIONS.includes(wantLevel.definition)) wantLevel.definition = "Wayfinder";
-        }
-      }
       // Independent of the seed pass: an already-flagged level whose
       // definition still matches the previous default ("Bucket List") flips to
       // "Wayfinder" so the user's legend keeps the latest wording.
@@ -19653,24 +19726,93 @@
     function clearBucketListFlag() {
       state.levels.forEach(level => { level.isBucketList = false; });
     }
-    // Resolve which level should *become* the Bucket List on first activation
-    // when nothing carries the flag yet. Prefers Want to Visit; otherwise the
-    // first excluded-from-stats level.
-    function fallbackBucketListLevelId() {
-      const want = state.levels.find(level => level.id === "want-to-visit" && level.countsTowardStats === false);
-      if (want) return want.id;
-      const excluded = state.levels.find(level => level.countsTowardStats === false);
-      return excluded?.id || "";
+    function suggestedWayfinderLevel() {
+      return state.levels.find(level =>
+        level.id === "want-to-visit" || level.name.trim().toLowerCase() === "want to visit"
+      ) || null;
+    }
+
+    function renderWayfinderLevelOptions() {
+      const host = $("#wayfinderLevelOptions");
+      if (!host) return;
+      const suggested = suggestedWayfinderLevel();
+      const options = state.levels.map(level => {
+        const recommended = suggested?.id === level.id;
+        const statsCopy = level.countsTowardStats === false
+          ? "Already excluded from completion stats"
+          : "Will be excluded from completion stats";
+        return `
+          <button class="wayfinder-level-option" type="button" data-wayfinder-level="${escapeHtml(level.id)}"
+            style="--level-color:${escapeHtml(level.color)}" aria-label="Use ${escapeHtml(level.name)} as Wayfinder">
+            <span class="wayfinder-level-option-color" aria-hidden="true"></span>
+            <span class="wayfinder-level-option-copy">
+              <b>${escapeHtml(level.name)}</b>
+              <small>${escapeHtml(level.definition)} · ${statsCopy}</small>
+            </span>
+            ${recommended ? `<span class="wayfinder-level-recommended">Recommended</span>` : ""}
+          </button>
+        `;
+      });
+      if (!suggested && state.levels.length < 5) {
+        options.unshift(`
+          <button class="wayfinder-level-option" type="button" data-wayfinder-level-create
+            style="--level-color:#7c3aed" aria-label="Add Want to Visit as Wayfinder">
+            <span class="wayfinder-level-option-color" aria-hidden="true"></span>
+            <span class="wayfinder-level-option-copy">
+              <b>Add Want to Visit</b>
+              <small>Create the suggested planning level without changing existing levels</small>
+            </span>
+            <span class="wayfinder-level-recommended">Recommended</span>
+          </button>
+        `);
+      }
+      host.innerHTML = options.join("");
+    }
+
+    function openWayfinderLevelDialog() {
+      renderWayfinderLevelOptions();
+      closeOpenDialogs("wayfinderLevelDialog");
+      const dialog = $("#wayfinderLevelDialog");
+      if (dialog.open) dialog.close();
+      dialog.showModal();
+      requestAnimationFrame(() => $("[data-wayfinder-level-create], [data-wayfinder-level]", dialog)?.focus());
+    }
+
+    function chooseWayfinderLevel(levelId) {
+      const target = levelById(levelId);
+      if (!target) return;
+      target.countsTowardStats = false;
+      const result = applyBucketListFlag(target.id);
+      if (!result.ok) {
+        showOverlayWarning("Wayfinder Level", result.reason);
+        return;
+      }
+      if ($("#wayfinderLevelDialog").open) $("#wayfinderLevelDialog").close();
+      setBucketListView(true);
+    }
+
+    function createSuggestedWayfinderLevel() {
+      if (state.levels.length >= 5) return;
+      const level = {
+        id: state.levels.some(item => item.id === "want-to-visit") ? uid() : "want-to-visit",
+        name: "Want to Visit",
+        definition: "Wayfinder",
+        color: "#7c3aed",
+        countsTowardStats: false,
+        isBucketList: false
+      };
+      insertLevelSmart(level);
+      chooseWayfinderLevel(level.id);
     }
 
     function bucketListViewActive() {
       return state.settings.bucketListView === true;
     }
 
-    // Toggle Wayfinder Mode. On activation: ensure a Bucket List level
-    // exists (auto-seed onto Want to Visit / first excluded level if needed),
-    // snapshot { levelFilter, matchNotes }, then scope filters to the bucket
-    // level + Match Notes on. On deactivation: restore the snapshot exactly.
+    // Toggle Wayfinder Mode. On activation: ask the user to choose a level
+    // when none carries the role, snapshot { levelFilter, matchNotes }, then
+    // scope filters to the Wayfinder level + Match Notes on. On deactivation:
+    // restore the snapshot exactly.
     function setBucketListView(active) {
       const wantActive = active === true;
       if (wantActive === bucketListViewActive()) {
@@ -19680,19 +19822,9 @@
       if (wantActive) {
         let bucketId = bucketListLevelId();
         if (!bucketId) {
-          const fallback = fallbackBucketListLevelId();
-          if (!fallback) {
-            showOverlayWarning("No Wayfinder Level", "Add an excluded-from-stats legend level to use as your Wayfinder, then try again.");
-            syncBucketListUi();
-            return;
-          }
-          const result = applyBucketListFlag(fallback);
-          if (!result.ok) {
-            showOverlayWarning("No Wayfinder Level", result.reason);
-            syncBucketListUi();
-            return;
-          }
-          bucketId = fallback;
+          openWayfinderLevelDialog();
+          syncBucketListUi();
+          return;
         }
         state.settings.bucketListFilterSnapshot = {
           levelFilter: [...noteLevelFilters].filter(id => levelById(id)),
@@ -21409,6 +21541,7 @@
       setButtonLabel("#noteSmartConvertBtn", __WAND_AND_SPARKLES_INVERSE, "Auto Convert", "Smart convert note text");
       setButtonLabel("#noteSmartConvertInfoBtn", __INFO_CIRCLE, "Info", "Smart Convert Rules");
       setButtonLabel("#levelDialogCloseBtn", __XMARK, "Close");
+      setButtonLabel("#wayfinderLevelDialogCloseBtn", __XMARK, "Close");
       setButtonLabel("#paletteCloseBtn", __XMARK, "Close");
       setButtonLabelBoth("#tagDialogBackBtn", __CHEVRON_BACKWARD, visitTagReturnTarget === "note" ? "Back to Note" : "Back to Settings");
       setButtonLabelBoth("#tagDialogCloseBtn", __XMARK, "Close");
@@ -23189,6 +23322,7 @@
       if (!host) return;
       const added = activeLayerId === "us" ? addedSuggestedSets() : [];
       host.classList.toggle("hidden", !added.length);
+      $("#labelsToggleLabel")?.classList.toggle("has-target-picker", Boolean(added.length));
       const labelIcon = $("[data-map-label-target-icon]");
       const selected = activeMapLabelTargetSet();
       if (labelIcon) {
@@ -28188,7 +28322,7 @@
       // The other universal keys are blocked while any modal dialog is open
       // so they never pre-empt context-bound dialog shortcuts.
       if ($("#noteDialog").open || $("#levelDialog").open || $("#settingsDialog").open ||
-        $("#renameDialog").open || $("#confirmDialog").open || $("#markerDialog").open ||
+        $("#renameDialog").open || $("#confirmDialog").open || $("#wayfinderLevelDialog").open || $("#markerDialog").open ||
         $("#tagDialog").open || $("#paletteDialog").open || $("#addToHomeDialog").open ||
         $("#tipJarDialog").open) return;
       const clickIf = sel => { const el = $(sel); if (el && !el.disabled) el.click(); };
@@ -28554,6 +28688,12 @@
         if (!levelActions[key]) return;
         event.preventDefault();
         levelActions[key]();
+        return;
+      }
+      if ($("#wayfinderLevelDialog").open) {
+        if (key !== "q" && key !== "x") return;
+        event.preventDefault();
+        $("#wayfinderLevelDialog").close();
         return;
       }
       if ($("#confirmDialog").open) {
@@ -28937,6 +29077,15 @@
         }
       });
       $("#waypointPacksCloseBtn").addEventListener("click", closeWaypointPacksPanel);
+      $("#wayfinderLevelOptions").addEventListener("click", event => {
+        const create = event.target.closest("[data-wayfinder-level-create]");
+        if (create) {
+          createSuggestedWayfinderLevel();
+          return;
+        }
+        const option = event.target.closest("[data-wayfinder-level]");
+        if (option) chooseWayfinderLevel(option.dataset.wayfinderLevel);
+      });
       $("#confirmActionBtn").addEventListener("click", () => {
         const action = pendingConfirm;
         pendingConfirm = null;
