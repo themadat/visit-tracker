@@ -9518,7 +9518,7 @@
                     aria-label="Toggle Ring Mode" data-shortcut="5">Rangefinder</button>
                 </div>
               </div>
-              <small data-hint data-hint-key="map-notes-controls">Toggle Location Notes<br />Visibility | Filter |
+              <small data-hint data-hint-key="map-notes-controls">Toggle Notes Pins<br />Visibility | Filter |
                 Wayfinder | Rangefinder</small>
             </div>
             <div class="map-control-stack">
@@ -9535,7 +9535,7 @@
                   </div>
                 </div>
               </div>
-              <small data-hint data-hint-key="map-label-controls">Choose Map Labels:<br />none | ABBR | Full
+              <small data-hint data-hint-key="map-label-controls">Choose Labels:<br />State/Pack Target | None | Abbr |
                 Name</small>
             </div>
           </div>
@@ -14269,7 +14269,7 @@
                 <div id="waypointPackAvailableList" class="waypoint-pack-available-list"></div>
               </section>
               <small class="waypoint-pack-settings-hint" data-hint data-hint-key="waypoint-pack-settings-help">
-                Choose a Pack and its settings: Existing or New Icon; Show/Hide Overlay on Map; Label Preference
+                Choose a Pack and settings: icon, overlay, labels, search, priorities, and note links
               </small>
               <section id="waypointPackConfigure" class="waypoint-pack-configure"></section>
               <section>
@@ -14967,7 +14967,8 @@
           <ol>
             <li>Tap a location to mark it. In cycle mode, the first tap on an already marked location shows it in Notes;
               the next tap cycles levels.</li>
-            <li>Use the US Map header to switch labels between none, abbreviations, and full names.</li>
+            <li>Use the Map Labels control to switch states, territories, or a linked Waypoint Pack between no labels,
+              abbreviations, and full names.</li>
             <li>Use Scroll Map to pan and zoom. Type an exact zoom percentage, use the zoom buttons, or reset to 100%.
               Your zoom, pan center, and fit/scroll mode are saved.</li>
             <li>Use Fit Map when you want the map framed cleanly for screenshots or sharing.</li>
@@ -14984,6 +14985,8 @@
             <li>Alaska, Hawaii, and territory points use inset map scale. Mainland rings clip away from those insets,
               inset starts clip to their own inset, and cross-inset Start-to-End comparisons use real coordinates with a
               broken map cue instead of a route line.</li>
+            <li>In Wayfinder, use Packs to preview curated place lists on the map, assign priorities, attach matching
+              notes, and add selected places as normal Wayfinder notes.</li>
             <li>On desktop, drag the divider between the map and cards to resize the working area.</li>
           </ol>
         </section>
@@ -14998,6 +15001,8 @@
               for quick Edit/Delete.</li>
             <li>Deleting a level moves affected locations down to the next lowest level.</li>
             <li>Click a Legend level to filter Notes by that level. Click it again to clear the filter.</li>
+            <li>When Map Labels targets a linked Waypoint Pack, the Legend keeps your same levels and colors but shows
+              pack-note counts and percentages instead of state or territory totals.</li>
             <li>Use Auto Colors to apply a palette to the current level order. Suggested categories can be shown or
               hidden, or you can make your own levels.</li>
             <li>On desktop, use the Legend Position button or drag the Legend title to place it around the map.</li>
@@ -15016,6 +15021,9 @@
             <li>Use Expanded, Condensed, or Text Only view. Text Only is copy-ready for Apple Notes.</li>
             <li>Use the icon chips to filter by Location Tags. Empty circle means notes without an icon; the ellipsis
               opens Location Tag settings.</li>
+            <li>In Wayfinder, the Packs button opens a compact panel over Notes. Pick an available pack, choose its
+              icon/overlay/label settings, search locations, set priorities, attach notes, then Add / Refresh Selected.
+            </li>
             <li>Right-click or long-press an icon chip to show only that icon. Do it again when one icon is selected to
               restore all icons.</li>
             <li>Use the date filter to cycle between All Dates, Year Only, Year and Month Only, and Full Dates Only.
@@ -15073,6 +15081,8 @@
           <p><b>Are Rangefinder rings routing distance?</b><br>No. Rings and Start-to-End comparisons use straight-line
             distance. Drive and Plane times use your selected average speed, starting from 60 mph for Drive and 600 mph
             for Plane, so both are planning hints.</p>
+          <p><b>Do Waypoint Packs change state progress?</b><br>No. Pack pins, labels, priorities, and Legend pack stats
+            come from linked notes. States and territories only change when you edit their levels yourself.</p>
         </section>
         <section class="help-section">
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ: Legend
@@ -15101,6 +15111,9 @@
             Notes rows easier to scan.</p>
           <p><b>Where do extra Location Tags come from?</b><br>More Icons is built from the circle symbols bundled into
             this file. Search by icon name, label, or related terms, then add the ones you want.</p>
+          <p><b>What happens when I attach an existing note to a Waypoint?</b><br>The note stays a normal note. Trail Log
+            links it to the pack, updates managed map details like coordinates, appends the pack note, and preserves your
+            level, date, people, topics, and other details.</p>
           <p><b>How do icon categories work?</b><br>The chip strip under the search box scopes More Icons to one or more
             categories. Tap a chip to add or remove that category, tap All to clear, and right-click or long-press a
             chip
@@ -15456,7 +15469,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.33";
+    const APP_VERSION = "4.3.0.34";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -17414,7 +17427,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.33",
+        version: "4.3.0.34",
         date: "2026-06-05",
         title: "Waypoint Pack",
         summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
@@ -17425,12 +17438,13 @@
           "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.33",
+          version: "4.3.0.34",
           title: "Waypoint Pack",
           summary: "Add Parks and Monuments as prioritized Wayfinder notes.",
           cta: "Pack the Map!"
         },
         updates: [
+          "Refreshed Help Center, FAQ, hints, README, and release-prep context for Waypoint Packs.",
           "Reprioritized and tidied the Roadmap: Basecamp now plans rich text formatting across named pads, Rangefinder edge cases/globe wrap/time zones merged into one priority item, drive-time and time-based rings merged, and smarter World map labels raised in priority.",
           "Added a Roadmap wish for linking multiple notes to one Waypoint Pack location.",
           "Show Developer Mode split-percentage pills only during active divider drags.",
