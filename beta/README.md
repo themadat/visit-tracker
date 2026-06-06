@@ -1,6 +1,6 @@
 # Trail Log
 
-Trail Log is a local-first travel map for marking where you've been, where you want to go next, and the little memories worth keeping along the way. It started as a US state visit tracker and now layers in DC, territories, a switchable World map, custom legend levels, location notes, icon tags, mapped memories, Rangefinder planning rings, and copy-friendly exports, all with a slightly outdoorsy, geeky vibe.
+Trail Log is a local-first travel map for marking where you've been, where you want to go next, and the little memories worth keeping along the way. It started as a US state visit tracker and now layers in DC, territories, a switchable World map, custom legend levels, location notes, icon tags, mapped memories, Wayfinder waypoint packs, Rangefinder planning rings, and copy-friendly exports, all with a slightly outdoorsy, geeky vibe.
 
 The app is still intentionally simple to run: one offline-capable `index.html`, plain HTML/CSS/JavaScript, browser localStorage, JSON import/export, and no backend. Optional coordinate lookup only goes online when you tap Locate; saved data and manual coordinates keep working offline.
 
@@ -100,4 +100,4 @@ context/               LLM handoff, dev context, and in-flight plan docs. Exclud
 
 All development context — architecture internals, persistence/migration rules, roadmap format, code map, verification steps, known issues, and the release-note conventions — lives in **`context/LLM_HANDOFF.md`**. Start there for any code work.
 
-It also defines the version-lifecycle shorthands: **`start`** (open a new version with a plan or feature), **`prep`** (make a version release-ready), and **`ship`** (condense and cut the release).
+It also defines the working shorthands: **`wish`** (capture a Roadmap idea), **`plan`** (explore and document a feature), **`start`** (implement from an existing plan), **`prep`** (make a version release-ready), and **`ship`** (condense and cut the release).
