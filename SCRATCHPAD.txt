@@ -6,6 +6,7 @@ highlighted modal pop-up buttons should activate on enter
 make square icons
 improve national park icon
 much more formatting for basecamp notes
+next and previous notes
 
 
 Mobile Cleanup: 
