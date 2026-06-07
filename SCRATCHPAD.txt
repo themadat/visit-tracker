@@ -1,5 +1,13 @@
 ## Future Prompt
 
+6/23/17 - baltimore
+esc is equivalent of exit and enter is save
+highlighted modal pop-up buttons should activate on enter
+make square icons
+improve national park icon
+much more formatting for basecamp notes
+
+
 Mobile Cleanup: 
 - Better Auto Colors single liner
 - Map buttons misaligned in scroll view
