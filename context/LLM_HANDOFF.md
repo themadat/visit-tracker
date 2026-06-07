@@ -6,30 +6,72 @@ Copy this into new chats:
 Continue work in /Users/stripes/Documents/GitHub/visit-tracker. Read context/LLM_HANDOFF.md first. Respect manual edits. Run git status --short before editing. Use port 8018 for local preview.
 ```
 
-Shorthand commands: **`start`**, **`prep`**, **`ship`** — see Workflows below.
+Shorthand commands: **`wish`**, **`plan`**, **`start`**, **`prep`**, **`ship`** — see
+Workflows below.
 
-## Workflows: `start` / `prep` / `ship`
+## Workflows: `wish` / `plan` / `start` / `prep` / `ship`
 
-Three shorthand commands drive the version lifecycle: `start` opens a line,
-`prep` makes it release-ready, `ship` condenses it into a cut release. Always
+Five shorthand commands drive planning and the version lifecycle: `wish`
+captures a Roadmap idea, `plan` explores and documents the feature, `start`
+implements from the plan and opens the version line, `prep` makes it
+release-ready, and `ship` condenses it into a cut release. This split is
+intentional: one LLM/session can produce the plan and handoff context, then a
+fresh LLM/session can run `start` to implement from that written plan. Always
 run `git status --short` first and preserve in-flight manual edits. End every
-working session with a push commit summary + description in two distinct
-copy-paste containers, then finish with one copyable checkpoint command:
-`` `_vt-checkpoint <short commit message>` ``.
+working session with two copy-paste containers: first the commit description in
+list form, then the commit command with title in the exact format
+`` `_vt-checkpoint APP_VERSION - <commit title>` ``.
 
-### `start` — open a new version line
+### `wish` — capture a Roadmap idea
 
-Begin a plan, or implement a specific feature.
+Record an idea for later without implementing it.
+
+- Check `WISHLIST_SEEDS` for duplicates and nearby wishes before assigning the
+  next unused `WISH-###` id.
+- Capture a complete seed: title, behavior-focused description, priority,
+  effort, target kind/version, estimated token cost, compact implementation
+  prompt, and category.
+- Use sensible defaults when the request is clear. Ask concise clarifying
+  questions only when an ambiguity materially changes scope, priority, or
+  architecture, and state any assumptions used.
+- Relate the new wish in an active plan doc when it is a direct follow-up to
+  that work.
+- Do not create a plan doc, retarget an exact version, or implement the wish
+  unless the user explicitly asks.
+- Since the Roadmap is visible in the app, bump the active build and add a
+  public-safe `CHANGELOG` update when a wish is added.
+- Verify the app parses and the new Roadmap item renders/searches correctly.
+
+### `plan` — explore and document a feature
+
+Talk through the feature before implementation.
 
 - Read the Snapshot for the latest cut release and any active dev line.
-- Pick the mode:
-  - **Plan**: write `context/WISH-<id>-<slug>-PLAN.md` capturing scope,
-    constraints, data-model/schema changes, phasing, and open questions.
-    Planning-only edits need no `APP_VERSION`/`CHANGELOG` churn.
-  - **Implement**: open the line by bumping `APP_VERSION` to a fresh build
-    (e.g. `4.2.0` → `4.2.1.1`, or a new minor `4.3.0.1`) and starting a new
-    `CHANGELOG` entry with a working (cheeky, on-theme) title. Bump the fourth
-    build number for each subsequent change on the line.
+- Dig into the feature: inspect relevant code, ask concise questions, identify
+  risks, data-model impacts, migration needs, UI states, exports, and tests.
+- Write or revise `context/WISH-<id>-<slug>-PLAN.md` with scope, constraints,
+  implementation phases, schema changes, UX behavior, open questions, and a
+  concrete test plan.
+- Update this handoff with any new context future implementers need, including
+  the active plan reference, important invariants, and where to start reading.
+- If the feature matches a `WISHLIST_SEEDS` ticket, reference it by `WISH-###`;
+  only retarget `targetVersion` when the user explicitly chooses a release.
+- Planning-only edits need no `APP_VERSION` or `CHANGELOG` churn unless the
+  user explicitly asks for user-visible Roadmap changes.
+- Do not implement the feature during `plan` unless the user explicitly changes
+  the request.
+
+### `start` — implement a planned feature
+
+Open or continue the implementation line from an existing plan.
+
+- Read the Snapshot, the active plan doc, and this handoff before editing.
+- If there is no clear plan doc for the requested feature, stop and run `plan`
+  first unless the user explicitly asks for a small direct implementation.
+- Open the line by bumping `APP_VERSION` to a fresh build (e.g. `4.2.0` →
+  `4.2.1.1`, or a new minor `4.3.0.1`) and starting a new `CHANGELOG` entry
+  with a working (cheeky, on-theme) title. Bump the fourth build number for
+  each subsequent change on the line.
 - If the feature matches a `WISHLIST_SEEDS` ticket, reference it by `WISH-###`
   and set/retarget its `targetVersion`.
 - New persisted fields: add defaults in `defaultState()` and repair in
@@ -79,7 +121,8 @@ Collapse the dev build line into one released entry.
 - Run final verification: parse, `git diff --check`, preview on port 8018,
   smoke the shipped flows, stop the local server, then re-run
   `git status --short`.
-- Leave no active dev line; the next change begins with `start`.
+- Leave no active dev line; the next substantial change begins with `plan`, or
+  `start` when a plan already exists.
 
 ## Release Notes
 
@@ -96,19 +139,22 @@ For every completed change:
 - When manual or unexpected edits are present, identify their app/docs effect and include it in `CHANGELOG` alongside the current update.
 - Keep the current major/minor release entry updated unless intentionally opening a new release line.
 - Preserve the localStorage schema where possible.
-- Give me a push commit summary and description in two distinct containers that make copy and paste very easy.
+- Give me two copy-paste containers: the first contains the commit description in list form;
+  the second contains the commit command with title in this format: `_vt-checkpoint APP_VERSION - <commit title>`
 
 ## Snapshot
 
 - Trail Log is a single-file, local-first HTML/CSS/JS app.
 - Main file: `index.html`. `STORAGE_KEY = "usStateVisitMap.v1"`, version in `APP_VERSION`.
 - Docs: `README.md` (public/run/build), this handoff (all dev + LLM context).
-- Current version: `APP_VERSION = "4.2.0"` — latest cut release is 4.2.0 "Rangefinder". No active dev line; the next change begins with `start`.
+- Current version: `APP_VERSION = "4.3.0"` — latest cut release is 4.3.0 "Waypoint Packs" with notice CTA "Pack the Map!".
+- 4.3.0 adds **Waypoint Packs** as a Wayfinder sub-feature: curated place packs that can be previewed, searched, prioritized, annotated, attached to existing notes, and batch-added as normal Wayfinder notes. National Parks and National Monuments are bundled packs, with embedded SVG Location Tags, pack-aware markers/labels, note metadata, priority badges, and export grouping. Pack markers do not recolor state progress. The Packs button only appears in Wayfinder, uses `__CIRCLE_BADGE_PLUS`, and opens a slightly inset child panel that follows the resizable Notes panel without outgrowing it. Opening Packs starts with no pack selected and a compact choose-configure-preview hint; selecting an Available Pack applies its saved overlay label mode immediately. Pack Locations uses a responsive location-and-actions row that stays split when narrow and joins one line when the location name has room. Its header keeps search and actions on one row, stretching search between the title and controls. Square row actions are capped at 40px, Priority is a shaded single-button popout, and link status is represented by the contextual Link/Edit button instead of a separate status block. Link opens a viewport-clamped real-note menu that preserves Pack Locations scroll position; photo previews now preserve that scroll position too. Linked Edit uses a teal outline. Pack overlay and label controls live beside Add/Remove in the Pack Locations header, and selecting a pack enables the overlay with its saved label preference. Leaving Wayfinder turns pack overlays off and restores normal linked-note pins. Linked packs add a compact chevron inside the map Labels icon cell; it opens a larger label target picker with normal state/territory labels plus linked pack icons, while the normal state/territory target uses a `circle.circle.fill` style icon instead of a tag and stays centered when no pack picker is available. The selected target owns the standard `None`, `Abbr`, and `Name` label buttons, and waypoint pack labels draw on linked overlay markers plus existing linked note pins with theme-correct dark-mode color. Long waypoint names split on spaces or dashes, can use three lines for extreme names, use wider line spacing, try below a marker when the preferred top placement would cover another icon, and draw in a top layer above all marker icons; priority badges draw on map note pins whenever their icon is visible. Legend has no separate stats button: it follows the selected map Labels target, keeping the same level rows, names, descriptions, colors, and actions while changing only counts and percentages for linked pack notes. Wayfinder levels count in Legend denominators and row percentages but not completed totals; hard-excluded levels still remove regions or pack items from denominators and show with excluded styling. If no Legend level owns the Wayfinder role, activating Wayfinder opens a picker for the user's existing levels, recommends Want to Visit when present, and can add that recommended level when room remains. Choosing a level automatically excludes it from completion stats before entering Wayfinder. Linked rows hide the staging note field. Developer Mode split-percentage pills show only during active divider drags. Editing a linked note leaves the Waypoint Packs panel open behind the editor so closing it returns to the same pack context. The linked note header shows Website, Photo, Priority, and Link to Waypoint controls in a teal-outlined container when the active pack tag is selected; waypoint choices are scoped to the note's location and merge default park details into Additional Details. Linking an existing note appends the waypoint note to Additional Details, preserves City, and overrides Where/coordinates with teal-highlighted controls. Monument artwork flips between map and Notes contrast treatments in light/dark modes. Park and Monument notes are prefilled as `Established on <date> | <description>` from static Wikipedia-sourced snapshots. Alaska waypoint projection has separate mainland/Aleutian frames, pack overlay pins are Wayfinder teal, and priority colors run green through orange. Preview priorities paint map badges before Add/Refresh; waypoint labels sit above markers. Preview inclusion uses a teal-bordered location selector instead of a checkbox. Selecting a pack temporarily enables its recommended Location Tag at the end of the active tag order; preview-added tags clean themselves up when the pack is left without linked notes. Notes can sort by priority, pack icon filters now show clearly distinct on/off states, hidden excluded locations also hide excluded-level note pins inside mixed locations, expanded note rows omit priority/source pills, WISH-069 tracks timezone-aware Rangefinder times, WISH-070 tracks first-class location ratings with sorting, WISH-071 tracks optional latitude/longitude map lines, and WISH-072 tracks linking multiple notes to one Waypoint Pack location.
 - 4.2.0 adds **Rangefinder Mode**: a map mode (Shortcut Mode key `5`, `__TARGET` button) that picks two note pins as Start/End, draws concentric planning rings, and shows straight-line distance + estimated time. Drive/Plane travel modes, per-map settings (`settings.ringByLayer.{us,world}`), configurable average speed (Drive 30–120, Plane 120–760 mph), fill/clip/unit/time toggles, and US + World support. Internal symbols use the `ring*` prefix.
-- Latest public releases (newest first): 4.2.0 "Rangefinder", 4.1.0 "Wayfinder", 4.0.0 "Trail Atlas", 3.3.0 "Basecamp Notes". Full notes in the in-app CHANGELOG; full history table in `README.md`.
-- Plan docs live in `context/` only while their line is in flight, then are deleted on ship. No active plan docs. Shipped plans (Rangefinder 4.2.0, Wayfinder 4.1.0, World map 4.0.0) were removed after release.
+- Latest public releases (newest first): 4.3.0 "Waypoint Packs", 4.2.0 "Rangefinder", 4.1.0 "Wayfinder", 4.0.0 "Trail Atlas". Full notes in the in-app CHANGELOG; full history table in `README.md`.
+- Plan docs live in `context/` only while their line is in flight, then are deleted on ship. No plan is currently active; shipped plans are removed after release.
 - No build step (other than the optional macOS icon pipeline — see README), backend, or dependencies.
-- User data lives in browser localStorage. Locate is the only intentional online action and only runs when clicked.
+- User data lives in browser localStorage. Locate and Waypoint Pack Wikipedia
+  photo previews are intentional online actions and only run when clicked.
 
 ## Rules
 
@@ -119,7 +165,8 @@ For every completed change:
 - Edit surgically, especially in `index.html`; do not reformat the file.
 - App behavior changes usually require `APP_VERSION`/`CHANGELOG` updates. Docs-only, handoff-only, or planning-only edits do not need release churn unless the user asks.
 - When a change affects dev rules, repo context, or future handoff instructions, update this file. Keep `README.md` for public/run/build info only — do not duplicate dev rules there.
-- End every final reply with a short copyable checkpoint command in the exact format `` `_vt-checkpoint <message>` ``. This signals the prompt is done and lets the user run their local commit/push/beta update helper.
+- End every final reply with two copyable blocks: first the commit description
+  in list form, then `_vt-checkpoint APP_VERSION - <commit title>`.
 
 **Code**
 
@@ -139,7 +186,8 @@ For every completed change:
 - `priority`: `P0`–`P3`. `effort`: `small` | `medium` | `large` | `x-large`.
 - `targetKind`: `exact` (with a `targetVersion`) or a bucket — `major` | `minor` | `patch`.
 - `description` states behavior and scope; `prompt` is a compact, minimal-token implementation prompt for an LLM.
-- When adding items, ask concise clarifying questions with default answers the user can accept unchanged.
+- When adding items, use sensible defaults and state them; ask concise
+  clarifying questions only when ambiguity materially changes the wish.
 
 **Release notes** — keep public-facing: describe shipped behavior, not prompts, tickets, or internal workflow.
 
@@ -182,12 +230,14 @@ State basics:
     ..., activeLayerId, mapLabels,
     selectedState, notesPanelState, collapsedNoteCategories, legendPosition,
     bucketListView, bucketListFilterSnapshot,  // Wayfinder mode + snapshot
-    ringMode, ringPanelSplitRatio, ringByLayer // Rangefinder mode + per-map bags
+    ringMode, ringPanelSplitRatio, ringByLayer, // Rangefinder mode + per-map bags
+    suggestedSetsVisible, activeSuggestedSetId,
+    suggestedSetIcons, suggestedSetLabelModes
   },
   levels: [{ id, name, definition, color, countsTowardStats, isBucketList }],
   visitTypes: [{ id, label, icon, shortcut, enabled, searchTags }],
   states: { CA: ["visited"] },                 // US states + territories
-  notes: { CA: [{ id, date, levelId, city, where, what, who, lat, lng, geocodeLabel, details, text, visitTypes }] },
+  notes: { CA: [{ id, date, levelId, city, where, what, who, lat, lng, geocodeLabel, details, text, visitTypes, priority, sourceSetId, sourceItemId, sourceSetGenerated }] },
   world: { regions: { FR: ["visited"] }, notes: { FR: [ ... ] } },  // countries (ISO-2), territories stay in states/notes
   territoryDefaultsSeeded, countriesSeeded
 }
@@ -238,6 +288,11 @@ Important invariants:
 - Only one level can be flagged `isBucketList: true`, and it must have
   `countsTowardStats: false`.
 - `visitTypes` are configurable icon tags; shortcuts should stay unique among active tags.
+- Waypoint Pack source metadata is optional on notes; normalize it against
+  bundled `SUGGESTED_SETS` and drop unknown set/item ids on import/load.
+- Waypoint Pack notes are normal notes. Batch add/attach updates managed fields
+  and coordinates but must not recolor state progress automatically.
+- `priority` is a note field (`"1"`-`"5"` or `""`), not a Location Icon Tag.
 - Saved Notes filters are repaired against current level/tag ids.
 - Rangefinder settings are repaired per layer. Ring arrays allow up to 8 rings;
   US and World settings remain independent after migration.
@@ -252,14 +307,30 @@ Important invariants:
 ## Current Surface
 
 - Map: SVG state/territory map + world map; layer toggle (`#mapLayerToggleBtn`); scroll/fit modes, pan/zoom persistence, labels, clustered note pins, Match Notes filtering. Wayfinder pill rides inside the layer toggle when active.
+- Waypoint Packs: Wayfinder-only Packs button `#notesAddWaypointsBtn`
+  (`__CIRCLE_BADGE_PLUS`) opens an inset panel over Notes, with National Parks
+  and National Monuments bundled as the first packs. Notes header Wayfinder button is
+  `#notesActivateWayfinderBtn`; the Packs button keeps a teal Wayfinder outline,
+  while the Wayfinder mode button only highlights when active.
+  Available Packs cards, visual icon choices, overlay and label icon controls,
+  a unified Pack Locations layout that keeps flexible name/code/location and
+  actions split when narrow, then joins them on one line when space permits.
+  Website, Photo, Edit/Link, and Unlink use 40px square icon buttons; Priority
+  uses compact outline controls. Link/Edit itself communicates unlinked/linked
+  state and anchors the expanded note-choice menu. Overlay and label controls
+  sit in the Pack Locations header. The inset Packs panel follows Notes
+  resizing. Linking appends waypoint details and
+  updates City/coordinates. Also includes batch add into Wayfinder, dedicated
+  pack SVG icons, pack-aware markers, preview priority map badges,
+  temporary-icon cleanup, and safe remove behavior.
 - Legend: editable levels (name, color, definition, exclude-from-stats, Wayfinder), drag reorder, swipe quick actions, movable desktop placement.
 - Rangefinder: Shortcut Mode key `5` / target button opens a paired panel with the Legend, picks saved note pins as Start/End, draws straight-line Drive/Plane planning rings on US and World maps, and keeps per-map ring distances, units, fill/clip/time style, travel mode, and average speed settings.
 - Notes: search (with `/` hint chip + universal `/` shortcut), sort, compact/expanded/text views, category grouping, icon filters, Show Excluded toggle (styled like legend's excluded pattern), coordinate filter, date precision filter, selected-location detail.
-- Note editor: Quick Add, City/Where/What/Who/Details, local field suggestions, Smart Convert, partial/flexible dates, weekday preview, manual/lookup coordinates, multiple icon tags. Quick Add defaults to the Wayfinder level when Wayfinder Mode is on.
+- Note editor: Quick Add, City/Where/What/Who/Details, local field suggestions, Smart Convert, partial/flexible dates, weekday preview, manual/lookup coordinates, multiple icon tags, priority, and Add to active pack. Quick Add defaults to the Wayfinder level when Wayfinder Mode is on.
 - Location Icon Tags: configurable active tags plus auto-discovered More Icons from `__*_CIRCLE` constants, generated labels/search tags, explicit aliases, aliased-first sorting.
 - Wayfinder: per-row "Mark Visited" promote action on Wayfinder notes (`openNoteDialog(id, { promoteBucketVisited: true })`) opens the editor pre-filled with `levelId: "visited"` + today's date when blank.
 - Help / What's New / Roadmap / Developer Tools (with grouped Keyboard Shortcuts Reference at `#keyboardShortcutsReference`) live under Settings tabs.
-- Exports: JSON, Markdown, RTF, Plain Text — MD/RTF/Text gain a Countries section (when engaged) and a Wayfinder section (when engaged); helper: `bucketListExportEntries()`.
+- Exports: JSON, Markdown, RTF, Plain Text — MD/RTF/Text gain Countries, Wayfinder, and Waypoint Packs sections when engaged; Wayfinder exports group linked pack notes under their pack name. Helpers: `bucketListExportEntries()`, `suggestedSetExportEntries()`.
 
 ## UX Preferences
 
