@@ -14329,10 +14329,10 @@
                 <div id="waypointPackAvailableList" class="waypoint-pack-available-list"></div>
               </section>
               <small class="waypoint-pack-settings-hint" data-hint data-hint-key="waypoint-pack-settings-help">
-                Choose a Pack and settings: icon, overlay, labels, search, priorities, and note links
+                Choose an Available Pack, set its icon and labels, preview locations, then link notes or Add / Refresh
               </small>
               <section id="waypointPackConfigure" class="waypoint-pack-configure"></section>
-              <section>
+              <section id="waypointPackLocationsSection">
                 <div class="waypoint-section-title is-pack-locations">
                   <h4>Pack Locations</h4>
                   <div class="waypoint-section-actions">
@@ -15099,8 +15099,9 @@
             <li>Use Expanded, Condensed, or Text Only view. Text Only is copy-ready for Apple Notes.</li>
             <li>Use the icon chips to filter by Location Tags. Empty circle means notes without an icon; the ellipsis
               opens Location Tag settings.</li>
-            <li>In Wayfinder, the Packs button opens a compact panel over Notes. Pick an available pack, choose its
-              icon/overlay/label settings, search locations, set priorities, attach notes, then Add / Refresh Selected.
+            <li>In Wayfinder, the Packs button opens an unselected pack browser over Notes. Pick an Available Pack to
+              show its saved icon/overlay/label settings and labeled map preview, then search locations, set priorities,
+              attach notes, or Add / Refresh Selected.
             </li>
             <li>Right-click or long-press an icon chip to show only that icon. Do it again when one icon is selected to
               restore all icons.</li>
@@ -15547,7 +15548,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.35";
+    const APP_VERSION = "4.3.0.36";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -17505,7 +17506,7 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.35",
+        version: "4.3.0.36",
         date: "2026-06-05",
         title: "Waypoint Pack",
         summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
@@ -17516,12 +17517,14 @@
           "Pack markers, labels, exports, and priority colors stay in sync."
         ],
         notice: {
-          version: "4.3.0.35",
+          version: "4.3.0.36",
           title: "Waypoint Packs",
           summary: "Add Currated Collections as prioritized Wayfinder Notes and view progress on the Map.",
           cta: "Pack the|Map!"
         },
         updates: [
+          "Opened Waypoint Packs with no pack preselected and added a compact choose-configure-preview flow hint.",
+          "Made selecting a Waypoint Pack immediately apply its saved label mode to that map overlay.",
           "Centered the Map Labels target icon when no linked Waypoint Pack picker is present.",
           "Added a Wayfinder setup popup for choosing an existing Legend level or adding the recommended Want to Visit level.",
           "Refreshed Help Center, FAQ, hints, README, and release-prep context for Waypoint Packs.",
@@ -18618,6 +18621,7 @@
     let notesHideExcludedOnly = true;
     let notesDatePrecisionFilter = "all";
     let notesCoordinateFilter = "all";
+    let waypointPackPanelSetId = "";
     let notesSearchQuery = "";
     let mapFitMode = false;
     let mapZoom = 1;
@@ -20812,12 +20816,14 @@
         waypointPackSearchQuery = "";
       }
       state.settings.activeSuggestedSetId = set.id;
+      state.settings.mapLabelTargetSetId = set.id;
       state.settings.suggestedSetsVisible = true;
       state.settings.suggestedSetLabelModes ||= {};
       if (!SUGGESTED_SET_LABEL_MODES.includes(state.settings.suggestedSetLabelModes[set.id])) {
         setSuggestedSetLabelMode(set.id, set.defaultLabelMode || "none");
       }
       addSuggestedSetRecommendedIcon(set.id);
+      waypointPackPanelSetId = set.id;
       return set;
     }
 
@@ -23261,7 +23267,7 @@
 
     function renderWaypointPackCard(set) {
       const progress = suggestedSetProgress(set.id);
-      const selected = activeSuggestedSet()?.id === set.id;
+      const selected = waypointPackPanelSetId === set.id;
       return `
         <button class="waypoint-pack-card" type="button" data-waypoint-pack="${escapeHtml(set.id)}" aria-pressed="${selected ? "true" : "false"}">
           <span>${visitTypeIcon(suggestedSetIconId(set.id))}</span>
@@ -23365,12 +23371,22 @@
       panel.classList.toggle("hidden", !isOpen);
       panel.setAttribute("aria-hidden", isOpen ? "false" : "true");
       $("#notesAddWaypointsBtn")?.setAttribute("aria-expanded", isOpen ? "true" : "false");
-      const set = activeSuggestedSet();
-      if (!set) return;
-      const progress = suggestedSetProgress(set.id);
       $("#waypointPacksSubtitle").textContent = "Curated place packs for future endeavors";
-      $("#waypointPacksSummary").textContent = `${progress.linked}/${progress.total} linked · ${progress.notes} notes`;
       $("#waypointPackAvailableList").innerHTML = SUGGESTED_SETS.map(renderWaypointPackCard).join("");
+      const set = SUGGESTED_SET_BY_ID[waypointPackPanelSetId] || null;
+      const configure = $("#waypointPackConfigure");
+      const locations = $("#waypointPackLocationsSection");
+      configure.classList.toggle("hidden", !set);
+      locations.classList.toggle("hidden", !set);
+      if (!set) {
+        $("#waypointPacksSummary").textContent = "Choose a pack";
+        configure.innerHTML = "";
+        $("#waypointPackMapControls").innerHTML = "";
+        $("#setsPreviewTable").innerHTML = "";
+        return;
+      }
+      const progress = suggestedSetProgress(set.id);
+      $("#waypointPacksSummary").textContent = `${progress.linked}/${progress.total} linked · ${progress.notes} notes`;
       $("#waypointPackConfigure").innerHTML = renderWaypointPackConfigure(set);
       $("#waypointPackMapControls").innerHTML = renderWaypointPackMapControls(set);
       const search = waypointPackSearchQuery.trim().toLowerCase();
@@ -23386,10 +23402,12 @@
     }
 
     function openSetsDialog(setId = "") {
-      const targetSetId = SUGGESTED_SET_BY_ID[setId] ? setId : activeSuggestedSet()?.id || SUGGESTED_SET_DEFAULT_ID;
-      activateSuggestedSet(targetSetId);
-      save();
       if (!bucketListViewActive()) setBucketListView(true);
+      waypointPackPanelSetId = "";
+      if (SUGGESTED_SET_BY_ID[setId]) {
+        activateSuggestedSet(setId);
+        save();
+      }
       waypointPacksPanelOpen = true;
       notesPanelOpen = true;
       renderSetsDialog();
@@ -23397,10 +23415,11 @@
     }
 
     function closeWaypointPacksPanel() {
-      const setId = activeSuggestedSet()?.id;
+      const setId = waypointPackPanelSetId;
       const iconRemoved = setId ? cleanupSuggestedSetPreviewIcon(setId) : false;
       if (setId) clearSuggestedSetPreviewDrafts(setId);
       waypointPacksPanelOpen = false;
+      waypointPackPanelSetId = "";
       waypointAttachMenuItemId = "";
       waypointPhotoPreviewKey = "";
       waypointPackSearchQuery = "";
