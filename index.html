@@ -15548,7 +15548,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0.36";
+    const APP_VERSION = "4.3.0.37";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -17506,30 +17506,29 @@
     ];
     const CHANGELOG = [
       {
-        version: "4.3.0.36",
-        date: "2026-06-05",
-        title: "Waypoint Pack",
-        summary: "Waypoint Packs turn curated place lists into prioritized Wayfinder notes.",
+        version: "4.3.0.37",
+        date: "2026-06-07",
+        title: "Waypoint Packs",
+        summary: "Waypoint Packs turn curated collections into prioritized, map-ready Wayfinder notes.",
         highlights: [
-          "Add currated collections (National Parks and Monuments) as Wayfinder notes.",
-          "Preview places with Photo, Link, Priority, and Note fields.",
-          "Attach existing notes without losing your details.",
-          "Pack markers, labels, exports, and priority colors stay in sync."
+          "Add National Parks and Monuments as prioritized Wayfinder notes.",
+          "Preview photos, links, priorities, and notes before adding locations.",
+          "Attach existing notes while preserving dates, levels, and details.",
+          "Track progress with synced map markers, labels, Legend stats, and exports."
         ],
         notice: {
-          version: "4.3.0.36",
+          version: "4.3.0.37",
           title: "Waypoint Packs",
-          summary: "Add Currated Collections as prioritized Wayfinder Notes and view progress on the Map.",
+          summary: "Add curated place packs as prioritized Wayfinder notes and track their map progress.",
           cta: "Pack the|Map!"
         },
         updates: [
+          "Polished release copy, Help guidance, and implementation notes for the Waypoint Packs release.",
           "Opened Waypoint Packs with no pack preselected and added a compact choose-configure-preview flow hint.",
           "Made selecting a Waypoint Pack immediately apply its saved label mode to that map overlay.",
           "Centered the Map Labels target icon when no linked Waypoint Pack picker is present.",
           "Added a Wayfinder setup popup for choosing an existing Legend level or adding the recommended Want to Visit level.",
           "Refreshed Help Center, FAQ, hints, README, and release-prep context for Waypoint Packs.",
-          "Reprioritized and tidied the Roadmap: Basecamp now plans rich text formatting across named pads, Rangefinder edge cases/globe wrap/time zones merged into one priority item, drive-time and time-based rings merged, and smarter World map labels raised in priority.",
-          "Added a Roadmap wish for linking multiple notes to one Waypoint Pack location.",
           "Show Developer Mode split-percentage pills only during active divider drags.",
           "Moved waypoint labels into a top draw layer so nearby marker icons cannot cover them.",
           "Added dash-aware and three-line waypoint name wrapping with wider line spacing.",
@@ -17548,24 +17547,21 @@
           "Kept Pack Locations search and actions on one header row with search stretching across the available space.",
           "Made hidden excluded-location filters hide excluded-level note pins even inside visited locations.",
           "Moved the Waypoint Pack label dropdown into the existing map Labels control beside the tag icon.",
-          "Added a Legend Pack Stats view with pack completion and level-colored breakdown chips.",
           "Added Pack Locations search for quickly finding waypoints to link or edit.",
           "Preserved Pack Locations scroll position when opening lower photo previews.",
           "Turned Waypoint Pack overlays off when leaving Wayfinder and restored normal note pins.",
           "Made active and inactive Waypoint Pack icon filters visually distinct in Notes.",
           "Added an added-pack dropdown beside map labels for switching packs and changing pack label modes.",
-          "Added a Roadmap wish for optional latitude and longitude map lines.",
           "Kept Waypoint link menus clamped to the viewport so wrapped-row popups are not cut off.",
           "Let Waypoint Pack icon filters stay off after a user turns them off in Notes.",
           "Merged waypoint default park details into Additional Details when linking from the note editor.",
           "Preserved Pack Locations scroll position when opening or choosing Link Existing Note menus.",
-          "Selecting a Waypoint Pack now turns its overlay on and defaults pack labels to full names.",
+          "Selecting a Waypoint Pack turns its overlay on and applies its saved label preference.",
           "Converted Waypoint priority controls into single shaded popout buttons in pack rows and linked note headers.",
           "Moved linked note priority, Website, Photo, and Link to Waypoint controls into a teal note-header container.",
           "Limited note-header waypoint choices to available pack places in the note's location and kept linked note cities intact.",
           "Highlighted linked waypoint-managed Where, Locate, latitude, and longitude controls in teal.",
           "Added Priority sorting to Notes and removed priority/source pills from expanded note rows.",
-          "Added Roadmap wish WISH-070 for first-class location ratings and rating-based sorting.",
           "Merged Pack Location link status into the contextual Link/Edit button, compacted square controls to 40px, and tightened priority type.",
           "Moved pack overlay and label controls into the Pack Locations header and anchored a stronger outlined note-choice menu directly below Link.",
           "Added live split-percentage pills above resize dividers in Developer Mode.",
@@ -17575,12 +17571,11 @@
           "Kept Pack Location actions aligned in a responsive toolbar and removed placeholder choices from link-note menus.",
           "Rebuilt Pack Locations as responsive toolbar rows with wide wrapping names, Website and Photo actions, priority, contextual Link/Edit, and Unlink.",
           "Added on-demand inline Wikipedia photo previews and moved state-scoped note attachment behind the Edit/Link button, with unavailable actions disabled.",
-          "Added a Roadmap wish for timezone-aware Rangefinder Start, End, departure, and arrival times.",
           "Kept Waypoint Packs open behind linked-note editing so closing the note returns to the same pack context.",
           "Collapsed linked Pack Locations into compact rows with dedicated contextual Edit and Unlink icons.",
           "Made National Monument artwork white on maps in light mode and black in dark mode, with the inverse treatment in Notes.",
           "Shortened Pack Locations to waypoint names, hid linked-note drafts, and added Unlink.",
-          "Linking an existing note now appends the waypoint note to Additional Details and updates City and coordinates.",
+          "Linking an existing note appends the waypoint note to Additional Details, preserves City, and updates Where and coordinates.",
           "Merged Add/Refresh and Pack Notes into one compact Pack Locations list with contextual Attach/Edit actions.",
           "Moved each location's priority controls between its name and info link to reduce vertical space.",
           "Limited Attach Existing Note choices to available notes in the waypoint's listed state or states.",
@@ -17600,9 +17595,7 @@
           "Changed the Waypoint Packs subtitle to a generic future-endeavors line without linked status.",
           "Selecting a pack now enables its recommended Location Tag and adds it to the end of the active tag order when needed.",
           "Increased map label text for Waypoint Pack markers.",
-          "Added a roadmap wish for a small raptor easter egg.",
           "Renamed Suggested Sets to Waypoint Packs and moved the entry point into Wayfinder as a compact Packs button.",
-          "Renamed the Notes Wayfinder controls internally to notesActivateWayfinderBtn and notesAddWaypointsBtn, with teal outlines tying them to Wayfinder mode.",
           "Replaced the modal drawer with an inset Waypoint Packs panel over Notes so the map stays visible and interactive.",
           "Added Available Packs cards, visual icon choices, layer-button overlay controls, and map-label-style label controls.",
           "Added National Monuments as a second Waypoint Pack using a static Wikipedia-sourced snapshot with coordinates, established dates, and description-prefilled notes.",
@@ -17613,14 +17606,14 @@
           "Pack settings are more compact: overlay sits next to label options, helper labels are removed, the combined label option is gone, and label SVG sizing matches map label controls.",
           "Added a dismissible Waypoint Packs settings hint between Available Packs and the pack settings.",
           "Bundled official National Park-designated units with stable NPS codes, labels, representative coordinates, state lists, URLs, and default note copy.",
-          "The Add Selected preview cards let each park be included or skipped, assigned priority 1-5, and annotated before batch creation.",
+          "Pack Location rows let each place be included or skipped, assigned priority 1-5, and annotated before batch creation.",
           "Batch adding creates missing Wayfinder notes, refreshes managed pack fields on existing linked notes, turns the chosen pack icon on, enables the pack overlay, and enters Wayfinder.",
           "Waypoint Pack notes remain normal notes in Notes, filters, Wayfinder, backups, and exports, with lightweight source metadata for duplicate checks and refreshes.",
-          "Added optional note priority with compact badges, note search text, exported note text, and pack-list filter/sort controls.",
+          "Added optional note priority with compact badges, search/export text, Notes sorting, and pack-preview controls.",
           "Priority now appears as a small number pill on the bottom-right of location icons and pack markers, and linked pack priority changes redraw the map marker immediately.",
           "Added attach flows from the pack panel and note editor so an existing note can join the active pack while preserving user-entered date, level, details, people, topics, and non-pack tags.",
-          "Pack markers render separately from normal note pins, use the selected pack icon, take their status color from the linked note level, and do not recolor whole states.",
-          "National Parks default to labels off, with Off, Abbr, and Name label modes available from the compact label control.",
+          "Pack markers render separately from normal note pins, use the selected pack icon and Wayfinder teal, and do not recolor whole states.",
+          "Pack labels support None, Abbr, and Name modes and remember each pack's preference.",
           "Removing a pack deletes untouched generated pack notes and detaches edited or visited notes so user work is kept.",
           "Markdown, Rich Text, and Plain Text exports group linked pack notes under their pack name while preserving the existing Wayfinder export flow.",
           "JSON backups/imports normalize pack metadata and priority while dropping unknown pack or item ids."

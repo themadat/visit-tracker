@@ -102,8 +102,8 @@ occurs only when the user clicks a location's Photo action.
     `__SQUARE_3_LAYERS_3D_TOP_FILLED` when on.
   - Leaving Wayfinder always turns the active pack overlay off and restores
     normal linked-note pins.
-  - Label UI reuses the map label button style with `Off`, `Abbr`, and `Name`.
-    National Parks default to labels off.
+  - Label UI reuses the map label button style with `None`, `Abbr`, and `Name`.
+    Each pack remembers its label preference; bundled packs start with names.
   - Once a pack has linked notes, the existing map Labels segmented control
     gains a compact chevron inside the tag-icon cell. It opens a label target
     picker with normal state/territory labels plus linked pack icons. Selecting
@@ -214,15 +214,17 @@ merged into a single note.
 
 ## Test Plan
 
-- New map defaults: pack overlay off, pack labels off, no state recoloring.
+- New map defaults: pack overlay off, no state recoloring.
 - Open Packs from Wayfinder; confirm an inset panel appears over Notes and the
-  map remains visible. Resize Notes and confirm Packs remains slightly inset
-  without becoming larger than its parent.
-- Select National Parks from Available Packs; choose an icon, overlay state, and
-  label mode.
+  map remains visible with no pack preselected. Confirm pack settings and
+  locations remain hidden until an Available Pack is chosen. Resize Notes and
+  confirm Packs remains slightly inset without becoming larger than its parent.
+- Select National Parks from Available Packs; confirm its saved label mode is
+  applied immediately, then choose an icon, overlay state, and label mode.
 - Select National Monuments; confirm 138 items, Wikipedia links, and prefilled
-  `Date Established | Description` note details.
-- Select National Parks; confirm prefilled `Date Established | Description`
+  `Established on <date> | <description>` note details.
+- Select National Parks; confirm prefilled
+  `Established on <date> | <description>` note details
   note details.
 - Select a pack whose recommended icon is hidden; confirm the icon becomes
   active at the end of the Location Tag order.
