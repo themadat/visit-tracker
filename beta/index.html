@@ -1642,7 +1642,15 @@
 
     .map-waypoint-pack-select[aria-pressed="true"] {
       border-color: #14b8a6;
-      box-shadow: inset 0 0 0 1px #14b8a6;
+      background: color-mix(in srgb, #14b8a6 22%, var(--surface));
+      box-shadow: inset 0 0 0 2px #14b8a6, 0 0 0 1px color-mix(in srgb, #14b8a6 35%, transparent);
+      color: #14b8a6;
+    }
+
+    .map-waypoint-pack-select:focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+      z-index: 1;
     }
 
 
@@ -6341,9 +6349,35 @@
     #basecampDialog[open] {
       display: grid;
       grid-template-rows: auto minmax(0, 1fr);
-      width: min(820px, calc(100dvw - 1rem));
-      height: min(860px, calc(100vh - 1.6rem));
+      width: min(1480px, calc(100dvw - 1rem));
+      height: min(1180px, calc(100vh - 1.2rem));
       overflow: hidden;
+    }
+
+    /* Panel mode: Basecamp behaves like a 4th docked panel on the right edge.
+       Uses <dialog>.show() so the user can still interact with map/legend/notes
+       behind it without a scrim. Width tuned to leave a usable main view. */
+    #basecampDialog[open][data-basecamp-mode="panel"] {
+      position: fixed;
+      inset: auto 12px 14px auto;
+      margin: 0;
+      width: min(440px, calc(100dvw - 24px));
+      height: min(calc(100dvh - 96px), 920px);
+      box-shadow: 0 18px 44px -20px rgba(15, 23, 42, .35), 0 8px 18px -10px rgba(15, 23, 42, .28);
+      border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line));
+      z-index: 40;
+    }
+
+    #basecampDialog[open][data-basecamp-mode="panel"]::backdrop {
+      display: none;
+    }
+
+    @media (max-width: 980px) {
+      #basecampDialog[open][data-basecamp-mode="panel"] {
+        inset: auto 8px 8px 8px;
+        width: auto;
+        height: min(70dvh, 720px);
+      }
     }
 
     #basecampDialog,
@@ -6439,11 +6473,30 @@
     .basecamp-search-wrap {
       display: grid;
       gap: .28rem;
+      flex: 1 1 auto;
+      min-width: 0;
     }
 
     .basecamp-search-wrap input {
       width: 100%;
       min-width: 0;
+    }
+
+    .basecamp-search-row {
+      display: flex;
+      align-items: stretch;
+      gap: .42rem;
+      min-width: 0;
+    }
+
+    .basecamp-search-row .basecamp-new-btn {
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+
+    .basecamp-search-hints {
+      display: grid;
+      gap: .14rem;
     }
 
     .basecamp-search-hint {
@@ -6636,6 +6689,34 @@
       padding: .3rem .48rem;
       border-color: color-mix(in srgb, #14b8a6 42%, var(--line));
       color: color-mix(in srgb, #0f766e 82%, var(--text));
+      position: relative;
+    }
+
+    /* Holding Cmd inside the Basecamp dialog flashes ⌘B / ⌘I / ⌘K hints over
+       the matching toolbar buttons so the chord is discoverable. */
+    .basecamp-toolbar button[data-cmd-hint]::after {
+      content: attr(data-cmd-hint);
+      position: absolute;
+      top: -.5rem;
+      right: -.34rem;
+      padding: 1px .32rem;
+      border-radius: 4px;
+      background: #14b8a6;
+      color: #fff;
+      font-size: .68rem;
+      font-weight: 800;
+      letter-spacing: .03em;
+      line-height: 1.3;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(2px);
+      transition: opacity .12s ease, transform .12s ease;
+      z-index: 3;
+    }
+
+    html[data-basecamp-cmd="on"] .basecamp-toolbar button[data-cmd-hint]::after {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .basecamp-link-popover {
@@ -7104,6 +7185,45 @@
     }
 
     .notes-search-input-wrap input:focus~.notes-search-shortcut-hint {
+      display: none;
+    }
+
+    /* Reusable "/" hint chip on the right edge of search-style inputs:
+       Smart Convert (note editor), Waypoint Pack search, Basecamp pad search. */
+    .search-shortcut-input {
+      position: relative;
+      display: flex;
+      align-items: stretch;
+      min-width: 0;
+    }
+
+    .search-shortcut-input > input {
+      flex: 1 1 auto;
+      min-width: 0;
+      padding-right: 1.85rem;
+    }
+
+    .search-shortcut-chip {
+      position: absolute;
+      right: .45rem;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 1px .38rem;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: var(--surface-2);
+      color: var(--muted);
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .03em;
+      line-height: 1.4;
+      pointer-events: none;
+      user-select: none;
+      z-index: 2;
+    }
+
+    .search-shortcut-input input:focus ~ .search-shortcut-chip,
+    .smart-convert-field > input:focus ~ .search-shortcut-chip {
       display: none;
     }
 
@@ -14888,8 +15008,12 @@
                 <div class="waypoint-section-title is-pack-locations">
                   <h4>Pack Locations</h4>
                   <div class="waypoint-section-actions">
-                    <input id="waypointPackLocationSearch" class="waypoint-location-search" type="search"
-                      placeholder="Search Pack Locations" aria-label="Search Waypoint Pack locations">
+                    <span class="search-shortcut-input waypoint-location-search-wrap">
+                      <input id="waypointPackLocationSearch" class="waypoint-location-search" type="search"
+                        placeholder="Search Pack Locations" aria-label="Search Waypoint Pack locations">
+                      <span class="search-shortcut-chip" aria-hidden="true"
+                        title="Press / to focus this search">/</span>
+                    </span>
                     <div id="waypointPackMapControls" class="waypoint-location-map-controls"></div>
                     <button id="setsBatchAddBtn" class="primary" type="button">Add / Refresh Selected</button>
                     <button id="setsRemoveBtn" class="danger" type="button">Remove Pack</button>
@@ -14946,7 +15070,7 @@
   <dialog id="renameDialog">
     <header>
       <h2>Rename Map</h2>
-      <button class="dialog-close" type="button" data-close="renameDialog" data-shortcut="Q">Close</button>
+      <button class="dialog-close" type="button" data-close="renameDialog" data-shortcut="Esc">Close</button>
     </header>
     <form id="renameForm" class="dialog-body" method="dialog">
       <label>Map name
@@ -14954,7 +15078,7 @@
       </label>
       <div class="actions">
         <button class="primary" type="submit" data-shortcut="S">Save Name</button>
-        <button type="button" data-close="renameDialog" data-shortcut="Q">Cancel</button>
+        <button type="button" data-close="renameDialog" data-shortcut="Esc">Cancel</button>
       </div>
     </form>
   </dialog>
@@ -14963,7 +15087,7 @@
     <header>
       <h2>Add Trail Log as an App!</h2>
       <button id="installDialogCloseBtn" class="dialog-close" type="button" data-close="addToHomeDialog"
-        data-shortcut="Q">Close</button>
+        data-shortcut="Esc">Close</button>
     </header>
     <div class="dialog-body">
       <section class="install-top" aria-live="polite">
@@ -15017,7 +15141,7 @@
     <header class="tip-jar-head">
       <h2>Buy me a Drink!</h2>
       <button id="tipJarCloseBtn" class="dialog-close" type="button" data-close="tipJarDialog"
-        data-shortcut="Q">Close</button>
+        data-shortcut="Esc">Close</button>
     </header>
     <div class="dialog-body">
       <p class="tip-intro">Saddle up to the bar with me —<br />every round keeps Trail Log moving.</p>
@@ -15072,7 +15196,7 @@
         <small id="markerDialogSubtitle"></small>
       </div>
       <button id="markerDialogCloseBtn" class="dialog-close" type="button" data-close="markerDialog"
-        data-shortcut="Q">Close</button>
+        data-shortcut="Esc">Close</button>
     </header>
     <div class="dialog-body">
       <p id="markerDialogSummary" class="marker-dialog-summary"></p>
@@ -15101,7 +15225,7 @@
         <button id="saveAddNoteBtn" class="primary" type="button" data-shortcut="A">Save + Add</button>
         <button id="deleteNoteFromDialogBtn" class="danger hidden" type="button" data-shortcut="D">Delete</button>
         <button id="noteDialogCloseBtn" class="dialog-close" type="button" data-close="noteDialog"
-          data-shortcut="Q">Close</button>
+          data-shortcut="Esc">Close</button>
       </div>
     </header>
     <form id="noteForm" class="dialog-body" method="dialog">
@@ -15117,6 +15241,8 @@
             <div id="noteSmartConvertHighlights" class="smart-convert-highlights" aria-hidden="true"></div>
             <input id="noteSmartConvert" maxlength="420" autocomplete="off" spellcheck="false"
               placeholder="Type a quick note to auto-fill the fields below; learn the syntax with the (i) button">
+            <span class="search-shortcut-chip" aria-hidden="true"
+              title="Press / to focus Smart Convert">/</span>
           </div>
           <button id="noteSmartConvertBtn" type="button" data-shortcut="W">Auto Convert</button>
           <button id="noteSmartConvertInfoBtn" type="button" data-shortcut="I">Info</button>
@@ -15270,7 +15396,7 @@
         <small id="levelSaveStatus" data-hint>Changes save automatically.</small>
       </div>
       <div class="dialog-head-actions">
-        <button id="levelDialogCloseBtn" type="button" data-close="levelDialog" data-shortcut="Q">Close</button>
+        <button id="levelDialogCloseBtn" type="button" data-close="levelDialog" data-shortcut="Esc">Close</button>
       </div>
     </header>
     <form id="levelForm" class="dialog-body" method="dialog">
@@ -15322,7 +15448,7 @@
         <small>Select the Legend level that represents places you want to visit.</small>
       </div>
       <button id="wayfinderLevelDialogCloseBtn" type="button" data-close="wayfinderLevelDialog"
-        data-shortcut="Q">Close</button>
+        data-shortcut="Esc">Close</button>
     </header>
     <div class="dialog-body">
       <p class="muted">The selected level becomes your Wayfinder and is excluded from completion totals. Your level
@@ -15334,7 +15460,7 @@
   <dialog id="paletteDialog">
     <header>
       <h2>Smart Color Swatches</h2>
-      <button id="paletteCloseBtn" type="button" data-close="paletteDialog" data-shortcut="Q">Close</button>
+      <button id="paletteCloseBtn" type="button" data-close="paletteDialog" data-shortcut="Esc">Close</button>
     </header>
     <div class="dialog-body">
       <p class="muted" data-hint data-hint-key="palette-help">
@@ -15347,7 +15473,7 @@
   <dialog id="confirmDialog">
     <header>
       <h2 id="confirmTitle">Confirm Action</h2>
-      <button id="confirmCloseBtn" type="button" data-close="confirmDialog" data-shortcut="Q">Close</button>
+      <button id="confirmCloseBtn" type="button" data-close="confirmDialog" data-shortcut="Esc">Close</button>
     </header>
     <div class="dialog-body">
       <p id="confirmMessage" class="muted"></p>
@@ -15362,7 +15488,7 @@
     <header>
       <h2>Smart Convert Rules</h2>
       <button id="smartConvertHelpCloseBtn" type="button" data-close="smartConvertHelpDialog"
-        data-shortcut="Q">Close</button>
+        data-shortcut="Esc">Close</button>
     </header>
     <div class="dialog-body smart-convert-help-body">
       <p class="muted">Type a quick note. Recognized pieces highlight inline and show as chips below the field.
@@ -15423,25 +15549,35 @@
           </span>
         </span>
         <button id="basecampClearBtn" class="danger" type="button" data-shortcut="X">Clear</button>
+        <button id="basecampDockBtn" type="button" aria-pressed="false"
+          aria-label="Dock Basecamp beside the map"
+          title="Pop into the panel column">Pop In</button>
         <button id="basecampCloseBtn" class="dialog-close" type="button" data-close="basecampDialog"
-          data-shortcut="Q">Close</button>
+          data-shortcut="Esc">Close</button>
       </div>
     </header>
     <div class="dialog-body basecamp-body">
       <div id="basecampWorkspace" class="basecamp-workspace">
         <aside class="basecamp-sidebar" aria-label="Basecamp pads">
-          <label class="basecamp-search-wrap">
-            <input id="basecampSearch" type="search" placeholder="Search pads…" aria-label="Search Basecamp pads">
+          <div class="basecamp-search-row">
+            <label class="basecamp-search-wrap">
+              <span class="search-shortcut-input">
+                <input id="basecampSearch" type="search" placeholder="Search pads…" aria-label="Search Basecamp pads">
+                <span class="search-shortcut-chip" aria-hidden="true"
+                  title="Press / to focus this search">/</span>
+              </span>
+            </label>
+            <button id="basecampNewPadBtn" class="basecamp-new-btn" type="button" data-shortcut="N"
+              title="Create a new pad">+ New Pad</button>
+          </div>
+          <div class="basecamp-search-hints">
             <small class="basecamp-search-hint" data-hint data-hint-key="basecamp-pad-search">
               Search pad names and content. Matches stay selectable.
             </small>
-          </label>
-          <span class="basecamp-new-wrap">
-            <button id="basecampNewPadBtn" class="basecamp-new-btn" type="button" data-shortcut="N">+ New Pad</button>
             <small class="basecamp-search-hint" data-hint data-hint-key="basecamp-new-pad">
               Start a separate pad for a trip, list, or plan.
             </small>
-          </span>
+          </div>
           <div id="basecampPadList" class="basecamp-pad-list"></div>
         </aside>
         <section id="basecampEditor" class="basecamp-editor-pane" aria-live="polite"></section>
@@ -15455,7 +15591,7 @@
       <div class="dialog-head-actions">
         <button id="tagDialogBackBtn" type="button" data-shortcut="B">Back to Settings</button>
         <button id="tagDialogCloseBtn" class="dialog-close" type="button" data-close="tagDialog"
-          data-shortcut="Q">Close</button>
+          data-shortcut="Esc">Close</button>
       </div>
     </header>
     <div class="dialog-body">
@@ -15476,7 +15612,7 @@
         <button class="hidden" type="button" role="tab" data-tab="developer" data-shortcut="V" data-dev-only>Developer
           Tools</button>
       </div>
-      <button id="settingsCloseBtn" type="button" data-close="settingsDialog" data-shortcut="Q">Close</button>
+      <button id="settingsCloseBtn" type="button" data-close="settingsDialog" data-shortcut="Esc">Close</button>
     </header>
     <div class="dialog-body">
 
@@ -16050,7 +16186,7 @@
               <div class="shortcut-row"><kbd>⌘/Ctrl+B</kbd> <kbd>⌘/Ctrl+I</kbd> <kbd>⌘/Ctrl+K</kbd><span>Bold,
                   italic, or add a URL link inside the editor</span></div>
               <div class="shortcut-row"><kbd>Alt+↑</kbd> <kbd>Alt+↓</kbd><span>Move the focused pad</span></div>
-              <div class="shortcut-row"><kbd>Q</kbd><span>Close Basecamp</span></div>
+              <div class="shortcut-row"><kbd>Esc</kbd><span>Close Basecamp</span></div>
             </div>
           </details>
 
@@ -16070,7 +16206,7 @@
               <div class="shortcut-row"><kbd>Y</kbd><span>Open Tag Settings</span></div>
               <div class="shortcut-row"><kbd>I</kbd><span>Open Smart Convert info
                   <em>[noteSmartConvertInfoBtn]</em></span></div>
-              <div class="shortcut-row"><kbd>Q</kbd> <kbd>X</kbd><span>Close the dialog</span></div>
+              <div class="shortcut-row"><kbd>Esc</kbd><span>Close the dialog</span></div>
             </div>
           </details>
 
@@ -16078,7 +16214,7 @@
             <summary>Level Dialog</summary>
             <div class="shortcut-list">
               <div class="shortcut-row"><kbd>S</kbd><span>Save level changes <em>[levelForm]</em></span></div>
-              <div class="shortcut-row"><kbd>Q</kbd> <kbd>X</kbd><span>Close the dialog
+              <div class="shortcut-row"><kbd>Esc</kbd><span>Close the dialog
                   <em>[levelDialogCloseBtn]</em></span></div>
             </div>
           </details>
@@ -16107,7 +16243,7 @@
                   only)</span></div>
               <div class="shortcut-row"><kbd>W</kbd> <kbd>F</kbd> <kbd>X</kbd><span>Reset What's New / Defaults / App
                   data</span></div>
-              <div class="shortcut-row"><kbd>Q</kbd><span>Close the dialog</span></div>
+              <div class="shortcut-row"><kbd>Esc</kbd><span>Close the dialog</span></div>
             </div>
           </details>
 
@@ -16116,7 +16252,7 @@
             <div class="shortcut-list">
               <div class="shortcut-row"><kbd>D</kbd><span>Confirm the destructive action
                   <em>[confirmActionBtn]</em></span></div>
-              <div class="shortcut-row"><kbd>Q</kbd> <kbd>X</kbd><span>Cancel / close</span></div>
+              <div class="shortcut-row"><kbd>Esc</kbd><span>Cancel / close</span></div>
               <div class="shortcut-row"><kbd>L</kbd> <kbd>D</kbd> <kbd>R</kbd> <kbd>1-4</kbd><span>Add as App: light /
                   dark icon, Mac reload, or open a device guide</span></div>
             </div>
@@ -16142,7 +16278,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.4.0.2";
+    const APP_VERSION = "4.4.0.3";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -18088,6 +18224,35 @@
     ];
     const CHANGELOG = [
       {
+        version: "4.4.0.3",
+        date: "2026-06-07",
+        title: "Basecamps",
+        summary: "Bigger Basecamp, keyboard-first label picker, Esc-everywhere, and quick search shortcuts.",
+        highlights: [
+          "Basecamp grows: bigger modal, dockable side panel, ⌘-hold hints, highlighted button.",
+          "Map label modes remember per target so State and pack labels stay independent.",
+          "Esc replaces Q on every close button and the chord no longer steals ⇧⌘⌥.",
+          "/ jumps to Smart Convert, Waypoint search, and Basecamp search."
+        ],
+        notice: {
+          version: "4.4.0",
+          title: "Basecamps",
+          summary: "Turn Basecamp into named rich-text pads with search and linked location notes.",
+          cta: "Make|Camp!"
+        },
+        updates: [
+          "Enlarged the Basecamp modal and added a Pop In / Pop Out toggle that docks Basecamp as a right-side panel.",
+          "Highlighted the Basecamp toolbar button whenever a pad is open in either modal or panel mode.",
+          "Surface ⌘B / ⌘I / ⌘K chips on the Basecamp toolbar whenever Cmd (or Ctrl) is held inside the dialog.",
+          "Moved the New Pad button onto the same row as the pad search input for faster pad creation.",
+          "Map labels now remember a separate mode per target (state/territory plus each linked Waypoint Pack) and render simultaneously instead of suppressing each other.",
+          "Strengthened the Map Labels target picker: clearer selected styling, arrow-key navigation, Enter to select, and Escape to dismiss.",
+          "Replaced every Q close shortcut with Esc and removed the X-as-close aliases in dialog dispatch tables.",
+          "Pressing / now focuses Smart Convert in the Note editor, Pack Locations search, and Basecamp pad search, with matching hint chips on each input.",
+          "Adding a note with a real visit level to a location flagged Not Interested clears the Not Interested flag automatically."
+        ]
+      },
+      {
         version: "4.4.0.2",
         date: "2026-06-07",
         title: "Basecamps",
@@ -19391,7 +19556,8 @@
           bucketListView: false,
           bucketListFilterSnapshot: null,
           ringMode: false,
-          ringByLayer: defaultRingByLayer()
+          ringByLayer: defaultRingByLayer(),
+          basecampPanelMode: "modal"
         },
         levels,
         states: defaultTerritoryStates(levels),
@@ -19792,6 +19958,7 @@
         next.settings.bucketListFilterSnapshot = null;
       }
       next.settings.ringMode = next.settings.ringMode === true;
+      next.settings.basecampPanelMode = next.settings.basecampPanelMode === "panel" ? "panel" : "modal";
       // Per-layer Rangefinder settings: US and World each keep their own anchors,
       // distances, travel mode, and display toggles. Legacy flat ring* fields
       // from older builds get folded into the matching bag (anchor1/2 honor the
@@ -21347,7 +21514,14 @@
 
     function addStateLevel(abbr, levelId) {
       if (!levelById(levelId)) return;
-      setStateLevelIds(abbr, [...getStateLevelIds(abbr), levelId]);
+      const current = getStateLevelIds(abbr);
+      // Adding a real visit level (anything but "not-interested" itself) to a
+      // location currently marked "Not Interested" clears that flag — the user
+      // changed their mind by jotting a note here.
+      const cleared = levelId === "not-interested"
+        ? current
+        : current.filter(id => id !== "not-interested");
+      setStateLevelIds(abbr, [...cleared, levelId]);
     }
 
     function activeSuggestedSet() {
@@ -22373,6 +22547,7 @@
       $("#mapToggleBtn").setAttribute("aria-pressed", String(mapPanelOpen));
       $("#legendToggleBtn").setAttribute("aria-pressed", String(legendPanelOpen));
       $("#notesToggleBtn").setAttribute("aria-pressed", String(notesPanelOpen));
+      $("#basecampBtn").setAttribute("aria-pressed", String($("#basecampDialog")?.open === true));
       $("#legendEditBtn").setAttribute("aria-pressed", String(legendEditMode));
       $("#mapFitBtn").setAttribute("aria-pressed", String(mapFitMode));
       syncMapZoomReadout();
@@ -22984,13 +23159,14 @@
     }
 
     function linkedWaypointLabelItem(cluster) {
-      const set = activeMapLabelTargetSet();
-      if (!set) return null;
-      const mode = suggestedSetLabelMode(set.id);
-      if (mode === "none") return null;
+      // Walk the cluster's notes in priority order and return the first whose
+      // source pack has labels turned on. Each pack remembers its own mode, so
+      // multiple packs can render simultaneously without sharing the active
+      // picker target.
       return sortedMarkerItems(cluster.items).find(item => {
         const source = suggestedSetSourceForNote(item.note);
-        return source?.set?.id === set.id;
+        if (!source?.set) return false;
+        return suggestedSetLabelMode(source.set.id) !== "none";
       }) || null;
     }
 
@@ -23508,7 +23684,8 @@
     }
 
     function appendSuggestedSetMarkerLabel(group, set, item, note, point, scale, iconFootprints = [], selfKey = "") {
-      if (state.settings.mapLabelTargetSetId !== set.id) return;
+      // Each Waypoint Pack remembers its own label mode and renders independently
+      // of which target the user is currently editing via the picker.
       const mode = suggestedSetLabelMode(set.id);
       if (mode === "none") return;
       appendWaypointMarkerLabel(group, {
@@ -24349,7 +24526,9 @@
       const labels = $("#mapLabels");
       if (!labels) return;
       labels.innerHTML = "";
-      if (activeMapLabelTargetSet()) return;
+      // State/territory labels render independently of any active Waypoint Pack
+      // label target so users can mix and match (e.g. State labels off while
+      // National Park labels are on).
       const mode = state.settings.mapLabels || "none";
       syncMapLabelButtons(mode);
       if (mode === "none") return;
@@ -28360,14 +28539,14 @@
           <h3 class="basecamp-editor-title">${escapeHtml(pad.name)}</h3>
         </div>
         <div class="basecamp-toolbar" role="toolbar" aria-label="Basecamp text formatting">
-          <button type="button" data-basecamp-format="bold" aria-label="Bold"><b>B</b></button>
-          <button type="button" data-basecamp-format="italic" aria-label="Italic"><i>I</i></button>
+          <button type="button" data-basecamp-format="bold" data-cmd-hint="⌘B" aria-label="Bold (⌘B)"><b>B</b></button>
+          <button type="button" data-basecamp-format="italic" data-cmd-hint="⌘I" aria-label="Italic (⌘I)"><i>I</i></button>
           <button type="button" data-basecamp-format="h2" aria-label="Heading 2">H2</button>
           <button type="button" data-basecamp-format="h3" aria-label="Heading 3">H3</button>
           <button type="button" data-basecamp-format="ul" aria-label="Bulleted list">• List</button>
           <button type="button" data-basecamp-format="ol" aria-label="Numbered list">1. List</button>
           <span class="basecamp-toolbar-link-wrap">
-            <button type="button" data-basecamp-url-link aria-label="Insert URL link">Link</button>
+            <button type="button" data-basecamp-url-link data-cmd-hint="⌘K" aria-label="Insert URL link (⌘K)">Link</button>
             <span id="basecampLinkPopover" class="basecamp-link-popover" hidden>
               <input id="basecampLinkUrl" type="url" placeholder="https://…" aria-label="Link URL">
               <button type="button" data-basecamp-link-apply>Apply</button>
@@ -28403,11 +28582,58 @@
       $("#basecampNewPadBtn").disabled = basecampPads().length >= BASECAMP_PAD_MAX;
     }
 
+    function basecampInPanelMode() {
+      return state.settings.basecampPanelMode === "panel";
+    }
+
+    function applyBasecampDialogMode() {
+      const dialog = $("#basecampDialog");
+      if (!dialog) return;
+      dialog.dataset.basecampMode = basecampInPanelMode() ? "panel" : "modal";
+      document.documentElement.dataset.basecampMode = dialog.open
+        ? (basecampInPanelMode() ? "panel" : "modal")
+        : "off";
+      $("#basecampBtn")?.setAttribute("aria-pressed", String(dialog.open === true));
+      const dock = $("#basecampDockBtn");
+      if (dock) {
+        const panel = basecampInPanelMode();
+        dock.setAttribute("aria-pressed", String(panel));
+        setButtonLabelBoth(
+          "#basecampDockBtn",
+          panel ? __ARROW_UP_RIGHT_AND_ARROW_DOWN_LEFT_CIRCLE : __ARROW_DOWN_RIGHT_AND_ARROW_UP_LEFT_CIRCLE,
+          panel ? "Pop Out" : "Pop In"
+        );
+        dock.title = panel ? "Pop back into a centered modal" : "Pop into the panel column";
+      }
+    }
+
+    function setBasecampPanelMode(mode) {
+      const next = mode === "panel" ? "panel" : "modal";
+      if (state.settings.basecampPanelMode === next) return;
+      const wasOpen = $("#basecampDialog").open;
+      if (wasOpen) {
+        flushBasecampPad();
+        $("#basecampDialog").close();
+      }
+      state.settings.basecampPanelMode = next;
+      save();
+      if (wasOpen) openBasecampDialog();
+      else applyBasecampDialogMode();
+    }
+
+    function toggleBasecampPanelMode() {
+      setBasecampPanelMode(basecampInPanelMode() ? "modal" : "panel");
+    }
+
     function openBasecampDialog() {
       closeOpenDialogs("basecampDialog");
       setBasecampStatus(BASECAMP_DEFAULT_STATUS);
       renderBasecampDialog();
-      $("#basecampDialog").showModal();
+      const dialog = $("#basecampDialog");
+      dialog.dataset.basecampMode = basecampInPanelMode() ? "panel" : "modal";
+      if (basecampInPanelMode()) dialog.show();
+      else dialog.showModal();
+      applyBasecampDialogMode();
       requestAnimationFrame(() => {
         const target = activeBasecampPad() ? $("[data-basecamp-body]") : $("#basecampNewPadBtn");
         target?.focus();
@@ -28935,6 +29161,35 @@
       const workspace = $("#basecampWorkspace");
       const list = $("#basecampPadList");
       if (!dialog || !workspace || !list) return;
+      // Esc fires the native cancel event before close — flush the pad so the
+      // pending edits land before the dialog goes away.
+      dialog.addEventListener("cancel", () => flushBasecampPad());
+      dialog.addEventListener("close", () => {
+        // Only flip back to "off" if Basecamp is actually closed — the panel
+        // mode toggle calls close()+open() in quick succession and the close
+        // event fires after the reopen has already set "panel".
+        if (!dialog.open) document.documentElement.dataset.basecampMode = "off";
+        render();
+      });
+      $("#basecampDockBtn")?.addEventListener("click", toggleBasecampPanelMode);
+      // Holding Cmd (or Ctrl on non-Mac) while Basecamp is open reveals the
+      // ⌘B / ⌘I / ⌘K hint chips on toolbar buttons.
+      const updateBasecampCmdHint = held => {
+        if (!dialog.open) {
+          delete document.documentElement.dataset.basecampCmd;
+          return;
+        }
+        document.documentElement.dataset.basecampCmd = held ? "on" : "off";
+      };
+      document.addEventListener("keydown", event => {
+        if (!dialog.open) return;
+        if (event.metaKey || event.ctrlKey) updateBasecampCmdHint(true);
+      });
+      document.addEventListener("keyup", event => {
+        if (!dialog.open) return;
+        if (!event.metaKey && !event.ctrlKey) updateBasecampCmdHint(false);
+      });
+      window.addEventListener("blur", () => updateBasecampCmdHint(false));
       $("#basecampNewPadBtn").addEventListener("click", createBasecampPad);
       $("#basecampCopyBtn").addEventListener("click", () => copyBasecampText());
       $("#basecampCopyAllBtn").addEventListener("click", () => {
@@ -29744,6 +29999,16 @@
         if ($("#basecampDialog").open) {
           $("#basecampSearch")?.focus();
           $("#basecampSearch")?.select();
+        } else if ($("#noteDialog").open) {
+          const smart = $("#noteSmartConvert");
+          try { smart?.focus({ preventScroll: true }); }
+          catch { smart?.focus(); }
+          smart?.select();
+        } else if (waypointPacksPanelOpen) {
+          const packSearch = $("#waypointPackLocationSearch");
+          try { packSearch?.focus({ preventScroll: true }); }
+          catch { packSearch?.focus(); }
+          packSearch?.select();
         } else {
           focusNotesSearchShortcut();
         }
@@ -30556,7 +30821,7 @@
       const key = shortcutKey(event);
       if ($("#renameDialog").open) {
         const renameActions = {
-          q: () => $("#renameDialog").close(),
+          escape: () => $("#renameDialog").close(),
           s: () => $("#renameForm").requestSubmit()
         };
         if (!renameActions[key]) return;
@@ -30566,8 +30831,7 @@
       }
       if ($("#addToHomeDialog").open) {
         const installActions = {
-          q: () => $("#addToHomeDialog").close(),
-          x: () => $("#addToHomeDialog").close(),
+          escape: () => $("#addToHomeDialog").close(),
           l: () => selectInstallIconVariant("light"),
           d: () => selectInstallIconVariant("dark"),
           r: () => $("#addToHomeDialog .install-mac-reload-notice:not(.hidden) .install-reload-btn")?.click()
@@ -30588,7 +30852,7 @@
         return;
       }
       if ($("#paletteDialog").open) {
-        if (key === "q") {
+        if (key === "escape") {
           event.preventDefault();
           $("#paletteDialog").close();
           return;
@@ -30601,8 +30865,7 @@
       }
       if ($("#noteDialog").open) {
         const noteActions = {
-          q: () => closeNoteDialog(),
-          x: () => closeNoteDialog(),
+          escape: () => closeNoteDialog(),
           s: () => $("#noteForm").requestSubmit(),
           a: saveNoteAndAddAnother,
           d: () => !$("#deleteNoteFromDialogBtn").classList.contains("hidden") && $("#deleteNoteFromDialogBtn").click(),
@@ -30623,8 +30886,7 @@
       }
       if ($("#markerDialog").open) {
         const markerActions = {
-          q: () => $("#markerDialog").close(),
-          x: () => $("#markerDialog").close(),
+          escape: () => $("#markerDialog").close(),
           a: () => markerDialogItems[0] && addNoteAtMappedLocation(markerDialogItems[0])
         };
         if (!markerActions[key]) return;
@@ -30634,8 +30896,7 @@
       }
       if (waypointPacksPanelOpen) {
         const setsActions = {
-          q: closeWaypointPacksPanel,
-          x: closeWaypointPacksPanel,
+          escape: closeWaypointPacksPanel,
           a: batchAddSuggestedSetFromDialog,
           r: () => $("#setsRemoveBtn").click()
         };
@@ -30650,15 +30911,14 @@
           backToSettingsFromTags();
           return;
         }
-        if (key !== "q" && key !== "x") return;
+        if (key !== "escape") return;
         event.preventDefault();
         $("#tagDialog").close();
         return;
       }
       if ($("#levelDialog").open) {
         const levelActions = {
-          q: () => $("#levelDialog").close(),
-          x: () => $("#levelDialog").close(),
+          escape: () => $("#levelDialog").close(),
           s: () => $("#levelForm").requestSubmit()
         };
         if (!levelActions[key]) return;
@@ -30667,7 +30927,7 @@
         return;
       }
       if ($("#wayfinderLevelDialog").open) {
-        if (key !== "q" && key !== "x") return;
+        if (key !== "escape") return;
         event.preventDefault();
         $("#wayfinderLevelDialog").close();
         return;
@@ -30675,8 +30935,7 @@
       if ($("#confirmDialog").open) {
         const actionKey = ($("#confirmActionBtn").dataset.shortcut || "d").toLowerCase();
         const confirmActions = {
-          q: () => $("#confirmDialog").close(),
-          x: () => $("#confirmDialog").close(),
+          escape: () => $("#confirmDialog").close(),
           [actionKey]: () => $("#confirmActionBtn").click()
         };
         if (!confirmActions[key]) return;
@@ -30687,7 +30946,7 @@
       if ($("#basecampDialog").open) {
         if (isTypingTarget(event.target)) return;
         const basecampActions = {
-          q: () => {
+          escape: () => {
             flushBasecampPad();
             $("#basecampDialog").close();
           },
@@ -30707,7 +30966,7 @@
       }
       if ($("#settingsDialog").open) {
         const settingsActions = {
-          q: () => $("#settingsDialog").close(),
+          escape: () => $("#settingsDialog").close(),
           s: () => switchTab("settings"),
           h: () => switchTab("help"),
           g: () => switchTab("whatsnew"),
@@ -31555,6 +31814,17 @@
       document.addEventListener("keydown", handleRingKeydown);
       document.addEventListener("keydown", handlePowerShortcut);
       document.addEventListener("keyup", updatePowerOverlay);
+      // Esc closes the inline Waypoint Packs panel even outside Shortcut Mode
+      // (the panel is not a <dialog> so no native cancel happens).
+      document.addEventListener("keydown", event => {
+        if (event.key !== "Escape" || event.defaultPrevented) return;
+        if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+        if (!waypointPacksPanelOpen) return;
+        // If a dialog is open, let the dialog handle Esc itself.
+        if ([...document.querySelectorAll("dialog")].some(d => d.open)) return;
+        event.preventDefault();
+        closeWaypointPacksPanel();
+      });
       window.addEventListener("blur", () => setPowerOverlay(false));
       window.addEventListener("resize", () => {
         if (!legendPositionControlAvailable()) closeLegendPositionMenu();
