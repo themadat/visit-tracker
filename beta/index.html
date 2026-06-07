@@ -1642,9 +1642,21 @@
 
     .map-waypoint-pack-select[aria-pressed="true"] {
       border-color: #14b8a6;
-      background: color-mix(in srgb, #14b8a6 22%, var(--surface));
-      box-shadow: inset 0 0 0 2px #14b8a6, 0 0 0 1px color-mix(in srgb, #14b8a6 35%, transparent);
-      color: #14b8a6;
+      background:
+        radial-gradient(circle at 50% 60%, color-mix(in srgb, #14b8a6 38%, transparent), color-mix(in srgb, #14b8a6 18%, var(--surface)) 75%),
+        color-mix(in srgb, #14b8a6 28%, var(--surface));
+      box-shadow:
+        inset 0 0 0 2px #14b8a6,
+        0 0 0 2px color-mix(in srgb, #14b8a6 30%, transparent),
+        0 6px 14px -6px color-mix(in srgb, #14b8a6 60%, transparent);
+      color: #0f766e;
+    }
+
+    [data-theme="dark"] .map-waypoint-pack-select[aria-pressed="true"] {
+      color: #99f6e4;
+      background:
+        radial-gradient(circle at 50% 60%, color-mix(in srgb, #14b8a6 48%, transparent), color-mix(in srgb, #14b8a6 24%, var(--surface)) 75%),
+        color-mix(in srgb, #14b8a6 32%, var(--surface));
     }
 
     .map-waypoint-pack-select:focus-visible {
@@ -16333,7 +16345,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.4.0.4";
+    const APP_VERSION = "4.4.0.5";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -18281,6 +18293,26 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "4.4.0.5",
+        date: "2026-06-07",
+        title: "Basecamps",
+        summary: "Map Labels picker keeps the active target icon and shades the selection more clearly.",
+        notice: {
+          version: "4.4.0",
+          title: "Basecamps",
+          summary: "Turn Basecamp into named rich-text pads with search and linked location notes.",
+          cta: "Make|Camp!"
+        },
+        highlights: [
+          "Shortcut Mode no longer clobbers the active Waypoint Pack icon on the Map Labels toggle.",
+          "Active picker option carries stronger teal shading so the live target is unmistakable."
+        ],
+        updates: [
+          "Fixed syncButtonLabels so it respects the active Waypoint Pack target and keeps that icon visible while Shortcut Mode is toggling.",
+          "Strengthened the .map-waypoint-pack-select[aria-pressed='true'] styling with a teal radial wash, ring, and soft shadow (with a brighter dark-mode variant)."
+        ]
+      },
       {
         version: "4.4.0.4",
         date: "2026-06-07",
@@ -22534,7 +22566,17 @@
       setButtonLabel("#notesToggleBtn", __LIST_BULLET_RECTANGLE_PORTRAIT_FILL, "Notes", "Toggle Notes Panel", "Toggle Notes Panel");
       setButtonLabel("#basecampBtn", __LONG_TEXT_PAGE_AND_PENCIL, "Basecamp", "Open Basecamp notes", "Open Basecamp notes");
       const mapLabelTargetIcon = $("[data-map-label-target-icon]");
-      if (mapLabelTargetIcon) mapLabelTargetIcon.innerHTML = prefersSymbols() ? __CIRCLE_CIRCLE_FILL : "Labels";
+      if (mapLabelTargetIcon) {
+        // Respect the active Waypoint Pack target — otherwise toggling Shortcut
+        // Mode reruns syncButtonLabels and clobbers the pack icon back to the
+        // states/territories glyph until the next renderMap pass.
+        const activeSet = activeMapLabelTargetSet();
+        if (activeSet) {
+          mapLabelTargetIcon.innerHTML = visitTypeIcon(suggestedSetIconId(activeSet.id));
+        } else {
+          mapLabelTargetIcon.innerHTML = prefersSymbols() ? __CIRCLE_CIRCLE_FILL : "Labels";
+        }
+      }
       setButtonLabel("#labelsNoneBtn", __CIRCLE_SLASH, "None", "No map labels");
       setButtonLabel("#labelsAbbrBtn", __CHARACTER, "Abbr", "Show location abbreviations");
       setButtonLabel("#labelsNameBtn", __TEXTFORMAT, "Name", "Show location names");
@@ -24411,14 +24453,14 @@
       }
       host.innerHTML = `
         <button class="map-waypoint-labels-toggle" type="button" data-map-waypoint-menu data-shortcut="4"
-          aria-expanded="${mapWaypointPackMenuOpen ? "true" : "false"}" aria-label="Choose label target"
-          title="Choose label target">
+          aria-expanded="${mapWaypointPackMenuOpen ? "true" : "false"}" aria-label="Choose Location Type"
+          title="Choose Location Type">
           ${__CHEVRON_DOWN_CIRCLE}
         </button>
         <div class="map-waypoint-labels-menu" ${mapWaypointPackMenuOpen ? "" : "hidden"}>
           <div class="map-waypoint-pack-grid" aria-label="Map label targets">
             <button class="map-waypoint-pack-select" type="button" data-map-label-target=""
-              aria-pressed="${selected ? "false" : "true"}" aria-label="States and territories" title="States and territories">
+              aria-pressed="${selected ? "false" : "true"}" aria-label="States" title="States">
               ${__CIRCLE_CIRCLE_FILL}
             </button>
             ${added.map(set => `
