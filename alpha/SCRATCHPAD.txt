@@ -6,7 +6,38 @@ Mobile Cleanup:
 - Double scroll with tip jar
 - Base camp causes scrolling problems and should just fit on mobile screen
 
-## Names
+SVGs
+// Find Free Custom SVGs: https://www.svgrepo.com
+https://www.svgrepo.com/collection/travel-and-places-infographic-icons/
+https://www.svgrepo.com/collection/gis-mapping-icons/
+https://www.svgrepo.com/collection/monuments/
+https://www.svgrepo.com/collection/travelling/
+
+Continents (Filled): Africa, Antarctica, South America
+Continents (Lines): Africa, North America, South America
+Missing Continents: Asia, Europe (Full), Oceania (Full), North America (Filled)
+Other Have: EU, Texas
+
+Missing Countries (default from coutricons, if svgrepo in name then Other Source; not as rounded, but more exact which I prefer)
+Africa
+Missing 13: Benin, Chad, Comoros, Democratic Republic of the Congo, Eswatini, Ethiopia, Madagascar, Mozambique, Nigeria, Republic of the Congo, Sao Tome and Principe, Tanzania, Uganda.
+
+Asia
+Missing 14: Armenia, Bahrain, Cambodia, Cyprus, Iraq, Kuwait, Lebanon, Maldives, Nepal, Qatar, Sri Lanka, Tajikistan, Turkmenistan, Vietnam.
+
+Europe
+Missing 8: Greece, Hungary, Iceland, Lithuania, Moldova, Monaco, Romania, San Marino.
+
+North America
+Missing 9: Antigua and Barbuda, Barbados, Costa Rica, Dominica, Dominican Republic, Honduras, Jamaica, Panama, Saint Vincent and the Grenadines.
+
+Oceania
+Missing 11: Australia, Fiji, Kiribati, Marshall Islands, Micronesia, Nauru, New Zealand, Papua New Guinea, Samoa, Solomon Islands, Tuvalu.
+
+South America
+Missing 2: Ecuador, Guyana.
+
+## Colors
 
 Ferrari (Rosso Corsa) corresponds to hex code #FF2800 (or sometimes #E80020 for the Formula 1 team)
 Ferrari Yellow (Giallo Modena): #FFF200
@@ -54,10 +85,7 @@ Lamborghini might be the color pallette to go with (ferrari limiting and maclare
 #C4C8D4 (Ice silver)
 #EBEBEB (Pearl White)
 
-// Find Free Custom SVGs: https://www.svgrepo.com
-https://www.svgrepo.com/collection/travel-and-places-infographic-icons/5
-https://www.svgrepo.com/collection/gis-mapping-icons/5
-https://www.svgrepo.com/collection/travelling/
+## Names
 
 Trail Log <- [Travel Log, Trail Notes, Book/Journal] <- Visit Tracker  <- US State Visit Map
 | Profession / Hobby | Common Term
