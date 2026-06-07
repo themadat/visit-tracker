@@ -6352,25 +6352,490 @@
     }
 
     .basecamp-body {
-      display: flex;
-      flex-direction: column;
-      gap: .5rem;
+      display: grid;
       min-height: 0;
       max-height: none;
+      padding: 0;
     }
 
-    .basecamp-text {
-      flex: 1 1 auto;
+    .basecamp-copy-wrap,
+    .basecamp-pad-row,
+    .basecamp-toolbar-link-wrap,
+    .basecamp-linked-picker-wrap {
+      position: relative;
+    }
+
+    .basecamp-copy-wrap {
+      display: flex;
+      align-items: stretch;
+    }
+
+    .basecamp-copy-wrap #basecampCopyBtn {
+      border-radius: var(--radius) 0 0 var(--radius);
+    }
+
+    .basecamp-copy-menu-btn {
+      min-width: 32px;
+      padding: .25rem;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      border-left: 0;
+    }
+
+    .basecamp-copy-menu,
+    .basecamp-row-menu,
+    .basecamp-icon-picker,
+    .basecamp-link-popover {
+      position: absolute;
+      z-index: 30;
+      display: grid;
+      gap: .24rem;
+      padding: .34rem;
+      border: 1px solid color-mix(in srgb, #14b8a6 55%, var(--line));
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .basecamp-copy-menu[hidden],
+    .basecamp-row-menu[hidden],
+    .basecamp-icon-picker[hidden],
+    .basecamp-link-popover[hidden] {
+      display: none;
+    }
+
+    .basecamp-copy-menu {
+      top: calc(100% + .3rem);
+      right: 0;
+      min-width: 10rem;
+    }
+
+    .basecamp-copy-menu button,
+    .basecamp-row-menu button {
+      justify-content: flex-start;
       width: 100%;
-      min-height: 240px;
-      resize: none;
+      min-height: 32px;
+      white-space: nowrap;
+    }
+
+    .basecamp-workspace {
+      display: grid;
+      grid-template-columns: minmax(190px, 230px) minmax(0, 1fr);
+      width: 100%;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .basecamp-sidebar {
+      display: grid;
+      grid-template-rows: auto auto minmax(0, 1fr);
+      gap: .5rem;
+      min-width: 0;
+      min-height: 0;
+      padding: .75rem;
+      border-right: 1px solid var(--line);
+      background: color-mix(in srgb, var(--surface-2) 72%, var(--surface) 28%);
+    }
+
+    .basecamp-search-wrap {
+      display: grid;
+      gap: .28rem;
+    }
+
+    .basecamp-search-wrap input {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .basecamp-search-hint {
+      margin: 0;
+      color: var(--muted);
+      font-size: .72rem;
+      line-height: 1.25;
+    }
+
+    .basecamp-new-btn {
+      width: 100%;
+      border-color: color-mix(in srgb, #14b8a6 58%, var(--line));
+      color: color-mix(in srgb, #0f766e 84%, var(--text));
+    }
+
+    .basecamp-new-wrap {
+      display: grid;
+      gap: .28rem;
+    }
+
+    .basecamp-pad-list {
+      display: grid;
+      align-content: start;
+      gap: .34rem;
+      min-height: 0;
+      overflow-y: auto;
+      padding-right: .12rem;
+    }
+
+    .basecamp-pad-row {
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr) 30px;
+      align-items: center;
+      gap: .38rem;
+      min-height: 46px;
+      padding: .34rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--surface) 78%, var(--surface-2) 22%);
+      cursor: grab;
+    }
+
+    .basecamp-pad-row.is-active {
+      border-color: #14b8a6;
+      background: color-mix(in srgb, #14b8a6 12%, var(--surface));
+      box-shadow: inset 3px 0 0 #14b8a6;
+    }
+
+    .basecamp-pad-row.is-no-match {
+      opacity: .46;
+    }
+
+    .basecamp-pad-row.is-dragging {
+      opacity: .45;
+    }
+
+    .basecamp-pad-select {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: .35rem;
+      min-width: 0;
+      min-height: 32px;
+      padding: .2rem .24rem;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      text-align: left;
+    }
+
+    .basecamp-pad-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 750;
+    }
+
+    .basecamp-match-count {
+      min-width: 1.4rem;
+      padding: .12rem .3rem;
+      border-radius: 999px;
+      background: color-mix(in srgb, #14b8a6 18%, var(--surface));
+      color: #0f766e;
+      font-size: .68rem;
+      font-weight: 850;
+      text-align: center;
+    }
+
+    .basecamp-pad-icon,
+    .basecamp-row-actions-btn,
+    .basecamp-rename-icon-btn {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      min-width: 30px;
+      min-height: 30px;
+      padding: .25rem;
+    }
+
+    .basecamp-pad-icon {
+      border: 0;
+      background: transparent;
+      color: #0f766e;
+    }
+
+    .basecamp-row-menu {
+      top: calc(100% - .12rem);
+      right: .25rem;
+      min-width: 8rem;
+    }
+
+    .basecamp-rename-row {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr) 30px;
+      align-items: center;
+      gap: .38rem;
+      width: 100%;
+    }
+
+    .basecamp-rename-row input {
+      min-width: 0;
+      width: 100%;
+      padding: .35rem .45rem;
+    }
+
+    .basecamp-icon-picker {
+      top: calc(100% + .25rem);
+      left: 0;
+      grid-template-columns: repeat(5, 38px);
+    }
+
+    .basecamp-icon-picker button {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      min-width: 38px;
+      padding: .38rem;
+    }
+
+    .basecamp-icon-picker button[aria-pressed="true"] {
+      border-color: #14b8a6;
+      background: color-mix(in srgb, #14b8a6 16%, var(--surface));
+    }
+
+    .basecamp-editor-pane {
+      display: grid;
+      grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+      background: var(--surface);
+    }
+
+    .basecamp-editor-head {
+      display: flex;
+      align-items: center;
+      gap: .55rem;
+      min-width: 0;
+      padding: .7rem .78rem .48rem;
+    }
+
+    .basecamp-editor-head .basecamp-pad-icon {
+      flex: 0 0 auto;
+    }
+
+    .basecamp-editor-title {
+      min-width: 0;
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 1.05rem;
+    }
+
+    .basecamp-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .28rem;
+      padding: .45rem .78rem;
+      border-block: 1px solid var(--line);
+      background: color-mix(in srgb, #14b8a6 7%, var(--surface-2));
+    }
+
+    .basecamp-toolbar button {
+      min-width: 34px;
+      min-height: 32px;
+      padding: .3rem .48rem;
+      border-color: color-mix(in srgb, #14b8a6 42%, var(--line));
+      color: color-mix(in srgb, #0f766e 82%, var(--text));
+    }
+
+    .basecamp-link-popover {
+      top: calc(100% + .3rem);
+      left: 0;
+      grid-template-columns: minmax(180px, 1fr) auto auto;
+      width: min(390px, calc(100vw - 2rem));
+    }
+
+    .basecamp-link-popover input {
+      min-width: 0;
+    }
+
+    .basecamp-pad-body {
+      min-height: 190px;
+      overflow-y: auto;
+      padding: 1rem;
+      outline: 0;
       font: inherit;
       line-height: 1.55;
+      caret-color: #0f766e;
+    }
+
+    .basecamp-pad-body:focus {
+      box-shadow: inset 0 0 0 2px color-mix(in srgb, #14b8a6 34%, transparent);
+    }
+
+    .basecamp-pad-body:empty::before {
+      color: var(--muted);
+      content: attr(data-placeholder);
+      pointer-events: none;
+    }
+
+    .basecamp-pad-body h2,
+    .basecamp-pad-body h3 {
+      margin: .75rem 0 .35rem;
+    }
+
+    .basecamp-pad-body p,
+    .basecamp-pad-body blockquote,
+    .basecamp-pad-body pre {
+      margin: .45rem 0;
+    }
+
+    .basecamp-pad-body blockquote {
+      padding-left: .75rem;
+      border-left: 3px solid #14b8a6;
+      color: var(--muted);
+    }
+
+    .basecamp-pad-body a {
+      color: #0f766e;
+      text-decoration: underline;
+    }
+
+    .basecamp-search-hit {
+      padding: 0 .06em;
+      border-radius: 3px;
+      background: #facc15;
+      color: #111827;
+    }
+
+    .basecamp-linked-section {
+      display: grid;
+      gap: .42rem;
+      padding: .55rem .78rem;
+      border-top: 1px solid var(--line);
+      background: color-mix(in srgb, var(--surface-2) 58%, var(--surface) 42%);
+    }
+
+    .basecamp-linked-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .5rem;
+    }
+
+    .basecamp-linked-head h3 {
+      margin: 0;
+      font-size: .88rem;
+    }
+
+    .basecamp-linked-list {
+      display: grid;
+      gap: .28rem;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+
+    .basecamp-linked-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      align-items: center;
+      gap: .3rem;
+      padding: .32rem .38rem;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--surface);
+    }
+
+    .basecamp-linked-open {
+      justify-content: flex-start;
+      min-width: 0;
+      min-height: 34px;
+      padding: .2rem .3rem;
+      border: 0;
+      background: transparent;
+      text-align: left;
+    }
+
+    .basecamp-linked-copy {
+      display: grid;
+      min-width: 0;
+    }
+
+    .basecamp-linked-copy b,
+    .basecamp-linked-copy small {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .basecamp-linked-copy small {
+      color: var(--muted);
+      font-size: .72rem;
+    }
+
+    .basecamp-linked-unlink {
+      opacity: 0;
+      width: 34px;
+      height: 34px;
+      min-width: 34px;
+      padding: .32rem;
+    }
+
+    .basecamp-linked-row:hover .basecamp-linked-unlink,
+    .basecamp-linked-unlink:focus-visible {
+      opacity: 1;
+    }
+
+    .basecamp-note-picker {
+      display: grid;
+      gap: .35rem;
+      padding: .42rem;
+      border: 1px solid color-mix(in srgb, #14b8a6 55%, var(--line));
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+
+    .basecamp-note-picker-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: .35rem;
+    }
+
+    .basecamp-note-picker-results {
+      display: grid;
+      gap: .24rem;
+      max-height: 190px;
+      overflow-y: auto;
+    }
+
+    .basecamp-note-result {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr);
+      align-items: center;
+      gap: .42rem;
+      width: 100%;
+      min-height: 42px;
+      padding: .34rem .42rem;
+      background: var(--surface-2);
+      text-align: left;
+    }
+
+    .basecamp-note-result:disabled {
+      opacity: .42;
+    }
+
+    .basecamp-note-result-copy {
+      display: grid;
+      min-width: 0;
+    }
+
+    .basecamp-note-result-copy b,
+    .basecamp-note-result-copy small {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .basecamp-note-result-copy small {
+      color: var(--muted);
+      font-size: .72rem;
     }
 
     .basecamp-foot {
       display: flex;
       justify-content: flex-end;
+      padding: .38rem .78rem .58rem;
+      border-top: 1px solid var(--line);
     }
 
     .basecamp-status,
@@ -6382,6 +6847,79 @@
     .basecamp-status.is-flash {
       color: var(--accent);
       font-weight: 800;
+    }
+
+    .basecamp-empty {
+      display: grid;
+      place-content: center;
+      justify-items: center;
+      gap: .7rem;
+      min-height: 0;
+      padding: 2rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .basecamp-empty .sf-symbol {
+      width: 3rem;
+      height: 3rem;
+      color: #0f766e;
+    }
+
+    @media (max-width: 720px) {
+      #basecampDialog[open] {
+        height: min(900px, calc(100dvh - .6rem));
+      }
+
+      #basecampDialog header {
+        align-items: flex-start;
+        gap: .5rem;
+        padding: .65rem;
+      }
+
+      #basecampDialog .dialog-head-actions {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      .basecamp-workspace {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto minmax(0, 1fr);
+      }
+
+      .basecamp-sidebar {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-rows: auto auto;
+        padding: .55rem;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .basecamp-search-wrap {
+        grid-column: 1;
+      }
+
+      .basecamp-new-wrap {
+        grid-column: 2;
+        grid-row: 1;
+        width: auto;
+      }
+
+      .basecamp-pad-list {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        display: flex;
+        overflow-x: auto;
+        overflow-y: hidden;
+      }
+
+      .basecamp-pad-row {
+        flex: 0 0 min(220px, 72vw);
+      }
+
+      .basecamp-linked-unlink {
+        opacity: 1;
+      }
     }
 
     .form-grid {
@@ -14862,17 +15400,37 @@
         <small id="basecampStatus" class="basecamp-status" aria-live="polite">Autosaves as you type.</small>
       </div>
       <div class="dialog-head-actions">
-        <button id="basecampCopyBtn" type="button" data-shortcut="P">Copy</button>
+        <span class="basecamp-copy-wrap">
+          <button id="basecampCopyBtn" type="button" data-shortcut="P">Copy</button>
+          <button id="basecampCopyMenuBtn" class="basecamp-copy-menu-btn" type="button"
+            aria-label="More Basecamp copy options" aria-expanded="false">▾</button>
+          <span id="basecampCopyMenu" class="basecamp-copy-menu" role="menu" hidden>
+            <button id="basecampCopyAllBtn" type="button" role="menuitem">Copy all pads</button>
+          </span>
+        </span>
         <button id="basecampClearBtn" class="danger" type="button" data-shortcut="X">Clear</button>
         <button id="basecampCloseBtn" class="dialog-close" type="button" data-close="basecampDialog"
           data-shortcut="Q">Close</button>
       </div>
     </header>
     <div class="dialog-body basecamp-body">
-      <textarea id="basecampText" class="basecamp-text" maxlength="20000"
-        placeholder="Basecamp is your home-base scratchpad — trip plans, packing lists, gear, and any notes not tied to one place. It autosaves on this device and rides along in Copy, exports, and backups. Jot anything here…"></textarea>
-      <div class="basecamp-foot">
-        <small id="basecampCount" class="basecamp-count" aria-live="polite">0 characters</small>
+      <div id="basecampWorkspace" class="basecamp-workspace">
+        <aside class="basecamp-sidebar" aria-label="Basecamp pads">
+          <label class="basecamp-search-wrap">
+            <input id="basecampSearch" type="search" placeholder="Search pads…" aria-label="Search Basecamp pads">
+            <small class="basecamp-search-hint" data-hint data-hint-key="basecamp-pad-search">
+              Search pad names and content. Matches stay selectable.
+            </small>
+          </label>
+          <span class="basecamp-new-wrap">
+            <button id="basecampNewPadBtn" class="basecamp-new-btn" type="button" data-shortcut="N">+ New Pad</button>
+            <small class="basecamp-search-hint" data-hint data-hint-key="basecamp-new-pad">
+              Start a separate pad for a trip, list, or plan.
+            </small>
+          </span>
+          <div id="basecampPadList" class="basecamp-pad-list"></div>
+        </aside>
+        <section id="basecampEditor" class="basecamp-editor-pane" aria-live="polite"></section>
       </div>
     </div>
   </dialog>
@@ -15202,9 +15760,13 @@
         </section>
         <section class="help-section">
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ: Other</h3>
-          <p><b>What is Basecamp?</b><br>Basecamp (toolbar button, or press B) opens a roomy scratchpad for notes that
-            are not tied to a single place — trip planning, packing lists, gear, reminders. It autosaves on this device
-            and is included in exports and backups.</p>
+          <p><b>What is Basecamp?</b><br>Basecamp (toolbar button, or press B) is a local workspace for planning that is
+            not tied to one place. Create named pads, format lists and links, search across pads, and attach existing
+            location notes for quick reference. Pads autosave and are included in exports and backups.</p>
+          <p><b>What happened to my old Basecamp scratchpad?</b><br>The first time this version loads, its text becomes
+            a pad named Basecamp. The migration runs once and keeps the original paragraphs and line breaks.</p>
+          <p><b>Are Basecamp pads encrypted or synced to a cloud?</b><br>No. They stay in this browser with the rest of
+            Trail Log's local data. Use JSON backups to move or protect them.</p>
           <p><b>How do I add it like an app?</b><br>Use Add as App in the top toolbar. Trail Log detects iPhone/iPad,
             Android, Mac, or PC, expands the matching directions, and keeps one other device guide open at a time.</p>
           <p><b>How do hints work?</b><br>Hints can be dismissed one at a time, or turned off globally in Settings.
@@ -15343,8 +15905,8 @@
             <summary>Universal Keys <span class="muted">(no modifier/mode required; skipped while typing)</span>
             </summary>
             <div class="shortcut-list">
-              <div class="shortcut-row is-direct"><kbd>/</kbd><span>Focus the Notes filter input
-                  <em>[notesStateSearch]</em></span></div>
+              <div class="shortcut-row is-direct"><kbd>/</kbd><span>Focus the Notes filter, or Basecamp pad search
+                  while Basecamp is open <em>[notesStateSearch | basecampSearch]</em></span></div>
               <div class="shortcut-row is-direct"><kbd>,</kbd><span>Open Settings <em>[settingsBtn]</em></span></div>
               <div class="shortcut-row is-direct"><kbd>?</kbd><span>Open Settings → Help Center</span></div>
               <div class="shortcut-row is-direct"><kbd>R</kbd><span>Open Settings → What's New | Release Notes; Press
@@ -15375,7 +15937,7 @@
               <div class="shortcut-row"><kbd>L</kbd><span>Toggle the Legend panel <em>[legendToggleBtn]</em></span>
               </div>
               <div class="shortcut-row"><kbd>N</kbd><span>Toggle the Notes panel <em>[notesToggleBtn]</em></span></div>
-              <div class="shortcut-row"><kbd>B</kbd><span>Open Basecamp Note <em>[basecampBtn]</em></span></div>
+              <div class="shortcut-row"><kbd>B</kbd><span>Open Basecamp pads <em>[basecampBtn]</em></span></div>
             </div>
           </details>
 
@@ -15459,6 +16021,21 @@
                   <em>[notesPanelClearBtn]</em></span></div>
               <div class="shortcut-row"><kbd>S</kbd><span>Add a Location Note
                   <em>[notesPanelAddNoteBtn]</em></span></div>
+            </div>
+          </details>
+
+          <details class="shortcut-section">
+            <summary>Basecamp Dialog</summary>
+            <div class="shortcut-list">
+              <div class="shortcut-row"><kbd>P</kbd><span>Copy the active pad <em>[basecampCopyBtn]</em></span></div>
+              <div class="shortcut-row"><kbd>X</kbd><span>Clear the active pad <em>[basecampClearBtn]</em></span></div>
+              <div class="shortcut-row"><kbd>N</kbd><span>Create a new pad <em>[basecampNewPadBtn]</em></span></div>
+              <div class="shortcut-row"><kbd>L</kbd><span>Open the linked-note picker</span></div>
+              <div class="shortcut-row"><kbd>/</kbd><span>Focus pad search <em>[basecampSearch]</em></span></div>
+              <div class="shortcut-row"><kbd>⌘/Ctrl+B</kbd> <kbd>⌘/Ctrl+I</kbd> <kbd>⌘/Ctrl+K</kbd><span>Bold,
+                  italic, or add a URL link inside the editor</span></div>
+              <div class="shortcut-row"><kbd>Alt+↑</kbd> <kbd>Alt+↓</kbd><span>Move the focused pad</span></div>
+              <div class="shortcut-row"><kbd>Q</kbd><span>Close Basecamp</span></div>
             </div>
           </details>
 
@@ -15548,7 +16125,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.3.0";
+    const APP_VERSION = "4.4.0.1";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -17437,8 +18014,8 @@
         description: "Extend Basecamp Notes from a single scratchpad to multiple named pads (for example Packing, Gear, or a per-trip pad), with a pad list, add/rename/delete/reorder, a large editor per pad, and search across pads. Add rich text formatting within each pad (bold, italic, headings, bullet/numbered lists, and links). Migrate the existing single scratchpad into the first pad without data loss.",
         priority: "P0",
         effort: "large",
-        targetKind: "minor",
-        targetVersion: "",
+        targetKind: "exact",
+        targetVersion: "4.4.0",
         tokenCostPct: 26,
         prompt: "Extend Basecamp Notes to multiple named pads: a pad list with add/rename/delete/reorder, a large rich-text editor per pad supporting bold, italic, headings, bullet/numbered lists, and links, plus search across pads. Migrate the existing single Basecamp scratchpad into the first pad without data loss. Keep it local/offline, exportable, and visually distinct from location notes.",
         category: "Notes"
@@ -17493,6 +18070,35 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "4.4.0.1",
+        date: "2026-06-07",
+        title: "Basecamps",
+        summary: "Basecamp grows into a local workspace of named, searchable rich-text pads.",
+        highlights: [
+          "Create, rename, reorder, search, and style multiple Basecamp pads.",
+          "Link existing location notes to planning pads without duplicating them.",
+          "Migrate the original Basecamp scratchpad without losing its text.",
+          "Carry pad formatting and linked notes into text, Markdown, and RTF exports."
+        ],
+        notice: {
+          version: "4.4.0",
+          title: "Basecamps",
+          summary: "Turn Basecamp into named rich-text pads with search and linked location notes.",
+          cta: "Make|Camp!"
+        },
+        updates: [
+          "Opened the Basecamps development line with additive multi-pad storage and legacy scratchpad migration.",
+          "Added a responsive pad workspace with create, rename, icon, delete, drag, and keyboard reorder controls.",
+          "Added cross-pad name and content search with match counts and temporary in-editor highlights.",
+          "Added a Selection API rich-text toolbar for emphasis, headings, lists, links, and clearing formatting.",
+          "Sanitized saved and pasted pad HTML while preserving safe structure, links, and plain-text line breaks.",
+          "Added all-notes search for linking US or World location notes into a pad without duplicating them.",
+          "Kept Basecamp open behind linked-note editing and removed stale note links during load and live rendering.",
+          "Added active-pad and all-pad copy flows plus per-pad Markdown, Rich Text, and Plain Text export sections.",
+          "Expanded Basecamp help, migration guidance, hints, and keyboard shortcut documentation."
+        ]
+      },
       {
         version: "4.3.0",
         date: "2026-06-07",
@@ -18535,7 +19141,18 @@
     const MAP_ZOOM_MAX = 64;
     const MAP_ZOOM_STEP = .5;
     const NOTE_AUTOCOMPLETE_LIMIT = 40;
-    const BASECAMP_MAX_LENGTH = 20000;
+    const BASECAMP_PAD_MAX = 20;
+    const BASECAMP_PAD_NAME_MAX = 60;
+    const BASECAMP_PAD_HTML_MAX = 60000;
+    const BASECAMP_DEFAULT_PAD_NAME = "Basecamp";
+    const BASECAMP_PAD_DEFAULT_ICON = "__LONG_TEXT_PAGE_AND_PENCIL";
+    const BASECAMP_PAD_ICON_SET = Object.freeze([
+      "__LONG_TEXT_PAGE_AND_PENCIL",
+      "__DOCUMENT_ON_DOCUMENT",
+      "__TRAY_CIRCLE",
+      "__SUITCASE_CIRCLE",
+      "__BACKPACK"
+    ]);
     const LEGEND_POSITION_ORDER = ["right-top", "right-bottom", "left-bottom", "left-top"];
     const LEGEND_POSITION_MENU_ORDER = ["left-top", "right-top", "left-bottom", "right-bottom"];
     const INSTALL_PLATFORM_SEQUENCE = ["auto", "idevice", "android", "mac", "pc"];
@@ -18739,7 +19356,7 @@
         notes: {},
         world: { regions: {}, notes: {} },
         visitTypes: defaultVisitTypes(),
-        basecamp: { text: "", updated: "" },
+        basecamp: { pads: [], activePadId: "", legacyMigrated: true },
         dismissedHints: [],
         lastSeenReleaseVersion: "0.0.0",
         dismissedReleaseVersion: "",
@@ -19261,10 +19878,7 @@
       const savedMapName = String(next.mapName || base.mapName).trim();
       next.mapName = (savedMapName === "Your ${APP_NAME}" ? DEFAULT_MAP_NAME : savedMapName || base.mapName).slice(0, 80);
       const basecampInput = input.basecamp && typeof input.basecamp === "object" ? input.basecamp : {};
-      next.basecamp = {
-        text: String(basecampInput.text || "").slice(0, BASECAMP_MAX_LENGTH),
-        updated: String(basecampInput.updated || "")
-      };
+      next.basecamp = normalizeBasecampState(basecampInput, next);
       const linkedSetIds = new Set([
         ...Object.values(next.notes).flat(),
         ...Object.values(next.world.notes).flat()
@@ -21111,6 +21725,153 @@
       return String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
     }
 
+    function basecampPadId() {
+      return "pad" + Math.random().toString(36).slice(2, 10).padEnd(8, "0").slice(0, 8);
+    }
+
+    function basecampPadIcon(iconId) {
+      const key = String(iconId || "");
+      if (!BASECAMP_PAD_ICON_SET.includes(key)) return __LONG_TEXT_PAGE_AND_PENCIL;
+      try {
+        return eval(key);
+      } catch {
+        return __LONG_TEXT_PAGE_AND_PENCIL;
+      }
+    }
+
+    function safeBasecampUrl(value) {
+      const raw = String(value || "").trim();
+      if (!raw) return "";
+      try {
+        const parsed = new URL(raw, window.location.href);
+        return ["http:", "https:", "mailto:"].includes(parsed.protocol) ? raw : "";
+      } catch {
+        return "";
+      }
+    }
+
+    function sanitizeBasecampHtml(input) {
+      const source = String(input || "").slice(0, BASECAMP_PAD_HTML_MAX * 2);
+      if (!source.trim()) return "";
+      const parsed = new DOMParser().parseFromString(`<body>${source}</body>`, "text/html");
+      const allowed = new Set(["p", "br", "b", "strong", "i", "em", "u", "h2", "h3", "ul", "ol", "li", "a", "blockquote", "code", "pre"]);
+      const dropWithContent = new Set(["script", "style", "noscript", "template", "svg", "math", "iframe", "object", "embed"]);
+      const cleanNode = node => {
+        if (node.nodeType === Node.TEXT_NODE) return escapeHtml(node.nodeValue || "");
+        if (node.nodeType !== Node.ELEMENT_NODE) return "";
+        let tag = node.tagName.toLowerCase();
+        if (dropWithContent.has(tag)) return "";
+        if (tag === "div") tag = "p";
+        const children = Array.from(node.childNodes).map(cleanNode).join("");
+        if (!allowed.has(tag)) return children;
+        if (tag === "br") return "<br>";
+        if (tag === "a") {
+          const href = safeBasecampUrl(node.getAttribute("href"));
+          return href
+            ? `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${children}</a>`
+            : children;
+        }
+        return `<${tag}>${children}</${tag}>`;
+      };
+      let html = Array.from(parsed.body.childNodes).map(cleanNode).join("").trim();
+      if (html.length > BASECAMP_PAD_HTML_MAX) {
+        html = legacyTextToHtml(basecampPlainText(html).slice(0, Math.floor(BASECAMP_PAD_HTML_MAX * .66)));
+      }
+      return html.slice(0, BASECAMP_PAD_HTML_MAX);
+    }
+
+    function basecampPlainText(html) {
+      const scratch = document.createElement("div");
+      scratch.innerHTML = String(html || "");
+      scratch.style.cssText = "position:fixed;left:-10000px;top:0;width:800px;opacity:0;pointer-events:none;white-space:normal;";
+      document.body.append(scratch);
+      const text = String(scratch.innerText ?? scratch.textContent ?? "");
+      scratch.remove();
+      return text
+        .replace(/\u200b/g, "")
+        .replace(/\n{3,}/g, "\n\n")
+        .trim()
+        .slice(0, BASECAMP_PAD_HTML_MAX);
+    }
+
+    function legacyTextToHtml(text) {
+      const clean = String(text || "").replace(/\r\n?/g, "\n").slice(0, BASECAMP_PAD_HTML_MAX);
+      if (!clean.trim()) return "";
+      return clean.split(/\n{2,}/).map(block => `<p>${escapeHtml(block).replace(/\n/g, "<br>")}</p>`).join("");
+    }
+
+    function normalizeBasecampState(input, normalizedState) {
+      const now = new Date().toISOString();
+      const validStamp = (value, fallback = now) => {
+        const text = String(value || "");
+        return Number.isFinite(Date.parse(text)) ? text : fallback;
+      };
+      const noteById = new Map();
+      Object.entries(normalizedState.notes || {}).forEach(([regionCode, notes]) => {
+        (notes || []).forEach(note => noteById.set(note.id, { note, regionCode }));
+      });
+      Object.entries(normalizedState.world?.notes || {}).forEach(([regionCode, notes]) => {
+        (notes || []).forEach(note => noteById.set(note.id, { note, regionCode }));
+      });
+      const normalizeLinks = value => {
+        const seen = new Set();
+        return (Array.isArray(value) ? value : []).reduce((links, item) => {
+          const noteId = String(item?.noteId || "");
+          const ref = noteById.get(noteId);
+          if (!ref || seen.has(noteId)) return links;
+          seen.add(noteId);
+          links.push({ noteId, regionCode: ref.regionCode });
+          return links;
+        }, []);
+      };
+      const rawPads = Array.isArray(input.pads) ? input.pads.slice(0, BASECAMP_PAD_MAX) : [];
+      if (rawPads.length) {
+        const usedIds = new Set();
+        const pads = rawPads.map((pad, index) => {
+          let id = String(pad?.id || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 40);
+          if (!id || usedIds.has(id)) {
+            do { id = basecampPadId(); } while (usedIds.has(id));
+          }
+          usedIds.add(id);
+          const html = sanitizeBasecampHtml(pad?.html || "");
+          const created = validStamp(pad?.created || pad?.updated);
+          return {
+            id,
+            name: String(pad?.name || `Pad ${index + 1}`).trim().slice(0, BASECAMP_PAD_NAME_MAX) || `Pad ${index + 1}`,
+            icon: BASECAMP_PAD_ICON_SET.includes(pad?.icon) ? pad.icon : BASECAMP_PAD_DEFAULT_ICON,
+            html,
+            plainText: basecampPlainText(html),
+            linkedNotes: normalizeLinks(pad?.linkedNotes),
+            created,
+            updated: validStamp(pad?.updated || pad?.created, created)
+          };
+        });
+        const requestedActive = String(input.activePadId || "");
+        return {
+          pads,
+          activePadId: pads.some(pad => pad.id === requestedActive) ? requestedActive : pads[0]?.id || "",
+          legacyMigrated: input.legacyMigrated === true
+        };
+      }
+      const legacyText = String(input.text || "");
+      if (legacyText.trim()) {
+        const stamp = validStamp(input.updated);
+        const html = legacyTextToHtml(legacyText);
+        const pad = {
+          id: basecampPadId(),
+          name: BASECAMP_DEFAULT_PAD_NAME,
+          icon: BASECAMP_PAD_DEFAULT_ICON,
+          html,
+          plainText: basecampPlainText(html),
+          linkedNotes: [],
+          created: stamp,
+          updated: stamp
+        };
+        return { pads: [pad], activePadId: pad.id, legacyMigrated: true };
+      }
+      return { pads: [], activePadId: "", legacyMigrated: true };
+    }
+
     function downloadFile(filename, type, content) {
       const blob = new Blob([content], { type });
       const url = URL.createObjectURL(blob);
@@ -21515,8 +22276,10 @@
       setButtonLabel("#saveAddNoteBtn", __CHECKMARK_CIRCLE_BADGE_PLUS_FILL, "Save + Add", "Save and add another note");
       setButtonLabel("#tipJarCloseBtn", __XMARK, "Close");
       setButtonLabel("#basecampCopyBtn", __DOCUMENT_ON_DOCUMENT, "Copy", "Copy Basecamp text");
+      setButtonLabel("#basecampCopyAllBtn", __DOCUMENT_ON_DOCUMENT, "Copy all pads", "Copy all Basecamp pads");
       setButtonLabel("#basecampClearBtn", ICON_SETTINGS_DELETE__TRASH_FILL, "Clear", "Clear Basecamp");
       setButtonLabel("#basecampCloseBtn", __XMARK, "Close");
+      setButtonLabel("#basecampNewPadBtn", __PLUS_APP_FILL, "New Pad", "Create a Basecamp pad");
       const tipSendIcon = $("#tipOtherSendBtn .tip-send-icon");
       if (tipSendIcon && !tipSendIcon.dataset.iconReady) {
         tipSendIcon.innerHTML = __PAPERPLANE_FILL;
@@ -21901,6 +22664,7 @@
       renderNotesPanel();
       renderSettingsControls();
       renderReleaseNotice();
+      if ($("#basecampDialog")?.open && !$("#noteDialog")?.open) renderBasecampDialog();
       syncBucketListUi();
       syncRingUi();
       enhanceHints();
@@ -27282,7 +28046,42 @@
 
     let basecampSaveTimer = 0;
     let basecampFlashTimer = 0;
+    let basecampSearchTimer = 0;
+    let basecampPendingPadId = "";
+    let basecampSearchQuery = "";
+    let basecampRenamePadId = "";
+    let basecampRowMenuPadId = "";
+    let basecampIconPickerPadId = "";
+    let basecampNotePickerOpen = false;
+    let basecampNotePickerQuery = "";
+    let basecampSavedRange = null;
+    let draggingBasecampPadId = "";
     const BASECAMP_DEFAULT_STATUS = "Autosaves as you type.";
+
+    function basecampPads() {
+      state.basecamp ||= { pads: [], activePadId: "", legacyMigrated: true };
+      state.basecamp.pads ||= [];
+      return state.basecamp.pads;
+    }
+
+    function activeBasecampPad() {
+      const pads = basecampPads();
+      const active = pads.find(pad => pad.id === state.basecamp.activePadId);
+      if (active) return active;
+      state.basecamp.activePadId = pads[0]?.id || "";
+      return pads[0] || null;
+    }
+
+    function basecampUpdatedLabel(value) {
+      const time = Date.parse(value || "");
+      if (!Number.isFinite(time)) return "not yet";
+      const seconds = Math.max(0, Math.round((Date.now() - time) / 1000));
+      if (seconds < 45) return "just now";
+      if (seconds < 3600) return `${Math.round(seconds / 60)}m ago`;
+      if (seconds < 86400) return `${Math.round(seconds / 3600)}h ago`;
+      if (seconds < 604800) return `${Math.round(seconds / 86400)}d ago`;
+      return new Date(time).toLocaleDateString();
+    }
 
     function setBasecampStatus(text, flash = false) {
       const status = $("#basecampStatus");
@@ -27298,66 +28097,1022 @@
       }
     }
 
-    function openBasecampDialog() {
-      const area = $("#basecampText");
-      if (!area) return;
-      area.value = state.basecamp?.text || "";
-      updateBasecampCount();
-      setBasecampStatus(BASECAMP_DEFAULT_STATUS);
-      closeOpenDialogs("basecampDialog");
-      $("#basecampDialog").showModal();
-      area.focus();
+    function basecampSearchMatchCount(pad, query = basecampSearchQuery) {
+      const needle = String(query || "").trim().toLowerCase();
+      if (!needle) return 0;
+      const haystack = `${pad.name}\n${pad.plainText || ""}`.toLowerCase();
+      let count = 0;
+      let offset = 0;
+      while ((offset = haystack.indexOf(needle, offset)) >= 0) {
+        count += 1;
+        offset += Math.max(1, needle.length);
+      }
+      return count;
     }
 
-    function updateBasecampCount() {
-      const area = $("#basecampText");
+    function basecampIconPickerHtml(pad) {
+      return `
+        <span class="basecamp-icon-picker" role="menu" ${basecampIconPickerPadId === pad.id ? "" : "hidden"}>
+          ${BASECAMP_PAD_ICON_SET.map(iconId => `
+            <button type="button" data-basecamp-icon="${escapeHtml(iconId)}" aria-pressed="${pad.icon === iconId}"
+              title="${escapeHtml(iconLabelFromId(iconId.replace(/^__/, "").toLowerCase()))}">
+              ${basecampPadIcon(iconId)}
+            </button>`).join("")}
+        </span>`;
+    }
+
+    function renderBasecampPadList({ focusRename = false } = {}) {
+      const list = $("#basecampPadList");
+      if (!list) return;
+      const active = activeBasecampPad();
+      list.innerHTML = basecampPads().map(pad => {
+        const matchCount = basecampSearchMatchCount(pad);
+        const noMatch = Boolean(basecampSearchQuery.trim() && matchCount === 0);
+        if (basecampRenamePadId === pad.id) {
+          return `
+            <div class="basecamp-pad-row is-active" data-basecamp-pad-row="${escapeHtml(pad.id)}">
+              <span class="basecamp-rename-row">
+                <span class="basecamp-toolbar-link-wrap">
+                  <button class="basecamp-rename-icon-btn" type="button" data-basecamp-icon-picker="${escapeHtml(pad.id)}"
+                    aria-label="Choose icon for ${escapeHtml(pad.name)}">${basecampPadIcon(pad.icon)}</button>
+                  ${basecampIconPickerHtml(pad)}
+                </span>
+                <input data-basecamp-rename-input="${escapeHtml(pad.id)}" maxlength="${BASECAMP_PAD_NAME_MAX}"
+                  value="${escapeHtml(pad.name)}" aria-label="Rename Basecamp pad">
+                <button class="basecamp-row-actions-btn" type="button" data-basecamp-rename-done="${escapeHtml(pad.id)}"
+                  aria-label="Finish renaming">${__CHECKMARK}</button>
+              </span>
+            </div>`;
+        }
+        return `
+          <div class="basecamp-pad-row${active?.id === pad.id ? " is-active" : ""}${noMatch ? " is-no-match" : ""}"
+            data-basecamp-pad-row="${escapeHtml(pad.id)}" draggable="true" tabindex="0"
+            aria-label="${escapeHtml(pad.name)}. Alt plus Up or Down reorders this pad.">
+            <button class="basecamp-pad-icon" type="button" data-basecamp-select="${escapeHtml(pad.id)}"
+              aria-label="Open ${escapeHtml(pad.name)}">${basecampPadIcon(pad.icon)}</button>
+            <button class="basecamp-pad-select" type="button" data-basecamp-select="${escapeHtml(pad.id)}">
+              <span class="basecamp-pad-name">${escapeHtml(pad.name)}</span>
+              ${basecampSearchQuery.trim() ? `<span class="basecamp-match-count">${matchCount}</span>` : ""}
+            </button>
+            <button class="basecamp-row-actions-btn" type="button" data-basecamp-row-menu="${escapeHtml(pad.id)}"
+              aria-label="Actions for ${escapeHtml(pad.name)}" aria-expanded="${basecampRowMenuPadId === pad.id}">${__ELLIPSIS_CIRCLE}</button>
+            <span class="basecamp-row-menu" role="menu" ${basecampRowMenuPadId === pad.id ? "" : "hidden"}>
+              <button type="button" role="menuitem" data-basecamp-rename="${escapeHtml(pad.id)}">${__PENCIL} Rename</button>
+              <button class="danger" type="button" role="menuitem" data-basecamp-delete="${escapeHtml(pad.id)}">${__DELETE_LEFT_FILL} Delete</button>
+            </span>
+          </div>`;
+      }).join("");
+      if (focusRename && basecampRenamePadId) {
+        requestAnimationFrame(() => {
+          const input = $(`[data-basecamp-rename-input="${basecampRenamePadId}"]`, list);
+          input?.focus();
+          input?.select();
+        });
+      }
+    }
+
+    function resolveBasecampLinkedNote(link) {
+      const refs = allSavedNoteRefs();
+      return refs.find(ref => ref.note.id === link?.noteId && ref.abbr === link?.regionCode)
+        || refs.find(ref => ref.note.id === link?.noteId)
+        || null;
+    }
+
+    function basecampNoteLabel(ref) {
+      return noteLocationDisplay(ref.note)
+        || String(ref.note.what || "").trim()
+        || String(noteDetails(ref.note) || "").trim()
+        || "Location note";
+    }
+
+    function basecampNoteSearchText(ref) {
+      return [
+        regionNameForLayer(ref.abbr, ref.layer),
+        ref.abbr,
+        basecampNoteLabel(ref),
+        noteSearchText(ref.note)
+      ].join(" ").toLowerCase();
+    }
+
+    function basecampNotePickerRefs(pad) {
+      const query = basecampNotePickerQuery.trim().toLowerCase();
+      return allSavedNoteRefs()
+        .filter(ref => !query || basecampNoteSearchText(ref).includes(query))
+        .sort((a, b) => String(b.note.updated || b.note.date || "").localeCompare(String(a.note.updated || a.note.date || ""))
+          || regionNameForLayer(a.abbr, a.layer).localeCompare(regionNameForLayer(b.abbr, b.layer))
+          || basecampNoteLabel(a).localeCompare(basecampNoteLabel(b)))
+        .slice(0, query ? 40 : 8)
+        .map(ref => ({ ...ref, linked: (pad.linkedNotes || []).some(link => link.noteId === ref.note.id) }));
+    }
+
+    function basecampNotePickerHtml(pad) {
+      if (!basecampNotePickerOpen) return "";
+      const refs = basecampNotePickerRefs(pad);
+      return `
+        <div class="basecamp-note-picker">
+          <div class="basecamp-note-picker-head">
+            <input id="basecampNotePickerSearch" type="search" value="${escapeHtml(basecampNotePickerQuery)}"
+              placeholder="Search all notes…" aria-label="Search all location notes">
+            <button type="button" data-basecamp-note-picker-done>Done</button>
+          </div>
+          <div class="basecamp-note-picker-results">
+            ${refs.length ? refs.map(ref => `
+              <button class="basecamp-note-result" type="button" data-basecamp-link-result="${escapeHtml(ref.note.id)}"
+                ${ref.linked ? "disabled" : ""}>
+                <span>${ref.note.visitTypes?.length ? visitTypeIcon(ref.note.visitTypes[0]) : __MAPPIN_CIRCLE}</span>
+                <span class="basecamp-note-result-copy">
+                  <b>${escapeHtml(basecampNoteLabel(ref))}</b>
+                  <small>${escapeHtml(regionNameForLayer(ref.abbr, ref.layer))} · ${escapeHtml(ref.note.date ? formatDateDisplay(ref.note.date) : "No date")}${ref.linked ? " · Linked" : ""}</small>
+                </span>
+              </button>`).join("") : `<div class="empty">No location notes match that search.</div>`}
+          </div>
+        </div>`;
+    }
+
+    function basecampLinkedSectionHtml(pad) {
+      const refs = (pad.linkedNotes || []).map(resolveBasecampLinkedNote).filter(Boolean);
+      const hasContent = refs.length || basecampNotePickerOpen;
+      return `
+        <section class="basecamp-linked-section">
+          ${hasContent ? `
+            <div class="basecamp-linked-head">
+              <h3>Linked notes</h3>
+              <button type="button" data-basecamp-link-note data-shortcut="L">+ Link a note</button>
+            </div>` : `<button type="button" data-basecamp-link-note data-shortcut="L">+ Link a note</button>`}
+          ${refs.length ? `<div class="basecamp-linked-list">${refs.map(ref => `
+            <div class="basecamp-linked-row">
+              <button class="basecamp-linked-open" type="button" data-basecamp-open-note="${escapeHtml(ref.note.id)}">
+                <span class="basecamp-linked-copy">
+                  <b>${escapeHtml(basecampNoteLabel(ref))}</b>
+                  <small>${escapeHtml(regionNameForLayer(ref.abbr, ref.layer))} · ${escapeHtml(ref.note.date ? formatDateDisplay(ref.note.date) : "No date")}</small>
+                </span>
+              </button>
+              <span>${ref.note.visitTypes?.length ? visitTypeIcon(ref.note.visitTypes[0]) : __MAPPIN_CIRCLE}</span>
+              <button class="basecamp-linked-unlink danger" type="button" data-basecamp-unlink-note="${escapeHtml(ref.note.id)}"
+                aria-label="Unlink ${escapeHtml(basecampNoteLabel(ref))}">${__XMARK}</button>
+            </div>`).join("")}</div>` : ""}
+          ${basecampNotePickerHtml(pad)}
+        </section>`;
+    }
+
+    function renderBasecampEditor({ focusBody = false, focusNotePicker = false } = {}) {
+      const editor = $("#basecampEditor");
+      if (!editor) return;
+      const pad = activeBasecampPad();
+      if (!pad) {
+        editor.innerHTML = `
+          <div class="basecamp-empty">
+            ${basecampPadIcon(BASECAMP_PAD_DEFAULT_ICON)}
+            <b>No pads yet</b>
+            <span>Create a Basecamp pad for a trip, packing list, gear notes, or anything else.</span>
+            <button type="button" data-basecamp-new-empty>New Pad</button>
+          </div>`;
+        return;
+      }
+      editor.innerHTML = `
+        <div class="basecamp-editor-head">
+          <span class="basecamp-pad-icon">${basecampPadIcon(pad.icon)}</span>
+          <h3 class="basecamp-editor-title">${escapeHtml(pad.name)}</h3>
+        </div>
+        <div class="basecamp-toolbar" role="toolbar" aria-label="Basecamp text formatting">
+          <button type="button" data-basecamp-format="bold" aria-label="Bold"><b>B</b></button>
+          <button type="button" data-basecamp-format="italic" aria-label="Italic"><i>I</i></button>
+          <button type="button" data-basecamp-format="h2" aria-label="Heading 2">H2</button>
+          <button type="button" data-basecamp-format="h3" aria-label="Heading 3">H3</button>
+          <button type="button" data-basecamp-format="ul" aria-label="Bulleted list">• List</button>
+          <button type="button" data-basecamp-format="ol" aria-label="Numbered list">1. List</button>
+          <span class="basecamp-toolbar-link-wrap">
+            <button type="button" data-basecamp-url-link aria-label="Insert URL link">Link</button>
+            <span id="basecampLinkPopover" class="basecamp-link-popover" hidden>
+              <input id="basecampLinkUrl" type="url" placeholder="https://…" aria-label="Link URL">
+              <button type="button" data-basecamp-link-apply>Apply</button>
+              <button type="button" data-basecamp-link-remove>Remove</button>
+            </span>
+          </span>
+          <button type="button" data-basecamp-format="clear" aria-label="Clear formatting">Tx</button>
+        </div>
+        <div class="basecamp-pad-body" contenteditable="true" role="textbox" aria-multiline="true"
+          data-basecamp-body="${escapeHtml(pad.id)}"
+          data-placeholder="Plan the trip, build a packing list, collect links, or leave yourself a note…">${sanitizeBasecampHtml(pad.html)}</div>
+        ${basecampLinkedSectionHtml(pad)}
+        <div class="basecamp-foot">
+          <small id="basecampCount" class="basecamp-count" aria-live="polite"></small>
+        </div>`;
+      updateBasecampCount(pad);
+      highlightBasecampSearchHit();
+      if (focusBody) requestAnimationFrame(() => $("[data-basecamp-body]")?.focus());
+      if (basecampNotePickerOpen && focusNotePicker) {
+        requestAnimationFrame(() => {
+          const input = $("#basecampNotePickerSearch");
+          input?.focus();
+          if (input) input.setSelectionRange(input.value.length, input.value.length);
+        });
+      }
+    }
+
+    function renderBasecampDialog(options = {}) {
+      renderBasecampPadList(options);
+      renderBasecampEditor(options);
+      const search = $("#basecampSearch");
+      if (search && search.value !== basecampSearchQuery) search.value = basecampSearchQuery;
+      $("#basecampNewPadBtn").disabled = basecampPads().length >= BASECAMP_PAD_MAX;
+    }
+
+    function openBasecampDialog() {
+      closeOpenDialogs("basecampDialog");
+      setBasecampStatus(BASECAMP_DEFAULT_STATUS);
+      renderBasecampDialog();
+      $("#basecampDialog").showModal();
+      requestAnimationFrame(() => {
+        const target = activeBasecampPad() ? $("[data-basecamp-body]") : $("#basecampNewPadBtn");
+        target?.focus();
+      });
+    }
+
+    function updateBasecampCount(pad = activeBasecampPad(), plainText = null) {
       const count = $("#basecampCount");
-      if (!area || !count) return;
-      const n = area.value.length;
-      count.textContent = `${n.toLocaleString()} character${n === 1 ? "" : "s"}`;
+      if (!count || !pad) return;
+      const text = plainText == null ? pad.plainText || "" : plainText;
+      count.textContent = `${text.length.toLocaleString()} chars · Updated ${basecampUpdatedLabel(pad.updated)}`;
+    }
+
+    function removeBasecampSearchMarks(root = $("[data-basecamp-body]")) {
+      if (!root) return;
+      $$("mark.basecamp-search-hit", root).forEach(mark => mark.replaceWith(...mark.childNodes));
+      root.normalize();
+    }
+
+    function highlightBasecampSearchHit() {
+      const root = $("[data-basecamp-body]");
+      const query = basecampSearchQuery.trim();
+      if (!root || !query) return;
+      removeBasecampSearchMarks(root);
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      const needle = query.toLowerCase();
+      while (walker.nextNode()) {
+        const node = walker.currentNode;
+        const index = String(node.nodeValue || "").toLowerCase().indexOf(needle);
+        if (index < 0) continue;
+        const range = document.createRange();
+        range.setStart(node, index);
+        range.setEnd(node, index + query.length);
+        const mark = document.createElement("mark");
+        mark.className = "basecamp-search-hit";
+        range.surroundContents(mark);
+        requestAnimationFrame(() => mark.scrollIntoView({ block: "nearest" }));
+        break;
+      }
+    }
+
+    function flushBasecampPad(padId = basecampPendingPadId || activeBasecampPad()?.id, { forceSave = false } = {}) {
+      clearTimeout(basecampSaveTimer);
+      basecampSaveTimer = 0;
+      basecampPendingPadId = "";
+      const pad = basecampPads().find(item => item.id === padId);
+      const body = $("[data-basecamp-body]");
+      if (!pad || !body || body.dataset.basecampBody !== pad.id) return false;
+      removeBasecampSearchMarks(body);
+      const html = sanitizeBasecampHtml(body.innerHTML.replace(/\u200b/g, ""));
+      const plainText = basecampPlainText(html);
+      const changed = html !== pad.html || plainText !== pad.plainText;
+      if (changed) {
+        pad.html = html;
+        pad.plainText = plainText;
+        pad.updated = new Date().toISOString();
+      }
+      updateBasecampCount(pad, plainText);
+      if (changed || forceSave) save();
+      if (changed && !$("#basecampStatus")?.classList.contains("is-flash")) setBasecampStatus("Saved");
+      return changed;
     }
 
     function handleBasecampInput() {
-      const area = $("#basecampText");
-      if (!area) return;
-      updateBasecampCount();
+      const body = $("[data-basecamp-body]");
+      const pad = activeBasecampPad();
+      if (!body || !pad) return;
+      removeBasecampSearchMarks(body);
+      updateBasecampCount(pad, basecampPlainText(body.innerHTML));
       setBasecampStatus("Saving…");
+      basecampPendingPadId = pad.id;
       clearTimeout(basecampSaveTimer);
-      basecampSaveTimer = window.setTimeout(() => {
-        state.basecamp = { text: area.value.slice(0, BASECAMP_MAX_LENGTH), updated: new Date().toISOString() };
-        save();
-        // Don't stomp an active "Copied to Clipboard" flash with the ambient save status.
-        const status = $("#basecampStatus");
-        if (!status?.classList.contains("is-flash")) setBasecampStatus("Saved");
-      }, 400);
+      basecampSaveTimer = window.setTimeout(() => flushBasecampPad(pad.id), 250);
     }
 
-    function copyBasecampText() {
-      const text = $("#basecampText")?.value || "";
+    function setActiveBasecampPad(padId, { focusBody = true } = {}) {
+      if (!basecampPads().some(pad => pad.id === padId)) return;
+      flushBasecampPad();
+      state.basecamp.activePadId = padId;
+      basecampRenamePadId = "";
+      basecampRowMenuPadId = "";
+      basecampIconPickerPadId = "";
+      basecampNotePickerOpen = false;
+      basecampNotePickerQuery = "";
+      save();
+      renderBasecampDialog({ focusBody });
+    }
+
+    function nextBasecampPadName() {
+      const names = new Set(basecampPads().map(pad => pad.name));
+      if (!names.has("New Pad")) return "New Pad";
+      let number = 2;
+      while (names.has(`New Pad ${number}`)) number += 1;
+      return `New Pad ${number}`;
+    }
+
+    function createBasecampPad() {
+      if (basecampPads().length >= BASECAMP_PAD_MAX) {
+        setBasecampStatus(`Maximum of ${BASECAMP_PAD_MAX} pads reached`, true);
+        return;
+      }
+      flushBasecampPad();
+      const stamp = new Date().toISOString();
+      const pad = {
+        id: basecampPadId(),
+        name: nextBasecampPadName(),
+        icon: BASECAMP_PAD_DEFAULT_ICON,
+        html: "",
+        plainText: "",
+        linkedNotes: [],
+        created: stamp,
+        updated: stamp
+      };
+      basecampPads().push(pad);
+      state.basecamp.activePadId = pad.id;
+      basecampRenamePadId = pad.id;
+      basecampRowMenuPadId = "";
+      save();
+      renderBasecampDialog({ focusRename: true });
+    }
+
+    function commitBasecampRename(padId) {
+      const pad = basecampPads().find(item => item.id === padId);
+      const input = $(`[data-basecamp-rename-input="${padId}"]`);
+      if (!pad) return;
+      const name = String(input?.value || pad.name).trim().slice(0, BASECAMP_PAD_NAME_MAX) || pad.name || "Untitled Pad";
+      const changed = name !== pad.name;
+      pad.name = name;
+      if (changed) pad.updated = new Date().toISOString();
+      basecampRenamePadId = "";
+      basecampIconPickerPadId = "";
+      save();
+      renderBasecampDialog();
+    }
+
+    function deleteBasecampPad(padId) {
+      const pads = basecampPads();
+      const index = pads.findIndex(pad => pad.id === padId);
+      const pad = pads[index];
+      if (!pad) return;
+      requestConfirm({
+        title: `Delete ${pad.name}?`,
+        message: "This permanently deletes this Basecamp pad. Linked location notes are not deleted.",
+        actionLabel: "Delete Pad",
+        preserveOpenDialogs: true,
+        onConfirm: () => {
+          const wasActive = state.basecamp.activePadId === padId;
+          pads.splice(index, 1);
+          if (wasActive) state.basecamp.activePadId = pads[index]?.id || pads[index - 1]?.id || "";
+          basecampRenamePadId = "";
+          basecampRowMenuPadId = "";
+          save();
+          renderBasecampDialog();
+          setBasecampStatus("Pad deleted", true);
+        }
+      });
+    }
+
+    function moveBasecampPad(padId, direction) {
+      const pads = basecampPads();
+      const from = pads.findIndex(pad => pad.id === padId);
+      const to = from + direction;
+      if (from < 0 || to < 0 || to >= pads.length) return;
+      flushBasecampPad();
+      const [pad] = pads.splice(from, 1);
+      pads.splice(to, 0, pad);
+      save();
+      renderBasecampDialog();
+      requestAnimationFrame(() => $(`[data-basecamp-pad-row="${padId}"]`)?.focus());
+    }
+
+    function copyBasecampText({ all = false } = {}) {
+      flushBasecampPad();
+      const active = activeBasecampPad();
+      const text = all
+        ? basecampPads().filter(pad => pad.plainText.trim()).map(pad => `### ${pad.name}\n\n${pad.plainText.trim()}`).join("\n\n")
+        : active?.plainText || "";
       if (!text.trim()) {
         setBasecampStatus("Nothing to copy yet", true);
         return;
       }
       copyTextToClipboard(text)
-        .then(() => setBasecampStatus("Copied to Clipboard", true))
+        .then(() => setBasecampStatus(all ? "All pads copied" : "Copied to Clipboard", true))
         .catch(() => showMessage("Copy Failed", "Your browser blocked clipboard access. Select the text manually."));
     }
 
     function clearBasecampText() {
-      if (!String(state.basecamp?.text || "").trim()) return;
+      const pad = activeBasecampPad();
+      if (!pad) return;
+      flushBasecampPad();
+      if (!pad.plainText.trim() && !pad.html.trim()) return;
       requestConfirm({
-        title: "Clear Basecamp?",
-        message: "This erases all Basecamp notes on this device. This cannot be undone.",
-        actionLabel: "Clear",
+        title: `Clear ${pad.name}?`,
+        message: "This clears this pad's content. The pad and its linked location notes stay in place.",
+        actionLabel: "Clear Pad",
         preserveOpenDialogs: true,
         onConfirm: () => {
-          state.basecamp = { text: "", updated: new Date().toISOString() };
+          pad.html = "";
+          pad.plainText = "";
+          pad.updated = new Date().toISOString();
           save();
-          const area = $("#basecampText");
-          if (area) area.value = "";
-          updateBasecampCount();
-          setBasecampStatus("Cleared", true);
+          renderBasecampDialog({ focusBody: true });
+          setBasecampStatus("Pad cleared", true);
         }
+      });
+    }
+
+    function basecampSelectionRange() {
+      const body = $("[data-basecamp-body]");
+      const selection = window.getSelection();
+      if (!body || !selection?.rangeCount) return null;
+      const range = selection.getRangeAt(0);
+      return body.contains(range.commonAncestorContainer) ? range : null;
+    }
+
+    function saveBasecampSelection() {
+      const range = basecampSelectionRange();
+      basecampSavedRange = range ? range.cloneRange() : null;
+      return basecampSavedRange;
+    }
+
+    function restoreBasecampSelection() {
+      const body = $("[data-basecamp-body]");
+      if (!body || !basecampSavedRange || !body.contains(basecampSavedRange.commonAncestorContainer)) return null;
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(basecampSavedRange);
+      return basecampSavedRange;
+    }
+
+    function selectBasecampNodeContents(node) {
+      const range = document.createRange();
+      range.selectNodeContents(node);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      basecampSavedRange = range.cloneRange();
+    }
+
+    function wrapBasecampSelectedText(range, createWrapper) {
+      const body = $("[data-basecamp-body]");
+      if (!body || range.collapsed) return [];
+      const walker = document.createTreeWalker(body, NodeFilter.SHOW_TEXT);
+      const parts = [];
+      while (walker.nextNode()) {
+        const node = walker.currentNode;
+        if (!node.nodeValue || !range.intersectsNode(node)) continue;
+        const start = node === range.startContainer ? range.startOffset : 0;
+        const end = node === range.endContainer ? range.endOffset : node.nodeValue.length;
+        if (end > start) parts.push({ node, start, end });
+      }
+      const wrappers = [];
+      parts.slice().reverse().forEach(part => {
+        const subrange = document.createRange();
+        subrange.setStart(part.node, part.start);
+        subrange.setEnd(part.node, part.end);
+        const wrapper = createWrapper();
+        wrapper.append(subrange.extractContents());
+        subrange.insertNode(wrapper);
+        wrappers.unshift(wrapper);
+      });
+      if (wrappers.length) {
+        const selectionRange = document.createRange();
+        selectionRange.setStartBefore(wrappers[0]);
+        selectionRange.setEndAfter(wrappers.at(-1));
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(selectionRange);
+        basecampSavedRange = selectionRange.cloneRange();
+      }
+      return wrappers;
+    }
+
+    function toggleBasecampInline(tagName) {
+      const body = $("[data-basecamp-body]");
+      const range = basecampSelectionRange();
+      if (!body || !range) return;
+      const start = range.startContainer.nodeType === Node.ELEMENT_NODE ? range.startContainer : range.startContainer.parentElement;
+      const existing = start?.closest?.(tagName);
+      if (existing && body.contains(existing)) {
+        existing.replaceWith(...existing.childNodes);
+        body.normalize();
+      } else if (!range.collapsed) {
+        wrapBasecampSelectedText(range, () => document.createElement(tagName));
+      } else {
+        setBasecampStatus("Select text to format it", true);
+        return;
+      }
+      handleBasecampInput();
+    }
+
+    function applyBasecampBlock(tagName) {
+      const body = $("[data-basecamp-body]");
+      const range = basecampSelectionRange();
+      if (!body || !range) return;
+      const start = range.startContainer.nodeType === Node.ELEMENT_NODE ? range.startContainer : range.startContainer.parentElement;
+      const block = start?.closest?.("p,h2,h3,blockquote,pre,li");
+      if (block && body.contains(block)) {
+        const replacement = document.createElement(block.tagName.toLowerCase() === tagName ? "p" : tagName);
+        replacement.append(...block.childNodes);
+        block.replaceWith(replacement);
+        selectBasecampNodeContents(replacement);
+      } else {
+        const replacement = document.createElement(tagName);
+        if (range.collapsed) replacement.append(document.createElement("br"));
+        else replacement.append(range.extractContents());
+        range.insertNode(replacement);
+        selectBasecampNodeContents(replacement);
+      }
+      handleBasecampInput();
+    }
+
+    function applyBasecampList(tagName) {
+      const body = $("[data-basecamp-body]");
+      const range = basecampSelectionRange();
+      if (!body || !range) return;
+      const start = range.startContainer.nodeType === Node.ELEMENT_NODE ? range.startContainer : range.startContainer.parentElement;
+      const existing = start?.closest?.("ul,ol");
+      if (existing && body.contains(existing)) {
+        const fragment = document.createDocumentFragment();
+        $$(":scope > li", existing).forEach(item => {
+          const p = document.createElement("p");
+          p.append(...item.childNodes);
+          fragment.append(p);
+        });
+        existing.replaceWith(fragment);
+      } else {
+        const text = range.toString() || start?.closest?.("p,h2,h3")?.textContent || "";
+        if (!text.trim()) {
+          setBasecampStatus("Select one or more lines for a list", true);
+          return;
+        }
+        const list = document.createElement(tagName);
+        text.split(/\n+/).filter(Boolean).forEach(line => {
+          const item = document.createElement("li");
+          item.textContent = line;
+          list.append(item);
+        });
+        const block = start?.closest?.("p,h2,h3");
+        if (block && body.contains(block)) block.replaceWith(list);
+        else {
+          range.deleteContents();
+          range.insertNode(list);
+        }
+        selectBasecampNodeContents(list);
+      }
+      handleBasecampInput();
+    }
+
+    function clearBasecampFormatting() {
+      const range = basecampSelectionRange();
+      if (!range || range.collapsed) {
+        setBasecampStatus("Select text to clear its formatting", true);
+        return;
+      }
+      const text = range.toString();
+      range.deleteContents();
+      const node = document.createTextNode(text);
+      range.insertNode(node);
+      selectBasecampNodeContents(node);
+      handleBasecampInput();
+    }
+
+    function handleBasecampFormat(action) {
+      if (action === "bold") toggleBasecampInline("strong");
+      if (action === "italic") toggleBasecampInline("em");
+      if (action === "h2" || action === "h3") applyBasecampBlock(action);
+      if (action === "ul" || action === "ol") applyBasecampList(action);
+      if (action === "clear") clearBasecampFormatting();
+    }
+
+    function insertBasecampFragment(fragment) {
+      const range = basecampSelectionRange();
+      if (!range) return;
+      range.deleteContents();
+      const last = fragment.lastChild;
+      range.insertNode(fragment);
+      if (last) {
+        range.setStartAfter(last);
+        range.collapse(true);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+      handleBasecampInput();
+    }
+
+    function handleBasecampPaste(event) {
+      event.preventDefault();
+      const html = event.clipboardData?.getData("text/html");
+      const text = event.clipboardData?.getData("text/plain") || "";
+      const clean = html ? sanitizeBasecampHtml(html) : legacyTextToHtml(text);
+      const template = document.createElement("template");
+      template.innerHTML = clean;
+      insertBasecampFragment(template.content);
+    }
+
+    function openBasecampLinkPopover() {
+      const body = $("[data-basecamp-body]");
+      const popover = $("#basecampLinkPopover");
+      const input = $("#basecampLinkUrl");
+      if (!body || !popover || !input) return;
+      const range = saveBasecampSelection();
+      if (!range) {
+        body.focus();
+        setBasecampStatus("Place the cursor or select text first", true);
+        return;
+      }
+      const start = range.startContainer.nodeType === Node.ELEMENT_NODE ? range.startContainer : range.startContainer.parentElement;
+      input.value = start?.closest?.("a")?.getAttribute("href") || "";
+      popover.hidden = false;
+      requestAnimationFrame(() => {
+        input.focus();
+        input.select();
+      });
+    }
+
+    function closeBasecampLinkPopover() {
+      const popover = $("#basecampLinkPopover");
+      if (popover) popover.hidden = true;
+    }
+
+    function applyBasecampLink() {
+      const href = safeBasecampUrl($("#basecampLinkUrl")?.value);
+      const range = restoreBasecampSelection();
+      if (!href || !range) {
+        setBasecampStatus(href ? "Select text or place the cursor first" : "Use an http, https, or mailto link", true);
+        return;
+      }
+      const body = $("[data-basecamp-body]");
+      const start = range.startContainer.nodeType === Node.ELEMENT_NODE ? range.startContainer : range.startContainer.parentElement;
+      const existing = start?.closest?.("a");
+      if (existing && body.contains(existing)) {
+        existing.href = href;
+        existing.target = "_blank";
+        existing.rel = "noopener noreferrer";
+        selectBasecampNodeContents(existing);
+      } else if (!range.collapsed) {
+        wrapBasecampSelectedText(range, () => {
+          const link = document.createElement("a");
+          link.href = href;
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          return link;
+        });
+      } else {
+        const link = document.createElement("a");
+        link.href = href;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = href;
+        range.insertNode(link);
+        selectBasecampNodeContents(link);
+      }
+      closeBasecampLinkPopover();
+      handleBasecampInput();
+      $("[data-basecamp-body]")?.focus();
+    }
+
+    function removeBasecampLink() {
+      const range = restoreBasecampSelection();
+      const body = $("[data-basecamp-body]");
+      if (!range || !body) return;
+      const start = range.startContainer.nodeType === Node.ELEMENT_NODE ? range.startContainer : range.startContainer.parentElement;
+      const link = start?.closest?.("a");
+      if (!link || !body.contains(link)) {
+        setBasecampStatus("Place the cursor inside a link first", true);
+        return;
+      }
+      link.replaceWith(...link.childNodes);
+      closeBasecampLinkPopover();
+      handleBasecampInput();
+      body.focus();
+    }
+
+    function openBasecampNotePicker() {
+      flushBasecampPad();
+      if (!activeBasecampPad()) return createBasecampPad();
+      basecampNotePickerOpen = true;
+      basecampNotePickerQuery = "";
+      renderBasecampEditor({ focusNotePicker: true });
+    }
+
+    function linkBasecampNote(noteId) {
+      const pad = activeBasecampPad();
+      const ref = allSavedNoteRefs().find(item => item.note.id === noteId);
+      if (!pad || !ref || pad.linkedNotes.some(link => link.noteId === noteId)) return;
+      pad.linkedNotes.push({ noteId, regionCode: ref.abbr });
+      pad.updated = new Date().toISOString();
+      basecampNotePickerQuery = "";
+      save();
+      renderBasecampEditor({ focusNotePicker: true });
+      setBasecampStatus("Note linked", true);
+    }
+
+    function unlinkBasecampNote(noteId) {
+      const pad = activeBasecampPad();
+      if (!pad) return;
+      pad.linkedNotes = pad.linkedNotes.filter(link => link.noteId !== noteId);
+      pad.updated = new Date().toISOString();
+      save();
+      renderBasecampEditor();
+      setBasecampStatus("Note unlinked", true);
+    }
+
+    function openBasecampLinkedNote(noteId) {
+      flushBasecampPad();
+      const ref = allSavedNoteRefs().find(item => item.note.id === noteId);
+      if (!ref) {
+        renderBasecampEditor();
+        return;
+      }
+      activeLayerId = ref.layer;
+      state.settings.activeLayerId = ref.layer;
+      selectedState = ref.abbr;
+      notesPanelState = ref.abbr;
+      notesPanelOpen = true;
+      applyActiveLayer();
+      save();
+      openNoteDialog(ref.note.id, { locationAbbr: ref.abbr });
+    }
+
+    function bindBasecampEvents() {
+      const dialog = $("#basecampDialog");
+      const workspace = $("#basecampWorkspace");
+      const list = $("#basecampPadList");
+      if (!dialog || !workspace || !list) return;
+      $("#basecampNewPadBtn").addEventListener("click", createBasecampPad);
+      $("#basecampCopyBtn").addEventListener("click", () => copyBasecampText());
+      $("#basecampCopyAllBtn").addEventListener("click", () => {
+        $("#basecampCopyMenu").hidden = true;
+        $("#basecampCopyMenuBtn").setAttribute("aria-expanded", "false");
+        copyBasecampText({ all: true });
+      });
+      $("#basecampCopyMenuBtn").addEventListener("click", event => {
+        event.stopPropagation();
+        const menu = $("#basecampCopyMenu");
+        const open = menu.hidden;
+        menu.hidden = !open;
+        event.currentTarget.setAttribute("aria-expanded", String(open));
+      });
+      $("#basecampClearBtn").addEventListener("click", clearBasecampText);
+      $("#basecampSearch").addEventListener("input", event => {
+        basecampSearchQuery = event.target.value;
+        clearTimeout(basecampSearchTimer);
+        basecampSearchTimer = window.setTimeout(() => {
+          flushBasecampPad();
+          renderBasecampDialog();
+        }, 120);
+      });
+      workspace.addEventListener("mousedown", event => {
+        if (event.target.closest("[data-basecamp-format], [data-basecamp-url-link]")) {
+          event.preventDefault();
+        }
+      });
+      workspace.addEventListener("input", event => {
+        if (event.target.matches("[data-basecamp-body]")) {
+          handleBasecampInput();
+          return;
+        }
+        if (event.target.matches("#basecampNotePickerSearch")) {
+          basecampNotePickerQuery = event.target.value;
+          clearTimeout(basecampSearchTimer);
+          basecampSearchTimer = window.setTimeout(() => renderBasecampEditor({ focusNotePicker: true }), 120);
+        }
+      });
+      workspace.addEventListener("paste", event => {
+        if (event.target.matches("[data-basecamp-body]")) handleBasecampPaste(event);
+      });
+      workspace.addEventListener("dblclick", event => {
+        const row = event.target.closest("[data-basecamp-pad-row]");
+        if (!row || event.target.closest(".basecamp-row-menu, .basecamp-row-actions-btn")) return;
+        basecampRenamePadId = row.dataset.basecampPadRow;
+        basecampRowMenuPadId = "";
+        renderBasecampPadList({ focusRename: true });
+      });
+      workspace.addEventListener("click", event => {
+        const select = event.target.closest("[data-basecamp-select]");
+        if (select) {
+          setActiveBasecampPad(select.dataset.basecampSelect);
+          return;
+        }
+        if (event.target.closest("[data-basecamp-new-empty]")) {
+          createBasecampPad();
+          return;
+        }
+        const menu = event.target.closest("[data-basecamp-row-menu]");
+        if (menu) {
+          event.stopPropagation();
+          basecampRowMenuPadId = basecampRowMenuPadId === menu.dataset.basecampRowMenu ? "" : menu.dataset.basecampRowMenu;
+          renderBasecampPadList();
+          return;
+        }
+        const rename = event.target.closest("[data-basecamp-rename]");
+        if (rename) {
+          basecampRenamePadId = rename.dataset.basecampRename;
+          basecampRowMenuPadId = "";
+          renderBasecampPadList({ focusRename: true });
+          return;
+        }
+        const renameDone = event.target.closest("[data-basecamp-rename-done]");
+        if (renameDone) {
+          commitBasecampRename(renameDone.dataset.basecampRenameDone);
+          return;
+        }
+        const remove = event.target.closest("[data-basecamp-delete]");
+        if (remove) {
+          deleteBasecampPad(remove.dataset.basecampDelete);
+          return;
+        }
+        const iconPicker = event.target.closest("[data-basecamp-icon-picker]");
+        if (iconPicker) {
+          basecampIconPickerPadId = basecampIconPickerPadId === iconPicker.dataset.basecampIconPicker ? "" : iconPicker.dataset.basecampIconPicker;
+          renderBasecampPadList({ focusRename: true });
+          return;
+        }
+        const icon = event.target.closest("[data-basecamp-icon]");
+        if (icon) {
+          const pad = basecampPads().find(item => item.id === basecampRenamePadId);
+          const input = $(`[data-basecamp-rename-input="${basecampRenamePadId}"]`);
+          if (pad && BASECAMP_PAD_ICON_SET.includes(icon.dataset.basecampIcon)) {
+            pad.name = String(input?.value || pad.name).trim().slice(0, BASECAMP_PAD_NAME_MAX) || pad.name;
+            pad.icon = icon.dataset.basecampIcon;
+            pad.updated = new Date().toISOString();
+            basecampIconPickerPadId = "";
+            save();
+            renderBasecampDialog({ focusRename: true });
+          }
+          return;
+        }
+        const format = event.target.closest("[data-basecamp-format]");
+        if (format) {
+          handleBasecampFormat(format.dataset.basecampFormat);
+          return;
+        }
+        if (event.target.closest("[data-basecamp-url-link]")) {
+          openBasecampLinkPopover();
+          return;
+        }
+        if (event.target.closest("[data-basecamp-link-apply]")) {
+          applyBasecampLink();
+          return;
+        }
+        if (event.target.closest("[data-basecamp-link-remove]")) {
+          removeBasecampLink();
+          return;
+        }
+        if (event.target.closest("[data-basecamp-link-note]")) {
+          openBasecampNotePicker();
+          return;
+        }
+        if (event.target.closest("[data-basecamp-note-picker-done]")) {
+          basecampNotePickerOpen = false;
+          basecampNotePickerQuery = "";
+          renderBasecampEditor({ focusBody: true });
+          return;
+        }
+        const result = event.target.closest("[data-basecamp-link-result]");
+        if (result) {
+          linkBasecampNote(result.dataset.basecampLinkResult);
+          return;
+        }
+        const unlink = event.target.closest("[data-basecamp-unlink-note]");
+        if (unlink) {
+          unlinkBasecampNote(unlink.dataset.basecampUnlinkNote);
+          return;
+        }
+        const open = event.target.closest("[data-basecamp-open-note]");
+        if (open) openBasecampLinkedNote(open.dataset.basecampOpenNote);
+      });
+      workspace.addEventListener("focusout", event => {
+        const input = event.target.closest("[data-basecamp-rename-input]");
+        if (!input) return;
+        const row = input.closest("[data-basecamp-pad-row]");
+        requestAnimationFrame(() => {
+          if (row?.contains(document.activeElement)) return;
+          if (basecampRenamePadId === input.dataset.basecampRenameInput) commitBasecampRename(input.dataset.basecampRenameInput);
+        });
+      });
+      workspace.addEventListener("keydown", event => {
+        const body = event.target.closest("[data-basecamp-body]");
+        if (body && (event.metaKey || event.ctrlKey)) {
+          const key = event.key.toLowerCase();
+          if (key === "b" || key === "i" || key === "k") {
+            event.preventDefault();
+            if (key === "b") toggleBasecampInline("strong");
+            if (key === "i") toggleBasecampInline("em");
+            if (key === "k") openBasecampLinkPopover();
+            return;
+          }
+        }
+        const rename = event.target.closest("[data-basecamp-rename-input]");
+        if (rename && event.key === "Enter") {
+          event.preventDefault();
+          commitBasecampRename(rename.dataset.basecampRenameInput);
+          return;
+        }
+        if (rename && event.key === "Escape") {
+          event.preventDefault();
+          basecampRenamePadId = "";
+          basecampIconPickerPadId = "";
+          renderBasecampPadList();
+          return;
+        }
+        const row = event.target.closest("[data-basecamp-pad-row]");
+        if (row && event.altKey && (event.key === "ArrowUp" || event.key === "ArrowDown")) {
+          event.preventDefault();
+          moveBasecampPad(row.dataset.basecampPadRow, event.key === "ArrowUp" ? -1 : 1);
+          return;
+        }
+        if (event.key === "Escape" && basecampNotePickerOpen) {
+          event.preventDefault();
+          basecampNotePickerOpen = false;
+          basecampNotePickerQuery = "";
+          renderBasecampEditor({ focusBody: true });
+          return;
+        }
+        if (event.key === "Escape" && !$("#basecampLinkPopover")?.hidden) {
+          event.preventDefault();
+          closeBasecampLinkPopover();
+          $("[data-basecamp-body]")?.focus();
+        }
+      });
+      list.addEventListener("dragstart", event => {
+        const row = event.target.closest("[data-basecamp-pad-row]");
+        if (!row || basecampRenamePadId) {
+          event.preventDefault();
+          return;
+        }
+        flushBasecampPad();
+        draggingBasecampPadId = row.dataset.basecampPadRow;
+        row.classList.add("is-dragging");
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData("text/plain", draggingBasecampPadId);
+      });
+      list.addEventListener("dragover", event => {
+        if (!draggingBasecampPadId) return;
+        event.preventDefault();
+        event.dataTransfer.dropEffect = "move";
+        const row = event.target.closest("[data-basecamp-pad-row]");
+        const dragging = $(`[data-basecamp-pad-row="${draggingBasecampPadId}"]`, list);
+        if (row && dragging && row !== dragging) {
+          const rect = row.getBoundingClientRect();
+          row.parentElement.insertBefore(dragging, event.clientY < rect.top + rect.height / 2 ? row : row.nextSibling);
+        }
+        const rect = list.getBoundingClientRect();
+        if (event.clientY < rect.top + 36) list.scrollTop -= 18;
+        else if (event.clientY > rect.bottom - 36) list.scrollTop += 18;
+      });
+      list.addEventListener("drop", event => {
+        if (!draggingBasecampPadId) return;
+        event.preventDefault();
+        const byId = new Map(basecampPads().map(pad => [pad.id, pad]));
+        const ordered = $$("[data-basecamp-pad-row]", list).map(row => byId.get(row.dataset.basecampPadRow)).filter(Boolean);
+        if (ordered.length === basecampPads().length) state.basecamp.pads = ordered;
+        draggingBasecampPadId = "";
+        save();
+        renderBasecampDialog();
+      });
+      list.addEventListener("dragend", () => {
+        if (!draggingBasecampPadId) return;
+        draggingBasecampPadId = "";
+        renderBasecampDialog();
+      });
+      dialog.addEventListener("cancel", event => {
+        event.preventDefault();
+        flushBasecampPad();
+        dialog.close();
+      });
+      dialog.addEventListener("close", () => {
+        flushBasecampPad();
+        basecampNotePickerOpen = false;
+        basecampNotePickerQuery = "";
+        basecampRowMenuPadId = "";
+        basecampIconPickerPadId = "";
+        closeBasecampLinkPopover();
+      });
+      document.addEventListener("click", event => {
+        if (!event.target.closest(".basecamp-copy-wrap")) {
+          $("#basecampCopyMenu").hidden = true;
+          $("#basecampCopyMenuBtn").setAttribute("aria-expanded", "false");
+        }
+        if (dialog.open && !event.target.closest(".basecamp-row-menu, [data-basecamp-row-menu]") && basecampRowMenuPadId) {
+          basecampRowMenuPadId = "";
+          renderBasecampPadList();
+        }
+        if (dialog.open && !event.target.closest("#basecampLinkPopover, [data-basecamp-url-link]")) closeBasecampLinkPopover();
+      });
+      $("#noteDialog").addEventListener("close", () => {
+        if (dialog.open) renderBasecampDialog();
       });
     }
 
@@ -27367,6 +29122,125 @@
       const saved = activeLayerId;
       activeLayerId = MAP_LAYERS[layer] ? layer : saved;
       try { return fn(); } finally { activeLayerId = saved; }
+    }
+
+    function basecampExportPads() {
+      return basecampPads().map(pad => ({
+        ...pad,
+        resolvedLinks: (pad.linkedNotes || []).map(resolveBasecampLinkedNote).filter(Boolean)
+      })).filter(pad => pad.plainText.trim() || pad.resolvedLinks.length);
+    }
+
+    function basecampMarkdownText(value) {
+      return String(value || "").replace(/([\\`*_[\]<>])/g, "\\$1");
+    }
+
+    function basecampHtmlToMarkdown(html) {
+      const parsed = new DOMParser().parseFromString(`<body>${sanitizeBasecampHtml(html)}</body>`, "text/html");
+      const render = (node, context = {}) => {
+        if (node.nodeType === Node.TEXT_NODE) return basecampMarkdownText(node.nodeValue || "");
+        if (node.nodeType !== Node.ELEMENT_NODE) return "";
+        const tag = node.tagName.toLowerCase();
+        const children = () => Array.from(node.childNodes).map(child => render(child, context)).join("");
+        if (tag === "br") return "\n";
+        if (tag === "strong" || tag === "b") return `**${children()}**`;
+        if (tag === "em" || tag === "i") return `*${children()}*`;
+        if (tag === "code") return `\`${String(node.textContent || "").replace(/`/g, "\\`")}\``;
+        if (tag === "pre") return `\n\`\`\`\n${String(node.textContent || "").trim()}\n\`\`\`\n\n`;
+        if (tag === "a") return `[${children()}](${node.getAttribute("href") || ""})`;
+        if (tag === "h2") return `#### ${children().trim()}\n\n`;
+        if (tag === "h3") return `##### ${children().trim()}\n\n`;
+        if (tag === "blockquote") return `${String(children()).split("\n").map(line => `> ${line}`).join("\n")}\n\n`;
+        if (tag === "p") return `${children().trim()}\n\n`;
+        if (tag === "ul" || tag === "ol") {
+          return `${Array.from(node.children).map((item, index) =>
+            render(item, { ...context, list: tag, index })).join("")}\n`;
+        }
+        if (tag === "li") {
+          const marker = context.list === "ol" ? `${Number(context.index || 0) + 1}.` : "-";
+          return `${marker} ${children().trim()}\n`;
+        }
+        return children();
+      };
+      return Array.from(parsed.body.childNodes).map(node => render(node)).join("")
+        .replace(/\n{3,}/g, "\n\n")
+        .trim();
+    }
+
+    function basecampHtmlToRtf(html) {
+      const parsed = new DOMParser().parseFromString(`<body>${sanitizeBasecampHtml(html)}</body>`, "text/html");
+      const render = (node, context = {}) => {
+        if (node.nodeType === Node.TEXT_NODE) return rtfEscape(node.nodeValue || "");
+        if (node.nodeType !== Node.ELEMENT_NODE) return "";
+        const tag = node.tagName.toLowerCase();
+        const children = () => Array.from(node.childNodes).map(child => render(child, context)).join("");
+        if (tag === "br") return "\\line ";
+        if (tag === "strong" || tag === "b") return `{\\b ${children()}}`;
+        if (tag === "em" || tag === "i") return `{\\i ${children()}}`;
+        if (tag === "u") return `{\\ul ${children()}}`;
+        if (tag === "code" || tag === "pre") return `{\\f1 ${children()}}`;
+        if (tag === "a") return `{\\ul ${children()}} (${rtfEscape(node.getAttribute("href") || "")})`;
+        if (tag === "h2") return `\\line {\\b\\fs32 ${children()}}\\line `;
+        if (tag === "h3") return `\\line {\\b\\fs28 ${children()}}\\line `;
+        if (tag === "blockquote") return `\\line \\li360 ${children()}\\li0 \\line `;
+        if (tag === "p") return `${children()}\\line `;
+        if (tag === "ul" || tag === "ol") {
+          return Array.from(node.children).map((item, index) => render(item, { ...context, list: tag, index })).join("");
+        }
+        if (tag === "li") {
+          const marker = context.list === "ol" ? `${Number(context.index || 0) + 1}.` : "\\bullet";
+          return `\\line \\li360 ${marker} ${children()}\\li0 `;
+        }
+        return children();
+      };
+      return Array.from(parsed.body.childNodes).map(node => render(node)).join("");
+    }
+
+    function basecampLinkedExportLine(ref) {
+      const region = regionNameForLayer(ref.abbr, ref.layer);
+      const date = ref.note.date ? formatDateDisplay(ref.note.date) : "No date";
+      return `${region} — ${date} — ${noteToSmartConvertText(ref.note)}`;
+    }
+
+    function appendBasecampMarkdown(lines) {
+      const pads = basecampExportPads();
+      if (!pads.length) return;
+      lines.push("## Basecamp", "");
+      pads.forEach(pad => {
+        lines.push(`### ${basecampMarkdownText(pad.name)}`, "");
+        const body = basecampHtmlToMarkdown(pad.html);
+        if (body) lines.push(body, "");
+        if (pad.resolvedLinks.length) {
+          lines.push("**Linked notes**");
+          pad.resolvedLinks.forEach(ref => lines.push(`- ${basecampMarkdownText(basecampLinkedExportLine(ref))}`));
+          lines.push("");
+        }
+      });
+    }
+
+    function appendBasecampText(lines) {
+      const pads = basecampExportPads();
+      if (!pads.length) return;
+      lines.push("", "Basecamp");
+      pads.forEach(pad => {
+        lines.push("", pad.name);
+        if (pad.plainText.trim()) lines.push(pad.plainText.trim());
+        if (pad.resolvedLinks.length) {
+          lines.push("Linked notes:");
+          pad.resolvedLinks.forEach(ref => lines.push(`- ${basecampLinkedExportLine(ref)}`));
+        }
+      });
+    }
+
+    function basecampRtfExport() {
+      const pads = basecampExportPads();
+      if (!pads.length) return "";
+      return `\\line \\line {\\b\\fs32 Basecamp}\\line ${pads.map(pad => {
+        const links = pad.resolvedLinks.length
+          ? `\\line {\\b Linked notes}\\line ${pad.resolvedLinks.map(ref => `\\bullet ${rtfEscape(basecampLinkedExportLine(ref))}\\line `).join("")}`
+          : "";
+        return `{\\b\\fs28 ${rtfEscape(pad.name)}}\\line ${basecampHtmlToRtf(pad.html)}${links}\\line `;
+      }).join("")}`;
     }
 
     // Countries worth listing in exports: any with notes or a stats-counting
@@ -27502,8 +29376,7 @@
         appendMarkdownWayfinder(lines, bucketEntries);
       }
       appendSuggestedSetsMarkdown(lines);
-      const mdBasecamp = String(state.basecamp?.text || "").trim();
-      if (mdBasecamp) lines.push("## Basecamp", mdBasecamp, "");
+      appendBasecampMarkdown(lines);
       lines.push("## Custom Levels and Definitions");
       state.levels.forEach(level => lines.push(`- ${level.name}: ${level.definition} (${level.color})`));
       downloadFile(`${slug(state.mapName)}-complete.md`, "text/markdown", lines.join("\n"));
@@ -27568,11 +29441,9 @@
         });
       }
       appendSuggestedSetsTextLines(lines);
-      const rtfBasecamp = String(state.basecamp?.text || "").trim();
-      if (rtfBasecamp) lines.push("", "Basecamp", rtfBasecamp);
       activeLayerId = savedLayer;
       const body = lines.map(line => rtfEscape(line)).join("\\line ");
-      const rtf = `{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0 -apple-system;}}\\f0\\fs24 ${body}}`;
+      const rtf = `{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0 -apple-system;}{\\f1 Menlo;}}\\f0\\fs24 ${body}${basecampRtfExport()}}`;
       downloadFile(`${slug(state.mapName)}-simple.rtf`, "application/rtf", rtf);
     }
 
@@ -27643,8 +29514,7 @@
         });
       }
       appendSuggestedSetsTextLines(lines);
-      const txtBasecamp = String(state.basecamp?.text || "").trim();
-      if (txtBasecamp) lines.push("", "Basecamp", txtBasecamp);
+      appendBasecampText(lines);
       downloadFile(`${slug(state.mapName)}-simple.txt`, "text/plain", lines.join("\n"));
     }
 
@@ -27784,7 +29654,12 @@
       if (handleHiddenHintResetShortcut(event, key)) return true;
       if (key === "/") {
         event.preventDefault();
-        focusNotesSearchShortcut();
+        if ($("#basecampDialog").open) {
+          $("#basecampSearch")?.focus();
+          $("#basecampSearch")?.select();
+        } else {
+          focusNotesSearchShortcut();
+        }
         return true;
       }
       if (key === "t") {
@@ -28324,7 +30199,7 @@
       if ($("#noteDialog").open || $("#levelDialog").open || $("#settingsDialog").open ||
         $("#renameDialog").open || $("#confirmDialog").open || $("#wayfinderLevelDialog").open || $("#markerDialog").open ||
         $("#tagDialog").open || $("#paletteDialog").open || $("#addToHomeDialog").open ||
-        $("#tipJarDialog").open) return;
+        $("#tipJarDialog").open || $("#basecampDialog").open) return;
       const clickIf = sel => { const el = $(sel); if (el && !el.disabled) el.click(); };
       const universal = {
         a: () => clickIf("#addToHomeBtn"),
@@ -28706,6 +30581,27 @@
         if (!confirmActions[key]) return;
         event.preventDefault();
         confirmActions[key]();
+        return;
+      }
+      if ($("#basecampDialog").open) {
+        if (isTypingTarget(event.target)) return;
+        const basecampActions = {
+          q: () => {
+            flushBasecampPad();
+            $("#basecampDialog").close();
+          },
+          p: () => copyBasecampText(),
+          x: clearBasecampText,
+          n: createBasecampPad,
+          l: openBasecampNotePicker,
+          "/": () => {
+            $("#basecampSearch")?.focus();
+            $("#basecampSearch")?.select();
+          }
+        };
+        if (!basecampActions[key]) return;
+        event.preventDefault();
+        basecampActions[key]();
         return;
       }
       if ($("#settingsDialog").open) {
@@ -29102,9 +30998,7 @@
       $("#legendToggleBtn").addEventListener("click", toggleLegendPanel);
       $("#notesToggleBtn").addEventListener("click", toggleNotesPanel);
       $("#basecampBtn").addEventListener("click", openBasecampDialog);
-      $("#basecampText").addEventListener("input", handleBasecampInput);
-      $("#basecampCopyBtn").addEventListener("click", copyBasecampText);
-      $("#basecampClearBtn").addEventListener("click", clearBasecampText);
+      bindBasecampEvents();
       $("#mapFitBtn").addEventListener("click", toggleMapFitMode);
       $("#mapLayerToggleBtn").addEventListener("click", () => setActiveLayer(activeLayerId === "world" ? "us" : "world"));
       $("#mapBucketListBtn").addEventListener("click", toggleBucketListView);
