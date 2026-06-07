@@ -1,6 +1,6 @@
 # Trail Log
 
-Trail Log is a local-first travel map for marking where you've been, where you want to go next, and the little memories worth keeping along the way. It started as a US state visit tracker and now layers in DC, territories, a switchable World map, custom legend levels, location notes, icon tags, mapped memories, Rangefinder planning rings, and copy-friendly exports, all with a slightly outdoorsy, geeky vibe.
+Trail Log is a local-first travel map for marking where you've been, where you want to go next, and the little memories worth keeping along the way. It started as a US state visit tracker and now layers in DC, territories, a switchable World map, custom legend levels, location notes, icon tags, mapped memories, Wayfinder packs for National Parks and Monuments, Rangefinder planning rings, and copy-friendly exports, all with a slightly outdoorsy, geeky vibe.
 
 The app is still intentionally simple to run: one offline-capable `index.html`, plain HTML/CSS/JavaScript, browser localStorage, JSON import/export, and no backend. Optional coordinate lookup only goes online when you tap Locate; saved data and manual coordinates keep working offline.
 
@@ -8,6 +8,7 @@ The app is still intentionally simple to run: one offline-capable `index.html`, 
 
 | Version | Date | Title | Summary
 |---|---:|---|---|
+| 4.3.0 | 2026-06-07 | Waypoint Packs | Waypoint Packs turn curated collections into prioritized, map-ready Wayfinder notes. |
 | 4.2.0 | 2026-06-02 | Rangefinder | Rangefinder adds straight-line planning rings, per-map settings, and travel-time estimates. |
 | 4.1.0 | 2026-05-29 | Wayfinder | Wayfinder Feature to act as a Bucket List or Planning Mode along with refreshed Keyboard Shortcuts approach for the Power Users. |
 | 4.0.0 | 2026-05-29 | Trail Atlas | A switchable World map — log every country right alongside your US states. |
@@ -100,4 +101,4 @@ context/               LLM handoff, dev context, and in-flight plan docs. Exclud
 
 All development context — architecture internals, persistence/migration rules, roadmap format, code map, verification steps, known issues, and the release-note conventions — lives in **`context/LLM_HANDOFF.md`**. Start there for any code work.
 
-It also defines the version-lifecycle shorthands: **`start`** (open a new version with a plan or feature), **`prep`** (make a version release-ready), and **`ship`** (condense and cut the release).
+It also defines the working shorthands: **`wish`** (capture a Roadmap idea), **`plan`** (explore and document a feature), **`start`** (implement from an existing plan), **`prep`** (make a version release-ready), and **`ship`** (condense and cut the release).
