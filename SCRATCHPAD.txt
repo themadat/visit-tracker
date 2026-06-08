@@ -1,7 +1,6 @@
 ## Future Prompt
 
-esc is equivalent of exit and enter is save
-highlighted modal pop-up buttons should activate on enter
+
 next and previous notes
 
 much more formatting for basecamp notes
