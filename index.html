@@ -1653,27 +1653,28 @@
       height: 1.35rem;
     }
 
-    /* Selected option in the Waypoint Pack picker uses a neutral gray fill
-       in both themes (was a teal radial wash) so it reads as "active" without
-       fighting the NPS/monument silhouette colors that sit on top. Light mode
-       uses a flat #d4d8df-ish gray with an inset darker border so it stays
-       readable against bright surfaces; dark mode goes the other way. */
+    /* Selected option in the Waypoint Pack picker uses a saturated mid-gray
+       in both themes (was a teal radial wash, then a too-pale light gray)
+       so the keyboard-driven selection (arrow keys repaint aria-pressed)
+       is unmistakable while it walks the grid. Light mode now sits at a
+       Tailwind-ish slate-400 so it contrasts the bright surface clearly;
+       dark mode uses a slate-700 against the dark surface. */
     .map-waypoint-pack-select[aria-pressed="true"] {
-      border-color: #9aa3b1;
-      background: #d6dae2;
+      border-color: #475569;
+      background: #94a3b8;
       box-shadow:
-        inset 0 0 0 1px #9aa3b1,
-        0 1px 2px rgba(16, 24, 40, .12);
-      color: inherit;
+        inset 0 0 0 2px #475569,
+        0 2px 6px rgba(15, 23, 42, .25);
+      color: #0f172a;
     }
 
     [data-theme="dark"] .map-waypoint-pack-select[aria-pressed="true"] {
-      border-color: #5b6473;
-      background: #3a414c;
+      border-color: #94a3b8;
+      background: #475569;
       box-shadow:
-        inset 0 0 0 1px #5b6473,
-        0 1px 2px rgba(0, 0, 0, .35);
-      color: inherit;
+        inset 0 0 0 2px #94a3b8,
+        0 2px 6px rgba(0, 0, 0, .45);
+      color: #f8fafc;
     }
 
     .map-waypoint-pack-select:focus-visible {
@@ -16742,7 +16743,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.4.0.19";
+    const APP_VERSION = "4.4.0.20";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -18738,6 +18739,24 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "4.4.0.20",
+        date: "2026-06-08",
+        title: "Basecamps",
+        summary: "Map label picker selection now reads at a glance in light mode.",
+        notice: {
+          version: "4.4.0",
+          title: "Basecamps",
+          summary: "Turn Basecamp into named rich-text pads with search and linked location notes.",
+          cta: "Make|Camp!"
+        },
+        highlights: [
+          "Map Labels target picker selection paints a saturated slate-400 in light mode (and slate-700 in dark) so the arrow-key cursor is unmistakable."
+        ],
+        updates: [
+          "Bumped .map-waypoint-pack-select[aria-pressed=\"true\"] from a pale near-surface gray to slate-400 (#94a3b8) light / slate-700 (#475569) dark with a 2px inset border and a stronger soft shadow so the keyboard-driven selection stays obvious as it walks the grid."
+        ]
+      },
       {
         version: "4.4.0.19",
         date: "2026-06-08",
