@@ -1653,28 +1653,28 @@
       height: 1.35rem;
     }
 
-    /* Selected option in the Waypoint Pack picker uses a saturated mid-gray
-       in both themes (was a teal radial wash, then a too-pale light gray)
-       so the keyboard-driven selection (arrow keys repaint aria-pressed)
-       is unmistakable while it walks the grid. Light mode now sits at a
-       Tailwind-ish slate-400 so it contrasts the bright surface clearly;
-       dark mode uses a slate-700 against the dark surface. */
+    /* Selected option in the Waypoint Pack picker. The user found the prior
+       dark-mode tone (slate-700) too light against the dark dropdown — we
+       restore the dimmer charcoal that previously worked. Light mode needs
+       a notably darker fill than the white dropdown so the arrow-key cursor
+       does not blend in: dark slate fill with slate-900 ring. !important
+       guards against generic button/toggle styles overwriting the fill. */
     .map-waypoint-pack-select[aria-pressed="true"] {
-      border-color: #475569;
-      background: #94a3b8;
+      background: #334155 !important;       /* slate-700 fill against #fff dropdown */
+      border-color: #0f172a !important;     /* slate-900 ring */
       box-shadow:
-        inset 0 0 0 2px #475569,
-        0 2px 6px rgba(15, 23, 42, .25);
-      color: #0f172a;
+        inset 0 0 0 2px #0f172a,
+        0 4px 10px rgba(15, 23, 42, .35) !important;
+      color: #f8fafc !important;            /* slate-50 text */
     }
 
     [data-theme="dark"] .map-waypoint-pack-select[aria-pressed="true"] {
-      border-color: #94a3b8;
-      background: #475569;
+      background: #3a414c !important;       /* original dim charcoal */
+      border-color: #5b6473 !important;     /* original gray-700 ring */
       box-shadow:
-        inset 0 0 0 2px #94a3b8,
-        0 2px 6px rgba(0, 0, 0, .45);
-      color: #f8fafc;
+        inset 0 0 0 1px #5b6473,
+        0 1px 2px rgba(0, 0, 0, .35) !important;
+      color: inherit !important;
     }
 
     .map-waypoint-pack-select:focus-visible {
@@ -16743,7 +16743,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.4.0.20";
+    const APP_VERSION = "4.4.0.21";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -18739,6 +18739,27 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "4.4.0.21",
+        date: "2026-06-08",
+        title: "Basecamps",
+        summary: "Map Labels picker: light mode finally inverts the surface; dark mode reverts to the original charcoal.",
+        notice: {
+          version: "4.4.0",
+          title: "Basecamps",
+          summary: "Turn Basecamp into named rich-text pads with search and linked location notes.",
+          cta: "Make|Camp!"
+        },
+        highlights: [
+          "Light-mode picker selection now uses a dark slate fill on the white dropdown so the arrow-key cursor is unmistakable.",
+          "Dark-mode selection restored to the original dim charcoal you preferred."
+        ],
+        updates: [
+          "Light: .map-waypoint-pack-select[aria-pressed=\"true\"] now paints slate-700 (#334155) on a slate-900 (#0f172a) ring with slate-50 text and a stronger shadow — so the active option is the obvious dark tile inside the bright dropdown.",
+          "Dark: reverted to the previous-known-good #3a414c / #5b6473 with the lighter shadow.",
+          "Both rules guarded with !important so the generic button + toggle-btn styling can not re-assert var(--surface) on top of the picker fill."
+        ]
+      },
       {
         version: "4.4.0.20",
         date: "2026-06-08",
