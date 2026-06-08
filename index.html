@@ -1655,21 +1655,23 @@
 
     /* Selected option in the Waypoint Pack picker uses a neutral gray fill
        in both themes (was a teal radial wash) so it reads as "active" without
-       fighting the NPS/monument silhouette colors that sit on top. */
+       fighting the NPS/monument silhouette colors that sit on top. Light mode
+       uses a flat #d4d8df-ish gray with an inset darker border so it stays
+       readable against bright surfaces; dark mode goes the other way. */
     .map-waypoint-pack-select[aria-pressed="true"] {
-      border-color: color-mix(in srgb, var(--text) 35%, var(--line));
-      background: color-mix(in srgb, var(--text) 14%, var(--surface));
+      border-color: #9aa3b1;
+      background: #d6dae2;
       box-shadow:
-        inset 0 0 0 1px color-mix(in srgb, var(--text) 28%, var(--line)),
-        0 1px 2px rgba(16, 24, 40, .08);
+        inset 0 0 0 1px #9aa3b1,
+        0 1px 2px rgba(16, 24, 40, .12);
       color: inherit;
     }
 
     [data-theme="dark"] .map-waypoint-pack-select[aria-pressed="true"] {
-      border-color: color-mix(in srgb, var(--text) 30%, var(--line));
-      background: color-mix(in srgb, var(--text) 18%, var(--surface));
+      border-color: #5b6473;
+      background: #3a414c;
       box-shadow:
-        inset 0 0 0 1px color-mix(in srgb, var(--text) 24%, var(--line)),
+        inset 0 0 0 1px #5b6473,
         0 1px 2px rgba(0, 0, 0, .35);
       color: inherit;
     }
@@ -2317,6 +2319,13 @@
       fill: #fff;
     }
 
+    /* Dark-mode tag chips in the note editor: NPS silhouette stays #000 by
+       default, which goes invisible on the dark chip. Flip the fill to white
+       so the arrowhead reads. Light mode keeps the original black silhouette. */
+    [data-theme="dark"] .visit-type-chip .pack-symbol.is-national-park path[fill="#000"] {
+      fill: #fff;
+    }
+
     /* Condensed note rows: hollow arrowhead, theme-keyed stroke. */
     html:not([data-theme="dark"]) .compact-note-row:not(.is-expanded) .compact-note-icon .pack-symbol.is-national-park path[fill="#000"] {
       fill: none;
@@ -2328,16 +2337,25 @@
       stroke: #fff;
     }
 
-    /* Expanded note rows: hollow arrowhead outlined in the row's level color
-       (visit-icon-stack carries color via inline style). */
+    /* Expanded note rows: arrowhead silhouette + stroke both pick up the
+       row's level color (visit-icon-stack carries color via inline style). */
     .compact-note-row.is-expanded .compact-note-icon .pack-symbol.is-national-park path[fill="#000"] {
-      fill: none;
+      fill: currentColor;
       stroke: currentColor;
     }
 
-    /* Notes icon-toggle filter list: filled silhouette, theme-keyed gray. */
+    /* Bump the expanded arrowhead glyph a touch so the level color reads
+       cleanly against the row background. */
+    .compact-note-row.is-expanded .compact-note-icon .pack-symbol.is-national-park {
+      width: 1.55rem;
+      height: 1.55rem;
+    }
+
+    /* Notes icon-toggle filter list: filled silhouette, theme-keyed gray.
+       Light-mode tone sits a touch lighter so the filter button does not
+       compete with active note rows nearby. */
     html:not([data-theme="dark"]) .notes-icon-filter .pack-symbol.is-national-park path[fill="#000"] {
-      fill: #555;
+      fill: #888;
     }
 
     [data-theme="dark"] .notes-icon-filter .pack-symbol.is-national-park path[fill="#000"] {
@@ -6920,6 +6938,26 @@
 
     .basecamp-editor-head .basecamp-pad-icon {
       flex: 0 0 auto;
+    }
+
+    /* Clickable pad-icon button in the editor head: invites a click, anchors
+       the icon picker popover, and reads as the same hue as the inline icon. */
+    .basecamp-editor-head .basecamp-pad-icon-wrap {
+      flex: 0 0 auto;
+    }
+
+    .basecamp-pad-icon-btn {
+      cursor: pointer;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      transition: background .15s ease, border-color .15s ease;
+    }
+
+    .basecamp-pad-icon-btn:hover,
+    .basecamp-pad-icon-btn:focus-visible {
+      border-color: color-mix(in srgb, #14b8a6 38%, var(--line));
+      background: color-mix(in srgb, #14b8a6 10%, var(--surface));
+      outline: none;
     }
 
     .basecamp-editor-title {
@@ -16591,7 +16629,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.4.0.16";
+    const APP_VERSION = "4.4.0.17";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -18587,6 +18625,34 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "4.4.0.17",
+        date: "2026-06-08",
+        title: "Basecamps",
+        summary: "Picker gray now reads, expanded NPS picks up the level color, and the Basecamp pad icon is its own square-fill picker.",
+        notice: {
+          version: "4.4.0",
+          title: "Basecamps",
+          summary: "Turn Basecamp into named rich-text pads with search and linked location notes.",
+          cta: "Make|Camp!"
+        },
+        highlights: [
+          "Light-mode picker selection now uses a solid neutral gray (#d6dae2) so the active option is unmistakable.",
+          "Expanded notes paint the NPS arrowhead in the level color and grow it a touch.",
+          "Notes icon-filter NPS reads lighter in light mode; the note editor tag list flips it white in dark mode.",
+          "New Basecamp pads pick a random __*_SQUARE_FILL icon on creation.",
+          "Clicking the pad icon (left of the title) opens the full icon picker without entering rename mode."
+        ],
+        updates: [
+          "Replaced the color-mix gray on .map-waypoint-pack-select[aria-pressed='true'] with flat tones (#d6dae2 light / #3a414c dark) so the active selection reads against the surface in both themes.",
+          "Expanded note arrowhead now uses fill: currentColor + stroke: currentColor and a slightly larger 1.55rem sf-symbol size.",
+          "Bumped the light-mode .notes-icon-filter NPS fill from #555 → #888.",
+          "Added a dark-mode rule turning .visit-type-chip NPS path[fill='#000'] white so the note editor tag list stays legible.",
+          "createBasecampPad now seeds pad.icon from randomBasecampSquareFillIcon() (picks any __*_SQUARE_FILL constant).",
+          "Editor head pad icon is now a button + popover anchor (data-basecamp-icon-picker); the icon-pick handler now uses basecampIconPickerPadId as a fallback target so picking works outside rename mode, and only captures rename input when actively renaming.",
+          "Added .basecamp-pad-icon-btn hover/focus styling so the clickable head icon reads as interactive."
+        ]
+      },
       {
         version: "4.4.0.16",
         date: "2026-06-08",
@@ -29491,7 +29557,13 @@
               aria-label="Finish renaming">${__CHECKMARK}</button>
           </span>`
         : `
-          <span class="basecamp-pad-icon">${basecampPadIcon(pad.icon)}</span>
+          <span class="basecamp-toolbar-link-wrap basecamp-pad-icon-wrap">
+            <button class="basecamp-pad-icon basecamp-pad-icon-btn" type="button"
+              data-basecamp-icon-picker="${escapeHtml(pad.id)}"
+              aria-label="Choose icon for ${escapeHtml(pad.name)}"
+              title="Choose pad icon">${basecampPadIcon(pad.icon)}</button>
+            ${basecampIconPickerHtml(pad)}
+          </span>
           <h3 class="basecamp-editor-title" data-basecamp-rename-target="${escapeHtml(pad.id)}"
             title="Double-click to rename">${escapeHtml(pad.name)}</h3>
           <button class="basecamp-edit-title-btn" type="button" data-basecamp-rename="${escapeHtml(pad.id)}"
@@ -29901,6 +29973,12 @@
       return `New Pad ${number}`;
     }
 
+    function randomBasecampSquareFillIcon() {
+      const squares = BASECAMP_PAD_ICON_SET.filter(id => id.endsWith("_SQUARE_FILL"));
+      if (!squares.length) return BASECAMP_PAD_DEFAULT_ICON;
+      return squares[Math.floor(Math.random() * squares.length)];
+    }
+
     function createBasecampPad() {
       if (basecampPads().length >= BASECAMP_PAD_MAX) {
         setBasecampStatus(`Maximum of ${BASECAMP_PAD_MAX} pads reached`, true);
@@ -29911,7 +29989,7 @@
       const pad = {
         id: basecampPadId(),
         name: nextBasecampPadName(),
-        icon: BASECAMP_PAD_DEFAULT_ICON,
+        icon: randomBasecampSquareFillIcon(),
         html: "",
         plainText: "",
         linkedNotes: [],
@@ -30551,15 +30629,22 @@
         }
         const icon = event.target.closest("[data-basecamp-icon]");
         if (icon) {
-          const pad = basecampPads().find(item => item.id === basecampRenamePadId);
-          const input = $(`[data-basecamp-rename-input="${basecampRenamePadId}"]`);
+          // The picker can be opened from rename mode (rename input live) or
+          // from a click on the read-only pad-icon button. Prefer the
+          // currently-renaming pad so any pending name edits get captured,
+          // otherwise fall back to whichever pad opened the picker.
+          const targetId = basecampRenamePadId || basecampIconPickerPadId;
+          const pad = basecampPads().find(item => item.id === targetId);
           if (pad && BASECAMP_PAD_ICON_SET.includes(icon.dataset.basecampIcon)) {
-            pad.name = String(input?.value || pad.name).trim().slice(0, BASECAMP_PAD_NAME_MAX) || pad.name;
+            if (basecampRenamePadId === pad.id) {
+              const input = $(`[data-basecamp-rename-input="${pad.id}"]`);
+              pad.name = String(input?.value || pad.name).trim().slice(0, BASECAMP_PAD_NAME_MAX) || pad.name;
+            }
             pad.icon = icon.dataset.basecampIcon;
             pad.updated = new Date().toISOString();
             basecampIconPickerPadId = "";
             save();
-            renderBasecampDialog({ focusRename: true });
+            renderBasecampDialog({ focusRename: Boolean(basecampRenamePadId) });
           }
           return;
         }
