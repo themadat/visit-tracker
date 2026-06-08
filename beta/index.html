@@ -15620,6 +15620,8 @@
             route — text only)</span></li>
         <li><b>for</b> &lt;activity&gt; → <em>What For</em></li>
         <li><b>with</b> &lt;people&gt; → <em>Who With</em></li>
+        <li><span class="muted">Commas stay inside the value (e.g. <code>with Seth, Christian</code>); only the next
+            keyword or a semicolon ends a phrase.</span></li>
       </ul>
       <h3>Dates</h3>
       <ul>
@@ -16390,7 +16392,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.4.0.7";
+    const APP_VERSION = "4.4.0.8";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -18341,6 +18343,27 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "4.4.0.8",
+        date: "2026-06-08",
+        title: "Basecamps",
+        summary: "Smart Convert phrases keep commas; only semicolons (and keyword/separator boundaries) break a value.",
+        notice: {
+          version: "4.4.0",
+          title: "Basecamps",
+          summary: "Turn Basecamp into named rich-text pads with search and linked location notes.",
+          cta: "Make|Camp!"
+        },
+        highlights: [
+          "Smart Convert preserves commas inside in / at / for / with values (e.g. with Seth, Christian).",
+          "Round-trip back to Smart Convert keeps the commas; only ::, ;, |, ||, or - now break a value."
+        ],
+        updates: [
+          "Loosened the Smart Convert city / where / what / who phrase regex from [^,;] to [^;] in both the character class and trailing lookahead so commas can sit inside a value.",
+          "Dropped the noSepNoComma helper in noteToSmartConvertText so round-tripping a saved note preserves commas in city / where / what / who.",
+          "Added a Help Center note clarifying that commas stay inside the phrase value."
+        ]
+      },
       {
         version: "4.4.0.7",
         date: "2026-06-07",
@@ -25084,20 +25107,19 @@
     // date, level, and tag names are recognized anywhere in the line.
     function noteToSmartConvertText(note) {
       // Strip multi-part separators from values so the line stays in keyword
-      // mode (and commas inside city/where/what/who that would truncate a
-      // phrase) — keeps the line round-trippable through Smart Convert.
+      // mode — commas inside city/where/what/who are now preserved because
+      // Smart Convert no longer terminates phrase values on commas.
       const noSep = value => String(value || "")
         .replace(/\s*(?:\|\||\||::|;| - )\s*/g, ", ")
         .replace(/\s+/g, " ")
         .trim();
-      const noSepNoComma = value => noSep(value).replace(/,/g, "");
       // Keyword tokens + " :: " separators: reads cleanly and re-parses through
       // Smart Convert by keyword (the separators just terminate each value).
       const parts = [];
-      if (noSep(note.city)) parts.push(`in ${noSepNoComma(note.city)}`);
-      if (noSep(note.where)) parts.push(`@ ${noSepNoComma(note.where)}`);
-      if (noSep(note.what)) parts.push(`for ${noSepNoComma(note.what)}`);
-      if (noSep(note.who)) parts.push(`with ${noSepNoComma(note.who)}`);
+      if (noSep(note.city)) parts.push(`in ${noSep(note.city)}`);
+      if (noSep(note.where)) parts.push(`@ ${noSep(note.where)}`);
+      if (noSep(note.what)) parts.push(`for ${noSep(note.what)}`);
+      if (noSep(note.who)) parts.push(`with ${noSep(note.who)}`);
       const dateText = smartDateString(note.date);
       if (dateText) parts.push(dateText);
       const level = levelById(note.levelId);
@@ -27511,27 +27533,30 @@
         const tAt = String.raw`(?:\b(?:at|near)\b|@)`;
         const tSep = String.raw`\s*(?:\|\||\||::|;)`;
         const re = (src, flags = "i") => new RegExp(src, flags);
+        // Commas are valid inside phrase values (e.g. "with Seth, Christian" or
+        // "in Mexico City, MX"). Values only terminate on semicolons, the
+        // explicit tSep group, or the next keyword boundary.
         const phraseSpecs = [
           {
             kind: "city", res: [
-              re(String.raw`\bin\s+([^,;]+,\s*[a-z]{2})(?=\s+(?:${tWith}|\bfor\b|${tAt})|${tSep}|$|[;])`),
-              re(String.raw`\bin\s+([^,;]+?)(?=\s+(?:${tWith}|\bfor\b|${tAt})|${tSep}|$|[,;])`)
+              re(String.raw`\bin\s+([^;]+,\s*[a-z]{2})(?=\s+(?:${tWith}|\bfor\b|${tAt})|${tSep}|$|[;])`),
+              re(String.raw`\bin\s+([^;]+?)(?=\s+(?:${tWith}|\bfor\b|${tAt})|${tSep}|$|[;])`)
             ]
           },
           {
             kind: "where", res: [
-              re(String.raw`(?:\b(?:at|near)\s+|@\s*)([^,;]+,\s*[a-z]{2})(?=\s+(?:${tWith}|\bfor\b|\bin\b)|${tSep}|$|[;])`),
-              re(String.raw`(?:\b(?:at|near)\s+|@\s*)([^,;]+?)(?=\s+(?:${tWith}|\bfor\b|\bin\b)|${tSep}|$|[,;])`)
+              re(String.raw`(?:\b(?:at|near)\s+|@\s*)([^;]+,\s*[a-z]{2})(?=\s+(?:${tWith}|\bfor\b|\bin\b)|${tSep}|$|[;])`),
+              re(String.raw`(?:\b(?:at|near)\s+|@\s*)([^;]+?)(?=\s+(?:${tWith}|\bfor\b|\bin\b)|${tSep}|$|[;])`)
             ]
           },
           {
             kind: "what", res: [
-              re(String.raw`\bfor\s+([^,;]+?)(?=\s+(?:${tWith}|${tAt}|\bin\b)|${tSep}|$|[,;])`)
+              re(String.raw`\bfor\s+([^;]+?)(?=\s+(?:${tWith}|${tAt}|\bin\b)|${tSep}|$|[;])`)
             ]
           },
           {
             kind: "who", res: [
-              re(String.raw`(?:\bwith\s+|\bw\/(?!o\b)\s*)([^,;]+?)(?=\s+(?:\bfor\b|${tAt}|\bin\b)|${tSep}|$|[,;])`)
+              re(String.raw`(?:\bwith\s+|\bw\/(?!o\b)\s*)([^;]+?)(?=\s+(?:\bfor\b|${tAt}|\bin\b)|${tSep}|$|[;])`)
             ]
           }
         ];
