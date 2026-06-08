@@ -6754,11 +6754,11 @@
       display: grid;
       /* Column 1 hosts the pad icon and grows to the max size that still keeps
          row height pinned to min-height: 46px (≈ 38px content area). */
-      grid-template-columns: 38px minmax(0, 1fr) 30px;
+      grid-template-columns: 38px minmax(0, 1fr);
       align-items: center;
-      gap: .38rem;
+      gap: .46rem;
       min-height: 46px;
-      padding: .34rem;
+      padding: .34rem .38rem .34rem .46rem;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: color-mix(in srgb, var(--surface) 78%, var(--surface-2) 22%);
@@ -6799,7 +6799,23 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      font-size: .98rem;
       font-weight: 750;
+    }
+
+    .basecamp-pad-copy {
+      display: grid;
+      min-width: 0;
+      gap: .08rem;
+    }
+
+    .basecamp-pad-updated {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--muted);
+      font-size: .7rem;
+      font-weight: 650;
     }
 
     .basecamp-match-count {
@@ -6815,7 +6831,6 @@
 
     .basecamp-pad-icon,
     .basecamp-row-actions-btn,
-    .basecamp-edit-title-btn,
     .basecamp-rename-icon-btn {
       display: grid;
       place-items: center;
@@ -6834,97 +6849,13 @@
       min-width: 38px;
       min-height: 38px;
       padding: 0;
+      transform: translateX(3px);
     }
 
     .basecamp-pad-row .basecamp-pad-icon .sf-symbol,
     .basecamp-pad-row .basecamp-pad-icon .pack-symbol {
       width: 100%;
       height: 100%;
-    }
-
-    /* Right-to-left swipe reveal: action buttons sit absolutely on the right,
-       hidden by a translateX(100%) transform until .is-swiped flips them in.
-       Swiped rows shift the title content left to keep the icon visible while
-       the actions slide on top of the right column. */
-    .basecamp-pad-actions {
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      display: flex;
-      align-items: stretch;
-      gap: 0;
-      transform: translateX(100%);
-      transition: transform .18s ease;
-      z-index: 2;
-      pointer-events: none;
-    }
-
-    .basecamp-pad-row.is-swiped .basecamp-pad-actions {
-      transform: translateX(0);
-      pointer-events: auto;
-    }
-
-    .basecamp-pad-row.is-swiped .basecamp-pad-select {
-      transform: translateX(-88px);
-      transition: transform .18s ease;
-    }
-
-    .basecamp-pad-row .basecamp-pad-select {
-      transition: transform .18s ease;
-    }
-
-    .basecamp-pad-action {
-      display: grid;
-      place-items: center;
-      width: 44px;
-      min-width: 44px;
-      height: 100%;
-      padding: 0 .45rem;
-      border: 0;
-      border-radius: 0;
-      color: white;
-      cursor: pointer;
-    }
-
-    .basecamp-pad-action.is-edit {
-      background: #14b8a6;
-    }
-
-    .basecamp-pad-action.is-danger {
-      background: var(--danger);
-    }
-
-    .basecamp-pad-action .sf-symbol {
-      width: 18px;
-      height: 18px;
-    }
-
-    .basecamp-edit-title-btn {
-      border: 0;
-      background: transparent;
-      color: var(--muted);
-      opacity: .8;
-    }
-
-    .basecamp-edit-title-btn:hover,
-    .basecamp-edit-title-btn:focus-visible {
-      color: #0f766e;
-      opacity: 1;
-    }
-
-    .basecamp-edit-title-btn .sf-symbol {
-      width: 10px;
-      height: 10px;
-    }
-
-    .basecamp-editor-head .basecamp-edit-title-btn {
-      width: 27px;
-      min-width: 27px;
-      height: 27px;
-      min-height: 27px;
-      padding: .14rem;
-      flex: 0 0 auto;
     }
 
     .basecamp-editor-actions {
@@ -6950,26 +6881,16 @@
       height: 18px;
     }
 
-    .basecamp-editor-title[data-basecamp-rename-target] {
-      cursor: text;
-    }
-
     .basecamp-pad-icon {
       border: 0;
       background: transparent;
       color: #0f766e;
     }
 
-    .basecamp-row-menu {
-      top: calc(100% - .12rem);
-      right: .25rem;
-      min-width: 8rem;
-    }
-
     .basecamp-rename-row {
       grid-column: 1 / -1;
       display: grid;
-      grid-template-columns: 1.47rem minmax(0, 1fr) 30px;
+      grid-template-columns: 2.15rem minmax(0, 1fr) 30px;
       align-items: center;
       gap: .38rem;
       width: 100%;
@@ -6997,6 +6918,7 @@
       height: 44px;
       min-width: 44px;
       padding: 0;
+      color: #0f766e;
     }
 
     /* Tile glyphs fill their button — the square-fill SVGs already have an
@@ -7041,15 +6963,12 @@
       flex: 0 0 auto;
     }
 
-    /* Cap the head icon button at the h3 title's intrinsic line-height so the
-       button never enlarges the editor head vertically — the SVG fills the
-       full button (zero padding, no buffer). */
     .basecamp-editor-head .basecamp-pad-icon-btn,
     .basecamp-editor-head .basecamp-rename-icon-btn {
-      width: 1.47rem;
-      min-width: 1.47rem;
-      height: 1.47rem;
-      min-height: 1.47rem;
+      width: 2.15rem;
+      min-width: 2.15rem;
+      height: 2.15rem;
+      min-height: 2.15rem;
       padding: 0;
     }
 
@@ -7078,10 +6997,25 @@
     .basecamp-editor-title {
       min-width: 0;
       margin: 0;
+      padding: .08rem .12rem;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      background: transparent;
+      color: var(--text);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      font-size: 1.05rem;
+      font: inherit;
+      font-size: 1.22rem;
+      font-weight: 850;
+      text-align: left;
+    }
+
+    .basecamp-editor-title:hover,
+    .basecamp-editor-title:focus-visible {
+      border-color: color-mix(in srgb, #14b8a6 38%, var(--line));
+      background: color-mix(in srgb, #14b8a6 10%, var(--surface));
+      outline: none;
     }
 
     .basecamp-toolbar {
@@ -16745,7 +16679,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.4.0.22";
+    const APP_VERSION = "4.4.0.23";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -18742,6 +18676,31 @@
     ];
     const CHANGELOG = [
       {
+        version: "4.4.0.23",
+        date: "2026-06-08",
+        title: "Basecamps",
+        summary: "Basecamp sidebar is select/reorder-only while header title and icon edit on click.",
+        notice: {
+          version: "4.4.0",
+          title: "Basecamps",
+          summary: "Turn Basecamp into named rich-text pads with search and linked location notes.",
+          cta: "Make|Camp!"
+        },
+        highlights: [
+          "Basecamp pad rows now select and reorder only, with no swipe edit actions.",
+          "Sidebar rows show larger titles plus an absolute last-updated timestamp.",
+          "The header icon and title are larger, and each edits with a single click.",
+          "New pads focus the header name field; picker icons inherit Basecamp teal."
+        ],
+        updates: [
+          "Removed the Basecamp pad-list swipe detector, swiped-row state, sidebar rename row, and list-side Edit/Delete action layer so the sidebar only opens pads or reorders them.",
+          "Sidebar rows now use a two-line title block with `Updated <absolute date/time>`, a slightly larger title, and a small rightward icon shift for active-row breathing room.",
+          "Replaced the header pencil button with a clickable title button; clicking the header title enters rename mode, while clicking the header icon opens the icon picker.",
+          "Bumped the header square icon and rename icon controls from 1.47rem to 2.15rem, enlarged the header title, and kept new-pad creation focused on the header rename input.",
+          "Matched Basecamp icon picker button color to the teal sidebar/header icon treatment so square-fill icons are themed instead of black/white."
+        ]
+      },
+      {
         version: "4.4.0.22",
         date: "2026-06-08",
         title: "Basecamps",
@@ -20335,10 +20294,10 @@
       "__TAG_SQUARE_FILL",
       "__PIN_SQUARE_FILL",
 
-      "__MAPPIN_SQUARE_FILL",
-      "__LOCATION_SQUARE_FILL",
       "__POINTER_ARROW_SQUARE_FILL",
       "__POINTER_ARROW_IPAD_SQUARE_FILL",
+      "__LOCATION_SQUARE_FILL",
+      "__MAPPIN_SQUARE_FILL",
 
       "__INFO_SQUARE_FILL",
       "__EXCLAMATIONMARK_SQUARE_FILL",
@@ -29566,12 +29525,7 @@
     let basecampPendingPadId = "";
     let basecampSearchQuery = "";
     let basecampRenamePadId = "";
-    let basecampRowMenuPadId = "";
     let basecampIconPickerPadId = "";
-    // Right-to-left swipe on a sidebar pad row reveals edit + delete actions;
-    // only one row can be in the swiped state at a time.
-    let basecampSwipedPadId = "";
-    let basecampSwipeSuppressClickUntil = 0;
     let basecampNotePickerOpen = false;
     let basecampNotePickerQuery = "";
     let basecampSavedRange = null;
@@ -29602,6 +29556,18 @@
       if (seconds < 86400) return `${Math.round(seconds / 3600)}h ago`;
       if (seconds < 604800) return `${Math.round(seconds / 86400)}d ago`;
       return new Date(time).toLocaleDateString();
+    }
+
+    function basecampUpdatedAbsoluteLabel(value) {
+      const time = Date.parse(value || "");
+      if (!Number.isFinite(time)) return "Not updated yet";
+      return new Intl.DateTimeFormat(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit"
+      }).format(new Date(time));
     }
 
     function setBasecampStatus(text, flash = false) {
@@ -29642,147 +29608,34 @@
         </span>`;
     }
 
-    function renderBasecampPadList({ focusRename = false } = {}) {
+    function renderBasecampPadList() {
       const list = $("#basecampPadList");
       if (!list) return;
       const active = activeBasecampPad();
       list.innerHTML = basecampPads().map(pad => {
         const matchCount = basecampSearchMatchCount(pad);
         const noMatch = Boolean(basecampSearchQuery.trim() && matchCount === 0);
-        const renaming = basecampRenamePadId === pad.id;
-        // Rename row (icon picker + input + commit checkmark) is rendered
-        // inline inside the sidebar whenever this pad is the rename target,
-        // so the swipe-revealed Edit action can stage rename + icon edits
-        // without bouncing the user to the editor head.
-        const renameRow = renaming
-          ? `
-            <span class="basecamp-rename-row basecamp-toolbar-link-wrap">
-              <button class="basecamp-rename-icon-btn" type="button" data-basecamp-icon-picker="${escapeHtml(pad.id)}"
-                aria-label="Choose icon for ${escapeHtml(pad.name)}">${basecampPadIcon(pad.icon)}</button>
-              ${basecampIconPickerHtml(pad)}
-              <input data-basecamp-rename-input="${escapeHtml(pad.id)}" maxlength="${BASECAMP_PAD_NAME_MAX}"
-                value="${escapeHtml(pad.name)}" aria-label="Rename Basecamp pad">
-              <button class="basecamp-row-actions-btn" type="button" data-basecamp-rename-done="${escapeHtml(pad.id)}"
-                aria-label="Finish renaming">${__CHECKMARK}</button>
-            </span>`
-          : "";
         const rowClass = [
           "basecamp-pad-row",
           active?.id === pad.id ? "is-active" : "",
-          noMatch ? "is-no-match" : "",
-          renaming ? "is-renaming" : "",
-          basecampSwipedPadId === pad.id && !renaming ? "is-swiped" : ""
+          noMatch ? "is-no-match" : ""
         ].filter(Boolean).join(" ");
         return `
           <div class="${rowClass}"
-            data-basecamp-pad-row="${escapeHtml(pad.id)}" draggable="${renaming ? "false" : "true"}" tabindex="0"
-            aria-label="${escapeHtml(pad.name)}. Swipe left for edit/delete. Alt plus Up or Down reorders.">
-            ${renameRow || `
+            data-basecamp-pad-row="${escapeHtml(pad.id)}" draggable="true" tabindex="0"
+            aria-label="${escapeHtml(pad.name)}. Last updated ${escapeHtml(basecampUpdatedAbsoluteLabel(pad.updated))}. Alt plus Up or Down reorders.">
             <button class="basecamp-pad-icon" type="button" data-basecamp-select="${escapeHtml(pad.id)}"
               aria-label="Open ${escapeHtml(pad.name)}">${basecampPadIcon(pad.icon)}</button>
             <button class="basecamp-pad-select" type="button" data-basecamp-select="${escapeHtml(pad.id)}"
-              data-basecamp-rename-target="${escapeHtml(pad.id)}">
-              <span class="basecamp-pad-name">${escapeHtml(pad.name)}</span>
+              aria-label="Open ${escapeHtml(pad.name)}">
+              <span class="basecamp-pad-copy">
+                <span class="basecamp-pad-name">${escapeHtml(pad.name)}</span>
+                <span class="basecamp-pad-updated">Updated ${escapeHtml(basecampUpdatedAbsoluteLabel(pad.updated))}</span>
+              </span>
               ${basecampSearchQuery.trim() ? `<span class="basecamp-match-count">${matchCount}</span>` : ""}
-            </button>`}
-            ${renaming ? "" : `
-            <span class="basecamp-pad-actions" aria-hidden="${basecampSwipedPadId === pad.id ? "false" : "true"}">
-              <button class="basecamp-pad-action is-edit" type="button" data-basecamp-rename="${escapeHtml(pad.id)}"
-                aria-label="Rename ${escapeHtml(pad.name)}" title="Rename">${__PENCIL}</button>
-              <button class="basecamp-pad-action is-danger" type="button" data-basecamp-delete="${escapeHtml(pad.id)}"
-                aria-label="Delete ${escapeHtml(pad.name)}" title="Delete">${__DELETE_LEFT_FILL}</button>
-            </span>`}
+            </button>
           </div>`;
       }).join("");
-      // Focus the rename input wherever it landed (sidebar or editor head).
-      if (focusRename && basecampRenamePadId) {
-        requestAnimationFrame(() => {
-          const input = $(`[data-basecamp-rename-input="${basecampRenamePadId}"]`);
-          input?.focus();
-          input?.select();
-        });
-      }
-    }
-
-    function closeBasecampSwipes(exceptPadId = "") {
-      if (!basecampSwipedPadId || basecampSwipedPadId === exceptPadId) return;
-      basecampSwipedPadId = "";
-      renderBasecampPadList();
-    }
-
-    function bindBasecampPadSwipe(list) {
-      if (!list || list.dataset.swipeBound === "true") return;
-      list.dataset.swipeBound = "true";
-      let pointerId = null;
-      let activeRow = null;
-      let activePadId = "";
-      let startX = 0;
-      let startY = 0;
-      let mode = "";
-
-      const detach = () => {
-        document.removeEventListener("pointermove", onMove);
-        document.removeEventListener("pointerup", onFinish);
-        document.removeEventListener("pointercancel", onFinish);
-        pointerId = null;
-        activeRow = null;
-        activePadId = "";
-        mode = "";
-      };
-
-      const onMove = event => {
-        if (pointerId !== event.pointerId || !activeRow) return;
-        const dx = event.clientX - startX;
-        const dy = event.clientY - startY;
-        if (!mode) {
-          if (dx < -32 && Math.abs(dx) > Math.abs(dy) * 1.4) mode = "swipe";
-          else if (Math.abs(dy) > 10 || Math.abs(dx) > 60) {
-            // Treat as scroll / drag — bail out of swipe detection cleanly.
-            detach();
-            return;
-          } else return;
-        }
-        event.preventDefault();
-        basecampSwipeSuppressClickUntil = Date.now() + 450;
-        const padId = activePadId;
-        detach();
-        if (basecampSwipedPadId === padId) return;
-        basecampSwipedPadId = padId;
-        renderBasecampPadList();
-      };
-      const onFinish = event => {
-        if (pointerId !== event.pointerId) return;
-        detach();
-      };
-      list.addEventListener("pointerdown", event => {
-        const row = event.target.closest("[data-basecamp-pad-row]");
-        if (!row) return;
-        // Don't initiate swipe over interactive sub-controls — the user is
-        // either pressing the icon button, an action, or the rename input.
-        if (event.target.closest(".basecamp-pad-action, .basecamp-rename-row, input, button, [data-basecamp-icon-picker]")) return;
-        if (event.button && event.button !== 0) return;
-        pointerId = event.pointerId;
-        activeRow = row;
-        activePadId = row.dataset.basecampPadRow || "";
-        startX = event.clientX;
-        startY = event.clientY;
-        mode = "";
-        document.addEventListener("pointermove", onMove);
-        document.addEventListener("pointerup", onFinish);
-        document.addEventListener("pointercancel", onFinish);
-      });
-      list.addEventListener("click", event => {
-        if (Date.now() < basecampSwipeSuppressClickUntil) {
-          event.stopPropagation();
-          event.preventDefault();
-        }
-      }, true);
-      // Click anywhere outside a swiped row closes the swipe.
-      document.addEventListener("pointerdown", event => {
-        if (!basecampSwipedPadId) return;
-        const inside = event.target.closest(`[data-basecamp-pad-row="${basecampSwipedPadId}"]`);
-        if (!inside) closeBasecampSwipes();
-      });
     }
 
     function resolveBasecampLinkedNote(link) {
@@ -29869,7 +29722,7 @@
         </section>`;
     }
 
-    function renderBasecampEditor({ focusBody = false, focusNotePicker = false } = {}) {
+    function renderBasecampEditor({ focusBody = false, focusNotePicker = false, focusRename = false } = {}) {
       const editor = $("#basecampEditor");
       if (!editor) return;
       const pad = activeBasecampPad();
@@ -29906,10 +29759,8 @@
               title="Choose pad icon">${basecampPadIcon(pad.icon)}</button>
             ${basecampIconPickerHtml(pad)}
           </span>
-          <h3 class="basecamp-editor-title" data-basecamp-rename-target="${escapeHtml(pad.id)}"
-            title="Double-click to rename">${escapeHtml(pad.name)}</h3>
-          <button class="basecamp-edit-title-btn" type="button" data-basecamp-rename="${escapeHtml(pad.id)}"
-            aria-label="Rename pad" title="Rename pad">${__PENCIL}</button>`;
+          <button class="basecamp-editor-title" type="button" data-basecamp-rename="${escapeHtml(pad.id)}"
+            aria-label="Rename ${escapeHtml(pad.name)}" title="Rename pad">${escapeHtml(pad.name)}</button>`;
       editor.innerHTML = `
         <div class="basecamp-editor-head${isRenaming ? " is-renaming" : ""}">
           ${titleBlock}
@@ -29981,6 +29832,13 @@
         </div>`;
       updateBasecampCount(pad);
       highlightBasecampSearchHit();
+      if (focusRename && basecampRenamePadId) {
+        requestAnimationFrame(() => {
+          const input = $(`[data-basecamp-rename-input="${basecampRenamePadId}"]`);
+          input?.focus();
+          input?.select();
+        });
+      }
       if (focusBody) requestAnimationFrame(() => $("[data-basecamp-body]")?.focus());
       if (basecampNotePickerOpen && focusNotePicker) {
         requestAnimationFrame(() => {
@@ -30299,7 +30157,6 @@
       flushBasecampPad();
       state.basecamp.activePadId = padId;
       basecampRenamePadId = "";
-      basecampRowMenuPadId = "";
       basecampIconPickerPadId = "";
       basecampNotePickerOpen = false;
       basecampNotePickerQuery = "";
@@ -30341,7 +30198,6 @@
       basecampPads().push(pad);
       state.basecamp.activePadId = pad.id;
       basecampRenamePadId = pad.id;
-      basecampRowMenuPadId = "";
       save();
       renderBasecampDialog({ focusRename: true });
     }
@@ -30375,7 +30231,6 @@
           pads.splice(index, 1);
           if (wasActive) state.basecamp.activePadId = pads[index]?.id || pads[index - 1]?.id || "";
           basecampRenamePadId = "";
-          basecampRowMenuPadId = "";
           save();
           renderBasecampDialog();
           setBasecampStatus("Pad deleted", true);
@@ -30878,7 +30733,6 @@
       window.addEventListener("blur", () => updateBasecampCmdHint(false));
       $("#basecampNewPadBtn").addEventListener("click", createBasecampPad);
       $("#basecampCopyAllBtn").addEventListener("click", () => copyBasecampText({ all: true }));
-      bindBasecampPadSwipe(list);
       $("#basecampSearch").addEventListener("input", event => {
         basecampSearchQuery = event.target.value;
         clearTimeout(basecampSearchTimer);
@@ -30888,7 +30742,7 @@
         }, 120);
       });
       workspace.addEventListener("mousedown", event => {
-        if (event.target.closest("[data-basecamp-format], [data-basecamp-url-link]")) {
+        if (event.target.closest("[data-basecamp-format], [data-basecamp-url-link], [data-basecamp-icon-picker], [data-basecamp-icon], [data-basecamp-rename-done]")) {
           event.preventDefault();
         }
       });
@@ -30906,24 +30760,6 @@
       workspace.addEventListener("paste", event => {
         if (event.target.matches("[data-basecamp-body]")) handleBasecampPaste(event);
       });
-      workspace.addEventListener("dblclick", event => {
-        const row = event.target.closest("[data-basecamp-pad-row]");
-        if (!row || event.target.closest(".basecamp-row-menu, .basecamp-row-actions-btn")) return;
-        const padId = row.dataset.basecampPadRow;
-        if (!padId) return;
-        // Rename UI lives in the editor head — point the active pad at this
-        // row (without setActiveBasecampPad, which would clear the rename
-        // state we are about to set) then re-render so the head swaps in
-        // the rename input.
-        if (basecampPads().some(pad => pad.id === padId)) {
-          flushBasecampPad();
-          state.basecamp.activePadId = padId;
-        }
-        basecampRenamePadId = padId;
-        basecampRowMenuPadId = "";
-        save();
-        renderBasecampDialog({ focusRename: true });
-      });
       workspace.addEventListener("click", event => {
         const select = event.target.closest("[data-basecamp-select]");
         if (select) {
@@ -30934,26 +30770,14 @@
           createBasecampPad();
           return;
         }
-        const menu = event.target.closest("[data-basecamp-row-menu]");
-        if (menu) {
-          event.stopPropagation();
-          basecampRowMenuPadId = basecampRowMenuPadId === menu.dataset.basecampRowMenu ? "" : menu.dataset.basecampRowMenu;
-          renderBasecampPadList();
-          return;
-        }
         const rename = event.target.closest("[data-basecamp-rename]");
         if (rename) {
-          // Rename input lives in both the sidebar row (swipe → edit) and the
-          // editor head; re-render the full dialog so whichever the user is
-          // looking at swaps in.
           const padId = rename.dataset.basecampRename;
           if (basecampPads().some(pad => pad.id === padId) && state.basecamp.activePadId !== padId) {
             flushBasecampPad();
             state.basecamp.activePadId = padId;
           }
           basecampRenamePadId = padId;
-          basecampRowMenuPadId = "";
-          basecampSwipedPadId = "";
           save();
           renderBasecampDialog({ focusRename: true });
           return;
@@ -30965,14 +30789,17 @@
         }
         const remove = event.target.closest("[data-basecamp-delete]");
         if (remove) {
-          basecampSwipedPadId = "";
           deleteBasecampPad(remove.dataset.basecampDelete);
           return;
         }
         const iconPicker = event.target.closest("[data-basecamp-icon-picker]");
         if (iconPicker) {
-          // Icon picker now lives in the editor-head rename row, so refresh
-          // the full dialog (not just the sidebar) to toggle it visible.
+          const padId = iconPicker.dataset.basecampIconPicker;
+          if (basecampRenamePadId === padId) {
+            const pad = basecampPads().find(item => item.id === padId);
+            const input = $(`[data-basecamp-rename-input="${padId}"]`);
+            if (pad && input) pad.name = String(input.value || pad.name).trim().slice(0, BASECAMP_PAD_NAME_MAX) || pad.name;
+          }
           basecampIconPickerPadId = basecampIconPickerPadId === iconPicker.dataset.basecampIconPicker
             ? ""
             : iconPicker.dataset.basecampIconPicker;
@@ -31054,30 +30881,12 @@
       workspace.addEventListener("focusout", event => {
         const input = event.target.closest("[data-basecamp-rename-input]");
         if (!input) return;
-        const row = input.closest("[data-basecamp-pad-row]");
+        const renameRow = input.closest(".basecamp-rename-row");
         requestAnimationFrame(() => {
-          if (row?.contains(document.activeElement)) return;
+          if (!input.isConnected) return;
+          if (renameRow?.contains(document.activeElement)) return;
           if (basecampRenamePadId === input.dataset.basecampRenameInput) commitBasecampRename(input.dataset.basecampRenameInput);
         });
-      });
-      // Double-click the pad title (sidebar row or active-pad header) to
-      // jump straight into inline rename mode.
-      workspace.addEventListener("dblclick", event => {
-        const target = event.target.closest("[data-basecamp-rename-target]");
-        if (!target) return;
-        event.preventDefault();
-        const padId = target.dataset.basecampRenameTarget;
-        if (!padId) return;
-        // Activate the renamed pad directly (avoid setActiveBasecampPad — it
-        // would clear the rename state we are about to set).
-        if (basecampPads().some(pad => pad.id === padId)) {
-          flushBasecampPad();
-          state.basecamp.activePadId = padId;
-        }
-        basecampRenamePadId = padId;
-        basecampRowMenuPadId = "";
-        save();
-        renderBasecampDialog({ focusRename: true });
       });
       workspace.addEventListener("keydown", event => {
         const body = event.target.closest("[data-basecamp-body]");
@@ -31175,15 +30984,10 @@
         flushBasecampPad();
         basecampNotePickerOpen = false;
         basecampNotePickerQuery = "";
-        basecampRowMenuPadId = "";
         basecampIconPickerPadId = "";
         closeBasecampLinkPopover();
       });
       document.addEventListener("click", event => {
-        if (dialog.open && !event.target.closest(".basecamp-row-menu, [data-basecamp-row-menu]") && basecampRowMenuPadId) {
-          basecampRowMenuPadId = "";
-          renderBasecampPadList();
-        }
         if (dialog.open && !event.target.closest("#basecampLinkPopover, [data-basecamp-url-link]")) closeBasecampLinkPopover();
         if (dialog.open && !event.target.closest("[data-basecamp-submenu], [data-basecamp-submenu-toggle], [data-basecamp-submenu-panel]")) {
           closeBasecampSubmenus();
