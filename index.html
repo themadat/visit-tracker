@@ -2347,15 +2347,15 @@
     /* Bump the expanded arrowhead glyph a touch so the level color reads
        cleanly against the row background. */
     .compact-note-row.is-expanded .compact-note-icon .pack-symbol.is-national-park {
-      width: 1.55rem;
-      height: 1.55rem;
+      width: 1.25rem;
+      height: 1.25rem;
     }
 
     /* Notes icon-toggle filter list: filled silhouette, theme-keyed gray.
        Light-mode tone sits a touch lighter so the filter button does not
        compete with active note rows nearby. */
     html:not([data-theme="dark"]) .notes-icon-filter .pack-symbol.is-national-park path[fill="#000"] {
-      fill: #888;
+      fill: #555;
     }
 
     [data-theme="dark"] .notes-icon-filter .pack-symbol.is-national-park path[fill="#000"] {
@@ -6884,7 +6884,7 @@
     .basecamp-rename-row {
       grid-column: 1 / -1;
       display: grid;
-      grid-template-columns: 30px minmax(0, 1fr) 30px;
+      grid-template-columns: 60px minmax(0, 1fr) 30px;
       align-items: center;
       gap: .38rem;
       width: 100%;
@@ -6899,8 +6899,8 @@
     .basecamp-icon-picker {
       top: calc(100% + .25rem);
       left: 0;
-      grid-template-columns: repeat(5, 38px);
-      max-height: min(60vh, 340px);
+      grid-template-columns: repeat(4, 44px);
+      max-height: min(70vh, 420px);
       overflow-y: auto;
       overscroll-behavior: contain;
     }
@@ -6908,10 +6908,10 @@
     .basecamp-icon-picker button {
       display: grid;
       place-items: center;
-      width: 38px;
-      height: 38px;
-      min-width: 38px;
-      padding: .38rem;
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      padding: .42rem;
     }
 
     .basecamp-icon-picker button[aria-pressed="true"] {
@@ -6941,9 +6941,28 @@
     }
 
     /* Clickable pad-icon button in the editor head: invites a click, anchors
-       the icon picker popover, and reads as the same hue as the inline icon. */
+       the icon picker popover, and reads as the same hue as the inline icon.
+       Sized ~2× the original sidebar icon so the active pad's glyph anchors
+       the head. */
     .basecamp-editor-head .basecamp-pad-icon-wrap {
       flex: 0 0 auto;
+    }
+
+    .basecamp-editor-head .basecamp-pad-icon-btn,
+    .basecamp-editor-head .basecamp-rename-icon-btn {
+      width: 60px;
+      min-width: 60px;
+      height: 60px;
+      min-height: 60px;
+      padding: .45rem;
+    }
+
+    .basecamp-editor-head .basecamp-pad-icon-btn .sf-symbol,
+    .basecamp-editor-head .basecamp-pad-icon-btn .pack-symbol,
+    .basecamp-editor-head .basecamp-rename-icon-btn .sf-symbol,
+    .basecamp-editor-head .basecamp-rename-icon-btn .pack-symbol {
+      width: 100%;
+      height: 100%;
     }
 
     .basecamp-pad-icon-btn {
@@ -16629,7 +16648,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.4.0.17";
+    const APP_VERSION = "4.4.0.18";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -18626,6 +18645,30 @@
     ];
     const CHANGELOG = [
       {
+        version: "4.4.0.18",
+        date: "2026-06-08",
+        title: "Basecamps",
+        summary: "Basecamp pad icons go square-fill only: 2× head glyph, 4-column picker, and a single source of truth for ordering.",
+        notice: {
+          version: "4.4.0",
+          title: "Basecamps",
+          summary: "Turn Basecamp into named rich-text pads with search and linked location notes.",
+          cta: "Make|Camp!"
+        },
+        highlights: [
+          "Default new pad icon is now __BOOKMARK_SQUARE_FILL (random pick still uses any square-fill).",
+          "Pad icon in the editor head renders ~2× larger and stays clickable inside or outside rename mode.",
+          "Pad icon picker is square-fill only with a single ordered list you can reshuffle.",
+          "Picker popover is 4 columns wide (was 5) with bigger 44px tiles."
+        ],
+        updates: [
+          "BASECAMP_PAD_DEFAULT_ICON moved to __BOOKMARK_SQUARE_FILL; BASECAMP_PAD_ICON_SET dropped the 5 original pad glyphs and kept only the __*_SQUARE_FILL family — see the comment header at that constant for the single source of truth on ordering.",
+          "Editor-head .basecamp-pad-icon-btn and .basecamp-rename-icon-btn sized 60×60 with the contained sf-symbol/pack-symbol filling 100% so the icon reads ~2× the original.",
+          "Rename row grid template updated 30px → 60px on column 1 to fit the new icon.",
+          "Picker grid template-columns now repeat(4, 44px) (was repeat(5, 38px)); buttons grew to 44×44 and max-height ticked up to min(70vh, 420px) for the taller grid."
+        ]
+      },
+      {
         version: "4.4.0.17",
         date: "2026-06-08",
         title: "Basecamps",
@@ -20091,48 +20134,46 @@
     const BASECAMP_PAD_NAME_MAX = 60;
     const BASECAMP_PAD_HTML_MAX = 60000;
     const BASECAMP_DEFAULT_PAD_NAME = "Basecamp";
-    const BASECAMP_PAD_DEFAULT_ICON = "__LONG_TEXT_PAGE_AND_PENCIL";
+    // Default icon for new pads when randomBasecampSquareFillIcon() is not
+    // available (fallback path). Picked from BASECAMP_PAD_ICON_SET below.
+    const BASECAMP_PAD_DEFAULT_ICON = "__BOOKMARK_SQUARE_FILL";
+    // === Reorder the Basecamp pad icon picker here. ===
+    // The picker grid renders these in array order, so this is the single
+    // source of truth for which __*_SQUARE_FILL icons appear and in what
+    // sequence. basecampPadIcon() resolves each entry via eval so any
+    // constant matching the naming convention can be dropped in.
     const BASECAMP_PAD_ICON_SET = Object.freeze([
-      // Original pad-flavoured glyphs (kept first so existing pads keep their default).
-      "__LONG_TEXT_PAGE_AND_PENCIL",
-      "__DOCUMENT_ON_DOCUMENT",
-      "__TRAY_CIRCLE",
-      "__SUITCASE_CIRCLE",
-      "__BACKPACK",
-      // Square-fill SVG family — surfaced as additional icon options. Each maps
-      // directly to the matching __*_SQUARE_FILL constant via basecampPadIcon's
-      // eval lookup, so adding the name here is the only wiring needed.
+      "__BOOKMARK_SQUARE_FILL",
+      "__STAR_SQUARE_FILL",
+      "__HEART_SQUARE_FILL",
+      "__FLAG_SQUARE_FILL",
+      "__CHECKMARK_SQUARE_FILL",
+      "__MAPPIN_SQUARE_FILL",
+      "__LOCATION_SQUARE_FILL",
+      "__PIN_SQUARE_FILL",
+      "__TAG_SQUARE_FILL",
+      "__INFO_SQUARE_FILL",
+      "__EXCLAMATIONMARK_SQUARE_FILL",
+      "__QUESTIONMARK_SQUARE_FILL",
       "__BELL_SQUARE_FILL",
       "__BOLT_SQUARE_FILL",
-      "__BOOKMARK_SQUARE_FILL",
-      "__BUTTON_PROGRAMMABLE_SQUARE_FILL",
-      "__CHECKMARK_SQUARE_FILL",
-      "__CIRCLE_SQUARE_FILL",
-      "__COMMAND_SQUARE_FILL",
-      "__DOT_SQUARE_FILL",
-      "__EXCLAMATIONMARK_SQUARE_FILL",
       "__EYE_SQUARE_FILL",
-      "__FLAG_SQUARE_FILL",
       "__HAND_RAISED_SQUARE_FILL",
-      "__HEART_SQUARE_FILL",
-      "__ICLOUD_SQUARE_FILL",
-      "__INFO_SQUARE_FILL",
-      "__LOCATION_SQUARE_FILL",
-      "__LOCK_SQUARE_FILL",
-      "__MAPPIN_SQUARE_FILL",
-      "__MICROPHONE_SQUARE_FILL",
       "__PERSON_CROP_SQUARE_FILL",
-      "__PIN_SQUARE_FILL",
-      "__PLAY_SQUARE_FILL",
-      "__POINTER_ARROW_IPAD_SQUARE_FILL",
-      "__POINTER_ARROW_SQUARE_FILL",
-      "__QUESTIONMARK_SQUARE_FILL",
-      "__RECTANGLE_ON_RECTANGLE_SQUARE_FILL",
+      "__LOCK_SQUARE_FILL",
+      "__MICROPHONE_SQUARE_FILL",
       "__SPEAKER_SQUARE_FILL",
-      "__STAR_SQUARE_FILL",
-      "__TAG_SQUARE_FILL",
       "__VIDEO_SQUARE_FILL",
+      "__PLAY_SQUARE_FILL",
+      "__ICLOUD_SQUARE_FILL",
       "__WIFI_SQUARE_FILL",
+      "__COMMAND_SQUARE_FILL",
+      "__BUTTON_PROGRAMMABLE_SQUARE_FILL",
+      "__POINTER_ARROW_SQUARE_FILL",
+      "__POINTER_ARROW_IPAD_SQUARE_FILL",
+      "__RECTANGLE_ON_RECTANGLE_SQUARE_FILL",
+      "__CIRCLE_SQUARE_FILL",
+      "__DOT_SQUARE_FILL",
       "__X_SQUARE_FILL"
     ]);
     const LEGEND_POSITION_ORDER = ["right-top", "right-bottom", "left-bottom", "left-top"];
