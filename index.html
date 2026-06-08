@@ -6757,11 +6757,16 @@
     }
 
     .basecamp-edit-title-btn .sf-symbol {
-      width: 16px;
-      height: 16px;
+      width: 8px;
+      height: 8px;
     }
 
     .basecamp-editor-head .basecamp-edit-title-btn {
+      width: 22px;
+      min-width: 22px;
+      height: 22px;
+      min-height: 22px;
+      padding: .12rem;
       flex: 0 0 auto;
     }
 
@@ -6823,6 +6828,9 @@
       top: calc(100% + .25rem);
       left: 0;
       grid-template-columns: repeat(5, 38px);
+      max-height: min(60vh, 340px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
     }
 
     .basecamp-icon-picker button {
@@ -16529,7 +16537,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.4.0.13";
+    const APP_VERSION = "4.4.0.14";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -18526,6 +18534,29 @@
     ];
     const CHANGELOG = [
       {
+        version: "4.4.0.14",
+        date: "2026-06-08",
+        title: "Basecamps",
+        summary: "Basecamp sidebar sheds its rename pencil and the editor head owns the title edit, with a wider square-fill icon palette.",
+        notice: {
+          version: "4.4.0",
+          title: "Basecamps",
+          summary: "Turn Basecamp into named rich-text pads with search and linked location notes.",
+          cta: "Make|Camp!"
+        },
+        highlights: [
+          "Sidebar rows are pure: no rename pencil, no inline rename — just icon, name, and match count.",
+          "Renaming and the half-size edit pencil now live in the active pad's header.",
+          "Pad icon picker gains 32 new square-fill SVG options (heart, star, flag, mappin, more)."
+        ],
+        updates: [
+          "renderBasecampPadList drops the basecampRenamePadId branch and the .basecamp-edit-title-btn from each row so sidebar UI stays minimal; focusRename now targets the editor-head input.",
+          "renderBasecampEditor swaps the title h3 for an inline rename row (icon picker + input + checkmark) whenever basecampRenamePadId matches the active pad; .basecamp-editor-head gains the is-renaming hook.",
+          "Editor pencil shrunk ~50%: .basecamp-edit-title-btn .sf-symbol drops 16px → 8px and the head button frame compresses to 22×22 with .12rem padding.",
+          "BASECAMP_PAD_ICON_SET appends the full __*_SQUARE_FILL family (32 glyphs), routed through basecampPadIcon's existing eval lookup; .basecamp-icon-picker gains max-height + overflow-y so the popover stays usable as the grid grows."
+        ]
+      },
+      {
         version: "4.4.0.13",
         date: "2026-06-08",
         title: "Basecamps",
@@ -19897,11 +19928,47 @@
     const BASECAMP_DEFAULT_PAD_NAME = "Basecamp";
     const BASECAMP_PAD_DEFAULT_ICON = "__LONG_TEXT_PAGE_AND_PENCIL";
     const BASECAMP_PAD_ICON_SET = Object.freeze([
+      // Original pad-flavoured glyphs (kept first so existing pads keep their default).
       "__LONG_TEXT_PAGE_AND_PENCIL",
       "__DOCUMENT_ON_DOCUMENT",
       "__TRAY_CIRCLE",
       "__SUITCASE_CIRCLE",
-      "__BACKPACK"
+      "__BACKPACK",
+      // Square-fill SVG family — surfaced as additional icon options. Each maps
+      // directly to the matching __*_SQUARE_FILL constant via basecampPadIcon's
+      // eval lookup, so adding the name here is the only wiring needed.
+      "__BELL_SQUARE_FILL",
+      "__BOLT_SQUARE_FILL",
+      "__BOOKMARK_SQUARE_FILL",
+      "__BUTTON_PROGRAMMABLE_SQUARE_FILL",
+      "__CHECKMARK_SQUARE_FILL",
+      "__CIRCLE_SQUARE_FILL",
+      "__COMMAND_SQUARE_FILL",
+      "__DOT_SQUARE_FILL",
+      "__EXCLAMATIONMARK_SQUARE_FILL",
+      "__EYE_SQUARE_FILL",
+      "__FLAG_SQUARE_FILL",
+      "__HAND_RAISED_SQUARE_FILL",
+      "__HEART_SQUARE_FILL",
+      "__ICLOUD_SQUARE_FILL",
+      "__INFO_SQUARE_FILL",
+      "__LOCATION_SQUARE_FILL",
+      "__LOCK_SQUARE_FILL",
+      "__MAPPIN_SQUARE_FILL",
+      "__MICROPHONE_SQUARE_FILL",
+      "__PERSON_CROP_SQUARE_FILL",
+      "__PIN_SQUARE_FILL",
+      "__PLAY_SQUARE_FILL",
+      "__POINTER_ARROW_IPAD_SQUARE_FILL",
+      "__POINTER_ARROW_SQUARE_FILL",
+      "__QUESTIONMARK_SQUARE_FILL",
+      "__RECTANGLE_ON_RECTANGLE_SQUARE_FILL",
+      "__SPEAKER_SQUARE_FILL",
+      "__STAR_SQUARE_FILL",
+      "__TAG_SQUARE_FILL",
+      "__VIDEO_SQUARE_FILL",
+      "__WIFI_SQUARE_FILL",
+      "__X_SQUARE_FILL"
     ]);
     const LEGEND_POSITION_ORDER = ["right-top", "right-bottom", "left-bottom", "left-top"];
     const LEGEND_POSITION_MENU_ORDER = ["left-top", "right-top", "left-bottom", "right-bottom"];
@@ -29185,22 +29252,9 @@
       list.innerHTML = basecampPads().map(pad => {
         const matchCount = basecampSearchMatchCount(pad);
         const noMatch = Boolean(basecampSearchQuery.trim() && matchCount === 0);
-        if (basecampRenamePadId === pad.id) {
-          return `
-            <div class="basecamp-pad-row is-active" data-basecamp-pad-row="${escapeHtml(pad.id)}">
-              <span class="basecamp-rename-row">
-                <span class="basecamp-toolbar-link-wrap">
-                  <button class="basecamp-rename-icon-btn" type="button" data-basecamp-icon-picker="${escapeHtml(pad.id)}"
-                    aria-label="Choose icon for ${escapeHtml(pad.name)}">${basecampPadIcon(pad.icon)}</button>
-                  ${basecampIconPickerHtml(pad)}
-                </span>
-                <input data-basecamp-rename-input="${escapeHtml(pad.id)}" maxlength="${BASECAMP_PAD_NAME_MAX}"
-                  value="${escapeHtml(pad.name)}" aria-label="Rename Basecamp pad">
-                <button class="basecamp-row-actions-btn" type="button" data-basecamp-rename-done="${escapeHtml(pad.id)}"
-                  aria-label="Finish renaming">${__CHECKMARK}</button>
-              </span>
-            </div>`;
-        }
+        // Sidebar rows stay compact: icon + name + match-count chip. No edit
+        // pencil and no inline rename UI — rename happens in the editor head
+        // (double-click the title there, or on the sidebar row, to enter it).
         return `
           <div class="basecamp-pad-row${active?.id === pad.id ? " is-active" : ""}${noMatch ? " is-no-match" : ""}"
             data-basecamp-pad-row="${escapeHtml(pad.id)}" draggable="true" tabindex="0"
@@ -29212,13 +29266,12 @@
               <span class="basecamp-pad-name">${escapeHtml(pad.name)}</span>
               ${basecampSearchQuery.trim() ? `<span class="basecamp-match-count">${matchCount}</span>` : ""}
             </button>
-            <button class="basecamp-edit-title-btn" type="button" data-basecamp-rename="${escapeHtml(pad.id)}"
-              aria-label="Rename ${escapeHtml(pad.name)}" title="Rename">${__PENCIL}</button>
           </div>`;
       }).join("");
+      // Rename input now lives in the editor head; focus is routed there too.
       if (focusRename && basecampRenamePadId) {
         requestAnimationFrame(() => {
-          const input = $(`[data-basecamp-rename-input="${basecampRenamePadId}"]`, list);
+          const input = $(`[data-basecamp-rename-input="${basecampRenamePadId}"]`);
           input?.focus();
           input?.select();
         });
@@ -29323,13 +29376,30 @@
           </div>`;
         return;
       }
-      editor.innerHTML = `
-        <div class="basecamp-editor-head">
+      // Title swaps to an inline rename input whenever basecampRenamePadId
+      // points at the active pad. The icon picker + checkmark commit-button
+      // live alongside the input so renaming feels integrated with the head.
+      const isRenaming = basecampRenamePadId === pad.id;
+      const titleBlock = isRenaming
+        ? `
+          <span class="basecamp-rename-row basecamp-toolbar-link-wrap">
+            <button class="basecamp-rename-icon-btn" type="button" data-basecamp-icon-picker="${escapeHtml(pad.id)}"
+              aria-label="Choose icon for ${escapeHtml(pad.name)}">${basecampPadIcon(pad.icon)}</button>
+            ${basecampIconPickerHtml(pad)}
+            <input data-basecamp-rename-input="${escapeHtml(pad.id)}" maxlength="${BASECAMP_PAD_NAME_MAX}"
+              value="${escapeHtml(pad.name)}" aria-label="Rename Basecamp pad">
+            <button class="basecamp-row-actions-btn" type="button" data-basecamp-rename-done="${escapeHtml(pad.id)}"
+              aria-label="Finish renaming">${__CHECKMARK}</button>
+          </span>`
+        : `
           <span class="basecamp-pad-icon">${basecampPadIcon(pad.icon)}</span>
           <h3 class="basecamp-editor-title" data-basecamp-rename-target="${escapeHtml(pad.id)}"
             title="Double-click to rename">${escapeHtml(pad.name)}</h3>
           <button class="basecamp-edit-title-btn" type="button" data-basecamp-rename="${escapeHtml(pad.id)}"
-            aria-label="Rename pad" title="Rename pad">${__PENCIL}</button>
+            aria-label="Rename pad" title="Rename pad">${__PENCIL}</button>`;
+      editor.innerHTML = `
+        <div class="basecamp-editor-head${isRenaming ? " is-renaming" : ""}">
+          ${titleBlock}
           <span class="basecamp-editor-actions">
             <button class="basecamp-editor-action-btn" type="button"
               data-basecamp-copy-current data-shortcut="P"
