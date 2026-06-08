@@ -6374,9 +6374,20 @@
     #basecampDialog[open] {
       display: grid;
       grid-template-rows: auto minmax(0, 1fr);
-      width: min(1480px, calc(100dvw - 1rem));
-      height: calc(100dvh - .6rem);
-      max-height: calc(100dvh - .6rem);
+      /* Leave the app toolbar visible. Anchor below it (4.25rem) and pin the
+         bottom margin to match the left/right .5rem gutters. Width is set via
+         left/right insets so the modal hugs the same .5rem gutter the side
+         panels use. */
+      margin: 0;
+      position: fixed;
+      top: 4.25rem;
+      bottom: .5rem;
+      left: max(.5rem, calc((100dvw - 1480px) / 2));
+      right: max(.5rem, calc((100dvw - 1480px) / 2));
+      width: auto;
+      height: auto;
+      max-width: none;
+      max-height: calc(100dvh - 4.75rem);
       overflow: hidden;
     }
 
@@ -6532,10 +6543,51 @@
 
     .basecamp-workspace {
       display: grid;
-      grid-template-columns: minmax(190px, 230px) minmax(0, 1fr);
+      grid-template-columns:
+        minmax(160px, calc((100% - 10px) * var(--basecamp-sidebar-ratio, .22)))
+        10px
+        minmax(280px, calc((100% - 10px) * (1 - var(--basecamp-sidebar-ratio, .22))));
       width: 100%;
       min-height: 0;
       overflow: hidden;
+    }
+
+    .basecamp-sidebar-handle {
+      position: relative;
+      align-self: stretch;
+      height: 100%;
+      width: 10px;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: col-resize;
+      touch-action: none;
+    }
+
+    .basecamp-sidebar-handle::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 4px;
+      height: min(72px, calc(100% - 2rem));
+      min-height: 42px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--line) 72%, var(--accent) 18%);
+      transform: translate(-50%, -50%);
+      transition: width .16s ease, background .16s ease, box-shadow .16s ease;
+    }
+
+    .basecamp-sidebar-handle:hover::before,
+    .basecamp-sidebar-handle:focus-visible::before {
+      width: 6px;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent);
+    }
+
+    .basecamp-sidebar-handle:focus-visible {
+      outline: none;
     }
 
     .basecamp-sidebar {
@@ -6677,6 +6729,7 @@
 
     .basecamp-pad-icon,
     .basecamp-row-actions-btn,
+    .basecamp-edit-title-btn,
     .basecamp-rename-icon-btn {
       display: grid;
       place-items: center;
@@ -6685,6 +6738,55 @@
       min-width: 30px;
       min-height: 30px;
       padding: .25rem;
+    }
+
+    .basecamp-edit-title-btn {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      opacity: .8;
+    }
+
+    .basecamp-edit-title-btn:hover,
+    .basecamp-edit-title-btn:focus-visible {
+      color: #0f766e;
+      opacity: 1;
+    }
+
+    .basecamp-edit-title-btn .sf-symbol {
+      width: 16px;
+      height: 16px;
+    }
+
+    .basecamp-editor-head .basecamp-edit-title-btn {
+      flex: 0 0 auto;
+    }
+
+    .basecamp-editor-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: .28rem;
+      margin-left: auto;
+      flex: 0 0 auto;
+    }
+
+    .basecamp-editor-action-btn {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      min-width: 36px;
+      height: 36px;
+      min-height: 36px;
+      padding: 0;
+    }
+
+    .basecamp-editor-action-btn .sf-symbol {
+      width: 18px;
+      height: 18px;
+    }
+
+    .basecamp-editor-title[data-basecamp-rename-target] {
+      cursor: text;
     }
 
     .basecamp-pad-icon {
@@ -6819,6 +6921,44 @@
     .basecamp-link-popover input {
       min-width: 0;
     }
+
+    /* Format / Font / Text dropdown submenus on the basecamp toolbar. */
+    .basecamp-submenu {
+      position: absolute;
+      top: calc(100% + .3rem);
+      left: 0;
+      z-index: 30;
+      display: grid;
+      gap: .22rem;
+      padding: .36rem;
+      min-width: 12rem;
+      border: 1px solid color-mix(in srgb, #14b8a6 55%, var(--line));
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .basecamp-submenu[hidden] {
+      display: none;
+    }
+
+    .basecamp-submenu button {
+      justify-content: flex-start;
+      width: 100%;
+      min-height: 30px;
+      padding: .3rem .55rem;
+      text-align: left;
+    }
+
+    /* Block alignment classes set by the Text submenu. */
+    .basecamp-pad-body .basecamp-align-left { text-align: left; }
+    .basecamp-pad-body .basecamp-align-center { text-align: center; }
+    .basecamp-pad-body .basecamp-align-right { text-align: right; }
+    .basecamp-pad-body .basecamp-align-justify { text-align: justify; }
+
+    /* Inline font-size classes set by the Font submenu (bigger / smaller). */
+    .basecamp-pad-body .basecamp-font-up { font-size: 1.2em; }
+    .basecamp-pad-body .basecamp-font-down { font-size: .82em; }
 
     .basecamp-pad-body {
       min-height: 190px;
@@ -15634,9 +15774,7 @@
         <small id="basecampStatus" class="basecamp-status" aria-live="polite">Autosaves as you type.</small>
       </div>
       <div class="dialog-head-actions">
-        <button id="basecampCopyBtn" type="button" data-shortcut="P">Copy</button>
         <button id="basecampCopyAllBtn" type="button">Copy All Pads</button>
-        <button id="basecampClearBtn" class="danger" type="button" data-shortcut="X">Clear</button>
         <button id="basecampDockBtn" type="button" aria-pressed="false"
           aria-label="Dock Basecamp beside the map"
           title="Pop Into the Notes Panel">Pop In</button>
@@ -15645,7 +15783,7 @@
       </div>
     </header>
     <div class="dialog-body basecamp-body">
-      <div id="basecampWorkspace" class="basecamp-workspace">
+      <div id="basecampWorkspace" class="basecamp-workspace" data-basecamp-sidebar-ratio>
         <aside class="basecamp-sidebar" aria-label="Basecamp pads">
           <div class="basecamp-search-row">
             <label class="basecamp-search-wrap">
@@ -15668,6 +15806,8 @@
           </div>
           <div id="basecampPadList" class="basecamp-pad-list"></div>
         </aside>
+        <div id="basecampSidebarHandle" class="basecamp-sidebar-handle" role="separator"
+          aria-orientation="vertical" aria-label="Resize sidebar / pad split" tabindex="0"></div>
         <section id="basecampEditor" class="basecamp-editor-pane" aria-live="polite"></section>
       </div>
     </div>
@@ -16267,12 +16407,11 @@
             <summary>Basecamp Dialog</summary>
             <div class="shortcut-list">
               <div class="shortcut-row"><kbd>P</kbd><span>Copy the active pad <em>[basecampCopyBtn]</em></span></div>
-              <div class="shortcut-row"><kbd>X</kbd><span>Clear the active pad <em>[basecampClearBtn]</em></span></div>
               <div class="shortcut-row"><kbd>N</kbd><span>Create a new pad <em>[basecampNewPadBtn]</em></span></div>
               <div class="shortcut-row"><kbd>L</kbd><span>Open the linked-note picker</span></div>
               <div class="shortcut-row"><kbd>/</kbd><span>Focus pad search <em>[basecampSearch]</em></span></div>
-              <div class="shortcut-row"><kbd>⌘/Ctrl+B</kbd> <kbd>⌘/Ctrl+I</kbd> <kbd>⌘/Ctrl+K</kbd><span>Bold,
-                  italic, or add a URL link inside the editor</span></div>
+              <div class="shortcut-row"><kbd>⌘/Ctrl+B</kbd> <kbd>⌘/Ctrl+I</kbd> <kbd>⌘/Ctrl+U</kbd> <kbd>⌘/Ctrl+K</kbd><span>Bold,
+                  italic, underline, or add a URL link inside the editor</span></div>
               <div class="shortcut-row"><kbd>Alt+↑</kbd> <kbd>Alt+↓</kbd><span>Move the focused pad</span></div>
               <div class="shortcut-row"><kbd>Esc</kbd><span>Close Basecamp</span></div>
             </div>
@@ -16366,7 +16505,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.4.0.10";
+    const APP_VERSION = "4.4.0.11";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -18331,6 +18470,34 @@
     ];
     const CHANGELOG = [
       {
+        version: "4.4.0.11",
+        date: "2026-06-08",
+        title: "Basecamps",
+        summary: "Note location header, basecamp pad-level actions, sidebar splitter, and full Format/Font/Text submenus.",
+        notice: {
+          version: "4.4.0",
+          title: "Basecamps",
+          summary: "Turn Basecamp into named rich-text pads with search and linked location notes.",
+          cta: "Make|Camp!"
+        },
+        highlights: [
+          "Edit-Note header now shows the location name.",
+          "Basecamp pad header: Copy + small Edit + Delete; sidebar drops the ... menu, gains inline Edit + double-click rename.",
+          "Vertical splitter between sidebar and pad with a saved ratio.",
+          "Underline + Strikethrough, plus Format / Font / Text dropdown submenus and ⌘U shortcut."
+        ],
+        updates: [
+          "Edit-Note dialog title is now 'Edit Note · <region name>' when an existing note is open against a known region.",
+          "Basecamp dialog modal sized to leave the app toolbar visible (top: 4.25rem, .5rem left/right/bottom gutter to match side panels).",
+          "Removed the dialog-header Copy / Clear buttons; Copy current pad lives in the active pad header next to Delete, with both delegated via [data-basecamp-copy-current] and [data-basecamp-delete] on workspace clicks.",
+          "Sidebar pad row dropped the ... overflow menu; rename is a small icon button next to the title, and double-clicking the title (in sidebar or active-pad header) opens inline rename via [data-basecamp-rename-target].",
+          "Added a vertical resize handle between the basecamp sidebar and pad column, driven by state.settings.basecampSidebarRatio (clamped 0.12–0.55, default 0.22). Pointer drag + ←/→/Home keyboard nav.",
+          "Added Underline + Strikethrough toolbar buttons and ⌘/Ctrl+U shortcut; sanitizer now allows <u>, <s>, <mark>, <sub>, <sup>, and <span> with a tight allow-list of class names.",
+          "Added Format, Font, and Text dropdown submenus: Format = Heading/Subheading/Body/Monostyled/Dash/Numbered; Font = Highlight/Bigger/Smaller/Sup/Sub/Default Script; Text = Indent/Outdent/Align Left/Center/Right/Justify.",
+          "Submenus open one-at-a-time and close on outside click or after picking an action; CSS adds .basecamp-align-* and .basecamp-font-* classes scoped to .basecamp-pad-body."
+        ]
+      },
+      {
         version: "4.4.0.10",
         date: "2026-06-08",
         title: "Basecamps",
@@ -19833,7 +20000,8 @@
           ringMode: false,
           ringByLayer: defaultRingByLayer(),
           basecampPanelMode: "modal",
-          basecampNotesSplitRatio: 0.5
+          basecampNotesSplitRatio: 0.5,
+          basecampSidebarRatio: 0.22
         },
         levels,
         states: defaultTerritoryStates(levels),
@@ -20239,6 +20407,10 @@
       next.settings.basecampNotesSplitRatio = Number.isFinite(splitRatio)
         ? Math.min(0.85, Math.max(0.15, splitRatio))
         : 0.5;
+      const sidebarRatio = Number(next.settings.basecampSidebarRatio);
+      next.settings.basecampSidebarRatio = Number.isFinite(sidebarRatio)
+        ? Math.min(0.55, Math.max(0.12, sidebarRatio))
+        : 0.22;
       // Per-layer Rangefinder settings: US and World each keep their own anchors,
       // distances, travel mode, and display toggles. Legacy flat ring* fields
       // from older builds get folded into the matching bag (anchor1/2 honor the
@@ -22250,7 +22422,10 @@
       const source = String(input || "").slice(0, BASECAMP_PAD_HTML_MAX * 2);
       if (!source.trim()) return "";
       const parsed = new DOMParser().parseFromString(`<body>${source}</body>`, "text/html");
-      const allowed = new Set(["p", "br", "b", "strong", "i", "em", "u", "h2", "h3", "ul", "ol", "li", "a", "blockquote", "code", "pre"]);
+      const allowed = new Set(["p", "br", "b", "strong", "i", "em", "u", "s", "mark", "sub", "sup", "h2", "h3", "ul", "ol", "li", "a", "blockquote", "code", "pre", "span"]);
+      // Allow a tightly-scoped set of class names for alignment / size /
+      // default-script wrappers added by the Font and Text submenus.
+      const allowedClassRe = /^(?:basecamp-align-(?:left|center|right|justify)|basecamp-font-(?:up|down|default))$/;
       const dropWithContent = new Set(["script", "style", "noscript", "template", "svg", "math", "iframe", "object", "embed"]);
       const cleanNode = node => {
         if (node.nodeType === Node.TEXT_NODE) return escapeHtml(node.nodeValue || "");
@@ -22267,7 +22442,15 @@
             ? `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${children}</a>`
             : children;
         }
-        return `<${tag}>${children}</${tag}>`;
+        // Preserve allow-listed class names (alignment / size / default-script
+        // wrappers from the Font and Text submenus); strip everything else.
+        const classes = (node.getAttribute("class") || "")
+          .split(/\s+/)
+          .filter(name => allowedClassRe.test(name));
+        // A bare <span> with no allow-listed classes collapses to its children.
+        if (tag === "span" && !classes.length) return children;
+        const classAttr = classes.length ? ` class="${escapeHtml(classes.join(" "))}"` : "";
+        return `<${tag}${classAttr}>${children}</${tag}>`;
       };
       let html = Array.from(parsed.body.childNodes).map(cleanNode).join("").trim();
       if (html.length > BASECAMP_PAD_HTML_MAX) {
@@ -22781,9 +22964,7 @@
       setButtonLabel("#saveNoteBtn", __CHECKMARK, "Save Note");
       setButtonLabel("#saveAddNoteBtn", __CHECKMARK_CIRCLE_BADGE_PLUS_FILL, "Save + Add", "Save and add another note");
       setButtonLabel("#tipJarCloseBtn", __XMARK, "Close");
-      setButtonLabel("#basecampCopyBtn", __DOCUMENT_ON_DOCUMENT, "Copy", "Copy Basecamp text");
       setButtonLabel("#basecampCopyAllBtn", __DOCUMENT_ON_CLIPBOARD, "Copy All Pads", "Copy all Basecamp Pads");
-      setButtonLabel("#basecampClearBtn", ICON_SETTINGS_DELETE__TRASH_FILL, "Clear", "Clear Basecamp");
       setButtonLabel("#basecampCloseBtn", __XMARK, "Close");
       // Force an icon-only button — the row layout depends on it staying square.
       const newPadBtn = $("#basecampNewPadBtn");
@@ -28063,7 +28244,9 @@
       const note = noteTarget ? (notesStoreForCode(noteTarget)[noteTarget] || []).find(item => item.id === noteId) : null;
       const defaults = note ? null : pendingNoteDefaults;
       pendingNoteDefaults = null;
-      $("#noteDialogTitle").textContent = note ? "Edit Note" : isQuick ? "Add Note" : `Add Note for ${regionName(noteTarget)}`;
+      $("#noteDialogTitle").textContent = note
+        ? (noteTarget ? `Edit Note · ${regionName(noteTarget)}` : "Edit Note")
+        : isQuick ? "Add Note" : `Add Note for ${regionName(noteTarget)}`;
       $("#noteId").value = note ? note.id : "";
       const locationWrap = $("#noteLocationSelectWrap");
       locationWrap?.classList.toggle("hidden", !isQuick);
@@ -28862,19 +29045,16 @@
         return `
           <div class="basecamp-pad-row${active?.id === pad.id ? " is-active" : ""}${noMatch ? " is-no-match" : ""}"
             data-basecamp-pad-row="${escapeHtml(pad.id)}" draggable="true" tabindex="0"
-            aria-label="${escapeHtml(pad.name)}. Alt plus Up or Down reorders this pad.">
+            aria-label="${escapeHtml(pad.name)}. Double-click to rename. Alt plus Up or Down reorders.">
             <button class="basecamp-pad-icon" type="button" data-basecamp-select="${escapeHtml(pad.id)}"
               aria-label="Open ${escapeHtml(pad.name)}">${basecampPadIcon(pad.icon)}</button>
-            <button class="basecamp-pad-select" type="button" data-basecamp-select="${escapeHtml(pad.id)}">
+            <button class="basecamp-pad-select" type="button" data-basecamp-select="${escapeHtml(pad.id)}"
+              data-basecamp-rename-target="${escapeHtml(pad.id)}">
               <span class="basecamp-pad-name">${escapeHtml(pad.name)}</span>
               ${basecampSearchQuery.trim() ? `<span class="basecamp-match-count">${matchCount}</span>` : ""}
             </button>
-            <button class="basecamp-row-actions-btn" type="button" data-basecamp-row-menu="${escapeHtml(pad.id)}"
-              aria-label="Actions for ${escapeHtml(pad.name)}" aria-expanded="${basecampRowMenuPadId === pad.id}">${__ELLIPSIS_CIRCLE}</button>
-            <span class="basecamp-row-menu" role="menu" ${basecampRowMenuPadId === pad.id ? "" : "hidden"}>
-              <button type="button" role="menuitem" data-basecamp-rename="${escapeHtml(pad.id)}">${__PENCIL} Rename</button>
-              <button class="danger" type="button" role="menuitem" data-basecamp-delete="${escapeHtml(pad.id)}">${__DELETE_LEFT_FILL} Delete</button>
-            </span>
+            <button class="basecamp-edit-title-btn" type="button" data-basecamp-rename="${escapeHtml(pad.id)}"
+              aria-label="Rename ${escapeHtml(pad.name)}" title="Rename">${__PENCIL}</button>
           </div>`;
       }).join("");
       if (focusRename && basecampRenamePadId) {
@@ -28987,15 +29167,59 @@
       editor.innerHTML = `
         <div class="basecamp-editor-head">
           <span class="basecamp-pad-icon">${basecampPadIcon(pad.icon)}</span>
-          <h3 class="basecamp-editor-title">${escapeHtml(pad.name)}</h3>
+          <h3 class="basecamp-editor-title" data-basecamp-rename-target="${escapeHtml(pad.id)}"
+            title="Double-click to rename">${escapeHtml(pad.name)}</h3>
+          <button class="basecamp-edit-title-btn" type="button" data-basecamp-rename="${escapeHtml(pad.id)}"
+            aria-label="Rename pad" title="Rename pad">${__PENCIL}</button>
+          <span class="basecamp-editor-actions">
+            <button class="basecamp-editor-action-btn" type="button"
+              data-basecamp-copy-current data-shortcut="P"
+              aria-label="Copy this pad" title="Copy this pad">${__DOCUMENT_ON_DOCUMENT}</button>
+            <button class="basecamp-editor-action-btn danger" type="button"
+              data-basecamp-delete="${escapeHtml(pad.id)}" aria-label="Delete this pad" title="Delete this pad">${__DELETE_LEFT_FILL}</button>
+          </span>
         </div>
         <div class="basecamp-toolbar" role="toolbar" aria-label="Basecamp text formatting">
           <button type="button" data-basecamp-format="bold" data-cmd-hint="⌘B" aria-label="Bold (⌘B)"><b>B</b></button>
           <button type="button" data-basecamp-format="italic" data-cmd-hint="⌘I" aria-label="Italic (⌘I)"><i>I</i></button>
-          <button type="button" data-basecamp-format="h2" aria-label="Heading 2">H2</button>
-          <button type="button" data-basecamp-format="h3" aria-label="Heading 3">H3</button>
-          <button type="button" data-basecamp-format="ul" aria-label="Bulleted list">• List</button>
-          <button type="button" data-basecamp-format="ol" aria-label="Numbered list">1. List</button>
+          <button type="button" data-basecamp-format="underline" data-cmd-hint="⌘U" aria-label="Underline (⌘U)"><u>U</u></button>
+          <button type="button" data-basecamp-format="strike" aria-label="Strikethrough"><s>S</s></button>
+          <span class="basecamp-toolbar-link-wrap" data-basecamp-submenu="format">
+            <button type="button" data-basecamp-submenu-toggle="format" aria-haspopup="menu"
+              aria-expanded="false" aria-label="Format block">¶ ▾</button>
+            <span class="basecamp-submenu" data-basecamp-submenu-panel="format" role="menu" hidden>
+              <button type="button" data-basecamp-format="h2" aria-label="Heading">Heading</button>
+              <button type="button" data-basecamp-format="h3" aria-label="Subheading">Subheading</button>
+              <button type="button" data-basecamp-format="body" aria-label="Body text">Body</button>
+              <button type="button" data-basecamp-format="mono" aria-label="Monostyled">Monostyled</button>
+              <button type="button" data-basecamp-format="ul" aria-label="Dash list">• Dash List</button>
+              <button type="button" data-basecamp-format="ol" aria-label="Numbered list">1. Numbered List</button>
+            </span>
+          </span>
+          <span class="basecamp-toolbar-link-wrap" data-basecamp-submenu="font">
+            <button type="button" data-basecamp-submenu-toggle="font" aria-haspopup="menu"
+              aria-expanded="false" aria-label="Font style">Aa ▾</button>
+            <span class="basecamp-submenu" data-basecamp-submenu-panel="font" role="menu" hidden>
+              <button type="button" data-basecamp-format="highlight" aria-label="Highlight"><mark>Highlight</mark></button>
+              <button type="button" data-basecamp-format="bigger" aria-label="Bigger">Bigger</button>
+              <button type="button" data-basecamp-format="smaller" aria-label="Smaller">Smaller</button>
+              <button type="button" data-basecamp-format="sup" aria-label="Superscript">x<sup>2</sup> Superscript</button>
+              <button type="button" data-basecamp-format="sub" aria-label="Subscript">x<sub>2</sub> Subscript</button>
+              <button type="button" data-basecamp-format="default-script" aria-label="Default script">Default Script</button>
+            </span>
+          </span>
+          <span class="basecamp-toolbar-link-wrap" data-basecamp-submenu="text">
+            <button type="button" data-basecamp-submenu-toggle="text" aria-haspopup="menu"
+              aria-expanded="false" aria-label="Text alignment and indentation">⇆ ▾</button>
+            <span class="basecamp-submenu" data-basecamp-submenu-panel="text" role="menu" hidden>
+              <button type="button" data-basecamp-format="indent" aria-label="Increase indent">Increase Indent</button>
+              <button type="button" data-basecamp-format="outdent" aria-label="Decrease indent">Decrease Indent</button>
+              <button type="button" data-basecamp-format="align-left" aria-label="Align left">Align Left</button>
+              <button type="button" data-basecamp-format="align-center" aria-label="Align center">Center</button>
+              <button type="button" data-basecamp-format="align-right" aria-label="Align right">Align Right</button>
+              <button type="button" data-basecamp-format="align-justify" aria-label="Justify">Justify</button>
+            </span>
+          </span>
           <span class="basecamp-toolbar-link-wrap">
             <button type="button" data-basecamp-url-link data-cmd-hint="⌘K" aria-label="Insert URL link (⌘K)">Link</button>
             <span id="basecampLinkPopover" class="basecamp-link-popover" hidden>
@@ -29035,6 +29259,61 @@
 
     function basecampInPanelMode() {
       return state.settings.basecampPanelMode === "panel";
+    }
+
+    function clampBasecampSidebarRatio(value) {
+      return Math.max(0.12, Math.min(0.55, Number.isFinite(Number(value)) ? Number(value) : 0.22));
+    }
+
+    function syncBasecampSidebarLayout() {
+      const workspace = $("#basecampWorkspace");
+      if (!workspace) return;
+      const ratio = clampBasecampSidebarRatio(state.settings.basecampSidebarRatio);
+      workspace.style.setProperty("--basecamp-sidebar-ratio", String(ratio));
+    }
+
+    function bindBasecampSidebarHandle() {
+      const handle = $("#basecampSidebarHandle");
+      const workspace = $("#basecampWorkspace");
+      if (!handle || !workspace || handle.dataset.bound === "1") {
+        syncBasecampSidebarLayout();
+        return;
+      }
+      handle.dataset.bound = "1";
+      let active = false;
+      const rectStart = { left: 0, width: 0 };
+      handle.addEventListener("pointerdown", event => {
+        active = true;
+        event.preventDefault();
+        handle.setPointerCapture?.(event.pointerId);
+        const rect = workspace.getBoundingClientRect();
+        rectStart.left = rect.left;
+        rectStart.width = rect.width;
+      });
+      window.addEventListener("pointermove", event => {
+        if (!active) return;
+        event.preventDefault();
+        const relative = (event.clientX - rectStart.left) / Math.max(1, rectStart.width);
+        state.settings.basecampSidebarRatio = clampBasecampSidebarRatio(relative);
+        syncBasecampSidebarLayout();
+      });
+      window.addEventListener("pointerup", () => {
+        if (!active) return;
+        active = false;
+        save();
+      });
+      handle.addEventListener("keydown", event => {
+        if (!["ArrowLeft", "ArrowRight", "Home"].includes(event.key)) return;
+        event.preventDefault();
+        let ratio = clampBasecampSidebarRatio(state.settings.basecampSidebarRatio);
+        if (event.key === "Home") ratio = 0.22;
+        else if (event.key === "ArrowLeft") ratio = clampBasecampSidebarRatio(ratio - 0.03);
+        else if (event.key === "ArrowRight") ratio = clampBasecampSidebarRatio(ratio + 0.03);
+        state.settings.basecampSidebarRatio = ratio;
+        save();
+        syncBasecampSidebarLayout();
+      });
+      syncBasecampSidebarLayout();
     }
 
     function ensureBasecampSplitHandle() {
@@ -29558,12 +29837,101 @@
       handleBasecampInput();
     }
 
+    function closeBasecampSubmenus() {
+      $$("[data-basecamp-submenu-panel]").forEach(panel => panel.hidden = true);
+      $$("[data-basecamp-submenu-toggle]").forEach(btn => btn.setAttribute("aria-expanded", "false"));
+    }
+
+    function toggleBasecampSubmenu(name) {
+      const panel = $(`[data-basecamp-submenu-panel="${name}"]`);
+      const toggle = $(`[data-basecamp-submenu-toggle="${name}"]`);
+      if (!panel || !toggle) return;
+      const open = panel.hidden;
+      closeBasecampSubmenus();
+      if (open) {
+        panel.hidden = false;
+        toggle.setAttribute("aria-expanded", "true");
+      }
+    }
+
     function handleBasecampFormat(action) {
-      if (action === "bold") toggleBasecampInline("strong");
-      if (action === "italic") toggleBasecampInline("em");
-      if (action === "h2" || action === "h3") applyBasecampBlock(action);
-      if (action === "ul" || action === "ol") applyBasecampList(action);
-      if (action === "clear") clearBasecampFormatting();
+      if (action === "bold") return toggleBasecampInline("strong");
+      if (action === "italic") return toggleBasecampInline("em");
+      if (action === "underline") return toggleBasecampInline("u");
+      if (action === "strike") return toggleBasecampInline("s");
+      if (action === "highlight") return toggleBasecampInline("mark");
+      if (action === "sup") return toggleBasecampInline("sup");
+      if (action === "sub") return toggleBasecampInline("sub");
+      if (action === "default-script") {
+        toggleBasecampInline("sup");
+        toggleBasecampInline("sub");
+        return;
+      }
+      if (action === "h2" || action === "h3") return applyBasecampBlock(action);
+      if (action === "body") return applyBasecampBlock("p");
+      if (action === "mono") return applyBasecampBlock("pre");
+      if (action === "ul" || action === "ol") return applyBasecampList(action);
+      if (action === "bigger") return applyBasecampFontSizeClass("basecamp-font-up");
+      if (action === "smaller") return applyBasecampFontSizeClass("basecamp-font-down");
+      if (action === "indent") return applyBasecampBlockClassDelta(1);
+      if (action === "outdent") return applyBasecampBlockClassDelta(-1);
+      if (action === "align-left") return applyBasecampBlockAlignClass("basecamp-align-left");
+      if (action === "align-center") return applyBasecampBlockAlignClass("basecamp-align-center");
+      if (action === "align-right") return applyBasecampBlockAlignClass("basecamp-align-right");
+      if (action === "align-justify") return applyBasecampBlockAlignClass("basecamp-align-justify");
+      if (action === "clear") return clearBasecampFormatting();
+    }
+
+    function applyBasecampFontSizeClass(className) {
+      const range = basecampSelectionRange();
+      if (!range || range.collapsed) {
+        setBasecampStatus("Select text to resize it", true);
+        return;
+      }
+      wrapBasecampSelectedText(range, () => {
+        const span = document.createElement("span");
+        span.className = className;
+        return span;
+      });
+      handleBasecampInput();
+    }
+
+    function activeBasecampBlock(range) {
+      const body = $("[data-basecamp-body]");
+      if (!body) return null;
+      const start = range.startContainer.nodeType === Node.ELEMENT_NODE ? range.startContainer : range.startContainer.parentElement;
+      const block = start?.closest?.("p,h2,h3,blockquote,pre,li");
+      return block && body.contains(block) ? block : null;
+    }
+
+    function applyBasecampBlockAlignClass(className) {
+      const range = basecampSelectionRange();
+      if (!range) return;
+      const block = activeBasecampBlock(range);
+      if (!block) return setBasecampStatus("Place the cursor in a paragraph first", true);
+      [...block.classList].forEach(name => {
+        if (/^basecamp-align-/.test(name)) block.classList.remove(name);
+      });
+      block.classList.add(className);
+      handleBasecampInput();
+    }
+
+    function applyBasecampBlockClassDelta(direction) {
+      const range = basecampSelectionRange();
+      if (!range) return;
+      const block = activeBasecampBlock(range);
+      if (!block) return setBasecampStatus("Place the cursor in a paragraph first", true);
+      // Indent wraps in <blockquote>; outdent unwraps the nearest blockquote.
+      if (direction > 0) {
+        const bq = document.createElement("blockquote");
+        block.replaceWith(bq);
+        bq.append(block);
+      } else {
+        const bq = block.closest("blockquote");
+        if (!bq) return setBasecampStatus("Nothing to outdent", true);
+        bq.replaceWith(...bq.childNodes);
+      }
+      handleBasecampInput();
     }
 
     function insertBasecampFragment(fragment) {
@@ -29736,6 +30104,7 @@
         render();
       });
       $("#basecampDockBtn")?.addEventListener("click", toggleBasecampPanelMode);
+      bindBasecampSidebarHandle();
       window.addEventListener("resize", () => syncBasecampPanelLayout());
       window.addEventListener("scroll", () => syncBasecampPanelLayout(), { passive: true });
       // Holding Cmd (or Ctrl on non-Mac) while Basecamp is open reveals the
@@ -29757,9 +30126,7 @@
       });
       window.addEventListener("blur", () => updateBasecampCmdHint(false));
       $("#basecampNewPadBtn").addEventListener("click", createBasecampPad);
-      $("#basecampCopyBtn").addEventListener("click", () => copyBasecampText());
       $("#basecampCopyAllBtn").addEventListener("click", () => copyBasecampText({ all: true }));
-      $("#basecampClearBtn").addEventListener("click", clearBasecampText);
       $("#basecampSearch").addEventListener("input", event => {
         basecampSearchQuery = event.target.value;
         clearTimeout(basecampSearchTimer);
@@ -29848,9 +30215,20 @@
           }
           return;
         }
+        if (event.target.closest("[data-basecamp-copy-current]")) {
+          copyBasecampText();
+          return;
+        }
+        const subToggle = event.target.closest("[data-basecamp-submenu-toggle]");
+        if (subToggle) {
+          event.stopPropagation();
+          toggleBasecampSubmenu(subToggle.dataset.basecampSubmenuToggle);
+          return;
+        }
         const format = event.target.closest("[data-basecamp-format]");
         if (format) {
           handleBasecampFormat(format.dataset.basecampFormat);
+          closeBasecampSubmenus();
           return;
         }
         if (event.target.closest("[data-basecamp-url-link]")) {
@@ -29897,14 +30275,27 @@
           if (basecampRenamePadId === input.dataset.basecampRenameInput) commitBasecampRename(input.dataset.basecampRenameInput);
         });
       });
+      // Double-click the pad title (sidebar row or active-pad header) to
+       // jump straight into inline rename mode.
+      workspace.addEventListener("dblclick", event => {
+        const target = event.target.closest("[data-basecamp-rename-target]");
+        if (!target) return;
+        event.preventDefault();
+        const padId = target.dataset.basecampRenameTarget;
+        if (!padId) return;
+        basecampRenamePadId = padId;
+        basecampRowMenuPadId = "";
+        renderBasecampPadList({ focusRename: true });
+      });
       workspace.addEventListener("keydown", event => {
         const body = event.target.closest("[data-basecamp-body]");
         if (body && (event.metaKey || event.ctrlKey)) {
           const key = event.key.toLowerCase();
-          if (key === "b" || key === "i" || key === "k") {
+          if (key === "b" || key === "i" || key === "u" || key === "k") {
             event.preventDefault();
             if (key === "b") toggleBasecampInline("strong");
             if (key === "i") toggleBasecampInline("em");
+            if (key === "u") toggleBasecampInline("u");
             if (key === "k") openBasecampLinkPopover();
             return;
           }
@@ -30001,6 +30392,9 @@
           renderBasecampPadList();
         }
         if (dialog.open && !event.target.closest("#basecampLinkPopover, [data-basecamp-url-link]")) closeBasecampLinkPopover();
+        if (dialog.open && !event.target.closest("[data-basecamp-submenu], [data-basecamp-submenu-toggle], [data-basecamp-submenu-panel]")) {
+          closeBasecampSubmenus();
+        }
       });
       $("#noteDialog").addEventListener("close", () => {
         if (dialog.open) renderBasecampDialog();
@@ -31502,7 +31896,6 @@
             $("#basecampDialog").close();
           },
           p: () => copyBasecampText(),
-          x: clearBasecampText,
           n: createBasecampPad,
           l: openBasecampNotePicker,
           "/": () => {
