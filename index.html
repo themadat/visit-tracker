@@ -1653,19 +1653,21 @@
       height: 1.35rem;
     }
 
-    /* Selected option in the Waypoint Pack picker. The user found the prior
-       dark-mode tone (slate-700) too light against the dark dropdown — we
-       restore the dimmer charcoal that previously worked. Light mode needs
-       a notably darker fill than the white dropdown so the arrow-key cursor
-       does not blend in: dark slate fill with slate-900 ring. !important
-       guards against generic button/toggle styles overwriting the fill. */
+    /* Selected option in the Waypoint Pack picker. We want the SAME visual
+       contract in both themes: a moderate gray fill that's clearly darker
+       than the dropdown surface, with a strong slate ring + inset border
+       so the boundary reads, while the icon glyphs keep their normal
+       color. Crucially, we do NOT force text color — the inner pack-symbol
+       paths still render in their default tone (the __CIRCLE_CIRCLE_FILL
+       glyph would otherwise paint its inner ring with `currentColor`
+       overriding `var(--surface)` and visually mutate the icon). */
     .map-waypoint-pack-select[aria-pressed="true"] {
-      background: #334155 !important;       /* slate-700 fill against #fff dropdown */
-      border-color: #0f172a !important;     /* slate-900 ring */
+      background: #b8c1cf !important;       /* slate-300/400 — clearly grayer than #fff */
+      border-color: #475569 !important;     /* slate-600 ring */
       box-shadow:
-        inset 0 0 0 2px #0f172a,
-        0 4px 10px rgba(15, 23, 42, .35) !important;
-      color: #f8fafc !important;            /* slate-50 text */
+        inset 0 0 0 2px #475569,
+        0 2px 6px rgba(15, 23, 42, .2) !important;
+      color: inherit !important;
     }
 
     [data-theme="dark"] .map-waypoint-pack-select[aria-pressed="true"] {
@@ -16743,7 +16745,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.4.0.21";
+    const APP_VERSION = "4.4.0.22";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -18739,6 +18741,26 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "4.4.0.22",
+        date: "2026-06-08",
+        title: "Basecamps",
+        summary: "Light-mode picker selection dialed back to a moderate slate gray so the icons keep their own color.",
+        notice: {
+          version: "4.4.0",
+          title: "Basecamps",
+          summary: "Turn Basecamp into named rich-text pads with search and linked location notes.",
+          cta: "Make|Camp!"
+        },
+        highlights: [
+          "Light-mode picker selection paints a clearly-darker gray with a slate-600 ring — icons keep their normal color and the __CIRCLE_CIRCLE_FILL glyph stops mutating when selected."
+        ],
+        updates: [
+          "Toned light-mode .map-waypoint-pack-select[aria-pressed=\"true\"] from slate-700/white-text down to a slate-300/400 fill (#b8c1cf) with a slate-600 (#475569) ring and 2px inset border — boundary reads at a glance, the icon glyphs keep their original color.",
+          "Stopped forcing color on the selected option in both themes (color: inherit !important) so pack-symbol paths that paint their inner ring via var(--surface) — like __CIRCLE_CIRCLE_FILL — render the same glyph selected or not.",
+          "Dark mode unchanged: #3a414c fill / #5b6473 ring (the previous-known-good)."
+        ]
+      },
       {
         version: "4.4.0.21",
         date: "2026-06-08",
