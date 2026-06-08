@@ -1653,23 +1653,25 @@
       height: 1.35rem;
     }
 
+    /* Selected option in the Waypoint Pack picker uses a neutral gray fill
+       in both themes (was a teal radial wash) so it reads as "active" without
+       fighting the NPS/monument silhouette colors that sit on top. */
     .map-waypoint-pack-select[aria-pressed="true"] {
-      border-color: #14b8a6;
-      background:
-        radial-gradient(circle at 50% 60%, color-mix(in srgb, #14b8a6 38%, transparent), color-mix(in srgb, #14b8a6 18%, var(--surface)) 75%),
-        color-mix(in srgb, #14b8a6 28%, var(--surface));
+      border-color: color-mix(in srgb, var(--text) 35%, var(--line));
+      background: color-mix(in srgb, var(--text) 14%, var(--surface));
       box-shadow:
-        inset 0 0 0 2px #14b8a6,
-        0 0 0 2px color-mix(in srgb, #14b8a6 30%, transparent),
-        0 6px 14px -6px color-mix(in srgb, #14b8a6 60%, transparent);
-      color: #0f766e;
+        inset 0 0 0 1px color-mix(in srgb, var(--text) 28%, var(--line)),
+        0 1px 2px rgba(16, 24, 40, .08);
+      color: inherit;
     }
 
     [data-theme="dark"] .map-waypoint-pack-select[aria-pressed="true"] {
-      color: #99f6e4;
-      background:
-        radial-gradient(circle at 50% 60%, color-mix(in srgb, #14b8a6 48%, transparent), color-mix(in srgb, #14b8a6 24%, var(--surface)) 75%),
-        color-mix(in srgb, #14b8a6 32%, var(--surface));
+      border-color: color-mix(in srgb, var(--text) 30%, var(--line));
+      background: color-mix(in srgb, var(--text) 18%, var(--surface));
+      box-shadow:
+        inset 0 0 0 1px color-mix(in srgb, var(--text) 24%, var(--line)),
+        0 1px 2px rgba(0, 0, 0, .35);
+      color: inherit;
     }
 
     .map-waypoint-pack-select:focus-visible {
@@ -2295,12 +2297,15 @@
       color: #fff;
     }
 
-    /* Park artwork has hard-coded #000 fills (not currentColor) so the theme
-       flips are targeted. The base rule covers the dark Waypoint Packs modal;
-       the second rule mirrors the monument's light-theme treatment by
-       whitening the silhouette wherever it rides a colored pin (map markers,
-       set-overlay markers, and the Notes pin contexts). Dark theme keeps the
-       original black silhouette on those same pins. */
+    /* Park artwork ships with hard-coded #000 fills + #888 strokes (not
+       currentColor) so the theme/context flips are targeted per surface.
+       Specificity ladder, lowest to highest:
+       1. Map markers + Waypoint Packs modal — silhouette stays visible.
+       2. Notes contexts — fall back to whatever the row-level rule sets.
+       3. Condensed notes — black/white outline (no fill).
+       4. Expanded notes — outline takes the row's level color.
+       5. Notes icon toggle filters — gray fill, theme-tuned.
+       6. Map header label selector + picker option — black/white fill. */
     [data-theme="dark"] #waypointPacksPanel .pack-symbol.is-national-park path[fill="#000"] {
       fill: #fff;
     }
@@ -2308,8 +2313,46 @@
     html:not([data-theme="dark"]) .map-marker-icon .pack-symbol.is-national-park path[fill="#000"],
     html:not([data-theme="dark"]) .set-marker-icon .pack-symbol.is-national-park path[fill="#000"],
     html:not([data-theme="dark"]) .visit-icon-stack .pack-symbol.is-national-park path[fill="#000"],
-    html:not([data-theme="dark"]) .visit-type-tag .pack-symbol.is-national-park path[fill="#000"],
-    html:not([data-theme="dark"]) .compact-note-icon .pack-symbol.is-national-park path[fill="#000"] {
+    html:not([data-theme="dark"]) .visit-type-tag .pack-symbol.is-national-park path[fill="#000"] {
+      fill: #fff;
+    }
+
+    /* Condensed note rows: hollow arrowhead, theme-keyed stroke. */
+    html:not([data-theme="dark"]) .compact-note-row:not(.is-expanded) .compact-note-icon .pack-symbol.is-national-park path[fill="#000"] {
+      fill: none;
+      stroke: #000;
+    }
+
+    [data-theme="dark"] .compact-note-row:not(.is-expanded) .compact-note-icon .pack-symbol.is-national-park path[fill="#000"] {
+      fill: none;
+      stroke: #fff;
+    }
+
+    /* Expanded note rows: hollow arrowhead outlined in the row's level color
+       (visit-icon-stack carries color via inline style). */
+    .compact-note-row.is-expanded .compact-note-icon .pack-symbol.is-national-park path[fill="#000"] {
+      fill: none;
+      stroke: currentColor;
+    }
+
+    /* Notes icon-toggle filter list: filled silhouette, theme-keyed gray. */
+    html:not([data-theme="dark"]) .notes-icon-filter .pack-symbol.is-national-park path[fill="#000"] {
+      fill: #555;
+    }
+
+    [data-theme="dark"] .notes-icon-filter .pack-symbol.is-national-park path[fill="#000"] {
+      fill: #aaa;
+    }
+
+    /* Map header label selector and the picker option for the same target:
+       filled silhouette, black on light, white on dark. */
+    html:not([data-theme="dark"]) .map-label-target-icon .pack-symbol.is-national-park path[fill="#000"],
+    html:not([data-theme="dark"]) .map-waypoint-pack-select .pack-symbol.is-national-park path[fill="#000"] {
+      fill: #000;
+    }
+
+    [data-theme="dark"] .map-label-target-icon .pack-symbol.is-national-park path[fill="#000"],
+    [data-theme="dark"] .map-waypoint-pack-select .pack-symbol.is-national-park path[fill="#000"] {
       fill: #fff;
     }
 
@@ -6768,16 +6811,16 @@
     }
 
     .basecamp-edit-title-btn .sf-symbol {
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
     }
 
     .basecamp-editor-head .basecamp-edit-title-btn {
-      width: 22px;
-      min-width: 22px;
-      height: 22px;
-      min-height: 22px;
-      padding: .12rem;
+      width: 27px;
+      min-width: 27px;
+      height: 27px;
+      min-height: 27px;
+      padding: .14rem;
       flex: 0 0 auto;
     }
 
@@ -16548,7 +16591,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.4.0.15";
+    const APP_VERSION = "4.4.0.16";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -18544,6 +18587,33 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "4.4.0.16",
+        date: "2026-06-08",
+        title: "Basecamps",
+        summary: "NPS arrowhead reads per surface, picker option goes neutral gray, and the Basecamp head rename/icon actions actually work.",
+        notice: {
+          version: "4.4.0",
+          title: "Basecamps",
+          summary: "Turn Basecamp into named rich-text pads with search and linked location notes.",
+          cta: "Make|Camp!"
+        },
+        highlights: [
+          "Expanded notes: NPS arrowhead becomes a hollow outline tinted with the level color.",
+          "Condensed notes: NPS arrowhead is a hollow outline — black in light, white in dark.",
+          "Notes icon-toggle list: NPS fills as theme-tuned gray; map-header label selector + picker option fill as theme-keyed black/white.",
+          "Map label picker active option uses a neutral gray background; Basecamp edit pencil grew ~25%.",
+          "Editing the title and the icon from the Basecamp pad header now actually triggers the rename/icon picker."
+        ],
+        updates: [
+          "Reshuffled the .pack-symbol.is-national-park CSS into 6 layered rules so each surface (modal, map markers, expanded notes, condensed notes, notes icon-filter, label selector + picker option) gets the right fill or stroke per theme.",
+          "Expanded note arrowhead now renders with fill: none + stroke: currentColor; condensed gets fill: none + stroke #000 / #fff per theme; notes-icon-filter fills #555 / #aaa; map-header label selector + .map-waypoint-pack-select fill #000 / #fff per theme.",
+          "Replaced the teal radial wash on .map-waypoint-pack-select[aria-pressed='true'] with a neutral gray fill in both themes so the silhouette riding on top stays readable.",
+          "Bumped .basecamp-edit-title-btn .sf-symbol 8px → 10px and the head button frame 22×22 → 27×27 (~25%).",
+          "Switched four basecamp click/dblclick handlers (sidebar row, [data-basecamp-rename], [data-basecamp-icon-picker], [data-basecamp-rename-target]) from renderBasecampPadList to renderBasecampDialog so the editor head re-renders with the rename input + icon picker; Escape inside the rename input also re-renders the full dialog.",
+          "Sidebar-row + title-target dblclick now manually flushes the pad and points state.basecamp.activePadId at the clicked row (skipping setActiveBasecampPad so it does not stomp basecampRenamePadId)."
+        ]
+      },
       {
         version: "4.4.0.15",
         date: "2026-06-08",
@@ -30418,9 +30488,20 @@
       workspace.addEventListener("dblclick", event => {
         const row = event.target.closest("[data-basecamp-pad-row]");
         if (!row || event.target.closest(".basecamp-row-menu, .basecamp-row-actions-btn")) return;
-        basecampRenamePadId = row.dataset.basecampPadRow;
+        const padId = row.dataset.basecampPadRow;
+        if (!padId) return;
+        // Rename UI lives in the editor head — point the active pad at this
+        // row (without setActiveBasecampPad, which would clear the rename
+        // state we are about to set) then re-render so the head swaps in
+        // the rename input.
+        if (basecampPads().some(pad => pad.id === padId)) {
+          flushBasecampPad();
+          state.basecamp.activePadId = padId;
+        }
+        basecampRenamePadId = padId;
         basecampRowMenuPadId = "";
-        renderBasecampPadList({ focusRename: true });
+        save();
+        renderBasecampDialog({ focusRename: true });
       });
       workspace.addEventListener("click", event => {
         const select = event.target.closest("[data-basecamp-select]");
@@ -30441,9 +30522,11 @@
         }
         const rename = event.target.closest("[data-basecamp-rename]");
         if (rename) {
+          // Rename input lives in the editor head — re-render both halves so
+          // the head swaps the title for the input and focus lands inside it.
           basecampRenamePadId = rename.dataset.basecampRename;
           basecampRowMenuPadId = "";
-          renderBasecampPadList({ focusRename: true });
+          renderBasecampDialog({ focusRename: true });
           return;
         }
         const renameDone = event.target.closest("[data-basecamp-rename-done]");
@@ -30458,8 +30541,12 @@
         }
         const iconPicker = event.target.closest("[data-basecamp-icon-picker]");
         if (iconPicker) {
-          basecampIconPickerPadId = basecampIconPickerPadId === iconPicker.dataset.basecampIconPicker ? "" : iconPicker.dataset.basecampIconPicker;
-          renderBasecampPadList({ focusRename: true });
+          // Icon picker now lives in the editor-head rename row, so refresh
+          // the full dialog (not just the sidebar) to toggle it visible.
+          basecampIconPickerPadId = basecampIconPickerPadId === iconPicker.dataset.basecampIconPicker
+            ? ""
+            : iconPicker.dataset.basecampIconPicker;
+          renderBasecampDialog({ focusRename: true });
           return;
         }
         const icon = event.target.closest("[data-basecamp-icon]");
@@ -30544,9 +30631,16 @@
         event.preventDefault();
         const padId = target.dataset.basecampRenameTarget;
         if (!padId) return;
+        // Activate the renamed pad directly (avoid setActiveBasecampPad — it
+        // would clear the rename state we are about to set).
+        if (basecampPads().some(pad => pad.id === padId)) {
+          flushBasecampPad();
+          state.basecamp.activePadId = padId;
+        }
         basecampRenamePadId = padId;
         basecampRowMenuPadId = "";
-        renderBasecampPadList({ focusRename: true });
+        save();
+        renderBasecampDialog({ focusRename: true });
       });
       workspace.addEventListener("keydown", event => {
         const body = event.target.closest("[data-basecamp-body]");
@@ -30569,9 +30663,10 @@
         }
         if (rename && event.key === "Escape") {
           event.preventDefault();
+          // Tear down the editor-head rename row too, not just the sidebar.
           basecampRenamePadId = "";
           basecampIconPickerPadId = "";
-          renderBasecampPadList();
+          renderBasecampDialog();
           return;
         }
         const row = event.target.closest("[data-basecamp-pad-row]");
