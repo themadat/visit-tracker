@@ -2295,10 +2295,21 @@
       color: #fff;
     }
 
-    /* Park artwork has hard-coded #000 fills (not currentColor) so the dark-mode
-       flip is targeted: inside the Waypoint Packs modal only, rewrite the
-       black paths to white. Map markers still render the original black silhouette. */
+    /* Park artwork has hard-coded #000 fills (not currentColor) so the theme
+       flips are targeted. The base rule covers the dark Waypoint Packs modal;
+       the second rule mirrors the monument's light-theme treatment by
+       whitening the silhouette wherever it rides a colored pin (map markers,
+       set-overlay markers, and the Notes pin contexts). Dark theme keeps the
+       original black silhouette on those same pins. */
     [data-theme="dark"] #waypointPacksPanel .pack-symbol.is-national-park path[fill="#000"] {
+      fill: #fff;
+    }
+
+    html:not([data-theme="dark"]) .map-marker-icon .pack-symbol.is-national-park path[fill="#000"],
+    html:not([data-theme="dark"]) .set-marker-icon .pack-symbol.is-national-park path[fill="#000"],
+    html:not([data-theme="dark"]) .visit-icon-stack .pack-symbol.is-national-park path[fill="#000"],
+    html:not([data-theme="dark"]) .visit-type-tag .pack-symbol.is-national-park path[fill="#000"],
+    html:not([data-theme="dark"]) .compact-note-icon .pack-symbol.is-national-park path[fill="#000"] {
       fill: #fff;
     }
 
@@ -16537,7 +16548,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.4.0.14";
+    const APP_VERSION = "4.4.0.15";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -18533,6 +18544,24 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "4.4.0.15",
+        date: "2026-06-08",
+        title: "Basecamps",
+        summary: "Light-theme NPS arrowhead now reads white on map and Notes pins, matching the monument silhouette.",
+        notice: {
+          version: "4.4.0",
+          title: "Basecamps",
+          summary: "Turn Basecamp into named rich-text pads with search and linked location notes.",
+          cta: "Make|Camp!"
+        },
+        highlights: [
+          "National Park silhouette flips to white on light-theme map markers and Notes location pins (dark theme keeps the original black)."
+        ],
+        updates: [
+          "Added a light-theme attribute selector that rewrites path[fill=\"#000\"] → #fff on .pack-symbol.is-national-park inside .map-marker-icon, .set-marker-icon, .visit-icon-stack, .visit-type-tag, and .compact-note-icon contexts so the NPS arrowhead reads against the colored pin. Dark theme rules remain untouched."
+        ]
+      },
       {
         version: "4.4.0.14",
         date: "2026-06-08",
