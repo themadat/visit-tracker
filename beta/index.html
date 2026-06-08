@@ -15612,13 +15612,13 @@
           <button id="basecampCopyMenuBtn" class="basecamp-copy-menu-btn" type="button"
             aria-label="More Basecamp copy options" aria-expanded="false">▾</button>
           <span id="basecampCopyMenu" class="basecamp-copy-menu" role="menu" hidden>
-            <button id="basecampCopyAllBtn" type="button" role="menuitem">Copy all pads</button>
+            <button id="basecampCopyAllBtn" type="button" role="menuitem">Copy All Pads</button>
           </span>
         </span>
         <button id="basecampClearBtn" class="danger" type="button" data-shortcut="X">Clear</button>
         <button id="basecampDockBtn" type="button" aria-pressed="false"
           aria-label="Dock Basecamp beside the map"
-          title="Pop into the panel column">Pop In</button>
+          title="Pop Into the Notes Panel">Pop In</button>
         <button id="basecampCloseBtn" class="dialog-close" type="button" data-close="basecampDialog"
           data-shortcut="Esc">Close</button>
       </div>
@@ -16345,7 +16345,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.4.0.5";
+    const APP_VERSION = "4.4.0.6";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -18293,6 +18293,25 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "4.4.0.6",
+        date: "2026-06-07",
+        title: "Basecamps",
+        summary: "Escape closes dialogs instead of escaping standalone fullscreen.",
+        notice: {
+          version: "4.4.0",
+          title: "Basecamps",
+          summary: "Turn Basecamp into named rich-text pads with search and linked location notes.",
+          cta: "Make|Camp!"
+        },
+        highlights: [
+          "Pressing Escape now closes every dialog (and the Waypoint Packs panel) without exiting standalone fullscreen."
+        ],
+        updates: [
+          "Moved the global Escape handler to the capture phase and made it preventDefault + stopPropagation so the browser cannot also handle the key (e.g. exit standalone/PWA fullscreen).",
+          "Top-most dialog now closes synchronously via the correct close path (closeNoteDialog / flushBasecampPad + close / dialog.close)."
+        ]
+      },
       {
         version: "4.4.0.5",
         date: "2026-06-07",
@@ -22628,7 +22647,7 @@
       setButtonLabel("#saveAddNoteBtn", __CHECKMARK_CIRCLE_BADGE_PLUS_FILL, "Save + Add", "Save and add another note");
       setButtonLabel("#tipJarCloseBtn", __XMARK, "Close");
       setButtonLabel("#basecampCopyBtn", __DOCUMENT_ON_DOCUMENT, "Copy", "Copy Basecamp text");
-      setButtonLabel("#basecampCopyAllBtn", __DOCUMENT_ON_CLIPBOARD, "Copy all pads", "Copy all Basecamp pads");
+      setButtonLabel("#basecampCopyAllBtn", __DOCUMENT_ON_CLIPBOARD, "Copy All Pads", "Copy all Basecamp Pads");
       setButtonLabel("#basecampClearBtn", ICON_SETTINGS_DELETE__TRASH_FILL, "Clear", "Clear Basecamp");
       setButtonLabel("#basecampCloseBtn", __XMARK, "Close");
       // Force an icon-only button — the row layout depends on it staying square.
@@ -28919,10 +28938,10 @@
           "#basecampDockBtn",
           panel ? __PIP_ENTER : __PIP_EXIT,
           panel ? "Pop Out" : "Pop In",
-          panel ? "Pop Basecamp back into a modal" : "Pop Basecamp into the side column",
-          panel ? "Pop back into a modal" : "Dock into the side column"
+          panel ? "Pop Out to Solo Modal" : "Pop Into the Notes Panel",
+          panel ? "Pop Out to Solo Modal" : "Pop Into the Notes Panel"
         );
-        dock.title = panel ? "Pop back into a centered modal" : "Pop into the panel column";
+        dock.title = panel ? "Pop Out to Solo Modal" : "Pop Into the Notes Panel";
       }
     }
 
@@ -32136,38 +32155,44 @@
       document.addEventListener("keydown", handlePowerShortcut);
       document.addEventListener("keyup", updatePowerOverlay);
       // Esc closes every open dialog and the inline Waypoint Packs panel even
-      // outside Shortcut Mode. Native dialog.cancel covers .showModal() dialogs
-      // automatically, but Basecamp panel mode uses .show() (no native Escape)
-      // and the Waypoint Packs panel is not a <dialog> at all.
+      // outside Shortcut Mode. Registered in the CAPTURE phase so the handler
+      // runs before any focused element (or the browser's own Escape handler,
+      // which would otherwise exit installed/standalone fullscreen mode)
+      // gets a chance to consume the event.
       document.addEventListener("keydown", event => {
         if (event.key !== "Escape" || event.defaultPrevented) return;
         if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
         const basecamp = $("#basecampDialog");
         if (basecamp?.open && basecampInPanelMode()) {
           event.preventDefault();
+          event.stopPropagation();
           flushBasecampPad();
           basecamp.close();
           return;
         }
-        // Fallback for any non-modal or otherwise stuck dialog: close the
-        // top-most open <dialog>. .showModal() dialogs normally close
-        // themselves via the cancel event, but this guards against listeners
-        // that swallow Escape (focused contenteditables, third-party widgets).
+        // Close the top-most open <dialog> synchronously and swallow the
+        // keydown so the browser cannot also act on Escape (e.g. exit
+        // standalone/PWA fullscreen). Note dialog has its own handler that
+        // already runs first; the openDialogs check finds whichever is on top.
         const openDialogs = [...document.querySelectorAll("dialog")].filter(d => d.open);
         if (openDialogs.length) {
           const top = openDialogs[openDialogs.length - 1];
-          // Don't double-close if something else is going to. Only intercept
-          // when the top dialog hasn't already scheduled a native cancel.
-          requestAnimationFrame(() => {
-            if (top.open) top.close();
-          });
+          event.preventDefault();
+          event.stopPropagation();
+          if (top.id === "noteDialog") closeNoteDialog();
+          else if (top.id === "basecampDialog") {
+            flushBasecampPad();
+            top.close();
+          }
+          else top.close();
           return;
         }
         if (waypointPacksPanelOpen) {
           event.preventDefault();
+          event.stopPropagation();
           closeWaypointPacksPanel();
         }
-      });
+      }, true);
       window.addEventListener("blur", () => setPowerOverlay(false));
       window.addEventListener("resize", () => {
         if (!legendPositionControlAvailable()) closeLegendPositionMenu();
