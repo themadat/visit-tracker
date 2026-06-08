@@ -16,10 +16,7 @@ Text (textformat.characters.arrow.left.and.right)
 - [Quote] Decrease (decrease.quotelevel), Quote (quotelevel), Increase (increase.quotelevel),
 - [Indent] Decrease (decrease.indent), Indentation (arrowtriangle.left.and.line.vertical.and.arrowtriangle.right.fill), Increase (increase.indent)
 
-
 much more formatting for basecamp notes
-make square icons
-improve national park icon
 
 Mobile Cleanup: 
 - Better Auto Colors single liner
