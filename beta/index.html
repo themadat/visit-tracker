@@ -6389,9 +6389,9 @@
     #sidePanel[data-basecamp-docked="on"] {
       grid-template-columns: minmax(0, 1fr);
       grid-template-rows:
-        minmax(140px, calc((100% - 6px) * (1 - var(--basecamp-notes-ratio, .5))))
-        6px
-        minmax(140px, calc((100% - 6px) * var(--basecamp-notes-ratio, .5)));
+        minmax(140px, calc((100% - 10px) * (1 - var(--basecamp-notes-ratio, .5))))
+        10px
+        minmax(140px, calc((100% - 10px) * var(--basecamp-notes-ratio, .5)));
       align-items: stretch;
       align-content: stretch;
       gap: 0;
@@ -6423,32 +6423,51 @@
       display: none;
     }
 
-    /* No close button while docked — Pop Out (back to a modal) is the way out. */
-    #basecampDialog[data-basecamp-mode="panel"] #basecampCloseBtn {
-      display: none;
-    }
+    /* Close button stays visible in panel mode so docked Basecamp can be
+       dismissed without first popping it back out into a modal. */
 
-    /* Inline resize handle between Notes panel and docked Basecamp,
-       analogous to #ringPanelResizeHandle. */
+    /* Inline resize handle between Notes panel and docked Basecamp.
+       Mirrors .main-resize-handle: invisible full-width target with a small,
+       centered pill via ::before so the divider is subtle but easy to grab. */
     #basecampSplitHandle {
+      position: relative;
       align-self: stretch;
       width: 100%;
-      height: 6px;
+      height: 10px;
       margin: 0;
-      background: color-mix(in srgb, var(--accent) 26%, var(--surface-2));
-      border-block: 1px solid color-mix(in srgb, var(--accent) 60%, var(--line));
-      border-radius: 4px;
-      cursor: ns-resize;
       padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: ns-resize;
+      touch-action: none;
+    }
+
+    #basecampSplitHandle::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: min(72px, calc(100% - 2rem));
+      min-width: 42px;
+      height: 4px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--line) 72%, var(--accent) 18%);
+      transform: translate(-50%, -50%);
+      transition: height .16s ease, background .16s ease, box-shadow .16s ease;
     }
 
     #basecampSplitHandle[hidden] {
       display: none;
     }
 
-    #basecampSplitHandle:hover,
+    #basecampSplitHandle:hover::before,
+    #basecampSplitHandle:focus-visible::before {
+      height: 6px;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent);
+    }
+
     #basecampSplitHandle:focus-visible {
-      background: color-mix(in srgb, var(--accent) 38%, var(--surface-2));
       outline: none;
     }
 
@@ -6478,30 +6497,12 @@
       padding: 0;
     }
 
-    .basecamp-copy-wrap,
     .basecamp-pad-row,
     .basecamp-toolbar-link-wrap,
     .basecamp-linked-picker-wrap {
       position: relative;
     }
 
-    .basecamp-copy-wrap {
-      display: flex;
-      align-items: stretch;
-    }
-
-    .basecamp-copy-wrap #basecampCopyBtn {
-      border-radius: var(--radius) 0 0 var(--radius);
-    }
-
-    .basecamp-copy-menu-btn {
-      min-width: 32px;
-      padding: .25rem;
-      border-radius: 0 var(--radius) var(--radius) 0;
-      border-left: 0;
-    }
-
-    .basecamp-copy-menu,
     .basecamp-row-menu,
     .basecamp-icon-picker,
     .basecamp-link-popover {
@@ -6516,30 +6517,9 @@
       box-shadow: var(--shadow);
     }
 
-    .basecamp-copy-menu[hidden],
     .basecamp-row-menu[hidden],
     .basecamp-icon-picker[hidden],
     .basecamp-link-popover[hidden] {
-      display: none;
-    }
-
-    .basecamp-copy-menu {
-      top: calc(100% + .3rem);
-      right: 0;
-      min-width: auto;
-    }
-
-    .basecamp-copy-menu button {
-      display: inline-grid;
-      place-items: center;
-      width: 40px;
-      min-width: 40px;
-      height: 40px;
-      min-height: 40px;
-      padding: 0;
-    }
-
-    .basecamp-copy-menu button .btn-text {
       display: none;
     }
 
@@ -15098,7 +15078,7 @@
                 <h3>Waypoint Packs</h3>
                 <small id="waypointPacksSubtitle">Curated place packs for future endeavors</small>
               </div>
-              <button id="waypointPacksCloseBtn" class="dialog-close primary" type="button" aria-label="Close Waypoint Packs">
+              <button id="waypointPacksCloseBtn" class="dialog-close" type="button" aria-label="Close Waypoint Packs">
                 Close
               </button>
             </header>
@@ -15196,7 +15176,7 @@
   <dialog id="addToHomeDialog">
     <header>
       <h2>Add Trail Log as an App!</h2>
-      <button id="installDialogCloseBtn" class="dialog-close primary" type="button" data-close="addToHomeDialog"
+      <button id="installDialogCloseBtn" class="dialog-close" type="button" data-close="addToHomeDialog"
         data-shortcut="Esc">Close</button>
     </header>
     <div class="dialog-body">
@@ -15250,7 +15230,7 @@
   <dialog id="tipJarDialog">
     <header class="tip-jar-head">
       <h2>Buy me a Drink!</h2>
-      <button id="tipJarCloseBtn" class="dialog-close primary" type="button" data-close="tipJarDialog"
+      <button id="tipJarCloseBtn" class="dialog-close" type="button" data-close="tipJarDialog"
         data-shortcut="Esc">Close</button>
     </header>
     <div class="dialog-body">
@@ -15305,7 +15285,7 @@
         <h2 id="markerDialogTitle">Mapped Notes</h2>
         <small id="markerDialogSubtitle"></small>
       </div>
-      <button id="markerDialogCloseBtn" class="dialog-close primary" type="button" data-close="markerDialog"
+      <button id="markerDialogCloseBtn" class="dialog-close" type="button" data-close="markerDialog"
         data-shortcut="Esc">Close</button>
     </header>
     <div class="dialog-body">
@@ -15572,7 +15552,7 @@
   <dialog id="paletteDialog">
     <header>
       <h2>Smart Color Swatches</h2>
-      <button id="paletteCloseBtn" class="primary" type="button" data-close="paletteDialog" data-shortcut="Esc">Close</button>
+      <button id="paletteCloseBtn" type="button" data-close="paletteDialog" data-shortcut="Esc">Close</button>
     </header>
     <div class="dialog-body">
       <p class="muted" data-hint data-hint-key="palette-help">
@@ -15599,7 +15579,7 @@
   <dialog id="smartConvertHelpDialog">
     <header>
       <h2>Smart Convert Rules</h2>
-      <button id="smartConvertHelpCloseBtn" class="primary" type="button" data-close="smartConvertHelpDialog"
+      <button id="smartConvertHelpCloseBtn" type="button" data-close="smartConvertHelpDialog"
         data-shortcut="Esc">Close</button>
     </header>
     <div class="dialog-body smart-convert-help-body">
@@ -15654,19 +15634,13 @@
         <small id="basecampStatus" class="basecamp-status" aria-live="polite">Autosaves as you type.</small>
       </div>
       <div class="dialog-head-actions">
-        <span class="basecamp-copy-wrap">
-          <button id="basecampCopyBtn" type="button" data-shortcut="P">Copy</button>
-          <button id="basecampCopyMenuBtn" class="basecamp-copy-menu-btn" type="button"
-            aria-label="More Basecamp copy options" aria-expanded="false">▾</button>
-          <span id="basecampCopyMenu" class="basecamp-copy-menu" role="menu" hidden>
-            <button id="basecampCopyAllBtn" type="button" role="menuitem">Copy All Pads</button>
-          </span>
-        </span>
+        <button id="basecampCopyBtn" type="button" data-shortcut="P">Copy</button>
+        <button id="basecampCopyAllBtn" type="button">Copy All Pads</button>
         <button id="basecampClearBtn" class="danger" type="button" data-shortcut="X">Clear</button>
         <button id="basecampDockBtn" type="button" aria-pressed="false"
           aria-label="Dock Basecamp beside the map"
           title="Pop Into the Notes Panel">Pop In</button>
-        <button id="basecampCloseBtn" class="dialog-close primary" type="button" data-close="basecampDialog"
+        <button id="basecampCloseBtn" class="dialog-close" type="button" data-close="basecampDialog"
           data-shortcut="Esc">Close</button>
       </div>
     </header>
@@ -15704,7 +15678,7 @@
       <h2>Location Tags</h2>
       <div class="dialog-head-actions">
         <button id="tagDialogBackBtn" type="button" data-shortcut="B">Back to Settings</button>
-        <button id="tagDialogCloseBtn" class="dialog-close primary" type="button" data-close="tagDialog"
+        <button id="tagDialogCloseBtn" class="dialog-close" type="button" data-close="tagDialog"
           data-shortcut="Esc">Close</button>
       </div>
     </header>
@@ -15726,7 +15700,7 @@
         <button class="hidden" type="button" role="tab" data-tab="developer" data-shortcut="V" data-dev-only>Developer
           Tools</button>
       </div>
-      <button id="settingsCloseBtn" class="primary" type="button" data-close="settingsDialog" data-shortcut="Esc">Close</button>
+      <button id="settingsCloseBtn" type="button" data-close="settingsDialog" data-shortcut="Esc">Close</button>
     </header>
     <div class="dialog-body">
 
@@ -16392,7 +16366,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.4.0.8";
+    const APP_VERSION = "4.4.0.9";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -18343,6 +18317,32 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "4.4.0.9",
+        date: "2026-06-08",
+        title: "Basecamps",
+        summary: "Basecamp dock: slimmer divider, dismissable from panel mode, split copy buttons, Esc/Enter rules refined.",
+        notice: {
+          version: "4.4.0",
+          title: "Basecamps",
+          summary: "Turn Basecamp into named rich-text pads with search and linked location notes.",
+          cta: "Make|Camp!"
+        },
+        highlights: [
+          "Slimmer Notes / Basecamp grab divider with a centered pill, matching the main and Rangefinder handles.",
+          "Close button is back in Basecamp's header while docked so it can be dismissed without popping out.",
+          "Copy and Copy All Pads are now two side-by-side header buttons (no dropdown).",
+          "Esc no longer activates Close, and never closes docked Basecamp — only pop-out Basecamp and other modals."
+        ],
+        updates: [
+          "Slimmed #basecampSplitHandle into a transparent strip with a small centered pill via ::before, mirroring .main-resize-handle. Side panel grid row bumped from 6px to 10px to fit the new target.",
+          "Removed the panel-mode CSS hiding #basecampCloseBtn so docked Basecamp can be closed from the header.",
+          "Split the Copy menu into separate #basecampCopyBtn (current pad) and #basecampCopyAllBtn (all pads) header buttons, dropped the chevron toggle, copy menu, and outside-click closer; retired the .basecamp-copy-wrap / .basecamp-copy-menu CSS.",
+          "Reverted .primary on every close button across install / tip jar / palette / settings / smart-convert-help / marker / tag / basecamp / waypoint-packs; close is never the Enter target.",
+          "Tightened the global Enter handler so .dialog-close buttons are skipped: only [data-enter-default] or a real button.primary action counts.",
+          "Reworked the global Escape handler to ignore docked (panel) Basecamp — Esc closes pop-out Basecamp and any open modal but leaves panel Basecamp alone (still preventDefault so PWA fullscreen doesn't exit)."
+        ]
+      },
       {
         version: "4.4.0.8",
         date: "2026-06-08",
@@ -22746,13 +22746,7 @@
       setButtonLabel("#saveAddNoteBtn", __CHECKMARK_CIRCLE_BADGE_PLUS_FILL, "Save + Add", "Save and add another note");
       setButtonLabel("#tipJarCloseBtn", __XMARK, "Close");
       setButtonLabel("#basecampCopyBtn", __DOCUMENT_ON_DOCUMENT, "Copy", "Copy Basecamp text");
-      // Force an icon-only square inside the copy menu regardless of button style.
-      const copyAllBtn = $("#basecampCopyAllBtn");
-      if (copyAllBtn) {
-        copyAllBtn.innerHTML = __DOCUMENT_ON_CLIPBOARD;
-        copyAllBtn.setAttribute("aria-label", "Copy all Basecamp Pads");
-        copyAllBtn.title = "Copy all Basecamp Pads";
-      }
+      setButtonLabel("#basecampCopyAllBtn", __DOCUMENT_ON_CLIPBOARD, "Copy All Pads", "Copy all Basecamp Pads");
       setButtonLabel("#basecampClearBtn", ICON_SETTINGS_DELETE__TRASH_FILL, "Clear", "Clear Basecamp");
       setButtonLabel("#basecampCloseBtn", __XMARK, "Close");
       // Force an icon-only button — the row layout depends on it staying square.
@@ -29709,18 +29703,7 @@
       window.addEventListener("blur", () => updateBasecampCmdHint(false));
       $("#basecampNewPadBtn").addEventListener("click", createBasecampPad);
       $("#basecampCopyBtn").addEventListener("click", () => copyBasecampText());
-      $("#basecampCopyAllBtn").addEventListener("click", () => {
-        $("#basecampCopyMenu").hidden = true;
-        $("#basecampCopyMenuBtn").setAttribute("aria-expanded", "false");
-        copyBasecampText({ all: true });
-      });
-      $("#basecampCopyMenuBtn").addEventListener("click", event => {
-        event.stopPropagation();
-        const menu = $("#basecampCopyMenu");
-        const open = menu.hidden;
-        menu.hidden = !open;
-        event.currentTarget.setAttribute("aria-expanded", String(open));
-      });
+      $("#basecampCopyAllBtn").addEventListener("click", () => copyBasecampText({ all: true }));
       $("#basecampClearBtn").addEventListener("click", clearBasecampText);
       $("#basecampSearch").addEventListener("input", event => {
         basecampSearchQuery = event.target.value;
@@ -29958,10 +29941,6 @@
         closeBasecampLinkPopover();
       });
       document.addEventListener("click", event => {
-        if (!event.target.closest(".basecamp-copy-wrap")) {
-          $("#basecampCopyMenu").hidden = true;
-          $("#basecampCopyMenuBtn").setAttribute("aria-expanded", "false");
-        }
         if (dialog.open && !event.target.closest(".basecamp-row-menu, [data-basecamp-row-menu]") && basecampRowMenuPadId) {
           basecampRowMenuPadId = "";
           renderBasecampPadList();
@@ -32341,19 +32320,15 @@
       document.addEventListener("keydown", event => {
         if (event.key !== "Escape" || event.defaultPrevented) return;
         if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
-        const basecamp = $("#basecampDialog");
-        if (basecamp?.open && basecampInPanelMode()) {
-          event.preventDefault();
-          event.stopPropagation();
-          flushBasecampPad();
-          basecamp.close();
-          return;
-        }
         // Close the top-most open <dialog> synchronously and swallow the
         // keydown so the browser cannot also act on Escape (e.g. exit
         // standalone/PWA fullscreen). Note dialog has its own handler that
         // already runs first; the openDialogs check finds whichever is on top.
-        const openDialogs = [...document.querySelectorAll("dialog")].filter(d => d.open);
+        // Basecamp in PANEL (pop-in) mode is treated like a docked side panel:
+        // Esc never closes it — only pop-out (modal) Basecamp closes on Esc.
+        const basecamp = $("#basecampDialog");
+        const basecampPanelOnly = basecamp?.open && basecampInPanelMode();
+        const openDialogs = [...document.querySelectorAll("dialog")].filter(d => d.open && !(d === basecamp && basecampPanelOnly));
         if (openDialogs.length) {
           const top = openDialogs[openDialogs.length - 1];
           event.preventDefault();
@@ -32364,6 +32339,13 @@
             top.close();
           }
           else top.close();
+          return;
+        }
+        // No dialog to close but a docked Basecamp is open — swallow Esc so
+        // the browser doesn't exit standalone/PWA fullscreen.
+        if (basecampPanelOnly) {
+          event.preventDefault();
+          event.stopPropagation();
           return;
         }
         if (waypointPacksPanelOpen) {
@@ -32391,9 +32373,10 @@
         const openDialogs = [...document.querySelectorAll("dialog")].filter(d => d.open);
         if (!openDialogs.length) return;
         const top = openDialogs[openDialogs.length - 1];
-        const primary = top.querySelector("[data-enter-default]")
-          || top.querySelector("button.primary:not([disabled]):not(.hidden)")
-          || top.querySelector("button.dialog-close:not([disabled]):not(.hidden)");
+        // Close buttons are NEVER the Enter target — only an explicit
+        // [data-enter-default] or a real .primary action button counts.
+        const primary = top.querySelector("[data-enter-default]:not([disabled]):not(.hidden)")
+          || top.querySelector("button.primary:not(.dialog-close):not([disabled]):not(.hidden)");
         if (!primary) return;
         event.preventDefault();
         event.stopPropagation();
