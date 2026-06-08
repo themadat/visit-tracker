@@ -1,23 +1,5 @@
 ## Future Prompt
-
-much more formatting for basecamp notes
-
-Format (paragraphsign)
-- Heading (square.3.layers.3d.top.filled), Subheader (square.3.layers.3d.middle.filled), Body (square.3.layers.3d.bottom.filled), Monostyled (chevron.left.forwardslash.chevron.right)
-- Dashed (list.dash), Bullet (list.bullet), Numbered (list.number), Checklist (checklist)
-
-- Bold (bold), Italic (italic), Underline (underline), Strikethrough (strikethrough)
-- Highlighter (highlighter), Shadow (shadow), Double Underline (underline.double), Double Strikethrough (strikethrough.double), 
-
-Font (textformat)
-- [Size] Smaller (textformat.size.smaller), Default (textformat.size), Bigger (textformat.size.larger)
-- [Baseline] Subscript (textformat.subscript), Default (character), Superscript (textformat.superscript)
-Text (textformat.characters.arrow.left.and.right)
-- [Align] Left (text.alignleft), Center (text.aligncenter), Right (text.alignright)
-- [Justify] Left (text.justify.left), Full (text.justify), Right (text.justify.right)
-- [Quote] Decrease (decrease.quotelevel), Quote (quotelevel), Increase (increase.quotelevel),
-- [Indent] Decrease (decrease.indent), Indentation (arrowtriangle.left.and.line.vertical.and.arrowtriangle.right.fill), Increase (increase.indent)
-
+_vt-checkpoint 4.4.0.24 - Basecamp icon formatting toolbar
 Mobile Cleanup: 
 - Better Auto Colors single liner
 - Map buttons misaligned in scroll view
