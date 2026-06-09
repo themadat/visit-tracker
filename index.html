@@ -16505,6 +16505,33 @@
           </ol>
         </section>
         <section class="help-section">
+          <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-docs"></span>Basecamp</h3>
+          <ol>
+            <li>Open Basecamp from the toolbar or press B. Basecamp is a local workspace for trip planning, packing
+              lists, gear notes, and other writing that is not tied to a single location.</li>
+            <li>Use + New Pad to create up to twenty named pads. Click the header title to rename a pad, click the
+              header icon to choose a pad icon, and use the per-pad Delete button to remove a pad.</li>
+            <li>Drag a sidebar pad row, or focus a row and press Alt+Up / Alt+Down, to reorder pads. The first pad
+              opens automatically when Basecamp is launched.</li>
+            <li>The Format, Font, and Text toolbars cover headings, body, monostyled blocks, dashed/bullet/numbered/
+              checklist lists, emphasis, highlight, shadow, double underline/strikethrough, sizing, baseline,
+              alignment, justification, quote levels, and independent indent. Hold Cmd or Ctrl to reveal shortcut
+              chips on toolbar buttons.</li>
+            <li>Use the Other toolbar group for Link, Code Block, and Clear Formatting. Image is reserved for a future
+              update. Cmd/Ctrl+Z and Cmd/Ctrl+Y undo and redo edits and toolbar formatting inside the editor.</li>
+            <li>Search across all pads in the sidebar. Press / to focus search. Matches highlight temporarily and stay
+              selectable. Switching pads or clearing the search returns the editor to its normal view.</li>
+            <li>Use Link Note in the editor header to attach existing US or World location notes to the active pad.
+              Linked notes show inline with quick open and unlink controls; editing a linked note keeps Basecamp open
+              behind it.</li>
+            <li>Use Copy Pad to copy the active pad, or Copy All Pads to copy every pad in order. Markdown, Rich Text,
+              and Plain Text exports include a per-pad Basecamp section. JSON backups always include every pad.</li>
+            <li>Upgrading from 4.3.0 turns your single Basecamp scratchpad into the first pad titled "Basecamp Pad"
+              with the default Basecamp pad icon. The migration runs once and never overwrites pads you have already
+              created.</li>
+          </ol>
+        </section>
+        <section class="help-section">
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-docs"></span>Other</h3>
           <ol>
             <li>Add dates as a year, month and year, or full date. Settings controls date order and month-name vs
@@ -16587,10 +16614,15 @@
         <section class="help-section">
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ: Other</h3>
           <p><b>What is Basecamp?</b><br>Basecamp (toolbar button, or press B) is a local workspace for planning that is
-            not tied to one place. Create named pads, format lists and links, search across pads, and attach existing
-            location notes for quick reference. Pads autosave and are included in exports and backups.</p>
-          <p><b>What happened to my old Basecamp scratchpad?</b><br>The first time this version loads, its text becomes
-            a pad named Basecamp. The migration runs once and keeps the original paragraphs and line breaks.</p>
+            not tied to one place. Create up to twenty named pads with their own icons, format text with the Format,
+            Font, and Text toolbars (headings, lists, checklists, links, quotes, alignment, sizing), reorder pads with
+            drag or Alt+Up/Down, search names and content across pads, and link existing US or World location notes for
+            quick reference. Pads autosave and are included in Markdown, Rich Text, and Plain Text exports plus JSON
+            backups.</p>
+          <p><b>What happened to my old Basecamp scratchpad?</b><br>The first time 4.4.0 loads, its text becomes the
+            first pad titled "Basecamp Pad" with the default Basecamp pad icon. The migration runs once, keeps the
+            original paragraphs, line breaks, and last-updated timestamp, and never overwrites pads you have already
+            created.</p>
           <p><b>Are Basecamp pads encrypted or synced to a cloud?</b><br>No. They stay in this browser with the rest of
             Trail Log's local data. Use JSON backups to move or protect them.</p>
           <p><b>How do I add it like an app?</b><br>Use Add as App in the top toolbar. Trail Log detects iPhone/iPad,
@@ -16956,7 +16988,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.4.0.26";
+    const APP_VERSION = "4.4.0.29";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -18943,18 +18975,6 @@
         category: "Legend"
       },
       {
-        title: "Multiple Named Basecamp Pads with Rich Text",
-        ticketId: "WISH-053",
-        description: "Extend Basecamp Notes from a single scratchpad to multiple named pads (for example Packing, Gear, or a per-trip pad), with a pad list, add/rename/delete/reorder, a large editor per pad, and search across pads. Add rich text formatting within each pad (bold, italic, headings, bullet/numbered lists, and links). Migrate the existing single scratchpad into the first pad without data loss.",
-        priority: "P0",
-        effort: "large",
-        targetKind: "exact",
-        targetVersion: "4.4.0",
-        tokenCostPct: 26,
-        prompt: "Extend Basecamp Notes to multiple named pads: a pad list with add/rename/delete/reorder, a large rich-text editor per pad supporting bold, italic, headings, bullet/numbered lists, and links, plus search across pads. Migrate the existing single Basecamp scratchpad into the first pad without data loss. Keep it local/offline, exportable, and visually distinct from location notes.",
-        category: "Notes"
-      },
-      {
         title: "Add Photo Support to Basecamp Notes",
         ticketId: "WISH-073",
         description: "Let Basecamp pads include local-first photos/images alongside rich text, with insert controls, safe storage limits, export behavior, and graceful disabled/empty states until the feature is implemented.",
@@ -19016,6 +19036,70 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "4.4.0.29",
+        date: "2026-06-09",
+        title: "Basecamps",
+        summary: "Help Center, FAQ, README, and Roadmap now match shipped Basecamps behavior.",
+        notice: {
+          version: "4.4.0",
+          title: "Basecamps",
+          summary: "Help, FAQ, README, and Roadmap describe the shipped Basecamps experience.",
+          cta: "Make|Camp!"
+        },
+        highlights: [
+          "Added a dedicated Basecamp Help Center section covering pads, formatting, search, and exports.",
+          "FAQ now explains the 4.3.0 → 4.4.0 migration to the first \"Basecamp Pad\" pad with default icon.",
+          "README feature list and release history table updated for the 4.4.0 Basecamps line.",
+          "Roadmap marks the Basecamps line items shipped on 4.4.0."
+        ],
+        updates: [
+          "Added a Basecamp section to the Help Center covering opening Basecamp, adding/renaming/deleting/reordering pads, formatting tools, search, linked location notes, copy and export flows, and the 4.3.0 upgrade behavior.",
+          "Expanded the FAQ: Other Basecamp entries to describe pad limits, icons, rich text tooling, linked notes, exports, and the one-time \"Basecamp Pad\" migration with the default icon and preserved timestamp.",
+          "Refreshed README.md feature list and release history to include the 4.4.0 Basecamps line.",
+          "Cleared shipped Basecamps roadmap items (WISH-053 multi-pad rich-text Basecamp, WISH-074 upgrade-preservation contract) from the active Roadmap and condensed the LLM handoff snapshot/current surface for the released Basecamps line."
+        ]
+      },
+      {
+        version: "4.4.0.28",
+        date: "2026-06-09",
+        title: "Basecamps",
+        summary: "Existing 4.3.0 Basecamp notes now migrate into the first 4.4.0 pad titled \"Basecamp Pad\".",
+        notice: {
+          version: "4.4.0",
+          title: "Basecamps",
+          summary: "Your 4.3.0 Basecamp note becomes the first 4.4.0 pad, titled Basecamp Pad.",
+          cta: "Make|Camp!"
+        },
+        highlights: [
+          "Upgrading from 4.3.0 keeps your Basecamp note as the first pad titled \"Basecamp Pad\".",
+          "The migrated pad uses the default Basecamp pad icon and keeps its original timestamp.",
+          "Migration only ever runs once — existing pads are never overwritten."
+        ],
+        updates: [
+          "Renamed the legacy Basecamp migration default pad title from \"Basecamp\" to \"Basecamp Pad\" so the migrated pad reads clearly in the new pad list.",
+          "Confirmed the one-time legacy text → pad migration path still preserves the original text, default icon, and saved timestamp, and only runs when no pads exist yet.",
+          "Retargeted WISH-074 to 4.4.0 to record the locked-in upgrade contract."
+        ]
+      },
+      {
+        version: "4.4.0.27",
+        date: "2026-06-09",
+        title: "Basecamps",
+        summary: "Roadmap now tracks preserving the original Basecamp note when upgrading from 4.3.0.",
+        notice: {
+          version: "4.4.0",
+          title: "Basecamps",
+          summary: "Roadmap tracks preserving the 4.3.0 Basecamp note on upgrade.",
+          cta: "Make|Camp!"
+        },
+        highlights: [
+          "Roadmap captures preserving the 4.3.0 Basecamp note as the first 4.4.0 pad."
+        ],
+        updates: [
+          "Seeded WISH-074 as a P2 future item ensuring the 4.3.0 → 4.4.0 upgrade keeps the existing Basecamp scratchpad as the first pad with the default icon and a Basecamp Pad title."
+        ]
+      },
       {
         version: "4.4.0.26",
         date: "2026-06-09",
@@ -20693,7 +20777,7 @@
     const BASECAMP_PAD_MAX = 20;
     const BASECAMP_PAD_NAME_MAX = 60;
     const BASECAMP_PAD_HTML_MAX = 60000;
-    const BASECAMP_DEFAULT_PAD_NAME = "Basecamp";
+    const BASECAMP_DEFAULT_PAD_NAME = "Basecamp Pad";
     // Default icon for new pads when randomBasecampSquareFillIcon() is not
     // available (fallback path). Picked from BASECAMP_PAD_ICON_SET below.
     const BASECAMP_PAD_DEFAULT_ICON = "__BOOKMARK_SQUARE_FILL";
