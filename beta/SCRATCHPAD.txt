@@ -1,6 +1,9 @@
 ## Future Prompt
 
-_vt-checkpoint 4.4.0.26 - Basecamp formatting toolbar polish
+LLM Optimizations: 
+- Slim context
+- Break up file (svg, help center, changelog)
+- 
 
 Mobile Cleanup: 
 - Better Auto Colors single liner
