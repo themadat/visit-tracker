@@ -1,5 +1,7 @@
 ## Future Prompt
-_vt-checkpoint 4.4.0.25 - Fix Basecamp formatting follow-up
+
+_vt-checkpoint 4.4.0.26 - Basecamp formatting toolbar polish
+
 Mobile Cleanup: 
 - Better Auto Colors single liner
 - Map buttons misaligned in scroll view
