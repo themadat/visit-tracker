@@ -7079,6 +7079,10 @@
       min-width: 0;
     }
 
+    .basecamp-toolbar-section[data-basecamp-toolbar-group="font"] .basecamp-toolbar-grid {
+      grid-template-columns: repeat(7, 34px);
+    }
+
     .basecamp-toolbar-section[data-basecamp-toolbar-group="text"] .basecamp-toolbar-grid {
       grid-template-columns: repeat(6, 34px);
     }
@@ -7097,6 +7101,11 @@
     .basecamp-toolbar button:hover,
     .basecamp-toolbar button:focus-visible {
       background: color-mix(in srgb, #14b8a6 12%, var(--surface));
+    }
+
+    .basecamp-toolbar button:disabled {
+      cursor: not-allowed;
+      opacity: .42;
     }
 
     .basecamp-toolbar button.is-active,
@@ -7118,6 +7127,11 @@
     .basecamp-format-btn[data-basecamp-format="smaller"] .basecamp-format-icon {
       width: .72rem;
       height: .72rem;
+    }
+
+    .basecamp-format-btn[data-basecamp-format="baseline"] .basecamp-format-icon {
+      width: .92rem;
+      height: .92rem;
     }
 
     .basecamp-format-icon .sf-symbol {
@@ -7183,7 +7197,7 @@
     }
 
     .basecamp-toolbar-utility .basecamp-toolbar-grid {
-      grid-template-columns: 34px;
+      grid-template-columns: repeat(2, 34px);
     }
 
     /* Mobile Format / Font / Text dropdown submenus on the Basecamp toolbar. */
@@ -7404,6 +7418,16 @@
     .basecamp-pad-body h2,
     .basecamp-pad-body h3 {
       margin: .75rem 0 .35rem;
+    }
+
+    .basecamp-pad-body h2 {
+      font-size: 1.48rem;
+      line-height: 1.18;
+    }
+
+    .basecamp-pad-body h3 {
+      font-size: 1.16rem;
+      line-height: 1.25;
     }
 
     .basecamp-pad-body p,
@@ -16932,7 +16956,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.4.0.25";
+    const APP_VERSION = "4.4.0.26";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -17153,6 +17177,11 @@
     const __WIDGET_LARGE = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 32.0117 30.0488"><g><rect height="30.0488" opacity="0" width="32.0117" x="0" y="0"/><path d="M6.57227 30.0391L25.0781 30.0391C27.3145 30.0391 29.0039 29.8047 30.2148 28.5938C31.4258 27.3828 31.6504 25.7031 31.6504 23.4668L31.6504 6.5625C31.6504 4.32617 31.4258 2.64648 30.2148 1.44531C29.0039 0.234375 27.3145 0 25.0781 0L6.50391 0C4.3457 0 2.64648 0.234375 1.43555 1.44531C0.224609 2.65625 0 4.33594 0 6.50391L0 23.4668C0 25.7031 0.214844 27.3828 1.42578 28.5938C2.64648 29.8047 4.33594 30.0391 6.57227 30.0391ZM6.23047 28.3008C4.81445 28.3008 3.4668 28.0859 2.69531 27.3242C1.93359 26.5527 1.72852 25.2246 1.72852 23.8086L1.72852 6.28906C1.72852 4.81445 1.93359 3.47656 2.69531 2.70508C3.45703 1.93359 4.82422 1.72852 6.28906 1.72852L25.4199 1.72852C26.8359 1.72852 28.1836 1.94336 28.9453 2.71484C29.7168 3.47656 29.9121 4.80469 29.9121 6.2207L29.9121 23.8086C29.9121 25.2246 29.707 26.5527 28.9453 27.3242C28.1836 28.0957 26.8359 28.3008 25.4199 28.3008Z"/><path d="M5.41992 18.9746L26.2305 18.9746C26.6113 18.9746 26.9141 18.6719 26.9141 18.2812C26.9141 17.9102 26.6113 17.6074 26.2305 17.6074L5.41992 17.6074C5.04883 17.6074 4.73633 17.9102 4.73633 18.2812C4.73633 18.6719 5.04883 18.9746 5.41992 18.9746ZM5.41992 22.3145L26.2305 22.3145C26.6113 22.3145 26.9141 22.0117 26.9141 21.6211C26.9141 21.25 26.6113 20.9473 26.2305 20.9473L5.41992 20.9473C5.04883 20.9473 4.73633 21.25 4.73633 21.6211C4.73633 22.0117 5.04883 22.3145 5.41992 22.3145ZM5.41992 25.6543L18.2129 25.6543C18.5938 25.6543 18.8965 25.3516 18.8965 24.9609C18.8965 24.5898 18.5938 24.2871 18.2129 24.2871L5.41992 24.2871C5.04883 24.2871 4.73633 24.5898 4.73633 24.9609C4.73633 25.3516 5.04883 25.6543 5.41992 25.6543ZM5.89844 9.50195L8.63281 9.50195C9.72656 9.50195 10.4785 8.75 10.4785 7.65625L10.4785 5.72266C10.4785 4.62891 9.72656 3.87695 8.63281 3.87695L5.89844 3.87695C4.80469 3.87695 4.04297 4.62891 4.04297 5.72266L4.04297 7.65625C4.04297 8.75 4.80469 9.50195 5.89844 9.50195Z"/></g></svg>`;
     const __WIDGET_MEDIUM = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 38.4375 23.4863"><g><rect height="23.4863" opacity="0" width="38.4375" x="0" y="0"/><path d="M6.57227 23.4863L31.5137 23.4863C33.75 23.4863 35.4395 23.252 36.6504 22.041C37.8613 20.8301 38.0762 19.1602 38.0762 16.9141L38.0762 6.57227C38.0762 4.33594 37.8613 2.66602 36.6504 1.45508C35.4395 0.244141 33.75 0.00976562 31.5137 0.00976562L6.57227 0.00976562C4.33594 0.00976562 2.64648 0.244141 1.42578 1.45508C0.214844 2.65625 0 4.33594 0 6.57227L0 16.9141C0 19.1602 0.214844 20.8301 1.42578 22.041C2.64648 23.252 4.33594 23.4863 6.57227 23.4863ZM6.23047 21.748C4.81445 21.748 3.4668 21.5332 2.69531 20.7715C1.93359 20 1.72852 18.6719 1.72852 17.2559L1.72852 6.23047C1.72852 4.81445 1.93359 3.48633 2.69531 2.72461C3.4668 1.95312 4.81445 1.73828 6.23047 1.73828L31.8555 1.73828C33.2715 1.73828 34.6094 1.94336 35.3809 2.72461C36.1426 3.48633 36.3477 4.81445 36.3477 6.23047L36.3477 17.2559C36.3477 18.6719 36.1426 20 35.3809 20.7715C34.6094 21.543 33.2715 21.748 31.8555 21.748Z"/><path d="M5.89844 9.51172L8.63281 9.51172C9.72656 9.51172 10.4785 8.75977 10.4785 7.66602L10.4785 5.73242C10.4785 4.63867 9.72656 3.88672 8.63281 3.88672L5.89844 3.88672C4.80469 3.88672 4.04297 4.63867 4.04297 5.73242L4.04297 7.66602C4.04297 8.75977 4.80469 9.51172 5.89844 9.51172ZM5.10742 19.1797L32.9688 19.1797C33.3496 19.1797 33.6523 18.877 33.6523 18.4961C33.6523 18.125 33.3496 17.8223 32.9688 17.8223L5.10742 17.8223C4.73633 17.8223 4.42383 18.125 4.42383 18.4961C4.42383 18.877 4.73633 19.1797 5.10742 19.1797Z"/></g></svg>`;
     const __WIDGET_SMALL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 23.916 23.5645"><g><rect height="23.5645" opacity="0" width="23.916" x="0" y="0"/><path d="M22.1289 1.44531C20.9082 0.234375 19.2188 0 16.9824 0L6.50391 0C4.3457 0 2.64648 0.234375 1.43555 1.44531C0.224609 2.65625 0 4.33594 0 6.50391L0 16.9824C0 19.2285 0.214844 20.9082 1.42578 22.1094C2.64648 23.3203 4.33594 23.5547 6.57227 23.5547L16.9824 23.5547C19.2188 23.5547 20.918 23.3203 22.1289 22.1094C23.3398 20.8984 23.5547 19.2285 23.5547 16.9824L23.5547 6.5625C23.5547 4.32617 23.3398 2.64648 22.1289 1.44531ZM21.8262 6.2207L21.8262 17.3242C21.8262 18.75 21.6211 20.0684 20.8594 20.8398C20.0879 21.6113 18.7402 21.8262 17.3242 21.8262L6.23047 21.8262C4.81445 21.8262 3.4668 21.6016 2.69531 20.8398C1.93359 20.0684 1.72852 18.75 1.72852 17.3242L1.72852 6.28906C1.72852 4.81445 1.93359 3.47656 2.69531 2.70508C3.45703 1.93359 4.82422 1.72852 6.28906 1.72852L17.3242 1.72852C18.7402 1.72852 20.0879 1.94336 20.8594 2.71484C21.6211 3.47656 21.8262 4.80469 21.8262 6.2207Z"/><path d="M4.75586 19.0234L18.7988 19.0234C19.1797 19.0234 19.4824 18.7207 19.4824 18.3398C19.4824 17.959 19.1797 17.6562 18.7988 17.6562L4.75586 17.6562C4.38477 17.6562 4.07227 17.959 4.07227 18.3398C4.07227 18.7207 4.38477 19.0234 4.75586 19.0234ZM5.89844 9.55078L8.63281 9.55078C9.72656 9.55078 10.4785 8.79883 10.4785 7.70508L10.4785 5.77148C10.4785 4.67773 9.72656 3.92578 8.63281 3.92578L5.89844 3.92578C4.80469 3.92578 4.04297 4.67773 4.04297 5.77148L4.04297 7.70508C4.04297 8.79883 4.80469 9.55078 5.89844 9.55078Z"/></g></svg>`;
+    const __LINK_BADGE_PLUS = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 33.9648 28.9355"><g><rect height="28.9355" opacity="0" width="33.9648" x="0" y="0"/><path d="M9.93164 13.5547L7.1582 16.3379C4.91211 18.5742 4.89258 21.7773 7.14844 24.0332C9.38477 26.2695 12.5781 26.25 14.834 24.0039L18.2366 20.6013C18.2175 20.753 18.2129 20.9082 18.2129 21.0645C18.2129 21.6825 18.2852 22.2845 18.4293 22.8597L15.957 25.332C13.0273 28.2715 8.83789 28.3105 5.84961 25.3223C2.86133 22.334 2.90039 18.1543 5.83984 15.2148L9.70703 11.3477C9.57031 12.0801 9.64844 12.8906 9.93164 13.5547ZM27.7246 3.39844C30.6651 6.34852 30.6741 10.4598 27.8401 13.3903C27.2765 13.2528 26.6877 13.1836 26.084 13.1836C25.9183 13.1836 25.7538 13.1888 25.5929 13.2088L26.416 12.3828C28.6621 10.1465 28.6816 6.94336 26.4258 4.6875C24.1895 2.45117 20.9961 2.4707 18.7402 4.7168L14.6289 8.82812C12.3828 11.0645 12.373 14.2773 14.6191 16.5137C15.5371 17.4414 16.7188 17.9492 18.5254 18.0078L17.0801 19.4727C15.3027 19.2773 14.209 18.6914 13.3203 17.8125C10.332 14.8242 10.3711 10.6348 13.3105 7.69531L17.6172 3.38867C20.5469 0.449219 24.7266 0.410156 27.7246 3.39844ZM20.2539 10.9082C21.2519 11.9062 21.9123 13.0372 22.2318 14.2117C21.6312 14.5478 21.0812 14.9643 20.595 15.446C20.4593 14.2896 19.9119 13.1597 18.9551 12.207C18.0371 11.2793 16.8555 10.7715 15.0391 10.7129L16.4941 9.24805C18.2617 9.44336 19.3652 10.0293 20.2539 10.9082Z"/><path d="M32.4023 21.0645C32.4023 24.5117 29.5215 27.373 26.084 27.373C22.627 27.373 19.7754 24.5312 19.7754 21.0645C19.7754 17.5977 22.627 14.7461 26.084 14.7461C29.5508 14.7461 32.4023 17.5977 32.4023 21.0645ZM25.3809 17.793L25.3809 20.3516L22.8125 20.3516C22.3926 20.3516 22.0996 20.625 22.0996 21.0645C22.0996 21.4941 22.3926 21.7676 22.8125 21.7676L25.3809 21.7676L25.3809 24.3359C25.3809 24.7559 25.6543 25.0488 26.084 25.0488C26.5234 25.0488 26.7969 24.7559 26.7969 24.3359L26.7969 21.7676L29.3555 21.7676C29.7852 21.7676 30.0684 21.4941 30.0684 21.0645C30.0684 20.625 29.7852 20.3516 29.3555 20.3516L26.7969 20.3516L26.7969 17.793C26.7969 17.373 26.5234 17.0801 26.084 17.0801C25.6543 17.0801 25.3809 17.373 25.3809 17.793Z"/></g></svg>`;
+    const __CLEAR = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 23.3203 22.959"><g><rect height="22.959" opacity="0" width="23.3203" x="0" y="0"/><path d="M3.79883 22.959L19.1504 22.959C21.6797 22.959 22.959 21.6797 22.959 19.1992L22.959 3.76953C22.959 1.2793 21.6797 0 19.1504 0L3.79883 0C1.2793 0 0 1.26953 0 3.76953L0 19.1992C0 21.6992 1.2793 22.959 3.79883 22.959ZM3.83789 21.2305C2.4707 21.2305 1.72852 20.5078 1.72852 19.1016L1.72852 3.85742C1.72852 2.46094 2.4707 1.72852 3.83789 1.72852L19.1211 1.72852C20.459 1.72852 21.2305 2.46094 21.2305 3.85742L21.2305 19.1016C21.2305 20.5078 20.459 21.2305 19.1211 21.2305Z"/><path d="M7.76367 16.4453L16.4551 7.74414C16.6309 7.57812 16.7285 7.36328 16.7285 7.12891C16.7285 6.64062 16.3379 6.26953 15.8496 6.26953C15.6152 6.26953 15.4102 6.35742 15.2441 6.5332L6.52344 15.2246C6.34766 15.4004 6.25 15.5957 6.25 15.8496C6.25 16.3281 6.64062 16.7188 7.12891 16.7188C7.38281 16.7188 7.58789 16.6211 7.76367 16.4453ZM15.2246 16.4453C15.3906 16.6211 15.5957 16.7188 15.8496 16.7188C16.3379 16.7188 16.7285 16.3281 16.7285 15.8496C16.7285 15.5957 16.6309 15.4004 16.4551 15.2246L7.74414 6.5332C7.56836 6.35742 7.37305 6.26953 7.12891 6.26953C6.64062 6.26953 6.25 6.64062 6.25 7.12891C6.25 7.36328 6.34766 7.57812 6.52344 7.74414Z"/></g></svg>`;
+    const __SQUARE_GRID_2X2 = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 23.3203 22.959"><g><rect height="22.959" opacity="0" width="23.3203" x="0" y="0"/><path d="M14.7949 22.959L20.7129 22.959C22.1973 22.959 22.959 22.2266 22.959 20.6738L22.959 14.834C22.959 13.2812 22.1973 12.5488 20.7129 12.5488L14.7949 12.5488C13.3008 12.5488 12.5488 13.2812 12.5488 14.834L12.5488 20.6738C12.5488 22.2266 13.3008 22.959 14.7949 22.959ZM14.8242 21.4258C14.3066 21.4258 14.082 21.1914 14.082 20.6738L14.082 14.8438C14.082 14.3262 14.3066 14.082 14.8242 14.082L20.6934 14.082C21.1914 14.082 21.4258 14.3262 21.4258 14.8438L21.4258 20.6738C21.4258 21.1914 21.1914 21.4258 20.6934 21.4258Z"/><path d="M2.24609 22.959L8.16406 22.959C9.64844 22.959 10.4102 22.2266 10.4102 20.6738L10.4102 14.834C10.4102 13.2812 9.64844 12.5488 8.16406 12.5488L2.24609 12.5488C0.761719 12.5488 0 13.2812 0 14.834L0 20.6738C0 22.2266 0.761719 22.959 2.24609 22.959ZM2.26562 21.4258C1.76758 21.4258 1.5332 21.1914 1.5332 20.6738L1.5332 14.8438C1.5332 14.3262 1.76758 14.082 2.26562 14.082L8.13477 14.082C8.63281 14.082 8.87695 14.3262 8.87695 14.8438L8.87695 20.6738C8.87695 21.1914 8.63281 21.4258 8.13477 21.4258Z"/><path d="M14.7949 10.4102L20.7129 10.4102C22.1973 10.4102 22.959 9.6875 22.959 8.125L22.959 2.28516C22.959 0.732422 22.1973 0 20.7129 0L14.7949 0C13.3008 0 12.5488 0.732422 12.5488 2.28516L12.5488 8.125C12.5488 9.6875 13.3008 10.4102 14.7949 10.4102ZM14.8242 8.87695C14.3066 8.87695 14.082 8.64258 14.082 8.11523L14.082 2.28516C14.082 1.77734 14.3066 1.5332 14.8242 1.5332L20.6934 1.5332C21.1914 1.5332 21.4258 1.77734 21.4258 2.28516L21.4258 8.11523C21.4258 8.64258 21.1914 8.87695 20.6934 8.87695Z"/><path d="M2.24609 10.4102L8.16406 10.4102C9.64844 10.4102 10.4102 9.6875 10.4102 8.125L10.4102 2.28516C10.4102 0.732422 9.64844 0 8.16406 0L2.24609 0C0.761719 0 0 0.732422 0 2.28516L0 8.125C0 9.6875 0.761719 10.4102 2.24609 10.4102ZM2.26562 8.87695C1.76758 8.87695 1.5332 8.64258 1.5332 8.11523L1.5332 2.28516C1.5332 1.77734 1.76758 1.5332 2.26562 1.5332L8.13477 1.5332C8.63281 1.5332 8.87695 1.77734 8.87695 2.28516L8.87695 8.11523C8.87695 8.64258 8.63281 8.87695 8.13477 8.87695Z"/></g></svg>`;
+    const __APPLE_TERMINAL = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 29.9512 22.959"><g><rect height="22.959" opacity="0" width="29.9512" x="0" y="0"/><path d="M3.79883 22.959L25.7812 22.959C28.3105 22.959 29.5898 21.6797 29.5898 19.1992L29.5898 3.76953C29.5898 1.2793 28.3105 0 25.7812 0L3.79883 0C1.2793 0 0 1.26953 0 3.76953L0 19.1992C0 21.6992 1.2793 22.959 3.79883 22.959ZM3.83789 21.2305C2.4707 21.2305 1.72852 20.5078 1.72852 19.1016L1.72852 3.85742C1.72852 2.46094 2.4707 1.72852 3.83789 1.72852L25.752 1.72852C27.0898 1.72852 27.8516 2.46094 27.8516 3.85742L27.8516 19.1016C27.8516 20.5078 27.0898 21.2305 25.752 21.2305Z"/><path d="M5.30273 9.58984C4.43359 10.1074 5.16602 11.416 6.11328 10.8203L9.77539 8.52539C10.4102 8.13477 10.3809 7.19727 9.77539 6.81641L6.11328 4.52148C5.16602 3.92578 4.42383 5.22461 5.30273 5.76172L8.4668 7.67578ZM10.5176 10.9082C10.5176 11.2988 10.8203 11.6113 11.2207 11.6113L16.0156 11.6113C16.416 11.6113 16.7188 11.2988 16.7188 10.9082C16.7188 10.5078 16.416 10.1953 16.0156 10.1953L11.2207 10.1953C10.8203 10.1953 10.5176 10.5078 10.5176 10.9082Z"/></g></svg>`;
+    const __PHOTO_BADGE_PLUS = `<svg class="sf-symbol" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 43.2715 30.9277"><g><rect height="30.9277" opacity="0" width="43.2715" x="0" y="0"/><path d="M36.25 7.75391L36.25 15.2257C35.9681 15.1918 35.6811 15.1758 35.3906 15.1758C35.0934 15.1758 34.7998 15.1927 34.5117 15.2291L34.5117 7.8418C34.5117 6.44531 33.75 5.71289 32.4121 5.71289L10.498 5.71289C9.13086 5.71289 8.38867 6.44531 8.38867 7.8418L8.38867 22.1548L12.3145 18.5742C12.8223 18.0957 13.3496 17.8613 13.9355 17.8613C14.5508 17.8613 15.1074 18.1152 15.6445 18.5938L17.998 20.7422L23.7207 15.6348C24.3066 15.1074 24.9219 14.8535 25.6348 14.8535C26.3477 14.8535 26.9922 15.1172 27.5684 15.6543L29.7035 17.644C28.3512 19.0569 27.5195 20.9688 27.5195 23.0566C27.5195 24.4686 27.8972 25.7974 28.5616 26.9434L10.459 26.9434C7.93945 26.9434 6.66016 25.6836 6.66016 23.1836L6.66016 7.75391C6.66016 5.25391 7.93945 3.98438 10.459 3.98438L32.4414 3.98438C34.9707 3.98438 36.25 5.26367 36.25 7.75391Z"/><path d="M18.9258 12.6562C18.9258 14.2969 17.5977 15.625 15.9668 15.625C14.3262 15.625 12.998 14.2969 12.998 12.6562C12.998 11.0254 14.3262 9.67773 15.9668 9.67773C17.5977 9.67773 18.9258 11.0254 18.9258 12.6562Z"/><path d="M41.709 23.0566C41.709 26.5137 38.8281 29.3652 35.3906 29.3652C31.9336 29.3652 29.082 26.5332 29.082 23.0566C29.082 19.5898 31.9336 16.7383 35.3906 16.7383C38.8574 16.7383 41.709 19.5898 41.709 23.0566ZM34.6875 19.7852L34.6875 22.3438L32.1191 22.3438C31.6992 22.3438 31.4062 22.6172 31.4062 23.0566C31.4062 23.4863 31.6992 23.7598 32.1191 23.7598L34.6875 23.7598L34.6875 26.3281C34.6875 26.7578 34.9609 27.041 35.3906 27.041C35.8301 27.041 36.1035 26.7578 36.1035 26.3281L36.1035 23.7598L38.6621 23.7598C39.0918 23.7598 39.375 23.4863 39.375 23.0566C39.375 22.6172 39.0918 22.3438 38.6621 22.3438L36.1035 22.3438L36.1035 19.7852C36.1035 19.3652 35.8301 19.0723 35.3906 19.0723C34.9609 19.0723 34.6875 19.3652 34.6875 19.7852Z"/></g></svg>`;
 
 
     // Common
@@ -18926,6 +18955,18 @@
         category: "Notes"
       },
       {
+        title: "Add Photo Support to Basecamp Notes",
+        ticketId: "WISH-073",
+        description: "Let Basecamp pads include local-first photos/images alongside rich text, with insert controls, safe storage limits, export behavior, and graceful disabled/empty states until the feature is implemented.",
+        priority: "P2",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 20,
+        prompt: "Add photo support to Basecamp notes. Include an Image toolbar action, local-first attachment/storage model with clear limits, inline image rendering in pads, backup/import/export handling, and accessible controls for adding, removing, and inspecting images without disrupting existing rich text.",
+        category: "Notes"
+      },
+      {
         title: "Choose Note Display Icon",
         ticketId: "WISH-047",
         description: "Let a note with multiple icon tags choose which icon should represent it in lists and on the map, instead of always using the first/default selected tag.",
@@ -18975,6 +19016,32 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "4.4.0.26",
+        date: "2026-06-09",
+        title: "Basecamps",
+        summary: "Basecamp formatting gets cleaner toolbar rows, safer list conversion, and a placeholder Image action.",
+        notice: {
+          version: "4.4.0",
+          title: "Basecamps",
+          summary: "Basecamp formatting is tidier, with safer lists and clearer Other tools.",
+          cta: "Make|Camp!"
+        },
+        highlights: [
+          "Heading text is now visibly larger than subheaders in Basecamp pads.",
+          "Multi-line list conversion no longer duplicates the final selected line.",
+          "Font tools now use a seven-wide first row with size controls beside basics.",
+          "Other tools now show Link, disabled Image, Code Block, and Clear buttons."
+        ],
+        updates: [
+          "Added explicit Basecamp editor heading and subheading sizes so Heading remains larger than Subheader.",
+          "Changed list insertion to replace the whole block only when the whole block is selected, otherwise it replaces exactly the selected range.",
+          "Reordered the Font toolbar to put Bold, Italic, Underline, Strikethrough, Smaller, Default size, and Bigger on the first row.",
+          "Updated Other to use the square-grid group icon, Link Badge Plus, disabled Photo Badge Plus, Apple Terminal for Code Block, and Clear for clear formatting.",
+          "Added a Code Block utility action that applies the same preformatted block behavior as Monostyled.",
+          "Seeded WISH-073 as a P2 future item for Basecamp photo support."
+        ]
+      },
       {
         version: "4.4.0.25",
         date: "2026-06-09",
@@ -29984,13 +30051,13 @@
           { action: "italic", label: "Italic", icon: __ITALIC, shortcut: "⌘I" },
           { action: "underline", label: "Underline", icon: __UNDERLINE, shortcut: "⌘U" },
           { action: "strike", label: "Strikethrough", icon: __STRIKETHROUGH, shortcut: "⇧⌘X" },
+          { action: "smaller", label: "Smaller", icon: __TEXTFORMAT_SIZE_SMALLER, shortcut: "⌥⌘-" },
+          { action: "default-size", label: "Default size", icon: __TEXTFORMAT_SIZE, shortcut: "⌥⌘=" },
+          { action: "bigger", label: "Bigger", icon: __TEXTFORMAT_SIZE_LARGER, shortcut: "⇧⌥⌘+" },
           { action: "highlight", label: "Highlighter", icon: __HIGHLIGHTER, shortcut: "⇧⌘H" },
           { action: "shadow", label: "Shadow", icon: __SHADOW, shortcut: "⌥⌘S" },
           { action: "double-underline", label: "Double underline", icon: __UNDERLINE_DOUBLE, shortcut: "⇧⌥⌘U" },
           { action: "double-strike", label: "Double strikethrough", icon: __STRIKETHROUGH_DOUBLE, shortcut: "⇧⌥⌘X" },
-          { action: "smaller", label: "Smaller", icon: __TEXTFORMAT_SIZE_SMALLER, shortcut: "⌥⌘-" },
-          { action: "default-size", label: "Default size", icon: __TEXTFORMAT_SIZE, shortcut: "⌥⌘=" },
-          { action: "bigger", label: "Bigger", icon: __TEXTFORMAT_SIZE_LARGER, shortcut: "⇧⌥⌘+" },
           { action: "sub", label: "Subscript", icon: __TEXTFORMAT_SUBSCRIPT, shortcut: "⌥⌘," },
           { action: "baseline", label: "Default baseline", icon: __CHARACTER, shortcut: "⇧⌥⌘." },
           { action: "sup", label: "Superscript", icon: __TEXTFORMAT_SUPERSCRIPT, shortcut: "⌥⌘." }
@@ -30018,8 +30085,10 @@
     ]);
 
     const BASECAMP_TOOLBAR_UTILITY = Object.freeze([
-      { action: "link", label: "Insert URL link", icon: __LINK_CIRCLE, shortcut: "⌘K", link: true },
-      { action: "clear", label: "Clear formatting", icon: __XMARK_CIRCLE }
+      { action: "link", label: "Insert URL link", icon: __LINK_BADGE_PLUS, shortcut: "⌘K", link: true },
+      { action: "image", label: "Add image", icon: __PHOTO_BADGE_PLUS, disabled: true },
+      { action: "code-block", label: "Code block", icon: __APPLE_TERMINAL },
+      { action: "clear", label: "Clear formatting", icon: __CLEAR }
     ]);
 
     function basecampToolbarButton(item) {
@@ -30028,9 +30097,10 @@
         ? "data-basecamp-url-link"
         : `data-basecamp-format="${escapeHtml(item.action)}"`;
       const hintAttr = item.shortcut ? ` data-cmd-hint="${escapeHtml(item.shortcut)}"` : "";
-      const pressedAttr = item.link || item.action === "clear" ? "" : ` aria-pressed="false"`;
+      const disabledAttr = item.disabled ? ` disabled aria-disabled="true"` : "";
+      const pressedAttr = item.link || item.disabled || item.action === "clear" ? "" : ` aria-pressed="false"`;
       return `
-        <button class="basecamp-format-btn" type="button" ${actionAttr}${hintAttr}
+        <button class="basecamp-format-btn" type="button" ${actionAttr}${hintAttr}${disabledAttr}
           aria-label="${escapeHtml(title)}" title="${escapeHtml(title)}"${pressedAttr}>
           <span class="basecamp-format-icon">${item.icon}</span>
           <span class="basecamp-format-text">${escapeHtml(item.label)}</span>
@@ -30071,7 +30141,7 @@
             ${BASECAMP_TOOLBAR_GROUPS.map(group => basecampToolbarSectionHtml(group)).join("")}
             <div class="basecamp-toolbar-utility" aria-label="Basecamp utility formatting">
               <div class="basecamp-toolbar-section-head">
-                <span>${__LINK_CIRCLE}</span>
+                <span>${__SQUARE_GRID_2X2}</span>
                 <span>Other</span>
               </div>
               <div class="basecamp-toolbar-grid">
@@ -31056,7 +31126,9 @@
           item.textContent = line;
           list.append(item);
         });
-        if (block && body.contains(block)) block.replaceWith(list);
+        const selectedWholeBlock = !range.collapsed && block && body.contains(block) && selectedLines.length
+          && selectedLines.join("\n") === basecampListLinesFromNode(block).join("\n");
+        if ((range.collapsed || selectedWholeBlock) && block && body.contains(block)) block.replaceWith(list);
         else {
           range.deleteContents();
           range.insertNode(list);
@@ -31198,7 +31270,7 @@
       if (action === "sup") return Boolean(basecampElementsInRange(range, "sup").length);
       if (action === "h2" || action === "h3") return block?.tagName.toLowerCase() === action;
       if (action === "body") return !block || block.tagName.toLowerCase() === "p";
-      if (action === "mono") return block?.tagName.toLowerCase() === "pre";
+      if (action === "mono" || action === "code-block") return block?.tagName.toLowerCase() === "pre";
       if (action === "dash-list") return Boolean(list && body.contains(list) && list.tagName.toLowerCase() === "ul" && basecampListClass(list) === "basecamp-list-dash");
       if (action === "bullet-list") return Boolean(list && body.contains(list) && list.tagName.toLowerCase() === "ul" && basecampListClass(list) === "basecamp-list-bullet");
       if (action === "number-list") return Boolean(list && body.contains(list) && list.tagName.toLowerCase() === "ol");
@@ -31217,7 +31289,7 @@
     function updateBasecampToolbarState() {
       const range = basecampSelectionRange();
       $$("[data-basecamp-format]").forEach(button => {
-        if (button.dataset.basecampFormat === "clear") return;
+        if (button.disabled || button.dataset.basecampFormat === "clear") return;
         const active = basecampActionIsActive(button.dataset.basecampFormat, range);
         button.classList.toggle("is-active", active);
         button.setAttribute("aria-pressed", active ? "true" : "false");
@@ -31290,7 +31362,7 @@
       if (action === "baseline" || action === "default-script") return applyBasecampBaselineDefault();
       if (action === "h2" || action === "h3") return applyBasecampBlock(action);
       if (action === "body") return applyBasecampBlock("p");
-      if (action === "mono") return applyBasecampBlock("pre");
+      if (action === "mono" || action === "code-block") return applyBasecampBlock("pre");
       if (action === "dash-list" || action === "ul") return applyBasecampList("ul", "basecamp-list-dash");
       if (action === "bullet-list") return applyBasecampList("ul", "basecamp-list-bullet");
       if (action === "number-list" || action === "ol") return applyBasecampList("ol");
