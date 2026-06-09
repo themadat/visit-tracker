@@ -7033,9 +7033,11 @@
 
     .basecamp-toolbar-desktop {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(156px, 1fr));
+      grid-template-columns: repeat(4, max-content);
       gap: .42rem;
       align-items: start;
+      justify-content: start;
+      overflow-x: auto;
     }
 
     .basecamp-toolbar-mobile {
@@ -7072,9 +7074,13 @@
 
     .basecamp-toolbar-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(32px, 1fr));
+      grid-template-columns: repeat(4, 34px);
       gap: .22rem;
       min-width: 0;
+    }
+
+    .basecamp-toolbar-section[data-basecamp-toolbar-group="text"] .basecamp-toolbar-grid {
+      grid-template-columns: repeat(6, 34px);
     }
 
     .basecamp-toolbar button {
@@ -7093,12 +7099,25 @@
       background: color-mix(in srgb, #14b8a6 12%, var(--surface));
     }
 
+    .basecamp-toolbar button.is-active,
+    .basecamp-toolbar button[aria-pressed="true"] {
+      border-color: color-mix(in srgb, #0f766e 78%, var(--line));
+      background: color-mix(in srgb, #14b8a6 22%, var(--surface));
+      color: color-mix(in srgb, #064e3b 86%, var(--text));
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, #14b8a6 42%, transparent);
+    }
+
     .basecamp-format-icon {
       display: grid;
       place-items: center;
       width: 1.18rem;
       height: 1.18rem;
       pointer-events: none;
+    }
+
+    .basecamp-format-btn[data-basecamp-format="smaller"] .basecamp-format-icon {
+      width: .72rem;
+      height: .72rem;
     }
 
     .basecamp-format-icon .sf-symbol {
@@ -7154,14 +7173,17 @@
 
     .basecamp-toolbar-utility {
       display: grid;
-      grid-template-columns: repeat(2, minmax(34px, 1fr));
-      gap: .22rem;
+      gap: .3rem;
       align-content: start;
       min-width: 0;
       padding: .38rem;
       border: 1px solid color-mix(in srgb, #14b8a6 28%, var(--line));
       border-radius: var(--radius);
       background: color-mix(in srgb, var(--surface) 74%, #14b8a6 5%);
+    }
+
+    .basecamp-toolbar-utility .basecamp-toolbar-grid {
+      grid-template-columns: 34px;
     }
 
     /* Mobile Format / Font / Text dropdown submenus on the Basecamp toolbar. */
@@ -7342,7 +7364,7 @@
       background: color-mix(in srgb, #14b8a6 8%, var(--surface));
     }
 
-    .basecamp-pad-body ul.basecamp-list-check>li::after {
+    .basecamp-pad-body ul.basecamp-list-check>li.basecamp-check-checked::after {
       content: "";
       position: absolute;
       top: .55em;
@@ -7352,6 +7374,11 @@
       border-left: 2px solid #14b8a6;
       border-bottom: 2px solid #14b8a6;
       transform: rotate(-45deg);
+    }
+
+    .basecamp-pad-body ul.basecamp-list-check>li:hover::before {
+      border-color: #0f766e;
+      box-shadow: 0 0 0 3px color-mix(in srgb, #14b8a6 16%, transparent);
     }
 
     .basecamp-pad-body {
@@ -16905,7 +16932,7 @@
 
   <script>
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.4.0.24";
+    const APP_VERSION = "4.4.0.25";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -18948,6 +18975,32 @@
       },
     ];
     const CHANGELOG = [
+      {
+        version: "4.4.0.25",
+        date: "2026-06-09",
+        title: "Basecamps",
+        summary: "Basecamp formatting now keeps selections, undo history, checklist state, and active tools in sync.",
+        notice: {
+          version: "4.4.0",
+          title: "Basecamps",
+          summary: "Basecamp formatting now tracks active tools and supports undo.",
+          cta: "Make|Camp!"
+        },
+        highlights: [
+          "Multi-line list creation now keeps selected text instead of inserting fallback content.",
+          "Basecamp editor undo/redo works for typing and custom toolbar formatting.",
+          "Checklist items start unchecked, can be checked, and export their checked state.",
+          "Toolbar buttons now show active formatting and use tighter Format/Font/Text grids."
+        ],
+        updates: [
+          "Reworked Basecamp list-line extraction to read selected fragments, block boundaries, and line breaks without using placeholder text.",
+          "Added a Basecamp-local undo/redo snapshot stack covering browser edits, paste, links, checklists, and toolbar-driven formatting mutations.",
+          "Made inline formatting unwrap matching selected elements, so Bold and related tools toggle off and preserve the highlighted selection.",
+          "Added selection-aware toolbar active states for inline marks, headings, lists, sizing, baseline, quote, indent, alignment, and justification.",
+          "Checklist list items now begin unchecked, toggle from the checkbox hit area, survive sanitization, and export as checked or unchecked Markdown/RTF.",
+          "Constrained desktop Format and Font groups to four columns, Text to six columns, and stacked Link/Clear inside an Other utility box."
+        ]
+      },
       {
         version: "4.4.0.24",
         date: "2026-06-08",
@@ -23249,7 +23302,7 @@
       const parsed = new DOMParser().parseFromString(`<body>${source}</body>`, "text/html");
       const allowed = new Set(["p", "br", "b", "strong", "i", "em", "u", "s", "mark", "sub", "sup", "h2", "h3", "ul", "ol", "li", "a", "blockquote", "code", "pre", "span"]);
       // Allow only the formatting classes Basecamp's toolbar can generate.
-      const allowedClassRe = /^(?:basecamp-align-(?:left|center|right|justify)|basecamp-justify-(?:left|full|right)|basecamp-font-(?:up|down|default)|basecamp-shadow|basecamp-double-(?:underline|strike)|basecamp-baseline-default|basecamp-list-(?:dash|bullet|check)|basecamp-indent-[123])$/;
+      const allowedClassRe = /^(?:basecamp-align-(?:left|center|right|justify)|basecamp-justify-(?:left|full|right)|basecamp-font-(?:up|down|default)|basecamp-shadow|basecamp-double-(?:underline|strike)|basecamp-baseline-default|basecamp-list-(?:dash|bullet|check)|basecamp-check-checked|basecamp-indent-[123])$/;
       const dropWithContent = new Set(["script", "style", "noscript", "template", "svg", "math", "iframe", "object", "embed"]);
       const cleanNode = node => {
         if (node.nodeType === Node.TEXT_NODE) return escapeHtml(node.nodeValue || "");
@@ -29826,6 +29879,7 @@
     let basecampNotePickerOpen = false;
     let basecampNotePickerQuery = "";
     let basecampSavedRange = null;
+    let basecampUndoState = { padId: "", undo: [], redo: [], last: "" };
     let draggingBasecampPadId = "";
     const BASECAMP_DEFAULT_STATUS = "Autosaves as you type.";
     const BASECAMP_AUTOSAVE_DELAY = 700;
@@ -29974,9 +30028,10 @@
         ? "data-basecamp-url-link"
         : `data-basecamp-format="${escapeHtml(item.action)}"`;
       const hintAttr = item.shortcut ? ` data-cmd-hint="${escapeHtml(item.shortcut)}"` : "";
+      const pressedAttr = item.link || item.action === "clear" ? "" : ` aria-pressed="false"`;
       return `
         <button class="basecamp-format-btn" type="button" ${actionAttr}${hintAttr}
-          aria-label="${escapeHtml(title)}" title="${escapeHtml(title)}">
+          aria-label="${escapeHtml(title)}" title="${escapeHtml(title)}"${pressedAttr}>
           <span class="basecamp-format-icon">${item.icon}</span>
           <span class="basecamp-format-text">${escapeHtml(item.label)}</span>
         </button>`;
@@ -29984,7 +30039,7 @@
 
     function basecampToolbarSectionHtml(group) {
       return `
-        <section class="basecamp-toolbar-section" aria-label="${escapeHtml(group.label)} formatting">
+        <section class="basecamp-toolbar-section" data-basecamp-toolbar-group="${escapeHtml(group.id)}" aria-label="${escapeHtml(group.label)} formatting">
           <div class="basecamp-toolbar-section-head">
             <span>${group.icon}</span>
             <span>${escapeHtml(group.label)}</span>
@@ -30015,7 +30070,13 @@
           <div class="basecamp-toolbar-desktop">
             ${BASECAMP_TOOLBAR_GROUPS.map(group => basecampToolbarSectionHtml(group)).join("")}
             <div class="basecamp-toolbar-utility" aria-label="Basecamp utility formatting">
-              ${BASECAMP_TOOLBAR_UTILITY.map(item => basecampToolbarButton(item)).join("")}
+              <div class="basecamp-toolbar-section-head">
+                <span>${__LINK_CIRCLE}</span>
+                <span>Other</span>
+              </div>
+              <div class="basecamp-toolbar-grid">
+                ${BASECAMP_TOOLBAR_UTILITY.map(item => basecampToolbarButton(item)).join("")}
+              </div>
             </div>
           </div>
           <div class="basecamp-toolbar-mobile">
@@ -30203,7 +30264,9 @@
           <small id="basecampCount" class="basecamp-count" aria-live="polite"></small>
         </div>`;
       updateBasecampCount(pad);
+      if (basecampUndoState.padId !== pad.id) resetBasecampUndoState(pad.id, pad.html);
       highlightBasecampSearchHit();
+      requestAnimationFrame(updateBasecampToolbarState);
       if (focusRename && basecampRenamePadId) {
         requestAnimationFrame(() => {
           const input = $(`[data-basecamp-rename-input="${basecampRenamePadId}"]`);
@@ -30520,8 +30583,11 @@
       updateBasecampCount(pad, liveText);
       setBasecampStatus("Saving…");
       basecampPendingPadId = pad.id;
+      basecampUndoState.padId = pad.id;
+      basecampUndoState.last = basecampEditorHtmlSnapshot();
       clearTimeout(basecampSaveTimer);
       basecampSaveTimer = window.setTimeout(() => flushBasecampPad(pad.id), BASECAMP_AUTOSAVE_DELAY);
+      requestAnimationFrame(updateBasecampToolbarState);
     }
 
     function setActiveBasecampPad(padId, { focusBody = true } = {}) {
@@ -30691,6 +30757,133 @@
       basecampSavedRange = range.cloneRange();
     }
 
+    function basecampEditorHtmlSnapshot() {
+      const body = $("[data-basecamp-body]");
+      if (!body) return "";
+      const clone = body.cloneNode(true);
+      $$("mark.basecamp-search-hit", clone).forEach(mark => mark.replaceWith(...mark.childNodes));
+      return sanitizeBasecampHtml(clone.innerHTML.replace(/\u200b/g, ""));
+    }
+
+    function resetBasecampUndoState(padId, html = "") {
+      basecampUndoState = { padId: padId || "", undo: [], redo: [], last: sanitizeBasecampHtml(html) };
+    }
+
+    function basecampRecordUndoSnapshot() {
+      const body = $("[data-basecamp-body]");
+      if (!body) return;
+      const padId = body.dataset.basecampBody || "";
+      const html = basecampEditorHtmlSnapshot();
+      if (basecampUndoState.padId !== padId) resetBasecampUndoState(padId, html);
+      if (basecampUndoState.undo.at(-1) !== html) {
+        basecampUndoState.undo.push(html);
+        if (basecampUndoState.undo.length > 80) basecampUndoState.undo.shift();
+      }
+      basecampUndoState.redo = [];
+      basecampUndoState.last = html;
+    }
+
+    function placeBasecampCursorAtEnd() {
+      const body = $("[data-basecamp-body]");
+      if (!body) return;
+      const range = document.createRange();
+      range.selectNodeContents(body);
+      range.collapse(false);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      basecampSavedRange = range.cloneRange();
+      body.focus();
+    }
+
+    function restoreBasecampBodyHtml(html) {
+      const body = $("[data-basecamp-body]");
+      if (!body) return;
+      body.innerHTML = sanitizeBasecampHtml(html);
+      placeBasecampCursorAtEnd();
+      handleBasecampInput();
+      updateBasecampToolbarState();
+    }
+
+    function undoBasecampEdit() {
+      const body = $("[data-basecamp-body]");
+      if (!body || !basecampUndoState.undo.length) return false;
+      const current = basecampEditorHtmlSnapshot();
+      const previous = basecampUndoState.undo.pop();
+      basecampUndoState.redo.push(current);
+      basecampUndoState.last = previous;
+      restoreBasecampBodyHtml(previous);
+      return true;
+    }
+
+    function redoBasecampEdit() {
+      const body = $("[data-basecamp-body]");
+      if (!body || !basecampUndoState.redo.length) return false;
+      const current = basecampEditorHtmlSnapshot();
+      const next = basecampUndoState.redo.pop();
+      basecampUndoState.undo.push(current);
+      basecampUndoState.last = next;
+      restoreBasecampBodyHtml(next);
+      return true;
+    }
+
+    function withBasecampSelectionMarkers(callback) {
+      const body = $("[data-basecamp-body]");
+      const range = basecampSelectionRange();
+      if (!body || !range || range.collapsed) {
+        callback();
+        return;
+      }
+      const marker = name => {
+        const span = document.createElement("span");
+        span.dataset.basecampSelectionMarker = name;
+        span.style.display = "none";
+        span.textContent = "\u200b";
+        return span;
+      };
+      const startMarker = marker("start");
+      const endMarker = marker("end");
+      const endRange = range.cloneRange();
+      endRange.collapse(false);
+      endRange.insertNode(endMarker);
+      const startRange = range.cloneRange();
+      startRange.collapse(true);
+      startRange.insertNode(startMarker);
+      callback();
+      const freshStart = $("[data-basecamp-selection-marker='start']", body);
+      const freshEnd = $("[data-basecamp-selection-marker='end']", body);
+      if (freshStart && freshEnd) {
+        const restored = document.createRange();
+        restored.setStartAfter(freshStart);
+        restored.setEndBefore(freshEnd);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(restored);
+        basecampSavedRange = restored.cloneRange();
+      }
+      freshStart?.remove();
+      freshEnd?.remove();
+      body.normalize();
+    }
+
+    function basecampInlineSelector(tagName) {
+      if (tagName === "strong") return "strong,b";
+      if (tagName === "em") return "em,i";
+      return tagName;
+    }
+
+    function basecampElementsInRange(range, selector) {
+      const body = $("[data-basecamp-body]");
+      if (!body || !range) return [];
+      const start = basecampRangeStartElement(range);
+      const closest = start?.closest?.(selector);
+      const matches = $$(selector, body).filter(element => {
+        try { return range.intersectsNode(element); } catch { return false; }
+      });
+      if (closest && body.contains(closest) && !matches.includes(closest)) matches.unshift(closest);
+      return matches;
+    }
+
     function wrapBasecampSelectedText(range, createWrapper) {
       const body = $("[data-basecamp-body]");
       if (!body || range.collapsed) return [];
@@ -30729,24 +30922,26 @@
       const body = $("[data-basecamp-body]");
       const range = basecampSelectionRange();
       if (!body || !range) return;
-      const start = range.startContainer.nodeType === Node.ELEMENT_NODE ? range.startContainer : range.startContainer.parentElement;
-      const existing = start?.closest?.(tagName);
-      if (existing && body.contains(existing)) {
-        existing.replaceWith(...existing.childNodes);
-        body.normalize();
+      const existing = basecampElementsInRange(range, basecampInlineSelector(tagName));
+      if (existing.length) {
+        basecampRecordUndoSnapshot();
+        withBasecampSelectionMarkers(() => existing.forEach(unwrapBasecampElement));
       } else if (!range.collapsed) {
+        basecampRecordUndoSnapshot();
         wrapBasecampSelectedText(range, () => document.createElement(tagName));
       } else {
         setBasecampStatus("Select text to format it", true);
         return;
       }
       handleBasecampInput();
+      updateBasecampToolbarState();
     }
 
     function applyBasecampBlock(tagName) {
       const body = $("[data-basecamp-body]");
       const range = basecampSelectionRange();
       if (!body || !range) return;
+      basecampRecordUndoSnapshot();
       const start = range.startContainer.nodeType === Node.ELEMENT_NODE ? range.startContainer : range.startContainer.parentElement;
       const block = start?.closest?.("p,h2,h3,blockquote,pre,li");
       if (block && body.contains(block)) {
@@ -30762,6 +30957,7 @@
         selectBasecampNodeContents(replacement);
       }
       handleBasecampInput();
+      updateBasecampToolbarState();
     }
 
     function basecampRangeStartElement(range) {
@@ -30779,6 +30975,7 @@
 
     function basecampListLinesFromNode(node) {
       const lines = [""];
+      const blockTags = new Set(["p", "div", "h2", "h3", "li", "blockquote", "pre"]);
       const appendText = value => {
         lines[lines.length - 1] += String(value || "");
       };
@@ -30787,12 +30984,21 @@
           appendText(current.nodeValue || "");
           return;
         }
+        if (current.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
+          Array.from(current.childNodes).forEach(walk);
+          return;
+        }
         if (current.nodeType !== Node.ELEMENT_NODE) return;
-        if (current.tagName.toLowerCase() === "br") {
+        if (current.getAttribute?.("data-placeholder")) return;
+        const tag = current.tagName.toLowerCase();
+        if (tag === "br") {
           lines.push("");
           return;
         }
+        const block = blockTags.has(tag);
+        if (block && lines.at(-1).trim()) lines.push("");
         Array.from(current.childNodes).forEach(walk);
+        if (block && lines.at(-1).trim()) lines.push("");
       };
       walk(node);
       return lines.map(line => line.trim()).filter(Boolean);
@@ -30813,6 +31019,7 @@
       const existing = start?.closest?.("ul,ol");
       const normalizedClass = className || "";
       if (existing && body.contains(existing)) {
+        basecampRecordUndoSnapshot();
         if (existing.tagName.toLowerCase() === tagName && basecampListClass(existing) === normalizedClass) {
           const fragment = document.createDocumentFragment();
           $$(":scope > li", existing).forEach(item => {
@@ -30833,13 +31040,15 @@
         const sourceNode = block && body.contains(block)
           ? block
           : body.contains(range.commonAncestorContainer) ? range.commonAncestorContainer : null;
+        const selectedLines = range.collapsed ? [] : basecampListLinesFromNode(range.cloneContents());
         const rangeLines = String(range.toString() || "").split(/\n+/).map(line => line.trim()).filter(Boolean);
         const sourceLines = sourceNode ? basecampListLinesFromNode(sourceNode) : [];
-        const lines = sourceNode?.querySelector?.("br") && sourceLines.length ? sourceLines : rangeLines.length ? rangeLines : sourceLines;
+        const lines = selectedLines.length ? selectedLines : sourceNode?.querySelector?.("br") && sourceLines.length ? sourceLines : rangeLines.length ? rangeLines : sourceLines;
         if (!lines.length) {
           setBasecampStatus("Select one or more lines for a list", true);
           return;
         }
+        basecampRecordUndoSnapshot();
         const list = document.createElement(tagName);
         if (normalizedClass) list.classList.add(normalizedClass);
         lines.forEach(line => {
@@ -30855,6 +31064,7 @@
         selectBasecampNodeContents(list);
       }
       handleBasecampInput();
+      updateBasecampToolbarState();
     }
 
     function clearBasecampFormatting() {
@@ -30864,11 +31074,13 @@
         return;
       }
       const text = range.toString();
+      basecampRecordUndoSnapshot();
       range.deleteContents();
       const node = document.createTextNode(text);
       range.insertNode(node);
       selectBasecampNodeContents(node);
       handleBasecampInput();
+      updateBasecampToolbarState();
     }
 
     function closeBasecampSubmenus() {
@@ -30892,11 +31104,12 @@
       const body = $("[data-basecamp-body]");
       const range = basecampSelectionRange();
       if (!body || !range) return;
-      const start = basecampRangeStartElement(range);
-      const existing = start?.closest?.(`.${className}`);
-      if (existing && body.contains(existing)) {
-        unwrapBasecampElement(existing);
+      const existing = basecampElementsInRange(range, `.${className}`);
+      if (existing.length) {
+        basecampRecordUndoSnapshot();
+        withBasecampSelectionMarkers(() => existing.forEach(unwrapBasecampElement));
       } else if (!range.collapsed) {
+        basecampRecordUndoSnapshot();
         wrapBasecampSelectedText(range, () => {
           const span = document.createElement("span");
           span.className = className;
@@ -30907,40 +31120,45 @@
         return;
       }
       handleBasecampInput();
+      updateBasecampToolbarState();
     }
 
     function applyBasecampFontSizeClass(className) {
       const body = $("[data-basecamp-body]");
       const range = basecampSelectionRange();
       if (!body || !range) return;
-      const start = basecampRangeStartElement(range);
-      const existing = start?.closest?.(".basecamp-font-up,.basecamp-font-down,.basecamp-font-default");
-      if (className === "basecamp-font-default" && existing && body.contains(existing)) {
-        unwrapBasecampElement(existing);
+      const existing = basecampElementsInRange(range, ".basecamp-font-up,.basecamp-font-down,.basecamp-font-default");
+      if (className === "basecamp-font-default" && existing.length) {
+        basecampRecordUndoSnapshot();
+        withBasecampSelectionMarkers(() => existing.forEach(unwrapBasecampElement));
         handleBasecampInput();
+        updateBasecampToolbarState();
         return;
       }
       if (range.collapsed) {
         setBasecampStatus("Select text to resize it", true);
         return;
       }
+      basecampRecordUndoSnapshot();
       wrapBasecampSelectedText(range, () => {
         const span = document.createElement("span");
         span.className = className;
         return span;
       });
       handleBasecampInput();
+      updateBasecampToolbarState();
     }
 
     function applyBasecampBaselineDefault() {
       const body = $("[data-basecamp-body]");
       const range = basecampSelectionRange();
       if (!body || !range) return;
-      const start = basecampRangeStartElement(range);
-      const existing = start?.closest?.("sup,sub,.basecamp-baseline-default");
-      if (existing && body.contains(existing)) {
-        unwrapBasecampElement(existing);
+      const existing = basecampElementsInRange(range, "sup,sub,.basecamp-baseline-default");
+      if (existing.length) {
+        basecampRecordUndoSnapshot();
+        withBasecampSelectionMarkers(() => existing.forEach(unwrapBasecampElement));
         handleBasecampInput();
+        updateBasecampToolbarState();
         return;
       }
       if (range.collapsed) {
@@ -30958,16 +31176,66 @@
       return block && body.contains(block) ? block : null;
     }
 
+    function basecampActionIsActive(action, range) {
+      const body = $("[data-basecamp-body]");
+      if (!body || !range) return false;
+      const start = basecampRangeStartElement(range);
+      const block = activeBasecampBlock(range);
+      const list = start?.closest?.("ul,ol");
+      if (action === "bold") return Boolean(basecampElementsInRange(range, "strong,b").length);
+      if (action === "italic") return Boolean(basecampElementsInRange(range, "em,i").length);
+      if (action === "underline") return Boolean(basecampElementsInRange(range, "u").length);
+      if (action === "strike") return Boolean(basecampElementsInRange(range, "s").length);
+      if (action === "highlight") return Boolean(basecampElementsInRange(range, "mark:not(.basecamp-search-hit)").length);
+      if (action === "shadow") return Boolean(basecampElementsInRange(range, ".basecamp-shadow").length);
+      if (action === "double-underline") return Boolean(basecampElementsInRange(range, ".basecamp-double-underline").length);
+      if (action === "double-strike") return Boolean(basecampElementsInRange(range, ".basecamp-double-strike").length);
+      if (action === "smaller") return Boolean(basecampElementsInRange(range, ".basecamp-font-down").length);
+      if (action === "default-size") return Boolean(basecampElementsInRange(range, ".basecamp-font-default").length);
+      if (action === "bigger") return Boolean(basecampElementsInRange(range, ".basecamp-font-up").length);
+      if (action === "sub") return Boolean(basecampElementsInRange(range, "sub").length);
+      if (action === "baseline") return Boolean(basecampElementsInRange(range, ".basecamp-baseline-default").length);
+      if (action === "sup") return Boolean(basecampElementsInRange(range, "sup").length);
+      if (action === "h2" || action === "h3") return block?.tagName.toLowerCase() === action;
+      if (action === "body") return !block || block.tagName.toLowerCase() === "p";
+      if (action === "mono") return block?.tagName.toLowerCase() === "pre";
+      if (action === "dash-list") return Boolean(list && body.contains(list) && list.tagName.toLowerCase() === "ul" && basecampListClass(list) === "basecamp-list-dash");
+      if (action === "bullet-list") return Boolean(list && body.contains(list) && list.tagName.toLowerCase() === "ul" && basecampListClass(list) === "basecamp-list-bullet");
+      if (action === "number-list") return Boolean(list && body.contains(list) && list.tagName.toLowerCase() === "ol");
+      if (action === "check-list") return Boolean(list && body.contains(list) && list.tagName.toLowerCase() === "ul" && basecampListClass(list) === "basecamp-list-check");
+      if (action === "quote" || action === "quote-in" || action === "quote-out") return Boolean(start?.closest?.("blockquote"));
+      if (action === "indent" || action === "indent-in" || action === "indent-out") return Boolean(block && [...block.classList].some(name => /^basecamp-indent-[123]$/.test(name)));
+      if (action === "align-left") return Boolean(block?.classList.contains("basecamp-align-left"));
+      if (action === "align-center") return Boolean(block?.classList.contains("basecamp-align-center"));
+      if (action === "align-right") return Boolean(block?.classList.contains("basecamp-align-right"));
+      if (action === "justify-left") return Boolean(block?.classList.contains("basecamp-justify-left"));
+      if (action === "justify-full" || action === "align-justify") return Boolean(block?.classList.contains("basecamp-justify-full"));
+      if (action === "justify-right") return Boolean(block?.classList.contains("basecamp-justify-right"));
+      return false;
+    }
+
+    function updateBasecampToolbarState() {
+      const range = basecampSelectionRange();
+      $$("[data-basecamp-format]").forEach(button => {
+        if (button.dataset.basecampFormat === "clear") return;
+        const active = basecampActionIsActive(button.dataset.basecampFormat, range);
+        button.classList.toggle("is-active", active);
+        button.setAttribute("aria-pressed", active ? "true" : "false");
+      });
+    }
+
     function applyBasecampBlockTextClass(className) {
       const range = basecampSelectionRange();
       if (!range) return;
       const block = activeBasecampBlock(range);
       if (!block) return setBasecampStatus("Place the cursor in a paragraph first", true);
+      basecampRecordUndoSnapshot();
       [...block.classList].forEach(name => {
         if (/^basecamp-(?:align|justify)-/.test(name)) block.classList.remove(name);
       });
       block.classList.add(className);
       handleBasecampInput();
+      updateBasecampToolbarState();
     }
 
     function applyBasecampQuote(direction = 0) {
@@ -30976,6 +31244,7 @@
       const block = activeBasecampBlock(range);
       if (!block) return setBasecampStatus("Place the cursor in a paragraph first", true);
       const quote = block.closest("blockquote");
+      basecampRecordUndoSnapshot();
       if (direction < 0 || (direction === 0 && quote)) {
         if (!quote) return setBasecampStatus("Nothing to decrease", true);
         quote.replaceWith(...quote.childNodes);
@@ -30987,6 +31256,7 @@
         selectBasecampNodeContents(block);
       }
       handleBasecampInput();
+      updateBasecampToolbarState();
     }
 
     function applyBasecampIndent(delta = 0, toggle = false) {
@@ -30999,9 +31269,11 @@
       const next = toggle ? (current ? 0 : 1) : Math.max(0, Math.min(3, current + delta));
       if (next === current && delta < 0) return setBasecampStatus("Nothing to decrease", true);
       if (next === current && delta > 0) return setBasecampStatus("Maximum indentation reached", true);
+      basecampRecordUndoSnapshot();
       if (currentClass) block.classList.remove(currentClass);
       if (next) block.classList.add(`basecamp-indent-${next}`);
       handleBasecampInput();
+      updateBasecampToolbarState();
     }
 
     function handleBasecampFormat(action) {
@@ -31088,6 +31360,7 @@
     function insertBasecampFragment(fragment) {
       const range = basecampSelectionRange();
       if (!range) return;
+      basecampRecordUndoSnapshot();
       range.deleteContents();
       const last = fragment.lastChild;
       range.insertNode(fragment);
@@ -31099,6 +31372,7 @@
         selection.addRange(range);
       }
       handleBasecampInput();
+      updateBasecampToolbarState();
     }
 
     function handleBasecampPaste(event) {
@@ -31146,6 +31420,7 @@
       const body = $("[data-basecamp-body]");
       const start = range.startContainer.nodeType === Node.ELEMENT_NODE ? range.startContainer : range.startContainer.parentElement;
       const existing = start?.closest?.("a");
+      basecampRecordUndoSnapshot();
       if (existing && body.contains(existing)) {
         existing.href = href;
         existing.target = "_blank";
@@ -31170,6 +31445,7 @@
       }
       closeBasecampLinkPopover();
       handleBasecampInput();
+      updateBasecampToolbarState();
       $("[data-basecamp-body]")?.focus();
     }
 
@@ -31183,9 +31459,11 @@
         setBasecampStatus("Place the cursor inside a link first", true);
         return;
       }
+      basecampRecordUndoSnapshot();
       link.replaceWith(...link.childNodes);
       closeBasecampLinkPopover();
       handleBasecampInput();
+      updateBasecampToolbarState();
       body.focus();
     }
 
@@ -31275,6 +31553,9 @@
         if (!dialog.open) return;
         if (!event.metaKey && !event.ctrlKey) updateBasecampCmdHint(false);
       });
+      document.addEventListener("selectionchange", () => {
+        if (dialog.open) requestAnimationFrame(updateBasecampToolbarState);
+      });
       window.addEventListener("blur", () => updateBasecampCmdHint(false));
       $("#basecampNewPadBtn").addEventListener("click", createBasecampPad);
       $("#basecampCopyAllBtn").addEventListener("click", () => copyBasecampText({ all: true }));
@@ -31290,6 +31571,9 @@
         if (event.target.closest("[data-basecamp-format], [data-basecamp-url-link], [data-basecamp-submenu-toggle], [data-basecamp-icon-picker], [data-basecamp-icon], [data-basecamp-rename-done]")) {
           event.preventDefault();
         }
+      });
+      workspace.addEventListener("beforeinput", event => {
+        if (event.target.matches("[data-basecamp-body]")) basecampRecordUndoSnapshot();
       });
       workspace.addEventListener("input", event => {
         if (event.target.matches("[data-basecamp-body]")) {
@@ -31392,6 +31676,18 @@
           openBasecampLinkPopover();
           return;
         }
+        const checkItem = event.target.closest("[data-basecamp-body] ul.basecamp-list-check > li");
+        if (checkItem) {
+          const rect = checkItem.getBoundingClientRect();
+          if (event.clientX - rect.left <= 28) {
+            event.preventDefault();
+            basecampRecordUndoSnapshot();
+            checkItem.classList.toggle("basecamp-check-checked");
+            handleBasecampInput();
+            updateBasecampToolbarState();
+            return;
+          }
+        }
         if (event.target.closest("[data-basecamp-link-apply]")) {
           applyBasecampLink();
           return;
@@ -31436,6 +31732,17 @@
       workspace.addEventListener("keydown", event => {
         const body = event.target.closest("[data-basecamp-body]");
         if (body && (event.metaKey || event.ctrlKey)) {
+          if (!event.altKey && String(event.key || "").toLowerCase() === "z") {
+            event.preventDefault();
+            if (event.shiftKey) redoBasecampEdit();
+            else undoBasecampEdit();
+            return;
+          }
+          if (!event.altKey && String(event.key || "").toLowerCase() === "y") {
+            event.preventDefault();
+            redoBasecampEdit();
+            return;
+          }
           const action = basecampShortcutAction(event);
           if (action) {
             event.preventDefault();
@@ -31585,7 +31892,7 @@
         if (tag === "li") {
           const marker = context.list === "ol"
             ? `${Number(context.index || 0) + 1}.`
-            : context.listClass === "basecamp-list-check" ? "- [ ]" : "-";
+            : context.listClass === "basecamp-list-check" ? (node.classList.contains("basecamp-check-checked") ? "- [x]" : "- [ ]") : "-";
           return `${marker} ${children().trim()}\n`;
         }
         return children();
@@ -31619,7 +31926,7 @@
         if (tag === "li") {
           const marker = context.list === "ol"
             ? `${Number(context.index || 0) + 1}.`
-            : context.listClass === "basecamp-list-check" ? "[ ]" : "\\bullet";
+            : context.listClass === "basecamp-list-check" ? (node.classList.contains("basecamp-check-checked") ? "[x]" : "[ ]") : "\\bullet";
           return `\\line \\li360 ${marker} ${children()}\\li0 `;
         }
         return children();
