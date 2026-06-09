@@ -8,6 +8,7 @@ The app is still intentionally simple to run: one offline-capable `index.html`, 
 
 | Version | Date | Title | Summary
 |---|---:|---|---|
+| 4.4.0 | 2026-06-09 | Basecamp Pads | Basecamp Pads turns the Basecamp scratchpad into a workspace of named rich-text pads with linked notes and exports. |
 | 4.3.0 | 2026-06-07 | Waypoint Packs | Waypoint Packs turn curated collections into prioritized, map-ready Wayfinder notes. |
 | 4.2.0 | 2026-06-02 | Rangefinder | Rangefinder adds straight-line planning rings, per-map settings, and travel-time estimates. |
 | 4.1.0 | 2026-05-29 | Wayfinder | Wayfinder Feature to act as a Bucket List or Planning Mode along with refreshed Keyboard Shortcuts approach for the Power Users. |
