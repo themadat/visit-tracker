@@ -147,11 +147,14 @@ For every completed change:
 - Trail Log is a single-file, local-first HTML/CSS/JS app.
 - Main file: `index.html`. `STORAGE_KEY = "usStateVisitMap.v1"`, version in `APP_VERSION`.
 - Docs: `README.md` (public/run/build), this handoff (all dev + LLM context).
-- Current version: `APP_VERSION = "4.3.0"` — latest cut release is 4.3.0 "Waypoint Packs" with notice CTA "Pack the Map!".
-- 4.3.0 adds **Waypoint Packs** as a Wayfinder sub-feature: curated place packs that can be previewed, searched, prioritized, annotated, attached to existing notes, and batch-added as normal Wayfinder notes. National Parks and National Monuments are bundled packs, with embedded SVG Location Tags, pack-aware markers/labels, note metadata, priority badges, and export grouping. Pack markers do not recolor state progress. The Packs button only appears in Wayfinder, uses `__CIRCLE_BADGE_PLUS`, and opens a slightly inset child panel that follows the resizable Notes panel without outgrowing it. Opening Packs starts with no pack selected and a compact choose-configure-preview hint; selecting an Available Pack applies its saved overlay label mode immediately. Pack Locations uses a responsive location-and-actions row that stays split when narrow and joins one line when the location name has room. Its header keeps search and actions on one row, stretching search between the title and controls. Square row actions are capped at 40px, Priority is a shaded single-button popout, and link status is represented by the contextual Link/Edit button instead of a separate status block. Link opens a viewport-clamped real-note menu that preserves Pack Locations scroll position; photo previews now preserve that scroll position too. Linked Edit uses a teal outline. Pack overlay and label controls live beside Add/Remove in the Pack Locations header, and selecting a pack enables the overlay with its saved label preference. Leaving Wayfinder turns pack overlays off and restores normal linked-note pins. Linked packs add a compact chevron inside the map Labels icon cell; it opens a larger label target picker with normal state/territory labels plus linked pack icons, while the normal state/territory target uses a `circle.circle.fill` style icon instead of a tag and stays centered when no pack picker is available. The selected target owns the standard `None`, `Abbr`, and `Name` label buttons, and waypoint pack labels draw on linked overlay markers plus existing linked note pins with theme-correct dark-mode color. Long waypoint names split on spaces or dashes, can use three lines for extreme names, use wider line spacing, try below a marker when the preferred top placement would cover another icon, and draw in a top layer above all marker icons; priority badges draw on map note pins whenever their icon is visible. Legend has no separate stats button: it follows the selected map Labels target, keeping the same level rows, names, descriptions, colors, and actions while changing only counts and percentages for linked pack notes. Wayfinder levels count in Legend denominators and row percentages but not completed totals; hard-excluded levels still remove regions or pack items from denominators and show with excluded styling. If no Legend level owns the Wayfinder role, activating Wayfinder opens a picker for the user's existing levels, recommends Want to Visit when present, and can add that recommended level when room remains. Choosing a level automatically excludes it from completion stats before entering Wayfinder. Linked rows hide the staging note field. Developer Mode split-percentage pills show only during active divider drags. Editing a linked note leaves the Waypoint Packs panel open behind the editor so closing it returns to the same pack context. The linked note header shows Website, Photo, Priority, and Link to Waypoint controls in a teal-outlined container when the active pack tag is selected; waypoint choices are scoped to the note's location and merge default park details into Additional Details. Linking an existing note appends the waypoint note to Additional Details, preserves City, and overrides Where/coordinates with teal-highlighted controls. Monument artwork flips between map and Notes contrast treatments in light/dark modes. Park and Monument notes are prefilled as `Established on <date> | <description>` from static Wikipedia-sourced snapshots. Alaska waypoint projection has separate mainland/Aleutian frames, pack overlay pins are Wayfinder teal, and priority colors run green through orange. Preview priorities paint map badges before Add/Refresh; waypoint labels sit above markers. Preview inclusion uses a teal-bordered location selector instead of a checkbox. Selecting a pack temporarily enables its recommended Location Tag at the end of the active tag order; preview-added tags clean themselves up when the pack is left without linked notes. Notes can sort by priority, pack icon filters now show clearly distinct on/off states, hidden excluded locations also hide excluded-level note pins inside mixed locations, expanded note rows omit priority/source pills, WISH-069 tracks timezone-aware Rangefinder times, WISH-070 tracks first-class location ratings with sorting, WISH-071 tracks optional latitude/longitude map lines, and WISH-072 tracks linking multiple notes to one Waypoint Pack location.
-- 4.2.0 adds **Rangefinder Mode**: a map mode (Shortcut Mode key `5`, `__TARGET` button) that picks two note pins as Start/End, draws concentric planning rings, and shows straight-line distance + estimated time. Drive/Plane travel modes, per-map settings (`settings.ringByLayer.{us,world}`), configurable average speed (Drive 30–120, Plane 120–760 mph), fill/clip/unit/time toggles, and US + World support. Internal symbols use the `ring*` prefix.
-- Latest public releases (newest first): 4.3.0 "Waypoint Packs", 4.2.0 "Rangefinder", 4.1.0 "Wayfinder", 4.0.0 "Trail Atlas". Full notes in the in-app CHANGELOG; full history table in `README.md`.
-- Plan docs live in `context/` only while their line is in flight, then are deleted on ship. No plan is currently active; shipped plans are removed after release.
+- Current version: `APP_VERSION = "4.4.0"` "Basecamps" — the latest cut release. No active development line.
+- Latest public releases (newest first): 4.4.0 "Basecamps", 4.3.0 "Waypoint Packs", 4.2.0 "Rangefinder", 4.1.0 "Wayfinder", 4.0.0 "Trail Atlas". Full per-release behavior lives in the in-app `CHANGELOG` constant in `index.html` (search `const CHANGELOG`); release table in `README.md`. Don't duplicate per-release prose here — read the CHANGELOG entry for the version in question.
+- Recent shipped scope (one-liners only; see CHANGELOG for detail):
+  - 4.4.0 **Basecamps** — Basecamp becomes up to twenty named rich-text pads with icons, search, reorder, formatting toolbars, linked US/World notes, and per-pad exports. Legacy `{ text, updated }` migrates once into "Basecamp Pad". `usStateVisitMap.v1` schema unchanged.
+  - 4.3.0 **Waypoint Packs** — Wayfinder sub-feature with bundled National Parks/Monuments packs, pack-aware markers/labels, linked-note flows, and pack-scoped Legend stats. Pack markers don't recolor state progress.
+  - 4.2.0 **Rangefinder** — map mode (Shortcut Mode key `5`) that picks two note pins as Start/End and draws Drive/Plane planning rings on US + World; per-map settings in `settings.ringByLayer.{us,world}`; internal symbols use the `ring*` prefix.
+- Open follow-ups: WISH-071 (optional lat/lng map lines, now P0); WISH-073 (P2 Basecamp photo support).
+- Plan docs live in `context/` only while their line is in flight, then are deleted on ship. No active plan or development line — start the next change with `wish` or `plan`.
 - No build step (other than the optional macOS icon pipeline — see README), backend, or dependencies.
 - User data lives in browser localStorage. Locate and Waypoint Pack Wikipedia
   photo previews are intentional online actions and only run when clicked.
@@ -239,6 +242,11 @@ State basics:
   states: { CA: ["visited"] },                 // US states + territories
   notes: { CA: [{ id, date, levelId, city, where, what, who, lat, lng, geocodeLabel, details, text, visitTypes, priority, sourceSetId, sourceItemId, sourceSetGenerated }] },
   world: { regions: { FR: ["visited"] }, notes: { FR: [ ... ] } },  // countries (ISO-2), territories stay in states/notes
+  basecamp: {
+    pads: [{ id, name, icon, html, plainText, linkedNotes: [{ noteId, regionCode }], created, updated }],
+    activePadId,
+    legacyMigrated
+  },
   territoryDefaultsSeeded, countriesSeeded
 }
 ```
@@ -296,6 +304,9 @@ Important invariants:
 - Saved Notes filters are repaired against current level/tag ids.
 - Rangefinder settings are repaired per layer. Ring arrays allow up to 8 rings;
   US and World settings remain independent after migration.
+- Basecamp HTML is sanitized before persistence; `plainText` is derived from
+  the sanitized body. Legacy `basecamp.text` migration must never rerun once
+  pads exist, and linked-note ids resolve across both note stores.
 - Selected-location Notes detail ignores main-list filters.
 - Match Notes map filtering follows active Notes filters.
 - Selecting an excluded-from-stats legend level auto-enables Show Excluded;
@@ -307,30 +318,16 @@ Important invariants:
 ## Current Surface
 
 - Map: SVG state/territory map + world map; layer toggle (`#mapLayerToggleBtn`); scroll/fit modes, pan/zoom persistence, labels, clustered note pins, Match Notes filtering. Wayfinder pill rides inside the layer toggle when active.
-- Waypoint Packs: Wayfinder-only Packs button `#notesAddWaypointsBtn`
-  (`__CIRCLE_BADGE_PLUS`) opens an inset panel over Notes, with National Parks
-  and National Monuments bundled as the first packs. Notes header Wayfinder button is
-  `#notesActivateWayfinderBtn`; the Packs button keeps a teal Wayfinder outline,
-  while the Wayfinder mode button only highlights when active.
-  Available Packs cards, visual icon choices, overlay and label icon controls,
-  a unified Pack Locations layout that keeps flexible name/code/location and
-  actions split when narrow, then joins them on one line when space permits.
-  Website, Photo, Edit/Link, and Unlink use 40px square icon buttons; Priority
-  uses compact outline controls. Link/Edit itself communicates unlinked/linked
-  state and anchors the expanded note-choice menu. Overlay and label controls
-  sit in the Pack Locations header. The inset Packs panel follows Notes
-  resizing. Linking appends waypoint details and
-  updates City/coordinates. Also includes batch add into Wayfinder, dedicated
-  pack SVG icons, pack-aware markers, preview priority map badges,
-  temporary-icon cleanup, and safe remove behavior.
+- Waypoint Packs: Wayfinder-only Packs button `#notesAddWaypointsBtn` (`__CIRCLE_BADGE_PLUS`) opens an inset panel over Notes with bundled National Parks/Monuments packs, available-pack cards, overlay/label controls in the Pack Locations header, 40px square Website/Photo/Edit-Link/Unlink buttons, compact Priority controls, pack-aware markers, preview priority badges, batch-add into Wayfinder, and safe remove behavior. Notes header Wayfinder button is `#notesActivateWayfinderBtn`. See the 4.3.0 CHANGELOG entry for full behavior.
 - Legend: editable levels (name, color, definition, exclude-from-stats, Wayfinder), drag reorder, swipe quick actions, movable desktop placement.
 - Rangefinder: Shortcut Mode key `5` / target button opens a paired panel with the Legend, picks saved note pins as Start/End, draws straight-line Drive/Plane planning rings on US and World maps, and keeps per-map ring distances, units, fill/clip/time style, travel mode, and average speed settings.
 - Notes: search (with `/` hint chip + universal `/` shortcut), sort, compact/expanded/text views, category grouping, icon filters, Show Excluded toggle (styled like legend's excluded pattern), coordinate filter, date precision filter, selected-location detail.
 - Note editor: Quick Add, City/Where/What/Who/Details, local field suggestions, Smart Convert, partial/flexible dates, weekday preview, manual/lookup coordinates, multiple icon tags, priority, and Add to active pack. Quick Add defaults to the Wayfinder level when Wayfinder Mode is on.
 - Location Icon Tags: configurable active tags plus auto-discovered More Icons from `__*_CIRCLE` constants, generated labels/search tags, explicit aliases, aliased-first sorting.
+- Basecamp: up to 20 named rich-text pads with icons, cross-pad search (`/` focuses), drag + `Alt+Up`/`Alt+Down` reorder, header-click rename/icon picker, Format/Font/Text/Other toolbars with Cmd/Ctrl chips and editor-local undo/redo, linked US/World notes (Basecamp stays open behind the editor), per-pad and all-pad copy, per-pad Markdown/RTF/Plain Text exports. Legacy `{ text, updated }` migrates once into a "Basecamp Pad" pad with the default icon. Helpers funnel through `normalizeBasecampState` + `basecampExportPads()`.
 - Wayfinder: per-row "Mark Visited" promote action on Wayfinder notes (`openNoteDialog(id, { promoteBucketVisited: true })`) opens the editor pre-filled with `levelId: "visited"` + today's date when blank.
 - Help / What's New / Roadmap / Developer Tools (with grouped Keyboard Shortcuts Reference at `#keyboardShortcutsReference`) live under Settings tabs.
-- Exports: JSON, Markdown, RTF, Plain Text — MD/RTF/Text gain Countries, Wayfinder, and Waypoint Packs sections when engaged; Wayfinder exports group linked pack notes under their pack name. Helpers: `bucketListExportEntries()`, `suggestedSetExportEntries()`.
+- Exports: JSON, Markdown, RTF, Plain Text — MD/RTF/Text gain Countries, Wayfinder, Waypoint Packs, and per-pad Basecamp sections when engaged; Wayfinder exports group linked pack notes under their pack name. Helpers: `bucketListExportEntries()`, `suggestedSetExportEntries()`, `basecampExportPads()`.
 
 ## UX Preferences
 
