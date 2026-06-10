@@ -63,5 +63,12 @@ loads (1,318 rules), themed render, map/legend/notice intact, console clean.
 (4.4.1.2–.3 in between: icon art → `assets/icons/`, `icon/` retired, deploy
 excludes, `build/check.sh`, `.rgignore`.)
 
+**4.4.1.5:** dead-code pass — 56 unreferenced icon consts parked in
+`build/icon-sources/parked-icon-consts.js` (not loaded, deploy-excluded;
+move a const back into icons.js to revive it), 17 uncalled functions and
+the orphaned `CIRCLE_ICON_ID_SET` deleted. `icons.js` ≈384k tokens,
+`index.html` ≈214k. Verified: check.sh + parked file parse clean; browser —
+654 More Icons discovered, registry/pack/Basecamp icons work, console clean.
+
 Remaining on this line: `prep` (Help/FAQ/hints/README/notice polish), then
 `ship` to cut 4.4.1.
