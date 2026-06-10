@@ -4,18 +4,6 @@
 
     const WISHLIST_SEEDS = [
       {
-        title: "Slim the Core File for Agentic Coding (No-Build Split)",
-        ticketId: "WISH-074",
-        description: "Move the SVG icon library, US/World map artwork, Release Notes data, and Roadmap data into plain companion scripts under assets/js loaded before the app script. Keeps the app offline-capable with no build step while making the core file dramatically smaller for coding sessions.",
-        priority: "P1",
-        effort: "medium",
-        targetKind: "exact",
-        targetVersion: "4.4.1",
-        tokenCostPct: 12,
-        prompt: "Extract icon constants, map SVG markup, CHANGELOG, and WISHLIST_SEEDS from index.html into assets/js companion scripts; generate a CIRCLE_ICON_SVGS registry to replace source-scan icon discovery; inject map markup into .map-wrap at startup.",
-        category: "Infra"
-      },
-      {
         title: "Single-File Deploy Build Step",
         ticketId: "WISH-038",
         description: "4.4.1 delivered the no-build split: styles in assets/css and icon/map/release/roadmap data in assets/js. Remaining scope, only if ever wanted: a build script that concatenates and minifies everything back into one deployable index.html for a true single-file distribution.",
