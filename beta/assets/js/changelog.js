@@ -20,6 +20,7 @@
             items: [
               "Fixed the Waypoint Packs panel rendering partly behind the notes control row in condensed view with Wayfinder mode on; it now opens as a full-height floating card over the Notes column instead of relying on a fixed top offset that the taller header overflowed.",
               "The panel now scrolls into view when opened, so it is visible even when the Notes column sits below the fold on tablet and phone layouts.",
+              "Hid the notes lists beneath the open panel, fixing a sticky category heading (such as a collapsed State group) that could linger over the panel until the next repaint.",
             ]
           }
         ]
