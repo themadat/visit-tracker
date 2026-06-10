@@ -90,8 +90,8 @@ release cut yet — that is `ship`.
 - Walk the line's shipped behavior and update everything that describes it:
   - **Help Center** entries and the **FAQ** (Settings → Help).
   - **Hints** and dismissable-hint copy (`data-hint` text + hint keys).
-  - **What's New / release notice banner**: `notice.summary` ≤100 chars,
-    themed `notice.cta` ending in `!`.
+  - **What's New / release notice banner**: `banner` ≤100 chars,
+    themed `cta` ending in `!`.
   - **Release notes** (`CHANGELOG`): highlights (≤4 bullets, ≤100 chars each)
     plus the dense `updates` list; keep wording public-safe (no tickets,
     prompts, or workflow mechanics).
@@ -99,7 +99,7 @@ release cut yet — that is `ship`.
   - **Roadmap** `WISHLIST_SEEDS`: mark shipped items done / retarget versions.
   - **This handoff**: refresh Snapshot, Current Surface, invariants, and UX as
     needed, and condense it so it stays lean.
-- Lock the release theme name and the final `notice.cta`.
+- Lock the release theme name and the final `cta`.
 - Verify the app parses and the new flows work. Leave the line in active-dev
   form (`APP_VERSION` still `x.y.z.N`) when prep is done.
 
@@ -111,8 +111,8 @@ Collapse the dev build line into one released entry.
   segment (e.g. `4.2.0.27` → `4.2.0`).
 - Collapse the active `CHANGELOG` entry's per-build notes into a single clean
   release: `Major.Minor.Patch :: YYYY-mm-dd :: Theme`, bold one-line summary,
-  ≤4 highlights, dense `updates`. Sync `notice.version` to the cut version so
-  release notice dismissal keys match the shipped release.
+  ≤4 highlights, dense `updateSections`. The banner derives version/title from
+  the entry, so dropping the `.N` build segment is the only version sync needed.
 - Sync public surfaces one last time: `README.md` release/history table,
   Help/FAQ/hints, release notice copy, and any Roadmap shipped/retargeted state.
 - Update the Snapshot's **Current version** and **Latest public releases**
@@ -149,11 +149,12 @@ For every completed change:
 
 - Bump the fourth `APP_VERSION` build number (in `index.html`). The `CHANGELOG` constant lives in `assets/js/changelog.js`.
 - When finalizing a release, set `APP_VERSION` to the released semantic version and collapse same-line patch/build notes into that release entry.
-- Update `CHANGELOG` using the collapsed release-note format: `Major.Minor.Patch :: YYYY-mm-dd :: Cheeky theme name`, then a bold one-line summary, then `highlights` and `updates`.
-- Keep `highlights` short: **max 4 bullets, each ≤100 characters.** Anything longer or extra goes in `updates` (the fuller, denser change list).
+- Entry shape: `{ version, date, title, summary, banner, cta, highlights, updateSections: [{ heading, items }] }`. The What's New banner derives its pill version, title, and dismissal keys from `version`/`title` — there is no separate notice object, so nothing extra to sync on `ship`.
+- Update `CHANGELOG` using the collapsed release-note format: `Major.Minor.Patch :: YYYY-mm-dd :: Cheeky theme name`, then a bold one-line summary, then `highlights` and `updateSections`.
+- Keep `highlights` short: **max 4 bullets, each ≤100 characters.** Anything longer or extra goes in `updateSections` (the fuller, denser change list grouped under headings).
 - Release Notes UI shows each release as a scannable card: header + summary + visible Highlights, with the Full Update List behind a clear collapsed toggle.
-- The release `notice.summary` must never exceed 100 characters.
-- The release `notice.cta` changes per version like the theme name and should be themed toward that release's title along with an exclamation point! (e.g. a Basecamp release → "Set Up Camp!").
+- `banner` (the What's New banner blurb) must never exceed 100 characters. Only the newest entry needs one; the banner shows the first entry that has it.
+- `cta` changes per version like the theme name and should be themed toward that release's title along with an exclamation point! (e.g. a Basecamp release → "Set Up Camp!"). A `|` in the text forces the banner's line break.
 - Keep changelog wording public-safe: describe features and changes, not internal tickets, prompts, or workflow mechanics.
 - When manual or unexpected edits are present, identify their app/docs effect and include it in `CHANGELOG` alongside the current update.
 - Keep the current major/minor release entry updated unless intentionally opening a new release line.
