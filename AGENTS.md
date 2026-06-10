@@ -1,8 +1,8 @@
 # Trail Log — Agent Instructions
 
-Local-first, no-build travel-tracking app: `index.html` (~16k lines, ≈216k
+Local-first, no-build travel-tracking app: `index.html` (~16k lines, ≈214k
 tokens — markup + app logic) plus companions: `assets/css/app.css` (≈64k
-tokens, all styles) and plain data scripts in `assets/js/` (`icons.js` ≈426k
+tokens, all styles) and plain data scripts in `assets/js/` (`icons.js` ≈384k
 tokens, `maps.js` ≈241k, `changelog.js` ≈25k, `roadmap.js` ≈6k). **None of
 the big files fit in a context window — never read them whole.**
 

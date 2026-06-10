@@ -195,7 +195,7 @@ For every completed change:
 - When a change affects dev rules, repo context, or future handoff instructions, update this file. Keep `README.md` for public/run/build info only — do not duplicate dev rules there.
 - `AGENTS.md` (Codex) and `CLAUDE.md` (Claude Code; imports AGENTS.md) auto-load a thin summary every session. Keep them lean; this handoff stays the source of truth.
 
-**Token discipline** (`index.html` ≈ 0.87 MB ≈ 216k tokens; the `assets/` companions hold another ~765k — none of the big files fit in context)
+**Token discipline** (`index.html` ≈ 0.86 MB ≈ 214k tokens; the `assets/` companions hold another ~720k — none of the big files fit in context)
 
 - Never read `index.html`, `assets/js/icons.js`, or `assets/js/maps.js` whole or in large spans. `rg -n` first, then read tight ranges (≲200 lines).
 - `index.html` landmarks (re-derive with `rg -n "</head>|<script" index.html`): HTML body ≈ lines 36–1.6k; main script ≈ 1.6k–16.2k (~190k tokens). All styles live in `assets/css/app.css` (~64k tokens).
