@@ -4669,6 +4669,15 @@
       visibility: hidden;
     }
 
+    /* A sticky category heading with rows scrolling under it is promoted to its
+       own compositor layer, which can draw above the panel even though the
+       panel sits higher in paint order — and visibility:hidden does not tear
+       that layer down (the heading lingers until a repaint). Dropping sticky
+       while the panel is open removes the layer entirely. */
+    #notesPanel[data-waypoint-open="true"] .notes-category-heading {
+      position: static;
+    }
+
     .waypoint-packs-head {
       display: flex;
       align-items: center;
