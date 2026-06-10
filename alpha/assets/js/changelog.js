@@ -4,6 +4,28 @@
 
     const CHANGELOG = [
       {
+        version: "4.4.2",
+        date: "2026-06-10",
+        title: "True Colors",
+        summary: "Waypoint pack icons — the National Park arrowhead and National Monument obelisk — now follow the light/dark theme everywhere, matching every other icon on every surface.",
+        banner: "Pack icons now match the light/dark look of every other icon, on every surface.",
+        cta: "Show Your|True Colors!",
+        highlights: [
+          "National Park and Monument icons follow the theme on every surface.",
+          "Fixes invisible or mismatched pack icons in compact notes and Basecamp linked notes.",
+        ],
+        updateSections: [
+          {
+            heading: "Icons",
+            items: [
+              "Waypoint pack artwork now derives its color from the surrounding surface exactly like all other icons, instead of shipping fixed black fills patched per surface.",
+              "Fixes the National Park arrowhead rendering invisible or off-theme in compact note rows, per-state icon stacks, and Basecamp linked notes, and keeps marker, picker, filter, and panel renderings consistent in both themes.",
+              "Condensed note rows keep their intentional hollow-arrowhead style, now keyed to the row's ink color in both themes.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.4.1",
         date: "2026-06-10",
         title: "Ultralight",
