@@ -11,8 +11,9 @@
         banner: "Bundled art and data moved into companion files — same app, lighter core, no behavior changes.",
         cta: "Shed Some Pack Weight!",
         highlights: [
-          "Moved icon art, map art, release notes, and roadmap data into companion files.",
+          "Moved icon art, map art, styles, release notes, and roadmap data into companion files.",
           "Same app everywhere: still offline-first with no build step or dependencies.",
+          "Removed dead code and parked unused icon art for a lighter download.",
         ],
         updateSections: [
           {
@@ -23,6 +24,7 @@
               "Moved all app styles into a companion stylesheet (assets/css/app.css) loaded from the head — same look everywhere, still no build step.",
               "Cleaned house: removed seventeen unused functions and an orphaned lookup, and moved fifty-six unused icon graphics out of the app bundle into a dev-side archive.",
               "Simplified release-note entries: the What's New banner now derives its version and title from the release itself, with a dedicated banner blurb replacing the old duplicated notice block.",
+              "Refreshed the README and Roadmap descriptions for the new companion-file layout.",
               "Tidied the repo: favicon, Apple touch, PWA, and brand-icon art now lives in assets/icons (head links, both manifests, Install dialog thumbnails, and the icon build pipeline updated to match); dormant icon source material moved under build/ and out of deploys; retired the bundled icon-kit templates.",
               "No behavior, schema, or data changes — saved Trail Logs load exactly as before.",
             ]
