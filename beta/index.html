@@ -1631,7 +1631,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.4.1.4";
+    const APP_VERSION = "4.4.1.5";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -1953,7 +1953,6 @@
     }
 
     const CIRCLE_ICON_IDS = autoCircleIconIds();
-    const CIRCLE_ICON_ID_SET = new Set(CIRCLE_ICON_IDS);
 
     // Browseable categories for the More Icons grid. Order = display order in the
     // chip strip; an icon may belong to multiple categories. Resolver below.
@@ -1984,9 +1983,6 @@
       return ICON_CATEGORIES.filter(cat => cat.test(norm)).map(cat => cat.id);
     }
 
-    function iconCategoryLabel(id) {
-      return ICON_CATEGORY_LABELS[id] || "";
-    }
 
     function iconCategoryCountText(catIds, count, query) {
       const trimmed = String(query || "").trim();
@@ -2009,9 +2005,6 @@
       return `${count} ${noun} ${scope}${suffix}`;
     }
 
-    function iconCategoryHasInactive(catId, inactiveTypes) {
-      return inactiveTypes.some(type => iconCategoriesForId(type.id).includes(catId));
-    }
 
     function iconLabelFromId(id) {
       return String(id || "").split("_").filter(Boolean).map(part => {
@@ -3620,9 +3613,6 @@
       state.levels.forEach(level => { level.isBucketList = (level.id === levelId); });
       return { ok: true };
     }
-    function clearBucketListFlag() {
-      state.levels.forEach(level => { level.isBucketList = false; });
-    }
     function suggestedWayfinderLevel() {
       return state.levels.find(level =>
         level.id === "want-to-visit" || level.name.trim().toLowerCase() === "want to visit"
@@ -4186,17 +4176,7 @@
       render();
     }
 
-    function setRingFill(on) {
-      ringSettings().fill = on === true;
-      save();
-      render();
-    }
 
-    function setRingClip(on) {
-      ringSettings().clip = on === true;
-      save();
-      render();
-    }
 
     function closeRingStyleMenu() {
       ringStyleMenuOpen = false;
@@ -5221,9 +5201,6 @@
       return state.settings.buttonStyle === "text";
     }
 
-    function labelFor(symbol, text) {
-      return prefersSymbols() ? symbol : text;
-    }
 
     function buttonMarkup(symbol, text, forceBoth = false) {
       const rawSymbol = String(symbol);
@@ -7196,10 +7173,6 @@
       return priority ? `<span class="priority-badge" title="Priority ${priority}" style="--priority-color:${escapeHtml(color)}">P${priority}</span>` : "";
     }
 
-    function noteSourceBadgeHtml(note) {
-      const source = suggestedSetSourceForNote(note);
-      return source ? `<span class="source-set-badge" title="${escapeHtml(noteSourceLabel(note))}">${escapeHtml(source.item.code)}</span>` : "";
-    }
 
     function noteAttachOptionLabel(ref) {
       const level = levelById(ref.note.levelId)?.name || "No level";
@@ -8196,13 +8169,6 @@
       if (persist) save();
     }
 
-    function cycleLegendPosition() {
-      const current = legendPosition();
-      const next = LEGEND_POSITION_META[current].next;
-      setLegendPosition(next);
-      render();
-      if (next === "right-bottom") revealLegendPanelSoon();
-    }
 
     function toggleLegendEditMode() {
       legendEditMode = !legendEditMode;
@@ -8302,13 +8268,6 @@
       title.addEventListener("pointercancel", cancel);
     }
 
-    function reorderLevelByIndex(levelId, toIndex) {
-      const from = state.levels.findIndex(level => level.id === levelId);
-      if (from < 0 || toIndex < 0 || toIndex >= state.levels.length || from === toIndex) return false;
-      const [level] = state.levels.splice(from, 1);
-      state.levels.splice(toIndex, 0, level);
-      return true;
-    }
 
     function legendDragOrderFromPlaceholder(list, draggedItem, placeholder) {
       const byId = new Map(state.levels.map(level => [level.id, level]));
@@ -8812,52 +8771,7 @@
       render();
     }
 
-    function renderDrawer() {
-      if (!selectedState) return;
-      $("#markedStatesSection").classList.add("hidden");
-      $("#levelsSection").classList.remove("hidden");
-      $("#notesSection").classList.remove("hidden");
-      const names = stateLevelNames(selectedState);
-      $("#drawerTitle").textContent = STATE_NAMES[selectedState];
-      $("#drawerSubtitle").textContent = names.length ? names.join(", ") : "Unvisited";
-      const activeIds = new Set(getStateLevelIds(selectedState));
-      $("#drawerLevelChecks").innerHTML = state.levels.map(level => `
-        <label class="check-row">
-          <input class="drawer-level-check" type="checkbox" value="${level.id}" ${activeIds.has(level.id) ? "checked" : ""}>
-          <span class="dot" style="background:${level.color}"></span>
-          <span>${escapeHtml(level.name)}</span>
-        </label>
-      `).join("");
-      $$(".drawer-level-check").forEach(input => {
-        input.addEventListener("change", () => toggleStateLevel(selectedState, input.value, input.checked));
-      });
-      const notes = (state.notes[selectedState] || []).slice().sort((a, b) => (b.date || "").localeCompare(a.date || ""));
-      $("#notesList").innerHTML = notes.length ? notes.map(note => `
-        <article class="note-card">
-          <div class="row" style="justify-content: space-between;">
-            <time datetime="${escapeHtml(note.date)}">${escapeHtml(formatDateDisplay(note.date))}</time>
-            <span class="tag">${escapeHtml(levelById(note.levelId)?.name || "No level")}</span>
-          </div>
-          ${visitTypeTags(note)}
-          ${renderNoteFieldStack(note)}
-          <div class="actions">
-            ${actionButtonHtml({ symbol: __PENCIL, text: "Edit", className: "", attrs: `data-edit-note="${note.id}"` })}
-            ${actionButtonHtml({ symbol: __DELETE_LEFT_FILL, text: "Delete", className: "danger", attrs: `data-delete-note="${note.id}"` })}
-          </div>
-        </article>
-      `).join("") : `<div class="empty">No visit notes yet.</div>`;
-      $$("[data-edit-note]").forEach(button => button.addEventListener("click", () => openNoteDialog(button.dataset.editNote)));
-      $$("[data-delete-note]").forEach(button => button.addEventListener("click", () => deleteNote(button.dataset.deleteNote)));
-    }
 
-    function openMarkedStatesDrawer() {
-      if ($("#selectDialog").open) $("#selectDialog").close();
-      notesPanelOpen = true;
-      notesPanelState = null;
-      closeDrawer();
-      save();
-      render();
-    }
 
     function markedStateAbbrs() {
       const codes = activeRegionCodes();
@@ -8867,25 +8781,6 @@
       );
     }
 
-    function renderMarkedStatesDrawer() {
-      $("#drawerTitle").textContent = "Notes";
-      $("#drawerSubtitle").textContent = "Select a location to view details or add notes.";
-      $("#markedStatesSection").classList.remove("hidden");
-      $("#levelsSection").classList.add("hidden");
-      $("#notesSection").classList.add("hidden");
-      const marked = markedStateAbbrs();
-      $("#markedStatesList").innerHTML = marked.length ? marked.map(abbr => {
-        const names = filteredStateLevelNames(abbr);
-        const noteCount = filteredNotesFor(abbr).length;
-        return `
-          <button class="state-list-card" type="button" data-open-marked="${abbr}">
-            <span><b>${escapeHtml(regionName(abbr))}</b>${regionKeyTag(abbr)}<br><small>${names.length ? escapeHtml(names.join(", ")) : "Notes only"}</small></span>
-            <span class="tag">${noteCount} note${noteCount === 1 ? "" : "s"}</span>
-          </button>
-        `;
-      }).join("") : `<div class="empty">No marked states yet.</div>`;
-      $$("[data-open-marked]").forEach(button => button.addEventListener("click", () => openStateDrawer(button.dataset.openMarked)));
-    }
 
     function anyVisiblePanel() {
       return mapPanelOpen || notesPanelOpen || (legendPanelOpen && (legendInSideColumn() || mapPanelOpen));
@@ -8980,14 +8875,6 @@
       setMapZoom(zoom);
     }
 
-    function snappedMapZoom(delta) {
-      const steps = mapZoom / MAP_ZOOM_STEP;
-      const rounded = Math.round(steps);
-      if (Math.abs(steps - rounded) < .001) return mapZoom + delta;
-      return delta > 0
-        ? Math.ceil(steps) * MAP_ZOOM_STEP
-        : Math.floor(steps) * MAP_ZOOM_STEP;
-    }
 
     function setMapZoom(value, anchor = null) {
       if (mapFitMode) mapFitMode = false;
@@ -9184,10 +9071,6 @@
       refreshAfterNotesFilterChange();
     }
 
-    function locationTypeTag(abbr) {
-      const meta = locationTypeMeta(abbr);
-      return `<span class="location-type-tag">${locationTypeIcon(abbr)} ${escapeHtml(meta.label)}</span>`;
-    }
 
     function visitTypeTags(note) {
       const tags = noteVisitTypeLabels(note);
@@ -9320,11 +9203,6 @@
       return dates[0] ? formatDateDisplay(dates[0]) : "No Dates";
     }
 
-    function compactLevelDot(level, fallbackLabel = "No level") {
-      const name = level?.name || fallbackLabel;
-      const color = level?.color || "var(--state-empty)";
-      return `<span class="compact-level-wrap" title="${escapeHtml(name)}" aria-label="${escapeHtml(name)}"><span class="compact-level-dot ${level ? "" : "is-empty"}" style="--level-color:${escapeHtml(color)}"></span><span class="sr-only">${escapeHtml(name)}</span></span>`;
-    }
 
     function compactLocationName(abbr, level) {
       const name = regionName(abbr);
@@ -10282,18 +10160,6 @@
       if ($("#tagDialog").open) renderVisitTagSettings();
     }
 
-    function moveVisitTag(fromId, toId) {
-      if (!fromId || !toId || fromId === toId) return;
-      const from = state.visitTypes.findIndex(type => type.id === fromId);
-      const to = state.visitTypes.findIndex(type => type.id === toId);
-      if (from < 0 || to < 0) return;
-      const [item] = state.visitTypes.splice(from, 1);
-      state.visitTypes.splice(to, 0, item);
-      draggingVisitTagId = "";
-      save();
-      render();
-      if ($("#tagDialog").open) renderVisitTagSettings();
-    }
 
     // Field metadata for each recognized Smart Convert token kind.
     const SMART_TOKEN_META = {
@@ -12472,26 +12338,6 @@
         .catch(() => showMessage("Copy Failed", "Your browser blocked clipboard access. Select the text manually."));
     }
 
-    function clearBasecampText() {
-      const pad = activeBasecampPad();
-      if (!pad) return;
-      flushBasecampPad();
-      if (!pad.plainText.trim() && !pad.html.trim()) return;
-      requestConfirm({
-        title: `Clear ${pad.name}?`,
-        message: "This clears this pad's content. The pad and its linked location notes stay in place.",
-        actionLabel: "Clear Pad",
-        preserveOpenDialogs: true,
-        onConfirm: () => {
-          pad.html = "";
-          pad.plainText = "";
-          pad.updated = new Date().toISOString();
-          save();
-          renderBasecampDialog({ focusBody: true });
-          setBasecampStatus("Pad cleared", true);
-        }
-      });
-    }
 
     function basecampSelectionRange() {
       const body = $("[data-basecamp-body]");
