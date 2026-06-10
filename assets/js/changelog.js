@@ -8,12 +8,8 @@
         date: "2026-06-09",
         title: "Ultralight",
         summary: "Trail Log sheds pack weight: bundled icon art, map art, release notes, and roadmap data move into companion files, so the app loads the same everywhere while its core file stays lean.",
-        notice: {
-          version: "4.4.1",
-          title: "Ultralight",
-          summary: "Bundled art and data moved into companion files — same app, lighter core, no behavior changes.",
-          cta: "Shed Some Pack Weight!"
-        },
+        banner: "Bundled art and data moved into companion files — same app, lighter core, no behavior changes.",
+        cta: "Shed Some Pack Weight!",
         highlights: [
           "Moved icon art, map art, release notes, and roadmap data into companion files.",
           "Same app everywhere: still offline-first with no build step or dependencies.",
@@ -26,6 +22,7 @@
               "More Icons discovery now reads a generated icon registry instead of scanning script source text, also removing an eval call site.",
               "Moved all app styles into a companion stylesheet (assets/css/app.css) loaded from the head — same look everywhere, still no build step.",
               "Cleaned house: removed seventeen unused functions and an orphaned lookup, and moved fifty-six unused icon graphics out of the app bundle into a dev-side archive.",
+              "Simplified release-note entries: the What's New banner now derives its version and title from the release itself, with a dedicated banner blurb replacing the old duplicated notice block.",
               "Tidied the repo: favicon, Apple touch, PWA, and brand-icon art now lives in assets/icons (head links, both manifests, Install dialog thumbnails, and the icon build pipeline updated to match); dormant icon source material moved under build/ and out of deploys; retired the bundled icon-kit templates.",
               "No behavior, schema, or data changes — saved Trail Logs load exactly as before.",
             ]
@@ -37,12 +34,8 @@
         date: "2026-06-09",
         title: "Basecamp Pads",
         summary: "Basecamp Pads turns the Basecamp scratchpad into a workspace of named rich-text pads with linked notes and exports.",
-        notice: {
-          version: "4.4.0",
-          title: "Basecamp Pads",
-          summary: "Basecamp grows into a workspace of named, rich-text pads, with linked notes, search, and exports.",
-          cta: "Note|Away!"
-        },
+        banner: "Basecamp grows into a workspace of named, rich-text pads, with linked notes, search, and exports.",
+        cta: "Note|Away!",
         highlights: [
           "Open Basecamp with up to 20 named, icon-tagged, rich-text pads.",
           "Sort, search, customize, and format away on each pad.",
@@ -98,12 +91,8 @@
           "Attach existing notes while preserving dates, levels, and details.",
           "Track progress with synced map markers, labels, Legend stats, and exports."
         ],
-        notice: {
-          version: "4.3.0",
-          title: "Waypoint Packs",
-          summary: "Add curated place packs as prioritized Wayfinder notes and track their map progress.",
-          cta: "Pack the|Map!"
-        },
+        banner: "Add curated place packs as prioritized Wayfinder notes and track their map progress.",
+        cta: "Pack the|Map!",
         updates: [
           "Polished release copy, Help guidance, and implementation notes for the Waypoint Packs release.",
           "Opened Waypoint Packs with no pack preselected and added a compact choose-configure-preview flow hint.",
@@ -212,12 +201,8 @@
           "Adjust distances, units, fill, clipping, labels, and speed.",
           "Compare Start-to-End distance with optional time estimates."
         ],
-        notice: {
-          version: "4.2.0",
-          title: "Rangefinder",
-          summary: "Rangefinder adds per-map planning rings, speeds, and Start-to-End estimates.",
-          cta: "Find Your|Range!"
-        },
+        banner: "Rangefinder adds per-map planning rings, speeds, and Start-to-End estimates.",
+        cta: "Find Your|Range!",
         updates: [
           "Added Rangefinder Mode to the map header with the target icon and Shortcut Mode key 5.",
           "Added a paired Rangefinder panel beside the Legend with responsive stacking, desktop placement support, and a resizable Legend/Rangefinder split.",
@@ -251,12 +236,8 @@
           "Mark Visited promotes a planned spot into a real visit in one click.",
           "Refreshed keyboard shortcut system with a grouped in-app reference."
         ],
-        notice: {
-          version: "4.1.0",
-          title: "Wayfinder",
-          summary: "Set a legend level as your Wayfinder and flip into a focused mode to plan your next adventure.",
-          cta: "Start Planning!"
-        },
+        banner: "Set a legend level as your Wayfinder and flip into a focused mode to plan your next adventure.",
+        cta: "Start Planning!",
         updates: [
           "Wayfinder is a role you can assign to any single legend level: each level row in the level editor gained a Wayfinder checkbox that spans the full dialog width, and ticking it auto-activates Exclude from Stats so the chord stays consistent. Only one level can be the Wayfinder at a time.",
           "Existing 'Want to Visit' levels are auto-flagged as the default Wayfinder on first load after this update, and their definition is renamed to 'Wayfinder' (custom definitions are preserved).",
@@ -292,12 +273,8 @@
           "Legend, stats, notes, and pins follow the active map.",
           "Countries default to Not Interested, so your stats stay calm."
         ],
-        notice: {
-          version: "4.0.0",
-          title: "Trail Atlas",
-          summary: "Switch to a World map and log every country alongside your US states.",
-          cta: "Go Global!"
-        },
+        banner: "Switch to a World map and log every country alongside your US states.",
+        cta: "Go Global!",
         updates: [
           "Added a World map alongside the US map. The 'World Map' button in the map header switches between them, and your choice is remembered.",
           "Countries support the same visit levels, notes, and map pins as US states. US territories appear on both maps and share a single set of notes and levels.",
@@ -345,12 +322,8 @@
           "For planning, packing, gear, and reminders not tied to a place.",
           "Autosaves on this device; rides along in Copy, exports, and backups."
         ],
-        notice: {
-          version: "3.3.0",
-          title: "Basecamp Notes",
-          summary: "A roomy scratchpad for home-base notes not tied to any one place.",
-          cta: "Set Up Camp"
-        },
+        banner: "A roomy scratchpad for home-base notes not tied to any one place.",
+        cta: "Set Up Camp",
         updates: [
           "Added Basecamp: a dedicated dialog with a large autosaving scratchpad for app-level notes (planning, packing, gear, reminders) that are not tied to a state, territory, or mapped location.",
           "Open Basecamp from the toolbar button beside Notes (matched in size to the other toggle icons) or with the B hotkey.",
@@ -371,12 +344,8 @@
           "Copied notes now read as clean, paste-ready lines you can drop straight back into Smart Convert.",
           "Tag Settings adds a sticky category chip strip that scopes the icon grid live."
         ],
-        notice: {
-          version: "3.2.0",
-          title: "Trail Shorthand",
-          summary: "Smart Convert highlights and promotes note pieces as you type, plus browseable icon categories.",
-          cta: "Take Note"
-        },
+        banner: "Smart Convert highlights and promotes note pieces as you type, plus browseable icon categories.",
+        cta: "Take Note",
         updates: [
           "Rebuilt Smart Convert around a single recognizer so live highlighting, recognition chips, and Auto Convert all agree on what was detected.",
           "Smart Convert highlights recognized dates, cities (in), places (at/near/@), purposes (for), people (with, w/), visit levels, and visit labels inline as you type, with no fields changed until you act.",
@@ -409,12 +378,8 @@
           "Filter notes by date precision: all, year, year+month, or full dates.",
           "Added over 200 icon aliases for better search and promoted more used icons."
         ],
-        notice: {
-          version: "3.1.0",
-          title: "Trail Echoes",
-          summary: "Note entry is quicker now, with saved suggestions, smarter dates, cleaner controls, richer icon search, and date precision filters.",
-          cta: "See What's New"
-        },
+        banner: "Note entry is quicker now, with saved suggestions, smarter dates, cleaner controls, richer icon search, and date precision filters.",
+        cta: "See What's New",
         updates: [
           "Added local autocomplete suggestions for City, Where, What, and Who using existing saved notes, with the current target location prioritized.",
           "Split note location entry into City and Where while preserving existing note text through search, display, export, and coordinate lookup behavior.",
@@ -441,12 +406,8 @@
           "Notes Supercharged: Quick Add, structured fields, partial dates, tags, and filters.",
           "Power Toolbar: Tip Jar, Add as App, Help Center, and What's New, all polished."
         ],
-        notice: {
-          version: "3.0.0",
-          title: "Meet Trail Log",
-          summary: "A place to track where you've been, where you're going, and log firsts and memories, with an outdoorsy, geeky vibe.",
-          cta: "Explore!"
-        },
+        banner: "A place to track where you've been, where you're going, and log firsts and memories, with an outdoorsy, geeky vibe.",
+        cta: "Explore!",
         updateSections: [
           {
             heading: "Brand, Install, and App Shell",
@@ -644,12 +605,8 @@
           "Pick Legend position from a corner menu or drag its title between placements.",
           "Denser Legend: per-level stats in color ovals and total completion up top."
         ],
-        notice: {
-          version: "2.5.0",
-          title: "Legend Gets Legs",
-          summary: "A Legend-focused release that makes levels easier to edit, reorder, position, and scan.",
-          cta: "Learn More"
-        },
+        banner: "A Legend-focused release that makes levels easier to edit, reorder, position, and scan.",
+        cta: "Learn More",
         updates: [
           "Legend Edit reveals row controls only when needed, while levels stay draggable outside edit mode.",
           "Legend rows support right-to-left swipe quick actions for Edit/Delete with a far-right dismiss control that does not shift row alignment.",
@@ -674,12 +631,8 @@
         date: "2026-05-22",
         title: "Polish, Memory, and Mobile Flow",
         summary: "A cleanup release for saved layout state, Notes filtering and summaries, Location Tag settings, Roadmap counts, and What's New polish.",
-        notice: {
-          version: "2.4.0",
-          title: "Polish, Memory, and Mobile Flow",
-          summary: "Saved map and Notes preferences, cleaner summaries, mobile polish, and a calmer What's New banner.",
-          cta: "Learn More"
-        },
+        banner: "Saved map and Notes preferences, cleaner summaries, mobile polish, and a calmer What's New banner.",
+        cta: "Learn More",
         highlights: [
           "Map view, zoom, pan, panels, Notes filters, and view prefs now persist.",
           "Denser Notes summaries: color-coded icons, compact filters, steadier filtering.",
@@ -708,12 +661,8 @@
         date: "2026-05-21",
         title: "Map Goes Places",
         summary: "A map-focused release with scrollable pan/zoom, cleaner fit controls, better mobile header behavior, and sharper map-control shortcuts.",
-        notice: {
-          version: "2.3.0",
-          title: "Map Goes Places",
-          summary: "Scrollable pan and zoom, editable zoom percentages, cleaner fit controls, and a tighter map header.",
-          cta: "Learn More"
-        },
+        banner: "Scrollable pan and zoom, editable zoom percentages, cleaner fit controls, and a tighter map header.",
+        cta: "Learn More",
         highlights: [
           "The State Map now opens in scrollable mode with pan-and-zoom controls available immediately.",
           "Zoom in 50% steps to 1000%, typed percentages, and pointer-anchored wheel zoom.",
@@ -748,12 +697,8 @@
         date: "2026-05-19",
         title: "Tag, You're It",
         summary: "Faster note entry, configurable icon tags, a bigger searchable icon catalog, and a resizable Notes workspace.",
-        notice: {
-          version: "2.2.0",
-          title: "Tag, You're It",
-          summary: "Faster notes, configurable icon tags, a resizable map/cards split, and a much bigger icon catalog.",
-          cta: "Learn More"
-        },
+        banner: "Faster notes, configurable icon tags, a resizable map/cards split, and a much bigger icon catalog.",
+        cta: "Learn More",
         highlights: [
           "Notes can carry multiple icon labels, with keyboard toggles and a faster editor.",
           "New Location Icon Tags: choose, rename, reorder, shortcut, and search icons.",
@@ -772,12 +717,8 @@
         date: "2026-05-17",
         title: "Notes Layout Polish",
         summary: "A focused Notes release with better scanning, sticky groups, clearer hierarchy, and cleaner copy-ready text.",
-        notice: {
-          version: "2.1.0",
-          title: "Notes Layout Polish",
-          summary: "Sticky groups, cleaner columns, clearer hierarchy, and better copy-ready notes.",
-          cta: "Learn More"
-        },
+        banner: "Sticky groups, cleaner columns, clearer hierarchy, and better copy-ready notes.",
+        cta: "Learn More",
         highlights: [
           "Notes search now stretches across the header and aligns with the Notes title.",
           "Categorical headers stick while scrolling and show counts before the chevron.",
@@ -797,12 +738,8 @@
         date: "2026-05-16",
         title: "Major Notes Upgrade",
         summary: "Richer visit notes, smarter search and views, release notifications, and a more copy-ready notes workflow.",
-        notice: {
-          version: "2.0.0",
-          title: "Major Notes Upgrade",
-          summary: "Richer visit notes, better sorting, grouped locations, and copy-ready text.",
-          cta: "Learn More"
-        },
+        banner: "Richer visit notes, better sorting, grouped locations, and copy-ready text.",
+        cta: "Learn More",
         highlights: [
           "Notes support structured fields: where, what, who, details, dates, and levels.",
           "New Notes views: Chronological, Alphabetical, Categorical, Expanded, and Text.",

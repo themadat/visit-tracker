@@ -70,5 +70,13 @@ the orphaned `CIRCLE_ICON_ID_SET` deleted. `icons.js` ≈384k tokens,
 `index.html` ≈214k. Verified: check.sh + parked file parse clean; browser —
 654 More Icons discovered, registry/pack/Basecamp icons work, console clean.
 
-Remaining on this line: `prep` (Help/FAQ/hints/README/notice polish), then
+**4.4.1.6:** CHANGELOG schema flattened — `notice` objects gone; entries are
+`{ version, date, title, summary, banner, cta, highlights, updateSections }`
+and the What's New banner derives pill/title/dismissal keys from the entry
+(`latestFeatureNotice()` is the single source). All 16 notices migrated after
+asserting version/title matched. Handoff Release Notes + prep/ship rules
+updated to the new shape. Verified: check.sh; browser — banner renders v4.4.1
+"Ultralight", dismissal round-trip works on derived version, console clean.
+
+Remaining on this line: `prep` (Help/FAQ/hints/README/banner polish), then
 `ship` to cut 4.4.1.
