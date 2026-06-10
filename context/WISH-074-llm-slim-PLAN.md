@@ -78,5 +78,15 @@ asserting version/title matched. Handoff Release Notes + prep/ship rules
 updated to the new shape. Verified: check.sh; browser — banner renders v4.4.1
 "Ultralight", dismissal round-trip works on derived version, console clean.
 
-Remaining on this line: `prep` (Help/FAQ/hints/README/banner polish), then
-`ship` to cut 4.4.1.
+**4.4.1.7 — prep complete.** Help/FAQ had no stale single-file claims (only
+historical changelog prose, left as-is). README intro updated ("open
+index.html and go — plain HTML/CSS/JS with a few companion data files, no
+build step"). WISH-038 retitled "Single-File Deploy Build Step" with
+remaining scope only (4.4.1 delivered the no-build split). Third highlight
+added; banner 94 chars + themed cta locked. Verified in browser: What's New
+card, Roadmap (26 items, WISH-074 targeted 4.4.1, WISH-038 new title), Help
+search, map smoke, console clean.
+
+Remaining on this line: `ship` to cut 4.4.1 (collapse build notes, set final
+date, README release-table row, delete this plan doc, refresh handoff
+Snapshot).
