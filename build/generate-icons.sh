@@ -3,10 +3,10 @@
 # generate-icons.sh
 # -----------------
 # Generate every PNG icon resource the app needs from the two source SVGs:
-#   icon/trail-log-light.svg  -> light variants (favicons, apple-touch-icon, manifest PNGs)
-#   icon/trail-log-dark.svg   -> dark apple-touch-icon
+#   assets/icons/trail-log-light.svg  -> light variants (favicons, apple-touch-icon, manifest PNGs)
+#   assets/icons/trail-log-dark.svg   -> dark apple-touch-icon
 #
-# Outputs at repo root (overwrites in place):
+# Outputs to assets/icons/ (overwrites in place):
 #   apple-touch-icon.png       180x180  (iOS home screen, light)
 #   apple-touch-icon-dark.png  180x180  (iOS home screen, dark)
 #   favicon-16.png              16x16   (legacy favicon, light)
@@ -29,8 +29,10 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-LIGHT_SVG="$REPO_ROOT/icon/trail-log-light.svg"
-DARK_SVG="$REPO_ROOT/icon/trail-log-dark.svg"
+LIGHT_SVG="$REPO_ROOT/assets/icons/trail-log-light.svg"
+DARK_SVG="$REPO_ROOT/assets/icons/trail-log-dark.svg"
+DEST_DIR="$REPO_ROOT/assets/icons"
+mkdir -p "$DEST_DIR"
 
 # --- preflight ---
 if ! command -v qlmanage >/dev/null 2>&1; then
@@ -75,7 +77,7 @@ render() {
     exit 1
   fi
 
-  mv "$generated" "$REPO_ROOT/$dest_name"
+  mv "$generated" "$DEST_DIR/$dest_name"
   printf '  %-32s %dx%d\n' "$dest_name" "$size" "$size"
 }
 

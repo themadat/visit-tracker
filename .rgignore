@@ -1,0 +1,6 @@
+# Keep accidental repo-wide ripgrep searches from dumping SVG path data into
+# LLM context. These are dev-only art sources with no code in them.
+# To search them deliberately: rg --no-ignore (or ls/Read the files directly).
+assets/svgs/
+assets/world-map.svg
+assets/world-map_raw.svg
