@@ -2264,56 +2264,17 @@
     }
 
     .pack-symbol.is-national-monument {
-      color: #000;
       filter: drop-shadow(0 0 1.2px #0f766e) drop-shadow(0 1px 1px rgba(15, 118, 110, .4));
     }
 
-    [data-theme="dark"] .pack-symbol.is-national-monument {
-      color: #fff;
-    }
+    /* Pack artwork (NPS arrowhead, monument) uses currentColor exactly like
+       the sf-symbol icons, so every surface inherits its container's themed
+       ink automatically — no per-surface fill flips. Only intentional shape
+       variants live below. */
 
-    /* Park artwork ships with hard-coded #000 fills + #888 strokes (not
-       currentColor) so the theme/context flips are targeted per surface.
-       Specificity ladder, lowest to highest:
-       1. Map markers + Waypoint Packs modal — silhouette stays visible.
-       2. Notes contexts — fall back to whatever the row-level rule sets.
-       3. Condensed notes — black/white outline (no fill).
-       4. Expanded notes — outline takes the row's level color.
-       5. Notes icon toggle filters — gray fill, theme-tuned.
-       6. Map header label selector + picker option — black/white fill. */
-    [data-theme="dark"] #waypointPacksPanel .pack-symbol.is-national-park path[fill="#000"] {
-      fill: #fff;
-    }
-
-    html:not([data-theme="dark"]) .map-marker-icon .pack-symbol.is-national-park path[fill="#000"],
-    html:not([data-theme="dark"]) .set-marker-icon .pack-symbol.is-national-park path[fill="#000"],
-    html:not([data-theme="dark"]) .visit-icon-stack .pack-symbol.is-national-park path[fill="#000"],
-    html:not([data-theme="dark"]) .visit-type-tag .pack-symbol.is-national-park path[fill="#000"] {
-      fill: #fff;
-    }
-
-    /* Dark-mode tag chips in the note editor: NPS silhouette stays #000 by
-       default, which goes invisible on the dark chip. Flip the fill to white
-       so the arrowhead reads. Light mode keeps the original black silhouette. */
-    [data-theme="dark"] .visit-type-chip .pack-symbol.is-national-park path[fill="#000"] {
-      fill: #fff;
-    }
-
-    /* Condensed note rows: hollow arrowhead, theme-keyed stroke. */
-    html:not([data-theme="dark"]) .compact-note-row:not(.is-expanded) .compact-note-icon .pack-symbol.is-national-park path[fill="#000"] {
+    /* Condensed note rows: hollow arrowhead in the row's ink. */
+    .compact-note-row:not(.is-expanded) .compact-note-icon .pack-symbol.is-national-park path {
       fill: none;
-      stroke: #000;
-    }
-
-    [data-theme="dark"] .compact-note-row:not(.is-expanded) .compact-note-icon .pack-symbol.is-national-park path[fill="#000"] {
-      fill: none;
-      stroke: #fff;
-    }
-
-    /* Expanded note rows: arrowhead silhouette + stroke both pick up the
-       row's level color (visit-icon-stack carries color via inline style). */
-    .compact-note-row.is-expanded .compact-note-icon .pack-symbol.is-national-park path[fill="#000"] {
-      fill: currentColor;
       stroke: currentColor;
     }
 
@@ -2322,43 +2283,6 @@
     .compact-note-row.is-expanded .compact-note-icon .pack-symbol.is-national-park {
       width: 1.25rem;
       height: 1.25rem;
-    }
-
-    /* Notes icon-toggle filter list: filled silhouette, theme-keyed gray.
-       Light-mode tone sits a touch lighter so the filter button does not
-       compete with active note rows nearby. */
-    html:not([data-theme="dark"]) .notes-icon-filter .pack-symbol.is-national-park path[fill="#000"] {
-      fill: #555;
-    }
-
-    [data-theme="dark"] .notes-icon-filter .pack-symbol.is-national-park path[fill="#000"] {
-      fill: #aaa;
-    }
-
-    /* Map header label selector and the picker option for the same target:
-       filled silhouette, theme-keyed black/white. The Simple NPS arrowhead
-       ships with a #888 stroke that washes out at small sizes against the
-       light header tile background, so flip stroke + fill together. */
-    html:not([data-theme="dark"]) .map-label-target-icon .pack-symbol.is-national-park path[fill="#000"],
-    html:not([data-theme="dark"]) .map-waypoint-pack-select .pack-symbol.is-national-park path[fill="#000"] {
-      fill: #000;
-      stroke: #000;
-    }
-
-    [data-theme="dark"] .map-label-target-icon .pack-symbol.is-national-park path[fill="#000"],
-    [data-theme="dark"] .map-waypoint-pack-select .pack-symbol.is-national-park path[fill="#000"] {
-      fill: #fff;
-      stroke: #fff;
-    }
-
-    .map-marker-icon .pack-symbol.is-national-monument,
-    .set-marker-icon .pack-symbol.is-national-monument {
-      color: #fff;
-    }
-
-    [data-theme="dark"] .map-marker-icon .pack-symbol.is-national-monument,
-    [data-theme="dark"] .set-marker-icon .pack-symbol.is-national-monument {
-      color: #000;
     }
 
     .map-marker-icon .pack-symbol,
