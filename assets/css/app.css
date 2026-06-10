@@ -4636,7 +4636,13 @@
     .waypoint-packs-panel {
       position: absolute;
       z-index: 8;
-      inset: 4.85rem .55rem .55rem .55rem;
+      /* Full floating card over the notes column. Earlier this used a fixed
+         4.85rem top to sit below the notes header, but the notes control stack
+         grows taller in compact + Wayfinder mode, so that magic top bisected
+         the controls row and left it peeking above the panel. Covering the
+         whole column (the panel has its own header, search, and Close) avoids
+         any header-height coupling. */
+      inset: .55rem;
       display: grid;
       grid-template-rows: auto minmax(0, 1fr);
       min-height: 0;
@@ -5409,7 +5415,7 @@
 
     @media (max-width: 620px) {
       .waypoint-packs-panel {
-        inset: 4.6rem .35rem .35rem;
+        inset: .35rem;
       }
 
       .waypoint-control-row,
