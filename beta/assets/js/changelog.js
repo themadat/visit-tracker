@@ -25,6 +25,7 @@
               "Moved the SVG icon library, US/World map artwork, Release Notes data, and Roadmap data out of the core file into plain companion scripts under assets/js (icons.js, maps.js, changelog.js, roadmap.js) loaded ahead of the app script.",
               "More Icons discovery now reads a generated icon registry instead of scanning script source text, also removing an eval call site.",
               "Moved all app styles into a companion stylesheet (assets/css/app.css) loaded from the head — same look everywhere, still no build step.",
+              "Cleaned house: removed seventeen unused functions and an orphaned lookup, and moved fifty-six unused icon graphics out of the app bundle into a dev-side archive.",
               "Tidied the repo: favicon, Apple touch, PWA, and brand-icon art now lives in assets/icons (head links, both manifests, Install dialog thumbnails, and the icon build pipeline updated to match); dormant icon source material moved under build/ and out of deploys; retired the bundled icon-kit templates.",
               "No behavior, schema, or data changes — saved Trail Logs load exactly as before.",
             ]
