@@ -2,12 +2,13 @@
 
 Trail Log is a local-first travel map for marking where you've been, where you want to go next, and the little memories worth keeping along the way. It started as a US state visit tracker and now layers in DC, territories, a switchable World map, custom legend levels, location notes, icon tags, mapped memories, Wayfinder packs for National Parks and Monuments, Rangefinder planning rings, named Basecamp pads with rich-text planning and linked location notes, and copy-friendly exports, all with a slightly outdoorsy, geeky vibe.
 
-The app is still intentionally simple to run: one offline-capable `index.html`, plain HTML/CSS/JavaScript, browser localStorage, JSON import/export, and no backend. Optional coordinate lookup only goes online when you tap Locate; saved data and manual coordinates keep working offline.
+The app is still intentionally simple to run: open `index.html` and go — plain HTML/CSS/JavaScript with a few companion data files, no build step, browser localStorage, JSON import/export, and no backend. Optional coordinate lookup only goes online when you tap Locate; saved data and manual coordinates keep working offline.
 
 ## Releases
 
 | Version | Date | Title | Summary
 |---|---:|---|---|
+| 4.4.1 | 2026-06-10 | Ultralight | Bundled icon art, map art, styles, and data move into companion files — same app, lighter core, no behavior changes. |
 | 4.4.0 | 2026-06-09 | Basecamp Pads | Basecamp Pads turns the Basecamp scratchpad into a workspace of named rich-text pads with linked notes and exports. |
 | 4.3.0 | 2026-06-07 | Waypoint Packs | Waypoint Packs turn curated collections into prioritized, map-ready Wayfinder notes. |
 | 4.2.0 | 2026-06-02 | Rangefinder | Rangefinder adds straight-line planning rings, per-map settings, and travel-time estimates. |
@@ -59,7 +60,7 @@ Use port `8018` by convention so smoke-test startup and cleanup stay predictable
 
 ### Build the icon assets (optional, macOS only)
 
-The repo ships with the generated PNG icons and the dual-theme `favicon.svg` already committed at the root, so day-to-day work needs no build. Run the build script only after editing the two source SVGs in `icon/`:
+The repo ships with the generated PNG icons and the dual-theme `favicon.svg` already committed in `assets/icons/`, so day-to-day work needs no build. Run the build script only after editing the two brand SVGs in `assets/icons/`:
 
 ```sh
 ./build/generate-icons.sh
@@ -67,10 +68,10 @@ The repo ships with the generated PNG icons and the dual-theme `favicon.svg` alr
 
 Inputs:
 
-- `icon/trail-log-light.svg` — light variant of the brand icon (mint background, brown book, gold globe ring).
-- `icon/trail-log-dark.svg` — dark variant (pine background, tan book, forest globe ring).
+- `assets/icons/trail-log-light.svg` — light variant of the brand icon (mint background, brown book, gold globe ring).
+- `assets/icons/trail-log-dark.svg` — dark variant (pine background, tan book, forest globe ring).
 
-The script writes ten PNGs at the repo root (`apple-touch-icon[-dark].png`, `icon-{192,512}[-dark].png`, `favicon-{16,32}[-dark].png`) using `qlmanage` from QuickLook. It then invokes `build/generate-favicon.py` (Python 3, no third-party deps) to combine both palettes into a single `favicon.svg` that swaps fills via `@media (prefers-color-scheme: dark)`.
+The script writes ten PNGs into `assets/icons/` (`apple-touch-icon[-dark].png`, `icon-{192,512}[-dark].png`, `favicon-{16,32}[-dark].png`) using `qlmanage` from QuickLook. It then invokes `build/generate-favicon.py` (Python 3, no third-party deps) to combine both palettes into a single `assets/icons/favicon.svg` that swaps fills via `@media (prefers-color-scheme: dark)`.
 
 If `qlmanage` hangs (the QuickLook daemon occasionally wedges), reset it with:
 
@@ -84,16 +85,16 @@ Commit the regenerated PNGs and `favicon.svg` alongside any SVG source edits.
 ## Repo Layout
 
 ```text
-index.html             Complete app: markup, styles, inline SVG map, app state, and UI logic.
+index.html             Core app: markup, app state, and UI logic.
+assets/css/            app.css — all app styles, loaded from the head.
+assets/js/             Data companion scripts loaded before the app script: icons.js (SVG icon library), maps.js (US/World map markup), changelog.js (release notes), roadmap.js (wishlist seeds).
+assets/icons/          Favicon + install icon art: favicon.svg (light + dark via @media), apple-touch-icon*.png, icon-{192,512}*.png manifest icons, favicon-{16,32}*.png legacy fallbacks, and the trail-log-{light,dark}.svg brand sources (fetched at runtime by the Install dialog's icon-picker thumbnails and consumed by the build pipeline).
+assets/svgs/           Dev-only SVG sourcing library (candidate icons, continents, countries). Excluded from deploys.
+assets/world-map*.svg  Dev-only world-map sources + optimize-world-svg.py helper. Excluded from deploys.
 README.md              Project overview, releases, run/build, and repo map (this file).
 manifest.webmanifest   PWA manifest (light icon set).
 manifest-dark.webmanifest  PWA manifest (dark icon set).
-favicon.svg            Browser-tab favicon, light + dark via @media.
-apple-touch-icon*.png  iOS / macOS home-screen and dock icons (light + dark).
-icon-*.png             Manifest icons at 192 and 512, light and dark.
-favicon-*.png          Legacy 16 / 32 favicon fallbacks, light and dark.
-build/                 Optional macOS icon build pipeline (generate-icons.sh + generate-favicon.py). Excluded from deploys.
-icon/                  Source SVGs the build pipeline consumes. `trail-log-{light,dark}.svg` are also fetched at runtime by the Install dialog's icon-picker thumbnails, so this folder ships with the deploy.
+build/                 Optional macOS icon build pipeline (generate-icons.sh + generate-favicon.py) plus dormant icon source material in icon-sources/. Excluded from deploys.
 context/               LLM handoff, dev context, and in-flight plan docs. Excluded from deploys.
 .github/workflows/     GitHub Actions; deploys main to /visit-tracker/ and 3-0-0-Trail-Log to /visit-tracker/beta/. Excluded from deploys.
 ```
