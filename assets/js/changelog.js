@@ -4,6 +4,27 @@
 
     const CHANGELOG = [
       {
+        version: "4.4.3",
+        date: "2026-06-10",
+        title: "Clear View",
+        summary: "The Waypoint Packs panel now opens as a clean full-height card over Notes, fixing a case where it opened half-hidden behind the notes controls in condensed Wayfinder view.",
+        banner: "Waypoint Packs now opens as a clean full card over Notes — no more peeking rows.",
+        cta: "Clear the View!",
+        highlights: [
+          "Fixes the Waypoint Packs panel opening half-hidden behind notes controls.",
+          "The panel now covers the full Notes column and scrolls into view when opened.",
+        ],
+        updateSections: [
+          {
+            heading: "Waypoint Packs",
+            items: [
+              "Fixed the Waypoint Packs panel rendering partly behind the notes control row in condensed view with Wayfinder mode on; it now opens as a full-height floating card over the Notes column instead of relying on a fixed top offset that the taller header overflowed.",
+              "The panel now scrolls into view when opened, so it is visible even when the Notes column sits below the fold on tablet and phone layouts.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.4.2",
         date: "2026-06-10",
         title: "True Colors",

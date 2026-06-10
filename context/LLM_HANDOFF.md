@@ -173,14 +173,14 @@ For every completed change:
   top-level consts share the global lexical scope and work over `file://`.
 - Main file: `index.html`. `STORAGE_KEY = "usStateVisitMap.v1"`, version in `APP_VERSION`.
 - Docs: `README.md` (public/run/build), this handoff (all dev + LLM context), `AGENTS.md` + `CLAUDE.md` (thin auto-loaded agent summaries — keep lean).
-- Current version: `APP_VERSION = "4.4.2"` "True Colors" — the latest cut release. No active development line.
+- Current version: `APP_VERSION = "4.4.3.1"` — active dev line **4.4.3 "Clear View"** (Waypoint Packs panel full-cover fix; small direct line, no plan doc). Latest cut release: 4.4.2 "True Colors".
 - Latest public releases (newest first): 4.4.2 "True Colors", 4.4.1 "Ultralight", 4.4.0 "Basecamps", 4.3.0 "Waypoint Packs", 4.2.0 "Rangefinder". Full per-release behavior lives in the `CHANGELOG` constant in `assets/js/changelog.js`; release table in `README.md`. Don't duplicate per-release prose here — read the CHANGELOG entry for the version in question.
 - Recent shipped scope (one-liners only; see CHANGELOG for detail):
   - 4.4.2 **True Colors** — pack-icon theme consistency: the NPS arrowhead SVG (`__NATIONAL_PARK_SERVICE_LOGO_SIMPLE` in `assets/js/icons.js`) now uses `currentColor` fills/strokes like every other icon, replacing per-surface `path[fill="#000"]` overrides in `app.css`. Condensed note rows keep the intentional hollow-arrowhead style, keyed to row ink. No behavior or schema changes.
   - 4.4.1 **Ultralight** — no-build split: styles in `assets/css/app.css`; icon/map/changelog/roadmap data in `assets/js/` classic scripts loaded before the main script; `CIRCLE_ICON_SVGS` registry replaces source-scan icon discovery; dead code removed and unused icon art parked in `build/icon-sources/`; CHANGELOG entries flattened to top-level `banner`/`cta`. No behavior or schema changes.
   - 4.4.0 **Basecamps** — Basecamp becomes up to twenty named rich-text pads with icons, search, reorder, formatting toolbars, linked US/World notes, and per-pad exports. Legacy `{ text, updated }` migrates once into "Basecamp Pad". `usStateVisitMap.v1` schema unchanged.
 - Open follow-ups: WISH-071 (optional lat/lng map lines, now P0); WISH-073 (P2 Basecamp photo support).
-- Plan docs live in `context/` only while their line is in flight, then are deleted on ship. No active plan or development line — start the next change with `wish` or `plan`.
+- Plan docs live in `context/` only while their line is in flight, then are deleted on ship. The active 4.4.3 line is a small direct change with no plan doc; next steps are `prep` then `ship`.
 - No build step (other than the optional macOS icon pipeline — see README), backend, or dependencies.
 - User data lives in browser localStorage. Locate and Waypoint Pack Wikipedia
   photo previews are intentional online actions and only run when clicked.
