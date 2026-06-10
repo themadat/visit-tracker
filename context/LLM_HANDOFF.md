@@ -6,15 +6,16 @@ Copy this into new chats:
 Continue work in /Users/stripes/Documents/GitHub/visit-tracker. Read context/LLM_HANDOFF.md first. Respect manual edits. Run git status --short before editing. Use port 8018 for local preview.
 ```
 
-Shorthand commands: **`wish`**, **`plan`**, **`start`**, **`prep`**, **`ship`** — see
-Workflows below.
+Shorthand commands: **`wish`**, **`plan`**, **`start`**, **`prep`**, **`ship`**,
+**`pause`** — see Workflows below.
 
-## Workflows: `wish` / `plan` / `start` / `prep` / `ship`
+## Workflows: `wish` / `plan` / `start` / `prep` / `ship` / `pause`
 
-Five shorthand commands drive planning and the version lifecycle: `wish`
+Six shorthand commands drive planning and the version lifecycle: `wish`
 captures a Roadmap idea, `plan` explores and documents the feature, `start`
 implements from the plan and opens the version line, `prep` makes it
-release-ready, and `ship` condenses it into a cut release. This split is
+release-ready, `ship` condenses it into a cut release, and `pause` checkpoints
+a line mid-flight so a different LLM/session can resume it cold. This split is
 intentional: one LLM/session can produce the plan and handoff context, then a
 fresh LLM/session can run `start` to implement from that written plan. Always
 run `git status --short` first and preserve in-flight manual edits. End every
@@ -89,8 +90,8 @@ release cut yet — that is `ship`.
 - Walk the line's shipped behavior and update everything that describes it:
   - **Help Center** entries and the **FAQ** (Settings → Help).
   - **Hints** and dismissable-hint copy (`data-hint` text + hint keys).
-  - **What's New / release notice banner**: `notice.summary` ≤100 chars,
-    themed `notice.cta` ending in `!`.
+  - **What's New / release notice banner**: `banner` ≤100 chars,
+    themed `cta` ending in `!`.
   - **Release notes** (`CHANGELOG`): highlights (≤4 bullets, ≤100 chars each)
     plus the dense `updates` list; keep wording public-safe (no tickets,
     prompts, or workflow mechanics).
@@ -98,7 +99,7 @@ release cut yet — that is `ship`.
   - **Roadmap** `WISHLIST_SEEDS`: mark shipped items done / retarget versions.
   - **This handoff**: refresh Snapshot, Current Surface, invariants, and UX as
     needed, and condense it so it stays lean.
-- Lock the release theme name and the final `notice.cta`.
+- Lock the release theme name and the final `cta`.
 - Verify the app parses and the new flows work. Leave the line in active-dev
   form (`APP_VERSION` still `x.y.z.N`) when prep is done.
 
@@ -110,8 +111,8 @@ Collapse the dev build line into one released entry.
   segment (e.g. `4.2.0.27` → `4.2.0`).
 - Collapse the active `CHANGELOG` entry's per-build notes into a single clean
   release: `Major.Minor.Patch :: YYYY-mm-dd :: Theme`, bold one-line summary,
-  ≤4 highlights, dense `updates`. Sync `notice.version` to the cut version so
-  release notice dismissal keys match the shipped release.
+  ≤4 highlights, dense `updateSections`. The banner derives version/title from
+  the entry, so dropping the `.N` build segment is the only version sync needed.
 - Sync public surfaces one last time: `README.md` release/history table,
   Help/FAQ/hints, release notice copy, and any Roadmap shipped/retargeted state.
 - Update the Snapshot's **Current version** and **Latest public releases**
@@ -124,17 +125,36 @@ Collapse the dev build line into one released entry.
 - Leave no active dev line; the next substantial change begins with `plan`, or
   `start` when a plan already exists.
 
+### `pause` — checkpoint a line mid-flight (tool/session handoff)
+
+End a working session before the line is done — typically when a usage window
+runs out — so any LLM (Claude Code or Codex) can resume cold.
+
+- Verify the app still parses; if it does not, say so explicitly in the
+  Resume block and the commit title.
+- Write or refresh a `## Resume` block at the top of the active plan doc (or
+  in the Snapshot when no plan doc exists): done so far, in progress right
+  now, exact next steps, files/symbols touched, verification status, open
+  gotchas.
+- Commit everything with the normal two copy-paste blocks; WIP commits are
+  fine — mark them `WIP` in the title.
+- Stop the local server.
+- The resuming session ramps from git, not from re-reading code:
+  `git log --oneline -5`, `git diff main...HEAD --stat`, then the Resume
+  block.
+
 ## Release Notes
 
 For every completed change:
 
-- Bump the fourth `APP_VERSION` build number.
+- Bump the fourth `APP_VERSION` build number (in `index.html`). The `CHANGELOG` constant lives in `assets/js/changelog.js`.
 - When finalizing a release, set `APP_VERSION` to the released semantic version and collapse same-line patch/build notes into that release entry.
-- Update `CHANGELOG` using the collapsed release-note format: `Major.Minor.Patch :: YYYY-mm-dd :: Cheeky theme name`, then a bold one-line summary, then `highlights` and `updates`.
-- Keep `highlights` short: **max 4 bullets, each ≤100 characters.** Anything longer or extra goes in `updates` (the fuller, denser change list).
+- Entry shape: `{ version, date, title, summary, banner, cta, highlights, updateSections: [{ heading, items }] }`. The What's New banner derives its pill version, title, and dismissal keys from `version`/`title` — there is no separate notice object, so nothing extra to sync on `ship`.
+- Update `CHANGELOG` using the collapsed release-note format: `Major.Minor.Patch :: YYYY-mm-dd :: Cheeky theme name`, then a bold one-line summary, then `highlights` and `updateSections`.
+- Keep `highlights` short: **max 4 bullets, each ≤100 characters.** Anything longer or extra goes in `updateSections` (the fuller, denser change list grouped under headings).
 - Release Notes UI shows each release as a scannable card: header + summary + visible Highlights, with the Full Update List behind a clear collapsed toggle.
-- The release `notice.summary` must never exceed 100 characters.
-- The release `notice.cta` changes per version like the theme name and should be themed toward that release's title along with an exclamation point! (e.g. a Basecamp release → "Set Up Camp!").
+- `banner` (the What's New banner blurb) must never exceed 100 characters. Only the newest entry needs one; the banner shows the first entry that has it.
+- `cta` changes per version like the theme name and should be themed toward that release's title along with an exclamation point! (e.g. a Basecamp release → "Set Up Camp!"). A `|` in the text forces the banner's line break.
 - Keep changelog wording public-safe: describe features and changes, not internal tickets, prompts, or workflow mechanics.
 - When manual or unexpected edits are present, identify their app/docs effect and include it in `CHANGELOG` alongside the current update.
 - Keep the current major/minor release entry updated unless intentionally opening a new release line.
@@ -144,15 +164,21 @@ For every completed change:
 
 ## Snapshot
 
-- Trail Log is a single-file, local-first HTML/CSS/JS app.
+- Trail Log is a local-first HTML/CSS/JS app with no build step: `index.html`
+  (markup, CSS, app logic) plus plain data companion scripts in `assets/js/` —
+  `icons.js` (`__*` SVG icon consts + generated `CIRCLE_ICON_SVGS` registry),
+  `maps.js` (`__US_AND_WORLD_MAP_MARKUP`, injected into `.map-wrap` as the main
+  script's first statement), `changelog.js` (`CHANGELOG`), `roadmap.js`
+  (`WISHLIST_SEEDS`) — loaded as classic scripts before the main script, so
+  top-level consts share the global lexical scope and work over `file://`.
 - Main file: `index.html`. `STORAGE_KEY = "usStateVisitMap.v1"`, version in `APP_VERSION`.
-- Docs: `README.md` (public/run/build), this handoff (all dev + LLM context).
-- Current version: `APP_VERSION = "4.4.0"` "Basecamps" — the latest cut release. No active development line.
-- Latest public releases (newest first): 4.4.0 "Basecamps", 4.3.0 "Waypoint Packs", 4.2.0 "Rangefinder", 4.1.0 "Wayfinder", 4.0.0 "Trail Atlas". Full per-release behavior lives in the in-app `CHANGELOG` constant in `index.html` (search `const CHANGELOG`); release table in `README.md`. Don't duplicate per-release prose here — read the CHANGELOG entry for the version in question.
+- Docs: `README.md` (public/run/build), this handoff (all dev + LLM context), `AGENTS.md` + `CLAUDE.md` (thin auto-loaded agent summaries — keep lean).
+- Current version: `APP_VERSION = "4.4.1"` "Ultralight" — the latest cut release. No active development line.
+- Latest public releases (newest first): 4.4.1 "Ultralight", 4.4.0 "Basecamps", 4.3.0 "Waypoint Packs", 4.2.0 "Rangefinder", 4.1.0 "Wayfinder". Full per-release behavior lives in the `CHANGELOG` constant in `assets/js/changelog.js`; release table in `README.md`. Don't duplicate per-release prose here — read the CHANGELOG entry for the version in question.
 - Recent shipped scope (one-liners only; see CHANGELOG for detail):
+  - 4.4.1 **Ultralight** — no-build split: styles in `assets/css/app.css`; icon/map/changelog/roadmap data in `assets/js/` classic scripts loaded before the main script; `CIRCLE_ICON_SVGS` registry replaces source-scan icon discovery; dead code removed and unused icon art parked in `build/icon-sources/`; CHANGELOG entries flattened to top-level `banner`/`cta`. No behavior or schema changes.
   - 4.4.0 **Basecamps** — Basecamp becomes up to twenty named rich-text pads with icons, search, reorder, formatting toolbars, linked US/World notes, and per-pad exports. Legacy `{ text, updated }` migrates once into "Basecamp Pad". `usStateVisitMap.v1` schema unchanged.
   - 4.3.0 **Waypoint Packs** — Wayfinder sub-feature with bundled National Parks/Monuments packs, pack-aware markers/labels, linked-note flows, and pack-scoped Legend stats. Pack markers don't recolor state progress.
-  - 4.2.0 **Rangefinder** — map mode (Shortcut Mode key `5`) that picks two note pins as Start/End and draws Drive/Plane planning rings on US + World; per-map settings in `settings.ringByLayer.{us,world}`; internal symbols use the `ring*` prefix.
 - Open follow-ups: WISH-071 (optional lat/lng map lines, now P0); WISH-073 (P2 Basecamp photo support).
 - Plan docs live in `context/` only while their line is in flight, then are deleted on ship. No active plan or development line — start the next change with `wish` or `plan`.
 - No build step (other than the optional macOS icon pipeline — see README), backend, or dependencies.
@@ -168,12 +194,20 @@ For every completed change:
 - Edit surgically, especially in `index.html`; do not reformat the file.
 - App behavior changes usually require `APP_VERSION`/`CHANGELOG` updates. Docs-only, handoff-only, or planning-only edits do not need release churn unless the user asks.
 - When a change affects dev rules, repo context, or future handoff instructions, update this file. Keep `README.md` for public/run/build info only — do not duplicate dev rules there.
+- `AGENTS.md` (Codex) and `CLAUDE.md` (Claude Code; imports AGENTS.md) auto-load a thin summary every session. Keep them lean; this handoff stays the source of truth.
+
+**Token discipline** (`index.html` ≈ 0.86 MB ≈ 214k tokens; the `assets/` companions hold another ~720k — none of the big files fit in context)
+
+- Never read `index.html`, `assets/js/icons.js`, or `assets/js/maps.js` whole or in large spans. `rg -n` first, then read tight ranges (≲200 lines).
+- `index.html` landmarks (re-derive with `rg -n "</head>|<script" index.html`): HTML body ≈ lines 36–1.6k; main script ≈ 1.6k–16.2k (~190k tokens). All styles live in `assets/css/app.css` (~64k tokens).
+- Companions: `icons.js` ≈426k tokens and `maps.js` ≈241k are inert art data — jump by symbol, never scroll. `changelog.js` ≈25k and `roadmap.js` ≈6k are safe to open in slices.
+- Don't echo big chunks of the files or command output into chat; prefer `rg -c`, `git diff --stat`, `head`.
 - End every final reply with two copyable blocks: first the commit description
   in list form, then `_vt-checkpoint APP_VERSION - <commit title>`.
 
 **Code**
 
-- Keep the app single-file unless there is a strong reason not to. No build step, backend, or runtime dependencies.
+- Keep the app no-build and dependency-free: `index.html` plus plain classic companion scripts in `assets/js/`. No bundlers, ES modules, backend, or runtime dependencies; everything must keep working over `file://`.
 - Prefer small, readable functions over new abstractions.
 - Use semantic HTML and accessible labels for new controls; theme-aware colors via CSS variables.
 - Keep all features offline and local-only. Destructive UI actions go through `requestConfirm(...)`.
@@ -183,7 +217,7 @@ For every completed change:
 - New persisted fields: add defaults in `defaultState()` and repair/defaulting in `normalizeState()`.
 - Preserve the `usStateVisitMap.v1` schema. Never overwrite existing user-created arrays or settings unless the user explicitly resets.
 
-**Roadmap (`WISHLIST_SEEDS`)** — developer-facing defaults only; never persisted in user backups.
+**Roadmap (`WISHLIST_SEEDS`, in `assets/js/roadmap.js`)** — developer-facing defaults only; never persisted in user backups.
 
 - Item shape: `title`, `ticketId` (`WISH-###`), `description`, `priority`, `effort`, `targetKind`, `targetVersion`, `tokenCostPct`, `prompt`, `category`.
 - `priority`: `P0`–`P3`. `effort`: `small` | `medium` | `large` | `x-large`.
@@ -197,16 +231,19 @@ For every completed change:
 ## Quick Commands
 
 ```sh
-rg -n "APP_VERSION|STORAGE_KEY|WISHLIST_SEEDS|CHANGELOG" index.html
+rg -n "APP_VERSION|STORAGE_KEY" index.html
+rg -n "version:" assets/js/changelog.js | head    # release entries
+rg -n "ticketId" assets/js/roadmap.js             # wish seeds
 rg -n "function defaultState|function normalizeState|function save" index.html
 rg -n "function renderNotesPanel|function renderMap|function bindEvents" index.html
 git diff --check
 python3 -m http.server 8018   # preview at http://127.0.0.1:8018/index.html; stop before final reply
 ```
 
-## Code Map (`index.html`)
+## Code Map
 
-- Constants: `APP_VERSION`, `STORAGE_KEY`, `STATES`/`STATE_NAMES`, `BUILT_INS`, `THEMES`, `MAP_LAYERS`, `WISHLIST_SEEDS`, `CHANGELOG`.
+- `index.html` constants: `APP_VERSION`, `STORAGE_KEY`, `STATES`/`STATE_NAMES`, `BUILT_INS`, `THEMES`, `MAP_LAYERS`.
+- `assets/js/` companions: `icons.js` (`__*` SVG consts + `CIRCLE_ICON_SVGS` registry), `maps.js` (`__US_AND_WORLD_MAP_MARKUP`), `changelog.js` (`CHANGELOG`), `roadmap.js` (`WISHLIST_SEEDS`).
 - Persistence: `defaultState`, `loadState`, `normalizeState`, `save`.
 - Map: `initMap`, `handleStateTap`, `cycleState`, `renderMap`, `renderLocationMarkers`, `renderRingOverlay`, `bindMapPanZoom`, `setMapZoom`, `toggleMapFitMode`.
 - Legend: `renderLegend`, `moveLevel`, `deleteLevel`, `smartApplyPalette`, `setLegendPosition`.
@@ -215,7 +252,18 @@ python3 -m http.server 8018   # preview at http://127.0.0.1:8018/index.html; sto
 
 ## Verify
 
-- **Parse check**: `node` is not guaranteed on this machine. Prefer serving on 8018 and watching the browser console for errors. If a JS engine is present, extract the last `<script>` and `new Function(...)` it (`node`, or macOS `jsc` at `/System/Library/Frameworks/JavaScriptCore.framework/Versions/A/Helpers/jsc`). Pure helpers can be unit-tested in isolation with `jsc`.
+- **Parse check**: `./build/check.sh` — one command; runs every `assets/js`
+  companion plus the wrapped main `<script>` through macOS `jsc`
+  (`node` is not guaranteed on this machine). Pure helpers can be unit-tested
+  in isolation with `jsc`.
+- **Preview server**: the `.claude/launch.json` preview wrapper can accept
+  connections but reset them. The reliable recipe: run
+  `python3 -m http.server 8018` as a background task, then point the
+  preview panel or browser at `http://127.0.0.1:8018/index.html`. Don't
+  re-debug the wrapper.
+- **Search hygiene**: `.rgignore` keeps `assets/svgs/` and the world-map
+  sources out of repo-wide `rg` results; explicitly targeting those paths
+  (e.g. `rg --files assets/svgs`) still works for deliberate browsing.
 - **Whitespace**: `git diff --check`.
 - **Smoke test** (after meaningful changes): desktop main view doesn't vertically scroll (Notes scroll internally); map renders and states/countries are clickable; mark a region, add/edit/delete a note; year-only, month/year, and full-date entries; toggle Notes sort/view; add coordinates via Locate (online) then reload and confirm a map marker; toggle date-format settings; apply a smart palette; export JSON/Markdown/RTF; import only after confirming overwrite.
 - Stop the local server before the final response.
