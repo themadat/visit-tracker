@@ -1,9 +1,10 @@
 ## Future Prompt
 
+change the sheild color in compact mode and in linked notes in basecamp
+
 LLM Optimizations: 
 - Slim context
 - Break up file (svg, help center, changelog)
-- 
 
 Mobile Cleanup: 
 - Better Auto Colors single liner
