@@ -4657,6 +4657,18 @@
       display: none;
     }
 
+    /* While the Waypoint Packs panel covers the Notes column, hide the notes
+       content lists underneath. Targeted by id because the compact view swaps
+       #notesPanelContent's class to .compact-notes. visibility (not display)
+       keeps #notesPanel's height so the absolutely-positioned panel still
+       fills it, while removing the sticky category headings from paint so none
+       bleed over the panel. */
+    #notesPanel[data-waypoint-open="true"] #notesPanelContent,
+    #notesPanel[data-waypoint-open="true"] #notesList,
+    #notesPanel[data-waypoint-open="true"] #markedStatesList {
+      visibility: hidden;
+    }
+
     .waypoint-packs-head {
       display: flex;
       align-items: center;
