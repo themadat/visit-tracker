@@ -16,15 +16,15 @@
         category: "Infra"
       },
       {
-        title: "Split App into /src Folder with Build Step",
+        title: "Single-File Deploy Build Step",
         ticketId: "WISH-038",
-        description: "Move from a single-file app to a /src layout with separate HTML, CSS, JS, icon constants, release notes (markdown), and wishlist (markdown). Add a build script that concatenates and minifies into the deployable index.html so the runtime still ships as one file. Goal: easier diffs, scoped edits, and tooling without sacrificing the offline single-file deploy story.",
+        description: "4.4.1 delivered the no-build split: styles in assets/css and icon/map/release/roadmap data in assets/js. Remaining scope, only if ever wanted: a build script that concatenates and minifies everything back into one deployable index.html for a true single-file distribution.",
         priority: "P3",
-        effort: "large",
+        effort: "medium",
         targetKind: "minor",
         targetVersion: "",
-        tokenCostPct: 35,
-        prompt: "Restructure the app source into /src with split HTML, CSS, JS, icon constants, release notes markdown, and wishlist markdown. Add a Node-free build step (Python or bash) that emits the existing single-file index.html for deploys. Preserve offline-only/no-backend semantics, the existing localStorage schema, and all current behaviors.",
+        tokenCostPct: 10,
+        prompt: "Add a Node-free build step (Python or bash) that inlines assets/css/app.css and the assets/js companion scripts into a single dist index.html. Preserve offline-only/no-backend semantics, the existing localStorage schema, and all current behaviors; keep the unbundled layout as the source of truth.",
         category: "Infra"
       },
       {

@@ -173,7 +173,7 @@ For every completed change:
   top-level consts share the global lexical scope and work over `file://`.
 - Main file: `index.html`. `STORAGE_KEY = "usStateVisitMap.v1"`, version in `APP_VERSION`.
 - Docs: `README.md` (public/run/build), this handoff (all dev + LLM context), `AGENTS.md` + `CLAUDE.md` (thin auto-loaded agent summaries — keep lean).
-- Current version: `APP_VERSION = "4.4.1.1"` — active dev line **4.4.1 "Ultralight"** (WISH-074 no-build slim split; plan: `context/WISH-074-llm-slim-PLAN.md`). Latest cut release: 4.4.0 "Basecamps".
+- Current version: `APP_VERSION = "4.4.1.7"` — active dev line **4.4.1 "Ultralight"**, prep complete (WISH-074 no-build slim split; plan: `context/WISH-074-llm-slim-PLAN.md`). Next step: `ship`. Latest cut release: 4.4.0 "Basecamps".
 - Latest public releases (newest first): 4.4.0 "Basecamps", 4.3.0 "Waypoint Packs", 4.2.0 "Rangefinder", 4.1.0 "Wayfinder", 4.0.0 "Trail Atlas". Full per-release behavior lives in the `CHANGELOG` constant in `assets/js/changelog.js`; release table in `README.md`. Don't duplicate per-release prose here — read the CHANGELOG entry for the version in question.
 - Recent shipped scope (one-liners only; see CHANGELOG for detail):
   - 4.4.0 **Basecamps** — Basecamp becomes up to twenty named rich-text pads with icons, search, reorder, formatting toolbars, linked US/World notes, and per-pad exports. Legacy `{ text, updated }` migrates once into "Basecamp Pad". `usStateVisitMap.v1` schema unchanged.
