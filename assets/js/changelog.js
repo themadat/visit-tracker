@@ -5,11 +5,11 @@
     const CHANGELOG = [
       {
         version: "4.4.1",
-        date: "2026-06-09",
+        date: "2026-06-10",
         title: "Ultralight",
         summary: "Trail Log sheds pack weight: bundled icon art, map art, release notes, and roadmap data move into companion files, so the app loads the same everywhere while its core file stays lean.",
-        banner: "Bundled art and data moved into companion files — same app, lighter core, no behavior changes.",
-        cta: "Shed Some Pack Weight!",
+        banner: "Same trail, smoother footing. Faster, lighter, leaner, and improved beneath the surface.",
+        cta: "Shed Some|Pack Weight!",
         highlights: [
           "Moved icon art, map art, styles, release notes, and roadmap data into companion files.",
           "Same app everywhere: still offline-first with no build step or dependencies.",
