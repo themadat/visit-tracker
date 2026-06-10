@@ -173,7 +173,7 @@ For every completed change:
   top-level consts share the global lexical scope and work over `file://`.
 - Main file: `index.html`. `STORAGE_KEY = "usStateVisitMap.v1"`, version in `APP_VERSION`.
 - Docs: `README.md` (public/run/build), this handoff (all dev + LLM context), `AGENTS.md` + `CLAUDE.md` (thin auto-loaded agent summaries — keep lean).
-- Current version: `APP_VERSION = "4.4.1"` "Ultralight" — the latest cut release. No active development line.
+- Current version: `APP_VERSION = "4.4.2.1"` — active dev line **4.4.2 "True Colors"** (pack-icon theme consistency; small direct line, no plan doc). Latest cut release: 4.4.1 "Ultralight".
 - Latest public releases (newest first): 4.4.1 "Ultralight", 4.4.0 "Basecamps", 4.3.0 "Waypoint Packs", 4.2.0 "Rangefinder", 4.1.0 "Wayfinder". Full per-release behavior lives in the `CHANGELOG` constant in `assets/js/changelog.js`; release table in `README.md`. Don't duplicate per-release prose here — read the CHANGELOG entry for the version in question.
 - Recent shipped scope (one-liners only; see CHANGELOG for detail):
   - 4.4.1 **Ultralight** — no-build split: styles in `assets/css/app.css`; icon/map/changelog/roadmap data in `assets/js/` classic scripts loaded before the main script; `CIRCLE_ICON_SVGS` registry replaces source-scan icon discovery; dead code removed and unused icon art parked in `build/icon-sources/`; CHANGELOG entries flattened to top-level `banner`/`cta`. No behavior or schema changes.
