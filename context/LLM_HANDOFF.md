@@ -149,11 +149,13 @@ For every completed change:
 
 - Bump the fourth `APP_VERSION` build number (in `index.html`). The `CHANGELOG` constant lives in `assets/js/changelog.js`.
 - When finalizing a release, set `APP_VERSION` to the released semantic version and collapse same-line patch/build notes into that release entry.
-- Entry shape: `{ version, date, title, summary, banner, cta, highlights, updateSections: [{ heading, items }] }`. The What's New banner derives its pill version, title, and dismissal keys from `version`/`title` — there is no separate notice object, so nothing extra to sync on `ship`.
+- Entry shape: `{ version, date, title, summary, highlights, updateSections: [{ heading, items }] }`, plus `banner` + `cta` **only on feature releases** (major/minor, i.e. a `.0` patch segment). The What's New banner derives its pill version, title, and dismissal keys from `version`/`title` — there is no separate notice object, so nothing extra to sync on `ship`.
+- The banner highlights feature releases only: `latestFeatureNotice()` surfaces the newest entry with `patch === 0`, so patch releases (x.y.Z, Z>0) ship without popping the banner and need no `banner`/`cta`.
+- The Full Update List toggle shows an "X sections · Y updates" tally (sections = grouped `updateSections` entries, updates = total sub-bullets; a flat string list shows just the update count).
 - Update `CHANGELOG` using the collapsed release-note format: `Major.Minor.Patch :: YYYY-mm-dd :: Cheeky theme name`, then a bold one-line summary, then `highlights` and `updateSections`.
 - Keep `highlights` short: **max 4 bullets, each ≤100 characters.** Anything longer or extra goes in `updateSections` (the fuller, denser change list grouped under headings).
 - Release Notes UI shows each release as a scannable card: header + summary + visible Highlights, with the Full Update List behind a clear collapsed toggle.
-- `banner` (the What's New banner blurb) must never exceed 100 characters. Only the newest entry needs one; the banner shows the first entry that has it.
+- `banner` (the What's New banner blurb) must never exceed 100 characters. Only feature releases (major/minor) carry one; the banner shows the newest feature entry, so patch releases omit `banner`/`cta`.
 - `cta` changes per version like the theme name and should be themed toward that release's title along with an exclamation point! (e.g. a Basecamp release → "Set Up Camp!"). A `|` in the text forces the banner's line break.
 - Keep changelog wording public-safe: describe features and changes, not internal tickets, prompts, or workflow mechanics.
 - When manual or unexpected edits are present, identify their app/docs effect and include it in `CHANGELOG` alongside the current update.
@@ -173,7 +175,7 @@ For every completed change:
   top-level consts share the global lexical scope and work over `file://`.
 - Main file: `index.html`. `STORAGE_KEY = "usStateVisitMap.v1"`, version in `APP_VERSION`.
 - Docs: `README.md` (public/run/build), this handoff (all dev + LLM context), `AGENTS.md` + `CLAUDE.md` (thin auto-loaded agent summaries — keep lean).
-- Current version: `APP_VERSION = "4.4.3"` "Clear View" — the latest cut release. No active development line.
+- Current version: `APP_VERSION = "4.4.4.1"` — active dev line **4.4.4 "Fine Print"** (release-notes: patch releases skip the banner; Full Update List tallies sections/updates; small direct line, no plan doc). Latest cut release: 4.4.3 "Clear View".
 - Latest public releases (newest first): 4.4.3 "Clear View", 4.4.2 "True Colors", 4.4.1 "Ultralight", 4.4.0 "Basecamps", 4.3.0 "Waypoint Packs". Full per-release behavior lives in the `CHANGELOG` constant in `assets/js/changelog.js`; release table in `README.md`. Don't duplicate per-release prose here — read the CHANGELOG entry for the version in question.
 - Recent shipped scope (one-liners only; see CHANGELOG for detail):
   - 4.4.3 **Clear View** — Waypoint Packs panel opens as a full-cover floating card over the Notes column (uniform `.55rem` inset replacing a fixed top offset that the taller compact/Wayfinder header overflowed), scrolls into view on open, and while open hides the notes lists + drops sticky positioning on category headings (via `#notesPanel[data-waypoint-open]`) so no heading bleeds over the panel. CSS/JS only; no schema changes.
