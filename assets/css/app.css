@@ -5486,6 +5486,22 @@
       background: rgba(10, 15, 25, .56);
     }
 
+    /* Note editor: clip the dialog and let only the form body scroll, sized in
+       dvh so the body's bottom (and Save) stays reachable on mobile where vh
+       includes the URL-bar gap. Without this the block-layout dialog ran past
+       the visible viewport and the lower fields couldn't be scrolled into view. */
+    #noteDialog[open] {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      max-height: min(860px, calc(100dvh - 1.6rem));
+      overflow: hidden;
+    }
+
+    #noteDialog .dialog-body {
+      max-height: none;
+      min-height: 0;
+    }
+
     #settingsDialog[open] {
       display: grid;
       grid-template-rows: auto minmax(0, 1fr) auto;
@@ -5946,7 +5962,10 @@
       line-height: 1.35;
     }
 
-    #tipJarDialog {
+    /* Scoped to [open] so the id-level display:grid doesn't beat the UA
+       dialog:not([open]){display:none} — without it the closed dialog stays
+       laid out and lingers full-screen after Close. */
+    #tipJarDialog[open] {
       width: min(780px, calc(100vw - 1.6rem));
       /* Grid column with a clipped dialog so only .dialog-body scrolls. Uses
          dvh to match the body's unit — mixing vh (dialog) and dvh (body) let
@@ -6809,6 +6828,24 @@
       height: 18px;
     }
 
+    /* Mobile-only "back to pad list" button; hidden on desktop where the list
+       and editor sit side by side. Shown via the 720px breakpoint. */
+    .basecamp-mobile-back {
+      display: none;
+      place-items: center;
+      flex: 0 0 auto;
+      width: 36px;
+      min-width: 36px;
+      height: 36px;
+      min-height: 36px;
+      padding: 0;
+    }
+
+    .basecamp-mobile-back .sf-symbol {
+      width: 18px;
+      height: 18px;
+    }
+
     .basecamp-pad-icon {
       border: 0;
       background: transparent;
@@ -7184,6 +7221,21 @@
       .basecamp-toolbar-mobile>button {
         flex: 0 0 38px;
         width: 38px;
+      }
+
+      /* Anchor the formatting submenus to the full-width toolbar instead of the
+         ~48px button cell: a 256px menu opened from a center/right button ran off
+         the right edge. Dropping the link-wrap's relative positioning lets the
+         submenu span the toolbar (with small insets) and always stay on screen. */
+      .basecamp-toolbar-mobile .basecamp-toolbar-link-wrap {
+        position: static;
+      }
+
+      .basecamp-toolbar-mobile .basecamp-submenu {
+        left: .55rem;
+        right: .55rem;
+        width: auto;
+        min-width: 0;
       }
     }
 
@@ -7562,36 +7614,60 @@
         justify-content: flex-end;
       }
 
+      /* Two-view model on mobile: the workspace shows either the pad LIST
+         (sidebar) or the pad DETAIL (editor), never both. Both panes share the
+         single grid cell; the active view is chosen by data-basecamp-mobile-view
+         on #basecampWorkspace, and the inter-pane resize handle is dropped. */
       .basecamp-workspace {
         grid-template-columns: 1fr;
-        grid-template-rows: auto minmax(0, 1fr);
+        grid-template-rows: minmax(0, 1fr);
       }
 
-      /* Mobile sidebar stacks vertically: the search row (input + New Pad icon
-         button, already laid out side-by-side by .basecamp-search-row) on top,
-         hints beneath, then the pad list as a horizontal strip so the sidebar
-         stays short and leaves the editor its vertical space. The previous
-         two-column grid targeted .basecamp-search-wrap / .basecamp-new-wrap as
-         direct children, but the current markup nests those inside
-         .basecamp-search-row (and .basecamp-new-wrap no longer exists), which
-         collapsed the search input and overlapped it with the hints. */
+      .basecamp-workspace > .basecamp-sidebar,
+      .basecamp-workspace > .basecamp-editor-pane {
+        grid-area: 1 / 1;
+        min-height: 0;
+      }
+
+      .basecamp-workspace[data-basecamp-mobile-view="list"] > .basecamp-editor-pane {
+        display: none;
+      }
+
+      .basecamp-workspace[data-basecamp-mobile-view="detail"] > .basecamp-sidebar {
+        display: none;
+      }
+
+      #basecampSidebarHandle {
+        display: none;
+      }
+
+      /* List view: search row (input + New Pad button, side-by-side via
+         .basecamp-search-row) and hints on top, then the pads as a full-width
+         vertical list that fills the rest and scrolls. */
       .basecamp-sidebar {
         grid-template-columns: minmax(0, 1fr);
-        grid-template-rows: auto auto auto;
+        grid-template-rows: auto auto minmax(0, 1fr);
         padding: .55rem;
         border-right: 0;
-        border-bottom: 1px solid var(--line);
+        border-bottom: 0;
       }
 
       .basecamp-pad-list {
         grid-row: 3;
-        display: flex;
-        overflow-x: auto;
-        overflow-y: hidden;
+        display: grid;
+        align-content: start;
+        gap: .4rem;
+        overflow-x: hidden;
+        overflow-y: auto;
       }
 
       .basecamp-pad-row {
-        flex: 0 0 min(220px, 72vw);
+        width: 100%;
+      }
+
+      /* Mobile-only Back control returns from the editor (detail) to the list. */
+      .basecamp-mobile-back {
+        display: inline-grid;
       }
 
       .basecamp-linked-unlink {
@@ -10051,11 +10127,27 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
+      /* The ring style ("circle options") button is the leftmost of the
+         right-aligned header actions, so its default right:0 menu ran off the
+         left edge of the narrow stacked panel. Anchor it to the button's left
+         so it opens rightward into the panel instead. */
+      .ring-style-menu {
+        left: 0;
+        right: auto;
+        transform-origin: top left;
+      }
+
       .side-panel-wrap {
         max-height: none;
         overflow-y: visible;
         padding-right: 0;
         padding-bottom: calc(.85rem + env(safe-area-inset-bottom, 0px));
+      }
+
+      /* Notes get at least 75% of the screen on mobile and grow taller as notes
+         pile up or a Waypoint pack is opened over the column. */
+      #notesPanel {
+        min-height: 75dvh;
       }
 
       .filters {
@@ -10070,6 +10162,24 @@
     @media (max-width: 620px) {
       .notes-search input::placeholder {
         font-size: .6rem;
+      }
+
+      /* Waypoint Pack Locations: drop the cramped single-row grid so the search
+         bar takes the first line on its own and the map controls + Add/Refresh +
+         Remove buttons wrap onto a second line. */
+      .waypoint-section-title.is-pack-locations .waypoint-section-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .35rem;
+      }
+
+      .waypoint-location-search-wrap {
+        flex: 1 1 100%;
+      }
+
+      #setsBatchAddBtn,
+      #setsRemoveBtn {
+        flex: 1 1 auto;
       }
 
       .topbar {
@@ -10220,7 +10330,12 @@
         text-align: center;
       }
 
-      [data-map-mode="scroll"] #stateMap {
+      /* Centering for the active map in scroll mode. Must exclude the hidden
+         (inactive-layer) map: this rule shares specificity with
+         #stateMap[hidden]{display:none} but comes later, so without :not([hidden])
+         it un-hides the US map and stacks it above the World map after a switch. */
+      [data-map-mode="scroll"] #stateMap:not([hidden]),
+      [data-map-mode="scroll"] #worldMap:not([hidden]) {
         display: inline-block;
       }
 
@@ -10398,6 +10513,16 @@
       .note-dialog-title-wrap {
         grid-area: title;
         grid-column: auto;
+        overflow: hidden;
+      }
+
+      /* Truncate the location title instead of letting its nowrap text spill
+         under the action buttons in the adjacent grid column. */
+      .note-dialog-title-wrap h2 {
+        flex: 0 1 auto;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .note-dialog-head .dialog-head-actions {
@@ -10412,6 +10537,16 @@
         width: 100%;
         min-width: 0;
         max-width: none;
+      }
+
+      /* Let the Rangefinder panel title wrap to two lines ("Range-" / "finder",
+         the hyphen comes from the &shy; in the markup) instead of truncating to
+         "Range…" once the header action buttons claim their space. */
+      .ring-panel-title-row h2 {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        line-height: 1.12;
       }
 
       #tab-settings .settings-category {

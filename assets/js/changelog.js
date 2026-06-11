@@ -9,19 +9,26 @@
         title: "Mobile Cleanup",
         summary: "A round of small-screen layout fixes for a smoother mobile experience.",
         highlights: [
-          "Fixed a double scrollbar when opening the Tip Jar on mobile.",
-          "Map zoom controls now sit centered in scroll view, in line with the rows below.",
-          "Smart Color Swatches keep each palette's colors and Apply button on one line.",
-          "Basecamp's mobile search box no longer hides behind the New Pad button.",
+          "Basecamp on phones: a pad list, then a full-screen editor with a Back button.",
+          "Notes fill at least 75% of the screen on mobile.",
+          "Switching to the World map now replaces the US map instead of stacking it.",
+          "Tip Jar, the note editor, and pop-up menus all behave on small screens now.",
         ],
         updateSections: [
           {
             heading: "Mobile",
             items: [
-              "Fixed the Tip Jar dialog showing a double scrollbar on phones — the dialog now clips to a single scrolling body and uses dynamic-viewport sizing so the panel and its contents no longer fight for the scroll.",
-              "Centered the map's zoom controls in scroll view so they line up with the notes-pin and label rows below; the Fit toggle still centers on its own once it's the only control.",
-              "Smart Color Swatches now keep each palette's color swatches and its Apply button together on a single line on phones, with the palette name on its own line above.",
-              "Fixed the Basecamp sidebar on phones where the search field collapsed behind the New Pad button — the search box, hints, and pad strip now stack cleanly and the dialog fits the screen.",
+              "Basecamp on phones is now a two-step flow: a full-width vertical pad list, then a full-screen editor for the chosen pad with a Back button to return to the list.",
+              "Notes now fill at least 75% of the screen on mobile and grow taller as notes pile up or a Waypoint pack is opened over the column.",
+              "Switching to the World map now replaces the US map instead of rendering it stacked underneath.",
+              "The note editor scrolls properly on phones — the lower fields and Save button stay reachable — and its action buttons no longer overlap the location title in the header.",
+              "Tip Jar fully closes on mobile instead of lingering at the bottom of the screen, and its earlier double-scrollbar fix carries over.",
+              "Rangefinder's ring-style (\"circle options\") menu opens fully on screen instead of clipping off the left edge, and its panel title wraps to two lines so the header buttons no longer truncate it.",
+              "Basecamp's formatting menus (Format, Font, Text) now stay on screen instead of clipping off the right edge.",
+              "Basecamp's pad-list search field no longer collapses behind the New Pad button.",
+              "The map's zoom controls sit centered in scroll view, lined up with the notes-pin and label rows below.",
+              "Smart Color Swatches keep each palette's color swatches and Apply button together on one line, with the palette name on its own line above.",
+              "Waypoint Pack Locations puts the search bar on its own line with the map and action buttons beneath it, so nothing is cramped or cut off.",
             ]
           }
         ]
