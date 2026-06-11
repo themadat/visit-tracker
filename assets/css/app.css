@@ -4636,7 +4636,13 @@
     .waypoint-packs-panel {
       position: absolute;
       z-index: 8;
-      inset: 4.85rem .55rem .55rem .55rem;
+      /* Full floating card over the notes column. Earlier this used a fixed
+         4.85rem top to sit below the notes header, but the notes control stack
+         grows taller in compact + Wayfinder mode, so that magic top bisected
+         the controls row and left it peeking above the panel. Covering the
+         whole column (the panel has its own header, search, and Close) avoids
+         any header-height coupling. */
+      inset: .55rem;
       display: grid;
       grid-template-rows: auto minmax(0, 1fr);
       min-height: 0;
@@ -4649,6 +4655,27 @@
 
     .waypoint-packs-panel.hidden {
       display: none;
+    }
+
+    /* While the Waypoint Packs panel covers the Notes column, hide the notes
+       content lists underneath. Targeted by id because the compact view swaps
+       #notesPanelContent's class to .compact-notes. visibility (not display)
+       keeps #notesPanel's height so the absolutely-positioned panel still
+       fills it, while removing the sticky category headings from paint so none
+       bleed over the panel. */
+    #notesPanel[data-waypoint-open="true"] #notesPanelContent,
+    #notesPanel[data-waypoint-open="true"] #notesList,
+    #notesPanel[data-waypoint-open="true"] #markedStatesList {
+      visibility: hidden;
+    }
+
+    /* A sticky category heading with rows scrolling under it is promoted to its
+       own compositor layer, which can draw above the panel even though the
+       panel sits higher in paint order — and visibility:hidden does not tear
+       that layer down (the heading lingers until a repaint). Dropping sticky
+       while the panel is open removes the layer entirely. */
+    #notesPanel[data-waypoint-open="true"] .notes-category-heading {
+      position: static;
     }
 
     .waypoint-packs-head {
@@ -5409,7 +5436,7 @@
 
     @media (max-width: 620px) {
       .waypoint-packs-panel {
-        inset: 4.6rem .35rem .35rem;
+        inset: .35rem;
       }
 
       .waypoint-control-row,
