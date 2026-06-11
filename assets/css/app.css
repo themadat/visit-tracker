@@ -10402,21 +10402,50 @@
       .date-builder,
       .note-place-grid,
       .note-field-grid,
-      .note-place-row,
-      .note-city-column,
-      .note-city-tail,
-      .note-where-tail,
       .note-level-radios,
       .smart-convert-row {
         grid-template-columns: 1fr;
+      }
+
+      /* City row: City input + Locate ("lookup coordinates") on the first line,
+         Latitude + Longitude paired on the second. display:contents flattens the
+         nested column/tail so all four become grid items of the row. */
+      .note-place-row:has(.note-city-column) {
+        grid-template-columns: 1fr 1fr;
+        align-items: end;
+      }
+
+      .note-city-column,
+      .note-city-tail {
+        display: contents;
+      }
+
+      /* Where row: Where input + the move-to-City button share the first line;
+         the geocode status message drops to its own full-width line below. */
+      .note-place-row:has(.note-where-tail) {
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: end;
+      }
+
+      .note-where-tail {
+        display: contents;
+      }
+
+      .note-location-message-stack {
+        grid-column: 1 / -1;
       }
 
       .visit-type-row {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
+      /* Slightly smaller chip text + tighter spacing so longer tag labels
+         (e.g. "National Parks") fit without truncating to an ellipsis. */
       .visit-type-chip {
         width: 100%;
+        gap: .22rem;
+        padding: .3rem .32rem;
+        font-size: .76rem;
       }
 
       .date-picker-head {
@@ -10501,33 +10530,37 @@
         padding: .68rem;
       }
 
+      /* Action buttons take the first line; the title drops to its own line
+         below so the buttons never cover it and the full location name shows
+         (wrapping if long) rather than truncating. */
       .note-dialog-head {
-        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-columns: 1fr;
         grid-template-areas:
-          "title actions"
-          "picker picker";
-        gap: .42rem .5rem;
+          "actions"
+          "title"
+          "picker";
+        gap: .35rem .5rem;
         align-items: center;
       }
 
       .note-dialog-title-wrap {
         grid-area: title;
         grid-column: auto;
-        overflow: hidden;
+        overflow: visible;
       }
 
-      /* Truncate the location title instead of letting its nowrap text spill
-         under the action buttons in the adjacent grid column. */
       .note-dialog-title-wrap h2 {
         flex: 0 1 auto;
         min-width: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
       }
 
       .note-dialog-head .dialog-head-actions {
         grid-area: actions;
         grid-column: auto;
+        justify-self: end;
       }
 
       .note-location-select {
