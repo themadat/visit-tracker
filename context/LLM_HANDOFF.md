@@ -175,11 +175,17 @@ For every completed change:
   top-level consts share the global lexical scope and work over `file://`.
 - Main file: `index.html`. `STORAGE_KEY = "usStateVisitMap.v1"`, version in `APP_VERSION`.
 - Docs: `README.md` (public/run/build), this handoff (all dev + LLM context), `AGENTS.md` + `CLAUDE.md` (thin auto-loaded agent summaries — keep lean).
-- Current version: `APP_VERSION = "4.4.5.3"` — active dev line **4.4.5 "Mobile Cleanup"**, **two batches of mobile fixes done** (small direct line, no plan doc; see Resume below). Ready for `prep`/`ship` once reviewed. Latest cut release: 4.4.4 "Fine Print".
+- Current version: `APP_VERSION = "4.4.5.4"` — active dev line **4.4.5 "Mobile Cleanup"**, **three batches of mobile fixes done** (small direct line, no plan doc; see Resume below). Ready for `prep`/`ship` once reviewed. Latest cut release: 4.4.4 "Fine Print".
 
-### Resume — 4.4.5 "Mobile Cleanup" (batch 2 done 2026-06-11)
+### Resume — 4.4.5 "Mobile Cleanup" (batch 3 done 2026-06-11)
 
-All mobile fixes from both rounds **done**. App parses clean (`./build/check.sh`); line at `4.4.5.3` with a `CHANGELOG` "Mobile Cleanup" entry (4 highlights, 11 dense Mobile update items). Patch release (patch=5) so no banner/cta — `latestFeatureNotice()` returns 4.4.0. Next step is `prep`/`ship`. Verify with `python3 -m http.server 8018` + `preview_resize` mobile (375px); **navigate via `…/index.html?v=<ts>` to bust browser cache on `index.html` (plain `?cb=` lands on chrome-error via the preview wrapper, but a `?v=` against the python server loads fine)**; resize first then re-navigate (resize reloads the wrapper's broken URL); force CSS reload by swapping the `app.css` link href.
+All mobile fixes from all three rounds **done**. App parses clean (`./build/check.sh`); line at `4.4.5.4` with a `CHANGELOG` "Mobile Cleanup" entry (4 highlights, 13 dense Mobile update items). Patch release (patch=5) so no banner/cta — `latestFeatureNotice()` returns 4.4.0. Next step is `prep`/`ship`. Verify with `python3 -m http.server 8018` + `preview_resize` mobile (375px); **navigate via `…/index.html?v=<ts>` to bust browser cache on `index.html` (plain `?cb=` lands on chrome-error via the preview wrapper, but a `?v=` against the python server loads fine)**; resize first then re-navigate (resize reloads the wrapper's broken URL); force CSS reload by swapping the `app.css` link href. Modal screenshots in the wrapper are flaky — trust `getBoundingClientRect` measurements.
+
+Batch 3 — note editor (`#noteDialog`) mobile polish, all in `app.css` `@media (max-width:620px)`:
+
+- **Header on its own line.** Replaced batch-2's title ellipsis: `.note-dialog-head` is now single-column `grid-template-areas："actions"/"title"/"picker"`, so the action buttons take line 1 and the full title shows on line 2 (`h2` `white-space:normal;overflow:visible`).
+- **Tag labels shrink.** `.visit-type-chip` gets `font-size:.76rem` + tighter gap/padding so labels like "National Parks" stop truncating to "…".
+- **Location fields pair up.** Dropped `.note-place-row/.note-city-column/.note-city-tail/.note-where-tail` from the blanket `1fr` collapse. City row `:has(.note-city-column)` → `1fr 1fr` with `.note-city-column`/`.note-city-tail` `display:contents` to flatten, so City+Locate land on line 1 and Lat+Lng on line 2. Where row `:has(.note-where-tail)` → `1fr auto` with `.note-where-tail` `display:contents` (Where+move-to-City button on one line) and `.note-location-message-stack{grid-column:1/-1}` (status text full-width below).
 
 Batch 1 (CSS-only): tip-jar double-scroll, map zoom controls centered in scroll view (`:has(.map-zoom-controls)::before` spacer), Smart Color Swatches swatches+Apply on one line (`#paletteDialog .theme-row`).
 
