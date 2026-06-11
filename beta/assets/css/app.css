@@ -5154,6 +5154,10 @@
       display: grid;
       place-items: center;
       min-width: 0;
+      /* The note form is a CSS grid; a percentage-width image in an auto row
+         collapses the track to 0 (the image loads but is clipped by overflow),
+         so the photo never appears. Pin the row to the image's own height. */
+      min-height: max-content;
       overflow: hidden;
       border-radius: 6px;
       background: #000;
