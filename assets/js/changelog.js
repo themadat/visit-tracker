@@ -10,12 +10,18 @@
         summary: "A round of small-screen layout fixes for a smoother mobile experience.",
         highlights: [
           "Fixed a double scrollbar when opening the Tip Jar on mobile.",
+          "Map zoom controls now sit centered in scroll view, in line with the rows below.",
+          "Smart Color Swatches keep each palette's colors and Apply button on one line.",
+          "Basecamp's mobile search box no longer hides behind the New Pad button.",
         ],
         updateSections: [
           {
             heading: "Mobile",
             items: [
               "Fixed the Tip Jar dialog showing a double scrollbar on phones — the dialog now clips to a single scrolling body and uses dynamic-viewport sizing so the panel and its contents no longer fight for the scroll.",
+              "Centered the map's zoom controls in scroll view so they line up with the notes-pin and label rows below; the Fit toggle still centers on its own once it's the only control.",
+              "Smart Color Swatches now keep each palette's color swatches and its Apply button together on a single line on phones, with the palette name on its own line above.",
+              "Fixed the Basecamp sidebar on phones where the search field collapsed behind the New Pad button — the search box, hints, and pad strip now stack cleanly and the dialog fits the screen.",
             ]
           }
         ]
