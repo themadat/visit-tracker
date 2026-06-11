@@ -175,11 +175,15 @@ For every completed change:
   top-level consts share the global lexical scope and work over `file://`.
 - Main file: `index.html`. `STORAGE_KEY = "usStateVisitMap.v1"`, version in `APP_VERSION`.
 - Docs: `README.md` (public/run/build), this handoff (all dev + LLM context), `AGENTS.md` + `CLAUDE.md` (thin auto-loaded agent summaries — keep lean).
-- Current version: `APP_VERSION = "4.4.5.5"` — active dev line **4.4.5 "Mobile Cleanup"**, **four batches of mobile fixes done** (small direct line, no plan doc; see Resume below). Ready for `prep`/`ship` once reviewed. Latest cut release: 4.4.4 "Fine Print".
+- Current version: `APP_VERSION = "4.4.5.6"` — active dev line **4.4.5 "Mobile Cleanup"**, **four batches of mobile fixes + a photo bugfix done** (small direct line, no plan doc; see Resume below). Ready for `prep`/`ship` once reviewed. Latest cut release: 4.4.4 "Fine Print".
 
-### Resume — 4.4.5 "Mobile Cleanup" (batch 4 done 2026-06-11)
+### Resume — 4.4.5 "Mobile Cleanup" (batch 4 + photo fix done 2026-06-11)
 
-All mobile fixes from all four rounds **done**. App parses clean (`./build/check.sh`); line at `4.4.5.5` with a `CHANGELOG` "Mobile Cleanup" entry (4 highlights, 14 dense Mobile update items). Patch release (patch=5) so no banner/cta — `latestFeatureNotice()` returns 4.4.0. Next step is `prep`/`ship`. Verify with `python3 -m http.server 8018` + `preview_resize` mobile (375px); **navigate via `…/index.html?v=<ts>` to bust browser cache on `index.html` (plain `?cb=` lands on chrome-error via the preview wrapper, but a `?v=` against the python server loads fine)**; resize first then re-navigate (resize reloads the wrapper's broken URL); force CSS reload by swapping the `app.css` link href. Modal screenshots in the wrapper are flaky — trust `getBoundingClientRect` measurements.
+All mobile fixes from all four rounds **done**, plus a linked-note photo bugfix and a new Roadmap seed. App parses clean (`./build/check.sh`); line at `4.4.5.6` with a `CHANGELOG` "Mobile Cleanup" entry (4 highlights, 16 dense Mobile update items). Patch release (patch=5) so no banner/cta — `latestFeatureNotice()` returns 4.4.0. Next step is `prep`/`ship`. Verify with `python3 -m http.server 8018` + `preview_resize` mobile (375px); **navigate via `…/index.html?v=<ts>` to bust browser cache on `index.html`; note `?v=` does NOT bust the cached companion scripts (`roadmap.js`/`changelog.js`/`icons.js`) — to re-check those, confirm on disk + `./build/check.sh` rather than trusting the live page**; resize first then re-navigate (resize reloads the wrapper's broken URL); force CSS reload by swapping the `app.css` link href. Modal screenshots in the wrapper are flaky — trust `getBoundingClientRect` measurements.
+
+Photo fix (`app.css` base rule, all viewports): the linked-note Wikipedia photo loaded but `#noteWaypointPhotoPreview` collapsed to 0 height inside the `.dialog-body` CSS grid (percentage-width image in an auto track → track collapses to 0, image clipped by `overflow:hidden`). Fix: `.note-waypoint-photo-preview { min-height: max-content }`. Verified the Arches thumbnail renders at 227px. Map-default check: a fresh-cleared-localStorage mobile load already lands in Fit (`defaultState().settings.mapViewMode === "fit"`); user chose to leave the default as-is, no code change.
+
+New Roadmap seed: **WISH-074** "Pinch-to-Zoom the Map on Touch" (P1, Map) in `roadmap.js`.
 
 Batch 4 — more `#noteDialog` mobile work in `app.css` `@media (max-width:620px)` (this supersedes batch-3's place-field pairing):
 
@@ -212,7 +216,7 @@ Verification traps still apply: UI drivers that call `save()` mutate real localS
   - 4.4.2 **True Colors** — pack-icon theme consistency: the NPS arrowhead SVG (`__NATIONAL_PARK_SERVICE_LOGO_SIMPLE` in `assets/js/icons.js`) now uses `currentColor` fills/strokes like every other icon, replacing per-surface `path[fill="#000"]` overrides in `app.css`. Condensed note rows keep the intentional hollow-arrowhead style, keyed to row ink. No behavior or schema changes.
   - 4.4.1 **Ultralight** — no-build split: styles in `assets/css/app.css`; icon/map/changelog/roadmap data in `assets/js/` classic scripts loaded before the main script; `CIRCLE_ICON_SVGS` registry replaces source-scan icon discovery; dead code removed and unused icon art parked in `build/icon-sources/`; CHANGELOG entries flattened to top-level `banner`/`cta`. No behavior or schema changes.
   - 4.4.0 **Basecamps** — Basecamp becomes up to twenty named rich-text pads with icons, search, reorder, formatting toolbars, linked US/World notes, and per-pad exports. Legacy `{ text, updated }` migrates once into "Basecamp Pad". `usStateVisitMap.v1` schema unchanged. (Current banner target — newest feature release.)
-- Open follow-ups: WISH-071 (optional lat/lng map lines, now P0); WISH-073 (P2 Basecamp photo support).
+- Open follow-ups: WISH-071 (optional lat/lng map lines, now P0); WISH-073 (P2 Basecamp photo support); WISH-074 (P1 pinch-to-zoom the map on touch).
 - Plan docs live in `context/` only while their line is in flight, then are deleted on ship. Active line **4.4.5 "Mobile Cleanup"** is paused mid-implementation (no plan doc) — see the Resume block above to continue.
 - No build step (other than the optional macOS icon pipeline — see README), backend, or dependencies.
 - User data lives in browser localStorage. Locate and Waypoint Pack Wikipedia

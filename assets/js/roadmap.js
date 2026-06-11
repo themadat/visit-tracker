@@ -4,6 +4,18 @@
 
     const WISHLIST_SEEDS = [
       {
+        title: "Pinch-to-Zoom the Map on Touch",
+        ticketId: "WISH-074",
+        description: "Let touch users pinch with two fingers to zoom the map (and ideally double-tap to zoom in), in addition to the existing zoom pill, drag-pan, and desktop wheel zoom. Zoom should center on the gesture midpoint and feel natural on phones/tablets.",
+        priority: "P1",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 12,
+        prompt: "Add two-finger pinch-to-zoom (and optional double-tap-to-zoom) to the scrollable map in bindMapPanZoom. Track two active pointers, derive scale from the change in finger distance, and route zoom changes through the existing zoom path so #mapZoomReadout and the zoom-button enable states stay in sync (the syncMapZoomReadout invariant). Keep the gesture centered on the pinch midpoint, preserve single-pointer drag panning and desktop wheel zoom, respect Fit vs scroll modes, and keep pan/zoom persistence working. Touch-only; no behavior change on desktop.",
+        category: "Map"
+      },
+      {
         title: "Single-File Deploy Build Step",
         ticketId: "WISH-038",
         description: "4.4.1 delivered the no-build split: styles in assets/css and icon/map/release/roadmap data in assets/js. Remaining scope, only if ever wanted: a build script that concatenates and minifies everything back into one deployable index.html for a true single-file distribution.",
