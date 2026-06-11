@@ -1,10 +1,12 @@
 ## Future Prompt
-
-Mobile Cleanup: 
+4.4.4 - no need for a banner with patch versions; full details should cound sub bullets
+4.4.6 - Mobile Cleanup: 
 - Better Auto Colors single liner
 - Map buttons misaligned in scroll view
 - Double scroll with tip jar
 - Base camp causes scrolling problems and should just fit on mobile screen
+4.5.0 - priority filter and and sorting
+
 
 ## Colors
 
@@ -41,18 +43,18 @@ Lamborghini might be the color pallette to go with (ferrari limiting and maclare
 #A80115 (volcano red)
 #C82504 (volcano orange)
 #FFC43D (mclaren orange)
+#63EA2E (mantis)
+#2F473A (Racing Green)
 #00B8EE (Curacao blue)
 #0149D3 (vegas blue)
 #172375 (aurora blue)
-#29324E (saffire Black)
-#63EA2E (mantis)
-#2F473A (Racing Green)
 #351175 (Lantana Purple)
 #C8659E (Colbalt Violet)
 #191A1E (Fire black)
-#9BA2B4 (titanium silver)
-#8C8D92 (Storm gray)
+#29324E (saffire Black)
 #626876 (maclaren argon)
+#8C8D92 (Storm gray)
+#9BA2B4 (titanium silver)
 #C4C8D4 (Ice silver)
 #EBEBEB (Pearl White)
 
