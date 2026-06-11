@@ -1,10 +1,5 @@
 ## Future Prompt
-4.4.4 - no need for a banner with patch versions; full details should cound sub bullets
-4.4.6 - Mobile Cleanup: 
-- Better Auto Colors single liner
-- Map buttons misaligned in scroll view
-- Double scroll with tip jar
-- Base camp causes scrolling problems and should just fit on mobile screen
+
 4.5.0 - priority filter and and sorting
 
 

@@ -879,14 +879,6 @@
             <button id="basecampNewPadBtn" class="basecamp-new-btn" type="button" data-shortcut="N"
               title="Create a new pad">+ New Pad</button>
           </div>
-          <div class="basecamp-search-hints">
-            <small class="basecamp-search-hint" data-hint data-hint-key="basecamp-pad-search">
-              Search pad names and content. Matches stay selectable.
-            </small>
-            <small class="basecamp-search-hint" data-hint data-hint-key="basecamp-new-pad">
-              Start a separate pad for a trip, list, or plan.
-            </small>
-          </div>
           <div id="basecampPadList" class="basecamp-pad-list"></div>
         </aside>
         <div id="basecampSidebarHandle" class="basecamp-sidebar-handle" role="separator" aria-orientation="vertical"
@@ -1631,7 +1623,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.4.5.2";
+    const APP_VERSION = "4.4.5.3";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -4498,7 +4490,7 @@
         : `<small class="ring-disclaimer" data-hint data-hint-key="${RING_HINT_KEY}">${escapeHtml(disclaimerText)}</small>`;
       panel.innerHTML = `
         <div class="ring-panel-title-row">
-          <h2>Rangefinder</h2>
+          <h2>Range&shy;finder</h2>
           ${headerActions}
         </div>
         <div class="ring-panel-status${ringPanelNotice ? " is-warning" : ""}">${escapeHtml(status)}</div>
@@ -11541,6 +11533,9 @@
     let basecampIconPickerPadId = "";
     let basecampNotePickerOpen = false;
     let basecampNotePickerQuery = "";
+    // Mobile-only Basecamp view: "list" (pad list) or "detail" (open pad
+    // editor). Inert on desktop, where both panes show side by side.
+    let basecampMobileView = "list";
     let basecampSavedRange = null;
     let basecampUndoState = { padId: "", undo: [], redo: [], last: "" };
     let draggingBasecampPadId = "";
@@ -11912,6 +11907,8 @@
             aria-label="Rename ${escapeHtml(pad.name)}" title="Rename pad">${escapeHtml(pad.name)}</button>`;
       editor.innerHTML = `
         <div class="basecamp-editor-head${isRenaming ? " is-renaming" : ""}">
+          <button class="basecamp-mobile-back" type="button" data-basecamp-mobile-back
+            aria-label="Back to pad list" title="Back to pads">${__CHEVRON_BACKWARD}</button>
           ${titleBlock}
           <span class="basecamp-editor-actions">
             <button class="basecamp-editor-action-btn" type="button"
@@ -11956,6 +11953,12 @@
       const search = $("#basecampSearch");
       if (search && search.value !== basecampSearchQuery) search.value = basecampSearchQuery;
       $("#basecampNewPadBtn").disabled = basecampPads().length >= BASECAMP_PAD_MAX;
+      // Drive the mobile two-view layout. With no active pad there is nothing to
+      // show in detail, so fall back to the list regardless of stored view.
+      const workspace = $("#basecampWorkspace");
+      if (workspace) {
+        workspace.dataset.basecampMobileView = activeBasecampPad() ? basecampMobileView : "list";
+      }
     }
 
     function basecampInPanelMode() {
@@ -12155,6 +12158,8 @@
     function openBasecampDialog() {
       closeOpenDialogs("basecampDialog");
       setBasecampStatus(BASECAMP_DEFAULT_STATUS);
+      // Always land on the pad list when opening on mobile.
+      basecampMobileView = "list";
       renderBasecampDialog();
       const dialog = $("#basecampDialog");
       const panel = basecampInPanelMode();
@@ -12260,6 +12265,8 @@
       if (!basecampPads().some(pad => pad.id === padId)) return;
       flushBasecampPad();
       state.basecamp.activePadId = padId;
+      // Selecting a pad opens it in the mobile detail view.
+      basecampMobileView = "detail";
       basecampRenamePadId = "";
       basecampIconPickerPadId = "";
       basecampNotePickerOpen = false;
@@ -12301,6 +12308,8 @@
       };
       basecampPads().push(pad);
       state.basecamp.activePadId = pad.id;
+      // A new pad opens straight into the mobile detail view for editing.
+      basecampMobileView = "detail";
       basecampRenamePadId = pad.id;
       save();
       renderBasecampDialog({ focusRename: true });
@@ -12334,6 +12343,8 @@
           const wasActive = state.basecamp.activePadId === padId;
           pads.splice(index, 1);
           if (wasActive) state.basecamp.activePadId = pads[index]?.id || pads[index - 1]?.id || "";
+          // Return to the mobile pad list after deleting the open pad.
+          basecampMobileView = "list";
           basecampRenamePadId = "";
           save();
           renderBasecampDialog();
@@ -13238,6 +13249,12 @@
         if (event.target.matches("[data-basecamp-body]")) handleBasecampPaste(event);
       });
       workspace.addEventListener("click", event => {
+        if (event.target.closest("[data-basecamp-mobile-back]")) {
+          flushBasecampPad();
+          basecampMobileView = "list";
+          renderBasecampDialog();
+          return;
+        }
         const select = event.target.closest("[data-basecamp-select]");
         if (select) {
           setActiveBasecampPad(select.dataset.basecampSelect);
