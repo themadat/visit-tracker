@@ -1631,7 +1631,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.4.3";
+    const APP_VERSION = "4.4.4";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -3535,9 +3535,12 @@
     }
 
     function latestFeatureNotice() {
+      // The What's New banner highlights feature releases — major or minor,
+      // i.e. a .0 patch segment. Patch releases (x.y.Z, Z>0) ship quietly
+      // without popping the banner, so they need no banner/cta authored.
       // Banner fields derive from the entry itself: the pill/title/dismissal
       // keys use entry.version + entry.title, the blurb is entry.banner.
-      const entry = CHANGELOG.find(item => item.banner) || CHANGELOG[0];
+      const entry = CHANGELOG.find(item => releaseVersionParts(item.version).patch === 0) || CHANGELOG[0];
       return {
         version: entry?.version || APP_VERSION,
         title: entry?.title || "What's New",
@@ -11388,9 +11391,22 @@
       };
       const body = `<ul>${list.map(renderItem).join("")}</ul>`;
       if (collapsible) {
+        // Count sections (grouped entries) and total updates (their sub-bullets;
+        // a bare string counts as one update). Show "X sections · Y updates",
+        // or just the update count when the list is flat with no sections.
+        let sections = 0, updates = 0;
+        list.forEach(note => {
+          if (typeof note === "string") { updates += 1; return; }
+          sections += 1;
+          updates += Array.isArray(note.items) ? note.items.filter(Boolean).length : 0;
+        });
+        const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
+        const countLabel = sections
+          ? `${plural(sections, "section")} · ${plural(updates, "update")}`
+          : plural(updates, "update");
         return `
           <details class="release-section release-collapsible">
-            <summary><span class="release-toggle-chevron" aria-hidden="true"></span>${escapeHtml(title)}<span class="release-toggle-count">${list.length}</span></summary>
+            <summary><span class="release-toggle-chevron" aria-hidden="true"></span>${escapeHtml(title)}<span class="release-toggle-count">${escapeHtml(countLabel)}</span></summary>
             ${body}
           </details>
         `;
