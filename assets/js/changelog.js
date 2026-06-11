@@ -4,6 +4,23 @@
 
     const CHANGELOG = [
       {
+        version: "4.4.5",
+        date: "2026-06-11",
+        title: "Mobile Cleanup",
+        summary: "A round of small-screen layout fixes for a smoother mobile experience.",
+        highlights: [
+          "Fixed a double scrollbar when opening the Tip Jar on mobile.",
+        ],
+        updateSections: [
+          {
+            heading: "Mobile",
+            items: [
+              "Fixed the Tip Jar dialog showing a double scrollbar on phones — the dialog now clips to a single scrolling body and uses dynamic-viewport sizing so the panel and its contents no longer fight for the scroll.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.4.4",
         date: "2026-06-10",
         title: "Fine Print",

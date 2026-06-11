@@ -175,7 +175,18 @@ For every completed change:
   top-level consts share the global lexical scope and work over `file://`.
 - Main file: `index.html`. `STORAGE_KEY = "usStateVisitMap.v1"`, version in `APP_VERSION`.
 - Docs: `README.md` (public/run/build), this handoff (all dev + LLM context), `AGENTS.md` + `CLAUDE.md` (thin auto-loaded agent summaries — keep lean).
-- Current version: `APP_VERSION = "4.4.4"` "Fine Print" — the latest cut release. No active development line.
+- Current version: `APP_VERSION = "4.4.5.1"` — active dev line **4.4.5 "Mobile Cleanup"**, **PAUSED mid-implementation** (small direct line, no plan doc; see Resume below). Latest cut release: 4.4.4 "Fine Print".
+
+### Resume — 4.4.5 "Mobile Cleanup" (paused 2026-06-11)
+
+Four mobile fixes requested; **1 of 4 done**. App parses clean; line opened at `4.4.5.1` with a `CHANGELOG` "Mobile Cleanup" entry (tip-jar item only so far). Resume the rest with `python3 -m http.server 8018` + `preview_resize` mobile (375px); **navigate plain `…/index.html`, no `?cb=` query (it lands on chrome-error here)**; force CSS reload by swapping the `app.css` link href.
+
+- **DONE — Tip Jar double scroll.** Root cause: base `dialog` capped height with `100vh` while `#tipJarDialog .dialog-body` used `100dvh`; the URL-bar gap let both scroll. Fix in `app.css` `#tipJarDialog`: grid column (`auto minmax(0,1fr)`), `overflow:hidden`, `max-height: min(860px, calc(100dvh - 1.6rem))`. Verified on mobile: dialog no longer scrolls, only `.dialog-body` does. Changelog item added.
+- **TODO — Map buttons misaligned in scroll view.** `.map-control-row` holds `.map-zoom-controls` (40px pill) + `.map-action-group` (34px button). Measured rects show them actually vertically centered (both center y=256) and the row centered — the reported defect was **not reproduced from rects**; needs a real visual look in scroll mode at 375px (toggle `#mapFitBtn`). Compare the row's horizontal extent vs the Notes-pins / Labels rows below it (possible centering/width mismatch). CSS: `app.css` ~1757 (`.map-zoom-controls`), `.map-control-row`, `[data-map-mode="scroll"]`.
+- **TODO — Auto Colors single liner.** `#smartColorsBtn` "Auto Colors" lives in the Legend header; a legend hint reads "Featured Palettes | Auto-Suggest | Add/Edit Levels." Decide whether the ask is the button label or a wrapping hint that should stay one line on mobile. Not yet investigated.
+- **TODO — Basecamp fits mobile screen.** Biggest item. `#basecampDialog` rules at `app.css` ~6381 (`[open]`), ~6422 (`[data-basecamp-mode="panel"]`), ~6495 (`@media max-width:980px`), ~7543 (`@media max-width:720px`). Reported "scrolling problems" — should fit the mobile viewport (likely same `vh`/`dvh` + nested-scroll family as the tip-jar fix). Investigate the dialog vs `.dialog-body` vs editor scroll containers on 375px.
+
+Verification traps still apply: UI drivers that call `save()` mutate real localStorage (snapshot first); `http.server` has no cache headers (force-reload assets).
 - Latest public releases (newest first): 4.4.4 "Fine Print", 4.4.3 "Clear View", 4.4.2 "True Colors", 4.4.1 "Ultralight", 4.4.0 "Basecamps". Full per-release behavior lives in the `CHANGELOG` constant in `assets/js/changelog.js`; release table in `README.md`. Don't duplicate per-release prose here — read the CHANGELOG entry for the version in question.
 - Recent shipped scope (one-liners only; see CHANGELOG for detail):
   - 4.4.4 **Fine Print** — release-notes refinements: the What's New banner surfaces only feature releases (major/minor, `patch === 0`) via `latestFeatureNotice()`, so patch ships skip it and patch entries omit `banner`/`cta`. The Full Update List toggle tallies "X sections · Y updates" from `updateSections` (`renderReleaseSection`). No schema changes.
@@ -184,7 +195,7 @@ For every completed change:
   - 4.4.1 **Ultralight** — no-build split: styles in `assets/css/app.css`; icon/map/changelog/roadmap data in `assets/js/` classic scripts loaded before the main script; `CIRCLE_ICON_SVGS` registry replaces source-scan icon discovery; dead code removed and unused icon art parked in `build/icon-sources/`; CHANGELOG entries flattened to top-level `banner`/`cta`. No behavior or schema changes.
   - 4.4.0 **Basecamps** — Basecamp becomes up to twenty named rich-text pads with icons, search, reorder, formatting toolbars, linked US/World notes, and per-pad exports. Legacy `{ text, updated }` migrates once into "Basecamp Pad". `usStateVisitMap.v1` schema unchanged. (Current banner target — newest feature release.)
 - Open follow-ups: WISH-071 (optional lat/lng map lines, now P0); WISH-073 (P2 Basecamp photo support).
-- Plan docs live in `context/` only while their line is in flight, then are deleted on ship. No active plan or development line — start the next change with `wish` or `plan`.
+- Plan docs live in `context/` only while their line is in flight, then are deleted on ship. Active line **4.4.5 "Mobile Cleanup"** is paused mid-implementation (no plan doc) — see the Resume block above to continue.
 - No build step (other than the optional macOS icon pipeline — see README), backend, or dependencies.
 - User data lives in browser localStorage. Locate and Waypoint Pack Wikipedia
   photo previews are intentional online actions and only run when clicked.
