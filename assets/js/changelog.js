@@ -4,6 +4,25 @@
 
     const CHANGELOG = [
       {
+        version: "4.4.4",
+        date: "2026-06-10",
+        title: "Fine Print",
+        summary: "Release notes get quieter and clearer: patch updates no longer pop the What's New banner, and the Full Update List now tallies its sections and updates.",
+        highlights: [
+          "Patch releases no longer pop the What's New banner — only feature updates do.",
+          "The Full Update List now tallies its sections and total updates at a glance.",
+        ],
+        updateSections: [
+          {
+            heading: "Release Notes",
+            items: [
+              "The What's New banner now appears only for feature releases (major or minor); patch releases ship quietly without it.",
+              "The Full Update List toggle now counts the sub-bullets across every section, showing an \"X sections · Y updates\" tally instead of only the section count.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.4.3",
         date: "2026-06-10",
         title: "Clear View",
