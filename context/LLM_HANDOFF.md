@@ -175,7 +175,7 @@ For every completed change:
   top-level consts share the global lexical scope and work over `file://`.
 - Main file: `index.html`. `STORAGE_KEY = "usStateVisitMap.v1"`, version in `APP_VERSION`.
 - Docs: `README.md` (public/run/build), this handoff (all dev + LLM context), `AGENTS.md` + `CLAUDE.md` (thin auto-loaded agent summaries — keep lean).
-- Current version: `APP_VERSION = "4.4.4.1"` — active dev line **4.4.4 "Fine Print"** (release-notes: patch releases skip the banner; Full Update List tallies sections/updates; small direct line, no plan doc). Latest cut release: 4.4.3 "Clear View".
+- Current version: `APP_VERSION = "4.4.4.1"` — active dev line **4.4.4 "Fine Print"**, prep complete (release-notes: patch releases skip the banner; Full Update List tallies sections/updates; small direct line, no plan doc). Next step: `ship`. Latest cut release: 4.4.3 "Clear View".
 - Latest public releases (newest first): 4.4.3 "Clear View", 4.4.2 "True Colors", 4.4.1 "Ultralight", 4.4.0 "Basecamps", 4.3.0 "Waypoint Packs". Full per-release behavior lives in the `CHANGELOG` constant in `assets/js/changelog.js`; release table in `README.md`. Don't duplicate per-release prose here — read the CHANGELOG entry for the version in question.
 - Recent shipped scope (one-liners only; see CHANGELOG for detail):
   - 4.4.3 **Clear View** — Waypoint Packs panel opens as a full-cover floating card over the Notes column (uniform `.55rem` inset replacing a fixed top offset that the taller compact/Wayfinder header overflowed), scrolls into view on open, and while open hides the notes lists + drops sticky positioning on category headings (via `#notesPanel[data-waypoint-open]`) so no heading bleeds over the panel. CSS/JS only; no schema changes.
