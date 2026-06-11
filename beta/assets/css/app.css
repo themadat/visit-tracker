@@ -5948,6 +5948,13 @@
 
     #tipJarDialog {
       width: min(780px, calc(100vw - 1.6rem));
+      /* Grid column with a clipped dialog so only .dialog-body scrolls. Uses
+         dvh to match the body's unit — mixing vh (dialog) and dvh (body) let
+         both scroll on mobile (the URL-bar gap), causing a double scrollbar. */
+      max-height: min(860px, calc(100dvh - 1.6rem));
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      overflow: hidden;
     }
 
     #tipJarDialog .tip-jar-head {
