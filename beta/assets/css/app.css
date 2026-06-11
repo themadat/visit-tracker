@@ -10400,39 +10400,56 @@
       .filters,
       .level-editor-grid,
       .date-builder,
-      .note-place-grid,
       .note-field-grid,
       .note-level-radios,
       .smart-convert-row {
         grid-template-columns: 1fr;
       }
 
-      /* City row: City input + Locate ("lookup coordinates") on the first line,
-         Latitude + Longitude paired on the second. display:contents flattens the
-         nested column/tail so all four become grid items of the row. */
-      .note-place-row:has(.note-city-column) {
-        grid-template-columns: 1fr 1fr;
+      /* Mobile place fields reorder into one flat grid: Latitude + Longitude on
+         line 1, the "Mapped…" status under them, then a full-width City and a
+         full-width Where (each input stretches, with its small button sharing a
+         right-hand column). display:contents flattens the row/column/tail
+         wrappers so every field becomes a directly placeable grid item. */
+      .note-place-grid {
+        grid-template-columns: 1fr 1fr auto;
+        gap: .42rem .32rem;
         align-items: end;
       }
 
+      .note-place-row,
       .note-city-column,
-      .note-city-tail {
-        display: contents;
-      }
-
-      /* Where row: Where input + the move-to-City button share the first line;
-         the geocode status message drops to its own full-width line below. */
-      .note-place-row:has(.note-where-tail) {
-        grid-template-columns: minmax(0, 1fr) auto;
-        align-items: end;
-      }
-
+      .note-city-tail,
       .note-where-tail {
         display: contents;
       }
 
+      .note-place-grid label:has(#noteLat) {
+        grid-area: 1 / 1 / 2 / 2;
+      }
+
+      .note-place-grid label:has(#noteLng) {
+        grid-area: 1 / 2 / 2 / 3;
+      }
+
       .note-location-message-stack {
-        grid-column: 1 / -1;
+        grid-area: 2 / 1 / 3 / 4;
+      }
+
+      .note-place-grid label:has(#noteCity) {
+        grid-area: 3 / 1 / 4 / 3;
+      }
+
+      #noteGeocodeBtn {
+        grid-area: 3 / 3 / 4 / 4;
+      }
+
+      .note-place-grid label:has(#noteWhere) {
+        grid-area: 4 / 1 / 5 / 3;
+      }
+
+      #noteWhereToCityBtn {
+        grid-area: 4 / 3 / 5 / 4;
       }
 
       .visit-type-row {
@@ -10560,7 +10577,18 @@
       .note-dialog-head .dialog-head-actions {
         grid-area: actions;
         grid-column: auto;
-        justify-self: end;
+        justify-self: stretch;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      /* A linked (Waypoint pack) note adds Website / Photo / priority / Link
+         buttons to this container; on phones drop that whole cluster onto its
+         own line so the header never grows wider than the screen. */
+      .note-dialog-head .dialog-head-actions > #noteWaypointHeaderControls {
+        order: 1;
+        flex-basis: 100%;
+        justify-content: flex-end;
       }
 
       .note-location-select {
