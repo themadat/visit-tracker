@@ -7567,27 +7567,24 @@
         grid-template-rows: auto minmax(0, 1fr);
       }
 
+      /* Mobile sidebar stacks vertically: the search row (input + New Pad icon
+         button, already laid out side-by-side by .basecamp-search-row) on top,
+         hints beneath, then the pad list as a horizontal strip so the sidebar
+         stays short and leaves the editor its vertical space. The previous
+         two-column grid targeted .basecamp-search-wrap / .basecamp-new-wrap as
+         direct children, but the current markup nests those inside
+         .basecamp-search-row (and .basecamp-new-wrap no longer exists), which
+         collapsed the search input and overlapped it with the hints. */
       .basecamp-sidebar {
-        grid-template-columns: minmax(0, 1fr) auto;
-        grid-template-rows: auto auto;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto auto auto;
         padding: .55rem;
         border-right: 0;
         border-bottom: 1px solid var(--line);
       }
 
-      .basecamp-search-wrap {
-        grid-column: 1;
-      }
-
-      .basecamp-new-wrap {
-        grid-column: 2;
-        grid-row: 1;
-        width: auto;
-      }
-
       .basecamp-pad-list {
-        grid-column: 1 / -1;
-        grid-row: 2;
+        grid-row: 3;
         display: flex;
         overflow-x: auto;
         overflow-y: hidden;
@@ -10246,6 +10243,16 @@
         font-size: .88rem;
       }
 
+      /* Scroll mode keeps the 34px Fit toggle beside the zoom pill, which shoved
+         the pill left of center while the toggle/label rows below it stay
+         centered. Mirror the toggle's footprint with a leading spacer so the
+         zoom pill centers in line with those rows. Fit mode hides the pill and
+         centers the lone toggle on its own, so the spacer is scroll-only. */
+      [data-button-style="symbols"][data-map-mode="scroll"] .map-control-row:has(.map-zoom-controls)::before {
+        content: "";
+        flex: 0 0 34px;
+      }
+
       [data-button-style="symbols"] .map-label-toggle {
         flex: 0 1 auto;
         gap: .06rem;
@@ -10461,7 +10468,19 @@
       }
 
       .theme-row {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: .5rem .55rem;
+      }
+
+      /* Keep the palette name on its own line, but pair the color swatches with
+         the Apply button on a single shared line below it. */
+      .theme-row > b {
+        grid-column: 1 / -1;
+      }
+
+      .theme-row .swatch-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: .3rem;
       }
 
       .tag-editor-row {
