@@ -8,6 +8,7 @@ The app is still intentionally simple to run: open `index.html` and go — plain
 
 | Version | Date | Title | Summary
 |---|---:|---|---|
+| 4.4.3 | 2026-06-10 | Clear View | The Waypoint Packs panel opens as a clean full-height card over Notes, fixing a case where it opened partly hidden behind the notes controls. |
 | 4.4.2 | 2026-06-10 | True Colors | Waypoint pack icons now follow the light/dark theme everywhere, matching every other icon on every surface. |
 | 4.4.1 | 2026-06-10 | Ultralight | Bundled icon art, map art, styles, and data move into companion files — same app, lighter core, no behavior changes. |
 | 4.4.0 | 2026-06-09 | Basecamp Pads | Basecamp Pads turns the Basecamp scratchpad into a workspace of named rich-text pads with linked notes and exports. |
