@@ -21,7 +21,9 @@ fresh LLM/session can run `start` to implement from that written plan. Always
 run `git status --short` first and preserve in-flight manual edits. End every
 working session with two copy-paste containers: first the commit description in
 list form, then the commit command with title in the exact format
-`` `_vt-checkpoint APP_VERSION - <commit title>` ``.
+`` `_vt-checkpoint "APP_VERSION - <commit title>"` `` — always wrap the title in
+double quotes so it pastes cleanly into a terminal (it contains spaces and
+shell-special characters).
 
 ### `wish` — capture a Roadmap idea
 
@@ -162,7 +164,7 @@ For every completed change:
 - Keep the current major/minor release entry updated unless intentionally opening a new release line.
 - Preserve the localStorage schema where possible.
 - Give me two copy-paste containers: the first contains the commit description in list form;
-  the second contains the commit command with title in this format: `_vt-checkpoint APP_VERSION - <commit title>`
+  the second contains the commit command with title in this format: `_vt-checkpoint "APP_VERSION - <commit title>"` (always double-quote the title so it pastes cleanly into a terminal)
 
 ## Snapshot
 
@@ -240,7 +242,8 @@ Verification traps still apply: UI drivers that call `save()` mutate real localS
 - Companions: `icons.js` ≈426k tokens and `maps.js` ≈241k are inert art data — jump by symbol, never scroll. `changelog.js` ≈25k and `roadmap.js` ≈6k are safe to open in slices.
 - Don't echo big chunks of the files or command output into chat; prefer `rg -c`, `git diff --stat`, `head`.
 - End every final reply with two copyable blocks: first the commit description
-  in list form, then `_vt-checkpoint APP_VERSION - <commit title>`.
+  in list form, then `_vt-checkpoint "APP_VERSION - <commit title>"` (always
+  double-quote the title for terminal safety).
 
 **Code**
 

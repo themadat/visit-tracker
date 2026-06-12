@@ -548,6 +548,7 @@
     </header>
     <form id="noteForm" class="dialog-body" method="dialog">
       <input id="noteId" type="hidden">
+      <div id="noteWaypointPhotoPreview" class="note-waypoint-photo-preview"></div>
       <section class="smart-convert-row">
         <div class="smart-convert-head">
           <label for="noteSmartConvert">Smart Convert</label>
@@ -595,7 +596,6 @@
         </label>
         <div id="noteSourceSummary" class="note-source-summary"></div>
       </section>
-      <div id="noteWaypointPhotoPreview" class="note-waypoint-photo-preview"></div>
       <small data-hint data-hint-key="note-tag-settings-help">
         Open Location Tags, choose which tags appear here, rename them, sort them, and set shortcuts.
       </small>
@@ -1623,7 +1623,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.4.5.6";
+    const APP_VERSION = "4.4.5.7";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
