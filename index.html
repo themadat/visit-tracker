@@ -1623,7 +1623,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.4.5.7";
+    const APP_VERSION = "4.4.5.8";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7169,13 +7169,6 @@
       openNoteDialog();
     }
 
-    function notePriorityBadgeHtml(note) {
-      const priority = normalizeNotePriority(note?.priority);
-      const color = notePriorityColor(priority);
-      return priority ? `<span class="priority-badge" title="Priority ${priority}" style="--priority-color:${escapeHtml(color)}">P${priority}</span>` : "";
-    }
-
-
     function noteAttachOptionLabel(ref) {
       const level = levelById(ref.note.levelId)?.name || "No level";
       const summary = noteSummary(ref.note);
@@ -9275,7 +9268,7 @@
               <article class="compact-note-row ${isBucket ? "is-bucket-target" : ""}" role="button" tabindex="0" data-edit-note-row="${note.id}">
                 <span class="compact-note-icon">${visitTypeIconStack(note, { color: noteLevel?.color })}</span>
                 <time datetime="${escapeHtml(note.date)}">${escapeHtml(formatDateDisplay(note.date))}</time>
-                <span class="compact-note-text">${notePriorityBadgeHtml(note)} ${escapeHtml(noteSummary(note))}</span>
+                <span class="compact-note-text">${escapeHtml(noteSummary(note))}</span>
                 <span class="actions">
                   ${isBucket ? actionButtonHtml({ symbol: __CHECKMARK_CIRCLE, text: "Mark Visited", className: "icon-btn bucket-mark-visited-btn", attrs: `data-mark-visited-note="${note.id}"` }) : ""}
                   ${actionButtonHtml({ symbol: __PENCIL, text: "Edit", className: "icon-btn", attrs: `data-edit-note="${note.id}"` })}
@@ -15681,7 +15674,16 @@
         const photo = event.target.closest("[data-note-waypoint-photo]");
         if (photo) {
           const source = suggestedSetItem($("#noteSourceSetId").value, $("#noteSourceItemId").value);
-          if (source) toggleWaypointPhotoPreview(source.set.id, source.item.id);
+          if (source) {
+            const willOpen = waypointPhotoPreviewKey !== waypointPhotoKey(source.set.id, source.item.id);
+            toggleWaypointPhotoPreview(source.set.id, source.item.id);
+            // On phones the photo sits at the top of the editor; scroll there so
+            // the user actually sees it when opening (the button is in the header).
+            if (willOpen && !DESKTOP_LAYOUT_QUERY.matches) {
+              const body = $("#noteForm");
+              if (body) requestAnimationFrame(() => body.scrollTo({ top: 0, behavior: "smooth" }));
+            }
+          }
         }
       });
       $("#quickAddNoteBtn").addEventListener("click", openQuickAddNoteDialog);
