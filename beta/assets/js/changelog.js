@@ -4,10 +4,12 @@
 
     const CHANGELOG = [
       {
-        version: "4.4.5",
-        date: "2026-06-11",
+        version: "4.5.0",
+        date: "2026-06-12",
         title: "Mobile Cleanup",
-        summary: "A round of small-screen layout fixes for a smoother mobile experience.",
+        summary: "A big pass over the small-screen experience: Basecamp, Notes, the map, the note editor, pop-up menus, and linked-note photos all behave properly on phones now.",
+        banner: "A big mobile cleanup:|two-step Basecamp, taller Notes, fixed maps, menus, photos & more.",
+        cta: "Tidy the Trail!",
         highlights: [
           "Basecamp on phones: a pad list, then a full-screen editor with a Back button.",
           "Notes fill at least 75% of the screen on mobile.",
@@ -33,7 +35,7 @@
               "Waypoint Pack Locations puts the search bar on its own line with the map and action buttons beneath it, so nothing is cramped or cut off.",
               "Fixed the linked-note photo on phones and desktop: the Wikipedia preview image loaded but its frame collapsed to zero height and overlapped the fields, so nothing usable appeared. Waypoint-pack note photos now show in full — the frame sizes to each photo's own proportions, so nothing is cropped on desktop or phones — sitting at the top of the editor below the header and above Smart Convert; on phones tapping the photo button scrolls the editor up so the photo is in view.",
               "Removed the \"P#\" priority badge from note rows for a cleaner, less cluttered list.",
-              "Added a Roadmap idea for two-finger pinch-to-zoom on the map.",
+              "Added Roadmap ideas for two-finger pinch-to-zoom on the map and showing where a pack photo was taken (its camera location) to help recreate the shot in person.",
             ]
           }
         ]
