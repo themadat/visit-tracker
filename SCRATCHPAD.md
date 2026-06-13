@@ -4,7 +4,7 @@
 - rangefinder circle options pop up should not go away after selecting an option
 - add a icon in legend next to stats
 
-4.6.0 - full expand toggle
+4.6.0 - full expand toggle (and do it in locations)
 4.5.0 - priority filter and and sorting
 
 
