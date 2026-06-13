@@ -4,6 +4,30 @@
 
     const WISHLIST_SEEDS = [
       {
+        title: "Pinch-to-Zoom the Map on Touch",
+        ticketId: "WISH-074",
+        description: "Let touch users pinch with two fingers to zoom the map (and ideally double-tap to zoom in), in addition to the existing zoom pill, drag-pan, and desktop wheel zoom. Zoom should center on the gesture midpoint and feel natural on phones/tablets.",
+        priority: "P1",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 12,
+        prompt: "Add two-finger pinch-to-zoom (and optional double-tap-to-zoom) to the scrollable map in bindMapPanZoom. Track two active pointers, derive scale from the change in finger distance, and route zoom changes through the existing zoom path so #mapZoomReadout and the zoom-button enable states stay in sync (the syncMapZoomReadout invariant). Keep the gesture centered on the pinch midpoint, preserve single-pointer drag panning and desktop wheel zoom, respect Fit vs scroll modes, and keep pan/zoom persistence working. Touch-only; no behavior change on desktop.",
+        category: "Map"
+      },
+      {
+        title: "Show a Pack Photo's Camera Location",
+        ticketId: "WISH-075",
+        description: "For a Waypoint-pack photo, surface where the shot was taken — the camera/vantage-point coordinates (and heading/bearing when available), which differ from the landmark's own location — so a traveler can stand in the same spot and recreate the photo in person. The data would come from the photo's Wikimedia Commons file page (the \"camera location\" geotag), shown near the photo with a tap-to-open map/directions link, while leaving the note's existing landmark coordinates untouched.",
+        priority: "P3",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 14,
+        prompt: "Add an optional 'camera location' readout to the linked-note Waypoint photo. When a pack photo is shown, fetch its Wikimedia Commons file metadata (e.g. the imageinfo / coordinates API for the file page that backs the pageimages thumbnail) and read the camera-location geotag plus heading when present. Render it as a small caption under the photo frame (#noteWaypointPhotoPreview) with a tap-to-open maps/directions link, clearly labeled as the photo vantage point (distinct from the landmark coordinates the note already stores). Keep it online-only and lazy (only when the photo is opened), gracefully hide when Commons has no camera geotag, and never overwrite the note's own lat/lng.",
+        category: "Notes"
+      },
+      {
         title: "Single-File Deploy Build Step",
         ticketId: "WISH-038",
         description: "4.4.1 delivered the no-build split: styles in assets/css and icon/map/release/roadmap data in assets/js. Remaining scope, only if ever wanted: a build script that concatenates and minifies everything back into one deployable index.html for a true single-file distribution.",
