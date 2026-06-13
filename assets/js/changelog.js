@@ -31,7 +31,7 @@
               "The map's zoom controls sit centered in scroll view, lined up with the notes-pin and label rows below.",
               "Smart Color Swatches keep each palette's color swatches and Apply button together on one line, with the palette name on its own line above.",
               "Waypoint Pack Locations puts the search bar on its own line with the map and action buttons beneath it, so nothing is cramped or cut off.",
-              "Fixed the linked-note photo on phones and desktop: the Wikipedia preview image loaded but its frame collapsed to zero height and overlapped the fields, so nothing usable appeared. Waypoint-pack note photos now show in a properly sized frame at the top of the editor — below the header and above Smart Convert — and on phones tapping the photo button scrolls the editor up so the photo is in view.",
+              "Fixed the linked-note photo on phones and desktop: the Wikipedia preview image loaded but its frame collapsed to zero height and overlapped the fields, so nothing usable appeared. Waypoint-pack note photos now show in full — the frame sizes to each photo's own proportions, so nothing is cropped on desktop or phones — sitting at the top of the editor below the header and above Smart Convert; on phones tapping the photo button scrolls the editor up so the photo is in view.",
               "Removed the \"P#\" priority badge from note rows for a cleaner, less cluttered list.",
               "Added a Roadmap idea for two-finger pinch-to-zoom on the map.",
             ]

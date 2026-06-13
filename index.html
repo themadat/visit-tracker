@@ -1623,7 +1623,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.4.5.8";
+    const APP_VERSION = "4.4.5.9";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -9604,6 +9604,21 @@
       ].filter(Boolean).forEach(element => element.classList.toggle("is-waypoint-override", linked));
     }
 
+    // Give the note-editor photo frame an explicit pixel height matching the
+    // photo's display height. The form is a CSS grid, and only a definite height
+    // sizes an auto row (an intrinsic / aspect-ratio height collapses it), so the
+    // frame must be measured: full image shown, no crop, no letterbox, row sized.
+    function sizeNoteWaypointPhotoFrame() {
+      const wrap = $("#noteWaypointPhotoPreview");
+      const img = wrap && wrap.querySelector("img");
+      if (!img || !img.naturalWidth || !img.naturalHeight) return;
+      const width = wrap.getBoundingClientRect().width;
+      if (!width) return;
+      const maxHeight = Math.min(window.innerHeight * 0.58, 26 * 16);
+      const height = Math.min(maxHeight, width * img.naturalHeight / img.naturalWidth);
+      wrap.style.height = `${Math.round(height)}px`;
+    }
+
     function refreshNoteWaypointControls({ menuOpen = false } = {}) {
       const wrap = $("#noteWaypointHeaderControls");
       if (!wrap) return;
@@ -9643,9 +9658,16 @@
         </div>
       `;
       const previewUrl = currentItem && photoOpen ? waypointPhotoUrlCache.get(photoKey) : "";
-      $("#noteWaypointPhotoPreview").innerHTML = previewUrl
-        ? `<img src="${escapeHtml(previewUrl)}" alt="${escapeHtml(currentItem.name)}">`
-        : "";
+      const photoPreview = $("#noteWaypointPhotoPreview");
+      if (previewUrl) {
+        photoPreview.innerHTML = `<img src="${escapeHtml(previewUrl)}" alt="${escapeHtml(currentItem.name)}">`;
+        const img = photoPreview.querySelector("img");
+        if (img.complete) sizeNoteWaypointPhotoFrame();
+        else img.addEventListener("load", sizeNoteWaypointPhotoFrame, { once: true });
+      } else {
+        photoPreview.innerHTML = "";
+        photoPreview.style.removeProperty("height");
+      }
       syncNoteWaypointOverrideState();
       syncNoteSetSummary();
     }
@@ -15967,6 +15989,7 @@
         if (ringTimeMenuOpen) closeRingTimeMenu();
         syncButtonLabels();
         scheduleMainLayoutSync();
+        if ($("#noteDialog")?.open) sizeNoteWaypointPhotoFrame();
       });
       document.addEventListener("click", event => {
         if (!legendPositionMenuOpen || event.target.closest(".legend-position-picker")) return;
