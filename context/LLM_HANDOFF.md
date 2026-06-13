@@ -177,56 +177,19 @@ For every completed change:
   top-level consts share the global lexical scope and work over `file://`.
 - Main file: `index.html`. `STORAGE_KEY = "usStateVisitMap.v1"`, version in `APP_VERSION`.
 - Docs: `README.md` (public/run/build), this handoff (all dev + LLM context), `AGENTS.md` + `CLAUDE.md` (thin auto-loaded agent summaries — keep lean).
-- Current version: `APP_VERSION = "4.5.0.1"` — active dev line **4.5.0 "Mobile Cleanup"**, retargeted from the 4.4.5 patch line to a **minor** and **PREPPED (release-ready)** (small direct line, no plan doc; see summary below). Next step: `ship`. Latest cut release: 4.4.4 "Fine Print".
-
-### 4.5.0 "Mobile Cleanup" — PREPPED (release-ready, 2026-06-12)
-
-Retargeted from the 4.4.5 patch line to the **4.5.0 minor** at the user's request and run through `prep`: CHANGELOG entry is now `version:"4.5.0"` with `banner` + `cta` ("Tidy the Trail!"), README release table + this Snapshot updated. CSS-heavy with some `index.html` JS; **no `usStateVisitMap.v1` schema changes**. Parses clean (`./build/check.sh`). Next: `ship` (collapse to `4.5.0`, drop `.N`).
-
-Two new Roadmap seeds in `roadmap.js`: **WISH-074** "Pinch-to-Zoom the Map on Touch" (P1, Map) and **WISH-075** "Show a Pack Photo's Camera Location" (P3, Notes).
-
-Key JS landmarks (`index.html`):
-- **Linked-note photo frame.** `#noteWaypointPhotoPreview` sits in the `.dialog-body` CSS grid; an auto row only sizes to a **definite** height (intrinsic / `max-content` / `aspect-ratio` collapse it to 0, so the image overflowed the fields). `sizeNoteWaypointPhotoFrame()` sets an explicit px height = frame width × the photo's natural ratio (capped `min(58vh,26rem)`), so the row is sized **and** the whole photo shows with no crop/letterbox; recomputed on window `resize`. The frame sits at the top of `#noteForm` (above Smart Convert); opening the photo scrolls `#noteForm` to top on mobile.
-- **Basecamp two-view (mobile).** `let basecampMobileView` ("list"|"detail") on `#basecampWorkspace` via `data-basecamp-mobile-view` (details in the area notes below).
-- Dropped the "P#" note-row badge (removed `notePriorityBadgeHtml` + its only call in the compact row).
-
-Verify (wrapper is flaky): `python3 -m http.server 8018`; `preview_resize` mobile (375px) **then** navigate `…/index.html?v=<ts>` (busts `index.html` only — NOT the cached companion scripts `roadmap.js`/`changelog.js`/`icons.js`; re-check those on disk + `./build/check.sh`); swap the `app.css` link href to reload CSS; resize reloads the wrapper's broken URL so always re-navigate after; trust `getBoundingClientRect` over flaky modal screenshots. UI drivers that call `save()` mutate real localStorage (snapshot first).
-
-Implementation notes by area (mobile media queries in `app.css`; condense/delete on `ship`):
-
-Batch 4 — more `#noteDialog` mobile work in `app.css` `@media (max-width:620px)` (this supersedes batch-3's place-field pairing):
-
-- **Linked-note header overflow.** A Waypoint-pack note injects `#noteWaypointHeaderControls` (Website/Photo/priority/Link) into `.dialog-head-actions`. Mobile rule now `justify-self:stretch;flex-wrap:wrap` on those actions, and `#noteWaypointHeaderControls{order:1;flex-basis:100%}` drops the cluster to its own line under the Save/Close row (no horizontal overflow).
-- **Place fields reordered into one flat grid.** `.note-place-grid` is now `grid-template-columns:1fr 1fr auto`; `.note-place-row/.note-city-column/.note-city-tail/.note-where-tail` are all `display:contents` so every field is a directly-placeable grid item. Placement via `:has()` + `grid-area`: Lat `1/1/2/2`, Lng `1/2/2/3`, `.note-location-message-stack` `2/1/3/4` (the "Mapped…" status, full width), City `3/1/4/3` (full-width, stretches like Where), `#noteGeocodeBtn` `3/3/4/4`, Where `4/1/5/3`, `#noteWhereToCityBtn` `4/3/5/4`. Net order top→bottom: Lat|Lng, status, City+Locate, Where+move.
-
-Batch 3 (superseded for place fields, header item still current) — `#noteDialog` mobile: title on its own line below actions (`.note-dialog-head` single-col `grid-template-areas:"actions"/"title"/"picker"`, `h2` `white-space:normal`); `.visit-type-chip` `font-size:.76rem` so tag labels stop truncating.
-
-Batch 1 (CSS-only): tip-jar double-scroll, map zoom controls centered in scroll view (`:has(.map-zoom-controls)::before` spacer), Smart Color Swatches swatches+Apply on one line (`#paletteDialog .theme-row`).
-
-Batch 2 — all mobile, mostly `app.css` (+ index.html for the two-view + Rangefinder title):
-
-- **World map switching.** `#stateMap[hidden]{display:none}` was overridden by the later equal-specificity `[data-map-mode="scroll"] #stateMap{display:inline-block}`, so the US map stayed visible under the World map. Fix: `:not([hidden])` on that mobile rule (+ `#worldMap` for parity).
-- **Tip Jar close.** `#tipJarDialog{display:grid…}` (id) beat the UA `dialog:not([open]){display:none}`, so it lingered after Close. Fix: scope to `#tipJarDialog[open]`.
-- **Basecamp two-view (mobile only).** New `let basecampMobileView` ("list"|"detail") on `#basecampWorkspace` via `data-basecamp-mobile-view`. `openBasecampDialog`→list, `setActiveBasecampPad`/`createBasecampPad`→detail, delete→list; a `.basecamp-mobile-back` (`__CHEVRON_BACKWARD`) button in the editor head (handler in the workspace click delegation) returns to list. CSS (`@media max-width:720px`) shares one grid cell and shows sidebar XOR editor; pad list is a vertical full-width list. `renderBasecampDialog` falls back to "list" when no active pad. Desktop ignores the attribute (both panes show; back btn `display:none`).
-- **Rangefinder ring-style menu clipped left.** `.ring-style-menu{right:0}` from the leftmost right-aligned header button ran off-screen. Fix (`@media max-width:980px`): `left:0;right:auto`.
-- **Basecamp formatting submenus clipped right.** `.basecamp-submenu{left:0}` anchored to the ~48px link-wrap. Fix (`@media max-width:760px`): make `.basecamp-toolbar-mobile .basecamp-toolbar-link-wrap` `position:static` so the submenu anchors to the full-width `.basecamp-toolbar`, with `left/right:.55rem`.
-- **Note editor scroll + header overlap.** `#noteDialog[open]` now grid (`auto minmax(0,1fr)`), `overflow:hidden`, dvh max-height; `.dialog-body{max-height:none;min-height:0}`. Title truncates: mobile `.note-dialog-title-wrap h2{overflow:hidden;text-overflow:ellipsis;flex:0 1 auto}`.
-- **Rangefinder header two lines.** Markup `<h2>Range&shy;finder</h2>`; mobile `.ring-panel-title-row h2{white-space:normal;overflow:visible}` so the soft hyphen breaks it ("Range-"/"finder") instead of the buttons truncating it.
-- **Notes ≥75% screen.** `@media max-width:980px` `#notesPanel{min-height:75dvh}` (grows with content).
-- **Waypoint Pack Locations two lines.** `@media max-width:620px` reverts `.is-pack-locations .waypoint-section-actions` to `flex-wrap`, search `flex:1 1 100%` (own line), `#setsBatchAddBtn`/`#setsRemoveBtn` `flex:1 1 auto` (line 2).
-
-Note: batch-1's mobile basecamp sidebar (single-column stack + horizontal pad strip) was superseded by the batch-2 two-view layout.
+- Current version: `APP_VERSION = "4.5.0"` — latest cut release **4.5.0 "Leave No Trace"** (minor, shipped 2026-06-12). No active dev line; the next substantial change starts with `plan` (or `start` when a plan already exists).
 
 Verification traps still apply: UI drivers that call `save()` mutate real localStorage (snapshot first); Wayfinder/Waypoint panels need a configured bucket-list level to render; `http.server` has no cache headers (force-reload assets).
-- Latest public releases (newest first): 4.4.4 "Fine Print", 4.4.3 "Clear View", 4.4.2 "True Colors", 4.4.1 "Ultralight", 4.4.0 "Basecamps". Full per-release behavior lives in the `CHANGELOG` constant in `assets/js/changelog.js`; release table in `README.md`. Don't duplicate per-release prose here — read the CHANGELOG entry for the version in question.
+- Latest public releases (newest first): 4.5.0 "Leave No Trace", 4.4.4 "Fine Print", 4.4.3 "Clear View", 4.4.2 "True Colors", 4.4.1 "Ultralight", 4.4.0 "Basecamps". Full per-release behavior lives in the `CHANGELOG` constant in `assets/js/changelog.js`; release table in `README.md`. Don't duplicate per-release prose here — read the CHANGELOG entry for the version in question.
 - Recent shipped scope (one-liners only; see CHANGELOG for detail):
+  - 4.5.0 **Leave No Trace** — broad small-screen pass (CSS-heavy + some `index.html` JS; no schema changes): Basecamp becomes a mobile two-view (`basecampMobileView` list↔detail on `#basecampWorkspace`); World-map switch hides the inactive map (`:not([hidden])`); Tip Jar closes (`[open]`); note editor scrolls with title on its own line + reordered location fields; linked-note photo frame sized to the photo's own ratio via `sizeNoteWaypointPhotoFrame()` (definite px height — only that sizes the `.dialog-body` grid row) and opening it scrolls `#noteForm` to top on mobile; Rangefinder/Basecamp pop-up menus stay on-screen; Notes ≥75dvh; dropped the "P#" note-row badge. Banner target (newest feature entry, `patch === 0`).
   - 4.4.4 **Fine Print** — release-notes refinements: the What's New banner surfaces only feature releases (major/minor, `patch === 0`) via `latestFeatureNotice()`, so patch ships skip it and patch entries omit `banner`/`cta`. The Full Update List toggle tallies "X sections · Y updates" from `updateSections` (`renderReleaseSection`). No schema changes.
   - 4.4.3 **Clear View** — Waypoint Packs panel opens as a full-cover floating card over the Notes column (uniform `.55rem` inset replacing a fixed top offset that the taller compact/Wayfinder header overflowed), scrolls into view on open, and while open hides the notes lists + drops sticky positioning on category headings (via `#notesPanel[data-waypoint-open]`) so no heading bleeds over the panel. CSS/JS only; no schema changes.
   - 4.4.2 **True Colors** — pack-icon theme consistency: the NPS arrowhead SVG (`__NATIONAL_PARK_SERVICE_LOGO_SIMPLE` in `assets/js/icons.js`) now uses `currentColor` fills/strokes like every other icon, replacing per-surface `path[fill="#000"]` overrides in `app.css`. Condensed note rows keep the intentional hollow-arrowhead style, keyed to row ink. No behavior or schema changes.
   - 4.4.1 **Ultralight** — no-build split: styles in `assets/css/app.css`; icon/map/changelog/roadmap data in `assets/js/` classic scripts loaded before the main script; `CIRCLE_ICON_SVGS` registry replaces source-scan icon discovery; dead code removed and unused icon art parked in `build/icon-sources/`; CHANGELOG entries flattened to top-level `banner`/`cta`. No behavior or schema changes.
   - 4.4.0 **Basecamps** — Basecamp becomes up to twenty named rich-text pads with icons, search, reorder, formatting toolbars, linked US/World notes, and per-pad exports. Legacy `{ text, updated }` migrates once into "Basecamp Pad". `usStateVisitMap.v1` schema unchanged.
 - Open follow-ups: WISH-071 (optional lat/lng map lines, now P0); WISH-073 (P2 Basecamp photo support); WISH-074 (P1 pinch-to-zoom the map on touch); WISH-075 (P3 pack-photo camera location).
-- Plan docs live in `context/` only while their line is in flight, then are deleted on ship. Active line **4.5.0 "Mobile Cleanup"** is prepped/release-ready (no plan doc — direct line); run `ship` to cut it.
+- Plan docs live in `context/` only while their line is in flight, then are deleted on ship. No active dev line right now (4.5.0 "Leave No Trace" shipped); the next substantial change starts with `plan`, or `start` when a plan already exists.
 - No build step (other than the optional macOS icon pipeline — see README), backend, or dependencies.
 - User data lives in browser localStorage. Locate and Waypoint Pack Wikipedia
   photo previews are intentional online actions and only run when clicked.
