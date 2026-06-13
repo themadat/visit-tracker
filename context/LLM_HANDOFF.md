@@ -21,7 +21,9 @@ fresh LLM/session can run `start` to implement from that written plan. Always
 run `git status --short` first and preserve in-flight manual edits. End every
 working session with two copy-paste containers: first the commit description in
 list form, then the commit command with title in the exact format
-`` `_vt-checkpoint APP_VERSION - <commit title>` ``.
+`` `_vt-checkpoint "APP_VERSION - <commit title>"` `` — always wrap the title in
+double quotes so it pastes cleanly into a terminal (it contains spaces and
+shell-special characters).
 
 ### `wish` — capture a Roadmap idea
 
@@ -162,7 +164,7 @@ For every completed change:
 - Keep the current major/minor release entry updated unless intentionally opening a new release line.
 - Preserve the localStorage schema where possible.
 - Give me two copy-paste containers: the first contains the commit description in list form;
-  the second contains the commit command with title in this format: `_vt-checkpoint APP_VERSION - <commit title>`
+  the second contains the commit command with title in this format: `_vt-checkpoint "APP_VERSION - <commit title>"` (always double-quote the title so it pastes cleanly into a terminal)
 
 ## Snapshot
 
@@ -175,16 +177,19 @@ For every completed change:
   top-level consts share the global lexical scope and work over `file://`.
 - Main file: `index.html`. `STORAGE_KEY = "usStateVisitMap.v1"`, version in `APP_VERSION`.
 - Docs: `README.md` (public/run/build), this handoff (all dev + LLM context), `AGENTS.md` + `CLAUDE.md` (thin auto-loaded agent summaries — keep lean).
-- Current version: `APP_VERSION = "4.4.4"` "Fine Print" — the latest cut release. No active development line.
-- Latest public releases (newest first): 4.4.4 "Fine Print", 4.4.3 "Clear View", 4.4.2 "True Colors", 4.4.1 "Ultralight", 4.4.0 "Basecamps". Full per-release behavior lives in the `CHANGELOG` constant in `assets/js/changelog.js`; release table in `README.md`. Don't duplicate per-release prose here — read the CHANGELOG entry for the version in question.
+- Current version: `APP_VERSION = "4.5.0"` — latest cut release **4.5.0 "Leave No Trace"** (minor, shipped 2026-06-12). No active dev line; the next substantial change starts with `plan` (or `start` when a plan already exists).
+
+Verification traps still apply: UI drivers that call `save()` mutate real localStorage (snapshot first); Wayfinder/Waypoint panels need a configured bucket-list level to render; `http.server` has no cache headers (force-reload assets).
+- Latest public releases (newest first): 4.5.0 "Leave No Trace", 4.4.4 "Fine Print", 4.4.3 "Clear View", 4.4.2 "True Colors", 4.4.1 "Ultralight", 4.4.0 "Basecamps". Full per-release behavior lives in the `CHANGELOG` constant in `assets/js/changelog.js`; release table in `README.md`. Don't duplicate per-release prose here — read the CHANGELOG entry for the version in question.
 - Recent shipped scope (one-liners only; see CHANGELOG for detail):
+  - 4.5.0 **Leave No Trace** — broad small-screen pass (CSS-heavy + some `index.html` JS; no schema changes): Basecamp becomes a mobile two-view (`basecampMobileView` list↔detail on `#basecampWorkspace`); World-map switch hides the inactive map (`:not([hidden])`); Tip Jar closes (`[open]`); note editor scrolls with title on its own line + reordered location fields; linked-note photo frame sized to the photo's own ratio via `sizeNoteWaypointPhotoFrame()` (definite px height — only that sizes the `.dialog-body` grid row) and opening it scrolls `#noteForm` to top on mobile; Rangefinder/Basecamp pop-up menus stay on-screen; Notes ≥75dvh; dropped the "P#" note-row badge. Banner target (newest feature entry, `patch === 0`).
   - 4.4.4 **Fine Print** — release-notes refinements: the What's New banner surfaces only feature releases (major/minor, `patch === 0`) via `latestFeatureNotice()`, so patch ships skip it and patch entries omit `banner`/`cta`. The Full Update List toggle tallies "X sections · Y updates" from `updateSections` (`renderReleaseSection`). No schema changes.
   - 4.4.3 **Clear View** — Waypoint Packs panel opens as a full-cover floating card over the Notes column (uniform `.55rem` inset replacing a fixed top offset that the taller compact/Wayfinder header overflowed), scrolls into view on open, and while open hides the notes lists + drops sticky positioning on category headings (via `#notesPanel[data-waypoint-open]`) so no heading bleeds over the panel. CSS/JS only; no schema changes.
   - 4.4.2 **True Colors** — pack-icon theme consistency: the NPS arrowhead SVG (`__NATIONAL_PARK_SERVICE_LOGO_SIMPLE` in `assets/js/icons.js`) now uses `currentColor` fills/strokes like every other icon, replacing per-surface `path[fill="#000"]` overrides in `app.css`. Condensed note rows keep the intentional hollow-arrowhead style, keyed to row ink. No behavior or schema changes.
   - 4.4.1 **Ultralight** — no-build split: styles in `assets/css/app.css`; icon/map/changelog/roadmap data in `assets/js/` classic scripts loaded before the main script; `CIRCLE_ICON_SVGS` registry replaces source-scan icon discovery; dead code removed and unused icon art parked in `build/icon-sources/`; CHANGELOG entries flattened to top-level `banner`/`cta`. No behavior or schema changes.
-  - 4.4.0 **Basecamps** — Basecamp becomes up to twenty named rich-text pads with icons, search, reorder, formatting toolbars, linked US/World notes, and per-pad exports. Legacy `{ text, updated }` migrates once into "Basecamp Pad". `usStateVisitMap.v1` schema unchanged. (Current banner target — newest feature release.)
-- Open follow-ups: WISH-071 (optional lat/lng map lines, now P0); WISH-073 (P2 Basecamp photo support).
-- Plan docs live in `context/` only while their line is in flight, then are deleted on ship. No active plan or development line — start the next change with `wish` or `plan`.
+  - 4.4.0 **Basecamps** — Basecamp becomes up to twenty named rich-text pads with icons, search, reorder, formatting toolbars, linked US/World notes, and per-pad exports. Legacy `{ text, updated }` migrates once into "Basecamp Pad". `usStateVisitMap.v1` schema unchanged.
+- Open follow-ups: WISH-071 (optional lat/lng map lines, now P0); WISH-073 (P2 Basecamp photo support); WISH-074 (P1 pinch-to-zoom the map on touch); WISH-075 (P3 pack-photo camera location).
+- Plan docs live in `context/` only while their line is in flight, then are deleted on ship. No active dev line right now (4.5.0 "Leave No Trace" shipped); the next substantial change starts with `plan`, or `start` when a plan already exists.
 - No build step (other than the optional macOS icon pipeline — see README), backend, or dependencies.
 - User data lives in browser localStorage. Locate and Waypoint Pack Wikipedia
   photo previews are intentional online actions and only run when clicked.
@@ -207,7 +212,8 @@ For every completed change:
 - Companions: `icons.js` ≈426k tokens and `maps.js` ≈241k are inert art data — jump by symbol, never scroll. `changelog.js` ≈25k and `roadmap.js` ≈6k are safe to open in slices.
 - Don't echo big chunks of the files or command output into chat; prefer `rg -c`, `git diff --stat`, `head`.
 - End every final reply with two copyable blocks: first the commit description
-  in list form, then `_vt-checkpoint APP_VERSION - <commit title>`.
+  in list form, then `_vt-checkpoint "APP_VERSION - <commit title>"` (always
+  double-quote the title for terminal safety).
 
 **Code**
 

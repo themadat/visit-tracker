@@ -548,6 +548,7 @@
     </header>
     <form id="noteForm" class="dialog-body" method="dialog">
       <input id="noteId" type="hidden">
+      <div id="noteWaypointPhotoPreview" class="note-waypoint-photo-preview"></div>
       <section class="smart-convert-row">
         <div class="smart-convert-head">
           <label for="noteSmartConvert">Smart Convert</label>
@@ -595,7 +596,6 @@
         </label>
         <div id="noteSourceSummary" class="note-source-summary"></div>
       </section>
-      <div id="noteWaypointPhotoPreview" class="note-waypoint-photo-preview"></div>
       <small data-hint data-hint-key="note-tag-settings-help">
         Open Location Tags, choose which tags appear here, rename them, sort them, and set shortcuts.
       </small>
@@ -878,14 +878,6 @@
             </label>
             <button id="basecampNewPadBtn" class="basecamp-new-btn" type="button" data-shortcut="N"
               title="Create a new pad">+ New Pad</button>
-          </div>
-          <div class="basecamp-search-hints">
-            <small class="basecamp-search-hint" data-hint data-hint-key="basecamp-pad-search">
-              Search pad names and content. Matches stay selectable.
-            </small>
-            <small class="basecamp-search-hint" data-hint data-hint-key="basecamp-new-pad">
-              Start a separate pad for a trip, list, or plan.
-            </small>
           </div>
           <div id="basecampPadList" class="basecamp-pad-list"></div>
         </aside>
@@ -1631,7 +1623,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.4.4";
+    const APP_VERSION = "4.5.0";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -4498,7 +4490,7 @@
         : `<small class="ring-disclaimer" data-hint data-hint-key="${RING_HINT_KEY}">${escapeHtml(disclaimerText)}</small>`;
       panel.innerHTML = `
         <div class="ring-panel-title-row">
-          <h2>Rangefinder</h2>
+          <h2>Range&shy;finder</h2>
           ${headerActions}
         </div>
         <div class="ring-panel-status${ringPanelNotice ? " is-warning" : ""}">${escapeHtml(status)}</div>
@@ -7177,13 +7169,6 @@
       openNoteDialog();
     }
 
-    function notePriorityBadgeHtml(note) {
-      const priority = normalizeNotePriority(note?.priority);
-      const color = notePriorityColor(priority);
-      return priority ? `<span class="priority-badge" title="Priority ${priority}" style="--priority-color:${escapeHtml(color)}">P${priority}</span>` : "";
-    }
-
-
     function noteAttachOptionLabel(ref) {
       const level = levelById(ref.note.levelId)?.name || "No level";
       const summary = noteSummary(ref.note);
@@ -9283,7 +9268,7 @@
               <article class="compact-note-row ${isBucket ? "is-bucket-target" : ""}" role="button" tabindex="0" data-edit-note-row="${note.id}">
                 <span class="compact-note-icon">${visitTypeIconStack(note, { color: noteLevel?.color })}</span>
                 <time datetime="${escapeHtml(note.date)}">${escapeHtml(formatDateDisplay(note.date))}</time>
-                <span class="compact-note-text">${notePriorityBadgeHtml(note)} ${escapeHtml(noteSummary(note))}</span>
+                <span class="compact-note-text">${escapeHtml(noteSummary(note))}</span>
                 <span class="actions">
                   ${isBucket ? actionButtonHtml({ symbol: __CHECKMARK_CIRCLE, text: "Mark Visited", className: "icon-btn bucket-mark-visited-btn", attrs: `data-mark-visited-note="${note.id}"` }) : ""}
                   ${actionButtonHtml({ symbol: __PENCIL, text: "Edit", className: "icon-btn", attrs: `data-edit-note="${note.id}"` })}
@@ -9619,6 +9604,21 @@
       ].filter(Boolean).forEach(element => element.classList.toggle("is-waypoint-override", linked));
     }
 
+    // Give the note-editor photo frame an explicit pixel height matching the
+    // photo's display height. The form is a CSS grid, and only a definite height
+    // sizes an auto row (an intrinsic / aspect-ratio height collapses it), so the
+    // frame must be measured: full image shown, no crop, no letterbox, row sized.
+    function sizeNoteWaypointPhotoFrame() {
+      const wrap = $("#noteWaypointPhotoPreview");
+      const img = wrap && wrap.querySelector("img");
+      if (!img || !img.naturalWidth || !img.naturalHeight) return;
+      const width = wrap.getBoundingClientRect().width;
+      if (!width) return;
+      const maxHeight = Math.min(window.innerHeight * 0.58, 26 * 16);
+      const height = Math.min(maxHeight, width * img.naturalHeight / img.naturalWidth);
+      wrap.style.height = `${Math.round(height)}px`;
+    }
+
     function refreshNoteWaypointControls({ menuOpen = false } = {}) {
       const wrap = $("#noteWaypointHeaderControls");
       if (!wrap) return;
@@ -9658,9 +9658,16 @@
         </div>
       `;
       const previewUrl = currentItem && photoOpen ? waypointPhotoUrlCache.get(photoKey) : "";
-      $("#noteWaypointPhotoPreview").innerHTML = previewUrl
-        ? `<img src="${escapeHtml(previewUrl)}" alt="${escapeHtml(currentItem.name)}">`
-        : "";
+      const photoPreview = $("#noteWaypointPhotoPreview");
+      if (previewUrl) {
+        photoPreview.innerHTML = `<img src="${escapeHtml(previewUrl)}" alt="${escapeHtml(currentItem.name)}">`;
+        const img = photoPreview.querySelector("img");
+        if (img.complete) sizeNoteWaypointPhotoFrame();
+        else img.addEventListener("load", sizeNoteWaypointPhotoFrame, { once: true });
+      } else {
+        photoPreview.innerHTML = "";
+        photoPreview.style.removeProperty("height");
+      }
       syncNoteWaypointOverrideState();
       syncNoteSetSummary();
     }
@@ -11541,6 +11548,9 @@
     let basecampIconPickerPadId = "";
     let basecampNotePickerOpen = false;
     let basecampNotePickerQuery = "";
+    // Mobile-only Basecamp view: "list" (pad list) or "detail" (open pad
+    // editor). Inert on desktop, where both panes show side by side.
+    let basecampMobileView = "list";
     let basecampSavedRange = null;
     let basecampUndoState = { padId: "", undo: [], redo: [], last: "" };
     let draggingBasecampPadId = "";
@@ -11912,6 +11922,8 @@
             aria-label="Rename ${escapeHtml(pad.name)}" title="Rename pad">${escapeHtml(pad.name)}</button>`;
       editor.innerHTML = `
         <div class="basecamp-editor-head${isRenaming ? " is-renaming" : ""}">
+          <button class="basecamp-mobile-back" type="button" data-basecamp-mobile-back
+            aria-label="Back to pad list" title="Back to pads">${__CHEVRON_BACKWARD}</button>
           ${titleBlock}
           <span class="basecamp-editor-actions">
             <button class="basecamp-editor-action-btn" type="button"
@@ -11956,6 +11968,12 @@
       const search = $("#basecampSearch");
       if (search && search.value !== basecampSearchQuery) search.value = basecampSearchQuery;
       $("#basecampNewPadBtn").disabled = basecampPads().length >= BASECAMP_PAD_MAX;
+      // Drive the mobile two-view layout. With no active pad there is nothing to
+      // show in detail, so fall back to the list regardless of stored view.
+      const workspace = $("#basecampWorkspace");
+      if (workspace) {
+        workspace.dataset.basecampMobileView = activeBasecampPad() ? basecampMobileView : "list";
+      }
     }
 
     function basecampInPanelMode() {
@@ -12155,6 +12173,8 @@
     function openBasecampDialog() {
       closeOpenDialogs("basecampDialog");
       setBasecampStatus(BASECAMP_DEFAULT_STATUS);
+      // Always land on the pad list when opening on mobile.
+      basecampMobileView = "list";
       renderBasecampDialog();
       const dialog = $("#basecampDialog");
       const panel = basecampInPanelMode();
@@ -12260,6 +12280,8 @@
       if (!basecampPads().some(pad => pad.id === padId)) return;
       flushBasecampPad();
       state.basecamp.activePadId = padId;
+      // Selecting a pad opens it in the mobile detail view.
+      basecampMobileView = "detail";
       basecampRenamePadId = "";
       basecampIconPickerPadId = "";
       basecampNotePickerOpen = false;
@@ -12301,6 +12323,8 @@
       };
       basecampPads().push(pad);
       state.basecamp.activePadId = pad.id;
+      // A new pad opens straight into the mobile detail view for editing.
+      basecampMobileView = "detail";
       basecampRenamePadId = pad.id;
       save();
       renderBasecampDialog({ focusRename: true });
@@ -12334,6 +12358,8 @@
           const wasActive = state.basecamp.activePadId === padId;
           pads.splice(index, 1);
           if (wasActive) state.basecamp.activePadId = pads[index]?.id || pads[index - 1]?.id || "";
+          // Return to the mobile pad list after deleting the open pad.
+          basecampMobileView = "list";
           basecampRenamePadId = "";
           save();
           renderBasecampDialog();
@@ -13238,6 +13264,12 @@
         if (event.target.matches("[data-basecamp-body]")) handleBasecampPaste(event);
       });
       workspace.addEventListener("click", event => {
+        if (event.target.closest("[data-basecamp-mobile-back]")) {
+          flushBasecampPad();
+          basecampMobileView = "list";
+          renderBasecampDialog();
+          return;
+        }
         const select = event.target.closest("[data-basecamp-select]");
         if (select) {
           setActiveBasecampPad(select.dataset.basecampSelect);
@@ -15664,7 +15696,16 @@
         const photo = event.target.closest("[data-note-waypoint-photo]");
         if (photo) {
           const source = suggestedSetItem($("#noteSourceSetId").value, $("#noteSourceItemId").value);
-          if (source) toggleWaypointPhotoPreview(source.set.id, source.item.id);
+          if (source) {
+            const willOpen = waypointPhotoPreviewKey !== waypointPhotoKey(source.set.id, source.item.id);
+            toggleWaypointPhotoPreview(source.set.id, source.item.id);
+            // On phones the photo sits at the top of the editor; scroll there so
+            // the user actually sees it when opening (the button is in the header).
+            if (willOpen && !DESKTOP_LAYOUT_QUERY.matches) {
+              const body = $("#noteForm");
+              if (body) requestAnimationFrame(() => body.scrollTo({ top: 0, behavior: "smooth" }));
+            }
+          }
         }
       });
       $("#quickAddNoteBtn").addEventListener("click", openQuickAddNoteDialog);
@@ -15948,6 +15989,7 @@
         if (ringTimeMenuOpen) closeRingTimeMenu();
         syncButtonLabels();
         scheduleMainLayoutSync();
+        if ($("#noteDialog")?.open) sizeNoteWaypointPhotoFrame();
       });
       document.addEventListener("click", event => {
         if (!legendPositionMenuOpen || event.target.closest(".legend-position-picker")) return;
