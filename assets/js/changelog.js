@@ -4,6 +4,43 @@
 
     const CHANGELOG = [
       {
+        version: "4.5.0",
+        date: "2026-06-12",
+        title: "Leave No Trace",
+        summary: "A big pass over the small-screen experience: Basecamp, Notes, the map, the note editor, pop-up menus, and linked-note photos all behave properly on phones now.",
+        banner: "A big mobile cleanup: two-step Basecamp, taller Notes, fixed maps, menus, photos & more.",
+        cta: "Tidy the|Trail!",
+        highlights: [
+          "Basecamp on phones: a pad list, then a full-screen editor with a Back button.",
+          "Notes fill at least 75% of the screen on mobile.",
+          "Switching to the World map now replaces the US map instead of stacking it.",
+          "Tip Jar, the note editor, and pop-up menus all behave on small screens now.",
+        ],
+        updateSections: [
+          {
+            heading: "Mobile",
+            items: [
+              "Basecamp on phones is now a two-step flow: a full-width vertical pad list, then a full-screen editor for the chosen pad with a Back button to return to the list.",
+              "Notes now fill at least 75% of the screen on mobile and grow taller as notes pile up or a Waypoint pack is opened over the column.",
+              "Switching to the World map now replaces the US map instead of rendering it stacked underneath.",
+              "The note editor scrolls properly on phones with the lower fields and Save button reachable, and its title now drops to its own line below the action buttons so they never cover it.",
+              "On phones the note editor's location fields are arranged for easier entry: Latitude and Longitude share the top line, the map-status text sits beneath them, then a full-width City and a full-width Where each pair with their small action button; longer tag labels (like \"National Parks\") shrink slightly so they stop truncating.",
+              "On a linked Waypoint-pack note, the editor header's extra Website / Photo / priority / Link controls now drop to their own line so the header never grows wider than the screen, and that cluster's border hugs its buttons instead of stretching across the row.",
+              "Tip Jar fully closes on mobile instead of lingering at the bottom of the screen, and its earlier double-scrollbar fix carries over.",
+              "Rangefinder's ring-style (\"circle options\") menu opens fully on screen instead of clipping off the left edge, and its panel title wraps to two lines so the header buttons no longer truncate it.",
+              "Basecamp's formatting menus (Format, Font, Text) now stay on screen instead of clipping off the right edge.",
+              "Basecamp's pad-list search field no longer collapses behind the New Pad button.",
+              "The map's zoom controls sit centered in scroll view, lined up with the notes-pin and label rows below.",
+              "Smart Color Swatches keep each palette's color swatches and Apply button together on one line, with the palette name on its own line above.",
+              "Waypoint Pack Locations puts the search bar on its own line with the map and action buttons beneath it, so nothing is cramped or cut off.",
+              "Fixed the linked-note photo on phones and desktop: the Wikipedia preview image loaded but its frame collapsed to zero height and overlapped the fields, so nothing usable appeared. Waypoint-pack note photos now show in full — the frame sizes to each photo's own proportions, so nothing is cropped on desktop or phones — sitting at the top of the editor below the header and above Smart Convert; on phones tapping the photo button scrolls the editor up so the photo is in view.",
+              "Removed the \"P#\" priority badge from note rows for a cleaner, less cluttered list.",
+              "Added Roadmap ideas for two-finger pinch-to-zoom on the map and showing where a pack photo was taken (its camera location) to help recreate the shot in person.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.4.4",
         date: "2026-06-10",
         title: "Fine Print",
