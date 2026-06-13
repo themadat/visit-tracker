@@ -5152,13 +5152,17 @@
 
     .note-waypoint-photo-preview {
       display: block;
+      width: 100%;
+      max-width: 34rem;
+      margin-inline: auto;
       min-width: 0;
-      /* The note form is a CSS grid. An intrinsic (max-content) min-height does
-         NOT size an auto row whose item holds a percentage-width image, so the
-         row collapsed to 0 and the photo overflowed onto the fields below. Only
-         a definite height sizes the row, so use a fixed photo frame and let the
-         image fill it (object-fit: cover) so the row is always sized. */
-      height: clamp(11rem, 34vh, 20rem);
+      /* The note form is a CSS grid. Only a DEFINITE height sizes an auto row;
+         an intrinsic (max-content) or aspect-ratio height does not, so the row
+         collapsed to 0 and the photo overflowed the fields. JS sets an explicit
+         pixel height equal to the photo's own display height (sizeNoteWaypointPhotoFrame),
+         so the row is sized AND the whole image shows with no crop or letterbox.
+         min-height covers the brief moment before the image loads. */
+      min-height: 11rem;
       overflow: hidden;
       border-radius: 6px;
       background: #000;
@@ -5172,7 +5176,7 @@
       display: block;
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
     }
 
     .waypoint-preview-card.is-linked {
