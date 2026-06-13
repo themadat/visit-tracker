@@ -6,10 +6,10 @@
       {
         version: "4.5.0",
         date: "2026-06-12",
-        title: "Mobile Cleanup",
+        title: "Leave No Trace",
         summary: "A big pass over the small-screen experience: Basecamp, Notes, the map, the note editor, pop-up menus, and linked-note photos all behave properly on phones now.",
-        banner: "A big mobile cleanup:|two-step Basecamp, taller Notes, fixed maps, menus, photos & more.",
-        cta: "Tidy the Trail!",
+        banner: "A big mobile cleanup: two-step Basecamp, taller Notes, fixed maps, menus, photos & more.",
+        cta: "Tidy the|Trail!",
         highlights: [
           "Basecamp on phones: a pad list, then a full-screen editor with a Back button.",
           "Notes fill at least 75% of the screen on mobile.",
