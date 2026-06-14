@@ -2504,9 +2504,11 @@
       justify-content: center;
       flex: 0 0 auto;
       color: var(--muted);
-      padding-right: .28rem;
-      margin-right: .04rem;
-      border-right: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+      /* Sits to the right of the totals so the %/count stay left-aligned with
+         the per-level pills below. */
+      padding-left: .28rem;
+      margin-left: .04rem;
+      border-left: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
     }
 
     .legend-grouping-icon svg {
