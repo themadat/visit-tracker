@@ -40,6 +40,7 @@ truth — read it before implementing anything.
   stop the server before the final reply. Parse-check: `./build/check.sh`
   (`jsc`-based; `node` may be absent).
 - End every working session with the two copy-paste blocks: commit
-  description list, then `_vt-checkpoint APP_VERSION - <title>`.
+  description list, then `_vt-checkpoint "APP_VERSION - <title>"` (always
+  double-quote the title so it pastes cleanly into a terminal).
 - Hitting a usage limit mid-feature? Run the handoff's `pause` workflow so
   the other tool can resume cold.
