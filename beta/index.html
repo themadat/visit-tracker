@@ -1623,7 +1623,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.5.2.1";
+    const APP_VERSION = "4.5.2.2";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -5541,7 +5541,7 @@
         if (activeSet) {
           mapLabelTargetIcon.innerHTML = visitTypeIcon(suggestedSetIconId(activeSet.id));
         } else {
-          mapLabelTargetIcon.innerHTML = prefersSymbols() ? __CIRCLE_CIRCLE_FILL : "Labels";
+          mapLabelTargetIcon.innerHTML = prefersSymbols() ? activeLayer().icon : "Labels";
         }
       }
       setButtonLabel("#labelsNoneBtn", __CIRCLE_SLASH, "None", "No map labels");
@@ -7429,7 +7429,7 @@
       const labelIcon = $("[data-map-label-target-icon]");
       const selected = activeMapLabelTargetSet();
       if (labelIcon) {
-        labelIcon.innerHTML = selected ? visitTypeIcon(suggestedSetIconId(selected.id)) : prefersSymbols() ? __CIRCLE_CIRCLE_FILL : "Labels";
+        labelIcon.innerHTML = selected ? visitTypeIcon(suggestedSetIconId(selected.id)) : prefersSymbols() ? activeLayer().icon : "Labels";
         $("#labelsToggleLabel").title = selected ? `${selected.name} Label Type` : "Map Label Type";
       }
       syncMapLabelButtons(selected ? suggestedSetLabelMode(selected.id) : state.settings.mapLabels || "none");
@@ -7447,8 +7447,8 @@
         <div class="map-waypoint-labels-menu" ${mapWaypointPackMenuOpen ? "" : "hidden"}>
           <div class="map-waypoint-pack-grid" aria-label="Map label targets">
             <button class="map-waypoint-pack-select" type="button" data-map-label-target=""
-              aria-pressed="${selected ? "false" : "true"}" aria-label="States" title="States">
-              ${__CIRCLE_CIRCLE_FILL}
+              aria-pressed="${selected ? "false" : "true"}" aria-label="${escapeHtml(activeLayer().heading)}" title="${escapeHtml(activeLayer().heading)}">
+              ${activeLayer().icon}
             </button>
             ${added.map(set => `
               <button class="map-waypoint-pack-select" type="button" data-map-waypoint-pack="${escapeHtml(set.id)}"
@@ -8092,7 +8092,7 @@
         ? circleIconSvg(suggestedSetIconId(stats.set.id))
         : activeLayer().icon;
       const groupingLabel = stats.set ? stats.set.name : activeLayer().heading;
-      $("#legendTotals").innerHTML = `<span class="legend-grouping-icon" title="Stats for: ${escapeHtml(groupingLabel)}" aria-label="Stats grouping: ${escapeHtml(groupingLabel)}">${groupingIcon}</span><span class="percent-pill">${stats.pct}%</span><span class="count-pill">${stats.counted}/${stats.total}</span>`;
+      $("#legendTotals").innerHTML = `<span class="percent-pill">${stats.pct}%</span><span class="count-pill">${stats.counted}/${stats.total}</span><span class="legend-grouping-icon" title="Stats for: ${escapeHtml(groupingLabel)}" aria-label="Stats grouping: ${escapeHtml(groupingLabel)}">${groupingIcon}</span>`;
       $("#legendList").innerHTML = state.levels.map((level, index) => {
         const count = stats.counts[level.id] || 0;
         const pct = Math.round((count / Math.max(1, stats.denominator)) * 100);
