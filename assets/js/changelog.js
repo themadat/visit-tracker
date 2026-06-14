@@ -4,6 +4,34 @@
 
     const CHANGELOG = [
       {
+        version: "4.5.2",
+        date: "2026-06-14",
+        title: "Get Your Bearings",
+        summary: "Rangefinder's ring-style menu stays open for quick multi-changes, and the Legend totals now show which grouping they're measured against.",
+        highlights: [
+          "Rangefinder's ring-style menu stays open so you can try fill/clip options and see them live.",
+          "The Legend totals show an icon for which grouping (US, World, or a Waypoint pack) they count.",
+        ],
+        updateSections: [
+          {
+            heading: "Rangefinder",
+            items: [
+              "The ring-style (\"circle options\") menu now stays open after each pick — change fill and clip and watch the rings update live; it closes when you click outside it.",
+            ]
+          },
+          {
+            heading: "Legend",
+            items: [
+              "The overall-completion pill in the Legend header now shows a small icon (on the right, so the totals stay lined up with the per-level rows) for which grouping the stats are measured against — the US map, the World map, or, when a Waypoint pack is driving the numbers, that pack's icon.",
+              "The map label selector now uses the US or World map icon for the base map option instead of a generic circle, matching the Legend grouping indicator.",
+              "Map icons in the label-target picker stay neatly inside their buttons; the World icon is optically balanced in both the label control and Legend pill.",
+              "Selecting National Parks labels now shows the National Parks icon beside its Legend stats.",
+              "US and World icons now inherit the active theme, and the Legend divider stays a clearer fixed height beside the larger World icon.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.5.1",
         date: "2026-06-12",
         title: "Back in the Picture",

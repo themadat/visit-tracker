@@ -1066,6 +1066,7 @@
               Plane planning rings, and compare the straight-line distance between two places.</li>
             <li>Rangefinder rings can be filled or stroke-only, clipped to the active land area, shown in miles or
               kilometers, customized up to eight distances, and shown with or without Drive or Plane time estimates.
+              The ring-style menu stays open while you combine fill and clip options; click outside it when finished.
               The time menu lets you adjust the average speed for the current travel mode.</li>
             <li>Mapped markers open the note when there is one note. Nearby markers cluster, zoom when they can split,
               or open a picker when they are too close.</li>
@@ -1090,6 +1091,8 @@
               for quick Edit/Delete.</li>
             <li>Deleting a level moves affected locations down to the next lowest level.</li>
             <li>Click a Legend level to filter Notes by that level. Click it again to clear the filter.</li>
+            <li>The icon beside the overall Legend totals shows what those stats measure: US locations, World
+              countries, or the linked Waypoint Pack currently selected in Map Labels.</li>
             <li>When Map Labels targets a linked Waypoint Pack, the Legend keeps your same levels and colors but shows
               pack-note counts and percentages instead of state or territory totals.</li>
             <li>Use Auto Colors to apply a palette to the current level order. Suggested categories can be shown or
@@ -1210,6 +1213,8 @@
             more levels later.</p>
           <p><b>Why do some levels show a no symbol instead of a percentage?</b><br>Those levels are excluded from
             completion stats.</p>
+          <p><b>What does the icon beside the overall Legend stats mean?</b><br>It identifies the current stats group:
+            US locations, World countries, or the linked Waypoint Pack selected in Map Labels.</p>
         </section>
         <section class="help-section">
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ: Notes</h3>
@@ -1623,7 +1628,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.5.1";
+    const APP_VERSION = "4.5.2";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -4222,7 +4227,8 @@
       const bag = ringSettings();
       if (kind === "fill") bag.fill = on === true;
       if (kind === "clip") bag.clip = on === true;
-      ringStyleMenuOpen = false;
+      // Keep the menu open so multiple fill/clip choices can be made and seen
+      // live on the map; the document-level outside-click handler closes it.
       save();
       render();
     }
@@ -5533,6 +5539,7 @@
       setButtonLabel("#basecampBtn", __LONG_TEXT_PAGE_AND_PENCIL, "Basecamp", "Open Basecamp notes", "Open Basecamp notes");
       const mapLabelTargetIcon = $("[data-map-label-target-icon]");
       if (mapLabelTargetIcon) {
+        mapLabelTargetIcon.classList.toggle("is-world", !activeMapLabelTargetSet() && activeLayerId === "world");
         // Respect the active Waypoint Pack target — otherwise toggling Shortcut
         // Mode reruns syncButtonLabels and clobbers the pack icon back to the
         // states/territories glyph until the next renderMap pass.
@@ -5540,7 +5547,7 @@
         if (activeSet) {
           mapLabelTargetIcon.innerHTML = visitTypeIcon(suggestedSetIconId(activeSet.id));
         } else {
-          mapLabelTargetIcon.innerHTML = prefersSymbols() ? __CIRCLE_CIRCLE_FILL : "Labels";
+          mapLabelTargetIcon.innerHTML = prefersSymbols() ? activeLayer().icon : "Labels";
         }
       }
       setButtonLabel("#labelsNoneBtn", __CIRCLE_SLASH, "None", "No map labels");
@@ -7428,7 +7435,8 @@
       const labelIcon = $("[data-map-label-target-icon]");
       const selected = activeMapLabelTargetSet();
       if (labelIcon) {
-        labelIcon.innerHTML = selected ? visitTypeIcon(suggestedSetIconId(selected.id)) : prefersSymbols() ? __CIRCLE_CIRCLE_FILL : "Labels";
+        labelIcon.classList.toggle("is-world", !selected && activeLayerId === "world");
+        labelIcon.innerHTML = selected ? visitTypeIcon(suggestedSetIconId(selected.id)) : prefersSymbols() ? activeLayer().icon : "Labels";
         $("#labelsToggleLabel").title = selected ? `${selected.name} Label Type` : "Map Label Type";
       }
       syncMapLabelButtons(selected ? suggestedSetLabelMode(selected.id) : state.settings.mapLabels || "none");
@@ -7446,8 +7454,8 @@
         <div class="map-waypoint-labels-menu" ${mapWaypointPackMenuOpen ? "" : "hidden"}>
           <div class="map-waypoint-pack-grid" aria-label="Map label targets">
             <button class="map-waypoint-pack-select" type="button" data-map-label-target=""
-              aria-pressed="${selected ? "false" : "true"}" aria-label="States" title="States">
-              ${__CIRCLE_CIRCLE_FILL}
+              aria-pressed="${selected ? "false" : "true"}" aria-label="${escapeHtml(activeLayer().heading)}" title="${escapeHtml(activeLayer().heading)}">
+              ${activeLayer().icon}
             </button>
             ${added.map(set => `
               <button class="map-waypoint-pack-select" type="button" data-map-waypoint-pack="${escapeHtml(set.id)}"
@@ -8084,7 +8092,15 @@
           pct: Math.round((countedStateTotal() / completionRegionTotal()) * 100),
           set: null
         };
-      $("#legendTotals").innerHTML = `<span class="percent-pill">${stats.pct}%</span><span class="count-pill">${stats.counted}/${stats.total}</span>`;
+      // Show which grouping these stats are measured against: a Waypoint pack
+      // when one is the active label target, otherwise the active map layer
+      // (US states/territories or World countries).
+      const groupingIcon = stats.set
+        ? visitTypeIcon(suggestedSetIconId(stats.set.id))
+        : activeLayer().icon;
+      const groupingLabel = stats.set ? stats.set.name : activeLayer().heading;
+      const groupingIconClass = stats.set ? "" : ` is-${activeLayerId}`;
+      $("#legendTotals").innerHTML = `<span class="percent-pill">${stats.pct}%</span><span class="count-pill">${stats.counted}/${stats.total}</span><span class="legend-grouping-icon${groupingIconClass}" title="Stats for: ${escapeHtml(groupingLabel)}" aria-label="Stats grouping: ${escapeHtml(groupingLabel)}">${groupingIcon}</span>`;
       $("#legendList").innerHTML = state.levels.map((level, index) => {
         const count = stats.counts[level.id] || 0;
         const pct = Math.round((count / Math.max(1, stats.denominator)) * 100);
