@@ -1,6 +1,5 @@
 ## Future Prompt
 
-4.6.0 - full expand toggle (and do it in locations)
 4.5.0 - priority filter and and sorting
 
 

@@ -262,10 +262,15 @@
           </div>
           <div class="notes-controls" aria-label="Notes display controls">
             <div class="segmented" aria-label="Notes view">
-              <button id="notesViewExpandedBtn" type="button" aria-pressed="true" data-shortcut="←">Expanded
+              <button id="notesViewDetailedBtn" type="button" aria-pressed="true" data-notes-view-mode="detailed">Detailed
                 View</button>
-              <button id="notesViewCompactBtn" type="button" aria-pressed="false" data-shortcut="↓">Condensed</button>
-              <button id="notesViewTextBtn" type="button" aria-pressed="false" data-shortcut="→">Text Only</button>
+              <button id="notesViewExpandedBtn" type="button" aria-pressed="false" data-notes-view-mode="expanded"
+                data-shortcut="←">Expanded
+                View</button>
+              <button id="notesViewCompactBtn" type="button" aria-pressed="false" data-notes-view-mode="compact"
+                data-shortcut="↓">Condensed</button>
+              <button id="notesViewTextBtn" type="button" aria-pressed="false" data-notes-view-mode="text"
+                data-shortcut="→">Text Only</button>
             </div>
             <div class="segmented" aria-label="Notes sort order">
               <button id="notesSortAlphaBtn" type="button" aria-pressed="false" data-shortcut="Z">Alphabetical</button>
@@ -1110,7 +1115,10 @@
               header, then Save or Save and Add Another.</li>
             <li>Sort Notes chronologically or alphabetically. Categorical groups City, State, and Territory locations
               with sticky headers.</li>
-            <li>Use Expanded, Condensed, or Text Only view. Text Only is copy-ready for Apple Notes.</li>
+            <li>Use Detailed, Expanded, Condensed, or Text Only view. Detailed shows every populated note field and
+              the full details text; Text Only is copy-ready for Apple Notes.</li>
+            <li>Open a location to manage its levels and Visit Notes. The same four view buttons appear in the Visit
+              Notes header, so that location's notes can use a different density without returning to the main list.</li>
             <li>Use the icon chips to filter by Location Tags. Empty circle means notes without an icon; the ellipsis
               opens Location Tag settings.</li>
             <li>In Wayfinder, the Packs button opens an unselected pack browser over Notes. Pick an Available Pack to
@@ -1224,6 +1232,9 @@
           <p><b>What does Categorical do in Notes?</b><br>It groups locations by City, State, and Territory while
             keeping
             your selected sort order inside each group.</p>
+          <p><b>What does Detailed view show?</b><br>Detailed is the full-card view. It shows the location's levels and
+            note/date totals, then every populated note field, tag, coordinate, priority, source, and the complete
+            details text without truncation.</p>
           <p><b>What is Text Only view for?</b><br>It renders a clean plain-text version of the current Notes view that
             is easy to select, copy, and paste into Apple Notes.</p>
           <p><b>How does Smart Convert work?</b><br>Type a quick note, then Auto Convert fills recognized date, level,
@@ -1628,7 +1639,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.5.2";
+    const APP_VERSION = "4.6.0.1";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -2490,7 +2501,7 @@
     let notesPanelOpen = true;
     let notesPanelState = null;
     let notesSortMode = "chrono";
-    let notesViewMode = "compact";
+    let notesViewMode = "detailed";
     let notesCategoricalMode = true;
     let notesHideExcludedOnly = true;
     let notesDatePrecisionFilter = "all";
@@ -2608,7 +2619,7 @@
           legendPanelOpen: true,
           notesPanelOpen: true,
           notesSortMode: "chrono",
-          notesViewMode: "compact",
+          notesViewMode: "detailed",
           notesCategoricalMode: true,
           notesHideExcludedOnly: true,
           notesDatePrecisionFilter: "all",
@@ -2992,7 +3003,7 @@
       });
       if (!next.settings.mapPanelOpen && !next.settings.legendPanelOpen && !next.settings.notesPanelOpen) next.settings.mapPanelOpen = true;
       if (!["alpha", "chrono", "priority"].includes(next.settings.notesSortMode)) next.settings.notesSortMode = "chrono";
-      if (!["expanded", "compact", "text"].includes(next.settings.notesViewMode)) next.settings.notesViewMode = "compact";
+      if (!["detailed", "expanded", "compact", "text"].includes(next.settings.notesViewMode)) next.settings.notesViewMode = "detailed";
       if (typeof next.settings.notesCategoricalMode !== "boolean") next.settings.notesCategoricalMode = true;
       if (typeof next.settings.notesHideExcludedOnly !== "boolean") next.settings.notesHideExcludedOnly = true;
       if (!DATE_PRECISION_FILTER_MODES.includes(next.settings.notesDatePrecisionFilter)) next.settings.notesDatePrecisionFilter = "all";
@@ -3453,7 +3464,7 @@
       state.settings.legendPanelOpen = legendPanelOpen !== false;
       state.settings.notesPanelOpen = notesPanelOpen !== false;
       state.settings.notesSortMode = ["alpha", "chrono", "priority"].includes(notesSortMode) ? notesSortMode : "chrono";
-      state.settings.notesViewMode = ["expanded", "compact", "text"].includes(notesViewMode) ? notesViewMode : "compact";
+      state.settings.notesViewMode = ["detailed", "expanded", "compact", "text"].includes(notesViewMode) ? notesViewMode : "detailed";
       state.settings.notesCategoricalMode = notesCategoricalMode === true;
       state.settings.notesHideExcludedOnly = notesHideExcludedOnly === true;
       state.settings.notesDatePrecisionFilter = DATE_PRECISION_FILTER_MODES.includes(notesDatePrecisionFilter) ? notesDatePrecisionFilter : "all";
@@ -3476,7 +3487,7 @@
       legendPanelOpen = state.settings.legendPanelOpen !== false;
       notesPanelOpen = state.settings.notesPanelOpen !== false;
       notesSortMode = ["alpha", "chrono", "priority"].includes(state.settings.notesSortMode) ? state.settings.notesSortMode : "chrono";
-      notesViewMode = ["expanded", "compact", "text"].includes(state.settings.notesViewMode) ? state.settings.notesViewMode : "compact";
+      notesViewMode = ["detailed", "expanded", "compact", "text"].includes(state.settings.notesViewMode) ? state.settings.notesViewMode : "detailed";
       notesCategoricalMode = state.settings.notesCategoricalMode !== false;
       notesHideExcludedOnly = state.settings.notesHideExcludedOnly !== false;
       notesDatePrecisionFilter = DATE_PRECISION_FILTER_MODES.includes(state.settings.notesDatePrecisionFilter) ? state.settings.notesDatePrecisionFilter : "all";
@@ -5586,6 +5597,7 @@
       setButtonLabel("#notesDatePrecisionFilterBtn", dateFilter.icon, dateFilter.label, dateFilter.aria, dateFilter.title);
       const coordFilter = coordinateFilterMeta();
       setButtonLabel("#notesCoordinateFilterBtn", coordFilter.icon, coordFilter.label, coordFilter.aria, coordFilter.title);
+      setButtonLabel("#notesViewDetailedBtn", __RECTANGLE_EXPAND_DIAGONAL, "Detailed", "Detailed View");
       setButtonLabel("#notesViewExpandedBtn", __RECTANGLE_EXPAND_VERTICAL, "Expanded", "Expanded View");
       setButtonLabel("#notesViewCompactBtn", __RECTANGLE_COMPRESS_VERTICAL, "Condensed", "Condensed View");
       setButtonLabel("#notesViewTextBtn", __LIST_BULLET_RECTANGLE_PORTRAIT, "Text Only");
@@ -8599,7 +8611,7 @@
         search ? `&quot;${escapeHtml(search)}&quot;` : "",
       ].filter(Boolean);
       const modeParts = [
-        `${notesViewMode === "compact" ? "Condensed" : notesViewMode === "text" ? "Text Only" : "Expanded"}`,
+        `${notesViewMode === "detailed" ? "Detailed" : notesViewMode === "compact" ? "Condensed" : notesViewMode === "text" ? "Text Only" : "Expanded"}`,
         notesSortMode === "alpha" ? "Alphabetical" : notesSortMode === "priority" ? "Priority" : "Chronological",
         notesCategoricalMode ? "Grouped" : "Ungrouped"
       ].filter(Boolean);
@@ -8997,12 +9009,20 @@
       $("#notesDatePrecisionFilterBtn").dataset.datePrecisionFilter = notesDatePrecisionFilter;
       $("#notesCoordinateFilterBtn").setAttribute("aria-pressed", String(notesCoordinateFilter !== "all"));
       $("#notesCoordinateFilterBtn").dataset.coordinateFilter = notesCoordinateFilter;
+      $("#notesViewDetailedBtn").setAttribute("aria-pressed", notesViewMode === "detailed");
       $("#notesViewExpandedBtn").setAttribute("aria-pressed", notesViewMode === "expanded");
       $("#notesViewCompactBtn").setAttribute("aria-pressed", notesViewMode === "compact");
       $("#notesViewTextBtn").setAttribute("aria-pressed", notesViewMode === "text");
       $("#copyNotesTextBtn").classList.toggle("is-copied", notesCopyActive);
       $("#notesStateSearch").value = notesSearchQuery;
       renderNotesIconFilters();
+    }
+
+    function setNotesViewMode(mode) {
+      if (!["detailed", "expanded", "compact", "text"].includes(mode) || notesViewMode === mode) return;
+      notesViewMode = mode;
+      save();
+      renderNotesPanel();
     }
 
     function renderNotesIconFilters() {
@@ -9268,10 +9288,91 @@
       `;
     }
 
+    function notesViewControlsHtml() {
+      const option = (mode, icon, label) => `
+        <button type="button" data-notes-view-mode="${mode}" aria-pressed="${notesViewMode === mode ? "true" : "false"}"
+          aria-label="${label} View" title="${label} View">${icon}<span>${label}</span></button>
+      `;
+      return `
+        <div class="segmented selected-notes-view-controls" aria-label="Visit Notes view">
+          ${option("detailed", __RECTANGLE_EXPAND_DIAGONAL, "Detailed")}
+          ${option("expanded", __RECTANGLE_EXPAND_VERTICAL, "Expanded")}
+          ${option("compact", __RECTANGLE_COMPRESS_VERTICAL, "Condensed")}
+          ${option("text", __LIST_BULLET_RECTANGLE_PORTRAIT, "Text Only")}
+        </div>
+      `;
+    }
+
+    function detailedNoteCard(note, abbr, { actions = false } = {}) {
+      const noteLevel = levelById(note.levelId);
+      const source = noteSourceLabel(note);
+      const types = noteVisitTypeLabels(note);
+      const coords = noteCoordinateText(note);
+      const detail = String(noteDetails(note) || "").trim();
+      const fields = [
+        ["Where", note.where],
+        ["City", note.city],
+        ["Coordinates", coords],
+        ["What", note.what],
+        ["Who", note.who],
+        ["Waypoint Pack", source],
+      ].filter(([, value]) => String(value || "").trim());
+      const bucketId = bucketListLevelId();
+      const isBucket = bucketId && note.levelId === bucketId;
+      return `
+        <article class="detailed-note-card ${isBucket ? "is-bucket-target" : ""}" role="button" tabindex="0"
+          data-edit-note-row="${escapeHtml(note.id)}" data-note-state="${escapeHtml(abbr)}">
+          <header class="detailed-note-head">
+            <span class="detailed-note-icons">${visitTypeIconStack(note, { color: noteLevel?.color })}</span>
+            <span class="detailed-note-heading">
+              <b>${escapeHtml(note.date ? formatDateDisplay(note.date) : "No date")}</b>
+              <small>${escapeHtml(noteLevel?.name || "No level")}</small>
+            </span>
+            ${notePriorityLabel(note) ? `<span class="detailed-note-priority">${escapeHtml(notePriorityLabel(note))}</span>` : ""}
+            ${actions ? `<span class="actions">
+              ${isBucket ? actionButtonHtml({ symbol: __CHECKMARK_CIRCLE, text: "Mark Visited", className: "icon-btn bucket-mark-visited-btn", attrs: `data-mark-visited-note="${note.id}"` }) : ""}
+              ${actionButtonHtml({ symbol: __PENCIL, text: "Edit", className: "icon-btn", attrs: `data-edit-note="${note.id}"` })}
+              ${actionButtonHtml({ symbol: __DELETE_LEFT_FILL, text: "Delete", className: "icon-btn danger", attrs: `data-delete-note="${note.id}"` })}
+            </span>` : ""}
+          </header>
+          ${types.length ? `<div class="detailed-note-tags" aria-label="Location tags">${types.map(type => `<span>${visitTypeIcon(type.id)}${escapeHtml(type.label)}</span>`).join("")}</div>` : ""}
+          ${fields.length ? `<dl class="detailed-note-fields">${fields.map(([label, value]) => `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(String(value))}</dd></div>`).join("")}</dl>` : ""}
+          <div class="detailed-note-details">
+            <b>Details</b>
+            <p>${detail ? escapeHtml(detail) : `<span class="muted">No details</span>`}</p>
+          </div>
+        </article>
+      `;
+    }
+
+    function detailedLocationRows(abbr) {
+      const notes = filteredNotesFor(abbr);
+      const levels = getStateLevelIds(abbr).map(id => levelById(id)).filter(Boolean);
+      const dates = notes.map(note => note.date).filter(Boolean).sort();
+      const dateLabel = dates.length
+        ? dates.length === 1 ? formatDateDisplay(dates[0]) : `${formatDateDisplay(dates[0])} - ${formatDateDisplay(dates[dates.length - 1])}`
+        : "No dates";
+      return `
+        <section class="detailed-location-card">
+          <button class="detailed-location-head" type="button" data-open-notes-state="${escapeHtml(abbr)}">
+            <span class="detailed-location-title">${compactLocationName(abbr, dominantLevel(abbr))}</span>
+            <span class="detailed-location-levels">${levels.length ? levels.map(level => `<span><i style="--level-color:${escapeHtml(level.color)}"></i>${escapeHtml(level.name)}</span>`).join("") : `<span>Unvisited</span>`}</span>
+            <span class="detailed-location-stats"><b>${notes.length}</b> note${notes.length === 1 ? "" : "s"}<small>${escapeHtml(dateLabel)}</small></span>
+          </button>
+          <div class="detailed-location-notes">
+            ${notes.length ? notes.map(note => detailedNoteCard(note, abbr)).join("") : `<div class="empty">No matching visit notes.</div>`}
+          </div>
+        </section>
+      `;
+    }
+
     function renderSelectedNoteList(notes) {
       if (!notes.length) return `<div class="empty">No visit notes yet.</div>`;
       if (notesViewMode === "text") {
         return `<pre class="notes-text-only" tabindex="0">${escapeHtml(notesTextForAbbr(notesPanelState, { ignoreFilters: true }))}</pre>`;
+      }
+      if (notesViewMode === "detailed") {
+        return `<div class="detailed-selected-note-list">${notes.map(note => detailedNoteCard(note, notesPanelState, { actions: true })).join("")}</div>`;
       }
       const bucketId = bucketListLevelId();
       if (notesViewMode === "compact") {
@@ -9357,8 +9458,9 @@
               </div>
             </section>
             <section class="notes-location-section">
-              <div class="row" style="justify-content: space-between; margin-bottom: .35rem;">
+              <div class="row notes-location-visit-head" style="justify-content: space-between; margin-bottom: .35rem;">
                 <h3>Visit Notes</h3>
+                ${notesViewControlsHtml()}
                 <button id="notesPanelAddNoteBtn" type="button" data-shortcut="S">${buttonMarkup(__PLUS_APP_FILL, "Add Note")}</button>
               </div>
               ${renderSelectedNoteList(notes)}
@@ -9404,6 +9506,9 @@
           selectedState = notesPanelState;
           deleteNote(button.dataset.deleteNote);
         }));
+        $$("[data-notes-view-mode]", $("#notesPanelContent")).forEach(button => button.addEventListener("click", () => {
+          setNotesViewMode(button.dataset.notesViewMode);
+        }));
         renderSetsDialog();
         scheduleMainLayoutSync();
         return;
@@ -9430,6 +9535,11 @@
         $("#notesPanelContent").innerHTML = notesCategoricalMode
           ? groupedMarkedStateAbbrs(marked).map(group => renderNotesCategoryGroup(group, renderRows)).join("")
           : renderRows(marked);
+      } else if (notesViewMode === "detailed") {
+        const renderCards = abbrs => abbrs.map(detailedLocationRows).join("");
+        $("#notesPanelContent").innerHTML = notesCategoricalMode
+          ? groupedMarkedStateAbbrs(marked).map(group => renderNotesCategoryGroup(group, renderCards)).join("")
+          : renderCards(marked);
       } else {
         const renderCards = abbrs => abbrs.map(expandedStateRows).join("");
         $("#notesPanelContent").innerHTML = notesCategoricalMode
@@ -9457,6 +9567,21 @@
         // view after the dialog closes. The save target follows selectedState.
         openNoteDialog(button.dataset.editNote);
       }));
+      $$("[data-edit-note-row]", $("#notesPanelContent")).forEach(row => {
+        const openRowNote = () => {
+          selectedState = row.dataset.noteState;
+          openNoteDialog(row.dataset.editNoteRow);
+        };
+        row.addEventListener("click", event => {
+          if (event.target.closest("button")) return;
+          openRowNote();
+        });
+        row.addEventListener("keydown", event => {
+          if (event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
+          openRowNote();
+        });
+      });
       renderSetsDialog();
       scheduleMainLayoutSync();
     }
@@ -15598,21 +15723,10 @@
       });
       $("#notesDatePrecisionFilterBtn").addEventListener("click", () => cycleNotesDatePrecisionFilter());
       $("#notesCoordinateFilterBtn").addEventListener("click", () => cycleNotesCoordinateFilter());
-      $("#notesViewExpandedBtn").addEventListener("click", () => {
-        notesViewMode = "expanded";
-        save();
-        renderNotesPanel();
-      });
-      $("#notesViewCompactBtn").addEventListener("click", () => {
-        notesViewMode = "compact";
-        save();
-        renderNotesPanel();
-      });
-      $("#notesViewTextBtn").addEventListener("click", () => {
-        notesViewMode = "text";
-        save();
-        renderNotesPanel();
-      });
+      $("#notesViewDetailedBtn").addEventListener("click", () => setNotesViewMode("detailed"));
+      $("#notesViewExpandedBtn").addEventListener("click", () => setNotesViewMode("expanded"));
+      $("#notesViewCompactBtn").addEventListener("click", () => setNotesViewMode("compact"));
+      $("#notesViewTextBtn").addEventListener("click", () => setNotesViewMode("text"));
       $("#copyNotesTextBtn").addEventListener("click", () => copyNotesText());
       $("#notesTagSettingsMiniBtn")?.addEventListener("click", () => openVisitTagSettings("settings"));
       $("#closeDrawerBtn").addEventListener("click", closeDrawer);
@@ -15887,7 +16001,7 @@
             legendPanelOpen = true;
             mapPanelOpen = true;
             notesSortMode = "chrono";
-            notesViewMode = "expanded";
+            notesViewMode = "detailed";
             notesCategoricalMode = true;
             notesHideExcludedOnly = true;
             notesSearchQuery = "";

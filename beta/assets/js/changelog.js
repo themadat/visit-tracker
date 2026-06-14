@@ -4,6 +4,38 @@
 
     const CHANGELOG = [
       {
+        version: "4.6.0",
+        date: "2026-06-14",
+        title: "The Whole Story",
+        summary: "Notes gains a full Detailed view, and individual locations can switch among all four note layouts.",
+        banner: "Detailed Notes shows every field in full, with all four views available inside each location.",
+        cta: "Read the Whole Story!",
+        highlights: [
+          "Detailed view shows complete location and note information without truncation.",
+          "Detailed is the default view for fresh Notes lists.",
+          "Individual locations now offer Detailed, Expanded, Condensed, and Text Only views.",
+        ],
+        updateSections: [
+          {
+            heading: "Detailed Notes",
+            items: [
+              "Added a Detailed view before Expanded using the diagonal-expand icon.",
+              "Each location card shows its type, applied levels, note count, and available date span.",
+              "Detailed note cards show date, level, priority, tags, Waypoint source, place fields, coordinates, people, activities, and complete details text.",
+              "Detailed layouts wrap naturally without fixed row heights, ellipsis, or line clamping.",
+            ]
+          },
+          {
+            heading: "Location Notes",
+            items: [
+              "The Visit Notes section inside an individual location now includes the same four-view selector as the main Notes list.",
+              "Switching views keeps one saved preference across the main list and selected-location notes.",
+              "Existing saved Expanded, Condensed, and Text Only choices remain intact; new/default settings start in Detailed.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.5.2",
         date: "2026-06-14",
         title: "Get Your Bearings",
