@@ -1623,7 +1623,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.5.1";
+    const APP_VERSION = "4.5.2.1";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -4222,7 +4222,8 @@
       const bag = ringSettings();
       if (kind === "fill") bag.fill = on === true;
       if (kind === "clip") bag.clip = on === true;
-      ringStyleMenuOpen = false;
+      // Keep the menu open so multiple fill/clip choices can be made and seen
+      // live on the map; the document-level outside-click handler closes it.
       save();
       render();
     }
@@ -8084,7 +8085,14 @@
           pct: Math.round((countedStateTotal() / completionRegionTotal()) * 100),
           set: null
         };
-      $("#legendTotals").innerHTML = `<span class="percent-pill">${stats.pct}%</span><span class="count-pill">${stats.counted}/${stats.total}</span>`;
+      // Show which grouping these stats are measured against: a Waypoint pack
+      // when one is the active label target, otherwise the active map layer
+      // (US states/territories or World countries).
+      const groupingIcon = stats.set
+        ? circleIconSvg(suggestedSetIconId(stats.set.id))
+        : activeLayer().icon;
+      const groupingLabel = stats.set ? stats.set.name : activeLayer().heading;
+      $("#legendTotals").innerHTML = `<span class="legend-grouping-icon" title="Stats for: ${escapeHtml(groupingLabel)}" aria-label="Stats grouping: ${escapeHtml(groupingLabel)}">${groupingIcon}</span><span class="percent-pill">${stats.pct}%</span><span class="count-pill">${stats.counted}/${stats.total}</span>`;
       $("#legendList").innerHTML = state.levels.map((level, index) => {
         const count = stats.counts[level.id] || 0;
         const pct = Math.round((count / Math.max(1, stats.denominator)) * 100);
