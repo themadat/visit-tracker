@@ -5151,9 +5151,18 @@
     }
 
     .note-waypoint-photo-preview {
-      display: grid;
-      place-items: center;
+      display: block;
+      width: 100%;
+      max-width: 34rem;
+      margin-inline: auto;
       min-width: 0;
+      /* The note form is a CSS grid. Only a DEFINITE height sizes an auto row;
+         an intrinsic (max-content) or aspect-ratio height does not, so the row
+         collapsed to 0 and the photo overflowed the fields. JS sets an explicit
+         pixel height equal to the photo's own display height (sizeNoteWaypointPhotoFrame),
+         so the row is sized AND the whole image shows with no crop or letterbox.
+         min-height covers the brief moment before the image loads. */
+      min-height: 11rem;
       overflow: hidden;
       border-radius: 6px;
       background: #000;
@@ -5166,7 +5175,7 @@
     .note-waypoint-photo-preview img {
       display: block;
       width: 100%;
-      max-height: 20rem;
+      height: 100%;
       object-fit: contain;
     }
 
@@ -5484,6 +5493,22 @@
 
     dialog::backdrop {
       background: rgba(10, 15, 25, .56);
+    }
+
+    /* Note editor: clip the dialog and let only the form body scroll, sized in
+       dvh so the body's bottom (and Save) stays reachable on mobile where vh
+       includes the URL-bar gap. Without this the block-layout dialog ran past
+       the visible viewport and the lower fields couldn't be scrolled into view. */
+    #noteDialog[open] {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      max-height: min(860px, calc(100dvh - 1.6rem));
+      overflow: hidden;
+    }
+
+    #noteDialog .dialog-body {
+      max-height: none;
+      min-height: 0;
     }
 
     #settingsDialog[open] {
@@ -5946,8 +5971,18 @@
       line-height: 1.35;
     }
 
-    #tipJarDialog {
+    /* Scoped to [open] so the id-level display:grid doesn't beat the UA
+       dialog:not([open]){display:none} — without it the closed dialog stays
+       laid out and lingers full-screen after Close. */
+    #tipJarDialog[open] {
       width: min(780px, calc(100vw - 1.6rem));
+      /* Grid column with a clipped dialog so only .dialog-body scrolls. Uses
+         dvh to match the body's unit — mixing vh (dialog) and dvh (body) let
+         both scroll on mobile (the URL-bar gap), causing a double scrollbar. */
+      max-height: min(860px, calc(100dvh - 1.6rem));
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      overflow: hidden;
     }
 
     #tipJarDialog .tip-jar-head {
@@ -6802,6 +6837,24 @@
       height: 18px;
     }
 
+    /* Mobile-only "back to pad list" button; hidden on desktop where the list
+       and editor sit side by side. Shown via the 720px breakpoint. */
+    .basecamp-mobile-back {
+      display: none;
+      place-items: center;
+      flex: 0 0 auto;
+      width: 36px;
+      min-width: 36px;
+      height: 36px;
+      min-height: 36px;
+      padding: 0;
+    }
+
+    .basecamp-mobile-back .sf-symbol {
+      width: 18px;
+      height: 18px;
+    }
+
     .basecamp-pad-icon {
       border: 0;
       background: transparent;
@@ -7177,6 +7230,21 @@
       .basecamp-toolbar-mobile>button {
         flex: 0 0 38px;
         width: 38px;
+      }
+
+      /* Anchor the formatting submenus to the full-width toolbar instead of the
+         ~48px button cell: a 256px menu opened from a center/right button ran off
+         the right edge. Dropping the link-wrap's relative positioning lets the
+         submenu span the toolbar (with small insets) and always stay on screen. */
+      .basecamp-toolbar-mobile .basecamp-toolbar-link-wrap {
+        position: static;
+      }
+
+      .basecamp-toolbar-mobile .basecamp-submenu {
+        left: .55rem;
+        right: .55rem;
+        width: auto;
+        min-width: 0;
       }
     }
 
@@ -7555,39 +7623,60 @@
         justify-content: flex-end;
       }
 
+      /* Two-view model on mobile: the workspace shows either the pad LIST
+         (sidebar) or the pad DETAIL (editor), never both. Both panes share the
+         single grid cell; the active view is chosen by data-basecamp-mobile-view
+         on #basecampWorkspace, and the inter-pane resize handle is dropped. */
       .basecamp-workspace {
         grid-template-columns: 1fr;
-        grid-template-rows: auto minmax(0, 1fr);
+        grid-template-rows: minmax(0, 1fr);
       }
 
+      .basecamp-workspace > .basecamp-sidebar,
+      .basecamp-workspace > .basecamp-editor-pane {
+        grid-area: 1 / 1;
+        min-height: 0;
+      }
+
+      .basecamp-workspace[data-basecamp-mobile-view="list"] > .basecamp-editor-pane {
+        display: none;
+      }
+
+      .basecamp-workspace[data-basecamp-mobile-view="detail"] > .basecamp-sidebar {
+        display: none;
+      }
+
+      #basecampSidebarHandle {
+        display: none;
+      }
+
+      /* List view: search row (input + New Pad button, side-by-side via
+         .basecamp-search-row) and hints on top, then the pads as a full-width
+         vertical list that fills the rest and scrolls. */
       .basecamp-sidebar {
-        grid-template-columns: minmax(0, 1fr) auto;
-        grid-template-rows: auto auto;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto auto minmax(0, 1fr);
         padding: .55rem;
         border-right: 0;
-        border-bottom: 1px solid var(--line);
-      }
-
-      .basecamp-search-wrap {
-        grid-column: 1;
-      }
-
-      .basecamp-new-wrap {
-        grid-column: 2;
-        grid-row: 1;
-        width: auto;
+        border-bottom: 0;
       }
 
       .basecamp-pad-list {
-        grid-column: 1 / -1;
-        grid-row: 2;
-        display: flex;
-        overflow-x: auto;
-        overflow-y: hidden;
+        grid-row: 3;
+        display: grid;
+        align-content: start;
+        gap: .4rem;
+        overflow-x: hidden;
+        overflow-y: auto;
       }
 
       .basecamp-pad-row {
-        flex: 0 0 min(220px, 72vw);
+        width: 100%;
+      }
+
+      /* Mobile-only Back control returns from the editor (detail) to the list. */
+      .basecamp-mobile-back {
+        display: inline-grid;
       }
 
       .basecamp-linked-unlink {
@@ -10047,11 +10136,27 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
+      /* The ring style ("circle options") button is the leftmost of the
+         right-aligned header actions, so its default right:0 menu ran off the
+         left edge of the narrow stacked panel. Anchor it to the button's left
+         so it opens rightward into the panel instead. */
+      .ring-style-menu {
+        left: 0;
+        right: auto;
+        transform-origin: top left;
+      }
+
       .side-panel-wrap {
         max-height: none;
         overflow-y: visible;
         padding-right: 0;
         padding-bottom: calc(.85rem + env(safe-area-inset-bottom, 0px));
+      }
+
+      /* Notes get at least 75% of the screen on mobile and grow taller as notes
+         pile up or a Waypoint pack is opened over the column. */
+      #notesPanel {
+        min-height: 75dvh;
       }
 
       .filters {
@@ -10066,6 +10171,24 @@
     @media (max-width: 620px) {
       .notes-search input::placeholder {
         font-size: .6rem;
+      }
+
+      /* Waypoint Pack Locations: drop the cramped single-row grid so the search
+         bar takes the first line on its own and the map controls + Add/Refresh +
+         Remove buttons wrap onto a second line. */
+      .waypoint-section-title.is-pack-locations .waypoint-section-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .35rem;
+      }
+
+      .waypoint-location-search-wrap {
+        flex: 1 1 100%;
+      }
+
+      #setsBatchAddBtn,
+      #setsRemoveBtn {
+        flex: 1 1 auto;
       }
 
       .topbar {
@@ -10216,7 +10339,12 @@
         text-align: center;
       }
 
-      [data-map-mode="scroll"] #stateMap {
+      /* Centering for the active map in scroll mode. Must exclude the hidden
+         (inactive-layer) map: this rule shares specificity with
+         #stateMap[hidden]{display:none} but comes later, so without :not([hidden])
+         it un-hides the US map and stacks it above the World map after a switch. */
+      [data-map-mode="scroll"] #stateMap:not([hidden]),
+      [data-map-mode="scroll"] #worldMap:not([hidden]) {
         display: inline-block;
       }
 
@@ -10237,6 +10365,16 @@
         min-height: 34px;
         padding: 0;
         font-size: .88rem;
+      }
+
+      /* Scroll mode keeps the 34px Fit toggle beside the zoom pill, which shoved
+         the pill left of center while the toggle/label rows below it stay
+         centered. Mirror the toggle's footprint with a leading spacer so the
+         zoom pill centers in line with those rows. Fit mode hides the pill and
+         centers the lone toggle on its own, so the spacer is scroll-only. */
+      [data-button-style="symbols"][data-map-mode="scroll"] .map-control-row:has(.map-zoom-controls)::before {
+        content: "";
+        flex: 0 0 34px;
       }
 
       [data-button-style="symbols"] .map-label-toggle {
@@ -10271,23 +10409,69 @@
       .filters,
       .level-editor-grid,
       .date-builder,
-      .note-place-grid,
       .note-field-grid,
-      .note-place-row,
-      .note-city-column,
-      .note-city-tail,
-      .note-where-tail,
       .note-level-radios,
       .smart-convert-row {
         grid-template-columns: 1fr;
+      }
+
+      /* Mobile place fields reorder into one flat grid: Latitude + Longitude on
+         line 1, the "Mapped…" status under them, then a full-width City and a
+         full-width Where (each input stretches, with its small button sharing a
+         right-hand column). display:contents flattens the row/column/tail
+         wrappers so every field becomes a directly placeable grid item. */
+      .note-place-grid {
+        grid-template-columns: 1fr 1fr auto;
+        gap: .42rem .32rem;
+        align-items: end;
+      }
+
+      .note-place-row,
+      .note-city-column,
+      .note-city-tail,
+      .note-where-tail {
+        display: contents;
+      }
+
+      .note-place-grid label:has(#noteLat) {
+        grid-area: 1 / 1 / 2 / 2;
+      }
+
+      .note-place-grid label:has(#noteLng) {
+        grid-area: 1 / 2 / 2 / 3;
+      }
+
+      .note-location-message-stack {
+        grid-area: 2 / 1 / 3 / 4;
+      }
+
+      .note-place-grid label:has(#noteCity) {
+        grid-area: 3 / 1 / 4 / 3;
+      }
+
+      #noteGeocodeBtn {
+        grid-area: 3 / 3 / 4 / 4;
+      }
+
+      .note-place-grid label:has(#noteWhere) {
+        grid-area: 4 / 1 / 5 / 3;
+      }
+
+      #noteWhereToCityBtn {
+        grid-area: 4 / 3 / 5 / 4;
       }
 
       .visit-type-row {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
+      /* Slightly smaller chip text + tighter spacing so longer tag labels
+         (e.g. "National Parks") fit without truncating to an ellipsis. */
       .visit-type-chip {
         width: 100%;
+        gap: .22rem;
+        padding: .3rem .32rem;
+        font-size: .76rem;
       }
 
       .date-picker-head {
@@ -10372,23 +10556,57 @@
         padding: .68rem;
       }
 
+      /* Action buttons take the first line; the title drops to its own line
+         below so the buttons never cover it and the full location name shows
+         (wrapping if long) rather than truncating. */
       .note-dialog-head {
-        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-columns: 1fr;
         grid-template-areas:
-          "title actions"
-          "picker picker";
-        gap: .42rem .5rem;
+          "actions"
+          "title"
+          "picker";
+        gap: .35rem .5rem;
         align-items: center;
       }
 
       .note-dialog-title-wrap {
         grid-area: title;
         grid-column: auto;
+        overflow: visible;
+      }
+
+      .note-dialog-title-wrap h2 {
+        flex: 0 1 auto;
+        min-width: 0;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
       }
 
       .note-dialog-head .dialog-head-actions {
         grid-area: actions;
         grid-column: auto;
+        justify-self: stretch;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      /* A linked (Waypoint pack) note adds Website / Photo / priority / Link
+         buttons to this container; on phones drop that whole cluster onto its
+         own line so the header never grows wider than the screen. A full-width
+         zero-height break forces the wrap, while the cluster itself stays
+         content-sized so its border hugs the buttons (no dead whitespace). */
+      .note-dialog-head .dialog-head-actions:has(> #noteWaypointHeaderControls:not(.hidden))::after {
+        content: "";
+        order: 1;
+        width: 100%;
+        height: 0;
+      }
+
+      .note-dialog-head .dialog-head-actions > #noteWaypointHeaderControls {
+        order: 2;
+        flex: 0 0 auto;
+        justify-content: flex-end;
       }
 
       .note-location-select {
@@ -10398,6 +10616,16 @@
         width: 100%;
         min-width: 0;
         max-width: none;
+      }
+
+      /* Let the Rangefinder panel title wrap to two lines ("Range-" / "finder",
+         the hyphen comes from the &shy; in the markup) instead of truncating to
+         "Range…" once the header action buttons claim their space. */
+      .ring-panel-title-row h2 {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        line-height: 1.12;
       }
 
       #tab-settings .settings-category {
@@ -10454,7 +10682,19 @@
       }
 
       .theme-row {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: .5rem .55rem;
+      }
+
+      /* Keep the palette name on its own line, but pair the color swatches with
+         the Apply button on a single shared line below it. */
+      .theme-row > b {
+        grid-column: 1 / -1;
+      }
+
+      .theme-row .swatch-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: .3rem;
       }
 
       .tag-editor-row {
