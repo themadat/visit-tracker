@@ -1120,9 +1120,11 @@
             <li>Sort Notes alphabetically, chronologically, or by priority. Down Arrow cycles views and Up Arrow cycles
               sorts; the view shortcut also works inside an individual location.</li>
             <li>Use Detailed, Expanded, Condensed, or Text Only view. Detailed shows every populated note field and
-              the full details text; click that text to edit it inline. Text Only is copy-ready for Apple Notes.</li>
+              the full details text; click that text to edit it inline, then press Cmd/Ctrl+Enter or use the checkmark
+              to save. Text Only is copy-ready for Apple Notes.</li>
             <li>Open a location to manage its levels and Visit Notes. The same four view buttons appear in the Visit
-              Notes header, which stays pinned while its notes scroll.</li>
+              Notes header, which stays pinned while its notes scroll. In Detailed or Expanded, select the note count
+              to collapse or reveal that location's notes.</li>
             <li>Use the icon chips to filter by Location Tags. Empty circle means notes without an icon; the ellipsis
               opens Location Tag settings.</li>
             <li>In Wayfinder, the Packs button opens an unselected pack browser over Notes. Pick an Available Pack to
@@ -1240,7 +1242,8 @@
             note/date totals, then location precision, level-colored tags, compact Location and Event summaries, and the
             complete details text without truncation. Linked Waypoints also show website, photo, and priority actions.</p>
           <p><b>Can I edit a Detailed card without opening the note editor?</b><br>Yes. Click its details text, make the
-            change inline, then use the checkmark to save. The live counter tracks the 2,000-character limit.</p>
+            change inline, then press Cmd/Ctrl+Enter or use the checkmark to save. The live counter tracks the
+            2,000-character limit. In the full note editor, Enter adds a new line and Cmd/Ctrl+Enter saves.</p>
           <p><b>What is Text Only view for?</b><br>It renders a clean plain-text version of the current Notes view that
             is easy to select, copy, and paste into Apple Notes.</p>
           <p><b>How does Smart Convert work?</b><br>Type a quick note, then Auto Convert fills recognized date, level,
@@ -1640,7 +1643,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.6.0.3";
+    const APP_VERSION = "4.6.0.4";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -2528,6 +2531,7 @@
     let noteIconLongPressHandled = false;
     let noteIconGestureSuppressUntil = 0;
     let collapsedNoteCategories = new Set();
+    let collapsedNoteLocations = new Set();
     let notesCopyTimer = 0;
     let notesCopyActive = false;
     let installReloadNeeded = false;
@@ -7229,12 +7233,12 @@
         : detailed ? "data-detailed-priority-menu" : "data-set-preview-priority-menu";
       const itemAttr = itemId ? `data-priority-item="${escapeHtml(itemId)}"` : "";
       const color = notePriorityColor(current);
-      const label = current || "–";
+      const label = current || "-";
       const title = current ? `Priority ${current}` : "Blank priority";
       const choices = ["", "1", "2", "3", "4", "5"].map(value => {
         const choiceLabel = value ? `Priority ${value}` : "Blank priority";
         const choiceColor = notePriorityColor(value) || "var(--line)";
-        return `<button class="waypoint-priority-choice" type="button" ${attrName}="${escapeHtml(value)}" ${itemAttr} aria-pressed="${current === value ? "true" : "false"}" title="${escapeHtml(choiceLabel)}" style="--priority-color:${escapeHtml(choiceColor)}"><span>${escapeHtml(choiceLabel)}</span><b>${escapeHtml(value || "–")}</b></button>`;
+        return `<button class="waypoint-priority-choice" type="button" role="menuitemradio" ${attrName}="${escapeHtml(value)}" ${itemAttr} aria-checked="${current === value ? "true" : "false"}" aria-label="${escapeHtml(choiceLabel)}" title="${escapeHtml(choiceLabel)}" style="--priority-color:${escapeHtml(choiceColor)}">${escapeHtml(value || "-")}</button>`;
       }).join("");
       return `
         <div class="waypoint-priority-popout" ${itemAttr}>
@@ -9153,7 +9157,6 @@
 
     function visitTypeIconStack(note, options = {}) {
       const labels = noteVisitTypeLabels(note);
-      const icons = labels.map(type => visitTypeIcon(type.id)).join("");
       const color = options.color;
       const styleAttr = color ? `style="color:${escapeHtml(color)}"` : "";
       const hasLocation = (() => {
@@ -9175,15 +9178,26 @@
       const scope = hasLocation
         ? `<span class="visit-icon-scope" aria-label="Has exact location" title="Mapped to coordinates">${__DOT_SCOPE}</span>`
         : "";
-      if (scope || icons) {
+      if (scope || labels.length) {
         const labelText = [hasLocation ? "Mapped location" : "", labels.map(type => type.label).join(", ")].filter(Boolean).join(", ");
         const priority = options.hidePriority ? "" : normalizeNotePriority(note?.priority);
         const priorityColor = notePriorityColor(priority);
         const priorityPill = priority ? `<span class="visit-priority-pill" aria-label="Priority ${priority}" style="--priority-color:${escapeHtml(priorityColor)}">${escapeHtml(priority)}</span>` : "";
-        return `<span class="visit-icon-stack" ${styleAttr} aria-label="${escapeHtml(labelText)}">${scope}${icons}${priorityPill}</span>`;
+        const priorityIconIndex = labels.findIndex(type => PACK_ICON_ID_SET.has(type.id));
+        const targetIconIndex = priorityIconIndex >= 0 ? priorityIconIndex : 0;
+        const icons = labels.map((type, index) =>
+          `<span class="visit-icon-item">${visitTypeIcon(type.id)}${priority && index === targetIconIndex ? priorityPill : ""}</span>`
+        ).join("");
+        const scopedIcon = scope
+          ? `<span class="visit-icon-item">${scope}${priority && !labels.length ? priorityPill : ""}</span>`
+          : "";
+        return `<span class="visit-icon-stack" ${styleAttr} aria-label="${escapeHtml(labelText)}">${scopedIcon}${icons}</span>`;
       }
       if (color) {
-        return `<span class="visit-icon-stack is-empty" style="color:${escapeHtml(color)}" aria-hidden="true">${__CIRCLE}</span>`;
+        const priority = options.hidePriority ? "" : normalizeNotePriority(note?.priority);
+        const priorityColor = notePriorityColor(priority);
+        const priorityPill = priority ? `<span class="visit-priority-pill" aria-label="Priority ${priority}" style="--priority-color:${escapeHtml(priorityColor)}">${escapeHtml(priority)}</span>` : "";
+        return `<span class="visit-icon-stack is-empty" style="color:${escapeHtml(color)}"><span class="visit-icon-item">${__CIRCLE}${priorityPill}</span></span>`;
       }
       return "";
     }
@@ -9300,17 +9314,19 @@
     function expandedStateRows(abbr) {
       const notes = filteredNotesFor(abbr);
       const bucketId = bucketListLevelId();
+      const collapsed = collapsedNoteLocations.has(abbr);
+      const stats = locationNoteStatsHtml(abbr, notes);
       return `
-        <button class="compact-note-row is-expanded is-expanded-parent" type="button" data-open-notes-state="${abbr}">
+        <div class="compact-note-row is-expanded is-expanded-parent" role="button" tabindex="0" data-open-notes-state="${abbr}">
           <span>${compactLocationName(abbr, dominantLevel(abbr))}</span>
-          <span></span><span></span><span></span>
-        </button>
-        ${notes.map(note => {
+          <span class="expanded-location-stats">${stats}</span>
+        </div>
+        ${collapsed ? "" : notes.map(note => {
         const noteLevel = levelById(note.levelId);
         const isBucket = bucketId && note.levelId === bucketId;
         return `
           <button class="compact-note-row is-expanded is-expanded-child ${isBucket ? "is-bucket-target" : ""}" type="button" data-note-state="${abbr}" data-edit-note="${note.id}">
-            <span class="compact-note-icon">${visitTypeIconStack(note, { color: noteLevel?.color, hidePriority: true })}</span>
+            <span class="compact-note-icon">${visitTypeIconStack(note, { color: noteLevel?.color })}</span>
             <span>${escapeHtml(formatDateDisplay(note.date))}</span>
             <span class="compact-note-text">${escapeHtml(noteSummary(note))}</span>
             <span></span>
@@ -9379,7 +9395,7 @@
           data-edit-note-row="${escapeHtml(note.id)}" data-note-id="${escapeHtml(note.id)}" data-note-state="${escapeHtml(abbr)}">
           <header class="detailed-note-head">
             <span class="detailed-note-date">${escapeHtml(note.date ? formatDateDisplay(note.date) : "No date")}</span>
-            <span class="detailed-note-precision" aria-label="${escapeHtml(locationPrecision.label)}" title="${escapeHtml(locationPrecision.title)}">${locationPrecision.icon}</span>
+            <span class="detailed-note-precision" style="--level-color:${escapeHtml(levelColor)}" aria-label="${escapeHtml(locationPrecision.label)}" title="${escapeHtml(locationPrecision.title)}">${locationPrecision.icon}</span>
             <span class="detailed-note-level" style="--level-color:${escapeHtml(levelColor)}">${escapeHtml(noteLevel?.name || "No level")}</span>
             ${types.map(type => `<span class="detailed-note-tag" style="--level-color:${escapeHtml(levelColor)}">${visitTypeIcon(type.id)}${escapeHtml(type.label)}</span>`).join("")}
             <span class="actions">
@@ -9411,21 +9427,27 @@
       `;
     }
 
-    function detailedLocationRows(abbr) {
-      const notes = filteredNotesFor(abbr);
-      const levels = getStateLevelIds(abbr).map(id => levelById(id)).filter(Boolean);
-      const dates = notes.map(note => note.date).filter(Boolean).sort();
+    function locationNoteStatsHtml(abbr, notes) {
+      const dates = [...new Set(notes.map(note => note.date).filter(Boolean))].sort();
       const dateLabel = dates.length
         ? dates.length === 1 ? formatDateDisplay(dates[0]) : `${formatDateDisplay(dates[0])} - ${formatDateDisplay(dates[dates.length - 1])}`
         : "No dates";
+      const collapsed = collapsedNoteLocations.has(abbr);
+      return `<small>[${escapeHtml(dateLabel)}]</small><i class="location-note-divider" aria-hidden="true"></i><button class="location-note-count-toggle" type="button" data-toggle-location-notes="${escapeHtml(abbr)}" aria-expanded="${!collapsed}" aria-label="${collapsed ? "Show" : "Hide"} ${notes.length} visit notes">${notes.length}</button>`;
+    }
+
+    function detailedLocationRows(abbr) {
+      const notes = filteredNotesFor(abbr);
+      const levels = getStateLevelIds(abbr).map(id => levelById(id)).filter(Boolean);
+      const collapsed = collapsedNoteLocations.has(abbr);
       return `
         <section class="detailed-location-card">
-          <button class="detailed-location-head" type="button" data-open-notes-state="${escapeHtml(abbr)}">
+          <div class="detailed-location-head" role="button" tabindex="0" data-open-notes-state="${escapeHtml(abbr)}">
             <span class="detailed-location-title">${compactLocationName(abbr, dominantLevel(abbr))}</span>
             <span class="detailed-location-levels">${levels.length ? levels.map(level => `<span><i style="--level-color:${escapeHtml(level.color)}"></i>${escapeHtml(level.name)}</span>`).join("") : `<span>Unvisited</span>`}</span>
-            <span class="detailed-location-stats"><small>[${escapeHtml(dateLabel)}]</small><b>${notes.length}</b></span>
-          </button>
-          <div class="detailed-location-notes">
+            <span class="detailed-location-stats">${locationNoteStatsHtml(abbr, notes)}</span>
+          </div>
+          <div class="detailed-location-notes" ${collapsed ? "hidden" : ""}>
             ${notes.length ? notes.map(note => detailedNoteCard(note, abbr)).join("") : `<div class="empty">No matching visit notes.</div>`}
           </div>
         </section>
@@ -9501,6 +9523,12 @@
           input.style.height = `${Math.max(input.scrollHeight, 72)}px`;
         });
         input.addEventListener("keydown", event => {
+          if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
+            event.preventDefault();
+            event.stopPropagation();
+            saveInlineDetails(input.closest(".detailed-note-card"));
+            return;
+          }
           if (event.key !== "Escape") return;
           event.preventDefault();
           renderNotesPanelAtScroll($("#notesPanelContent")?.scrollTop || 0);
@@ -9557,7 +9585,7 @@
       const bucketId = bucketListLevelId();
       if (notesViewMode === "compact") {
         return `
-          <div class="compact-notes compact-notes-notes selected-note-list">
+          <div class="compact-notes compact-notes-notes selected-note-list is-condensed-selected">
             ${notes.map(note => {
           const noteLevel = levelById(note.levelId);
           const isBucket = bucketId && note.levelId === bucketId;
@@ -9584,7 +9612,7 @@
         const isBucket = bucketId && note.levelId === bucketId;
         return `
             <article class="compact-note-row is-expanded ${isBucket ? "is-bucket-target" : ""}" role="button" tabindex="0" data-edit-note-row="${note.id}">
-              <span class="compact-note-icon">${visitTypeIconStack(note, { color: noteLevel?.color, hidePriority: true })}</span>
+              <span class="compact-note-icon">${visitTypeIconStack(note, { color: noteLevel?.color })}</span>
               <time datetime="${escapeHtml(note.date)}">${escapeHtml(formatDateDisplay(note.date))}</time>
               <span class="compact-note-text">${escapeHtml(noteSummary(note))}</span>
               <span class="actions">
@@ -9735,21 +9763,38 @@
         save();
         renderNotesPanel();
       }));
-      $$("[data-open-notes-state]").forEach(button => button.addEventListener("click", () => {
-        const content = $("#notesPanelContent");
-        const contentRect = content?.getBoundingClientRect();
-        const buttonRect = button.getBoundingClientRect();
-        notesListReturnPosition = {
-          abbr: button.dataset.openNotesState,
-          scrollTop: content?.scrollTop || 0,
-          offset: contentRect ? buttonRect.top - contentRect.top : 0,
-        };
-        selectedState = button.dataset.openNotesState;
-        notesPanelState = selectedState;
-        save();
-        renderMap();
-        renderNotesPanel();
+      $$("[data-toggle-location-notes]", $("#notesPanelContent")).forEach(button => button.addEventListener("click", event => {
+        event.preventDefault();
+        event.stopPropagation();
+        const abbr = button.dataset.toggleLocationNotes;
+        if (collapsedNoteLocations.has(abbr)) collapsedNoteLocations.delete(abbr);
+        else collapsedNoteLocations.add(abbr);
+        renderNotesPanelAtScroll($("#notesPanelContent")?.scrollTop || 0);
       }));
+      $$("[data-open-notes-state]").forEach(button => {
+        const openLocation = () => {
+          const content = $("#notesPanelContent");
+          const contentRect = content?.getBoundingClientRect();
+          const buttonRect = button.getBoundingClientRect();
+          notesListReturnPosition = {
+            abbr: button.dataset.openNotesState,
+            scrollTop: content?.scrollTop || 0,
+            offset: contentRect ? buttonRect.top - contentRect.top : 0,
+          };
+          selectedState = button.dataset.openNotesState;
+          notesPanelState = selectedState;
+          save();
+          renderMap();
+          renderNotesPanel();
+        };
+        button.addEventListener("click", openLocation);
+        if (button.getAttribute("role") === "button") button.addEventListener("keydown", event => {
+          if (event.target.closest("[data-toggle-location-notes]")) return;
+          if (event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
+          openLocation();
+        });
+      });
       $$("[data-edit-note]", $("#notesPanelContent")).forEach(button => button.addEventListener("click", event => {
         event.stopPropagation();
         selectedState = button.dataset.noteState;
@@ -15030,7 +15075,15 @@
     }
 
     function handleNoteDialogKeydown(event) {
-      if (!$("#noteDialog").open || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
+      if (!$("#noteDialog").open || event.defaultPrevented || event.altKey) return;
+      if (event.key === "Enter" && (event.metaKey || event.ctrlKey) && event.target === $("#noteText")) {
+        event.preventDefault();
+        event.stopPropagation();
+        $("#noteForm").requestSubmit();
+        return;
+      }
+      if (event.ctrlKey || event.metaKey) return;
+      if (event.key === "Enter" && event.target === $("#noteText")) return;
       if (event.key === "Escape") {
         event.preventDefault();
         closeNoteDialog();
@@ -15477,7 +15530,7 @@
         // control advertises the same shortcut.
         arrowleft: () => notesPanelState && clickIf("#notesPanelBackBtn"),
         arrowdown: () => notesPanelOpen && cycleNotesViewMode(),
-        arrowup: () => notesPanelOpen && cycleNotesSortMode(),
+        arrowup: () => { },
         // Delete clears applied levels on the drilled-in location.
         delete: () => notesPanelState && clickIf("#notesPanelClearBtn"),
         backspace: () => notesPanelState && clickIf("#notesPanelClearBtn"),
@@ -15486,6 +15539,14 @@
       if (!actions[key]) return;
       event.preventDefault();
       actions[key]();
+    }
+
+    function handleNotesSortArrowKeyup(event) {
+      if (event.key !== "ArrowUp" || event.defaultPrevented || isTypingTarget(event.target)) return;
+      if (!(shortcutsActive() || (event.shiftKey && event.altKey && event.ctrlKey && !event.metaKey))) return;
+      if (!notesPanelOpen || document.querySelector("dialog[open]")) return;
+      event.preventDefault();
+      cycleNotesSortMode();
     }
 
     function bindHelpSearch() {
@@ -15658,7 +15719,7 @@
           const set = activeSuggestedSet();
           if (input) input.value = priority;
           $$("[data-set-preview-priority-choice]", row).forEach(button => {
-            button.setAttribute("aria-pressed", button === priorityChoice ? "true" : "false");
+            button.setAttribute("aria-checked", button === priorityChoice ? "true" : "false");
           });
           if (row && set) setSuggestedSetPreviewPriority(set.id, row.dataset.setPreviewItem, priority);
           state.settings.suggestedSetsVisible = true;
@@ -15978,6 +16039,12 @@
       }));
       $("#notePriority").addEventListener("change", () => refreshNoteWaypointControls());
       $("#noteText").addEventListener("input", () => updateDetailsCounter($("#noteText"), $("#noteTextCounter")));
+      $("#noteText").addEventListener("keydown", event => {
+        if (event.key !== "Enter" || !(event.metaKey || event.ctrlKey)) return;
+        event.preventDefault();
+        event.stopPropagation();
+        $("#noteForm").requestSubmit();
+      });
       $("#noteSourceItemSelect").addEventListener("change", event => {
         applySuggestedSetItemToNoteForm(activeSuggestedSet().id, event.target.value);
       });
@@ -16238,6 +16305,7 @@
       $("#coffeeKeyBtn").addEventListener("click", () => handleDeveloperGesture("coffee"));
       document.addEventListener("keydown", handleRingKeydown);
       document.addEventListener("keydown", handlePowerShortcut);
+      document.addEventListener("keyup", handleNotesSortArrowKeyup);
       document.addEventListener("keyup", updatePowerOverlay);
       // Esc closes every open dialog and the inline Waypoint Packs panel even
       // outside Shortcut Mode. Registered in the CAPTURE phase so the handler
