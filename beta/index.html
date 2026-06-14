@@ -1623,7 +1623,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.5.2.3";
+    const APP_VERSION = "4.5.2.4";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -5534,6 +5534,7 @@
       setButtonLabel("#basecampBtn", __LONG_TEXT_PAGE_AND_PENCIL, "Basecamp", "Open Basecamp notes", "Open Basecamp notes");
       const mapLabelTargetIcon = $("[data-map-label-target-icon]");
       if (mapLabelTargetIcon) {
+        mapLabelTargetIcon.classList.toggle("is-world", !activeMapLabelTargetSet() && activeLayerId === "world");
         // Respect the active Waypoint Pack target — otherwise toggling Shortcut
         // Mode reruns syncButtonLabels and clobbers the pack icon back to the
         // states/territories glyph until the next renderMap pass.
@@ -7429,6 +7430,7 @@
       const labelIcon = $("[data-map-label-target-icon]");
       const selected = activeMapLabelTargetSet();
       if (labelIcon) {
+        labelIcon.classList.toggle("is-world", !selected && activeLayerId === "world");
         labelIcon.innerHTML = selected ? visitTypeIcon(suggestedSetIconId(selected.id)) : prefersSymbols() ? activeLayer().icon : "Labels";
         $("#labelsToggleLabel").title = selected ? `${selected.name} Label Type` : "Map Label Type";
       }
@@ -8089,7 +8091,7 @@
       // when one is the active label target, otherwise the active map layer
       // (US states/territories or World countries).
       const groupingIcon = stats.set
-        ? circleIconSvg(suggestedSetIconId(stats.set.id))
+        ? visitTypeIcon(suggestedSetIconId(stats.set.id))
         : activeLayer().icon;
       const groupingLabel = stats.set ? stats.set.name : activeLayer().heading;
       const groupingIconClass = stats.set ? "" : ` is-${activeLayerId}`;
