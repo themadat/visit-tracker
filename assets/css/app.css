@@ -5069,20 +5069,29 @@
       display: none;
     }
 
+    .waypoint-priority-menu {
+      grid-template-columns: repeat(6, 2rem);
+      min-width: 0;
+    }
+
     .waypoint-priority-choice {
-      justify-content: space-between;
-      width: 100%;
-      min-height: 30px;
-      padding: .24rem .42rem;
+      display: grid;
+      place-items: center;
+      width: 2rem;
+      min-width: 2rem;
+      height: 2rem;
+      min-height: 2rem;
+      padding: 0;
       border-color: color-mix(in srgb, var(--priority-color, var(--line)) 48%, var(--line));
       background: color-mix(in srgb, var(--priority-color, var(--surface-2)) 18%, var(--surface));
       color: var(--text);
-      font-size: .78rem;
-      font-weight: 850;
-      text-align: left;
+      font-size: .82rem;
+      font-weight: 900;
+      line-height: 1;
+      text-align: center;
     }
 
-    .waypoint-priority-choice[aria-pressed="true"] {
+    .waypoint-priority-choice[aria-checked="true"] {
       background: color-mix(in srgb, var(--priority-color, var(--line)) 35%, var(--surface));
       box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--priority-color, var(--line)) 70%, transparent);
     }
@@ -9262,9 +9271,12 @@
       width: 100%;
       min-width: 0;
       padding: .48rem .55rem;
-      border-color: color-mix(in srgb, var(--line) 72%, var(--accent) 28%);
+      border: 1px solid color-mix(in srgb, var(--line) 72%, var(--accent) 28%);
+      border-radius: 8px;
       background: var(--surface-2);
+      color: var(--text);
       text-align: left;
+      cursor: pointer;
     }
 
     .detailed-location-title,
@@ -9315,12 +9327,30 @@
       white-space: nowrap;
     }
 
-    .detailed-location-stats b {
-      color: var(--text);
-    }
-
     .detailed-location-stats small {
       font-size: .7rem;
+    }
+
+    .location-note-divider {
+      width: 1px;
+      height: 1rem;
+      flex: 0 0 1px;
+      background: color-mix(in srgb, var(--text) 38%, var(--line) 62%);
+    }
+
+    .location-note-count-toggle {
+      display: grid;
+      place-items: center;
+      min-width: 1.7rem;
+      min-height: 1.7rem;
+      padding: .1rem .3rem;
+      border: 1px solid color-mix(in srgb, var(--line) 72%, var(--accent) 28%);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--text);
+      font-size: .75rem;
+      font-weight: 900;
+      line-height: 1;
     }
 
     .detailed-location-notes,
@@ -9369,7 +9399,7 @@
     .detailed-note-precision {
       display: inline-flex;
       align-items: center;
-      color: var(--muted);
+      color: var(--level-color);
     }
 
     .detailed-note-precision .sf-symbol {
@@ -9654,6 +9684,23 @@
       gap: .48rem;
     }
 
+    .expanded-location-stats {
+      display: inline-flex;
+      grid-column: 2 / -1;
+      align-items: center;
+      justify-self: end;
+      gap: .35rem;
+      color: var(--muted);
+      font-size: .7rem;
+      white-space: nowrap;
+    }
+
+    .expanded-location-stats .location-note-count-toggle {
+      min-width: 1.55rem;
+      min-height: 1.55rem;
+      font-size: .7rem;
+    }
+
     /* This is the Notes under a Location in Expanded Moded */
     .compact-note-row.is-expanded-child {
       grid-template-columns: 90px 75px minmax(0, 1.5fr) minmax(0, 0);
@@ -9684,6 +9731,13 @@
       min-width: 0;
     }
 
+    .visit-icon-item {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      flex: 0 0 auto;
+    }
+
     .visit-priority-pill {
       position: absolute;
       right: -.42rem;
@@ -9696,7 +9750,7 @@
       padding: 0 .16rem;
       border: 1px solid var(--surface);
       border-radius: 999px;
-      background: var(--accent);
+      background: var(--priority-color, var(--accent));
       color: #fff;
       font-size: .58rem;
       font-weight: 950;
@@ -9750,6 +9804,24 @@
     .selected-note-list .compact-note-icon {
       min-width: 4.75rem;
       justify-content: flex-start;
+    }
+
+    .selected-note-list.is-condensed-selected .compact-note-row {
+      grid-template-columns: 72px 66px minmax(0, 1fr) max-content;
+      min-height: 25px;
+      padding: .16rem .28rem;
+      font-size: .72rem;
+      line-height: 1.05;
+    }
+
+    .selected-note-list.is-condensed-selected .compact-note-icon {
+      min-width: 0;
+      justify-content: flex-start;
+    }
+
+    .selected-note-list.is-condensed-selected time,
+    .selected-note-list.is-condensed-selected .compact-note-text {
+      font-size: .68rem;
     }
 
     .compact-state-icons {
