@@ -177,7 +177,8 @@ For every completed change:
   top-level consts share the global lexical scope and work over `file://`.
 - Main file: `index.html`. `STORAGE_KEY = "usStateVisitMap.v1"`, version in `APP_VERSION`.
 - Docs: `README.md` (public/run/build), this handoff (all dev + LLM context), `AGENTS.md` + `CLAUDE.md` (thin auto-loaded agent summaries — keep lean).
-- Current version: `APP_VERSION = "4.5.0"` — latest cut release **4.5.0 "Leave No Trace"** (minor, shipped 2026-06-12). No active dev line; the next substantial change starts with `plan` (or `start` when a plan already exists).
+- Current version: `APP_VERSION = "4.5.1.1"` — active dev line **4.5.1 "Back in the Picture"** (patch bugfix, no plan doc). Latest cut release: 4.5.0 "Leave No Trace" (still the banner target — patch ships skip the banner). Run `prep`/`ship` when ready.
+  - **4.5.1 fix:** the "Add as App" icon previews showed only their background color. The `.install-icon-thumb-{light,dark}` `background-image` used a page-root path (`url("assets/icons/…")`) that broke when the 4.4.1 no-build split moved the rules into `assets/css/app.css` — relative `url()` resolves against the stylesheet, so it pointed at `assets/css/assets/icons/…`. Fix: `url("../icons/…")`. (Watch for other stylesheet-relative `url()` paths if more art moves.)
 
 Verification traps still apply: UI drivers that call `save()` mutate real localStorage (snapshot first); Wayfinder/Waypoint panels need a configured bucket-list level to render; `http.server` has no cache headers (force-reload assets).
 - Latest public releases (newest first): 4.5.0 "Leave No Trace", 4.4.4 "Fine Print", 4.4.3 "Clear View", 4.4.2 "True Colors", 4.4.1 "Ultralight", 4.4.0 "Basecamps". Full per-release behavior lives in the `CHANGELOG` constant in `assets/js/changelog.js`; release table in `README.md`. Don't duplicate per-release prose here — read the CHANGELOG entry for the version in question.
