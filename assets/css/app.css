@@ -1512,6 +1512,7 @@
       place-items: center;
       width: 30px;
       min-width: 30px;
+      color: color-mix(in srgb, var(--text) 72%, var(--muted) 28%);
     }
 
     #labelsToggleLabel.has-target-picker .map-label-target-icon {
@@ -1531,8 +1532,10 @@
       height: 2.25rem;
     }
 
-    .map-label-target-icon .sf-symbol {
-      color: color-mix(in srgb, var(--text) 72%, var(--muted) 28%);
+    .map-label-target-icon>svg,
+    .map-waypoint-pack-select>svg,
+    .legend-grouping-icon>svg {
+      fill: currentColor;
     }
 
     .map-label-toggle button {
@@ -2506,16 +2509,28 @@
 
     /* Grouping indicator: which region set the totals are measured against. */
     .legend-grouping-icon {
+      position: relative;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       flex: 0 0 auto;
+      height: 16px;
       color: var(--muted);
       /* Sits to the right of the totals so the %/count stay left-aligned with
          the per-level pills below. */
       padding-left: .28rem;
       margin-left: .04rem;
-      border-left: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+    }
+
+    .legend-grouping-icon::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 1px;
+      height: 14px;
+      background: color-mix(in srgb, var(--muted) 58%, var(--line) 42%);
+      transform: translateY(-50%);
     }
 
     .legend-grouping-icon svg {

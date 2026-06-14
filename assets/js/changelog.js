@@ -26,6 +26,7 @@
               "The map label selector now uses the US or World map icon for the base map option instead of a generic circle, matching the Legend grouping indicator.",
               "Map icons in the label-target picker stay neatly inside their buttons; the World icon is optically balanced in both the label control and Legend pill.",
               "Selecting National Parks labels now shows the National Parks icon beside its Legend stats.",
+              "US and World icons now inherit the active theme, and the Legend divider stays a clearer fixed height beside the larger World icon.",
             ]
           }
         ]
