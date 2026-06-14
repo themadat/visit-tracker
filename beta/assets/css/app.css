@@ -5748,12 +5748,16 @@
 
     .install-icon-thumb-light {
       background-color: #D6E7D8;
-      background-image: url("assets/icons/trail-log-light.svg");
+      /* Relative to this stylesheet (assets/css/), not the page root — the
+         no-build CSS split (4.4.1) moved these rules out of index.html, which
+         broke the old root-relative "assets/icons/…" path so only the green
+         background showed. */
+      background-image: url("../icons/trail-log-light.svg");
     }
 
     .install-icon-thumb-dark {
       background-color: #243127;
-      background-image: url("assets/icons/trail-log-dark.svg");
+      background-image: url("../icons/trail-log-dark.svg");
     }
 
     .install-directions-grid {
