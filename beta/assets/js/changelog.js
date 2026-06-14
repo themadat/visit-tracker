@@ -5,7 +5,7 @@
     const CHANGELOG = [
       {
         version: "4.5.2",
-        date: "2026-06-12",
+        date: "2026-06-14",
         title: "Get Your Bearings",
         summary: "Rangefinder's ring-style menu stays open for quick multi-changes, and the Legend totals now show which grouping they're measured against.",
         highlights: [
