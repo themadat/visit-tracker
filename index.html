@@ -1066,6 +1066,7 @@
               Plane planning rings, and compare the straight-line distance between two places.</li>
             <li>Rangefinder rings can be filled or stroke-only, clipped to the active land area, shown in miles or
               kilometers, customized up to eight distances, and shown with or without Drive or Plane time estimates.
+              The ring-style menu stays open while you combine fill and clip options; click outside it when finished.
               The time menu lets you adjust the average speed for the current travel mode.</li>
             <li>Mapped markers open the note when there is one note. Nearby markers cluster, zoom when they can split,
               or open a picker when they are too close.</li>
@@ -1090,6 +1091,8 @@
               for quick Edit/Delete.</li>
             <li>Deleting a level moves affected locations down to the next lowest level.</li>
             <li>Click a Legend level to filter Notes by that level. Click it again to clear the filter.</li>
+            <li>The icon beside the overall Legend totals shows what those stats measure: US locations, World
+              countries, or the linked Waypoint Pack currently selected in Map Labels.</li>
             <li>When Map Labels targets a linked Waypoint Pack, the Legend keeps your same levels and colors but shows
               pack-note counts and percentages instead of state or territory totals.</li>
             <li>Use Auto Colors to apply a palette to the current level order. Suggested categories can be shown or
@@ -1210,6 +1213,8 @@
             more levels later.</p>
           <p><b>Why do some levels show a no symbol instead of a percentage?</b><br>Those levels are excluded from
             completion stats.</p>
+          <p><b>What does the icon beside the overall Legend stats mean?</b><br>It identifies the current stats group:
+            US locations, World countries, or the linked Waypoint Pack selected in Map Labels.</p>
         </section>
         <section class="help-section">
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ: Notes</h3>
@@ -1623,7 +1628,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.5.2.5";
+    const APP_VERSION = "4.5.2";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
