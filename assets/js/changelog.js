@@ -14,6 +14,7 @@
           "Detailed view shows complete location and note information without truncation.",
           "Detailed is the default view for fresh Notes lists.",
           "Individual locations now offer Detailed, Expanded, Condensed, and Text Only views.",
+          "Detailed cards support inline details editing and linked Waypoint actions.",
         ],
         updateSections: [
           {
@@ -21,7 +22,9 @@
             items: [
               "Added a Detailed view before Expanded using the diagonal-expand icon.",
               "Each location card shows its type, applied levels, note count, and available date span.",
-              "Detailed note cards show date, level, priority, tags, Waypoint source, place fields, coordinates, people, activities, and complete details text.",
+              "Detailed card headers place date precision, level, and color-matched Location Tags on one readable line.",
+              "Location combines Where and City; Event combines What and Who in a balanced two-column summary.",
+              "Coordinates stay out of Detailed cards, while complete details text remains untruncated.",
               "Detailed layouts wrap naturally without fixed row heights, ellipsis, or line clamping.",
             ]
           },
@@ -29,6 +32,9 @@
             heading: "Location Notes",
             items: [
               "The Visit Notes section inside an individual location now includes the same four-view selector as the main Notes list.",
+              "The Visit Notes heading and view controls stay pinned while scrolling a location's notes.",
+              "Clicking a Detailed card's details text opens an inline editor with a one-click checkmark save.",
+              "Linked Waypoint notes expose website, photo, and priority controls beside Edit and Delete.",
               "Switching views keeps one saved preference across the main list and selected-location notes.",
               "Existing saved Expanded, Condensed, and Text Only choices remain intact; new/default settings start in Detailed.",
             ]

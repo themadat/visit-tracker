@@ -9203,6 +9203,14 @@
       grid-template-columns: auto minmax(0, 1fr) auto;
       align-items: center;
       gap: .45rem;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      margin: -.18rem 0 .35rem !important;
+      padding: .35rem .18rem;
+      border-bottom: 1px solid color-mix(in srgb, var(--line) 78%, var(--accent) 22%);
+      background: color-mix(in srgb, var(--surface) 94%, var(--surface-2) 6%);
+      box-shadow: 0 5px 10px color-mix(in srgb, var(--surface) 82%, transparent);
     }
 
     .notes-location-visit-head h3 {
@@ -9345,86 +9353,90 @@
     }
 
     .detailed-note-head {
-      display: grid;
-      grid-template-columns: auto minmax(0, 1fr) auto auto;
-      gap: .48rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .32rem;
       align-items: center;
       min-width: 0;
     }
 
-    .detailed-note-icons {
-      display: inline-flex;
-      min-width: 2rem;
-      justify-content: center;
-    }
-
-    .detailed-note-icons .sf-symbol,
-    .detailed-note-icons .pack-symbol {
-      width: 1.25rem;
-      height: 1.25rem;
-    }
-
-    .detailed-note-heading {
-      display: grid;
-      gap: .08rem;
-      min-width: 0;
-    }
-
-    .detailed-note-heading b,
-    .detailed-note-heading small {
+    .detailed-note-date {
+      font-weight: 850;
       overflow-wrap: anywhere;
-      white-space: normal;
     }
 
-    .detailed-note-heading small {
+    .detailed-note-precision {
+      display: inline-flex;
+      align-items: center;
       color: var(--muted);
     }
 
-    .detailed-note-priority {
-      padding: .18rem .42rem;
+    .detailed-note-precision .sf-symbol {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .detailed-note-level,
+    .detailed-note-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: .25rem;
+      min-height: 1.55rem;
+      padding: .16rem .42rem;
+      border: 1px solid color-mix(in srgb, var(--level-color) 68%, var(--line) 32%);
       border-radius: 999px;
-      background: color-mix(in srgb, var(--accent) 18%, var(--surface) 82%);
-      color: var(--accent-2);
-      font-size: .7rem;
-      font-weight: 850;
+      background: color-mix(in srgb, var(--level-color) 18%, var(--surface) 82%);
+      color: color-mix(in srgb, var(--level-color) 78%, var(--text) 22%);
+      font-size: .72rem;
+      font-weight: 800;
+      line-height: 1.1;
       white-space: nowrap;
+    }
+
+    .detailed-note-level {
+      background: color-mix(in srgb, var(--level-color) 25%, var(--surface) 75%);
+      font-weight: 900;
+    }
+
+    .detailed-note-tag .sf-symbol,
+    .detailed-note-tag .pack-symbol {
+      width: .88rem;
+      height: .88rem;
     }
 
     .detailed-note-head .actions {
       display: inline-flex;
       align-items: center;
       gap: .12rem;
+      margin-left: auto;
       white-space: nowrap;
     }
 
-    .detailed-note-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: .28rem;
-    }
-
-    .detailed-note-tags>span {
+    .detailed-waypoint-actions {
       display: inline-flex;
       align-items: center;
-      gap: .25rem;
-      padding: .18rem .4rem;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: var(--surface-2);
-      color: var(--muted);
-      font-size: .72rem;
-      font-weight: 750;
+      gap: .12rem;
+      margin-right: .12rem;
+      padding: .12rem;
+      border: 2px solid #14b8a6;
+      border-radius: 9px;
+      background: color-mix(in srgb, #14b8a6 8%, var(--surface));
     }
 
-    .detailed-note-tags .sf-symbol,
-    .detailed-note-tags .pack-symbol {
-      width: .9rem;
-      height: .9rem;
+    .detailed-waypoint-actions .waypoint-row-action,
+    .detailed-waypoint-actions .waypoint-priority-popout,
+    .detailed-waypoint-actions .waypoint-priority-toggle {
+      width: 2.12rem;
+      min-width: 2.12rem;
+      max-width: 2.12rem;
+      height: 2.12rem;
+      min-height: 2.12rem;
+      max-height: 2.12rem;
     }
 
     .detailed-note-fields {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: .4rem .65rem;
       margin: 0;
     }
@@ -9451,6 +9463,42 @@
       white-space: normal;
     }
 
+    .detailed-note-combined {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .18rem .72rem;
+      align-items: baseline;
+    }
+
+    .detailed-note-combined>span:not(.muted) {
+      display: inline-flex;
+      gap: .28rem;
+      align-items: baseline;
+      min-width: 0;
+    }
+
+    .detailed-note-combined small {
+      color: var(--muted);
+      font-size: .66rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .detailed-waypoint-photo {
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: calc(var(--radius) * .72);
+      background: var(--surface-2);
+    }
+
+    .detailed-waypoint-photo img {
+      display: block;
+      width: 100%;
+      max-height: min(26rem, 58vh);
+      object-fit: contain;
+    }
+
     .detailed-note-details {
       display: grid;
       gap: .18rem;
@@ -9459,7 +9507,14 @@
       border-top: 1px solid var(--line);
     }
 
-    .detailed-note-details>b {
+    .detailed-note-details-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .4rem;
+    }
+
+    .detailed-note-details-head>b {
       color: var(--muted);
       font-size: .7rem;
       letter-spacing: .03em;
@@ -9472,6 +9527,47 @@
       overflow-wrap: anywhere;
       white-space: pre-wrap;
       line-height: 1.42;
+    }
+
+    .detailed-note-details p[role="button"] {
+      min-height: 1.6rem;
+      padding: .22rem .28rem;
+      margin: -.22rem -.28rem;
+      border-radius: .35rem;
+      cursor: text;
+    }
+
+    .detailed-note-details p[role="button"]:hover,
+    .detailed-note-details p[role="button"]:focus-visible {
+      background: color-mix(in srgb, var(--accent) 9%, transparent);
+      outline: none;
+    }
+
+    .detailed-note-details textarea {
+      width: 100%;
+      min-height: 4.5rem;
+      resize: none;
+      overflow: hidden;
+      line-height: 1.42;
+    }
+
+    .detailed-note-details-save {
+      width: 1.8rem;
+      height: 1.8rem;
+      min-width: 1.8rem;
+      min-height: 1.8rem;
+      padding: .35rem;
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 14%, var(--surface) 86%);
+      color: var(--accent-2);
+    }
+
+    .detailed-note-details-save[hidden] {
+      display: none;
+    }
+
+    .detailed-note-card.is-editing-details {
+      cursor: default;
     }
 
     .compact-note-row {
