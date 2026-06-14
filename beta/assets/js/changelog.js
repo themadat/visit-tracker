@@ -24,6 +24,7 @@
             items: [
               "The overall-completion pill in the Legend header now shows a small icon (on the right, so the totals stay lined up with the per-level rows) for which grouping the stats are measured against — the US map, the World map, or, when a Waypoint pack is driving the numbers, that pack's icon.",
               "The map label selector now uses the US or World map icon for the base map option instead of a generic circle, matching the Legend grouping indicator.",
+              "Map icons in the label-target picker now stay neatly inside their buttons, and the World icon is optically balanced with the US icon in the Legend pill.",
             ]
           }
         ]
