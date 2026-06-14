@@ -177,7 +177,8 @@ For every completed change:
   top-level consts share the global lexical scope and work over `file://`.
 - Main file: `index.html`. `STORAGE_KEY = "usStateVisitMap.v1"`, version in `APP_VERSION`.
 - Docs: `README.md` (public/run/build), this handoff (all dev + LLM context), `AGENTS.md` + `CLAUDE.md` (thin auto-loaded agent summaries — keep lean).
-- Current version: `APP_VERSION = "4.5.2"` — released **4.5.2 "Get Your Bearings"**. No active dev line. Banner target stays 4.5.0 "Leave No Trace" because patch releases skip the banner.
+- Current version: `APP_VERSION = "4.6.0.1"` — active dev line **4.6.0 "The Whole Story"**. Plan: `context/4.6.0-DETAILED-NOTES-PLAN.md`. Latest cut release: 4.5.2 "Get Your Bearings".
+  - **4.6.0 in progress:** Notes has a fourth `detailed` view before Expanded, using `__RECTANGLE_EXPAND_DIAGONAL`. Fresh/default settings use Detailed while existing saved view modes remain valid. Detailed location cards show levels, note/date totals, and uncropped full-field note cards. The same four-view selector renders in an individual location's Visit Notes header and shares the persisted `notesViewMode`.
 - Gotcha worth keeping: `url()` paths in `assets/css/app.css` are **relative to the stylesheet**, not the page root (e.g. app-icon art is `url("../icons/…")`). The 4.5.1 fix corrected `.install-icon-thumb-{light,dark}` which still used the old root path after the 4.4.1 CSS split.
 
 Verification traps still apply: UI drivers that call `save()` mutate real localStorage (snapshot first); Wayfinder/Waypoint panels need a configured bucket-list level to render; `http.server` has no cache headers (force-reload assets).
@@ -192,7 +193,7 @@ Verification traps still apply: UI drivers that call `save()` mutate real localS
   - 4.4.1 **Ultralight** — no-build split: styles in `assets/css/app.css`; icon/map/changelog/roadmap data in `assets/js/` classic scripts loaded before the main script; `CIRCLE_ICON_SVGS` registry replaces source-scan icon discovery; dead code removed and unused icon art parked in `build/icon-sources/`; CHANGELOG entries flattened to top-level `banner`/`cta`. No behavior or schema changes.
   - 4.4.0 **Basecamps** — Basecamp becomes up to twenty named rich-text pads with icons, search, reorder, formatting toolbars, linked US/World notes, and per-pad exports. Legacy `{ text, updated }` migrates once into "Basecamp Pad". `usStateVisitMap.v1` schema unchanged.
 - Open follow-ups: WISH-071 (optional lat/lng map lines, now P0); WISH-073 (P2 Basecamp photo support); WISH-074 (P1 pinch-to-zoom the map on touch); WISH-075 (P3 pack-photo camera location).
-- Plan docs live in `context/` only while their line is in flight, then are deleted on ship. No active dev line right now (4.5.2 "Get Your Bearings" shipped); the next substantial change starts with `plan`, or `start` when a plan already exists.
+- Plan docs live in `context/` only while their line is in flight, then are deleted on ship. Active plan: `context/4.6.0-DETAILED-NOTES-PLAN.md`.
 - No build step (other than the optional macOS icon pipeline — see README), backend, or dependencies.
 - User data lives in browser localStorage. Locate and Waypoint Pack Wikipedia
   photo previews are intentional online actions and only run when clicked.
