@@ -2497,6 +2497,23 @@
       line-height: 1.15;
     }
 
+    /* Grouping indicator: which region set the totals are measured against. */
+    .legend-grouping-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      color: var(--muted);
+      padding-right: .28rem;
+      margin-right: .04rem;
+      border-right: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+    }
+
+    .legend-grouping-icon svg {
+      width: 16px;
+      height: 16px;
+    }
+
     #legendPanel {
       --legend-action-lane: calc(108px + .48rem);
     }
