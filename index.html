@@ -262,20 +262,21 @@
           </div>
           <div class="notes-controls" aria-label="Notes display controls">
             <div class="segmented" aria-label="Notes view">
-              <button id="notesViewDetailedBtn" type="button" aria-pressed="true" data-notes-view-mode="detailed">Detailed
+              <button id="notesViewDetailedBtn" type="button" aria-pressed="true" data-notes-view-mode="detailed"
+                data-shortcut="↓">Detailed
                 View</button>
               <button id="notesViewExpandedBtn" type="button" aria-pressed="false" data-notes-view-mode="expanded"
-                data-shortcut="←">Expanded
+                data-shortcut="↓">Expanded
                 View</button>
               <button id="notesViewCompactBtn" type="button" aria-pressed="false" data-notes-view-mode="compact"
                 data-shortcut="↓">Condensed</button>
               <button id="notesViewTextBtn" type="button" aria-pressed="false" data-notes-view-mode="text"
-                data-shortcut="→">Text Only</button>
+                data-shortcut="↓">Text Only</button>
             </div>
             <div class="segmented" aria-label="Notes sort order">
-              <button id="notesSortAlphaBtn" type="button" aria-pressed="false" data-shortcut="Z">Alphabetical</button>
-              <button id="notesSortChronoBtn" type="button" aria-pressed="true" data-shortcut="T">Chronological</button>
-              <button id="notesSortPriorityBtn" type="button" aria-pressed="false">Priority</button>
+              <button id="notesSortAlphaBtn" type="button" aria-pressed="false" data-shortcut="↑">Alphabetical</button>
+              <button id="notesSortChronoBtn" type="button" aria-pressed="true" data-shortcut="↑">Chronological</button>
+              <button id="notesSortPriorityBtn" type="button" aria-pressed="false" data-shortcut="↑">Priority</button>
             </div>
             <button id="notesCategoryToggleBtn" class="notes-category-toggle" type="button" aria-pressed="true"
               data-shortcut="G">Categorical</button>
@@ -705,8 +706,11 @@
       <datalist id="noteWhereSuggestions"></datalist>
       <datalist id="noteWhatSuggestions"></datalist>
       <datalist id="noteWhoSuggestions"></datalist>
-      <label>Additional Details
-        <textarea id="noteText" maxlength="700" placeholder="Markdown-friendly plain text"></textarea>
+      <label>
+        <span class="field-label note-details-label">Additional Details
+          <small id="noteTextCounter" class="note-details-counter" aria-live="polite"></small>
+        </span>
+        <textarea id="noteText" maxlength="2000" placeholder="Markdown-friendly plain text"></textarea>
       </label>
     </form>
   </dialog>
@@ -1113,8 +1117,8 @@
             </li>
             <li>Use Quick Add beside search to add a note from the main list. Pick the target location in the note
               header, then Save or Save and Add Another.</li>
-            <li>Sort Notes chronologically or alphabetically. Categorical groups City, State, and Territory locations
-              with sticky headers.</li>
+            <li>Sort Notes alphabetically, chronologically, or by priority. Down Arrow cycles views and Up Arrow cycles
+              sorts; the view shortcut also works inside an individual location.</li>
             <li>Use Detailed, Expanded, Condensed, or Text Only view. Detailed shows every populated note field and
               the full details text; click that text to edit it inline. Text Only is copy-ready for Apple Notes.</li>
             <li>Open a location to manage its levels and Visit Notes. The same four view buttons appear in the Visit
@@ -1233,10 +1237,10 @@
             keeping
             your selected sort order inside each group.</p>
           <p><b>What does Detailed view show?</b><br>Detailed is the full-card view. It shows the location's levels and
-            note/date totals, then date precision, level-colored tags, compact Location and Event summaries, and the
+            note/date totals, then location precision, level-colored tags, compact Location and Event summaries, and the
             complete details text without truncation. Linked Waypoints also show website, photo, and priority actions.</p>
           <p><b>Can I edit a Detailed card without opening the note editor?</b><br>Yes. Click its details text, make the
-            change inline, then use the checkmark to save.</p>
+            change inline, then use the checkmark to save. The live counter tracks the 2,000-character limit.</p>
           <p><b>What is Text Only view for?</b><br>It renders a clean plain-text version of the current Notes view that
             is easy to select, copy, and paste into Apple Notes.</p>
           <p><b>How does Smart Convert work?</b><br>Type a quick note, then Auto Convert fills recognized date, level,
@@ -1495,15 +1499,10 @@
               <div class="shortcut-row"><kbd>6</kbd><span>Toggle Wayfinder Mode
                   <em>[notesActivateWayfinderBtn]</em></span>
               </div>
-              <div class="shortcut-row"><kbd>←</kbd><span>Notes View: Expanded <em>[notesViewExpandedBtn]</em></span>
-              </div>
-              <div class="shortcut-row"><kbd>↓</kbd><span>Notes View: Condensed <em>[notesViewCompactBtn]</em></span>
-              </div>
-              <div class="shortcut-row"><kbd>→</kbd><span>Notes View: Plain Text Only <em>[notesViewTextBtn]</em></span>
-              </div>
-              <div class="shortcut-row"><kbd>Z</kbd><span>Sort Alphabetically <em>[notesSortAlphaBtn]</em></span></div>
-              <div class="shortcut-row"><kbd>T</kbd><span>Sort Chronologically <em>[notesSortChronoBtn]</em></span>
-              </div>
+              <div class="shortcut-row"><kbd>↓</kbd><span>Cycle Notes View: Detailed → Expanded → Condensed → Text
+                  <em>[notesViewDetailedBtn]</em></span></div>
+              <div class="shortcut-row"><kbd>↑</kbd><span>Cycle Notes Sort: Alphabetical → Chronological → Priority
+                  <em>[notesSortAlphaBtn]</em></span></div>
               <div class="shortcut-row"><kbd>G</kbd><span>Categorical Grouping
                   On/Off<em>[notesCategoryToggleBtn]</em></span>
               </div>
@@ -1641,7 +1640,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.6.0.2";
+    const APP_VERSION = "4.6.0.3";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -2326,7 +2325,7 @@
             wikiPage: page,
             photoUrl: WIKIPEDIA_PHOTO_OVERRIDES[page] || "",
             dateEstablished,
-            defaultDetails: `Established ${dateEstablished} | ${description}`.slice(0, 700),
+            defaultDetails: `Established ${dateEstablished} | ${description}`.slice(0, 2000),
             noteTemplate: `Official National Park unit. Website: ${url}`
           };
         })
@@ -2502,6 +2501,7 @@
     let legendPanelOpen = true;
     let notesPanelOpen = true;
     let notesPanelState = null;
+    let notesListReturnPosition = null;
     let notesSortMode = "chrono";
     let notesViewMode = "detailed";
     let notesCategoricalMode = true;
@@ -3403,7 +3403,7 @@
     }
 
     function normalizeNote(note, abbr, next, validLevelIds) {
-      const details = String(note.details || note.text || note.summary || "").slice(0, 700);
+      const details = String(note.details || note.text || note.summary || "").slice(0, 2000);
       const validVisitTypeIds = new Set((next.visitTypes || VISIT_TYPES).map(type => type.id));
       const visitTypes = Array.isArray(note.visitTypes)
         ? [...new Set(note.visitTypes.filter(id => validVisitTypeIds.has(id)))]
@@ -4701,7 +4701,7 @@
     }
 
     function setSuggestedSetPreviewDetail(setId, itemId, detail) {
-      suggestedSetPreviewDetails.set(suggestedSetPreviewPriorityKey(setId, itemId), String(detail || "").slice(0, 700));
+      suggestedSetPreviewDetails.set(suggestedSetPreviewPriorityKey(setId, itemId), String(detail || "").slice(0, 2000));
     }
 
     function clearSuggestedSetPreviewDrafts(setId) {
@@ -4879,7 +4879,7 @@
       const existing = String(noteDetails(note) || "").trim();
       const addition = String(details || "").trim();
       if (!addition || existing.includes(addition)) return note;
-      const merged = [existing, addition].filter(Boolean).join(existing ? "\n\n" : "").slice(0, 700);
+      const merged = [existing, addition].filter(Boolean).join(existing ? "\n\n" : "").slice(0, 2000);
       note.details = merged;
       note.text = merged;
       return note;
@@ -4901,7 +4901,7 @@
 
     function createSuggestedSetNote(set, item, { priority = "", details = "" } = {}) {
       const cleanPriority = normalizeNotePriority(priority);
-      const cleanDetails = String(details || "").trim().slice(0, 700);
+      const cleanDetails = String(details || "").trim().slice(0, 2000);
       const note = refreshSuggestedSetManagedFields({
         id: uid(),
         date: "",
@@ -7220,8 +7220,13 @@
 
     function waypointPriorityButtons(priority, attrName, itemId = "") {
       const current = normalizeNotePriority(priority);
-      const toggleAttr = attrName === "data-note-priority-choice" ? "data-note-priority-toggle" : "data-set-preview-priority-toggle";
-      const menuAttr = attrName === "data-note-priority-choice" ? "data-note-priority-menu" : "data-set-preview-priority-menu";
+      const detailed = attrName === "data-detailed-priority-choice";
+      const toggleAttr = attrName === "data-note-priority-choice"
+        ? "data-note-priority-toggle"
+        : detailed ? "data-detailed-priority-toggle" : "data-set-preview-priority-toggle";
+      const menuAttr = attrName === "data-note-priority-choice"
+        ? "data-note-priority-menu"
+        : detailed ? "data-detailed-priority-menu" : "data-set-preview-priority-menu";
       const itemAttr = itemId ? `data-priority-item="${escapeHtml(itemId)}"` : "";
       const color = notePriorityColor(current);
       const label = current || "–";
@@ -7352,7 +7357,7 @@
       const attachMenu = attachMenuOpen
         ? `<div class="waypoint-attach-menu" data-set-attach-item="${escapeHtml(item.id)}" role="menu" aria-label="Attach an existing note to ${escapeHtml(item.name)}">${attachableNoteChoicesHtml(refs)}</div>`
         : "";
-      const noteField = note ? "" : `<textarea data-set-preview-note maxlength="700" placeholder="Notes for ${escapeHtml(item.name)}">${escapeHtml(detail)}</textarea>`;
+      const noteField = note ? "" : `<textarea data-set-preview-note maxlength="2000" placeholder="Notes for ${escapeHtml(item.name)}">${escapeHtml(detail)}</textarea>`;
       return `
         <article class="waypoint-preview-card ${note ? "is-linked" : ""}" data-set-preview-item="${escapeHtml(item.id)}">
           <div class="waypoint-preview-main">
@@ -7672,7 +7677,7 @@
           item,
           include: suggestedSetPreviewInclude(set.id, item.id),
           priority: suggestedSetPreviewPriority(set.id, item.id) || normalizeNotePriority(note?.priority),
-          details: String(suggestedSetPreviewDetail(set, item, note) || "").trim().slice(0, 700)
+          details: String(suggestedSetPreviewDetail(set, item, note) || "").trim().slice(0, 2000)
         };
       });
     }
@@ -7915,6 +7920,12 @@
 
     function noteDetails(note) {
       return note?.details ?? note?.text ?? "";
+    }
+
+    function updateDetailsCounter(input, counter) {
+      if (!input || !counter) return;
+      const max = Number(input.maxLength) > 0 ? Number(input.maxLength) : 2000;
+      counter.textContent = `(${input.value.length}/${max} character limit)`;
     }
 
     function noteCoordinateText(note) {
@@ -9027,6 +9038,25 @@
       renderNotesPanel();
     }
 
+    function cycleNotesViewMode() {
+      const order = ["detailed", "expanded", "compact", "text"];
+      const index = order.indexOf(notesViewMode);
+      setNotesViewMode(order[(index + 1) % order.length] || "detailed");
+    }
+
+    function setNotesSortMode(mode) {
+      if (!["alpha", "chrono", "priority"].includes(mode) || notesSortMode === mode) return;
+      notesSortMode = mode;
+      save();
+      renderNotesPanel();
+    }
+
+    function cycleNotesSortMode() {
+      const order = ["alpha", "chrono", "priority"];
+      const index = order.indexOf(notesSortMode);
+      setNotesSortMode(order[(index + 1) % order.length] || "alpha");
+    }
+
     function renderNotesIconFilters() {
       const list = $("#notesIconFilters");
       if (!list) return;
@@ -9293,7 +9323,7 @@
     function notesViewControlsHtml() {
       const option = (mode, icon, label) => `
         <button type="button" data-notes-view-mode="${mode}" aria-pressed="${notesViewMode === mode ? "true" : "false"}"
-          aria-label="${label} View" title="${label} View">${icon}<span>${label}</span></button>
+          data-shortcut="↓" aria-label="${label} View" title="${label} View">${icon}<span>${label}</span></button>
       `;
       return `
         <div class="segmented selected-notes-view-controls" aria-label="Visit Notes view">
@@ -9310,16 +9340,13 @@
       const source = suggestedSetSourceForNote(note);
       const types = noteVisitTypeLabels(note);
       const detail = String(noteDetails(note) || "").trim();
-      const locationParts = [
-        ["Where", note.where],
-        ["City", note.city],
-      ].filter(([, value]) => String(value || "").trim());
-      const eventParts = [
-        ["What", note.what],
-        ["Who", note.who],
-      ].filter(([, value]) => String(value || "").trim());
-      const precision = noteDatePrecision(note.date);
-      const precisionMeta = precision === "none" ? datePrecisionFilterMeta("all") : datePrecisionFilterMeta(precision);
+      const where = String(note.where || "").trim();
+      const city = String(note.city || "").trim();
+      const what = String(note.what || "").trim();
+      const who = String(note.who || "").trim();
+      const locationText = where && city ? `${where} in ${city}` : where || city;
+      const eventText = what && who ? `${what} with ${who}` : what || who;
+      const locationPrecision = validNoteCoordinates(note) ? coordinateFilterMeta("mapped") : coordinateFilterMeta("missing");
       const levelColor = noteLevel?.color || "var(--accent)";
       const bucketId = bucketListLevelId();
       const isBucket = bucketId && note.levelId === bucketId;
@@ -9327,7 +9354,8 @@
       const photoOpen = Boolean(photoKey && waypointPhotoPreviewKey === photoKey);
       const photoLoading = Boolean(photoKey && waypointPhotoLoadingKeys.has(photoKey));
       const photoUrl = photoOpen ? waypointPhotoUrlCache.get(photoKey) : "";
-      const waypointActions = source && actions ? `
+      const priorityControl = waypointPriorityButtons(note.priority, "data-detailed-priority-choice", note.id);
+      const waypointActions = source ? `
         <span class="detailed-waypoint-actions" aria-label="Waypoint actions">
           <a class="icon-btn waypoint-row-action" href="${escapeHtml(source.item.url)}" target="_blank" rel="noopener"
             aria-label="Open ${escapeHtml(source.item.name)} website" title="Website">${__RICHTEXT_PAGE_FILL}</a>
@@ -9336,16 +9364,14 @@
             aria-expanded="${photoOpen ? "true" : "false"}" title="${photoLoading ? "Loading photo" : "Photo"}"
             ${source.item.wikiPage && !photoLoading ? "" : "disabled"}>${__PHOTO_ARTFRAME}</button>
           <span class="waypoint-priority-row" aria-label="Priority">
-            ${waypointPriorityButtons(note.priority, "data-detailed-priority-choice", note.id)}
+            ${priorityControl}
           </span>
         </span>
       ` : "";
-      const combinedField = (label, parts) => `
+      const combinedField = (label, value) => `
         <div>
           <dt>${escapeHtml(label)}</dt>
-          <dd class="detailed-note-combined">${parts.length
-          ? parts.map(([partLabel, value]) => `<span><small>${escapeHtml(partLabel)}</small>${escapeHtml(String(value))}</span>`).join("")
-          : `<span class="muted">Not specified</span>`}</dd>
+          <dd>${value ? escapeHtml(value) : `<span class="muted">Not specified</span>`}</dd>
         </div>
       `;
       return `
@@ -9353,29 +9379,33 @@
           data-edit-note-row="${escapeHtml(note.id)}" data-note-id="${escapeHtml(note.id)}" data-note-state="${escapeHtml(abbr)}">
           <header class="detailed-note-head">
             <span class="detailed-note-date">${escapeHtml(note.date ? formatDateDisplay(note.date) : "No date")}</span>
-            <span class="detailed-note-precision" aria-label="${escapeHtml(precisionMeta.label)}" title="${escapeHtml(precisionMeta.label)}">${precisionMeta.icon}</span>
+            <span class="detailed-note-precision" aria-label="${escapeHtml(locationPrecision.label)}" title="${escapeHtml(locationPrecision.title)}">${locationPrecision.icon}</span>
             <span class="detailed-note-level" style="--level-color:${escapeHtml(levelColor)}">${escapeHtml(noteLevel?.name || "No level")}</span>
             ${types.map(type => `<span class="detailed-note-tag" style="--level-color:${escapeHtml(levelColor)}">${visitTypeIcon(type.id)}${escapeHtml(type.label)}</span>`).join("")}
-            ${actions ? `<span class="actions">
+            <span class="actions">
               ${waypointActions}
+              ${source ? "" : `<span class="detailed-priority-action" aria-label="Priority">${priorityControl}</span>`}
+              ${actions ? `
               ${isBucket ? actionButtonHtml({ symbol: __CHECKMARK_CIRCLE, text: "Mark Visited", className: "icon-btn bucket-mark-visited-btn", attrs: `data-mark-visited-note="${note.id}"` }) : ""}
               ${actionButtonHtml({ symbol: __PENCIL, text: "Edit", className: "icon-btn", attrs: `data-edit-note="${note.id}"` })}
               ${actionButtonHtml({ symbol: __DELETE_LEFT_FILL, text: "Delete", className: "icon-btn danger", attrs: `data-delete-note="${note.id}"` })}
-            </span>` : ""}
+              ` : ""}
+            </span>
           </header>
           <dl class="detailed-note-fields">
-            ${combinedField("Location", locationParts)}
-            ${combinedField("Event", eventParts)}
+            ${combinedField("Location", locationText)}
+            ${combinedField("Event", eventText)}
           </dl>
           ${photoUrl ? `<div class="detailed-waypoint-photo"><img src="${escapeHtml(photoUrl)}" alt="${escapeHtml(source.item.name)}"></div>` : ""}
           <div class="detailed-note-details">
             <span class="detailed-note-details-head">
               <b>Details</b>
+              <small class="detailed-note-details-counter" data-inline-details-counter hidden></small>
               <button class="icon-btn detailed-note-details-save" type="button" data-save-inline-details hidden
                 aria-label="Save details" title="Save details">${__CHECKMARK}</button>
             </span>
             <p data-edit-inline-details role="button" tabindex="0" aria-label="Edit note details">${detail ? escapeHtml(detail) : `<span class="muted">No details</span>`}</p>
-            <textarea data-inline-details-input rows="3" aria-label="Note details" hidden>${escapeHtml(detail)}</textarea>
+            <textarea data-inline-details-input rows="3" maxlength="2000" aria-label="Note details" hidden>${escapeHtml(detail)}</textarea>
           </div>
         </article>
       `;
@@ -9393,7 +9423,7 @@
           <button class="detailed-location-head" type="button" data-open-notes-state="${escapeHtml(abbr)}">
             <span class="detailed-location-title">${compactLocationName(abbr, dominantLevel(abbr))}</span>
             <span class="detailed-location-levels">${levels.length ? levels.map(level => `<span><i style="--level-color:${escapeHtml(level.color)}"></i>${escapeHtml(level.name)}</span>`).join("") : `<span>Unvisited</span>`}</span>
-            <span class="detailed-location-stats"><b>${notes.length}</b> note${notes.length === 1 ? "" : "s"}<small>${escapeHtml(dateLabel)}</small></span>
+            <span class="detailed-location-stats"><small>[${escapeHtml(dateLabel)}]</small><b>${notes.length}</b></span>
           </button>
           <div class="detailed-location-notes">
             ${notes.length ? notes.map(note => detailedNoteCard(note, abbr)).join("") : `<div class="empty">No matching visit notes.</div>`}
@@ -9422,11 +9452,14 @@
       const display = $("[data-edit-inline-details]", card);
       const input = $("[data-inline-details-input]", card);
       const saveButton = $("[data-save-inline-details]", card);
-      if (!display || !input || !saveButton || card.classList.contains("is-editing-details")) return;
+      const counter = $("[data-inline-details-counter]", card);
+      if (!display || !input || !saveButton || !counter || card.classList.contains("is-editing-details")) return;
       card.classList.add("is-editing-details");
       display.hidden = true;
       input.hidden = false;
       saveButton.hidden = false;
+      counter.hidden = false;
+      updateDetailsCounter(input, counter);
       input.style.height = "auto";
       input.style.height = `${Math.max(input.scrollHeight, 72)}px`;
       input.focus();
@@ -9463,6 +9496,7 @@
       $$("[data-inline-details-input]", root).forEach(input => {
         input.addEventListener("click", event => event.stopPropagation());
         input.addEventListener("input", () => {
+          updateDetailsCounter(input, $("[data-inline-details-counter]", input.closest(".detailed-note-card")));
           input.style.height = "auto";
           input.style.height = `${Math.max(input.scrollHeight, 72)}px`;
         });
@@ -9643,6 +9677,7 @@
             openRowNote();
           });
           row.addEventListener("keydown", event => {
+            if (event.target.closest("button, a, input, select, textarea")) return;
             if (event.key !== "Enter" && event.key !== " ") return;
             event.preventDefault();
             openRowNote();
@@ -9701,6 +9736,14 @@
         renderNotesPanel();
       }));
       $$("[data-open-notes-state]").forEach(button => button.addEventListener("click", () => {
+        const content = $("#notesPanelContent");
+        const contentRect = content?.getBoundingClientRect();
+        const buttonRect = button.getBoundingClientRect();
+        notesListReturnPosition = {
+          abbr: button.dataset.openNotesState,
+          scrollTop: content?.scrollTop || 0,
+          offset: contentRect ? buttonRect.top - contentRect.top : 0,
+        };
         selectedState = button.dataset.openNotesState;
         notesPanelState = selectedState;
         save();
@@ -9724,6 +9767,7 @@
           openRowNote();
         });
         row.addEventListener("keydown", event => {
+          if (event.target.closest("button, a, input, select, textarea")) return;
           if (event.key !== "Enter" && event.key !== " ") return;
           event.preventDefault();
           openRowNote();
@@ -9998,6 +10042,7 @@
       $("#noteSourceItemId").value = source.item.id;
       $("#noteSourceGenerated").value = "";
       $("#noteText").value = mergeSuggestedSetDetailsText($("#noteText").value, source.item.defaultDetails);
+      updateDetailsCounter($("#noteText"), $("#noteTextCounter"));
       $("#noteWhere").value = source.item.fullName;
       $("#noteLat").value = normalizeLatitude(source.item.lat);
       $("#noteLng").value = normalizeLongitude(source.item.lng);
@@ -10723,7 +10768,8 @@
       if (!addition) return;
       const existing = el.value.trim();
       const next = existing ? `${existing} ${addition}` : addition;
-      el.value = next.slice(0, Number(el.maxLength) || 700);
+      el.value = next.slice(0, Number(el.maxLength) || 2000);
+      updateDetailsCounter(el, $("#noteTextCounter"));
     }
 
     // Apply a single recognized token to its destination field.
@@ -10750,7 +10796,8 @@
       // Replace the current field value (tags and details above are the
       // exceptions). Date and level also replace via their own setters.
       const value = String(token.value || "").trim();
-      input.value = value.slice(0, Number(input.maxLength) || 700);
+      input.value = value.slice(0, Number(input.maxLength) || 2000);
+      if (input === $("#noteText")) updateDetailsCounter(input, $("#noteTextCounter"));
     }
 
     // Promote one token (chip click): apply to field, splice its text out of the
@@ -11152,6 +11199,7 @@
       setNoteVisitTypes(note?.visitTypes || defaults?.visitTypes || []);
       renderNoteSetControls(note);
       $("#noteText").value = note ? noteDetails(note) : "";
+      updateDetailsCounter($("#noteText"), $("#noteTextCounter"));
       refreshNoteAutocompletes(noteTarget);
       refreshNoteLocationButtons();
       $("#noteDialog").showModal();
@@ -15404,7 +15452,6 @@
           else clickIf("#settingsBtn");
         },
         "<": () => clickIf("#settingsBtn"),
-        t: () => notesListContext && clickIf("#notesSortChronoBtn"),
         e: () => clickIf("#renameBtn"),
         m: toggleMapPanel,
         l: toggleLegendPanel,
@@ -15420,19 +15467,17 @@
 
         // Notes filters / actions.
         c: () => notesPanelOpen && clickIf("#copyNotesTextBtn"),
-        z: () => notesListContext && clickIf("#notesSortAlphaBtn"),
         g: () => notesListContext && clickIf("#notesCategoryToggleBtn"),
         h: () => notesListContext && clickIf("#notesExcludedToggleBtn"),
         d: () => notesListContext && clickIf("#notesDatePrecisionFilterBtn"),
         o: () => notesListContext && clickIf("#notesCoordinateFilterBtn"),
         i: () => notesListContext && clickIf("#notesTagSettingsMiniBtn"),
 
-        // Notes view modes (arrow keys). ArrowLeft is context-shared: it
-        // routes to Back when the user is drilled into a location, and to
-        // Expanded view otherwise.
-        arrowleft: () => notesPanelState ? clickIf("#notesPanelBackBtn") : (notesListContext && clickIf("#notesViewExpandedBtn")),
-        arrowdown: () => notesListContext && clickIf("#notesViewCompactBtn"),
-        arrowright: () => notesListContext && clickIf("#notesViewTextBtn"),
+        // Notes view and sort modes cycle so every button in each segmented
+        // control advertises the same shortcut.
+        arrowleft: () => notesPanelState && clickIf("#notesPanelBackBtn"),
+        arrowdown: () => notesPanelOpen && cycleNotesViewMode(),
+        arrowup: () => notesPanelOpen && cycleNotesSortMode(),
         // Delete clears applied levels on the drilled-in location.
         delete: () => notesPanelState && clickIf("#notesPanelClearBtn"),
         backspace: () => notesPanelState && clickIf("#notesPanelClearBtn"),
@@ -15824,26 +15869,29 @@
         notesPanelState = null;
         save();
         renderNotesPanel();
+        const returnPosition = notesListReturnPosition;
+        notesListReturnPosition = null;
+        requestAnimationFrame(() => {
+          const content = $("#notesPanelContent");
+          if (!content || !returnPosition) return;
+          const anchor = $$("[data-open-notes-state]", content)
+            .find(button => button.dataset.openNotesState === returnPosition.abbr);
+          if (anchor) {
+            const contentRect = content.getBoundingClientRect();
+            const anchorRect = anchor.getBoundingClientRect();
+            content.scrollTop += anchorRect.top - contentRect.top - returnPosition.offset;
+          } else if (Number.isFinite(returnPosition.scrollTop)) {
+            content.scrollTop = returnPosition.scrollTop;
+          }
+        });
       });
       $("#notesStateSearch").addEventListener("input", event => {
         notesSearchQuery = event.target.value;
         refreshAfterNotesFilterChange();
       });
-      $("#notesSortAlphaBtn").addEventListener("click", () => {
-        notesSortMode = "alpha";
-        save();
-        renderNotesPanel();
-      });
-      $("#notesSortChronoBtn").addEventListener("click", () => {
-        notesSortMode = "chrono";
-        save();
-        renderNotesPanel();
-      });
-      $("#notesSortPriorityBtn").addEventListener("click", () => {
-        notesSortMode = "priority";
-        save();
-        renderNotesPanel();
-      });
+      $("#notesSortAlphaBtn").addEventListener("click", () => setNotesSortMode("alpha"));
+      $("#notesSortChronoBtn").addEventListener("click", () => setNotesSortMode("chrono"));
+      $("#notesSortPriorityBtn").addEventListener("click", () => setNotesSortMode("priority"));
       $("#notesCategoryToggleBtn").addEventListener("click", () => {
         notesCategoricalMode = !notesCategoricalMode;
         save();
@@ -15929,6 +15977,7 @@
         setNoteGeocodeStatus("Manual coordinates will be used for the map marker.");
       }));
       $("#notePriority").addEventListener("change", () => refreshNoteWaypointControls());
+      $("#noteText").addEventListener("input", () => updateDetailsCounter($("#noteText"), $("#noteTextCounter")));
       $("#noteSourceItemSelect").addEventListener("change", event => {
         applySuggestedSetItemToNoteForm(activeSuggestedSet().id, event.target.value);
       });

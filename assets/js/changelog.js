@@ -22,9 +22,12 @@
             items: [
               "Added a Detailed view before Expanded using the diagonal-expand icon.",
               "Each location card shows its type, applied levels, note count, and available date span.",
-              "Detailed card headers place date precision, level, and color-matched Location Tags on one readable line.",
-              "Location combines Where and City; Event combines What and Who in a balanced two-column summary.",
+              "Detailed card headers place location precision, level, and color-matched Location Tags on one readable line.",
+              "Location reads as Where in City; Event reads as What with Who in a balanced two-column summary.",
               "Coordinates stay out of Detailed cards, while complete details text remains untruncated.",
+              "Priority can be changed directly from any Detailed card.",
+              "Linked Waypoint controls now appear in both the main Notes list and individual locations.",
+              "Location summaries keep the date range and note count together on one line.",
               "Detailed layouts wrap naturally without fixed row heights, ellipsis, or line clamping.",
             ]
           },
@@ -33,7 +36,11 @@
             items: [
               "The Visit Notes section inside an individual location now includes the same four-view selector as the main Notes list.",
               "The Visit Notes heading and view controls stay pinned while scrolling a location's notes.",
-              "Clicking a Detailed card's details text opens an inline editor with a one-click checkmark save.",
+              "Clicking a Detailed card's details text opens an inline editor with a live character count and checkmark save.",
+              "Additional Details now accepts up to 2,000 characters in both the full editor and Detailed cards.",
+              "Space and Enter remain normal text input while editing Detailed card details.",
+              "Back returns to the previous scroll position in the location list.",
+              "Down Arrow cycles all four views; Up Arrow cycles all three sort modes.",
               "Linked Waypoint notes expose website, photo, and priority controls beside Edit and Delete.",
               "Switching views keeps one saved preference across the main list and selected-location notes.",
               "Existing saved Expanded, Condensed, and Text Only choices remain intact; new/default settings start in Detailed.",
