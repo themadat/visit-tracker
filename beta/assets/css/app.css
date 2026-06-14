@@ -9306,9 +9306,10 @@
     }
 
     .detailed-location-stats {
-      display: grid;
-      justify-items: end;
-      gap: .12rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: .35rem;
       color: var(--muted);
       font-size: .75rem;
       white-space: nowrap;
@@ -9412,6 +9413,21 @@
       white-space: nowrap;
     }
 
+    .detailed-priority-action {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .detailed-priority-action .waypoint-priority-popout,
+    .detailed-priority-action .waypoint-priority-toggle {
+      width: 2.12rem;
+      min-width: 2.12rem;
+      max-width: 2.12rem;
+      height: 2.12rem;
+      min-height: 2.12rem;
+      max-height: 2.12rem;
+    }
+
     .detailed-waypoint-actions {
       display: inline-flex;
       align-items: center;
@@ -9463,27 +9479,6 @@
       white-space: normal;
     }
 
-    .detailed-note-combined {
-      display: flex;
-      flex-wrap: wrap;
-      gap: .18rem .72rem;
-      align-items: baseline;
-    }
-
-    .detailed-note-combined>span:not(.muted) {
-      display: inline-flex;
-      gap: .28rem;
-      align-items: baseline;
-      min-width: 0;
-    }
-
-    .detailed-note-combined small {
-      color: var(--muted);
-      font-size: .66rem;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
     .detailed-waypoint-photo {
       min-width: 0;
       overflow: hidden;
@@ -9519,6 +9514,21 @@
       font-size: .7rem;
       letter-spacing: .03em;
       text-transform: uppercase;
+    }
+
+    .detailed-note-details-counter,
+    .note-details-counter {
+      margin-left: auto;
+      color: var(--muted);
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: none;
+      white-space: nowrap;
+    }
+
+    .detailed-note-details-counter[hidden] {
+      display: none;
     }
 
     .detailed-note-details p {
@@ -9568,6 +9578,12 @@
 
     .detailed-note-card.is-editing-details {
       cursor: default;
+    }
+
+    .note-details-label {
+      display: flex;
+      align-items: baseline;
+      gap: .4rem;
     }
 
     .compact-note-row {
