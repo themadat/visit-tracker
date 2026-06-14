@@ -1526,6 +1526,11 @@
       overflow: visible;
     }
 
+    .map-label-target-icon.is-world>svg {
+      width: 2.25rem;
+      height: 2.25rem;
+    }
+
     .map-label-target-icon .sf-symbol {
       color: color-mix(in srgb, var(--text) 72%, var(--muted) 28%);
     }
@@ -2519,8 +2524,8 @@
     }
 
     .legend-grouping-icon.is-world svg {
-      width: 18px;
-      height: 18px;
+      width: 32px;
+      height: 32px;
     }
 
     #legendPanel {
