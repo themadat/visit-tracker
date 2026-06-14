@@ -1,6 +1,7 @@
 ## Future Prompt
 
-4.5.0 - priority filter and and sorting
+4.6.0 - priority filter and and sorting
+4.7.0 - Priority, link, photo support on all locations (regular accent border)
 
 
 ## Colors
