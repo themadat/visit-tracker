@@ -4,6 +4,23 @@
 
     const CHANGELOG = [
       {
+        version: "4.5.1",
+        date: "2026-06-12",
+        title: "Back in the Picture",
+        summary: "The “Add as App” icon previews show their artwork again instead of just a colored background.",
+        highlights: [
+          "Fixed the “Add Trail Log as an App” icon previews showing only a colored square.",
+        ],
+        updateSections: [
+          {
+            heading: "Fixes",
+            items: [
+              "The Light and Dark icon previews in “Add as App” (and the home-screen icon they show) render their book-and-globe artwork again — an image path had broken when the styles moved into their own file a few releases back, leaving only the background color.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.5.0",
         date: "2026-06-12",
         title: "Leave No Trace",
