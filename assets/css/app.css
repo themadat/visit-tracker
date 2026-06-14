@@ -1518,10 +1518,11 @@
       transform: translateX(1.5px);
     }
 
+    .map-label-target-icon>svg,
     .map-label-target-icon .sf-symbol,
     .map-label-target-icon .pack-symbol {
-      width: 28px;
-      height: 28px;
+      width: 1.35rem;
+      height: 1.35rem;
       overflow: visible;
     }
 
@@ -1612,6 +1613,7 @@
       padding: .25rem;
     }
 
+    .map-waypoint-pack-select>svg,
     .map-waypoint-pack-select .pack-symbol,
     .map-waypoint-pack-select .sf-symbol {
       flex: 0 0 auto;
@@ -2514,6 +2516,11 @@
     .legend-grouping-icon svg {
       width: 16px;
       height: 16px;
+    }
+
+    .legend-grouping-icon.is-world svg {
+      width: 18px;
+      height: 18px;
     }
 
     #legendPanel {
