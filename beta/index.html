@@ -1643,7 +1643,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.6.0";
+    const APP_VERSION = "4.6.1.1";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -5487,11 +5487,20 @@
     }
 
     function setActiveLayer(id) {
-      activeLayerId = MAP_LAYERS[id] ? id : "us";
+      const nextId = MAP_LAYERS[id] ? id : "us";
+      if (nextId === activeLayerId) return;
+      activeLayerId = nextId;
       state.settings.activeLayerId = activeLayerId;
       applyActiveLayer();
-      save();
-      render();
+      renderRingPanel();
+      renderMap();
+      renderLegend();
+      renderNotesPanel();
+      syncBucketListUi();
+      syncRingUi();
+      syncButtonLabels();
+      scheduleMainLayoutSync();
+      requestAnimationFrame(() => requestAnimationFrame(() => save({ captureMapPan: false })));
     }
 
     // One-time: default every world country to the Not Interested level so the
@@ -14405,6 +14414,7 @@
     function shortcutKey(event) {
       if (event.code?.startsWith("Key")) return event.code.slice(3).toLowerCase();
       if (event.code?.startsWith("Digit")) return event.code.slice(5);
+      if (event.code === "Backquote") return event.shiftKey ? "~" : "`";
       if (event.code === "Minus" || event.code === "NumpadSubtract") return "-";
       if (event.code === "Equal" || event.code === "NumpadAdd") return event.shiftKey || event.code === "NumpadAdd" ? "+" : "=";
       return event.key.toLowerCase();
@@ -15493,6 +15503,7 @@
         "3": () => setActiveMapLabelMode("none"),
         "2": () => setActiveMapLabelMode("abbr"),
         "1": () => setActiveMapLabelMode("name"),
+        "~": () => setActiveLayer(activeLayerId === "world" ? "us" : "world"),
         "-": () => nudgeMapZoom(-MAP_ZOOM_STEP),
         "+": () => nudgeMapZoom(MAP_ZOOM_STEP),
         "=": () => nudgeMapZoom(MAP_ZOOM_STEP),
