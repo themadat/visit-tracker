@@ -7,7 +7,7 @@
         title: "Pinch-to-Zoom the Map on Touch",
         ticketId: "WISH-074",
         description: "Let touch users pinch with two fingers to zoom the map (and ideally double-tap to zoom in), in addition to the existing zoom pill, drag-pan, and desktop wheel zoom. Zoom should center on the gesture midpoint and feel natural on phones/tablets.",
-        priority: "P1",
+        priority: "P0",
         effort: "medium",
         targetKind: "minor",
         targetVersion: "",
@@ -19,7 +19,7 @@
         title: "Show a Pack Photo's Camera Location",
         ticketId: "WISH-075",
         description: "For a Waypoint-pack photo, surface where the shot was taken — the camera/vantage-point coordinates (and heading/bearing when available), which differ from the landmark's own location — so a traveler can stand in the same spot and recreate the photo in person. The data would come from the photo's Wikimedia Commons file page (the \"camera location\" geotag), shown near the photo with a tap-to-open map/directions link, while leaving the note's existing landmark coordinates untouched.",
-        priority: "P3",
+        priority: "P0",
         effort: "medium",
         targetKind: "minor",
         targetVersion: "",
@@ -151,7 +151,7 @@
         title: "Note Links and Photos",
         ticketId: "WISH-067",
         description: "Add first-class link and photo buttons to notes so a place can carry URLs, reference pages, and local/attached images without stuffing everything into Details. Scope includes note-editor controls, compact indicators in note rows, export behavior, import/backups, and local-first storage limits that avoid surprising large data saves.",
-        priority: "P0",
+        priority: "P1",
         effort: "large",
         targetKind: "minor",
         targetVersion: "",
@@ -292,18 +292,6 @@
         category: "Notes"
       },
       {
-        title: "Move Between Notes Faster",
-        ticketId: "WISH-051",
-        description: "Add faster navigation between notes so reviewing or editing a run of notes does not require closing and reopening each one. Scope includes previous/next note controls in the note editor, predictable ordering from the current Notes view/filter context, keyboard shortcuts, and safe handling when filters or selected locations change.",
-        priority: "P2",
-        effort: "medium",
-        targetKind: "minor",
-        targetVersion: "",
-        tokenCostPct: 18,
-        prompt: "Add faster note-to-note navigation. Include previous/next controls in the note editor, respect the active Notes ordering/filter context where practical, add keyboard shortcuts, and handle edge cases when the current note is filtered out or deleted.",
-        category: "Notes"
-      },
-      {
         title: "More Date Formats and Spelled-Out Months",
         ticketId: "WISH-049",
         description: "Broaden the date parser used by Smart Convert and manual date entry to accept more natural date formats — long and short spelled-out months (January / Jan), ordinals (1st, 2nd), comma variants, weekday prefixes/suffixes, ISO-like and locale-flexible orderings — without breaking the current accepted formats.",
@@ -314,17 +302,5 @@
         tokenCostPct: 14,
         prompt: "Expand date parsing for Smart Convert and the note date field to accept more natural date formats including long/short spelled-out month names, ordinal day numbers, weekday prefixes/suffixes, and varied separators, while preserving currently accepted formats.",
         category: "Notes"
-      },
-      {
-        title: "Optimize iPhone UI",
-        ticketId: "WISH-011",
-        description: "Tune the app for iPhone-sized screens. Scope includes map sizing, tabs, controls, dialogs, touch targets, safe areas, and avoiding cramped or clipped text.",
-        priority: "P3",
-        effort: "medium",
-        targetKind: "minor",
-        targetVersion: "",
-        tokenCostPct: 32,
-        prompt: "Improve iPhone layout: map size, controls, dialogs, safe areas, touch targets, and text fitting.",
-        category: "UI"
-      },
+      }
     ];
