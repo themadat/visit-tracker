@@ -5106,7 +5106,7 @@
       border: 0;
       border-radius: 8px;
       background: color-mix(in srgb, var(--priority-color, var(--line)) 42%, var(--surface));
-      color: #111827;
+      color: var(--priority-color, var(--text));
       font-size: .95rem;
       font-weight: 950;
       line-height: 1;
@@ -5117,6 +5117,11 @@
       background: var(--surface-2);
       color: var(--muted);
       box-shadow: none;
+    }
+
+    .waypoint-priority-toggle .sf-symbol {
+      width: 1.42rem;
+      height: 1.42rem;
     }
 
     .waypoint-priority-menu,
@@ -5153,11 +5158,16 @@
       padding: 0;
       border-color: color-mix(in srgb, var(--priority-color, var(--line)) 48%, var(--line));
       background: color-mix(in srgb, var(--priority-color, var(--surface-2)) 18%, var(--surface));
-      color: var(--text);
+      color: var(--priority-color, var(--text));
       font-size: .82rem;
       font-weight: 900;
       line-height: 1;
       text-align: center;
+    }
+
+    .waypoint-priority-choice .sf-symbol {
+      width: 1.3rem;
+      height: 1.3rem;
     }
 
     .waypoint-priority-choice[aria-checked="true"] {
@@ -5244,6 +5254,20 @@
       display: none;
     }
 
+    .note-priority-header-control {
+      position: relative;
+      display: flex;
+      align-items: stretch;
+      flex: 0 0 auto;
+      padding: .24rem;
+      border: 2px solid #14b8a6;
+      border-radius: 8px;
+      background: color-mix(in srgb, #14b8a6 9%, var(--surface));
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, #14b8a6 20%, transparent);
+    }
+
+    .note-priority-header-control .waypoint-priority-popout,
+    .note-priority-header-control .waypoint-priority-toggle,
     .note-waypoint-header-controls .waypoint-row-action,
     .note-waypoint-header-controls .waypoint-priority-popout,
     .note-waypoint-header-controls .waypoint-priority-toggle {
@@ -5560,30 +5584,6 @@
       background: color-mix(in srgb, var(--surface-2) 70%, transparent);
     }
 
-    .note-core-priority {
-      display: grid;
-      grid-template-columns: auto 4.25rem minmax(0, 1fr);
-      align-items: center;
-      gap: .45rem;
-      padding: .48rem .55rem;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: color-mix(in srgb, var(--surface-2) 64%, transparent);
-    }
-
-    .note-core-priority label {
-      font-weight: 850;
-    }
-
-    .note-core-priority select {
-      min-height: 36px;
-    }
-
-    .note-core-priority small {
-      color: var(--muted);
-      font-size: .76rem;
-    }
-
     .note-source-summary {
       grid-column: 1 / -1;
       color: var(--muted);
@@ -5601,14 +5601,6 @@
       .note-set-section {
         grid-template-columns: 1fr;
         align-items: stretch;
-      }
-
-      .note-core-priority {
-        grid-template-columns: auto 4.25rem;
-      }
-
-      .note-core-priority small {
-        grid-column: 1 / -1;
       }
 
       .sets-overlay-check,
@@ -8129,6 +8121,11 @@
       position: relative;
     }
 
+    .notes-controls .notes-priority-toggle .sf-symbol {
+      width: 1.48em;
+      height: 1.48em;
+    }
+
     .notes-priority-toggle[aria-pressed="true"] {
       border-color: var(--accent);
       background: color-mix(in srgb, var(--accent) 18%, var(--surface));
@@ -8162,10 +8159,11 @@
       position: fixed;
       z-index: 80;
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: .48rem;
-      width: min(19rem, calc(100vw - 1rem));
-      padding: .62rem;
+      grid-template-columns: repeat(5, minmax(3.2rem, 1fr));
+      gap: .5rem;
+      box-sizing: border-box;
+      width: min(29rem, calc(100vw - 1rem));
+      padding: .72rem;
       border: 1px solid var(--line);
       border-radius: .72rem;
       background: var(--surface);
@@ -8177,39 +8175,44 @@
       display: none;
     }
 
-    .notes-priority-menu label {
+    .notes-priority-menu-item {
       display: grid;
-      gap: .2rem;
+      justify-items: center;
+      gap: .28rem;
+      min-width: 0;
       color: var(--muted);
       font-size: .68rem;
       font-weight: 850;
     }
 
-    .notes-priority-menu select {
-      width: 100%;
-      min-height: 36px;
+    .notes-priority-menu-item small {
+      font: inherit;
+    }
+
+    .notes-priority-menu-item button {
+      display: grid;
+      place-items: center;
+      width: 3.2rem;
+      min-width: 3.2rem;
+      height: 3.2rem;
+      min-height: 3.2rem;
+      padding: .7rem;
       color: var(--text);
-      font-size: .78rem;
     }
 
-    .notes-priority-menu .notes-priority-group-check {
-      display: flex;
-      align-items: center;
-      gap: .4rem;
-      min-height: 36px;
-      color: var(--text);
-      font-size: .76rem;
+    .notes-priority-menu .notes-priority-menu-item button .sf-symbol {
+      width: 1.7rem;
+      height: 1.7rem;
     }
 
-    .notes-priority-group-check input {
-      width: 18px;
-      height: 18px;
-      margin: 0;
+    #notesPriorityFilterValue {
+      color: var(--priority-color, var(--text));
     }
 
-    #notesPriorityResetBtn {
-      min-height: 36px;
-      font-size: .76rem;
+    #notesPriorityGroup[aria-pressed="true"] {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 18%, var(--surface));
+      color: var(--accent-2);
     }
 
     .notes-controls button>.sf-symbol,
@@ -10064,6 +10067,32 @@
       justify-content: flex-start;
     }
 
+    .condensed-priority-action {
+      display: inline-flex;
+      align-items: center;
+      overflow: visible;
+    }
+
+    .condensed-priority-action .waypoint-priority-popout,
+    .condensed-priority-action .waypoint-priority-toggle {
+      width: 18px;
+      min-width: 18px;
+      max-width: 18px;
+      height: 18px;
+      min-height: 18px;
+      max-height: 18px;
+    }
+
+    .condensed-priority-action .waypoint-priority-toggle {
+      padding: 2px;
+      border-radius: 999px;
+    }
+
+    .condensed-priority-action .waypoint-priority-toggle .sf-symbol {
+      width: 12px;
+      height: 12px;
+    }
+
     .selected-note-list.is-condensed-selected time,
     .selected-note-list.is-condensed-selected .compact-note-text {
       font-size: .68rem;
@@ -10096,6 +10125,7 @@
     .compact-note-row .actions {
       flex-wrap: nowrap;
       gap: .1rem;
+      overflow: visible;
     }
 
     .compact-level-wrap,
@@ -10216,13 +10246,15 @@
       font-size: .82rem;
     }
 
-    .notes-priority-heading-dot {
-      width: .72rem;
-      height: .72rem;
-      border: 2px solid color-mix(in srgb, var(--priority-color) 72%, var(--text));
-      border-radius: 4px;
-      background: var(--priority-color);
-      box-shadow: inset 0 0 0 1px color-mix(in srgb, white 46%, transparent);
+    .notes-priority-heading-icon {
+      display: inline-grid;
+      place-items: center;
+      color: var(--priority-color);
+    }
+
+    .notes-priority-heading-icon .sf-symbol {
+      width: 1.08rem;
+      height: 1.08rem;
     }
 
     .notes-selected-priority-heading {
@@ -11360,18 +11392,16 @@
         justify-content: flex-end;
       }
 
-      /* A linked (Waypoint pack) note adds Website / Photo / priority / Link
-         buttons to this container; on phones drop that whole cluster onto its
-         own line so the header never grows wider than the screen. A full-width
-         zero-height break forces the wrap, while the cluster itself stays
-         content-sized so its border hugs the buttons (no dead whitespace). */
-      .note-dialog-head .dialog-head-actions:has(> #noteWaypointHeaderControls:not(.hidden))::after {
+      /* Priority and linked Waypoint controls share a second line on phones.
+         A full-width zero-height break keeps the primary actions above them. */
+      .note-dialog-head .dialog-head-actions::after {
         content: "";
         order: 1;
         width: 100%;
         height: 0;
       }
 
+      .note-dialog-head .dialog-head-actions > #notePriorityHeaderControl,
       .note-dialog-head .dialog-head-actions > #noteWaypointHeaderControls {
         order: 2;
         flex: 0 0 auto;
