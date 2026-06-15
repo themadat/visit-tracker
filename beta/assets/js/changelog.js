@@ -29,8 +29,10 @@
               "Priority menus now stay compact with direct square choices for blank or priorities 1 through 5.",
               "Linked Waypoint controls now appear in both the main Notes list and individual locations.",
               "Location summaries keep the date range and note count together on one line.",
-              "Detailed and Expanded location headers show the date span and note count with a clearer divider; selecting the count collapses or reveals that location's notes.",
-              "Expanded note priority badges stay attached to the Waypoint icon when present, otherwise the first map-winning icon.",
+              "Detailed and Expanded location headers show the date span and note count with a clearer divider; the count now reliably collapses or reveals that location's notes and shows a disclosure chevron that points down when open and right when collapsed.",
+              "Expanded note priority badges stay attached to the Waypoint icon when present, otherwise the first map-winning icon, and now tuck in from the corner so they no longer clip at a row's right or bottom edge.",
+              "The priority badge no longer appears in the denser Condensed view.",
+              "Every note now shows a coordinate-status icon — a plain target with a \"Coordinates: NONE\" hint when unmapped, and a dotted target showing the exact latitude and longitude when mapped.",
               "Detailed layouts wrap naturally without fixed row heights, ellipsis, or line clamping.",
             ]
           },
