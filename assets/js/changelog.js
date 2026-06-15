@@ -4,7 +4,7 @@
 
     const CHANGELOG = [
       {
-        version: "4.6.1.4",
+        version: "4.6.1.5",
         date: "2026-06-15",
         title: "A Small World",
         summary: "Switching between the US and World maps is quicker, and the advertised map shortcut works again.",
@@ -22,6 +22,7 @@
               "Added the missing ~ action to the Shortcut Mode home-screen command table.",
               "The map chord now captures keydown, dead-key keypress, and keyup fallbacks before other keyboard handlers can consume it.",
               "Restored true display:none isolation for the inactive map after keeping the World SVG live slowed unrelated app interactions.",
+              "Map switches now show a compact loading pill and progress bar before the destination SVG begins painting.",
             ]
           }
         ]
