@@ -5259,11 +5259,10 @@
       display: flex;
       align-items: stretch;
       flex: 0 0 auto;
-      padding: .24rem;
-      border: 2px solid #14b8a6;
-      border-radius: 8px;
-      background: color-mix(in srgb, #14b8a6 9%, var(--surface));
-      box-shadow: inset 0 0 0 1px color-mix(in srgb, #14b8a6 20%, transparent);
+      padding: 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
     }
 
     .note-priority-header-control .waypoint-priority-popout,
@@ -8200,9 +8199,52 @@
       color: var(--text);
     }
 
+    .notes-priority-menu-item button[aria-expanded="true"] {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+      color: var(--accent-2);
+    }
+
     .notes-priority-menu .notes-priority-menu-item button .sf-symbol {
       width: 1.7rem;
       height: 1.7rem;
+    }
+
+    .notes-priority-options {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .4rem;
+      padding-top: .65rem;
+      border-top: 1px solid var(--line);
+    }
+
+    .notes-priority-options[hidden] {
+      display: none;
+    }
+
+    .notes-priority-option {
+      display: grid;
+      place-items: center;
+      width: 2.75rem;
+      min-width: 2.75rem;
+      height: 2.75rem;
+      min-height: 2.75rem;
+      padding: .58rem;
+      color: var(--priority-color, var(--text));
+    }
+
+    .notes-priority-menu .notes-priority-option .sf-symbol {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+
+    .notes-priority-option[aria-pressed="true"] {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 18%, var(--surface));
+      color: var(--priority-color, var(--accent-2));
+      box-shadow: inset 0 0 0 1px var(--accent);
     }
 
     #notesPriorityFilterValue {
@@ -9692,9 +9734,7 @@
       background: color-mix(in srgb, #14b8a6 8%, var(--surface));
     }
 
-    .detailed-waypoint-actions .waypoint-row-action,
-    .detailed-waypoint-actions .waypoint-priority-popout,
-    .detailed-waypoint-actions .waypoint-priority-toggle {
+    .detailed-waypoint-actions .waypoint-row-action {
       width: 2.12rem;
       min-width: 2.12rem;
       max-width: 2.12rem;
@@ -9993,11 +10033,12 @@
       z-index: 1;
       display: grid;
       place-items: center;
+      width: .9rem;
       min-width: .9rem;
       height: .9rem;
-      padding: 0 .15rem;
+      padding: 0;
       border: 1px solid var(--surface);
-      border-radius: 999px;
+      border-radius: 3px;
       background: var(--priority-color, var(--accent));
       color: #fff;
       font-size: .58rem;
@@ -10249,12 +10290,20 @@
     .notes-priority-heading-icon {
       display: inline-grid;
       place-items: center;
+      align-self: center;
       color: var(--priority-color);
+      line-height: 1;
     }
 
     .notes-priority-heading-icon .sf-symbol {
       width: 1.08rem;
       height: 1.08rem;
+      display: block;
+    }
+
+    .notes-priority-group .notes-category-heading>span:first-child {
+      align-items: center;
+      line-height: 1;
     }
 
     .notes-selected-priority-heading {
