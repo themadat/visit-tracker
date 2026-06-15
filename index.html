@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.6.1">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.0">
 </head>
 
 <body>
@@ -277,8 +277,35 @@
             <div class="segmented" aria-label="Notes sort order">
               <button id="notesSortAlphaBtn" type="button" aria-pressed="false" data-shortcut="→">Alphabetical</button>
               <button id="notesSortChronoBtn" type="button" aria-pressed="true" data-shortcut="→">Chronological</button>
-              <button id="notesSortPriorityBtn" type="button" aria-pressed="false" data-shortcut="→">Priority</button>
             </div>
+            <span class="notes-priority-picker">
+              <button id="notesPriorityBtn" class="notes-priority-toggle" type="button" aria-pressed="false"
+                aria-haspopup="dialog" aria-expanded="false" aria-controls="notesPriorityMenu">Priority</button>
+              <span id="notesPriorityMenu" class="notes-priority-menu" role="dialog" aria-label="Priority controls"
+                hidden>
+                <span class="notes-priority-menu-item">
+                  <small>Filter</small>
+                  <button id="notesPriorityFilterMode" type="button"></button>
+                </span>
+                <span class="notes-priority-menu-item">
+                  <small>Number</small>
+                  <button id="notesPriorityFilterValue" type="button"></button>
+                </span>
+                <span class="notes-priority-menu-item">
+                  <small>Order</small>
+                  <button id="notesPrioritySort" type="button"></button>
+                </span>
+                <span class="notes-priority-menu-item">
+                  <small>Group</small>
+                  <button id="notesPriorityGroup" type="button"></button>
+                </span>
+                <span class="notes-priority-menu-item">
+                  <small>Reset</small>
+                  <button id="notesPriorityResetBtn" type="button"></button>
+                </span>
+                <span id="notesPriorityOptions" class="notes-priority-options" hidden></span>
+              </span>
+            </span>
             <button id="notesCategoryToggleBtn" class="notes-category-toggle" type="button" aria-pressed="true"
               data-shortcut="G">Categorical</button>
             <button id="notesExcludedToggleBtn" class="notes-excluded-toggle" type="button" aria-pressed="true"
@@ -289,7 +316,7 @@
               data-shortcut="O">Coordinates</button>
           </div>
           <small id="notesPanelSubtitle" class="notes-toggle-hint" data-hint data-hint-key="notesPanelSubtitle">
-            Category Grouping | Excluded, Date, and Mapped Filters.
+            Priority / Category Grouping | Excluded, Date, and Mapped Filters.
           </small>
           <div id="notesIconFilterRow" class="notes-icon-filter-row">
             <ol id="notesIconFilters" class="notes-icon-filters" aria-label="Filter notes by icon"></ol>
@@ -542,6 +569,8 @@
       <div class="dialog-head-actions">
         <div id="noteWaypointHeaderControls" class="note-waypoint-header-controls hidden"
           aria-label="Waypoint controls"></div>
+        <div id="notePriorityHeaderControl" class="note-priority-header-control"
+          aria-label="Priority"></div>
         <button id="notePrevBtn" class="note-nav-btn hidden" type="button" aria-label="Previous note"
           title="Previous note"></button>
         <button id="noteNextBtn" class="note-nav-btn hidden" type="button" aria-label="Next note"
@@ -584,20 +613,11 @@
       </div>
       <section id="visitTypeRow" class="visit-type-row" aria-label="Visit labels">
       </section>
+      <input id="notePriority" type="hidden">
       <section id="noteSetSection" class="note-set-section hidden">
         <input id="noteSourceSetId" type="hidden">
         <input id="noteSourceItemId" type="hidden">
         <input id="noteSourceGenerated" type="hidden">
-        <label>Priority
-          <select id="notePriority">
-            <option value="">Blank</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-          </select>
-        </label>
         <label>Add to active pack
           <select id="noteSourceItemSelect"></select>
         </label>
@@ -1120,8 +1140,10 @@
             </li>
             <li>Use Quick Add beside search to add a note from the main list. Pick the target location in the note
               header, then Save or Save and Add Another.</li>
-            <li>Sort Notes alphabetically, chronologically, or by priority. Down Arrow cycles views and Right Arrow cycles
-              sorts; the view shortcut also works inside an individual location.</li>
+            <li>Right Arrow cycles the Alphabetical and Chronological sort. The Priority button adds exact, higher, or
+              lower filtering, 1-to-5 or 5-to-1 ordering, and priority grouping on top of that base sort. When the
+              filter is All, the priority number stays cleared because it does not affect the list. Down Arrow cycles
+              views; the view shortcut also works inside an individual location.</li>
             <li>Use Detailed, Expanded, Condensed, or Text Only view. Detailed shows every populated note field and
               the full details text; click that text to edit it inline, then press Cmd/Ctrl+Enter or use the checkmark
               to save. Text Only is copy-ready for Apple Notes.</li>
@@ -1147,7 +1169,7 @@
             <li>Use Locate beside the Lat/Lng row to look up latitude/longitude (City + state). The Where field for a
               stadium or trail name stays text-only. The arrow button next to Where moves its text into City. You can
               also edit or clear coordinates manually.</li>
-            <li>Notes support City, Where, What, Who, Additional Details, partial dates, and multiple
+            <li>Notes support City, Where, What, Who, Additional Details, partial dates, priority, and multiple
               icon labels. Four or fewer labels keeps rows easier to scan.</li>
             <li>When one location is open, Notes shows every note for that location. Main-list search, level, icon,
               date, coordinate, and visibility filters do not hide that selected location's notes.</li>
@@ -1236,14 +1258,18 @@
         <section class="help-section">
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ: Notes</h3>
           <p><b>Will my Notes filters come back?</b><br>Yes. Notes view, sort, grouping, excluded visibility, date
-            precision, coordinate filter, Legend filters, icon filters, collapsed categories, and selected location
-            restore with your local settings.</p>
+            precision, coordinate filter, Priority filter/order/grouping, Legend filters, icon filters, collapsed
+            categories, and selected location restore with your local settings.</p>
           <p><b>What does Categorical do in Notes?</b><br>It groups locations by City, State, and Territory while
-            keeping
-            your selected sort order inside each group.</p>
+            keeping your selected Alphabetical or Chronological sort inside each group. Group by Priority temporarily
+            takes precedence when it is active, and a location can appear in multiple priority groups when its notes
+            have different priorities.</p>
           <p><b>What does Detailed view show?</b><br>Detailed is the full-card view. It shows the location's levels and
             note/date totals, then location precision, level-colored tags, compact Location and Event summaries, and the
             complete details text without truncation. Linked Waypoints also show website, photo, and priority actions.</p>
+          <p><b>Where does Priority show up?</b><br>Priority appears in the note editor, Detailed cards, Condensed
+            priority controls, Expanded/list icon badges, map pins, Text Only view, and Markdown/Rich Text/Plain Text
+            exports.</p>
           <p><b>Can I edit a Detailed card without opening the note editor?</b><br>Yes. Click its details text, make the
             change inline, then press Cmd/Ctrl+Enter or use the checkmark to save. The live counter tracks the
             2,000-character limit. In the full note editor, Enter adds a new line and Cmd/Ctrl+Enter saves.</p>
@@ -1507,7 +1533,7 @@
               </div>
               <div class="shortcut-row"><kbd>↓</kbd><span>Cycle Notes View: Detailed → Expanded → Condensed → Text
                   <em>[notesViewDetailedBtn]</em></span></div>
-              <div class="shortcut-row"><kbd>→</kbd><span>Cycle Notes Sort: Alphabetical → Chronological → Priority
+              <div class="shortcut-row"><kbd>→</kbd><span>Cycle Notes Sort: Alphabetical → Chronological
                   <em>[notesSortAlphaBtn]</em></span></div>
               <div class="shortcut-row"><kbd>G</kbd><span>Categorical Grouping
                   On/Off<em>[notesCategoryToggleBtn]</em></span>
@@ -1646,7 +1672,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.6.1";
+    const APP_VERSION = "4.7.0";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -2514,6 +2540,10 @@
     let notesHideExcludedOnly = true;
     let notesDatePrecisionFilter = "all";
     let notesCoordinateFilter = "all";
+    let notesPriorityFilter = { mode: "none", value: "" };
+    let notesPrioritySort = "none";
+    let notesPriorityGroup = false;
+    let notesPriorityOptionPanel = "";
     let waypointPackPanelSetId = "";
     let notesSearchQuery = "";
     let mapFitMode = false;
@@ -2630,6 +2660,9 @@
           legendPanelOpen: true,
           notesPanelOpen: true,
           notesSortMode: "chrono",
+          notesPriorityFilter: { mode: "none", value: "" },
+          notesPrioritySort: "none",
+          notesPriorityGroup: false,
           notesViewMode: "detailed",
           notesCategoricalMode: true,
           notesHideExcludedOnly: true,
@@ -3013,7 +3046,21 @@
         if (typeof next.settings[key] !== "boolean") next.settings[key] = base.settings[key];
       });
       if (!next.settings.mapPanelOpen && !next.settings.legendPanelOpen && !next.settings.notesPanelOpen) next.settings.mapPanelOpen = true;
-      if (!["alpha", "chrono", "priority"].includes(next.settings.notesSortMode)) next.settings.notesSortMode = "chrono";
+      const legacyPrioritySort = next.settings.notesSortMode === "priority";
+      if (!["alpha", "chrono"].includes(next.settings.notesSortMode)) next.settings.notesSortMode = "chrono";
+      const rawPriorityFilter = next.settings.notesPriorityFilter && typeof next.settings.notesPriorityFilter === "object"
+        ? next.settings.notesPriorityFilter
+        : {};
+      const priorityFilterMode = ["none", "exact", "gte", "lte"].includes(rawPriorityFilter.mode)
+        ? rawPriorityFilter.mode
+        : "none";
+      next.settings.notesPriorityFilter = {
+        mode: priorityFilterMode,
+        value: priorityFilterMode === "none" ? "" : normalizeNotesPriorityFilterValue(rawPriorityFilter.value)
+      };
+      if (!["none", "asc", "desc"].includes(next.settings.notesPrioritySort)) next.settings.notesPrioritySort = "none";
+      if (legacyPrioritySort && next.settings.notesPrioritySort === "none") next.settings.notesPrioritySort = "desc";
+      if (typeof next.settings.notesPriorityGroup !== "boolean") next.settings.notesPriorityGroup = false;
       if (!["detailed", "expanded", "compact", "text"].includes(next.settings.notesViewMode)) next.settings.notesViewMode = "detailed";
       if (typeof next.settings.notesCategoricalMode !== "boolean") next.settings.notesCategoricalMode = true;
       if (typeof next.settings.notesHideExcludedOnly !== "boolean") next.settings.notesHideExcludedOnly = true;
@@ -3246,6 +3293,10 @@
       return /^[1-5]$/.test(text) ? text : "";
     }
 
+    function normalizeNotesPriorityFilterValue(value) {
+      return normalizeNotePriority(value);
+    }
+
     function notePriorityColor(value) {
       return NOTE_PRIORITY_COLORS[normalizeNotePriority(value)] || "";
     }
@@ -3474,7 +3525,13 @@
       state.settings.mapPanelOpen = mapPanelOpen !== false;
       state.settings.legendPanelOpen = legendPanelOpen !== false;
       state.settings.notesPanelOpen = notesPanelOpen !== false;
-      state.settings.notesSortMode = ["alpha", "chrono", "priority"].includes(notesSortMode) ? notesSortMode : "chrono";
+      state.settings.notesSortMode = ["alpha", "chrono"].includes(notesSortMode) ? notesSortMode : "chrono";
+      state.settings.notesPriorityFilter = {
+        mode: ["none", "exact", "gte", "lte"].includes(notesPriorityFilter?.mode) ? notesPriorityFilter.mode : "none",
+        value: notesPriorityFilter?.mode === "none" ? "" : normalizeNotesPriorityFilterValue(notesPriorityFilter?.value)
+      };
+      state.settings.notesPrioritySort = ["none", "asc", "desc"].includes(notesPrioritySort) ? notesPrioritySort : "none";
+      state.settings.notesPriorityGroup = notesPriorityGroup === true;
       state.settings.notesViewMode = ["detailed", "expanded", "compact", "text"].includes(notesViewMode) ? notesViewMode : "detailed";
       state.settings.notesCategoricalMode = notesCategoricalMode === true;
       state.settings.notesHideExcludedOnly = notesHideExcludedOnly === true;
@@ -3497,7 +3554,14 @@
       mapPanelOpen = state.settings.mapPanelOpen !== false;
       legendPanelOpen = state.settings.legendPanelOpen !== false;
       notesPanelOpen = state.settings.notesPanelOpen !== false;
-      notesSortMode = ["alpha", "chrono", "priority"].includes(state.settings.notesSortMode) ? state.settings.notesSortMode : "chrono";
+      notesSortMode = ["alpha", "chrono"].includes(state.settings.notesSortMode) ? state.settings.notesSortMode : "chrono";
+      notesPriorityFilter = {
+        mode: ["none", "exact", "gte", "lte"].includes(state.settings.notesPriorityFilter?.mode) ? state.settings.notesPriorityFilter.mode : "none",
+        value: state.settings.notesPriorityFilter?.mode === "none" ? "" : normalizeNotesPriorityFilterValue(state.settings.notesPriorityFilter?.value)
+      };
+      if (notesPriorityFilter.mode === "none") notesPriorityFilter.value = "";
+      notesPrioritySort = ["none", "asc", "desc"].includes(state.settings.notesPrioritySort) ? state.settings.notesPrioritySort : "none";
+      notesPriorityGroup = state.settings.notesPriorityGroup === true;
       notesViewMode = ["detailed", "expanded", "compact", "text"].includes(state.settings.notesViewMode) ? state.settings.notesViewMode : "detailed";
       notesCategoricalMode = state.settings.notesCategoricalMode !== false;
       notesHideExcludedOnly = state.settings.notesHideExcludedOnly !== false;
@@ -5636,8 +5700,14 @@
       setButtonLabel("#notesPanelBackBtn", __CHEVRON_BACKWARD, "All Notes");
       setButtonLabel("#notesSortAlphaBtn", __TEXTFORMAT_CHARACTERS_ARROW_LEFT_AND_RIGHT, "Alphabetical");
       setButtonLabel("#notesSortChronoBtn", __CLOCK_ARROW_TRIANGLEHEAD_2_COUNTERCLOCKWISE_ROTATE_90, "Chronological");
-      setButtonLabel("#notesSortPriorityBtn", __FLAG_CIRCLE, "Priority");
-      setButtonLabel("#notesCategoryToggleBtn", __RECTANGLE_3_GROUP_FILL, "Categorical", "Group by Location Type");
+      const prioritySummary = notesPriorityControlSummary();
+      setButtonLabel("#notesPriorityBtn", __CIRCLE_BADGE_MINUS, "Priority", prioritySummary.label, prioritySummary.label);
+      const priorityButton = $("#notesPriorityBtn");
+      priorityButton?.setAttribute("aria-pressed", String(notesPriorityControlsActive()));
+      if (prioritySummary.status) priorityButton?.setAttribute("data-priority-status", prioritySummary.status);
+      else priorityButton?.removeAttribute("data-priority-status");
+      const categoryTitle = notesPriorityGroup ? "Priority grouping is active" : "Group by Location Type";
+      setButtonLabel("#notesCategoryToggleBtn", __RECTANGLE_3_GROUP_FILL, "Categorical", categoryTitle, categoryTitle);
       setButtonLabel("#notesExcludedToggleBtn", __CIRCLE_SLASH, notesHideExcludedOnly ? "Hidden" : "Shown", notesHideExcludedOnly ? "Excluded locations hidden" : "Excluded locations shown", notesHideExcludedOnly ? "Excluded locations hidden" : "Excluded locations shown");
       const dateFilter = datePrecisionFilterMeta();
       setButtonLabel("#notesDatePrecisionFilterBtn", dateFilter.icon, dateFilter.label, dateFilter.aria, dateFilter.title);
@@ -6097,6 +6167,7 @@
         && stateMatchesVisitTypeFilter(abbr)
         && stateMatchesExcludedVisibility(abbr)
         && stateMatchesDatePrecisionFilter(abbr)
+        && stateMatchesPriorityFilter(abbr)
         && stateMatchesCoordinateFilter(abbr)
         && stateMatchesNotesSearch(abbr);
     }
@@ -6912,12 +6983,14 @@
       const priority = normalizeNotePriority(priorityValue);
       if (!priority) return;
       const svgNS = "http://www.w3.org/2000/svg";
-      const bg = document.createElementNS(svgNS, "circle");
+      const bg = document.createElementNS(svgNS, "rect");
       bg.classList.add(`${classPrefix}-priority-bg`);
       bg.style.setProperty("--priority-color", notePriorityColor(priority));
-      bg.setAttribute("cx", "8.2");
-      bg.setAttribute("cy", "8.2");
-      bg.setAttribute("r", "5");
+      bg.setAttribute("x", "3.2");
+      bg.setAttribute("y", "3.2");
+      bg.setAttribute("width", "10");
+      bg.setAttribute("height", "10");
+      bg.setAttribute("rx", "1.4");
       group.append(bg);
       const text = document.createElementNS(svgNS, "text");
       text.classList.add(`${classPrefix}-priority`);
@@ -7262,27 +7335,40 @@
       ).join("");
     }
 
+    function prioritySquareIcon(priority) {
+      return ({
+        "1": __1_SQUARE_FILL,
+        "2": __2_SQUARE_FILL,
+        "3": __3_SQUARE_FILL,
+        "4": __4_SQUARE_FILL,
+        "5": __5_SQUARE_FILL,
+        "": __MINUS_SQUARE_FILL
+      })[normalizeNotePriority(priority)] || __MINUS_SQUARE_FILL;
+    }
+
     function waypointPriorityButtons(priority, attrName, itemId = "") {
       const current = normalizeNotePriority(priority);
       const detailed = attrName === "data-detailed-priority-choice";
+      const condensed = attrName === "data-condensed-priority-choice";
       const toggleAttr = attrName === "data-note-priority-choice"
         ? "data-note-priority-toggle"
-        : detailed ? "data-detailed-priority-toggle" : "data-set-preview-priority-toggle";
+        : detailed ? "data-detailed-priority-toggle"
+          : condensed ? "data-condensed-priority-toggle" : "data-set-preview-priority-toggle";
       const menuAttr = attrName === "data-note-priority-choice"
         ? "data-note-priority-menu"
-        : detailed ? "data-detailed-priority-menu" : "data-set-preview-priority-menu";
+        : detailed ? "data-detailed-priority-menu"
+          : condensed ? "data-condensed-priority-menu" : "data-set-preview-priority-menu";
       const itemAttr = itemId ? `data-priority-item="${escapeHtml(itemId)}"` : "";
       const color = notePriorityColor(current);
-      const label = current || "-";
       const title = current ? `Priority ${current}` : "Blank priority";
       const choices = ["", "1", "2", "3", "4", "5"].map(value => {
         const choiceLabel = value ? `Priority ${value}` : "Blank priority";
         const choiceColor = notePriorityColor(value) || "var(--line)";
-        return `<button class="waypoint-priority-choice" type="button" role="menuitemradio" ${attrName}="${escapeHtml(value)}" ${itemAttr} aria-checked="${current === value ? "true" : "false"}" aria-label="${escapeHtml(choiceLabel)}" title="${escapeHtml(choiceLabel)}" style="--priority-color:${escapeHtml(choiceColor)}">${escapeHtml(value || "-")}</button>`;
+        return `<button class="waypoint-priority-choice" type="button" role="menuitemradio" ${attrName}="${escapeHtml(value)}" ${itemAttr} aria-checked="${current === value ? "true" : "false"}" aria-label="${escapeHtml(choiceLabel)}" title="${escapeHtml(choiceLabel)}" style="--priority-color:${escapeHtml(choiceColor)}">${prioritySquareIcon(value)}</button>`;
       }).join("");
       return `
         <div class="waypoint-priority-popout" ${itemAttr}>
-          <button class="waypoint-priority-toggle" type="button" ${toggleAttr} aria-haspopup="menu" aria-expanded="false" data-priority="${escapeHtml(current)}" title="${escapeHtml(title)}" style="--priority-color:${escapeHtml(color || "var(--line)")};">${escapeHtml(label)}</button>
+          <button class="waypoint-priority-toggle" type="button" ${toggleAttr} aria-haspopup="menu" aria-expanded="false" data-priority="${escapeHtml(current)}" aria-label="${escapeHtml(title)}" title="${escapeHtml(title)}" style="--priority-color:${escapeHtml(color || "var(--line)")};">${prioritySquareIcon(current)}</button>
           <div class="waypoint-priority-menu" ${menuAttr} role="menu" hidden>${choices}</div>
         </div>
       `;
@@ -8635,8 +8721,206 @@
       refreshAfterNotesFilterChange();
     }
 
+    function notesPriorityControlsActive() {
+      return notesPriorityFilter.mode !== "none" || notesPrioritySort !== "none" || notesPriorityGroup;
+    }
+
+    function notesPriorityControlSummary() {
+      const parts = [];
+      let status = "";
+      if (notesPriorityFilter.mode !== "none") {
+        const valueLabel = notesPriorityFilter.value ? `priority ${notesPriorityFilter.value}` : "no priority";
+        const operator = notesPriorityFilter.mode === "exact" ? "" : notesPriorityFilter.mode === "gte" ? "≥" : "≤";
+        status = `${operator}${notesPriorityFilter.value || "-"}`;
+        const filterLabel = !notesPriorityFilter.value || notesPriorityFilter.mode === "exact"
+          ? valueLabel
+          : `priority ${notesPriorityFilter.value} or ${notesPriorityFilter.mode === "gte" ? "higher" : "lower"}`;
+        parts.push(`Filter ${filterLabel}`);
+      }
+      if (notesPrioritySort !== "none") {
+        if (!status) status = notesPrioritySort === "desc" ? "5↓" : "1↑";
+        parts.push(`sort ${notesPrioritySort === "desc" ? "5 to 1" : "1 to 5"}`);
+      }
+      if (notesPriorityGroup) {
+        if (!status) status = "G";
+        parts.push("group by priority");
+      }
+      return {
+        status,
+        label: parts.length ? `Priority: ${parts.join(", ")}` : "Priority filter, sort, and grouping"
+      };
+    }
+
+    function setNotesPriorityMenuOpen(open) {
+      const menu = $("#notesPriorityMenu");
+      const button = $("#notesPriorityBtn");
+      if (!menu || !button) return;
+      if (open) {
+        menu.style.removeProperty("width");
+        menu.style.removeProperty("left");
+        menu.style.removeProperty("top");
+      }
+      if (!open) notesPriorityOptionPanel = "";
+      menu.hidden = !open;
+      button.setAttribute("aria-expanded", String(open));
+      renderNotesPriorityMenuControls();
+      if (open) requestAnimationFrame(() => positionFloatingMenu(menu, button));
+    }
+
+    function notesPriorityFilterModeMeta(mode = notesPriorityFilter.mode) {
+      return ({
+        none: { icon: __SUM, label: "All priorities" },
+        exact: { icon: __EQUAL, label: "Exact priority" },
+        lte: { icon: __LESSTHANOREQUALTO, label: "Priority or lower" },
+        gte: { icon: __GREATERTHANOREQUALTO, label: "Priority or higher" }
+      })[mode] || { icon: __SUM, label: "All priorities" };
+    }
+
+    function notesPrioritySortMeta(sort = notesPrioritySort) {
+      return ({
+        none: { icon: __CHART_BAR_XAXIS, label: "Priority order off" },
+        desc: { icon: __CHART_BAR_XAXIS_DESCENDING, label: "Priority order 5 to 1" },
+        asc: { icon: __CHART_BAR_XAXIS_ASCENDING, label: "Priority order 1 to 5" }
+      })[sort] || { icon: __CHART_BAR_XAXIS, label: "Priority order off" };
+    }
+
+    function renderNotesPriorityMenuControls() {
+      const filter = notesPriorityFilterModeMeta();
+      const allPriorities = notesPriorityFilter.mode === "none";
+      if (allPriorities) notesPriorityFilter.value = "";
+      if (allPriorities && notesPriorityOptionPanel === "number") notesPriorityOptionPanel = "";
+      const number = allPriorities ? "" : normalizeNotesPriorityFilterValue(notesPriorityFilter.value);
+      const numberLabel = number ? `Priority ${number}` : "No priority";
+      const order = notesPrioritySortMeta();
+      const controls = [
+        ["#notesPriorityFilterMode", filter.icon, filter.label],
+        ["#notesPriorityFilterValue", prioritySquareIcon(number), numberLabel],
+        ["#notesPrioritySort", order.icon, order.label],
+        ["#notesPriorityGroup", __LIST_NUMBER, notesPriorityGroup ? "Stop grouping by priority" : "Group by priority"],
+        ["#notesPriorityResetBtn", __SLIDER_HORIZONTAL_2_ARROW_TRIANGLEHEAD_COUNTERCLOCKWISE, "Reset priority controls"]
+      ];
+      controls.forEach(([selector, icon, label]) => {
+        const button = $(selector);
+        if (!button) return;
+        button.innerHTML = icon;
+        button.setAttribute("aria-label", label);
+        button.title = label;
+        if (selector === "#notesPriorityFilterValue") {
+          button.disabled = allPriorities;
+          button.setAttribute("aria-disabled", String(allPriorities));
+        }
+      });
+      $("#notesPriorityFilterValue")?.style.setProperty("--priority-color", notePriorityColor(number) || "var(--muted)");
+      $("#notesPriorityGroup")?.setAttribute("aria-pressed", String(notesPriorityGroup));
+      [
+        ["#notesPriorityFilterMode", "filter"],
+        ["#notesPriorityFilterValue", "number"],
+        ["#notesPrioritySort", "order"]
+      ].forEach(([selector, panel]) => {
+        const button = $(selector);
+        button?.setAttribute("aria-expanded", String(notesPriorityOptionPanel === panel));
+        button?.setAttribute("aria-controls", "notesPriorityOptions");
+      });
+      renderNotesPriorityOptionPanel();
+    }
+
+    function notesPriorityOptionsFor(panel) {
+      if (panel === "filter") return [
+        { value: "none", icon: __SUM, label: "All priorities" },
+        { value: "exact", icon: __EQUAL, label: "Exact priority" },
+        { value: "lte", icon: __LESSTHANOREQUALTO, label: "Priority or lower" },
+        { value: "gte", icon: __GREATERTHANOREQUALTO, label: "Priority or higher" }
+      ];
+      if (panel === "number") return ["", "1", "2", "3", "4", "5"].map(value => ({
+        value,
+        icon: prioritySquareIcon(value),
+        label: value ? `Priority ${value}` : "No priority",
+        color: notePriorityColor(value) || "var(--muted)"
+      }));
+      if (panel === "order") return [
+        { value: "none", icon: __CHART_BAR_XAXIS, label: "Priority order off" },
+        { value: "desc", icon: __CHART_BAR_XAXIS_DESCENDING, label: "Priority order 5 to 1" },
+        { value: "asc", icon: __CHART_BAR_XAXIS_ASCENDING, label: "Priority order 1 to 5" }
+      ];
+      return [];
+    }
+
+    function notesPriorityOptionSelected(panel, value) {
+      if (panel === "filter") return notesPriorityFilter.mode === value;
+      if (panel === "number") return normalizeNotesPriorityFilterValue(notesPriorityFilter.value) === value;
+      if (panel === "order") return notesPrioritySort === value;
+      return false;
+    }
+
+    function renderNotesPriorityOptionPanel() {
+      const panel = $("#notesPriorityOptions");
+      if (!panel) return;
+      const options = notesPriorityOptionsFor(notesPriorityOptionPanel);
+      panel.hidden = !options.length;
+      panel.setAttribute("aria-label", notesPriorityOptionPanel ? `Priority ${notesPriorityOptionPanel} options` : "");
+      panel.innerHTML = options.map(option =>
+        `<button class="notes-priority-option" type="button" data-priority-option-panel="${escapeHtml(notesPriorityOptionPanel)}" data-priority-option-value="${escapeHtml(option.value)}" aria-pressed="${notesPriorityOptionSelected(notesPriorityOptionPanel, option.value)}" aria-label="${escapeHtml(option.label)}" title="${escapeHtml(option.label)}"${option.color ? ` style="--priority-color:${escapeHtml(option.color)}"` : ""}>${option.icon}</button>`
+      ).join("");
+    }
+
+    function toggleNotesPriorityOptionPanel(panel) {
+      if (panel === "number" && notesPriorityFilter.mode === "none") return;
+      notesPriorityOptionPanel = notesPriorityOptionPanel === panel ? "" : panel;
+      renderNotesPriorityMenuControls();
+      requestAnimationFrame(() => positionFloatingMenu($("#notesPriorityMenu"), $("#notesPriorityBtn")));
+    }
+
+    function chooseNotesPriorityOption(panel, value) {
+      if (panel === "filter" && ["none", "exact", "lte", "gte"].includes(value)) {
+        notesPriorityFilter.mode = value;
+        if (value === "none") notesPriorityFilter.value = "";
+      }
+      if (panel === "number" && notesPriorityFilter.mode !== "none") notesPriorityFilter.value = normalizeNotePriority(value);
+      if (panel === "order" && ["none", "desc", "asc"].includes(value)) notesPrioritySort = value;
+      notesPriorityOptionPanel = "";
+      updateNotesPriorityControls();
+    }
+
+    function noteMatchesPriorityFilter(note) {
+      if (notesPriorityFilter.mode === "none") return true;
+      const priority = normalizeNotePriority(note?.priority);
+      if (!notesPriorityFilter.value) return !priority;
+      if (!priority) return false;
+      const value = Number(priority);
+      const target = Number(notesPriorityFilter.value);
+      if (notesPriorityFilter.mode === "exact") return value === target;
+      if (notesPriorityFilter.mode === "gte") return value >= target;
+      if (notesPriorityFilter.mode === "lte") return value <= target;
+      return true;
+    }
+
+    function stateMatchesPriorityFilter(abbr) {
+      if (notesPriorityFilter.mode === "none") return true;
+      return (notesStoreForCode(abbr)[abbr] || []).some(noteMatchesPriorityFilter);
+    }
+
+    function updateNotesPriorityControls() {
+      save();
+      syncButtonLabels();
+      refreshAfterNotesFilterChange();
+    }
+
+    function toggleNotesPriorityGroup() {
+      notesPriorityOptionPanel = "";
+      notesPriorityGroup = !notesPriorityGroup;
+      updateNotesPriorityControls();
+    }
+
+    function resetNotesPriorityControls() {
+      notesPriorityOptionPanel = "";
+      notesPriorityFilter = { mode: "none", value: "" };
+      notesPrioritySort = "none";
+      notesPriorityGroup = false;
+      updateNotesPriorityControls();
+    }
+
     function noteMatchesAllFilters(note) {
-      return noteMatchesLevelFilter(note) && noteMatchesVisitTypeFilter(note) && noteMatchesDatePrecisionFilter(note) && noteMatchesExcludedVisibility(note);
+      return noteMatchesLevelFilter(note) && noteMatchesVisitTypeFilter(note) && noteMatchesDatePrecisionFilter(note) && noteMatchesPriorityFilter(note) && noteMatchesExcludedVisibility(note);
     }
 
     function activeFilterNames() {
@@ -8659,18 +8943,20 @@
         : [...noteVisitTypeFilters].map(id => id === NOTE_FILTER_NO_ICON ? "No Icon" : visitTypeMeta(id)?.label).filter(Boolean);
       const dateFilter = datePrecisionFilterMeta();
       const coordFilter = coordinateFilterMeta();
+      const prioritySummary = notesPriorityControlSummary();
       const filterParts = [
         notesSummaryIconPart(__CIRCLE_SLASH, notesHideExcludedOnly ? "Hidden" : "Shown", notesHideExcludedOnly ? "Excluded locations hidden" : "Excluded locations shown"),
         notesSummaryIconPart(dateFilter.icon, dateFilter.label, dateFilter.title),
         notesSummaryIconPart(coordFilter.icon, coordFilter.label, coordFilter.title),
+        notesPriorityControlsActive() ? notesSummaryIconPart(__CIRCLE_BADGE_MINUS, prioritySummary.status || "On", prioritySummary.label) : "",
         escapeHtml(levels.length ? `${levels.join(", ")}` : "All Levels"),
         escapeHtml(icons.length ? `${icons.join(", ")}` : "All Icons"),
         search ? `&quot;${escapeHtml(search)}&quot;` : "",
       ].filter(Boolean);
       const modeParts = [
         `${notesViewMode === "detailed" ? "Detailed" : notesViewMode === "compact" ? "Condensed" : notesViewMode === "text" ? "Text Only" : "Expanded"}`,
-        notesSortMode === "alpha" ? "Alphabetical" : notesSortMode === "priority" ? "Priority" : "Chronological",
-        notesCategoricalMode ? "Grouped" : "Ungrouped"
+        notesSortMode === "alpha" ? "Alphabetical" : "Chronological",
+        notesPriorityGroup ? "Priority Groups" : notesCategoricalMode ? "Category Groups" : "Ungrouped"
       ].filter(Boolean);
       const countLabel = `<span class="summary-count" aria-label="${markedCount} location${markedCount === 1 ? "" : "s"}"><span>${markedCount}</span>${__LOCATION_FILL}</span> <span class="summary-count" aria-label="${notesCount} note${notesCount === 1 ? "" : "s"}"><span>${notesCount}</span>${__LIST_BULLET_RECTANGLE_PORTRAIT_FILL}</span>`;
       return `<strong>${countLabel}<span class="mode-bracket">[${escapeHtml(modeParts.join(" | "))}]</span></strong><em>${filterParts.join(" | ")}</em>`;
@@ -8768,7 +9054,10 @@
     }
 
     function notesForDisplay(abbr, options = {}) {
-      return options.ignoreFilters ? sortedNotesFor(abbr) : filteredNotesFor(abbr);
+      const notes = options.ignoreFilters ? sortedNotesFor(abbr) : filteredNotesFor(abbr);
+      if (!Object.prototype.hasOwnProperty.call(options, "priorityGroup")) return notes;
+      const priority = normalizeNotePriority(options.priorityGroup);
+      return notes.filter(note => normalizeNotePriority(note?.priority) === priority);
     }
 
     function stateLevelNamesForDisplay(abbr, options = {}) {
@@ -8866,7 +9155,7 @@
       const codes = activeRegionCodes();
       const marked = new Set(codes.filter(code => getStateLevelIds(code).length > 0 || (notesStoreForCode(code)[code] || []).length > 0));
       return codes.filter(abbr =>
-        marked.has(abbr) && stateMatchesLevelFilter(abbr) && stateMatchesVisitTypeFilter(abbr) && stateMatchesExcludedVisibility(abbr) && stateMatchesDatePrecisionFilter(abbr) && stateMatchesCoordinateFilter(abbr)
+        marked.has(abbr) && stateMatchesLevelFilter(abbr) && stateMatchesVisitTypeFilter(abbr) && stateMatchesExcludedVisibility(abbr) && stateMatchesDatePrecisionFilter(abbr) && stateMatchesPriorityFilter(abbr) && stateMatchesCoordinateFilter(abbr)
       );
     }
 
@@ -9014,52 +9303,88 @@
 
     function notePrioritySortRank(note) {
       const priority = normalizeNotePriority(note?.priority);
-      return priority ? Number(priority) : 99;
+      return priority ? Number(priority) : null;
+    }
+
+    function effectiveNotesPrioritySort() {
+      return notesPrioritySort !== "none" ? notesPrioritySort : notesPriorityGroup ? "desc" : "none";
+    }
+
+    function compareNotePriority(a, b, direction = effectiveNotesPrioritySort()) {
+      const aRank = notePrioritySortRank(a);
+      const bRank = notePrioritySortRank(b);
+      if (aRank === null && bRank === null) return 0;
+      if (aRank === null) return 1;
+      if (bRank === null) return -1;
+      return direction === "asc" ? aRank - bRank : bRank - aRank;
+    }
+
+    function compareNotesBase(a, b) {
+      if (notesSortMode === "alpha") {
+        return noteSummary(a).localeCompare(noteSummary(b))
+          || (a.date || "").localeCompare(b.date || "");
+      }
+      return (a.date || "9999-99-99").localeCompare(b.date || "9999-99-99")
+        || noteSummary(a).localeCompare(noteSummary(b));
     }
 
     function sortPriorityForState(abbr) {
-      const ranks = filteredNotesFor(abbr).map(notePrioritySortRank).sort((a, b) => a - b);
-      return ranks[0] ?? 99;
+      const priorities = filteredNotesFor(abbr)
+        .map(notePrioritySortRank)
+        .filter(value => value !== null);
+      if (!priorities.length) return null;
+      return effectiveNotesPrioritySort() === "asc"
+        ? Math.min(...priorities)
+        : Math.max(...priorities);
+    }
+
+    function compareStatePriority(a, b) {
+      const aRank = sortPriorityForState(a);
+      const bRank = sortPriorityForState(b);
+      if (aRank === null && bRank === null) return 0;
+      if (aRank === null) return 1;
+      if (bRank === null) return -1;
+      return effectiveNotesPrioritySort() === "asc" ? aRank - bRank : bRank - aRank;
+    }
+
+    function compareStatesBase(a, b) {
+      if (notesSortMode === "chrono") {
+        const dateSort = sortDateForState(a).localeCompare(sortDateForState(b));
+        if (dateSort) return dateSort;
+      }
+      return regionName(a).localeCompare(regionName(b));
     }
 
     function sortedMarkedStateAbbrs() {
       const marked = notesSearchQuery.trim()
         ? activeRegionCodes().filter(abbr =>
-          stateMatchesNotesSearch(abbr) && stateMatchesLevelFilter(abbr) && stateMatchesVisitTypeFilter(abbr) && stateMatchesExcludedVisibility(abbr) && stateMatchesDatePrecisionFilter(abbr) && stateMatchesCoordinateFilter(abbr)
+          stateMatchesNotesSearch(abbr) && stateMatchesLevelFilter(abbr) && stateMatchesVisitTypeFilter(abbr) && stateMatchesExcludedVisibility(abbr) && stateMatchesDatePrecisionFilter(abbr) && stateMatchesPriorityFilter(abbr) && stateMatchesCoordinateFilter(abbr)
         )
         : markedStateAbbrs();
       return marked.sort((a, b) => {
-        if (notesSortMode === "priority") {
-          const prioritySort = sortPriorityForState(a) - sortPriorityForState(b);
+        if (effectiveNotesPrioritySort() !== "none") {
+          const prioritySort = compareStatePriority(a, b);
           if (prioritySort) return prioritySort;
         }
-        if (notesSortMode === "chrono") {
-          const dateSort = sortDateForState(a).localeCompare(sortDateForState(b));
-          if (dateSort) return dateSort;
-        }
-        return regionName(a).localeCompare(regionName(b));
+        return compareStatesBase(a, b);
       });
     }
 
     function sortedNotesFor(abbr) {
       return (notesStoreForCode(abbr)[abbr] || []).slice().sort((a, b) => {
-        if (notesSortMode === "priority") {
-          return notePrioritySortRank(a) - notePrioritySortRank(b)
-            || (a.date || "9999-99-99").localeCompare(b.date || "9999-99-99")
-            || noteSummary(a).localeCompare(noteSummary(b));
-        }
-        if (notesSortMode === "alpha") {
-          return noteSummary(a).localeCompare(noteSummary(b)) || (a.date || "").localeCompare(b.date || "");
-        }
-        return (a.date || "9999-99-99").localeCompare(b.date || "9999-99-99") || noteSummary(a).localeCompare(noteSummary(b));
+        const prioritySort = effectiveNotesPrioritySort() === "none" ? 0 : compareNotePriority(a, b);
+        return prioritySort || compareNotesBase(a, b);
       });
     }
 
     function renderNotesPanelControls() {
       $("#notesSortAlphaBtn").setAttribute("aria-pressed", notesSortMode === "alpha");
       $("#notesSortChronoBtn").setAttribute("aria-pressed", notesSortMode === "chrono");
-      $("#notesSortPriorityBtn").setAttribute("aria-pressed", notesSortMode === "priority");
       $("#notesCategoryToggleBtn").setAttribute("aria-pressed", String(notesCategoricalMode));
+      $("#notesCategoryToggleBtn").disabled = notesPriorityGroup;
+      $("#notesCategoryToggleBtn").title = notesPriorityGroup ? "Priority grouping is active" : "Group by Location Type";
+      $("#notesPriorityBtn").setAttribute("aria-pressed", String(notesPriorityControlsActive()));
+      renderNotesPriorityMenuControls();
       $("#notesExcludedToggleBtn").setAttribute("aria-pressed", String(!notesHideExcludedOnly));
       $("#notesExcludedToggleBtn").dataset.excludedVisibility = notesHideExcludedOnly ? "hidden" : "shown";
       $("#notesDatePrecisionFilterBtn").setAttribute("aria-pressed", String(notesDatePrecisionFilter !== "all"));
@@ -9089,14 +9414,14 @@
     }
 
     function setNotesSortMode(mode) {
-      if (!["alpha", "chrono", "priority"].includes(mode) || notesSortMode === mode) return;
+      if (!["alpha", "chrono"].includes(mode) || notesSortMode === mode) return;
       notesSortMode = mode;
       save();
       renderNotesPanel();
     }
 
     function cycleNotesSortMode() {
-      const order = ["alpha", "chrono", "priority"];
+      const order = ["alpha", "chrono"];
       const index = order.indexOf(notesSortMode);
       setNotesSortMode(order[(index + 1) % order.length] || "alpha");
     }
@@ -9243,9 +9568,9 @@
       return "";
     }
 
-    function visitTypeIconStackForState(abbr) {
+    function visitTypeIconStackForState(abbr, options = {}) {
       const ids = new Set();
-      filteredNotesFor(abbr).forEach(note => (note.visitTypes || []).forEach(id => ids.add(id)));
+      notesForDisplay(abbr, options).forEach(note => (note.visitTypes || []).forEach(id => ids.add(id)));
       const labels = allVisitTypes().filter(type => ids.has(type.id));
       const icons = labels.map(type => visitTypeIcon(type.id)).join("");
       return icons ? `<span class="visit-icon-stack" aria-label="${escapeHtml(labels.map(type => type.label).join(", "))}">${icons}</span>` : "";
@@ -9264,7 +9589,7 @@
     }
 
     function textOnlyNoteLine(note) {
-      const parts = [formatTextOnlyDate(note.date), levelById(note.levelId)?.name || "No level", noteFieldsKeywordText(note)];
+      const parts = [formatTextOnlyDate(note.date), levelById(note.levelId)?.name || "No level", notePriorityLabel(note), noteFieldsKeywordText(note)];
       return `        - ${parts.filter(Boolean).join(" :: ")}${visitTypeTextSuffix(note)}`;
     }
 
@@ -9286,7 +9611,7 @@
       const suffix = levelText ? ` :: ${type.label} :: ${levelText}` : "";
       if (notes.length === 1) {
         const note = notes[0];
-        const noteParts = [formatTextOnlyDate(note.date), noteFieldsKeywordText(note)].filter(Boolean);
+        const noteParts = [formatTextOnlyDate(note.date), notePriorityLabel(note), noteFieldsKeywordText(note)].filter(Boolean);
         return `- [${checked}] ${STATE_NAMES[abbr]} (${abbr})${suffix}${noteParts.length ? ` :: ${noteParts.join(" :: ")}` : ""}${visitTypeTextSuffix(note)}`;
       }
       const lines = [`- [${checked}] ${STATE_NAMES[abbr]} (${abbr})${suffix}`];
@@ -9296,10 +9621,53 @@
 
     function buildNotesTextOnly(abbrs = sortedMarkedStateAbbrs()) {
       if (!abbrs.length) return "No notes match the current filters.";
+      if (notesPriorityGroup) {
+        return groupedPriorityStateAbbrs(abbrs)
+          .map(group => `${priorityGroupLabel(group.priority)}\n${group.abbrs.map(abbr => notesTextForAbbr(abbr, { priorityGroup: group.priority })).join("\n")}`)
+          .join("\n\n");
+      }
       if (!notesCategoricalMode) return abbrs.map(notesTextForAbbr).join("\n");
       return groupedMarkedStateAbbrs(abbrs)
         .map(group => `${LOCATION_TYPES[group.type].label}\n${group.abbrs.map(notesTextForAbbr).join("\n")}`)
         .join("\n\n");
+    }
+
+    function priorityGroupOrder() {
+      const values = effectiveNotesPrioritySort() === "asc"
+        ? ["1", "2", "3", "4", "5"]
+        : ["5", "4", "3", "2", "1"];
+      return [...values, ""];
+    }
+
+    function priorityGroupLabel(priority) {
+      return priority ? `Priority ${priority}` : "Unprioritized";
+    }
+
+    function priorityGroupHeadingLabel(priority) {
+      return priority ? "Priority" : "Unprioritized";
+    }
+
+    function priorityNotesForState(abbr, priority) {
+      const normalizedPriority = normalizeNotePriority(priority);
+      return filteredNotesFor(abbr).filter(note => normalizeNotePriority(note?.priority) === normalizedPriority);
+    }
+
+    function groupedPriorityStateAbbrs(abbrs) {
+      return priorityGroupOrder()
+        .map(priority => ({
+          priority,
+          abbrs: abbrs.filter(abbr => priorityNotesForState(abbr, priority).length)
+        }))
+        .filter(group => group.abbrs.length);
+    }
+
+    function groupedPriorityNotes(notes) {
+      return priorityGroupOrder()
+        .map(priority => ({
+          priority,
+          notes: notes.filter(note => normalizeNotePriority(note?.priority) === priority)
+        }))
+        .filter(group => group.notes.length);
     }
 
     function groupedMarkedStateAbbrs(abbrs) {
@@ -9323,9 +9691,56 @@
       `;
     }
 
-    function highestLevelDateForState(abbr) {
+    function renderNotesPriorityGroup(group, renderItems) {
+      const color = notePriorityColor(group.priority) || "var(--muted)";
+      return `
+        <section class="notes-category-group notes-priority-group">
+          <div class="notes-category-heading">
+            <span><span class="notes-priority-heading-icon" style="--priority-color:${escapeHtml(color)}">${prioritySquareIcon(group.priority)}</span>${escapeHtml(priorityGroupHeadingLabel(group.priority))}</span>
+            <small><span>${group.abbrs.length}</span></small>
+          </div>
+          ${renderItems(group.abbrs, { priorityGroup: group.priority })}
+        </section>
+      `;
+    }
+
+    function renderSelectedPriorityGroups(notes, renderItems) {
+      if (!notesPriorityGroup) return renderItems(notes);
+      return groupedPriorityNotes(notes).map(group => {
+        const color = notePriorityColor(group.priority) || "var(--muted)";
+        return `
+          <section class="notes-category-group notes-priority-group">
+            <div class="notes-category-heading notes-selected-priority-heading">
+              <span><span class="notes-priority-heading-icon" style="--priority-color:${escapeHtml(color)}">${prioritySquareIcon(group.priority)}</span>${escapeHtml(priorityGroupHeadingLabel(group.priority))}</span>
+              <small><span>${group.notes.length}</span></small>
+            </div>
+            ${renderItems(group.notes)}
+          </section>
+        `;
+      }).join("");
+    }
+
+    function renderGroupedStateItems(abbrs, renderItems) {
+      if (notesPriorityGroup) {
+        return groupedPriorityStateAbbrs(abbrs)
+          .map(group => renderNotesPriorityGroup(group, renderItems))
+          .join("");
+      }
+      if (notesCategoricalMode) {
+        return groupedMarkedStateAbbrs(abbrs)
+          .map(group => renderNotesCategoryGroup(group, renderItems))
+          .join("");
+      }
+      return renderItems(abbrs);
+    }
+
+    function highestLevelDateForState(abbr, options = {}) {
       const levelId = dominantLevel(abbr)?.id || "";
-      const notes = sortedNotesFor(abbr).filter(note => !levelId || note.levelId === levelId);
+      const scopedToPriority = Object.prototype.hasOwnProperty.call(options, "priorityGroup");
+      const sourceNotes = scopedToPriority
+        ? notesForDisplay(abbr, options)
+        : sortedNotesFor(abbr);
+      const notes = scopedToPriority ? sourceNotes : sourceNotes.filter(note => !levelId || note.levelId === levelId);
       const dates = notes.map(note => note.date).filter(Boolean).sort();
       return dates[0] ? formatDateDisplay(dates[0]) : "No Dates";
     }
@@ -9338,22 +9753,22 @@
       return `<span class="compact-location-name" title="${escapeHtml(label)}"><span class="compact-location-icon" style="--level-color:${escapeHtml(color)}" aria-hidden="true">${locationTypeIcon(abbr)}</span><b>${escapeHtml(name)}</b>${regionKeyTag(abbr)}<span class="sr-only">${escapeHtml(label)}</span></span>`;
     }
 
-    function compactStateRow(abbr) {
+    function compactStateRow(abbr, options = {}) {
       const dominant = dominantLevel(abbr);
-      const notes = filteredNotesFor(abbr);
-      const dates = highestLevelDateForState(abbr);
+      const notes = notesForDisplay(abbr, options);
+      const dates = highestLevelDateForState(abbr, options);
       return `
         <button class="compact-note-row" type="button" data-open-notes-state="${abbr}">
           <span>${compactLocationName(abbr, dominant)}</span>
           <span>${escapeHtml(dates)}</span>
           <span class="compact-note-text compact-note-count" aria-label="${notes.length} visit notes"><span>${notes.length}</span>${__LIST_BULLET_RECTANGLE_PORTRAIT_FILL}</span>
-          <span class="compact-state-icons">${visitTypeIconStackForState(abbr)}</span>
+          <span class="compact-state-icons">${visitTypeIconStackForState(abbr, options)}</span>
         </button>
       `;
     }
 
-    function expandedStateRows(abbr) {
-      const notes = filteredNotesFor(abbr);
+    function expandedStateRows(abbr, options = {}) {
+      const notes = notesForDisplay(abbr, options);
       const bucketId = bucketListLevelId();
       const collapsed = collapsedNoteLocations.has(abbr);
       const stats = locationNoteStatsHtml(abbr, notes);
@@ -9422,9 +9837,6 @@
             aria-label="${photoOpen ? "Close" : "Open"} ${escapeHtml(source.item.name)} photo"
             aria-expanded="${photoOpen ? "true" : "false"}" title="${photoLoading ? "Loading photo" : "Photo"}"
             ${source.item.wikiPage && !photoLoading ? "" : "disabled"}>${__PHOTO_ARTFRAME}</button>
-          <span class="waypoint-priority-row" aria-label="Priority">
-            ${priorityControl}
-          </span>
         </span>
       ` : "";
       const combinedField = (label, value) => `
@@ -9443,7 +9855,7 @@
             ${types.map(type => `<span class="detailed-note-tag" style="--level-color:${escapeHtml(levelColor)}">${visitTypeIcon(type.id)}${escapeHtml(type.label)}</span>`).join("")}
             <span class="actions">
               ${waypointActions}
-              ${source ? "" : `<span class="detailed-priority-action" aria-label="Priority">${priorityControl}</span>`}
+              <span class="detailed-priority-action" aria-label="Priority">${priorityControl}</span>
               ${actions ? `
               ${isBucket ? actionButtonHtml({ symbol: __CHECKMARK_CIRCLE, text: "Mark Visited", className: "icon-btn bucket-mark-visited-btn", attrs: `data-mark-visited-note="${note.id}"` }) : ""}
               ${actionButtonHtml({ symbol: __PENCIL, text: "Edit", className: "icon-btn", attrs: `data-edit-note="${note.id}"` })}
@@ -9479,8 +9891,8 @@
       return `<small>[${escapeHtml(dateLabel)}]</small><i class="location-note-divider" aria-hidden="true"></i><button class="location-note-count-toggle${collapsed ? " is-collapsed" : ""}" type="button" data-toggle-location-notes="${escapeHtml(abbr)}" aria-expanded="${!collapsed}" aria-label="${collapsed ? "Show" : "Hide"} ${notes.length} visit notes"><span class="location-note-count-value">${notes.length}</span><span class="location-note-count-chevron" aria-hidden="true">${__CHEVRON_DOWN}</span></button>`;
     }
 
-    function detailedLocationRows(abbr) {
-      const notes = filteredNotesFor(abbr);
+    function detailedLocationRows(abbr, options = {}) {
+      const notes = notesForDisplay(abbr, options);
       const levels = getStateLevelIds(abbr).map(id => levelById(id)).filter(Boolean);
       const collapsed = collapsedNoteLocations.has(abbr);
       return `
@@ -9620,16 +10032,24 @@
     function renderSelectedNoteList(notes) {
       if (!notes.length) return `<div class="empty">No visit notes yet.</div>`;
       if (notesViewMode === "text") {
+        if (notesPriorityGroup) {
+          const groupedText = groupedPriorityNotes(notes)
+            .map(group => `${priorityGroupLabel(group.priority)}\n${group.notes.map(textOnlyNoteLine).join("\n")}`)
+            .join("\n\n");
+          return `<pre class="notes-text-only" tabindex="0">${escapeHtml(groupedText)}</pre>`;
+        }
         return `<pre class="notes-text-only" tabindex="0">${escapeHtml(notesTextForAbbr(notesPanelState, { ignoreFilters: true }))}</pre>`;
       }
       if (notesViewMode === "detailed") {
-        return `<div class="detailed-selected-note-list">${notes.map(note => detailedNoteCard(note, notesPanelState, { actions: true })).join("")}</div>`;
+        return renderSelectedPriorityGroups(notes, items =>
+          `<div class="detailed-selected-note-list">${items.map(note => detailedNoteCard(note, notesPanelState, { actions: true })).join("")}</div>`
+        );
       }
       const bucketId = bucketListLevelId();
       if (notesViewMode === "compact") {
-        return `
+        return renderSelectedPriorityGroups(notes, items => `
           <div class="compact-notes compact-notes-notes selected-note-list is-condensed-selected">
-            ${notes.map(note => {
+            ${items.map(note => {
           const noteLevel = levelById(note.levelId);
           const isBucket = bucketId && note.levelId === bucketId;
           return `
@@ -9639,6 +10059,7 @@
                 <span class="compact-note-text">${escapeHtml(noteSummary(note))}</span>
                 <span class="actions">
                   ${isBucket ? actionButtonHtml({ symbol: __CHECKMARK_CIRCLE, text: "Mark Visited", className: "icon-btn bucket-mark-visited-btn", attrs: `data-mark-visited-note="${note.id}"` }) : ""}
+                  <span class="condensed-priority-action" aria-label="Priority">${waypointPriorityButtons(note.priority, "data-condensed-priority-choice", note.id)}</span>
                   ${actionButtonHtml({ symbol: __PENCIL, text: "Edit", className: "icon-btn", attrs: `data-edit-note="${note.id}"` })}
                   ${actionButtonHtml({ symbol: __DELETE_LEFT_FILL, text: "Delete", className: "icon-btn danger", attrs: `data-delete-note="${note.id}"` })}
                 </span>
@@ -9646,11 +10067,11 @@
             `;
         }).join("")}
           </div>
-        `;
+        `);
       }
-      return `
+      return renderSelectedPriorityGroups(notes, items => `
           <div class="compact-notes compact-notes-notes selected-note-list">
-          ${notes.map(note => {
+          ${items.map(note => {
         const noteLevel = levelById(note.levelId);
         const isBucket = bucketId && note.levelId === bucketId;
         return `
@@ -9667,7 +10088,36 @@
           `;
       }).join("")}
         </div>
-      `;
+      `);
+    }
+
+    function wireCondensedPriorityControls(root) {
+      if (!root) return;
+      $$("[data-condensed-priority-toggle]", root).forEach(button => button.addEventListener("click", event => {
+        event.stopPropagation();
+        const popout = button.closest(".waypoint-priority-popout");
+        const menu = popout ? $("[data-condensed-priority-menu]", popout) : null;
+        const open = menu?.hidden !== false;
+        $$("[data-condensed-priority-menu]", root).forEach(item => item.hidden = true);
+        $$("[data-condensed-priority-toggle]", root).forEach(item => item.setAttribute("aria-expanded", "false"));
+        if (menu) {
+          menu.hidden = !open;
+          button.setAttribute("aria-expanded", open ? "true" : "false");
+          positionWaypointFloatingMenus();
+        }
+      }));
+      $$("[data-condensed-priority-choice]", root).forEach(button => button.addEventListener("click", event => {
+        event.stopPropagation();
+        const row = button.closest("[data-edit-note-row]");
+        const note = (notesStoreForCode(notesPanelState)[notesPanelState] || [])
+          .find(item => item.id === row?.dataset.editNoteRow);
+        if (!note) return;
+        const scrollTop = $("#notesPanelContent")?.scrollTop || 0;
+        note.priority = normalizeNotePriority(button.dataset.condensedPriorityChoice || "");
+        save();
+        renderMap();
+        renderNotesPanelAtScroll(scrollTop);
+      }));
     }
 
     function renderNotesPanel() {
@@ -9762,6 +10212,7 @@
           setNotesViewMode(button.dataset.notesViewMode);
         }));
         wireDetailedNoteCards($("#notesPanelContent"));
+        wireCondensedPriorityControls($("#notesPanelContent"));
         renderSetsDialog();
         scheduleMainLayoutSync();
         return;
@@ -9775,7 +10226,8 @@
       if (!marked.length) {
         const emptyText = notesSearchQuery.trim()
           ? "No states match that search."
-          : notesHideExcludedOnly ? "No visible marked locations. Excluded locations are hidden."
+          : notesPriorityFilter.mode !== "none" ? "No notes match the active Priority filter."
+            : notesHideExcludedOnly ? "No visible marked locations. Excluded locations are hidden."
             : !allNoteIconFiltersSelected() ? "No locations match the selected icon filters."
               : notesDatePrecisionFilter !== "all" ? `No locations match the ${datePrecisionFilterMeta().label} date filter.`
                 : notesCoordinateFilter !== "all" ? `No locations match the ${coordinateFilterMeta().label} coordinate filter.`
@@ -9784,20 +10236,14 @@
       } else if (notesViewMode === "text") {
         $("#notesPanelContent").innerHTML = `<pre id="notesTextOnly" class="notes-text-only" tabindex="0">${escapeHtml(buildNotesTextOnly(marked))}</pre>`;
       } else if (notesViewMode === "compact") {
-        const renderRows = abbrs => abbrs.map(compactStateRow).join("");
-        $("#notesPanelContent").innerHTML = notesCategoricalMode
-          ? groupedMarkedStateAbbrs(marked).map(group => renderNotesCategoryGroup(group, renderRows)).join("")
-          : renderRows(marked);
+        const renderRows = (abbrs, options = {}) => abbrs.map(abbr => compactStateRow(abbr, options)).join("");
+        $("#notesPanelContent").innerHTML = renderGroupedStateItems(marked, renderRows);
       } else if (notesViewMode === "detailed") {
-        const renderCards = abbrs => abbrs.map(detailedLocationRows).join("");
-        $("#notesPanelContent").innerHTML = notesCategoricalMode
-          ? groupedMarkedStateAbbrs(marked).map(group => renderNotesCategoryGroup(group, renderCards)).join("")
-          : renderCards(marked);
+        const renderCards = (abbrs, options = {}) => abbrs.map(abbr => detailedLocationRows(abbr, options)).join("");
+        $("#notesPanelContent").innerHTML = renderGroupedStateItems(marked, renderCards);
       } else {
-        const renderCards = abbrs => abbrs.map(expandedStateRows).join("");
-        $("#notesPanelContent").innerHTML = notesCategoricalMode
-          ? groupedMarkedStateAbbrs(marked).map(group => renderNotesCategoryGroup(group, renderCards)).join("")
-          : renderCards(marked);
+        const renderCards = (abbrs, options = {}) => abbrs.map(abbr => expandedStateRows(abbr, options)).join("");
+        $("#notesPanelContent").innerHTML = renderGroupedStateItems(marked, renderCards);
       }
       $$("[data-toggle-note-category]", $("#notesPanelContent")).forEach(button => button.addEventListener("click", () => {
         const type = button.dataset.toggleNoteCategory;
@@ -9862,6 +10308,7 @@
         });
       });
       wireDetailedNoteCards($("#notesPanelContent"));
+      wireCondensedPriorityControls($("#notesPanelContent"));
       renderSetsDialog();
       scheduleMainLayoutSync();
     }
@@ -10066,13 +10513,11 @@
       const photoButton = currentItem
         ? `<button id="noteWaypointPhotoBtn" class="icon-btn waypoint-row-action" type="button" data-note-waypoint-photo aria-label="${photoOpen ? "Close" : "Open"} ${escapeHtml(currentItem.name)} photo" aria-expanded="${photoOpen ? "true" : "false"}" title="${photoLoading ? "Loading photo" : "Photo"}" ${photoEnabled ? "" : "disabled"}>${__PHOTO_ARTFRAME}</button>`
         : "";
-      const priority = normalizeNotePriority($("#notePriority").value);
       const linkedClass = currentItem ? "is-linked" : "";
       const linkDisabled = !items.length && !currentItem;
       wrap.innerHTML = `
         ${urlButton}
         ${photoButton}
-        <div class="waypoint-priority-row" aria-label="Priority">${waypointPriorityButtons(priority, "data-note-priority-choice")}</div>
         <div class="note-waypoint-link-wrap">
           <button id="noteWaypointLinkBtn" class="icon-btn waypoint-row-action ${linkedClass}" type="button" data-note-waypoint-link aria-haspopup="menu" aria-expanded="${menuOpen ? "true" : "false"}" aria-label="Link to Waypoint" title="${currentItem ? `Linked: ${escapeHtml(noteWaypointChoiceLabel(currentItem))}` : "Link to Waypoint"}" ${linkDisabled ? "disabled" : ""}>${__LINK_CIRCLE}</button>
           <div id="noteWaypointLinkMenu" class="note-waypoint-link-menu" role="menu" ${menuOpen ? "" : "hidden"}>${noteWaypointLinkMenuHtml(set, items, currentItem ? source : null)}</div>
@@ -10093,6 +10538,12 @@
       syncNoteSetSummary();
     }
 
+    function refreshNotePriorityHeaderControl() {
+      const wrap = $("#notePriorityHeaderControl");
+      if (!wrap) return;
+      wrap.innerHTML = waypointPriorityButtons($("#notePriority").value, "data-note-priority-choice");
+    }
+
     function renderNoteSetControls(note = null) {
       const source = suggestedSetSourceForNote(note);
       if (source) state.settings.activeSuggestedSetId = source.set.id;
@@ -10104,6 +10555,7 @@
       $("#noteSourceItemSelect").innerHTML = `<option value="">Not linked to ${escapeHtml(set.name)}</option>` + noteSourceSelectableItems(set).map(item =>
         `<option value="${escapeHtml(item.id)}" ${source?.set.id === set.id && source?.item.id === item.id ? "selected" : ""}>${escapeHtml(item.name)} (${escapeHtml(item.code)})</option>`
       ).join("");
+      refreshNotePriorityHeaderControl();
       refreshNoteWaypointControls();
     }
 
@@ -16011,7 +16463,21 @@
       });
       $("#notesSortAlphaBtn").addEventListener("click", () => setNotesSortMode("alpha"));
       $("#notesSortChronoBtn").addEventListener("click", () => setNotesSortMode("chrono"));
-      $("#notesSortPriorityBtn").addEventListener("click", () => setNotesSortMode("priority"));
+      $("#notesPriorityBtn").addEventListener("click", event => {
+        event.stopPropagation();
+        setNotesPriorityMenuOpen($("#notesPriorityMenu").hidden);
+      });
+      $("#notesPriorityMenu").addEventListener("click", event => event.stopPropagation());
+      $("#notesPriorityFilterMode").addEventListener("click", () => toggleNotesPriorityOptionPanel("filter"));
+      $("#notesPriorityFilterValue").addEventListener("click", () => toggleNotesPriorityOptionPanel("number"));
+      $("#notesPrioritySort").addEventListener("click", () => toggleNotesPriorityOptionPanel("order"));
+      $("#notesPriorityOptions").addEventListener("click", event => {
+        const option = event.target.closest("[data-priority-option-panel]");
+        if (!option) return;
+        chooseNotesPriorityOption(option.dataset.priorityOptionPanel, option.dataset.priorityOptionValue || "");
+      });
+      $("#notesPriorityGroup").addEventListener("click", toggleNotesPriorityGroup);
+      $("#notesPriorityResetBtn").addEventListener("click", resetNotesPriorityControls);
       $("#notesCategoryToggleBtn").addEventListener("click", () => {
         notesCategoricalMode = !notesCategoricalMode;
         save();
@@ -16096,7 +16562,6 @@
       ["#noteLat", "#noteLng"].forEach(selector => $(selector).addEventListener("input", () => {
         setNoteGeocodeStatus("Manual coordinates will be used for the map marker.");
       }));
-      $("#notePriority").addEventListener("change", () => refreshNoteWaypointControls());
       $("#noteText").addEventListener("input", () => updateDetailsCounter($("#noteText"), $("#noteTextCounter")));
       $("#noteText").addEventListener("keydown", event => {
         if (event.key !== "Enter" || !(event.metaKey || event.ctrlKey)) return;
@@ -16127,6 +16592,7 @@
         const priorityChoice = event.target.closest("[data-note-priority-choice]");
         if (priorityChoice) {
           $("#notePriority").value = normalizeNotePriority(priorityChoice.dataset.notePriorityChoice || "");
+          refreshNotePriorityHeaderControl();
           refreshNoteWaypointControls();
           return;
         }
@@ -16324,6 +16790,10 @@
             legendPanelOpen = true;
             mapPanelOpen = true;
             notesSortMode = "chrono";
+            notesPriorityFilter = { mode: "none", value: "" };
+            notesPrioritySort = "none";
+            notesPriorityGroup = false;
+            notesPriorityOptionPanel = "";
             notesViewMode = "detailed";
             notesCategoricalMode = true;
             notesHideExcludedOnly = true;
@@ -16443,6 +16913,7 @@
         if (!legendPositionControlAvailable()) closeLegendPositionMenu();
         if (ringStyleMenuOpen) closeRingStyleMenu();
         if (ringTimeMenuOpen) closeRingTimeMenu();
+        if (!$("#notesPriorityMenu")?.hidden) positionFloatingMenu($("#notesPriorityMenu"), $("#notesPriorityBtn"));
         syncButtonLabels();
         scheduleMainLayoutSync();
         if ($("#noteDialog")?.open) sizeNoteWaypointPhotoFrame();
@@ -16458,6 +16929,16 @@
       document.addEventListener("click", event => {
         if (!ringTimeMenuOpen || event.target.closest(".ring-time-picker")) return;
         closeRingTimeMenu();
+      });
+      document.addEventListener("click", event => {
+        if ($("#notesPriorityMenu")?.hidden || event.target.closest(".notes-priority-picker")) return;
+        setNotesPriorityMenuOpen(false);
+      });
+      document.addEventListener("keydown", event => {
+        if (event.key !== "Escape" || $("#notesPriorityMenu")?.hidden) return;
+        event.preventDefault();
+        setNotesPriorityMenuOpen(false);
+        $("#notesPriorityBtn")?.focus();
       });
       document.addEventListener("keydown", event => {
         if (!mapWaypointPackMenuOpen) return;
