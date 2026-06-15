@@ -4,7 +4,7 @@
 
     const CHANGELOG = [
       {
-        version: "4.7.0.3",
+        version: "4.7.0.4",
         date: "2026-06-15",
         title: "Priority",
         summary: "Priority becomes a first-class note field with unified filtering, sorting, and grouping.",
@@ -22,6 +22,7 @@
               "Every note can set or clear Priority from a single header control in the standard note editor, including notes outside Waypoint Packs.",
               "Detailed, Expanded, and Condensed expose Priority treatments, with direct updates available in Detailed and Condensed views.",
               "Priority controls and list headings use color-coded square number icons, including a clear no-priority state.",
+              "Map note pins and note-list icons use matching square Priority badges.",
               "Linked Waypoint actions keep Priority immediately outside their highlighted action group.",
               "Markdown, Rich Text, Plain Text, and JSON exports preserve each note's priority.",
             ]
@@ -32,8 +33,9 @@
               "The new Priority popover filters an exact number, that number or higher, or that number or lower.",
               "Priority ordering can run 5-to-1 or 1-to-5 while Alphabetical or Chronological remains the tie-breaker.",
               "Group by Priority supersedes Category grouping and adds vertically aligned icon-led headings.",
+              "A location can appear in multiple Priority groups, with each copy showing only matching notes.",
               "Filter, number, and order buttons expand selectable option rows; Group and Reset stay direct.",
-              "The Priority number starts blank and can explicitly target notes without a priority.",
+              "The Priority number starts blank, disables while All is selected, and can target notes without a priority.",
               "Legacy Priority sort preferences migrate to chronological tie-breaking with 5-to-1 priority ordering.",
             ]
           }
