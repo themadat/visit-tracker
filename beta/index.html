@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.0.3">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.0.4">
 </head>
 
 <body>
@@ -1667,7 +1667,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.0.3";
+    const APP_VERSION = "4.7.0.4";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -3051,7 +3051,7 @@
         : "none";
       next.settings.notesPriorityFilter = {
         mode: priorityFilterMode,
-        value: normalizeNotesPriorityFilterValue(rawPriorityFilter.value)
+        value: priorityFilterMode === "none" ? "" : normalizeNotesPriorityFilterValue(rawPriorityFilter.value)
       };
       if (!["none", "asc", "desc"].includes(next.settings.notesPrioritySort)) next.settings.notesPrioritySort = "none";
       if (legacyPrioritySort && next.settings.notesPrioritySort === "none") next.settings.notesPrioritySort = "desc";
@@ -3523,7 +3523,7 @@
       state.settings.notesSortMode = ["alpha", "chrono"].includes(notesSortMode) ? notesSortMode : "chrono";
       state.settings.notesPriorityFilter = {
         mode: ["none", "exact", "gte", "lte"].includes(notesPriorityFilter?.mode) ? notesPriorityFilter.mode : "none",
-        value: normalizeNotesPriorityFilterValue(notesPriorityFilter?.value)
+        value: notesPriorityFilter?.mode === "none" ? "" : normalizeNotesPriorityFilterValue(notesPriorityFilter?.value)
       };
       state.settings.notesPrioritySort = ["none", "asc", "desc"].includes(notesPrioritySort) ? notesPrioritySort : "none";
       state.settings.notesPriorityGroup = notesPriorityGroup === true;
@@ -3552,8 +3552,9 @@
       notesSortMode = ["alpha", "chrono"].includes(state.settings.notesSortMode) ? state.settings.notesSortMode : "chrono";
       notesPriorityFilter = {
         mode: ["none", "exact", "gte", "lte"].includes(state.settings.notesPriorityFilter?.mode) ? state.settings.notesPriorityFilter.mode : "none",
-        value: normalizeNotesPriorityFilterValue(state.settings.notesPriorityFilter?.value)
+        value: state.settings.notesPriorityFilter?.mode === "none" ? "" : normalizeNotesPriorityFilterValue(state.settings.notesPriorityFilter?.value)
       };
+      if (notesPriorityFilter.mode === "none") notesPriorityFilter.value = "";
       notesPrioritySort = ["none", "asc", "desc"].includes(state.settings.notesPrioritySort) ? state.settings.notesPrioritySort : "none";
       notesPriorityGroup = state.settings.notesPriorityGroup === true;
       notesViewMode = ["detailed", "expanded", "compact", "text"].includes(state.settings.notesViewMode) ? state.settings.notesViewMode : "detailed";
@@ -6977,12 +6978,14 @@
       const priority = normalizeNotePriority(priorityValue);
       if (!priority) return;
       const svgNS = "http://www.w3.org/2000/svg";
-      const bg = document.createElementNS(svgNS, "circle");
+      const bg = document.createElementNS(svgNS, "rect");
       bg.classList.add(`${classPrefix}-priority-bg`);
       bg.style.setProperty("--priority-color", notePriorityColor(priority));
-      bg.setAttribute("cx", "8.2");
-      bg.setAttribute("cy", "8.2");
-      bg.setAttribute("r", "5");
+      bg.setAttribute("x", "3.2");
+      bg.setAttribute("y", "3.2");
+      bg.setAttribute("width", "10");
+      bg.setAttribute("height", "10");
+      bg.setAttribute("rx", "1.4");
       group.append(bg);
       const text = document.createElementNS(svgNS, "text");
       text.classList.add(`${classPrefix}-priority`);
@@ -8778,7 +8781,10 @@
 
     function renderNotesPriorityMenuControls() {
       const filter = notesPriorityFilterModeMeta();
-      const number = normalizeNotesPriorityFilterValue(notesPriorityFilter.value);
+      const allPriorities = notesPriorityFilter.mode === "none";
+      if (allPriorities) notesPriorityFilter.value = "";
+      if (allPriorities && notesPriorityOptionPanel === "number") notesPriorityOptionPanel = "";
+      const number = allPriorities ? "" : normalizeNotesPriorityFilterValue(notesPriorityFilter.value);
       const numberLabel = number ? `Priority ${number}` : "No priority";
       const order = notesPrioritySortMeta();
       const controls = [
@@ -8794,6 +8800,10 @@
         button.innerHTML = icon;
         button.setAttribute("aria-label", label);
         button.title = label;
+        if (selector === "#notesPriorityFilterValue") {
+          button.disabled = allPriorities;
+          button.setAttribute("aria-disabled", String(allPriorities));
+        }
       });
       $("#notesPriorityFilterValue")?.style.setProperty("--priority-color", notePriorityColor(number) || "var(--muted)");
       $("#notesPriorityGroup")?.setAttribute("aria-pressed", String(notesPriorityGroup));
@@ -8849,14 +8859,18 @@
     }
 
     function toggleNotesPriorityOptionPanel(panel) {
+      if (panel === "number" && notesPriorityFilter.mode === "none") return;
       notesPriorityOptionPanel = notesPriorityOptionPanel === panel ? "" : panel;
       renderNotesPriorityMenuControls();
       requestAnimationFrame(() => positionFloatingMenu($("#notesPriorityMenu"), $("#notesPriorityBtn")));
     }
 
     function chooseNotesPriorityOption(panel, value) {
-      if (panel === "filter" && ["none", "exact", "lte", "gte"].includes(value)) notesPriorityFilter.mode = value;
-      if (panel === "number") notesPriorityFilter.value = normalizeNotePriority(value);
+      if (panel === "filter" && ["none", "exact", "lte", "gte"].includes(value)) {
+        notesPriorityFilter.mode = value;
+        if (value === "none") notesPriorityFilter.value = "";
+      }
+      if (panel === "number" && notesPriorityFilter.mode !== "none") notesPriorityFilter.value = normalizeNotePriority(value);
       if (panel === "order" && ["none", "desc", "asc"].includes(value)) notesPrioritySort = value;
       notesPriorityOptionPanel = "";
       updateNotesPriorityControls();
@@ -9035,7 +9049,10 @@
     }
 
     function notesForDisplay(abbr, options = {}) {
-      return options.ignoreFilters ? sortedNotesFor(abbr) : filteredNotesFor(abbr);
+      const notes = options.ignoreFilters ? sortedNotesFor(abbr) : filteredNotesFor(abbr);
+      if (!Object.prototype.hasOwnProperty.call(options, "priorityGroup")) return notes;
+      const priority = normalizeNotePriority(options.priorityGroup);
+      return notes.filter(note => normalizeNotePriority(note?.priority) === priority);
     }
 
     function stateLevelNamesForDisplay(abbr, options = {}) {
@@ -9546,9 +9563,9 @@
       return "";
     }
 
-    function visitTypeIconStackForState(abbr) {
+    function visitTypeIconStackForState(abbr, options = {}) {
       const ids = new Set();
-      filteredNotesFor(abbr).forEach(note => (note.visitTypes || []).forEach(id => ids.add(id)));
+      notesForDisplay(abbr, options).forEach(note => (note.visitTypes || []).forEach(id => ids.add(id)));
       const labels = allVisitTypes().filter(type => ids.has(type.id));
       const icons = labels.map(type => visitTypeIcon(type.id)).join("");
       return icons ? `<span class="visit-icon-stack" aria-label="${escapeHtml(labels.map(type => type.label).join(", "))}">${icons}</span>` : "";
@@ -9601,7 +9618,7 @@
       if (!abbrs.length) return "No notes match the current filters.";
       if (notesPriorityGroup) {
         return groupedPriorityStateAbbrs(abbrs)
-          .map(group => `${priorityGroupLabel(group.priority)}\n${group.abbrs.map(notesTextForAbbr).join("\n")}`)
+          .map(group => `${priorityGroupLabel(group.priority)}\n${group.abbrs.map(abbr => notesTextForAbbr(abbr, { priorityGroup: group.priority })).join("\n")}`)
           .join("\n\n");
       }
       if (!notesCategoricalMode) return abbrs.map(notesTextForAbbr).join("\n");
@@ -9625,17 +9642,16 @@
       return priority ? "Priority" : "Unprioritized";
     }
 
-    function priorityGroupForState(abbr) {
-      const notes = filteredNotesFor(abbr);
-      const prioritized = notes.find(note => normalizeNotePriority(note?.priority));
-      return normalizeNotePriority(prioritized?.priority);
+    function priorityNotesForState(abbr, priority) {
+      const normalizedPriority = normalizeNotePriority(priority);
+      return filteredNotesFor(abbr).filter(note => normalizeNotePriority(note?.priority) === normalizedPriority);
     }
 
     function groupedPriorityStateAbbrs(abbrs) {
       return priorityGroupOrder()
         .map(priority => ({
           priority,
-          abbrs: abbrs.filter(abbr => priorityGroupForState(abbr) === priority)
+          abbrs: abbrs.filter(abbr => priorityNotesForState(abbr, priority).length)
         }))
         .filter(group => group.abbrs.length);
     }
@@ -9678,7 +9694,7 @@
             <span><span class="notes-priority-heading-icon" style="--priority-color:${escapeHtml(color)}">${prioritySquareIcon(group.priority)}</span>${escapeHtml(priorityGroupHeadingLabel(group.priority))}</span>
             <small><span>${group.abbrs.length}</span></small>
           </div>
-          ${renderItems(group.abbrs)}
+          ${renderItems(group.abbrs, { priorityGroup: group.priority })}
         </section>
       `;
     }
@@ -9713,9 +9729,13 @@
       return renderItems(abbrs);
     }
 
-    function highestLevelDateForState(abbr) {
+    function highestLevelDateForState(abbr, options = {}) {
       const levelId = dominantLevel(abbr)?.id || "";
-      const notes = sortedNotesFor(abbr).filter(note => !levelId || note.levelId === levelId);
+      const scopedToPriority = Object.prototype.hasOwnProperty.call(options, "priorityGroup");
+      const sourceNotes = scopedToPriority
+        ? notesForDisplay(abbr, options)
+        : sortedNotesFor(abbr);
+      const notes = scopedToPriority ? sourceNotes : sourceNotes.filter(note => !levelId || note.levelId === levelId);
       const dates = notes.map(note => note.date).filter(Boolean).sort();
       return dates[0] ? formatDateDisplay(dates[0]) : "No Dates";
     }
@@ -9728,22 +9748,22 @@
       return `<span class="compact-location-name" title="${escapeHtml(label)}"><span class="compact-location-icon" style="--level-color:${escapeHtml(color)}" aria-hidden="true">${locationTypeIcon(abbr)}</span><b>${escapeHtml(name)}</b>${regionKeyTag(abbr)}<span class="sr-only">${escapeHtml(label)}</span></span>`;
     }
 
-    function compactStateRow(abbr) {
+    function compactStateRow(abbr, options = {}) {
       const dominant = dominantLevel(abbr);
-      const notes = filteredNotesFor(abbr);
-      const dates = highestLevelDateForState(abbr);
+      const notes = notesForDisplay(abbr, options);
+      const dates = highestLevelDateForState(abbr, options);
       return `
         <button class="compact-note-row" type="button" data-open-notes-state="${abbr}">
           <span>${compactLocationName(abbr, dominant)}</span>
           <span>${escapeHtml(dates)}</span>
           <span class="compact-note-text compact-note-count" aria-label="${notes.length} visit notes"><span>${notes.length}</span>${__LIST_BULLET_RECTANGLE_PORTRAIT_FILL}</span>
-          <span class="compact-state-icons">${visitTypeIconStackForState(abbr)}</span>
+          <span class="compact-state-icons">${visitTypeIconStackForState(abbr, options)}</span>
         </button>
       `;
     }
 
-    function expandedStateRows(abbr) {
-      const notes = filteredNotesFor(abbr);
+    function expandedStateRows(abbr, options = {}) {
+      const notes = notesForDisplay(abbr, options);
       const bucketId = bucketListLevelId();
       const collapsed = collapsedNoteLocations.has(abbr);
       const stats = locationNoteStatsHtml(abbr, notes);
@@ -9866,8 +9886,8 @@
       return `<small>[${escapeHtml(dateLabel)}]</small><i class="location-note-divider" aria-hidden="true"></i><button class="location-note-count-toggle${collapsed ? " is-collapsed" : ""}" type="button" data-toggle-location-notes="${escapeHtml(abbr)}" aria-expanded="${!collapsed}" aria-label="${collapsed ? "Show" : "Hide"} ${notes.length} visit notes"><span class="location-note-count-value">${notes.length}</span><span class="location-note-count-chevron" aria-hidden="true">${__CHEVRON_DOWN}</span></button>`;
     }
 
-    function detailedLocationRows(abbr) {
-      const notes = filteredNotesFor(abbr);
+    function detailedLocationRows(abbr, options = {}) {
+      const notes = notesForDisplay(abbr, options);
       const levels = getStateLevelIds(abbr).map(id => levelById(id)).filter(Boolean);
       const collapsed = collapsedNoteLocations.has(abbr);
       return `
@@ -10211,13 +10231,13 @@
       } else if (notesViewMode === "text") {
         $("#notesPanelContent").innerHTML = `<pre id="notesTextOnly" class="notes-text-only" tabindex="0">${escapeHtml(buildNotesTextOnly(marked))}</pre>`;
       } else if (notesViewMode === "compact") {
-        const renderRows = abbrs => abbrs.map(compactStateRow).join("");
+        const renderRows = (abbrs, options = {}) => abbrs.map(abbr => compactStateRow(abbr, options)).join("");
         $("#notesPanelContent").innerHTML = renderGroupedStateItems(marked, renderRows);
       } else if (notesViewMode === "detailed") {
-        const renderCards = abbrs => abbrs.map(detailedLocationRows).join("");
+        const renderCards = (abbrs, options = {}) => abbrs.map(abbr => detailedLocationRows(abbr, options)).join("");
         $("#notesPanelContent").innerHTML = renderGroupedStateItems(marked, renderCards);
       } else {
-        const renderCards = abbrs => abbrs.map(expandedStateRows).join("");
+        const renderCards = (abbrs, options = {}) => abbrs.map(abbr => expandedStateRows(abbr, options)).join("");
         $("#notesPanelContent").innerHTML = renderGroupedStateItems(marked, renderCards);
       }
       $$("[data-toggle-note-category]", $("#notesPanelContent")).forEach(button => button.addEventListener("click", () => {

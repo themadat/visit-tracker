@@ -8205,6 +8205,14 @@
       color: var(--accent-2);
     }
 
+    .notes-priority-menu-item button:disabled {
+      cursor: not-allowed;
+      opacity: .48;
+      color: var(--muted);
+      background: color-mix(in srgb, var(--surface-2) 72%, var(--surface));
+      box-shadow: none;
+    }
+
     .notes-priority-menu .notes-priority-menu-item button .sf-symbol {
       width: 1.7rem;
       height: 1.7rem;
