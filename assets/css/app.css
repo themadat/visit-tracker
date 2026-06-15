@@ -1751,7 +1751,10 @@
     }
 
     .map-wrap {
-      padding: clamp(.7rem, 2vw, 1.2rem);
+      --map-wrap-padding: clamp(.7rem, 2vw, 1.2rem);
+      position: relative;
+      isolation: isolate;
+      padding: var(--map-wrap-padding);
       overflow: auto;
       min-height: 0;
       overscroll-behavior: contain;
@@ -1833,10 +1836,11 @@
     }
 
     [data-map-mode="fit"] .map-wrap {
+      --map-wrap-padding: clamp(.35rem, 1.4vw, .85rem);
       display: grid;
       place-items: center;
       overflow: hidden;
-      padding: clamp(.35rem, 1.4vw, .85rem);
+      padding: var(--map-wrap-padding);
       cursor: default;
       touch-action: auto;
     }
@@ -1863,9 +1867,12 @@
     #stateMap,
     #worldMap {
       display: block;
+      position: relative;
+      z-index: 1;
       width: 100%;
       min-width: 680px;
       height: auto;
+      background: var(--surface);
     }
 
     .map-states path,
@@ -1902,7 +1909,14 @@
        the Countries layer goes live. */
     #stateMap[hidden],
     #worldMap[hidden] {
-      display: none;
+      display: block;
+      position: absolute;
+      z-index: 0;
+      top: var(--map-wrap-padding);
+      left: var(--map-wrap-padding);
+      width: calc(100% - var(--map-wrap-padding) - var(--map-wrap-padding));
+      opacity: .001;
+      pointer-events: none;
     }
 
     #worldMap .landxx {
