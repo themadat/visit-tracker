@@ -4,7 +4,7 @@
 
     const CHANGELOG = [
       {
-        version: "4.6.1.3",
+        version: "4.6.1.4",
         date: "2026-06-15",
         title: "A Small World",
         summary: "Switching between the US and World maps is quicker, and the advertised map shortcut works again.",
@@ -21,7 +21,7 @@
               "Backquote-key normalization makes the Shift+Control+Option+~ chord reliable across keyboard layouts.",
               "Added the missing ~ action to the Shortcut Mode home-screen command table.",
               "The map chord now captures keydown, dead-key keypress, and keyup fallbacks before other keyboard handlers can consume it.",
-              "The inactive map stays rendered as a noninteractive underlay, so returning to the large World SVG no longer rebuilds it from display:none.",
+              "Restored true display:none isolation for the inactive map after keeping the World SVG live slowed unrelated app interactions.",
             ]
           }
         ]
