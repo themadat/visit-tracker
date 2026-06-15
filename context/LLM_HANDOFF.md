@@ -177,7 +177,7 @@ For every completed change:
   top-level consts share the global lexical scope and work over `file://`.
 - Main file: `index.html`. `STORAGE_KEY = "usStateVisitMap.v1"`, version in `APP_VERSION`.
 - Docs: `README.md` (public/run/build), this handoff (all dev + LLM context), `AGENTS.md` + `CLAUDE.md` (thin auto-loaded agent summaries — keep lean).
-- Current version: `APP_VERSION = "4.7.0.1"` — active development line **4.7.0 "Priority"** on branch `4-7-0-priority`; plan in `context/4.7.0-PRIORITY-PLAN.md`.
+- Current version: `APP_VERSION = "4.7.0.2"` — active development line **4.7.0 "Priority"** on branch `4-7-0-priority`; plan in `context/4.7.0-PRIORITY-PLAN.md`.
 - Gotcha worth keeping: `url()` paths in `assets/css/app.css` are **relative to the stylesheet**, not the page root (e.g. app-icon art is `url("../icons/…")`). The 4.5.1 fix corrected `.install-icon-thumb-{light,dark}` which still used the old root path after the 4.4.1 CSS split.
 
 Verification traps still apply: UI drivers that call `save()` mutate real localStorage (snapshot first); Wayfinder/Waypoint panels need a configured bucket-list level to render; `http.server` has no cache headers (force-reload assets).
@@ -194,7 +194,7 @@ Verification traps still apply: UI drivers that call `save()` mutate real localS
   - 4.4.1 **Ultralight** — no-build split: styles in `assets/css/app.css`; icon/map/changelog/roadmap data in `assets/js/` classic scripts loaded before the main script; `CIRCLE_ICON_SVGS` registry replaces source-scan icon discovery; dead code removed and unused icon art parked in `build/icon-sources/`; CHANGELOG entries flattened to top-level `banner`/`cta`. No behavior or schema changes.
   - 4.4.0 **Basecamps** — Basecamp becomes up to twenty named rich-text pads with icons, search, reorder, formatting toolbars, linked US/World notes, and per-pad exports. Legacy `{ text, updated }` migrates once into "Basecamp Pad". `usStateVisitMap.v1` schema unchanged.
 - Open follow-ups: WISH-071 (optional lat/lng map lines, now P0); WISH-073 (P2 Basecamp photo support); WISH-074 (P1 pinch-to-zoom the map on touch); WISH-075 (P3 pack-photo camera location).
-- Plan docs live in `context/` only while their line is in flight, then are deleted on ship. Active plan: `context/4.7.0-PRIORITY-PLAN.md` (4.7.0 "Priority", implementation complete and awaiting review).
+- Plan docs live in `context/` only while their line is in flight, then are deleted on ship. Active plan: `context/4.7.0-PRIORITY-PLAN.md` (4.7.0 "Priority", implementation active at 4.7.0.2 and awaiting review).
 - No build step (other than the optional macOS icon pipeline — see README), backend, or dependencies.
 - User data lives in browser localStorage. Locate and Waypoint Pack Wikipedia
   photo previews are intentional online actions and only run when clicked.
