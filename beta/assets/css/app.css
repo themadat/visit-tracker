@@ -9726,6 +9726,20 @@
       font-size: .7rem;
     }
 
+    /* Expanded headers use a denser layout, so halve the disclosure chevron.
+       svg.sf-symbol raises specificity above `.is-expanded-parent .sf-symbol`. */
+    .expanded-location-stats .location-note-count-chevron svg.sf-symbol {
+      width: .31rem;
+      height: .31rem;
+    }
+
+    /* Keep the date span + count pushed to the right of the header cell; the
+       generic `.compact-note-row > * { justify-self: start }` was overriding the
+       base end alignment, so re-assert it with a higher-specificity selector. */
+    .compact-note-row .expanded-location-stats {
+      justify-self: end;
+    }
+
     /* This is the Notes under a Location in Expanded Moded */
     .compact-note-row.is-expanded-child {
       grid-template-columns: 90px 75px minmax(0, 1.5fr) minmax(0, 0);
@@ -9746,6 +9760,14 @@
       place-items: center;
       min-width: 4.25rem;
       justify-content: center;
+    }
+
+    /* The generic `.compact-note-row > * { overflow: hidden }` truncation rule
+       clips the priority badge that hangs off the icon cell (visible only where
+       the cell shrink-wraps, e.g. the main Notes list). The icon cell holds
+       icons, not truncatable text, so let its overflow show. */
+    .compact-note-row .compact-note-icon {
+      overflow: visible;
     }
 
     .visit-icon-stack {

@@ -1643,7 +1643,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.6.0.5";
+    const APP_VERSION = "4.6.0.6";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -9363,7 +9363,9 @@
       const who = String(note.who || "").trim();
       const locationText = where && city ? `${where} in ${city}` : where || city;
       const eventText = what && who ? `${what} with ${who}` : what || who;
-      const locationPrecision = validNoteCoordinates(note) ? coordinateFilterMeta("mapped") : coordinateFilterMeta("missing");
+      const noteCoords = validNoteCoordinates(note);
+      const coordsLabel = noteCoords ? `${noteCoords.lat}, ${noteCoords.lng}` : "NONE";
+      const coordsIcon = noteCoords ? __SCOPE_DOT : __SCOPE;
       const levelColor = noteLevel?.color || "var(--accent)";
       const bucketId = bucketListLevelId();
       const isBucket = bucketId && note.levelId === bucketId;
@@ -9396,7 +9398,7 @@
           data-edit-note-row="${escapeHtml(note.id)}" data-note-id="${escapeHtml(note.id)}" data-note-state="${escapeHtml(abbr)}">
           <header class="detailed-note-head">
             <span class="detailed-note-date">${escapeHtml(note.date ? formatDateDisplay(note.date) : "No date")}</span>
-            <span class="detailed-note-precision" style="--level-color:${escapeHtml(levelColor)}" aria-label="${escapeHtml(locationPrecision.label)}" title="${escapeHtml(locationPrecision.title)}">${locationPrecision.icon}</span>
+            <span class="detailed-note-precision${noteCoords ? "" : " is-no-coords"}" style="--level-color:${escapeHtml(levelColor)}" aria-label="Coordinates: ${escapeHtml(coordsLabel)}" title="Coordinates: ${escapeHtml(coordsLabel)}">${coordsIcon}</span>
             <span class="detailed-note-level" style="--level-color:${escapeHtml(levelColor)}">${escapeHtml(noteLevel?.name || "No level")}</span>
             ${types.map(type => `<span class="detailed-note-tag" style="--level-color:${escapeHtml(levelColor)}">${visitTypeIcon(type.id)}${escapeHtml(type.label)}</span>`).join("")}
             <span class="actions">
@@ -15531,7 +15533,7 @@
         // control advertises the same shortcut.
         arrowleft: () => notesPanelState && clickIf("#notesPanelBackBtn"),
         arrowdown: () => notesPanelOpen && cycleNotesViewMode(),
-        arrowup: () => { },
+        arrowup: () => notesPanelOpen && cycleNotesSortMode(),
         // Delete clears applied levels on the drilled-in location.
         delete: () => notesPanelState && clickIf("#notesPanelClearBtn"),
         backspace: () => notesPanelState && clickIf("#notesPanelClearBtn"),
@@ -15540,14 +15542,6 @@
       if (!actions[key]) return;
       event.preventDefault();
       actions[key]();
-    }
-
-    function handleNotesSortArrowKeyup(event) {
-      if (event.key !== "ArrowUp" || event.defaultPrevented || isTypingTarget(event.target)) return;
-      if (!(shortcutsActive() || (event.shiftKey && event.altKey && event.ctrlKey && !event.metaKey))) return;
-      if (!notesPanelOpen || document.querySelector("dialog[open]")) return;
-      event.preventDefault();
-      cycleNotesSortMode();
     }
 
     function bindHelpSearch() {
@@ -16306,7 +16300,6 @@
       $("#coffeeKeyBtn").addEventListener("click", () => handleDeveloperGesture("coffee"));
       document.addEventListener("keydown", handleRingKeydown);
       document.addEventListener("keydown", handlePowerShortcut);
-      document.addEventListener("keyup", handleNotesSortArrowKeyup);
       document.addEventListener("keyup", updatePowerOverlay);
       // Esc closes every open dialog and the inline Waypoint Packs panel even
       // outside Shortcut Mode. Registered in the CAPTURE phase so the handler
