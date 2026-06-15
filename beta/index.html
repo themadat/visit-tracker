@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.6.1.3">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.6.1.4">
 </head>
 
 <body>
@@ -1643,7 +1643,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.6.1.3";
+    const APP_VERSION = "4.6.1.4";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -5466,13 +5466,7 @@
         const el = $("#" + layer.svgId);
         // SVG elements don't reflect the `hidden` IDL property, so toggle the
         // attribute explicitly.
-        if (el) {
-          const inactive = layer.id !== id;
-          el.toggleAttribute("hidden", inactive);
-          el.toggleAttribute("inert", inactive);
-          if (inactive) el.setAttribute("aria-hidden", "true");
-          else el.removeAttribute("aria-hidden");
-        }
+        if (el) el.toggleAttribute("hidden", layer.id !== id);
       });
       document.documentElement.dataset.activeLayer = id;
       syncLayerToggleLabel();
