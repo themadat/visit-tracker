@@ -4,7 +4,7 @@
 
     const CHANGELOG = [
       {
-        version: "4.6.1.1",
+        version: "4.6.1.2",
         date: "2026-06-15",
         title: "A Small World",
         summary: "Switching between the US and World maps is quicker, and the advertised map shortcut works again.",
@@ -20,6 +20,7 @@
               "World and US activation now refreshes the map, Legend, Notes, Rangefinder, and related controls without rebuilding unrelated app surfaces.",
               "Backquote-key normalization makes the Shift+Control+Option+~ chord reliable across keyboard layouts.",
               "Added the missing ~ action to the Shortcut Mode home-screen command table.",
+              "The map chord now captures keydown, dead-key keypress, and keyup fallbacks before other keyboard handlers can consume it.",
             ]
           }
         ]
