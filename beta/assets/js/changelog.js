@@ -5,11 +5,11 @@
     const CHANGELOG = [
       {
         version: "4.6.0",
-        date: "2026-06-14",
+        date: "2026-06-15",
         title: "The Whole Story",
         summary: "Notes gains a full Detailed view, and individual locations can switch among all four note layouts.",
         banner: "Detailed Notes shows every field in full, with all four views available inside each location.",
-        cta: "Read the Whole Story!",
+        cta: "Read the|Whole Story!",
         highlights: [
           "Detailed view shows complete location and note information without truncation.",
           "Detailed is the default view for fresh Notes lists.",
@@ -32,9 +32,9 @@
               "Detailed and Expanded location headers show the date span and note count with a clearer divider; the count now reliably collapses or reveals that location's notes and shows a disclosure chevron that points down when open and right when collapsed.",
               "Expanded note priority badges stay attached to the Waypoint icon when present, otherwise the first map-winning icon, and now tuck in from the corner so they no longer clip at a row's right or bottom edge.",
               "The priority badge no longer appears in the denser Condensed view.",
-              "Every note across all four views — including Detailed cards — shows a coordinate-status icon: a plain target with a \"Coordinates: NONE\" hint when unmapped, and a dotted target showing the exact latitude and longitude when mapped (Detailed cards previously showed the dotted target either way).",
+              "Every visual note row or card shows coordinate status: a plain target with a \"Coordinates: NONE\" hint when unmapped, or a dotted target showing the saved latitude and longitude when mapped.",
               "In Expanded location headers the disclosure chevron is smaller, and the date span and note count stay right-aligned in the header.",
-              "Shift + Control + Option + Up now reliably cycles the Notes sort order; it fires on key-press like the view-cycle shortcut instead of on release, which macOS could swallow.",
+              "Right Arrow now cycles the Notes sort order, while Down Arrow cycles the four note views.",
               "Detailed layouts wrap naturally without fixed row heights, ellipsis, or line clamping.",
             ]
           },
@@ -48,7 +48,7 @@
               "Additional Details now accepts up to 2,000 characters in both the full editor and Detailed cards.",
               "Space and Enter remain normal text input while editing Detailed card details.",
               "Back returns to the previous scroll position in the location list.",
-              "Down Arrow cycles all four views; Up Arrow cycles all three sort modes.",
+              "Down Arrow cycles all four views; Right Arrow cycles all three sort modes.",
               "Condensed Visit Notes uses tighter rows and smaller date/summary text so more notes fit on screen.",
               "Linked Waypoint notes expose website, photo, and priority controls beside Edit and Delete.",
               "Switching views keeps one saved preference across the main list and selected-location notes.",

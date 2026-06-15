@@ -1,6 +1,6 @@
 # Trail Log
 
-Trail Log is a local-first travel map for marking where you've been, where you want to go next, and the little memories worth keeping along the way. It started as a US state visit tracker and now layers in DC, territories, a switchable World map, custom legend levels, location notes, icon tags, mapped memories, Wayfinder packs for National Parks and Monuments, Rangefinder planning rings, named Basecamp pads with rich-text planning and linked location notes, and copy-friendly exports, all with a slightly outdoorsy, geeky vibe.
+Trail Log is a local-first travel map for marking where you've been, where you want to go next, and the little memories worth keeping along the way. It started as a US state visit tracker and now layers in DC, territories, a switchable World map, custom legend levels, four location-note views from Detailed to Text Only, icon tags, mapped memories, Wayfinder packs for National Parks and Monuments, Rangefinder planning rings, named Basecamp pads with rich-text planning and linked location notes, and copy-friendly exports, all with a slightly outdoorsy, geeky vibe.
 
 The app is still intentionally simple to run: open `index.html` and go — plain HTML/CSS/JavaScript with a few companion data files, no build step, browser localStorage, JSON import/export, and no backend. Optional coordinate lookup only goes online when you tap Locate; saved data and manual coordinates keep working offline.
 
@@ -8,6 +8,7 @@ The app is still intentionally simple to run: open `index.html` and go — plain
 
 | Version | Date | Title | Summary
 |---|---:|---|---|
+| 4.6.0 | 2026-06-15 | The Whole Story | Detailed Notes shows every field in full, and each location can switch among Detailed, Expanded, Condensed, and Text Only views. |
 | 4.5.2 | 2026-06-14 | Get Your Bearings | Rangefinder's style menu stays open for quick fill/clip changes, while Legend totals and Map Labels clearly show whether they represent US, World, or Waypoint Pack locations. |
 | 4.5.1 | 2026-06-12 | Back in the Picture | Fixes the "Add as App" icon previews showing only a colored background — the book-and-globe artwork renders again. |
 | 4.5.0 | 2026-06-12 | Leave No Trace | A broad small-screen pass: Basecamp becomes a pad list plus full-screen editor, Notes fill more of the screen, and the map, note editor, pop-up menus, and linked-note photos all behave on phones. |
