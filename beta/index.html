@@ -274,9 +274,9 @@
                 data-shortcut="↓">Text Only</button>
             </div>
             <div class="segmented" aria-label="Notes sort order">
-              <button id="notesSortAlphaBtn" type="button" aria-pressed="false" data-shortcut="↑">Alphabetical</button>
-              <button id="notesSortChronoBtn" type="button" aria-pressed="true" data-shortcut="↑">Chronological</button>
-              <button id="notesSortPriorityBtn" type="button" aria-pressed="false" data-shortcut="↑">Priority</button>
+              <button id="notesSortAlphaBtn" type="button" aria-pressed="false" data-shortcut="→">Alphabetical</button>
+              <button id="notesSortChronoBtn" type="button" aria-pressed="true" data-shortcut="→">Chronological</button>
+              <button id="notesSortPriorityBtn" type="button" aria-pressed="false" data-shortcut="→">Priority</button>
             </div>
             <button id="notesCategoryToggleBtn" class="notes-category-toggle" type="button" aria-pressed="true"
               data-shortcut="G">Categorical</button>
@@ -1117,7 +1117,7 @@
             </li>
             <li>Use Quick Add beside search to add a note from the main list. Pick the target location in the note
               header, then Save or Save and Add Another.</li>
-            <li>Sort Notes alphabetically, chronologically, or by priority. Down Arrow cycles views and Up Arrow cycles
+            <li>Sort Notes alphabetically, chronologically, or by priority. Down Arrow cycles views and Right Arrow cycles
               sorts; the view shortcut also works inside an individual location.</li>
             <li>Use Detailed, Expanded, Condensed, or Text Only view. Detailed shows every populated note field and
               the full details text; click that text to edit it inline, then press Cmd/Ctrl+Enter or use the checkmark
@@ -1504,7 +1504,7 @@
               </div>
               <div class="shortcut-row"><kbd>↓</kbd><span>Cycle Notes View: Detailed → Expanded → Condensed → Text
                   <em>[notesViewDetailedBtn]</em></span></div>
-              <div class="shortcut-row"><kbd>↑</kbd><span>Cycle Notes Sort: Alphabetical → Chronological → Priority
+              <div class="shortcut-row"><kbd>→</kbd><span>Cycle Notes Sort: Alphabetical → Chronological → Priority
                   <em>[notesSortAlphaBtn]</em></span></div>
               <div class="shortcut-row"><kbd>G</kbd><span>Categorical Grouping
                   On/Off<em>[notesCategoryToggleBtn]</em></span>
@@ -1643,7 +1643,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.6.0.6";
+    const APP_VERSION = "4.6.0";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -15533,7 +15533,7 @@
         // control advertises the same shortcut.
         arrowleft: () => notesPanelState && clickIf("#notesPanelBackBtn"),
         arrowdown: () => notesPanelOpen && cycleNotesViewMode(),
-        arrowup: () => notesPanelOpen && cycleNotesSortMode(),
+        arrowright: () => notesPanelOpen && cycleNotesSortMode(),
         // Delete clears applied levels on the drilled-in location.
         delete: () => notesPanelState && clickIf("#notesPanelClearBtn"),
         backspace: () => notesPanelState && clickIf("#notesPanelClearBtn"),
