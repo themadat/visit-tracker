@@ -4,26 +4,31 @@
 
     const CHANGELOG = [
       {
-        version: "4.6.1.6",
+        version: "4.6.1",
         date: "2026-06-15",
         title: "A Small World",
-        summary: "Switching between the US and World maps is quicker, and the advertised map shortcut works again.",
+        summary: "Map switching responds sooner, shows clear loading progress, and restores its keyboard shortcut.",
         highlights: [
-          "Map switching refreshes only the layer-dependent surfaces instead of rerendering the full app.",
-          "Shift+Control+Option+~ now switches between the US and World maps.",
+          "Map switching refreshes only the surfaces that depend on the active map.",
+          "The switch button shows its destination, spinner, and progress while loading.",
+          "Shift+Control+Option+~ reliably switches between the US and World maps.",
         ],
         updateSections: [
           {
-            heading: "Map Switching",
+            heading: "Faster Feedback",
             items: [
-              "The new map can paint before its selected-layer preference is persisted.",
-              "World and US activation now refreshes the map, Legend, Notes, Rangefinder, and related controls without rebuilding unrelated app surfaces.",
-              "Backquote-key normalization makes the Shift+Control+Option+~ chord reliable across keyboard layouts.",
-              "Added the missing ~ action to the Shortcut Mode home-screen command table.",
-              "The map chord now captures keydown, dead-key keypress, and keyup fallbacks before other keyboard handlers can consume it.",
-              "Restored true display:none isolation for the inactive map after keeping the World SVG live slowed unrelated app interactions.",
-              "Map switches now show a compact loading pill and progress bar before the destination SVG begins painting.",
-              "The loading spinner, destination label, and progress line now live directly inside the map switch button.",
+              "Switching maps refreshes the map, Legend, Notes, Rangefinder, and related controls without rebuilding unrelated app surfaces.",
+              "The inactive map remains fully removed from layout and painting so normal app interactions stay responsive.",
+              "The map switch button changes to a destination label, spinner, and progress line before the next SVG begins painting.",
+              "The selected map is persisted after the destination has painted instead of delaying the visible switch.",
+            ]
+          },
+          {
+            heading: "Keyboard Shortcut",
+            items: [
+              "Shift+Control+Option+~ now switches between the US and World maps as advertised.",
+              "Physical Backquote and Option-produced dead-key variants are normalized across keydown, keypress, and keyup.",
+              "A held-key latch prevents missed shortcuts and accidental double map toggles.",
             ]
           }
         ]
