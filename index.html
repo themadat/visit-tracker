@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.6.1.6">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.6.1">
 </head>
 
 <body>
@@ -1064,6 +1064,8 @@
           <ol>
             <li>Tap a location to mark it. In cycle mode, the first tap on an already marked location shows it in Notes;
               the next tap cycles levels.</li>
+            <li>Tap the map title to switch between US and World. The button shows the destination and loading progress
+              while the next map is prepared.</li>
             <li>Use the Map Labels control to switch states, territories, or a linked Waypoint Pack between no labels,
               abbreviations, and full names.</li>
             <li>Use Scroll Map to pan and zoom. Type an exact zoom percentage, use the zoom buttons, or reset to 100%.
@@ -1457,7 +1459,7 @@
           <details class="shortcut-section">
             <summary>Map<span class="muted">(Panel :: Header)</span></summary>
             <div class="shortcut-list">
-              <div class="shortcut-row"><kbd>~</kbd><span>Switch US ⇄ World Map <em>[mapLayerToggleBtn]</em></span>
+              <div class="shortcut-row"><kbd>⇧⌃⌥~</kbd><span>Switch US ⇄ World Map <em>[mapLayerToggleBtn]</em></span>
               </div>
               <div class="shortcut-row"><kbd>−</kbd><span>Zoom out (scroll mode only) <em>[mapZoomOutBtn]</em></span>
               </div>
@@ -1644,7 +1646,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.6.1.6";
+    const APP_VERSION = "4.6.1";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
