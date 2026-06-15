@@ -4,6 +4,38 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.0.1",
+        date: "2026-06-15",
+        title: "Priority",
+        summary: "Priority becomes a first-class note field with unified filtering, sorting, and grouping.",
+        banner: "Set priorities on every note, then filter, sort, and group the Notes list around them.",
+        cta: "Set Your|Priorities!",
+        highlights: [
+          "Every note can carry a priority from 1 through 5.",
+          "A unified Priority menu controls filtering, ordering, and grouping.",
+          "Priority appears consistently in note views and exports.",
+        ],
+        updateSections: [
+          {
+            heading: "Priority Everywhere",
+            items: [
+              "Every note can set or clear Priority directly in the standard note editor, including notes outside Waypoint Packs.",
+              "Detailed and Expanded retain their priority treatments, Condensed stays intentionally clean, and Text Only includes Priority.",
+              "Markdown, Rich Text, Plain Text, and JSON exports preserve each note's priority.",
+            ]
+          },
+          {
+            heading: "Find What Matters",
+            items: [
+              "The new Priority popover filters an exact number, that number or higher, or that number or lower.",
+              "Priority ordering can run 5-to-1 or 1-to-5 while Alphabetical or Chronological remains the tie-breaker.",
+              "Group by Priority supersedes Category grouping and adds colored Priority and Unprioritized headings.",
+              "Legacy Priority sort preferences migrate to chronological tie-breaking with 5-to-1 priority ordering.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.6.1",
         date: "2026-06-15",
         title: "A Small World",
