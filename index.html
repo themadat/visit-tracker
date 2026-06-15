@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.6.1">
 </head>
 
 <body>
@@ -116,6 +116,7 @@
             <button id="mapLayerToggleBtn" class="map-layer-toggle" type="button" aria-pressed="false"
               aria-label="Switch between the US and World maps" data-shortcut="~">
               <span id="mapLayerIcon" class="map-layer-icon" aria-hidden="true"></span>
+              <span class="map-layer-loading-spinner" aria-hidden="true"></span>
               <span class="map-layer-text-stack">
                 <h2 id="mapHeading">US Map</h2>
                 <span id="mapLayerModePills" class="map-layer-mode-pills hidden" aria-hidden="true">
@@ -1063,6 +1064,8 @@
           <ol>
             <li>Tap a location to mark it. In cycle mode, the first tap on an already marked location shows it in Notes;
               the next tap cycles levels.</li>
+            <li>Tap the map title to switch between US and World. The button shows the destination and loading progress
+              while the next map is prepared.</li>
             <li>Use the Map Labels control to switch states, territories, or a linked Waypoint Pack between no labels,
               abbreviations, and full names.</li>
             <li>Use Scroll Map to pan and zoom. Type an exact zoom percentage, use the zoom buttons, or reset to 100%.
@@ -1456,7 +1459,7 @@
           <details class="shortcut-section">
             <summary>Map<span class="muted">(Panel :: Header)</span></summary>
             <div class="shortcut-list">
-              <div class="shortcut-row"><kbd>~</kbd><span>Switch US ⇄ World Map <em>[mapLayerToggleBtn]</em></span>
+              <div class="shortcut-row"><kbd>⇧⌃⌥~</kbd><span>Switch US ⇄ World Map <em>[mapLayerToggleBtn]</em></span>
               </div>
               <div class="shortcut-row"><kbd>−</kbd><span>Zoom out (scroll mode only) <em>[mapZoomOutBtn]</em></span>
               </div>
@@ -1643,7 +1646,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.6.0";
+    const APP_VERSION = "4.6.1";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -2537,6 +2540,8 @@
     let installReloadNeeded = false;
     let installPlatformOverride = "auto";
     let powerOverlayActive = false;
+    let mapLayerChordHeld = false;
+    let mapLayerSwitchToken = 0;
     let developerGesture = [];
     let releaseShortcutPrimed = false;
     let draggingVisitTagId = "";
@@ -5486,12 +5491,47 @@
       btn.setAttribute("aria-label", `${current.heading}. Tap to switch to the ${other.heading}.`);
     }
 
+    function setMapSwitchBusy(active, targetHeading = "") {
+      const button = $("#mapLayerToggleBtn");
+      const heading = $("#mapHeading");
+      if (!button) return;
+      button.classList.toggle("is-loading", active);
+      button.disabled = active;
+      button.setAttribute("aria-busy", active ? "true" : "false");
+      if (active) {
+        heading.textContent = `Loading ${targetHeading}...`;
+        button.setAttribute("aria-label", `Loading ${targetHeading}`);
+      } else {
+        syncLayerToggleLabel();
+      }
+    }
+
     function setActiveLayer(id) {
-      activeLayerId = MAP_LAYERS[id] ? id : "us";
-      state.settings.activeLayerId = activeLayerId;
-      applyActiveLayer();
-      save();
-      render();
+      const nextId = MAP_LAYERS[id] ? id : "us";
+      if (nextId === activeLayerId) return;
+      const token = ++mapLayerSwitchToken;
+      setMapSwitchBusy(true, MAP_LAYERS[nextId].heading);
+      // Let the loading status paint before the destination SVG starts its
+      // synchronous layout and paint work.
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        if (token !== mapLayerSwitchToken) return;
+        activeLayerId = nextId;
+        state.settings.activeLayerId = activeLayerId;
+        applyActiveLayer();
+        renderRingPanel();
+        renderMap();
+        renderLegend();
+        renderNotesPanel();
+        syncBucketListUi();
+        syncRingUi();
+        syncButtonLabels();
+        scheduleMainLayoutSync();
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          if (token !== mapLayerSwitchToken) return;
+          setMapSwitchBusy(false);
+          save({ captureMapPan: false });
+        }));
+      }));
     }
 
     // One-time: default every world country to the Not Interested level so the
@@ -14405,9 +14445,32 @@
     function shortcutKey(event) {
       if (event.code?.startsWith("Key")) return event.code.slice(3).toLowerCase();
       if (event.code?.startsWith("Digit")) return event.code.slice(5);
+      if (event.code === "Backquote") return event.shiftKey ? "~" : "`";
       if (event.code === "Minus" || event.code === "NumpadSubtract") return "-";
       if (event.code === "Equal" || event.code === "NumpadAdd") return event.shiftKey || event.code === "NumpadAdd" ? "+" : "=";
       return event.key.toLowerCase();
+    }
+
+    function handleMapLayerChord(event) {
+      const backquote = event.code === "Backquote"
+        || event.key === "~"
+        || event.key === "`"
+        || event.key === "Dead"
+        || event.keyCode === 192;
+      const modifierKey = ["Shift", "Control", "Alt", "Meta"].includes(event.key);
+      if (event.type === "keyup") {
+        const missedKeydown = backquote && !mapLayerChordHeld
+          && event.shiftKey && event.ctrlKey && event.altKey && !event.metaKey;
+        if (backquote || modifierKey) mapLayerChordHeld = false;
+        if (!missedKeydown) return;
+      } else {
+        if (!backquote || mapLayerChordHeld
+          || !event.shiftKey || !event.ctrlKey || !event.altKey || event.metaKey) return;
+        mapLayerChordHeld = true;
+      }
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      setActiveLayer(activeLayerId === "world" ? "us" : "world");
     }
 
     function isTypingTarget(target) {
@@ -15493,6 +15556,7 @@
         "3": () => setActiveMapLabelMode("none"),
         "2": () => setActiveMapLabelMode("abbr"),
         "1": () => setActiveMapLabelMode("name"),
+        "~": () => setActiveLayer(activeLayerId === "world" ? "us" : "world"),
         "-": () => nudgeMapZoom(-MAP_ZOOM_STEP),
         "+": () => nudgeMapZoom(MAP_ZOOM_STEP),
         "=": () => nudgeMapZoom(MAP_ZOOM_STEP),
@@ -16298,6 +16362,9 @@
       });
       $("#liquorKeyBtn").addEventListener("click", () => handleDeveloperGesture("liquor"));
       $("#coffeeKeyBtn").addEventListener("click", () => handleDeveloperGesture("coffee"));
+      document.addEventListener("keydown", handleMapLayerChord, true);
+      document.addEventListener("keypress", handleMapLayerChord, true);
+      document.addEventListener("keyup", handleMapLayerChord, true);
       document.addEventListener("keydown", handleRingKeydown);
       document.addEventListener("keydown", handlePowerShortcut);
       document.addEventListener("keyup", updatePowerOverlay);
