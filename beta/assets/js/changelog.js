@@ -32,7 +32,9 @@
               "Detailed and Expanded location headers show the date span and note count with a clearer divider; the count now reliably collapses or reveals that location's notes and shows a disclosure chevron that points down when open and right when collapsed.",
               "Expanded note priority badges stay attached to the Waypoint icon when present, otherwise the first map-winning icon, and now tuck in from the corner so they no longer clip at a row's right or bottom edge.",
               "The priority badge no longer appears in the denser Condensed view.",
-              "Every note now shows a coordinate-status icon — a plain target with a \"Coordinates: NONE\" hint when unmapped, and a dotted target showing the exact latitude and longitude when mapped.",
+              "Every note across all four views — including Detailed cards — shows a coordinate-status icon: a plain target with a \"Coordinates: NONE\" hint when unmapped, and a dotted target showing the exact latitude and longitude when mapped (Detailed cards previously showed the dotted target either way).",
+              "In Expanded location headers the disclosure chevron is smaller, and the date span and note count stay right-aligned in the header.",
+              "Shift + Control + Option + Up now reliably cycles the Notes sort order; it fires on key-press like the view-cycle shortcut instead of on release, which macOS could swallow.",
               "Detailed layouts wrap naturally without fixed row heights, ellipsis, or line clamping.",
             ]
           },
