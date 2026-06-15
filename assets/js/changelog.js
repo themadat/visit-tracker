@@ -4,7 +4,7 @@
 
     const CHANGELOG = [
       {
-        version: "4.7.0.4",
+        version: "4.7.0",
         date: "2026-06-15",
         title: "Priority",
         summary: "Priority becomes a first-class note field with unified filtering, sorting, and grouping.",

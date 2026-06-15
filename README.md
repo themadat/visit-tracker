@@ -8,6 +8,7 @@ The app is still intentionally simple to run: open `index.html` and go — plain
 
 | Version | Date | Title | Summary
 |---|---:|---|---|
+| 4.7.0 | 2026-06-15 | Priority | Every note can carry a priority, with unified filtering, ordering, grouping, square badges, and exports. |
 | 4.6.1 | 2026-06-15 | A Small World | Map switching responds sooner, shows loading progress directly in the switch button, and restores the Shift+Control+Option+~ shortcut. |
 | 4.6.0 | 2026-06-15 | The Whole Story | Detailed Notes shows every field in full, and each location can switch among Detailed, Expanded, Condensed, and Text Only views. |
 | 4.5.2 | 2026-06-14 | Get Your Bearings | Rangefinder's style menu stays open for quick fill/clip changes, while Legend totals and Map Labels clearly show whether they represent US, World, or Waypoint Pack locations. |
