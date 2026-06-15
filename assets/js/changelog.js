@@ -4,6 +4,60 @@
 
     const CHANGELOG = [
       {
+        version: "4.6.0",
+        date: "2026-06-15",
+        title: "The Whole Story",
+        summary: "Notes gains a full Detailed view, and individual locations can switch among all four note layouts.",
+        banner: "Detailed Notes shows every field in full, with all four views available inside each location.",
+        cta: "Read the|Whole Story!",
+        highlights: [
+          "Detailed view shows complete location and note information without truncation.",
+          "Detailed is the default view for fresh Notes lists.",
+          "Individual locations now offer Detailed, Expanded, Condensed, and Text Only views.",
+          "Detailed cards support inline details editing and linked Waypoint actions.",
+        ],
+        updateSections: [
+          {
+            heading: "Detailed Notes",
+            items: [
+              "Added a Detailed view before Expanded using the diagonal-expand icon.",
+              "Each location card shows its type, applied levels, note count, and available date span.",
+              "Detailed card headers place location precision, level, and color-matched Location Tags on one readable line.",
+              "Location reads as Where in City; Event reads as What with Who in a balanced two-column summary.",
+              "Coordinates stay out of Detailed cards, while complete details text remains untruncated.",
+              "Priority can be changed directly from any Detailed card.",
+              "Priority menus now stay compact with direct square choices for blank or priorities 1 through 5.",
+              "Linked Waypoint controls now appear in both the main Notes list and individual locations.",
+              "Location summaries keep the date range and note count together on one line.",
+              "Detailed and Expanded location headers show the date span and note count with a clearer divider; the count now reliably collapses or reveals that location's notes and shows a disclosure chevron that points down when open and right when collapsed.",
+              "Expanded note priority badges stay attached to the Waypoint icon when present, otherwise the first map-winning icon, and now tuck in from the corner so they no longer clip at a row's right or bottom edge.",
+              "The priority badge no longer appears in the denser Condensed view.",
+              "Every visual note row or card shows coordinate status: a plain target with a \"Coordinates: NONE\" hint when unmapped, or a dotted target showing the saved latitude and longitude when mapped.",
+              "In Expanded location headers the disclosure chevron is smaller, and the date span and note count stay right-aligned in the header.",
+              "Right Arrow now cycles the Notes sort order, while Down Arrow cycles the four note views.",
+              "Detailed layouts wrap naturally without fixed row heights, ellipsis, or line clamping.",
+            ]
+          },
+          {
+            heading: "Location Notes",
+            items: [
+              "The Visit Notes section inside an individual location now includes the same four-view selector as the main Notes list.",
+              "The Visit Notes heading and view controls stay pinned while scrolling a location's notes.",
+              "Clicking a Detailed card's details text opens an inline editor with a live character count and checkmark save.",
+              "Cmd/Ctrl+Enter saves inline Detailed edits and the full note editor's Additional Details; plain Enter keeps inserting a new line.",
+              "Additional Details now accepts up to 2,000 characters in both the full editor and Detailed cards.",
+              "Space and Enter remain normal text input while editing Detailed card details.",
+              "Back returns to the previous scroll position in the location list.",
+              "Down Arrow cycles all four views; Right Arrow cycles all three sort modes.",
+              "Condensed Visit Notes uses tighter rows and smaller date/summary text so more notes fit on screen.",
+              "Linked Waypoint notes expose website, photo, and priority controls beside Edit and Delete.",
+              "Switching views keeps one saved preference across the main list and selected-location notes.",
+              "Existing saved Expanded, Condensed, and Text Only choices remain intact; new/default settings start in Detailed.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.5.2",
         date: "2026-06-14",
         title: "Get Your Bearings",
