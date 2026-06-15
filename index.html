@@ -1643,7 +1643,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.6.1.1";
+    const APP_VERSION = "4.6.1.2";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -2537,6 +2537,7 @@
     let installReloadNeeded = false;
     let installPlatformOverride = "auto";
     let powerOverlayActive = false;
+    let mapLayerChordHeld = false;
     let developerGesture = [];
     let releaseShortcutPrimed = false;
     let draggingVisitTagId = "";
@@ -14420,6 +14421,28 @@
       return event.key.toLowerCase();
     }
 
+    function handleMapLayerChord(event) {
+      const backquote = event.code === "Backquote"
+        || event.key === "~"
+        || event.key === "`"
+        || event.key === "Dead"
+        || event.keyCode === 192;
+      const modifierKey = ["Shift", "Control", "Alt", "Meta"].includes(event.key);
+      if (event.type === "keyup") {
+        const missedKeydown = backquote && !mapLayerChordHeld
+          && event.shiftKey && event.ctrlKey && event.altKey && !event.metaKey;
+        if (backquote || modifierKey) mapLayerChordHeld = false;
+        if (!missedKeydown) return;
+      } else {
+        if (!backquote || mapLayerChordHeld
+          || !event.shiftKey || !event.ctrlKey || !event.altKey || event.metaKey) return;
+        mapLayerChordHeld = true;
+      }
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      setActiveLayer(activeLayerId === "world" ? "us" : "world");
+    }
+
     function isTypingTarget(target) {
       return /^(input|textarea|select)$/i.test(target?.tagName || "") || target?.isContentEditable;
     }
@@ -16309,6 +16332,9 @@
       });
       $("#liquorKeyBtn").addEventListener("click", () => handleDeveloperGesture("liquor"));
       $("#coffeeKeyBtn").addEventListener("click", () => handleDeveloperGesture("coffee"));
+      document.addEventListener("keydown", handleMapLayerChord, true);
+      document.addEventListener("keypress", handleMapLayerChord, true);
+      document.addEventListener("keyup", handleMapLayerChord, true);
       document.addEventListener("keydown", handleRingKeydown);
       document.addEventListener("keydown", handlePowerShortcut);
       document.addEventListener("keyup", updatePowerOverlay);
