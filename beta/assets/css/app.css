@@ -1199,6 +1199,8 @@
 
     /* The map title doubles as the US/World switch: icon + name, always shown. */
     .map-layer-toggle {
+      position: relative;
+      overflow: hidden;
       display: inline-flex;
       align-items: center;
       gap: .45rem;
@@ -1351,6 +1353,50 @@
 
     .map-layer-toggle:active {
       transform: translateY(1px);
+    }
+
+    .map-layer-toggle.is-loading {
+      cursor: wait;
+      border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+      background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+      box-shadow: 0 3px 12px color-mix(in srgb, var(--accent) 16%, transparent);
+      opacity: 1;
+    }
+
+    .map-layer-toggle.is-loading::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 32%;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--accent);
+      animation: map-switch-progress 1s ease-in-out infinite;
+    }
+
+    .map-layer-loading-spinner {
+      display: none;
+      flex: 0 0 auto;
+      width: 1.15rem;
+      height: 1.15rem;
+      margin-inline: .48rem;
+      border: 2px solid color-mix(in srgb, var(--accent) 24%, var(--line));
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: map-switch-spin .72s linear infinite;
+    }
+
+    .map-layer-toggle.is-loading .map-layer-icon {
+      display: none;
+    }
+
+    .map-layer-toggle.is-loading .map-layer-loading-spinner {
+      display: inline-block;
+    }
+
+    .map-layer-toggle.is-loading .map-layer-mode-pills {
+      display: none;
     }
 
     /* Reserve enough width for the longest label ("World Map") and never wrap,
@@ -1750,54 +1796,6 @@
       min-height: 0;
     }
 
-    .map-switch-status {
-      position: absolute;
-      z-index: 8;
-      inset: .45rem auto auto 50%;
-      translate: -50% 0;
-      display: inline-flex;
-      align-items: left;
-      gap: .45rem;
-      max-width: calc(100% - 1rem);
-      padding: .42rem .68rem;
-      border: 1px solid color-mix(in srgb, var(--accent) 38%, var(--line));
-      border-radius: 999px;
-      background: color-mix(in srgb, var(--surface) 92%, transparent);
-      color: var(--text);
-      box-shadow: 0 5px 18px color-mix(in srgb, var(--text) 16%, transparent);
-      backdrop-filter: blur(8px);
-      font-size: .76rem;
-      font-weight: 750;
-      white-space: nowrap;
-      overflow: hidden;
-      pointer-events: none;
-    }
-
-    .map-switch-status[hidden] {
-      display: none;
-    }
-
-    .map-switch-status::after {
-      content: "";
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 32%;
-      height: 2px;
-      border-radius: 999px;
-      background: var(--accent);
-      animation: map-switch-progress 1s ease-in-out infinite;
-    }
-
-    .map-switch-spinner {
-      width: .82rem;
-      height: .82rem;
-      border: 2px solid color-mix(in srgb, var(--accent) 24%, var(--line));
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: map-switch-spin .72s linear infinite;
-    }
-
     @keyframes map-switch-spin {
       to {
         rotate: 1turn;
@@ -1815,8 +1813,8 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .map-switch-spinner,
-      .map-switch-status::after {
+      .map-layer-loading-spinner,
+      .map-layer-toggle.is-loading::after {
         animation: none;
       }
     }

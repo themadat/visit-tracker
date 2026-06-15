@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.6.1.5">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.6.1.6">
 </head>
 
 <body>
@@ -116,6 +116,7 @@
             <button id="mapLayerToggleBtn" class="map-layer-toggle" type="button" aria-pressed="false"
               aria-label="Switch between the US and World maps" data-shortcut="~">
               <span id="mapLayerIcon" class="map-layer-icon" aria-hidden="true"></span>
+              <span class="map-layer-loading-spinner" aria-hidden="true"></span>
               <span class="map-layer-text-stack">
                 <h2 id="mapHeading">US Map</h2>
                 <span id="mapLayerModePills" class="map-layer-mode-pills hidden" aria-hidden="true">
@@ -188,10 +189,6 @@
         </div>
         <div id="legendSlotTop" class="legend-slot legend-slot-top" aria-label="Legend above map"></div>
         <div class="map-viewport">
-          <div id="mapSwitchStatus" class="map-switch-status" role="status" aria-live="polite" hidden>
-            <span class="map-switch-spinner" aria-hidden="true"></span>
-            <span id="mapSwitchStatusText">Switching maps...</span>
-          </div>
           <div class="map-wrap">
             <!-- #stateMap + #worldMap SVGs are injected from assets/js/maps.js at startup -->
           </div>
@@ -1647,7 +1644,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.6.1.5";
+    const APP_VERSION = "4.6.1.6";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -5493,14 +5490,18 @@
     }
 
     function setMapSwitchBusy(active, targetHeading = "") {
-      const panel = $(".map-panel");
-      const status = $("#mapSwitchStatus");
-      const text = $("#mapSwitchStatusText");
       const button = $("#mapLayerToggleBtn");
-      if (panel) panel.setAttribute("aria-busy", active ? "true" : "false");
-      if (status) status.hidden = !active;
-      if (text && active) text.textContent = `Loading ${targetHeading}...`;
-      if (button) button.disabled = active;
+      const heading = $("#mapHeading");
+      if (!button) return;
+      button.classList.toggle("is-loading", active);
+      button.disabled = active;
+      button.setAttribute("aria-busy", active ? "true" : "false");
+      if (active) {
+        heading.textContent = `Loading ${targetHeading}...`;
+        button.setAttribute("aria-label", `Loading ${targetHeading}`);
+      } else {
+        syncLayerToggleLabel();
+      }
     }
 
     function setActiveLayer(id) {
