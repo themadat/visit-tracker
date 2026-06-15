@@ -177,7 +177,7 @@ For every completed change:
   top-level consts share the global lexical scope and work over `file://`.
 - Main file: `index.html`. `STORAGE_KEY = "usStateVisitMap.v1"`, version in `APP_VERSION`.
 - Docs: `README.md` (public/run/build), this handoff (all dev + LLM context), `AGENTS.md` + `CLAUDE.md` (thin auto-loaded agent summaries — keep lean).
-- Current version: `APP_VERSION = "4.6.1.4"` — active patch line **4.6.1 "A Small World"** restores true `display:none` isolation for the inactive map after the 4.6.1.3 warm-underlay experiment caused broad interaction lag; the targeted layer renderer and capture-phase `Shift+Control+Option+~` shortcut fixes remain. Latest cut release is **4.6.0 "The Whole Story"**. No active plan; this is a small direct implementation.
+- Current version: `APP_VERSION = "4.6.1.5"` — active patch line **4.6.1 "A Small World"** keeps true `display:none` isolation for the inactive map, shows a map-scoped loading pill/progress bar before destination SVG paint, and retains the targeted layer renderer plus capture-phase `Shift+Control+Option+~` shortcut fixes. Latest cut release is **4.6.0 "The Whole Story"**. No active plan; this is a small direct implementation.
 - Gotcha worth keeping: `url()` paths in `assets/css/app.css` are **relative to the stylesheet**, not the page root (e.g. app-icon art is `url("../icons/…")`). The 4.5.1 fix corrected `.install-icon-thumb-{light,dark}` which still used the old root path after the 4.4.1 CSS split.
 
 Verification traps still apply: UI drivers that call `save()` mutate real localStorage (snapshot first); Wayfinder/Waypoint panels need a configured bucket-list level to render; `http.server` has no cache headers (force-reload assets).
