@@ -177,7 +177,7 @@ For every completed change:
   top-level consts share the global lexical scope and work over `file://`.
 - Main file: `index.html`. `STORAGE_KEY = "usStateVisitMap.v1"`, version in `APP_VERSION`.
 - Docs: `README.md` (public/run/build), this handoff (all dev + LLM context), `AGENTS.md` + `CLAUDE.md` (thin auto-loaded agent summaries — keep lean).
-- Current version: `APP_VERSION = "4.6.1.2"` — active patch line **4.6.1 "A Small World"** improves map-layer switching and repairs the `Shift+Control+Option+~` shortcut with capture-phase keydown/keypress/keyup handling for Backquote and dead-key variants. Latest cut release is **4.6.0 "The Whole Story"**. No active plan; this is a small direct implementation.
+- Current version: `APP_VERSION = "4.6.1.3"` — active patch line **4.6.1 "A Small World"** keeps the inactive map rendered beneath the active layer for faster World activation and repairs the `Shift+Control+Option+~` shortcut with capture-phase keydown/keypress/keyup handling. Latest cut release is **4.6.0 "The Whole Story"**. No active plan; this is a small direct implementation.
 - Gotcha worth keeping: `url()` paths in `assets/css/app.css` are **relative to the stylesheet**, not the page root (e.g. app-icon art is `url("../icons/…")`). The 4.5.1 fix corrected `.install-icon-thumb-{light,dark}` which still used the old root path after the 4.4.1 CSS split.
 
 Verification traps still apply: UI drivers that call `save()` mutate real localStorage (snapshot first); Wayfinder/Waypoint panels need a configured bucket-list level to render; `http.server` has no cache headers (force-reload assets).
