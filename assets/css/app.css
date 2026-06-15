@@ -9339,11 +9339,13 @@
     }
 
     .location-note-count-toggle {
-      display: grid;
-      place-items: center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .22rem;
       min-width: 1.7rem;
       min-height: 1.7rem;
-      padding: .1rem .3rem;
+      padding: .1rem .34rem;
       border: 1px solid color-mix(in srgb, var(--line) 72%, var(--accent) 28%);
       border-radius: 6px;
       background: var(--surface);
@@ -9353,11 +9355,34 @@
       line-height: 1;
     }
 
+    /* Disclosure chevron: points down when expanded, right when collapsed. */
+    .location-note-count-chevron {
+      display: inline-flex;
+      align-items: center;
+      color: var(--muted);
+      transition: transform .15s ease;
+    }
+
+    .location-note-count-chevron svg {
+      width: .62rem;
+      height: .62rem;
+    }
+
+    .location-note-count-toggle.is-collapsed .location-note-count-chevron {
+      transform: rotate(-90deg);
+    }
+
     .detailed-location-notes,
     .detailed-selected-note-list {
       display: grid;
       gap: .55rem;
       min-width: 0;
+    }
+
+    /* The [hidden] attribute alone is overridden by the display:grid above, so
+       the collapsed location notes stayed visible — re-hide them explicitly. */
+    .detailed-location-notes[hidden] {
+      display: none;
     }
 
     .detailed-note-card {
@@ -9740,14 +9765,17 @@
 
     .visit-priority-pill {
       position: absolute;
-      right: -.42rem;
-      bottom: -.42rem;
+      /* Tucked in/up from the icon corner (was -.42rem on both) so the badge no
+         longer clips against the row's right edge or bottom border, with a little
+         breathing room around it. */
+      right: -.16rem;
+      bottom: -.14rem;
       z-index: 1;
       display: grid;
       place-items: center;
-      min-width: .95rem;
-      height: .95rem;
-      padding: 0 .16rem;
+      min-width: .9rem;
+      height: .9rem;
+      padding: 0 .15rem;
       border: 1px solid var(--surface);
       border-radius: 999px;
       background: var(--priority-color, var(--accent));

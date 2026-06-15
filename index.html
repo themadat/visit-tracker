@@ -1643,7 +1643,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.6.0.4";
+    const APP_VERSION = "4.6.0.5";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -9175,9 +9175,10 @@
         if (latNum === 0 && lngNum === 0) return false;
         return true;
       })();
+      const coordsLabel = hasLocation ? `${Number(note.lat)}, ${Number(note.lng)}` : "NONE";
       const scope = hasLocation
-        ? `<span class="visit-icon-scope" aria-label="Has exact location" title="Mapped to coordinates">${__DOT_SCOPE}</span>`
-        : "";
+        ? `<span class="visit-icon-scope" aria-label="Coordinates: ${escapeHtml(coordsLabel)}" title="Coordinates: ${escapeHtml(coordsLabel)}">${__SCOPE_DOT}</span>`
+        : `<span class="visit-icon-scope is-no-coords" aria-label="Coordinates: none" title="Coordinates: NONE">${__SCOPE}</span>`;
       if (scope || labels.length) {
         const labelText = [hasLocation ? "Mapped location" : "", labels.map(type => type.label).join(", ")].filter(Boolean).join(", ");
         const priority = options.hidePriority ? "" : normalizeNotePriority(note?.priority);
@@ -9433,7 +9434,7 @@
         ? dates.length === 1 ? formatDateDisplay(dates[0]) : `${formatDateDisplay(dates[0])} - ${formatDateDisplay(dates[dates.length - 1])}`
         : "No dates";
       const collapsed = collapsedNoteLocations.has(abbr);
-      return `<small>[${escapeHtml(dateLabel)}]</small><i class="location-note-divider" aria-hidden="true"></i><button class="location-note-count-toggle" type="button" data-toggle-location-notes="${escapeHtml(abbr)}" aria-expanded="${!collapsed}" aria-label="${collapsed ? "Show" : "Hide"} ${notes.length} visit notes">${notes.length}</button>`;
+      return `<small>[${escapeHtml(dateLabel)}]</small><i class="location-note-divider" aria-hidden="true"></i><button class="location-note-count-toggle${collapsed ? " is-collapsed" : ""}" type="button" data-toggle-location-notes="${escapeHtml(abbr)}" aria-expanded="${!collapsed}" aria-label="${collapsed ? "Show" : "Hide"} ${notes.length} visit notes"><span class="location-note-count-value">${notes.length}</span><span class="location-note-count-chevron" aria-hidden="true">${__CHEVRON_DOWN}</span></button>`;
     }
 
     function detailedLocationRows(abbr) {
@@ -9591,7 +9592,7 @@
           const isBucket = bucketId && note.levelId === bucketId;
           return `
               <article class="compact-note-row ${isBucket ? "is-bucket-target" : ""}" role="button" tabindex="0" data-edit-note-row="${note.id}">
-                <span class="compact-note-icon">${visitTypeIconStack(note, { color: noteLevel?.color })}</span>
+                <span class="compact-note-icon">${visitTypeIconStack(note, { color: noteLevel?.color, hidePriority: true })}</span>
                 <time datetime="${escapeHtml(note.date)}">${escapeHtml(formatDateDisplay(note.date))}</time>
                 <span class="compact-note-text">${escapeHtml(noteSummary(note))}</span>
                 <span class="actions">
