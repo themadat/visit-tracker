@@ -5551,13 +5551,37 @@
 
     .note-set-section {
       display: grid;
-      grid-template-columns: minmax(7rem, .44fr) minmax(12rem, 1fr);
+      grid-template-columns: minmax(12rem, 1fr);
       gap: .45rem;
       align-items: end;
       padding: .55rem;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: color-mix(in srgb, var(--surface-2) 70%, transparent);
+    }
+
+    .note-core-priority {
+      display: grid;
+      grid-template-columns: auto 4.25rem minmax(0, 1fr);
+      align-items: center;
+      gap: .45rem;
+      padding: .48rem .55rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--surface-2) 64%, transparent);
+    }
+
+    .note-core-priority label {
+      font-weight: 850;
+    }
+
+    .note-core-priority select {
+      min-height: 36px;
+    }
+
+    .note-core-priority small {
+      color: var(--muted);
+      font-size: .76rem;
     }
 
     .note-source-summary {
@@ -5577,6 +5601,14 @@
       .note-set-section {
         grid-template-columns: 1fr;
         align-items: stretch;
+      }
+
+      .note-core-priority {
+        grid-template-columns: auto 4.25rem;
+      }
+
+      .note-core-priority small {
+        grid-column: 1 / -1;
       }
 
       .sets-overlay-check,
@@ -8073,6 +8105,7 @@
     }
 
     .notes-controls .notes-category-toggle,
+    .notes-controls .notes-priority-toggle,
     .notes-controls .notes-excluded-toggle,
     .notes-controls .notes-date-filter,
     .notes-controls .notes-coordinate-filter {
@@ -8084,6 +8117,99 @@
       aspect-ratio: 1;
       padding: 0;
       justify-content: center;
+    }
+
+    .notes-priority-picker {
+      position: relative;
+      display: inline-flex;
+      flex: 0 0 var(--notes-control-size);
+    }
+
+    .notes-priority-toggle {
+      position: relative;
+    }
+
+    .notes-priority-toggle[aria-pressed="true"] {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 18%, var(--surface));
+      color: var(--accent-2);
+    }
+
+    .notes-priority-toggle[data-priority-status]::after {
+      content: attr(data-priority-status);
+      position: absolute;
+      right: -3px;
+      bottom: -3px;
+      display: grid;
+      place-items: center;
+      min-width: 16px;
+      height: 16px;
+      padding: 0 3px;
+      border: 2px solid var(--surface);
+      border-radius: 999px;
+      background: var(--accent);
+      color: white;
+      font-size: .55rem;
+      font-weight: 950;
+      line-height: 1;
+    }
+
+    [data-theme="dark"] .notes-priority-toggle[data-priority-status]::after {
+      color: #07111f;
+    }
+
+    .notes-priority-menu {
+      position: fixed;
+      z-index: 80;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .48rem;
+      width: min(19rem, calc(100vw - 1rem));
+      padding: .62rem;
+      border: 1px solid var(--line);
+      border-radius: .72rem;
+      background: var(--surface);
+      box-shadow: 0 16px 36px rgba(15, 23, 42, .22);
+      animation: miniPop .12s ease-out;
+    }
+
+    .notes-priority-menu[hidden] {
+      display: none;
+    }
+
+    .notes-priority-menu label {
+      display: grid;
+      gap: .2rem;
+      color: var(--muted);
+      font-size: .68rem;
+      font-weight: 850;
+    }
+
+    .notes-priority-menu select {
+      width: 100%;
+      min-height: 36px;
+      color: var(--text);
+      font-size: .78rem;
+    }
+
+    .notes-priority-menu .notes-priority-group-check {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      min-height: 36px;
+      color: var(--text);
+      font-size: .76rem;
+    }
+
+    .notes-priority-group-check input {
+      width: 18px;
+      height: 18px;
+      margin: 0;
+    }
+
+    #notesPriorityResetBtn {
+      min-height: 36px;
+      font-size: .76rem;
     }
 
     .notes-controls button>.sf-symbol,
@@ -10088,6 +10214,20 @@
       gap: .22rem;
       font-weight: 750;
       font-size: .82rem;
+    }
+
+    .notes-priority-heading-dot {
+      width: .72rem;
+      height: .72rem;
+      border: 2px solid color-mix(in srgb, var(--priority-color) 72%, var(--text));
+      border-radius: 4px;
+      background: var(--priority-color);
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, white 46%, transparent);
+    }
+
+    .notes-selected-priority-heading {
+      position: static;
+      margin-top: .32rem;
     }
 
     .notes-text-only {
