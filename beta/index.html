@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.0.4">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.0">
 </head>
 
 <body>
@@ -1141,8 +1141,9 @@
             <li>Use Quick Add beside search to add a note from the main list. Pick the target location in the note
               header, then Save or Save and Add Another.</li>
             <li>Right Arrow cycles the Alphabetical and Chronological sort. The Priority button adds exact, higher, or
-              lower filtering, 1-to-5 or 5-to-1 ordering, and priority grouping on top of that base sort. Down Arrow
-              cycles views; the view shortcut also works inside an individual location.</li>
+              lower filtering, 1-to-5 or 5-to-1 ordering, and priority grouping on top of that base sort. When the
+              filter is All, the priority number stays cleared because it does not affect the list. Down Arrow cycles
+              views; the view shortcut also works inside an individual location.</li>
             <li>Use Detailed, Expanded, Condensed, or Text Only view. Detailed shows every populated note field and
               the full details text; click that text to edit it inline, then press Cmd/Ctrl+Enter or use the checkmark
               to save. Text Only is copy-ready for Apple Notes.</li>
@@ -1168,7 +1169,7 @@
             <li>Use Locate beside the Lat/Lng row to look up latitude/longitude (City + state). The Where field for a
               stadium or trail name stays text-only. The arrow button next to Where moves its text into City. You can
               also edit or clear coordinates manually.</li>
-            <li>Notes support City, Where, What, Who, Additional Details, partial dates, and multiple
+            <li>Notes support City, Where, What, Who, Additional Details, partial dates, priority, and multiple
               icon labels. Four or fewer labels keeps rows easier to scan.</li>
             <li>When one location is open, Notes shows every note for that location. Main-list search, level, icon,
               date, coordinate, and visibility filters do not hide that selected location's notes.</li>
@@ -1261,10 +1262,14 @@
             categories, and selected location restore with your local settings.</p>
           <p><b>What does Categorical do in Notes?</b><br>It groups locations by City, State, and Territory while
             keeping your selected Alphabetical or Chronological sort inside each group. Group by Priority temporarily
-            takes precedence when it is active.</p>
+            takes precedence when it is active, and a location can appear in multiple priority groups when its notes
+            have different priorities.</p>
           <p><b>What does Detailed view show?</b><br>Detailed is the full-card view. It shows the location's levels and
             note/date totals, then location precision, level-colored tags, compact Location and Event summaries, and the
             complete details text without truncation. Linked Waypoints also show website, photo, and priority actions.</p>
+          <p><b>Where does Priority show up?</b><br>Priority appears in the note editor, Detailed cards, Condensed
+            priority controls, Expanded/list icon badges, map pins, Text Only view, and Markdown/Rich Text/Plain Text
+            exports.</p>
           <p><b>Can I edit a Detailed card without opening the note editor?</b><br>Yes. Click its details text, make the
             change inline, then press Cmd/Ctrl+Enter or use the checkmark to save. The live counter tracks the
             2,000-character limit. In the full note editor, Enter adds a new line and Cmd/Ctrl+Enter saves.</p>
@@ -1667,7 +1672,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.0.4";
+    const APP_VERSION = "4.7.0";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
