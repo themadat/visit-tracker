@@ -1,6 +1,6 @@
 ## Future Prompt
 
-4.6.0 - priority filter and and sorting; __CIRCLE_BADGE_MINUS
+WISH: P1 World Map labels respect native tongue
 
 ## Colors
 
