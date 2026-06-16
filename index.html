@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.1.2">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.1.3">
 </head>
 
 <body>
@@ -1673,7 +1673,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.1.2";
+    const APP_VERSION = "4.7.1.3";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7856,11 +7856,10 @@
     }
 
     const WORLD_LABEL_STYLE = {
-      name: { min: 7.8, max: 26, leader: 9, char: .53, line: 1.02, maxLines: 3 },
+      name: { min: 5.8, max: 13, leader: 8.2, char: .53, line: 1.02, maxLines: 3 },
       abbr: { min: 10.5, max: 32, leader: 11.5, char: .62, line: 1, maxLines: 1 }
     };
     const WORLD_LABEL_COLLISION_PAD = 2.4;
-    const WORLD_LABEL_BACKUP_AREA = 18000;
 
     function worldMapLabelText(code, mode) {
       if (mode === "abbr") return String(code || "").toUpperCase();
@@ -7882,6 +7881,7 @@
 
     function linePartitions(words, maxLines) {
       if (words.length <= 1 || maxLines <= 1) return [[words]];
+      maxLines = Math.min(maxLines, words.length);
       const results = [];
       const walk = (start, lines) => {
         if (start >= words.length) {
@@ -7921,10 +7921,19 @@
         };
       });
       return layouts.sort((a, b) => {
-        const aScore = a.width + Math.max(0, a.lines.length - 1) * fontSize * .9;
-        const bScore = b.width + Math.max(0, b.lines.length - 1) * fontSize * .9;
+        const aScore = a.width + Math.max(0, a.lines.length - 1) * fontSize * .15;
+        const bScore = b.width + Math.max(0, b.lines.length - 1) * fontSize * .15;
         return aScore - bScore || a.height - b.height;
       })[0] || { lines: [String(text || "")], width: fontSize, height: fontSize, lineHeight: fontSize };
+    }
+
+    function worldLabelMaxSize(text, mode) {
+      const profile = WORLD_LABEL_STYLE[mode] || WORLD_LABEL_STYLE.name;
+      if (mode !== "name") return profile.max;
+      const clean = String(text || "").trim();
+      if (/\s/.test(clean)) return Math.min(profile.max, clean.length > 13 ? 10.8 : 11.6);
+      if (clean.length > 8) return Math.min(profile.max, 12);
+      return profile.max;
     }
 
     function worldLabelBox(x, y, layout) {
@@ -7955,11 +7964,11 @@
     }
 
     function fittedWorldLabelSize(text, box, mode) {
-      const profile = WORLD_LABEL_STYLE[mode] || WORLD_LABEL_STYLE.name;
-      const layoutAtMax = worldLabelLayout(text, profile.max, mode);
-      const widthFit = layoutAtMax.width > 0 ? profile.max * ((box.width || 0) * .72) / layoutAtMax.width : profile.max;
-      const heightFit = layoutAtMax.height > 0 ? profile.max * ((box.height || 0) * .74) / layoutAtMax.height : profile.max;
-      return Math.min(profile.max, widthFit, heightFit);
+      const maxSize = worldLabelMaxSize(text, mode);
+      const layoutAtMax = worldLabelLayout(text, maxSize, mode);
+      const widthFit = layoutAtMax.width > 0 ? maxSize * ((box.width || 0) * .64) / layoutAtMax.width : maxSize;
+      const heightFit = layoutAtMax.height > 0 ? maxSize * ((box.height || 0) * .66) / layoutAtMax.height : maxSize;
+      return Math.min(maxSize, widthFit, heightFit);
     }
 
     function worldMapCenterPoint() {
@@ -8037,24 +8046,16 @@
         const center = stateTileCenter(code);
         if (!center?.box) return;
         const text = worldMapLabelText(code, mode);
-        const area = center.box.width * center.box.height;
         const fitSize = fittedWorldLabelSize(text, center.box, mode);
         const profile = WORLD_LABEL_STYLE[mode] || WORLD_LABEL_STYLE.name;
+        const maxSize = worldLabelMaxSize(text, mode);
         const minSize = profile.min;
-        const narrowness = Math.min(center.box.width || 0, center.box.height || 0) / Math.max(center.box.width || 1, center.box.height || 1);
         if (circleCodes.has(code)) return;
-        const addBackupLeader = () => {
-          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].forEach(variant => {
-            const leader = worldLeaderLabelCandidate({ code, x: center.x, y: center.y, area }, mode, Math.max(1, Math.min(area, WORLD_LABEL_BACKUP_AREA) * .28), variant);
-            if (leader) leaderCandidates.push(leader);
-          });
-        };
-        if (fitSize < minSize) {
-          addBackupLeader();
-          return;
-        }
+        const area = center.box.width * center.box.height;
         const fontSize = Math.max(minSize, fitSize);
         const layout = worldLabelLayout(text, fontSize, mode);
+        const tightLabelBoost = mode === "name" && (/\s/.test(text) || fitSize < maxSize * .92) ? 65000 : 0;
+        const narrowShapeBoost = Math.min(center.box.width || 0, center.box.height || 0) / Math.max(center.box.width || 1, center.box.height || 1) < .32 ? area * .45 : 0;
         countryCandidates.push({
           code,
           kind: "country",
@@ -8065,10 +8066,9 @@
           y: center.y,
           fontSize,
           box: worldLabelBox(center.x, center.y, layout),
-          priority: area,
-          collisionPad: area > 35000 ? 3.2 : 1.8
+          priority: area + tightLabelBoost + narrowShapeBoost,
+          collisionPad: area > 35000 ? 2.4 : .8
         });
-        if (mode === "name" && (area < WORLD_LABEL_BACKUP_AREA || fitSize < profile.max * .88 || narrowness < .38)) addBackupLeader();
       });
       return { countryCandidates, leaderCandidates };
     }
@@ -8134,8 +8134,10 @@
         .forEach(candidate => {
           if (placedCodes.has(candidate.code)) return;
           const padded = paddedWorldLabelBox(candidate.box, candidate.collisionPad ?? WORLD_LABEL_COLLISION_PAD);
-          if (placed.some(box => worldLabelBoxesOverlap(padded, box))) return;
-          placed.push(padded);
+          const overlaps = placed.some(box => worldLabelBoxesOverlap(padded, box));
+          const canOverprint = candidate.kind === "country" && candidate.fontSize <= 11.6 && (candidate.lines?.length || 1) > 1;
+          if (overlaps && !canOverprint) return;
+          if (!canOverprint) placed.push(padded);
           placedCodes.add(candidate.code);
           renderWorldLabelCandidate(labels, candidate);
         });

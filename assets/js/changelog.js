@@ -4,6 +4,27 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.1.3",
+        date: "2026-06-15",
+        title: "Atlas Ink",
+        summary: "World labels stay smaller and reserve leader lines for dot-backed places.",
+        highlights: [
+          "Country-name labels use a lower maximum size.",
+          "Leader lines are limited to countries represented by map dots.",
+          "China now labels as China instead of China Mainland.",
+        ],
+        updateSections: [
+          {
+            heading: "World Labels",
+            items: [
+              "Shape-backed countries render their labels over the country instead of using fallback leader lines.",
+              "World Name labels use a smaller cap and tighter fit so long names like South Africa, Burkina Faso, and United Kingdom feel less oversized.",
+              "The China short-name override keeps the map label concise.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.1.2",
         date: "2026-06-15",
         title: "Atlas Ink",
