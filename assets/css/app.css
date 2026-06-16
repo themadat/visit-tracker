@@ -2058,6 +2058,53 @@
       pointer-events: none;
     }
 
+    .world-label-tune-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .25rem;
+      flex-wrap: wrap;
+      padding-top: .25rem;
+      font-size: .68rem;
+    }
+
+    .world-label-tune-bar button {
+      min-height: 1.65rem;
+      padding: .2rem .45rem;
+      border-radius: .55rem;
+      font-size: .68rem;
+    }
+
+    .world-label-tune-bar button[aria-pressed="true"] {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+      color: var(--text);
+    }
+
+    #worldLabelTuneStatus {
+      color: var(--muted);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .map-labels.is-tuning {
+      pointer-events: auto;
+    }
+
+    .map-labels.is-tuning text {
+      pointer-events: auto;
+      cursor: grab;
+    }
+
+    .map-labels.is-tuning text.is-selected {
+      fill: var(--accent);
+      stroke-width: 4.4px;
+    }
+
+    .map-labels.is-tuning text.is-dragging {
+      cursor: grabbing;
+    }
+
     .map-location-markers {
       pointer-events: auto;
     }
