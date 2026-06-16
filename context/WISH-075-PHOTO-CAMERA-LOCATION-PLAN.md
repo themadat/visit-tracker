@@ -4,7 +4,7 @@ Ticket: **WISH-075** "Show a Pack Photo's Camera Location". Target: **4.7.2** (a
 
 ## Goal
 
-When a pack photo is shown, fetch and display the photo's **camera location** (and heading when available) from Wikimedia Commons, plus the **offset from the note's landmark** (distance + bearing), with a **tap-to-open map pin** at the camera spot. Show it **under the photo in both places the photo appears** (note editor + Waypoint Packs panel). Hide gracefully when Commons has no camera geotag.
+When a pack photo is shown, fetch and display the photo's **camera location** (and heading when available) from Wikimedia Commons, plus the **offset from the note's landmark** (distance + bearing), with a **tap-to-open map pin** at the camera spot. Show it **under the photo in both places the photo appears** (note editor + Waypoint Packs panel). When no camera location exists, **show an explicit, subtle "unavailable" state** (not nothing) so it never reads as a bug/missing feature.
 
 ## Current photo flow (what we build on)
 
@@ -32,8 +32,11 @@ When a pack photo is shown, fetch and display the photo's **camera location** (a
   - **Heading** ("facing NE") only when EXIF `GPSImgDirection` exists (8-point compass from degrees; honor `GPSImgDirectionRef` if simple).
   - **Offset from landmark** (chosen option): haversine distance + initial-bearing compass label between the note's landmark coords (`validNoteCoordinates(note)`) and the camera coords. Skip the offset if the note has no coords. Use the app's existing unit sense (Rangefinder `ringUnit` mi/km → m·km or ft·mi); confirm formatting at `start`.
   - **Tap-to-open = map pin** at the camera coords: `https://www.google.com/maps/search/?api=1&query=<lat>,<lng>` (new tab, `rel="noopener"`), matching how Locate/photo previews are intentional online actions.
-- **Lazy + online-only**: only fetch when a photo is opened (same trigger as the image fetch); never auto-fetch. Loading state while the camera request is in flight; the photo can render before the camera readout resolves.
-- **Graceful absence/error**: on no-geotag or fetch failure, simply omit the readout (no error popup — many photos legitimately lack camera GPS).
+- **Lazy + online-only**: only fetch when a photo is opened (same trigger as the image fetch); never auto-fetch. The caption area has three explicit states so it never looks broken:
+  - **Checking** (request in flight): a muted "Checking camera location…" placeholder (the photo can render before the readout resolves).
+  - **Found**: the readout above.
+  - **Unavailable** (no camera geotag) / **offline or fetch error**: a muted, small **explicit empty state** in the same slot — e.g. "📷 No camera location on file" (and a distinct "Couldn't check — offline?" for a failed request if worth distinguishing) — with a subtle muted style, no error popup. The key point: a missing camera location is communicated, not silently dropped.
+- **Read-only**: never write to `note.lat/lng` or any stored field.
 - **Read-only**: never write to `note.lat/lng` or any stored field.
 
 ## Schema / data
@@ -47,14 +50,14 @@ When a pack photo is shown, fetch and display the photo's **camera location** (a
 2. File-name derivation (URL parse + pageimages `piprop=…|name`); `commonsCameraLocationEndpoint`.
 3. `fetchWaypointCameraLocation` + `waypointCameraLocationCache`; hook into the photo-open flow (after the image resolves), refresh consumers when it returns.
 4. Compass + offset helpers (distance/bearing vs landmark).
-5. Render the readout under the photo in **both** surfaces (`#noteWaypointPhotoPreview` render + `waypointPhotoPreviewHtml`/packs panel), with the map-pin link.
-6. CSS: small, subordinate caption styling (theme-aware), mobile-friendly.
+5. Render the caption under the photo in **both** surfaces (`#noteWaypointPhotoPreview` render + `waypointPhotoPreviewHtml`/packs panel) with its three states (checking / found-with-map-pin-link / explicit unavailable).
+6. CSS: small, subordinate caption styling (theme-aware) with a muted variant for the checking/unavailable empty states, mobile-friendly.
 7. Surfaces: Help/FAQ note (online action), README, handoff. Mark WISH-075 done at `ship`.
 8. Verify (parse + desktop/mobile smoke on 8018 with a known camera-geotagged photo and one without).
 
 ## Open questions / risks
 
-- **Coverage**: many Commons photos have **no** camera location (no `{{Camera location}}`, no EXIF GPS) — the feature is best-effort and will frequently show nothing. Confirm that's acceptable (it is, per "hide gracefully").
+- **Coverage**: many Commons photos have **no** camera location (no `{{Camera location}}`, no EXIF GPS) — the feature is best-effort and will frequently land in the "unavailable" state. That's expected; the explicit empty state keeps it from looking broken. Keep the unavailable copy gentle/non-alarming.
 - **Commons API shape / CORS**: confirm `origin=*` works for commons.wikimedia.org and the `coordinates`+`imageinfo` combo returns what we expect; EXIF `GPSLatitude` formatting varies (decimal vs DMS string) — normalize.
 - **Heading availability**: `GPSImgDirection` is rarer than GPS position; heading is a when-present bonus.
 - **Units for the offset**: align with the app's mi/km handling; pick m/km vs ft/mi.
@@ -65,6 +68,7 @@ When a pack photo is shown, fetch and display the photo's **camera location** (a
 
 - Open a pack photo known to have a camera location (find one with `{{Camera location}}` on Commons) in the note editor: readout shows camera coords, heading when present, and offset from the landmark; the map-pin link opens the right spot; note's own lat/lng unchanged.
 - Same photo in the Waypoint Packs panel preview shows the same readout.
-- A photo without a camera geotag shows the image but **no** readout and no error.
-- Offline / fetch failure: image behavior unchanged, readout simply absent.
+- A photo without a camera geotag shows the image plus an explicit muted "no camera location on file" state (not a blank gap) and no error popup.
+- Offline / fetch failure: image behavior unchanged; the caption shows a muted "couldn't check" state rather than disappearing.
+- While the camera request is in flight, a muted "checking…" placeholder shows, then resolves to found/unavailable.
 - `./build/check.sh`, `git diff --check`, desktop + mobile (375px) on port 8018; both themes.
