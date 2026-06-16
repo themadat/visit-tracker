@@ -4,6 +4,27 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.1.10",
+        date: "2026-06-16",
+        title: "Atlas Ink",
+        summary: "World map names use even-numbered font sizes from 8 to 16.",
+        highlights: [
+          "World Name labels snap to even font sizes.",
+          "Manual font overrides clamp to 8 through 16.",
+          "The tuner size field follows the same range.",
+        ],
+        updateSections: [
+          {
+            heading: "World Labels",
+            items: [
+              "World map Name labels now render only at even-numbered font sizes from 8 through 16.",
+              "Loaded manual override font sizes are normalized at render/export time, so older decimal sizes still work.",
+              "The label tuner Size field now accepts the same 8-to-16 even-number range.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.1.9",
         date: "2026-06-16",
         title: "Atlas Ink",
