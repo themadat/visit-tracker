@@ -4,6 +4,28 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.1.7",
+        date: "2026-06-16",
+        title: "Atlas Ink",
+        summary: "World label tuning can be hidden and can edit label text and size.",
+        highlights: [
+          "The label tuner can be dismissed from the map controls.",
+          "Developer Tools can bring the tuner back.",
+          "Selected labels expose editable name and size fields.",
+        ],
+        updateSections: [
+          {
+            heading: "World Labels",
+            items: [
+              "Adds a Dismiss control so the World label tuner disappears completely from the main map controls.",
+              "Adds a Developer Tools restore button for bringing the hidden tuner back when needed.",
+              "Selecting a tuned World label now shows editable name and size fields with the current font size.",
+              "Manual override exports can include text-only, size-only, or mixed text/size/position edits.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.1.6",
         date: "2026-06-16",
         title: "Atlas Ink",
