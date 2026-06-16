@@ -4,6 +4,47 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.1.12",
+        date: "2026-06-16",
+        title: "Atlas Ink",
+        summary: "World label tuning gets fixed size buttons and forced line breaks.",
+        highlights: [
+          "World label sizes are now 8, 12, or 16.",
+          "The tuner uses size buttons instead of number entry.",
+          "Manual name overrides can force exact line breaks.",
+        ],
+        updateSections: [
+          {
+            heading: "World Labels",
+            items: [
+              "World Name labels now normalize to the three supported sizes: 8, 12, and 16.",
+              "The label tuner replaces the numeric size input with direct 8 / 12 / 16 buttons.",
+              "The Name override field is now multiline: line breaks are exported as explicit `lines` overrides.",
+              "A one-line override can force names like Trinidad & Tobago onto one line, while a two-line override can split names like Guinea-Bissau.",
+            ]
+          }
+        ]
+      },
+      {
+        version: "4.7.1.11",
+        date: "2026-06-16",
+        title: "Atlas Ink",
+        summary: "Roadmap previews two release-notes and roadmap refinements.",
+        highlights: [
+          "Roadmap: badge wishes that already have a plan.",
+          "Roadmap: cleaner headed sections in the Full Update List.",
+        ],
+        updateSections: [
+          {
+            heading: "Roadmap",
+            items: [
+              "Plans a badge that marks which roadmap ideas already have a written plan behind them.",
+              "Plans to restructure the release-notes Full Update List into headed sections with single-level bullets.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.1.10",
         date: "2026-06-16",
         title: "Atlas Ink",
