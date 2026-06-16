@@ -196,18 +196,6 @@
         category: "Maps"
       },
       {
-        title: "Smarter World Map Labels",
-        ticketId: "WISH-057",
-        description: "Make the world map read like a real atlas. At the whole-world (fit) zoom all ~248 country labels overlap into an unreadable cluster. Scope: size each country's label to fit its landmass (smaller where needed) with collision handling so overlapping labels hide instead of stacking; label tiny/microstate countries with a small offset name and a leader line to the dot; and add an English short-name display mode (clean names like 'South Korea'). No zoom-aware density and no engaged-only mode. US-map label behavior stays unchanged.",
-        priority: "P0",
-        effort: "medium",
-        targetKind: "exact",
-        targetVersion: "4.7.1",
-        tokenCostPct: 22,
-        prompt: "Rewrite world-map labels (renderWorldMapLabels) only; keep US-map labels unchanged. Size each .world-tile label to fit its bbox (clamped min/max), run a greedy largest-tile-first collision pass that hides overflow, and demote labels too small to fit to leader-line labels. Add microstate labels from the hidden .circlexx dots (ISO-2 in the class, fixed cx/cy) with a small offset name + thin leader line, fed through the same collision pass. Add a curated ISO-2 to English short-name map and use it for the Name mode. No zoom-aware density, no engaged-only mode.",
-        category: "Maps"
-      },
-      {
         title: "World Map Labels in Native Languages",
         ticketId: "WISH-076",
         description: "Add a native-language display mode for World map labels: show each country and dependency in its own native name/endonym (Deutschland, España, 日本, Россия, مصر) instead of English, optionally including native-script capital names. Builds on the Atlas Ink world-label system and its English short-name mode (WISH-057), reusing the same sizing, collision, leader-line, and manual-override machinery. Includes a toggle between English and native-language labels, font/script fallback so non-Latin scripts (CJK, Cyrillic, Arabic/RTL, Greek, Devanagari) render, and sensible handling of multi-language/multi-script countries. Fully offline; English stays the default.",
