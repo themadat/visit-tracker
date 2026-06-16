@@ -6,25 +6,25 @@
       {
         title: "Pinch-to-Zoom the Map on Touch",
         ticketId: "WISH-074",
-        description: "Let touch users pinch with two fingers to zoom the map (and ideally double-tap to zoom in), in addition to the existing zoom pill, drag-pan, and desktop wheel zoom. Zoom should center on the gesture midpoint and feel natural on phones/tablets.",
+        description: "Let touch users zoom the map with two-finger pinch (centered on the pinch midpoint, continuous while moving and snapping to a known zoom % on release), double-tap to zoom in one step, and two-finger tap to zoom out one step — in addition to the existing zoom pill, drag-pan, and desktop wheel/trackpad zoom. Touch-only; no behavior change on desktop, and it should feel natural on phones/tablets.",
         priority: "P0",
         effort: "medium",
-        targetKind: "minor",
-        targetVersion: "",
+        targetKind: "exact",
+        targetVersion: "4.7.3",
         tokenCostPct: 12,
-        prompt: "Add two-finger pinch-to-zoom (and optional double-tap-to-zoom) to the scrollable map in bindMapPanZoom. Track two active pointers, derive scale from the change in finger distance, and route zoom changes through the existing zoom path so #mapZoomReadout and the zoom-button enable states stay in sync (the syncMapZoomReadout invariant). Keep the gesture centered on the pinch midpoint, preserve single-pointer drag panning and desktop wheel zoom, respect Fit vs scroll modes, and keep pan/zoom persistence working. Touch-only; no behavior change on desktop.",
+        prompt: "Add touchscreen gestures to the scrollable map in bindMapPanZoom (gate on pointerType === 'touch'): two-finger pinch (scale from finger distance, anchored at the midpoint), double-tap to zoom in one step (anchored at the tap), and two-finger tap to zoom out one step. Route all zoom through setMapZoom(value, anchor) so #mapZoomReadout and the zoom-button states stay in sync (the syncMapZoomReadout invariant). Keep the live pinch continuous (transient CSS transform) and on release commit snapped to the nearest value in a MAP_ZOOM_STOPS ladder of round percentages (log-space nearest; doubling/halving stays on the ladder so taps share the stops). Track active pointers in a Map, suspend single-pointer pan during pinch, suppress tile taps on gesture end, set touch-action on .map-wrap so gestures reach the handlers, respect Fit vs scroll modes, and keep pan/zoom persistence. No change for mouse/trackpad.",
         category: "Map"
       },
       {
         title: "Show a Pack Photo's Camera Location",
         ticketId: "WISH-075",
-        description: "For a Waypoint-pack photo, surface where the shot was taken — the camera/vantage-point coordinates (and heading/bearing when available), which differ from the landmark's own location — so a traveler can stand in the same spot and recreate the photo in person. The data would come from the photo's Wikimedia Commons file page (the \"camera location\" geotag), shown near the photo with a tap-to-open map/directions link, while leaving the note's existing landmark coordinates untouched.",
+        description: "For a Waypoint-pack photo, surface where the shot was taken — the camera/vantage-point coordinates (plus heading when available, and the distance/bearing offset from the note's landmark) so a traveler can stand in the same spot and recreate the photo. Data comes from the photo's Wikimedia Commons file (the camera-location geotag or EXIF GPS), shown as a small caption under the photo in BOTH the note editor and the Waypoint Packs panel, with a tap-to-open map pin at the camera spot. Online-only and lazy; when there's no geotag it shows an explicit subtle 'unavailable' state (not a blank gap) so it never looks like a bug; never overwrites the note's own lat/lng.",
         priority: "P0",
         effort: "medium",
-        targetKind: "minor",
-        targetVersion: "",
+        targetKind: "exact",
+        targetVersion: "4.7.2",
         tokenCostPct: 14,
-        prompt: "Add an optional 'camera location' readout to the linked-note Waypoint photo. When a pack photo is shown, fetch its Wikimedia Commons file metadata (e.g. the imageinfo / coordinates API for the file page that backs the pageimages thumbnail) and read the camera-location geotag plus heading when present. Render it as a small caption under the photo frame (#noteWaypointPhotoPreview) with a tap-to-open maps/directions link, clearly labeled as the photo vantage point (distinct from the landmark coordinates the note already stores). Keep it online-only and lazy (only when the photo is opened), gracefully hide when Commons has no camera geotag, and never overwrite the note's own lat/lng.",
+        prompt: "Add a camera-location readout to the linked-note Waypoint photo, shown in both the note editor (#noteWaypointPhotoPreview) and the Waypoint Packs panel preview. When a photo is opened, derive its Commons File name from the resolved upload/thumb URL (or pageimages piprop=name), then query commons.wikimedia.org (origin=*) prop=coordinates|imageinfo: prefer the coordinates entry with type=camera, else EXIF extmetadata GPSLatitude/GPSLongitude, with GPSImgDirection as heading. Cache in-memory (no schema change). Show camera coords + heading-when-present + distance/bearing offset from the note's landmark coords, with a Google Maps pin link at the camera spot. Lazy/online-only, hide gracefully when absent, never write to note.lat/lng.",
         category: "Notes"
       },
       {
@@ -76,15 +76,15 @@
         category: "Maps"
       },
       {
-        title: "Selectable Color Themes",
+        title: "App-Wide Theming Overhaul",
         ticketId: "WISH-063",
-        description: "Let users pick color themes for Wayfinder, Rangefinder, and the overall app. Scope includes theme presets, accessible contrast checks, and preserving existing colors as defaults.",
+        description: "Make color theming a first-class, app-wide system where every color is selectable: Legend level colors, note Priority colors, Rangefinder ring and accent colors, Wayfinder accents, and the app's global accent and surface colors. Move the palette control out of the Legend and into the top bar immediately left of Settings, opening a much larger palette modal that shows the entire color range at once (grouped by surface) instead of editing one swatch at a time. Includes theme presets, accessible contrast checks, light/dark readability, persisted selections, and keeping every current color as the default.",
         priority: "P0",
-        effort: "medium",
-        targetKind: "minor",
-        targetVersion: "",
-        tokenCostPct: 22,
-        prompt: "Add user-selectable color themes for Wayfinder, Rangefinder, and the overall app. Keep existing colors as defaults, preserve local settings, and ensure selected themes remain readable in light and dark modes.",
+        effort: "x-large",
+        targetKind: "exact",
+        targetVersion: "5.0.0",
+        tokenCostPct: 50,
+        prompt: "Make theming app-wide and first-class. Relocate the palette control from the Legend (currently the legend palette button / smartApplyPalette) into the top bar immediately left of the Settings button, and rebuild it as a large modal that exposes every themeable color at once, grouped by surface: Legend level colors, note Priority colors, Rangefinder ring/accent colors, Wayfinder accents, and global app accent/surface colors. Show the full range together rather than one swatch at a time, offer theme presets, run accessible-contrast checks, and keep light/dark readability. Preserve all current colors as defaults. Persist chosen colors/theme in settings (add defaults in defaultState(), repair in normalizeState()), preserve the usStateVisitMap.v1 schema, and keep everything offline/local-only and theme-aware via CSS variables.",
         category: "UI"
       },
       {
@@ -93,10 +93,10 @@
         description: "Round out Rangefinder with three related upgrades. (1) Cross-inset edge cases: clearer treatment when Start and End cross between the contiguous map and inset regions (for example Washington to Alaska), including clipped-ring visuals, inset-scale limits, and honest long-distance comparisons across projections. (2) Antimeridian wrap on the World map: rings around a Start near the date line (Honolulu, Tokyo, Sydney) keep drawing on the opposite side instead of clipping, with continuous geometry across the seam, arc-following labels, preserved clip-to-land and inset behavior, and shorter-great-circle Start-to-End paths. (3) Offline time zones: show local time and IANA zone for Start and End, let a user pick a departure time, and compute the destination-local arrival from the current travel-time estimate, with daylight-saving handling, US and World support, and manual correction when a zone cannot be resolved offline.",
         priority: "P0",
         effort: "large",
-        targetKind: "minor",
-        targetVersion: "",
+        targetKind: "exact",
+        targetVersion: "4.7.5",
         tokenCostPct: 48,
-        prompt: "Deliver three related Rangefinder upgrades. (1) Polish cross-inset edge cases (e.g. a Washington Start with rings or an Alaska End): clear visuals despite differing inset scales, explicit limits, preserved local settings. (2) Wrap rings around the World-map antimeridian so a date-line Start continues on the opposite side instead of clipping; keep clip-to-land, labels, inset handling, US-map behavior, and honest great-circle math, picking the shorter wrap for comparisons. (3) Add offline-first time zones: local time and IANA zone for Start/End, a chosen departure time, destination-local arrival from the current estimate, daylight-saving handling, US and World support, manual correction, and no automatic network lookups.",
+        prompt: "Deliver three related Rangefinder upgrades. (1) Polish cross-inset edge cases (e.g. a Washington Start with rings or an Alaska End): clearer non-route cross-region cue, inset radius caps, honest real-coordinate distance, preserved local settings. (2) Antimeridian wrap on the World map via mirror/duplicate ellipses: also draw the ring-shapes group translated by +/- the world projection box width so a date-line Start continues on the opposite side instead of clipping; reuse the land clip/inset mask, label the visible arc, keep US-map behavior, and pick the shorter longitudinal wrap for the Start-to-End cue. (3) Offline time zones via a compact region->IANA zone table (US state / world country -> primary zone, optional longitude refinement, manual override when unresolved); use Intl.DateTimeFormat({timeZone}) for offline local time + DST; show Start/End local time and zone, a chosen departure time, and destination-local arrival from the current travel-time estimate; US and World; no network lookups. Add settings + normalize; preserve usStateVisitMap.v1.",
         category: "Maps"
       },
       {
@@ -114,13 +114,13 @@
       {
         title: "Latitude / Longitude Map Lines",
         ticketId: "WISH-071",
-        description: "Add an optional latitude/longitude line overlay to US and World maps, with readable interval labels and styling that remains secondary to locations, Wayfinder, and Rangefinder overlays.",
+        description: "Add an optional, per-map latitude/longitude graticule with customizable major + minor line tiers set from a settings pop-up (defaults: World 30 deg major / 10 deg minor, US 10 deg major / 5 deg minor). Major lines are stronger and carry degree labels at both ends; minor lines are subtle. The World map uses its true Robinson projection (curved meridians) and draws the projection outline/frame so the map reads as curved rather than a rectangle; the US map draws true lat/lon per state through each state's local frame, with separate grids inside the insets (Alaska, Hawaii) — continuous within a state, not across the stylized tile layout. Styling stays secondary to locations, Wayfinder, and Rangefinder; settings are remembered per map.",
         priority: "P0",
         effort: "medium",
-        targetKind: "minor",
-        targetVersion: "",
-        tokenCostPct: 16,
-        prompt: "Add a toggleable latitude/longitude graticule overlay for US and World maps. Include sensible line intervals and labels, theme-aware styling, and preserve map interaction and existing Wayfinder/Rangefinder overlays.",
+        targetKind: "exact",
+        targetVersion: "4.7.2",
+        tokenCostPct: 18,
+        prompt: "Add a customizable lat/lng graticule as a non-interactive SVG <g> layer per map, below markers/rings/labels. Two tiers: minor-interval lines (subtle) plus major-interval lines (stronger, with degree labels like 30°N/120°W at both ends). World: sample worldCoordinatePoint (Robinson) for straight parallels + polyline meridians. US: per .state-tile and per inset frame (LOCATION_GEO_BOUNDS + LOCATION_PROJECTION_FRAME_OVERRIDES) draw straight lat/lng segments within each box. Add settings.graticuleByLayer { us:{enabled,major:10,minor:5}, world:{enabled,major:30,minor:10} } (default off) with defaults/normalize (clamp, major>=minor), a per-map button that opens a settings pop-up (on/off + major/minor intervals), and theme-aware styling. Preserve map pan/zoom and existing overlays.",
         category: "Maps"
       },
       {
@@ -165,10 +165,10 @@
         description: "Add a small, discoverable raptor easter egg that rewards curious clicking or an obscure app interaction without disrupting map, notes, export, or accessibility workflows.",
         priority: "P0",
         effort: "small",
-        targetKind: "patch",
-        targetVersion: "",
+        targetKind: "exact",
+        targetVersion: "4.7.4",
         tokenCostPct: 8,
-        prompt: "Add a subtle raptor easter egg that is discoverable through a playful but non-disruptive interaction. Keep it local-only, accessible, and harmless to normal map, notes, export, and keyboard workflows.",
+        prompt: "Add a subtle raptor easter egg that is discoverable through a playful but non-disruptive interaction. Keep it local-only, accessible, and harmless to normal map, notes, export, and keyboard workflows. (Exact hidden trigger and payoff are intentionally kept out of this shipped seed to avoid spoilers — see context/WISH-068-RAPTOR-EASTER-EGG-PLAN.md.)",
         category: "Fun"
       },
       {
@@ -196,16 +196,40 @@
         category: "Maps"
       },
       {
-        title: "Smarter World Map Labels",
-        ticketId: "WISH-057",
-        description: "Improve world-map label readability. At the whole-world (fit) zoom all ~248 country labels render, so dense regions (Europe, Caribbean, microstates) overlap into an unreadable cluster. Scope: collision/declutter handling (hide or thin overlapping labels), zoom-aware density (show more labels as the user zooms in), leader lines or circle labels for tiny/microstate countries, and optionally an 'engaged only' mode that labels only countries with a level or notes.",
-        priority: "P0",
+        title: "World Map Labels in Native Languages",
+        ticketId: "WISH-076",
+        description: "Add a native-language display mode for World map labels: show each country and dependency in its own native name/endonym (Deutschland, España, 日本, Россия, مصر) instead of English, optionally including native-script capital names. Builds on the Atlas Ink world-label system and its English short-name mode (WISH-057), reusing the same sizing, collision, leader-line, and manual-override machinery. Includes a toggle between English and native-language labels, font/script fallback so non-Latin scripts (CJK, Cyrillic, Arabic/RTL, Greek, Devanagari) render, and sensible handling of multi-language/multi-script countries. Fully offline; English stays the default.",
+        priority: "P1",
         effort: "medium",
         targetKind: "minor",
         targetVersion: "",
-        tokenCostPct: 22,
-        prompt: "Declutter world-map labels. Add label collision handling so overlapping country labels hide/thin instead of stacking, make label density zoom-aware (more labels as you zoom in), handle tiny/microstate countries (leader lines or offset), and consider an option to label only engaged countries (those with a level or notes). Keep US-map label behavior unchanged.",
+        tokenCostPct: 20,
+        prompt: "Add a native-language (endonym) display mode to renderWorldMapLabels alongside the existing English short-name mode (WISH-057). Add a curated ISO-2 -> native name table (countries + dependencies, optional native-script capital) seeded from https://en.wikipedia.org/wiki/List_of_countries_and_dependencies_and_their_capitals_in_native_languages. Add a label-language setting/toggle (persist in settings; default English) that swaps the name source, reusing the existing fit-sizing, collision, leader-line, multiline, and manual-override pipeline. Add a CSS font-family fallback stack so non-Latin scripts render (CJK, Cyrillic, Arabic with RTL, Greek, Devanagari, etc.); for multi-language countries pick a primary native name or show both. Keep US-map labels unchanged, stay fully offline (no network), add defaults in defaultState() + repair in normalizeState(), and preserve usStateVisitMap.v1.",
         category: "Maps"
+      },
+      {
+        title: "Mark Roadmap Items That Have a Plan",
+        ticketId: "WISH-077",
+        description: "In the Roadmap (Settings → What's New → Roadmap), show a clear badge on any wish that already has a written plan behind it, so it is obvious at a glance which ideas are spec'd versus raw. Driven by an optional field on each roadmap seed (set when a plan doc is authored), rendered as a 'Plan ready' pill in the card's chips, included in search, with an optional filter to show only planned items. Roadmap display affordance only; no change to user data.",
+        priority: "P0",
+        effort: "small",
+        targetKind: "patch",
+        targetVersion: "",
+        tokenCostPct: 8,
+        prompt: "In renderWishlist (index.html) denote wishes that have a plan. Add an optional seed field (e.g. planDoc: \"WISH-063-THEMING-OVERHAUL-PLAN.md\") to WISHLIST_SEEDS and its documented shape; render a distinct 'Plan ready' pill in the card .chips row when present (reuse .tag with a modifier class), add the field to the search blob, and optionally add a 'Has plan' filter/sort. Have the plan workflow set planDoc when a plan is written and backfill existing plans (063, 077, 078). WISHLIST_SEEDS are dev defaults (never persisted), so no defaultState/normalizeState change; Roadmap-only.",
+        category: "UI"
+      },
+      {
+        title: "Headed Sections in the Full Update List",
+        ticketId: "WISH-078",
+        description: "Restructure the Release Notes 'Full Update List' so it reads as headed sections instead of a doubly-indented nested list. Each update section should render as a section header with its bullet points one indent level beneath it (a single level-1 list), rather than the current layout where the section heading is itself a bullet and its items are indented again under it. Flat (section-less) entries keep a simple single-level bullet list. Visual/markup only.",
+        priority: "P0",
+        effort: "small",
+        targetKind: "patch",
+        targetVersion: "",
+        tokenCostPct: 6,
+        prompt: "In renderReleaseSection (index.html) and its CSS (.release-section / .release-subsection in app.css), change the Full Update List so section objects render as a block header + a single level-1 <ul> of items, not as <li class=release-subsection> wrapping a nested <ul> inside an outer <ul> (which double-indents and bullets the heading). Keep bare-string lists and the Highlights section as a simple single-level bullet list, and keep the 'X sections · Y updates' count + collapsible <details> behavior. Update CSS so the heading has no list bullet and items sit at one indent level. Markup/CSS only; no data/schema change.",
+        category: "UI"
       },
       {
         title: "Search All Locations in Quick Add",
