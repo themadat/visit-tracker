@@ -1698,7 +1698,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.1";
+    const APP_VERSION = "4.7.2.1";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -5646,6 +5646,7 @@
 
     function handleStateTap(abbr, event) {
       if (event?.type === "click") event.currentTarget?.blur?.();
+      if (abbr === "HI" && activeLayerId === "us" && raptorTapHit(event)) { showRaptorEasterEgg(); return; }
       const wasActiveInNotes = notesPanelOpen && notesPanelState === abbr;
       const alreadyMarked = getStateLevelIds(abbr).length > 0;
       selectStateInNotes(abbr);
@@ -5669,6 +5670,50 @@
       else if (index === ids.length - 1) setStateLevelIds(abbr, []);
       else setStateLevelIds(abbr, [ids[index + 1] || ids[0]]);
       save();
+    }
+
+    // Easter egg (WISH-068): tapping the westernmost Hawaiian island (Niihau) on
+    // the US map pops a raptor above the inset. The region is in #stateMap user
+    // space (viewBox 0 0 934 593); Niihau sits west of the Kauai channel (x<252).
+    const RAPTOR_HIT_REGION = { xMin: 226, xMax: 252, yMin: 504, yMax: 528 };
+    let raptorEggTimer = null;
+
+    function raptorTapHit(event) {
+      if (!event || event.type !== "click") return false;
+      const svg = document.getElementById("stateMap");
+      const ctm = svg?.getScreenCTM?.();
+      if (!ctm || !svg.createSVGPoint) return false;
+      const pt = svg.createSVGPoint();
+      pt.x = event.clientX;
+      pt.y = event.clientY;
+      const p = pt.matrixTransform(ctm.inverse());
+      const r = RAPTOR_HIT_REGION;
+      return p.x >= r.xMin && p.x <= r.xMax && p.y >= r.yMin && p.y <= r.yMax;
+    }
+
+    function showRaptorEasterEgg() {
+      let el = document.getElementById("raptorEgg");
+      if (!el) {
+        el = document.createElement("div");
+        el.id = "raptorEgg";
+        el.className = "raptor-egg";
+        el.setAttribute("role", "status");
+        el.setAttribute("aria-live", "polite");
+        el.innerHTML = `<span class="raptor-egg-art" aria-hidden="true">${__RAPTOR}</span><span class="raptor-egg-caption">You found a Raptor!</span>`;
+        document.body.appendChild(el);
+      }
+      const hi = document.querySelector('#stateMap [data-abbr="HI"]');
+      const rect = hi?.getBoundingClientRect();
+      if (rect) {
+        const left = Math.min(Math.max(rect.left + rect.width / 2, 90), window.innerWidth - 90);
+        el.style.left = `${Math.round(left)}px`;
+        el.style.top = `${Math.round(Math.max(rect.top, 96))}px`;
+      }
+      el.classList.remove("is-visible");
+      void el.offsetWidth;
+      el.classList.add("is-visible");
+      clearTimeout(raptorEggTimer);
+      raptorEggTimer = setTimeout(() => el.classList.remove("is-visible"), 2400);
     }
 
     function syncButtonLabels() {
@@ -13134,19 +13179,28 @@
     function renderReleaseSection(title, items, collapsible) {
       const list = Array.isArray(items) ? items.filter(Boolean) : [];
       if (!list.length) return "";
-      const renderItem = note => {
-        if (typeof note === "string") return `<li>${escapeHtml(note)}</li>`;
-        const heading = String(note.heading || note.title || "").trim();
-        const subitems = Array.isArray(note.items) ? note.items.filter(Boolean) : [];
-        if (!heading && !subitems.length) return "";
-        return `
-          <li class="release-subsection">
-            ${heading ? `<b>${escapeHtml(heading)}</b>` : ""}
-            ${subitems.length ? `<ul>${subitems.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>` : ""}
-          </li>
-        `;
-      };
-      const body = `<ul>${list.map(renderItem).join("")}</ul>`;
+      // Flat string lists (Highlights, or a section-less updates array) stay a
+      // simple single-level bullet list. When the list has grouped sections,
+      // render each as a block heading + a single level-1 <ul> — not an <li>
+      // wrapping a nested <ul>, which double-indents and bullets the heading.
+      const hasSections = list.some(note => typeof note !== "string");
+      let body;
+      if (!hasSections) {
+        body = `<ul>${list.map(note => `<li>${escapeHtml(note)}</li>`).join("")}</ul>`;
+      } else {
+        body = list.map(note => {
+          if (typeof note === "string") return `<ul><li>${escapeHtml(note)}</li></ul>`;
+          const heading = String(note.heading || note.title || "").trim();
+          const subitems = Array.isArray(note.items) ? note.items.filter(Boolean) : [];
+          if (!heading && !subitems.length) return "";
+          return `
+            <div class="release-subsection">
+              ${heading ? `<b>${escapeHtml(heading)}</b>` : ""}
+              ${subitems.length ? `<ul>${subitems.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>` : ""}
+            </div>
+          `;
+        }).join("");
+      }
       if (collapsible) {
         // Count sections (grouped entries) and total updates (their sub-bullets;
         // a bare string counts as one update). Show "X sections · Y updates",
@@ -13223,7 +13277,7 @@
         `<option value="${value}" ${effort === value ? "selected" : ""}>${value} (${effortCounts[value] || 0})</option>`
       ).join("");
       let items = scopedSeeds.map(wish => ({ ...wish, _index: WISHLIST_SEEDS.indexOf(wish) })).filter(wish => {
-        const blob = `${wish.ticketId} ${wish.title} ${wish.description} ${wish.category} ${wish.priority} ${wish.effort} ${wish.targetKind} ${wish.targetVersion} ${wish.prompt}`.toLowerCase();
+        const blob = `${wish.ticketId} ${wish.title} ${wish.description} ${wish.category} ${wish.priority} ${wish.effort} ${wish.targetKind} ${wish.targetVersion} ${wish.prompt} ${wish.planDoc ? "plan ready " + wish.planDoc : ""}`.toLowerCase();
         return !search || blob.includes(search);
       });
       $("#wishResultCount").textContent = `${items.length} item${items.length === 1 ? "" : "s"}`;
@@ -13247,6 +13301,7 @@
           </div>
           <p>${escapeHtml(wish.description || "No description")}</p>
           <div class="chips">
+            ${wish.planDoc ? `<span class="tag plan-ready" title="Has a written plan: ${escapeHtml(wish.planDoc)}">Plan ready</span>` : ""}
             <span class="tag">Category: ${escapeHtml(wish.category || "General")}</span>
             <span class="tag priority-pill">Priority: ${escapeHtml(wish.priority)}</span>
             <span class="tag">Target: ${escapeHtml(wishlistTargetLabel(wish))}</span>

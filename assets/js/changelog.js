@@ -4,6 +4,31 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.2.1",
+        date: "2026-06-16",
+        title: "Trail Marks",
+        summary: "The Roadmap flags which ideas already have a plan, and release notes read cleaner.",
+        highlights: [
+          "Roadmap badges ideas that already have a written plan.",
+          "Release notes' Full Update List reads as clean headed sections.",
+        ],
+        updateSections: [
+          {
+            heading: "Roadmap",
+            items: [
+              "Roadmap cards show a 'Plan ready' badge when an idea already has a detailed plan behind it.",
+              "Planned ideas are searchable, so you can find what has already been spec'd.",
+            ]
+          },
+          {
+            heading: "Release Notes",
+            items: [
+              "The Full Update List now reads as headed sections with a single level of bullets, instead of a deeply indented nested list.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.1",
         date: "2026-06-16",
         title: "Atlas Ink",
