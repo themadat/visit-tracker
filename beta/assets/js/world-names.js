@@ -4,6 +4,7 @@
 
 const WORLD_REGION_SHORT_NAMES = Object.freeze({
   AE: "United Arab Emirates",
+  BA: "Bosnia and Herzegovina",
   BO: "Bolivia",
   BN: "Brunei",
   BQ: "Caribbean Netherlands",
@@ -12,6 +13,7 @@ const WORLD_REGION_SHORT_NAMES = Object.freeze({
   CI: "Cote d'Ivoire",
   CN: "China",
   CV: "Cape Verde",
+  CW: "Curacao",
   CZ: "Czechia",
   FK: "Falkland Islands",
   FM: "Micronesia",
@@ -21,6 +23,7 @@ const WORLD_REGION_SHORT_NAMES = Object.freeze({
   KR: "South Korea",
   LA: "Laos",
   MD: "Moldova",
+  MO: "Macao",
   MK: "North Macedonia",
   PS: "Palestine",
   RU: "Russia",
@@ -31,6 +34,10 @@ const WORLD_REGION_SHORT_NAMES = Object.freeze({
   VA: "Vatican City",
   VE: "Venezuela",
   VN: "Vietnam",
+  WF: "Wallis and Futuna",
+  XQ: "Crimea",
+  XR: "Southern Kuril Islands",
+  XV: "Svalbard",
   XK: "Kosovo"
 });
 

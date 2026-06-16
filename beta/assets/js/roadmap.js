@@ -165,10 +165,10 @@
         description: "Add a small, discoverable raptor easter egg that rewards curious clicking or an obscure app interaction without disrupting map, notes, export, or accessibility workflows.",
         priority: "P0",
         effort: "small",
-        targetKind: "patch",
-        targetVersion: "",
+        targetKind: "exact",
+        targetVersion: "4.7.4",
         tokenCostPct: 8,
-        prompt: "Add a subtle raptor easter egg that is discoverable through a playful but non-disruptive interaction. Keep it local-only, accessible, and harmless to normal map, notes, export, and keyboard workflows.",
+        prompt: "Add a subtle raptor easter egg that is discoverable through a playful but non-disruptive interaction. Keep it local-only, accessible, and harmless to normal map, notes, export, and keyboard workflows. (Exact hidden trigger and payoff are intentionally kept out of this shipped seed to avoid spoilers — see context/WISH-068-RAPTOR-EASTER-EGG-PLAN.md.)",
         category: "Fun"
       },
       {
