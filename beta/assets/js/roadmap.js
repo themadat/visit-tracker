@@ -76,15 +76,15 @@
         category: "Maps"
       },
       {
-        title: "Selectable Color Themes",
+        title: "App-Wide Theming Overhaul",
         ticketId: "WISH-063",
-        description: "Let users pick color themes for Wayfinder, Rangefinder, and the overall app. Scope includes theme presets, accessible contrast checks, and preserving existing colors as defaults.",
+        description: "Make color theming a first-class, app-wide system where every color is selectable: Legend level colors, note Priority colors, Rangefinder ring and accent colors, Wayfinder accents, and the app's global accent and surface colors. Move the palette control out of the Legend and into the top bar immediately left of Settings, opening a much larger palette modal that shows the entire color range at once (grouped by surface) instead of editing one swatch at a time. Includes theme presets, accessible contrast checks, light/dark readability, persisted selections, and keeping every current color as the default.",
         priority: "P0",
-        effort: "medium",
-        targetKind: "minor",
-        targetVersion: "",
-        tokenCostPct: 22,
-        prompt: "Add user-selectable color themes for Wayfinder, Rangefinder, and the overall app. Keep existing colors as defaults, preserve local settings, and ensure selected themes remain readable in light and dark modes.",
+        effort: "x-large",
+        targetKind: "exact",
+        targetVersion: "5.0.0",
+        tokenCostPct: 50,
+        prompt: "Make theming app-wide and first-class. Relocate the palette control from the Legend (currently the legend palette button / smartApplyPalette) into the top bar immediately left of the Settings button, and rebuild it as a large modal that exposes every themeable color at once, grouped by surface: Legend level colors, note Priority colors, Rangefinder ring/accent colors, Wayfinder accents, and global app accent/surface colors. Show the full range together rather than one swatch at a time, offer theme presets, run accessible-contrast checks, and keep light/dark readability. Preserve all current colors as defaults. Persist chosen colors/theme in settings (add defaults in defaultState(), repair in normalizeState()), preserve the usStateVisitMap.v1 schema, and keep everything offline/local-only and theme-aware via CSS variables.",
         category: "UI"
       },
       {
