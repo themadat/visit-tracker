@@ -4,10 +4,11 @@ Ticket: **WISH-071** "Latitude / Longitude Map Lines". Target: **4.7.2** (patch 
 
 ## Goal
 
-Add a toggleable lat/lng graticule:
-- **World map** — true graticule via the existing **Robinson** projection (`worldCoordinatePoint`): straight parallels, curved (sampled) meridians, 30° spacing, degree labels, with the **Equator / Prime Meridian / Tropics / Polar circles** emphasized.
-- **US map** — **true lat/lon per state**, drawn through each state's own local frame, with **separate grids inside the insets** (Alaska, Hawaii, territories). Lines are continuous *within* a state's box but do **not** connect across states (the US map is a stylized tile layout, not a single projection) — that's expected and by design.
-- A **per-map overlay toggle** (remembered separately for US and World), kept visually subordinate to markers/rings/labels.
+Add a toggleable lat/lng graticule with **two line tiers (major + minor)** and **user-customizable intervals**, configured from a **settings pop-up**:
+- **World map** — true graticule via the existing **Robinson** projection (`worldCoordinatePoint`): straight parallels, curved (sampled) meridians, plus the **projection outline/frame** (curved ±180° edge meridians closed by the pole parallels) so the map's curvature reads instead of looking like a rectangle. Defaults: **30° major, 10° minor**. Reference lines (Equator / Prime Meridian / Tropics / Polar circles) may be optionally emphasized on top.
+- **US map** — **true lat/lon per state**, drawn through each state's own local frame, with **separate grids inside the insets** (Alaska, Hawaii, territories). Defaults: **10° major, 5° minor**. Lines are continuous *within* a state's box but do **not** connect across states (the US map is a stylized tile layout, not a single projection) — that's expected and by design.
+- **Major lines** read stronger and carry **degree labels at both line ends**; **minor lines** are thinner/subtler (lighter or no labels).
+- A **per-map control** (button → settings pop-up) holding on/off + major/minor intervals, remembered separately for US and World, kept visually subordinate to markers/rings/labels.
 
 ## Why the two maps differ (key projection facts)
 
@@ -17,44 +18,52 @@ Add a toggleable lat/lng graticule:
 
 ## Behavior / UX
 
+### Major + minor tiers (both maps)
+- Each map draws **two tiers**: lines at the **minor** interval (thin/subtle) and, on top, lines at the **major** interval (stronger, labeled). Implement by generating the line set at the minor interval and tagging any whose degree value is a multiple of the major interval as "major" (so majors are a superset visually and never doubled). Keep majors a clean multiple of minors (defaults are: 30/10 world, 10/5 US — both integer multiples).
+- **End labels (both maps):** every **major** line carries a degree label at **both ends** (e.g. parallels labeled at their left & right ends, meridians at top & bottom), formatted like `30°N` / `120°W` / `0°`. Minor lines are unlabeled by default. Place labels just outside/at the line's endpoints, theme-aware, and keep them subordinate (don't fight country/state labels from WISH-057).
+
 ### World graticule (Robinson)
-- For each parallel at the chosen interval (lat = …−30,0,30…, plus key lines), the line is horizontal: compute `y = worldCoordinatePoint({lat, lng:0}).y` and span x across `worldProjectionBox()` width (or sample a few lng points; Robinson y is lng-independent so a straight segment is exact).
-- For each meridian (lng = …−30,0,30… of **true** longitude, projected through `WORLD_MAP_CENTRAL_MERIDIAN`), sample lat from −90→90 in steps (e.g. 5°), project each via `worldCoordinatePoint`, build a polyline (meridians curve).
-- **30° spacing** (Q2). **Emphasize** Equator (0°), Prime Meridian (0°), Tropics (±23.44°), Arctic/Antarctic circles (±66.56°) with a slightly stronger/distinct stroke; label lines in degrees at the map frame edges (parallels at left/right, meridians at top/bottom). Clamp/handle the date-line wrap via the existing `longitudeOffset` logic.
+- Parallels are horizontal: `y = worldCoordinatePoint({lat, lng:0}).y`, span x across `worldProjectionBox()` (Robinson y is lng-independent, so a straight segment is exact). End labels at the left/right frame edges.
+- Meridians: sample lat −90→90 in steps (e.g. 5°), project each true-longitude line through `worldCoordinatePoint` (handle `WORLD_MAP_CENTRAL_MERIDIAN` / date-line wrap via the existing `longitudeOffset` logic) → polyline (meridians curve). End labels at the top/bottom ends.
+- Defaults **30° major / 10° minor**. Optionally also draw the named reference lines — Equator, Prime Meridian, Tropics (±23.44°), Arctic/Antarctic circles (±66.56°) — as an extra emphasized style (could be a checkbox in the pop-up); keep optional so it doesn't conflict with the major/minor model.
+- **Projection outline / frame:** draw the Robinson boundary so the curvature reads instead of looking like a rectangle. The frame is the two extreme edge meridians (±180° from `WORLD_MAP_CENTRAL_MERIDIAN`, the curved east/west edges — sample like any meridian) closed by the pole parallels (90°N top, 90°S bottom — short horizontals, since Robinson narrows toward the poles), forming the flattened-oval silhouette. Render it as one closed polyline (or two meridian polylines + two pole segments) styled like a frame stroke (≈ major weight, maybe slightly stronger). It falls out of the same `worldCoordinatePoint` sampling. **Decision to confirm at `start`:** show the frame whenever the world graticule is on (plan default), or make it **always-on** for the world map regardless of the graticule (since the rectangle-look concern exists even with the graticule off). Plan leans: draw with the graticule now; flag always-on as an easy follow-up.
 
 ### US graticule (per state + insets)
-- For every `.state-tile` (and each inset region via `LOCATION_PROJECTION_FRAME_OVERRIDES`), read its `bounds = [minLat,maxLat,minLng,maxLng]` and `box`. Draw the integer-multiple-of-interval lat lines within `[minLat,maxLat]` as horizontal segments (`y = box.y + box.height·(maxLat−L)/(maxLat−minLat)`, full box width) and lng lines within `[minLng,maxLng]` as vertical segments. Reuse the exact ratio math from `projectNoteLocation` (incl. `projectionLongitudeForBounds`) so lines match where pins land.
-- Insets (AK, HI, territories) naturally get their **own** grids/intervals because they have their own box+bounds. **US interval should be finer than 30°** (states span only a few degrees) — propose ~5° (tune); flag as a tuning decision.
-- Optional light per-state degree labels (small, at a box edge); may start label-less on US to avoid clutter and add if wanted.
+- For every `.state-tile` (and each inset region via `LOCATION_PROJECTION_FRAME_OVERRIDES`), read its `bounds = [minLat,maxLat,minLng,maxLng]` and `box`. Draw the minor- and major-interval lat lines within `[minLat,maxLat]` as horizontal segments (`y = box.y + box.height·(maxLat−L)/(maxLat−minLat)`, full box width) and lng lines within `[minLng,maxLng]` as vertical segments. Reuse the exact ratio math from `projectNoteLocation` (incl. `projectionLongitudeForBounds`) so lines match where pins land.
+- Insets (AK, HI, territories) naturally get their **own** grids because they have their own box+bounds. Defaults **10° major / 5° minor**.
+- Major lines get end labels clipped to each state's box edges; given how small state boxes are, consider showing US end labels only on majors (or only on larger states) to avoid clutter — tune at `start`.
 
-### Toggle, styling, persistence
-- **New map-header overlay toggle** (a button alongside pins/labels controls), **per map** (Q3). Reuse the map-control button pattern; advertise a shortcut if there's a free key.
-- **Setting**: add a per-layer flag, mirroring `ringByLayer` — e.g. `settings.graticuleByLayer = { us:false, world:false }` (default **off**). Add defaults in `defaultState()` and repair in `normalizeState()`; **preserve `usStateVisitMap.v1`**.
-- **Styling**: thin, low-contrast, theme-aware lines (CSS vars); key world lines emphasized; everything **below** markers/rings/labels and non-interactive (`pointer-events:none`) so map taps/pan/zoom are unaffected. Lines live in the zoom/pan-transformed SVG so they scale with the map.
+### Settings pop-up, toggle, styling, persistence
+- **A per-map control button** in the map header (alongside pins/labels) opens a **settings pop-up** (reuse an existing header pop-up pattern — e.g. the ring-style menu or map-label picker — for consistency and outside-click close, and so it clamps on mobile). Pop-up contents **per map**: on/off, **major interval**, **minor interval** (numeric inputs or steppers, validated to sane ranges and major ≥ minor and ideally a multiple), optionally the reference-lines emphasis checkbox. The button's pressed/badged state reflects whether the graticule is on.
+- **Setting (schema):** per-layer object, mirroring `ringByLayer` — `settings.graticuleByLayer = { us: { enabled:false, major:10, minor:5 }, world: { enabled:false, major:30, minor:10 } }`. Add defaults in `defaultState()` and clamp/repair in `normalizeState()` (validate intervals, enforce major ≥ minor, fall back to defaults on bad data); **preserve `usStateVisitMap.v1`**.
+- **Styling**: thin, low-contrast, theme-aware lines (CSS vars) with a stronger major stroke; everything **below** markers/rings/labels and non-interactive (`pointer-events:none`) so map taps/pan/zoom are unaffected. Lines live in the zoom/pan-transformed SVG so they scale with the map; labels too (so they don't need per-zoom repositioning).
 
 ## Implementation phases (for `start`)
 
 1. Open `4.7.2.1`, CHANGELOG entry (patch → no banner/cta), bump `APP_VERSION`.
-2. Settings: `graticuleByLayer {us,world}` defaults + normalize.
+2. Settings: `graticuleByLayer = { us:{enabled,major:10,minor:5}, world:{enabled,major:30,minor:10} }` defaults + clamp/normalize (validate intervals, major ≥ minor).
 3. Inject a graticule `<g>` layer per map (below markers/rings), like the ring overlay setup (≈5500); add `renderGraticule()` called from the map render path.
-4. World graticule: parallels + sampled meridians via `worldCoordinatePoint`/`worldProjectionBox`, 30° + emphasized key lines + edge labels.
-5. US graticule: per-state/per-inset straight segments from `LOCATION_GEO_BOUNDS` + `LOCATION_PROJECTION_FRAME_OVERRIDES`, finer interval.
-6. New per-map toggle button + handler + button-state sync; CSS for line/label styling (+ emphasis + theme).
-7. Surfaces: Help/FAQ, hints, keyboard reference, README, handoff. Mark WISH-071 done at `ship`.
-8. Verify (parse + desktop/mobile smoke on 8018, both maps, fit + zoomed, both themes).
+4. Major/minor line generator (shared): produce minor-interval lines, tag majors (multiples of `major`); major = stronger stroke + end labels, minor = subtle, unlabeled.
+5. World graticule: parallels + sampled meridians via `worldCoordinatePoint`/`worldProjectionBox`; the projection outline/frame (edge meridians + pole parallels); end labels at frame edges; optional reference-line emphasis.
+6. US graticule: per-state/per-inset straight segments from `LOCATION_GEO_BOUNDS` + `LOCATION_PROJECTION_FRAME_OVERRIDES`; major end labels (tuned for clutter).
+7. New per-map control **button → settings pop-up** (on/off + major/minor intervals, validated); button-state sync; CSS for line/label styling (major/minor + theme); ensure the pop-up clamps on mobile.
+8. Surfaces: Help/FAQ, hints, keyboard reference, README, handoff. Mark WISH-071 done at `ship`.
+9. Verify (parse + desktop/mobile smoke on 8018, both maps, fit + zoomed, both themes).
 
 ## Open questions / risks
 
-- **US interval tuning** (~5° vs 10°) and whether US lines need degree labels — start minimal, tune.
-- **US discontinuity is by design** — confirm the user is fine with grid lines not connecting across the stylized state tiles (they asked for "true lat/lon for US including different grids inside the insets", which this delivers).
-- **Robinson sampling density** for meridians (step size) — balance smoothness vs node count; meridians are ~7 lines × ~37 samples = cheap.
-- **Label placement / clutter**, especially where graticule labels meet country/state labels (WISH-057) — keep graticule subordinate; consider hiding world labels-vs-graticule overlaps or just lower graticule contrast.
-- **Performance / re-render**: render once per map render (not per zoom/pan, since it's in the transformed SVG). ~7+7 world lines + ~50 US boxes × few lines — trivial.
+- **US major end-label clutter**: state boxes are small; majors at 10° may still crowd — may show US labels only on majors / larger states, or only at box edges. Tune at `start`.
+- **Interval validation**: enforce sane ranges and major ≥ minor (ideally a clean multiple) in the pop-up and `normalizeState`; decide UI (free numeric vs stepper vs preset list).
+- **US discontinuity is by design** — grid lines don't connect across the stylized state tiles (the user explicitly asked for true per-state lat/lon + separate inset grids, which this delivers).
+- **Label placement / clutter** where graticule meets country/state labels (WISH-057) — keep graticule subordinate (lower contrast, below labels).
+- **Robinson sampling density** for meridians — balance smoothness vs node count (cheap either way).
+- **Performance / re-render**: render once per map render (not per zoom/pan, since it's in the transformed SVG). Minor tier multiplies line count but stays small.
 - **Central meridian / date-line wrap** on the world meridians — reuse `longitudeOffset`.
 
 ## Verify (at `start`/`prep`)
 
-- World map: toggle on → 30° graticule with curved meridians, straight parallels, emphasized Equator/Prime Meridian/Tropics/Polar circles, degree labels; lines sit behind pins/rings; pan/zoom still works; off → fully removed.
-- US map: toggle on → each state shows its own true lat/lon lines, insets (AK/HI) show their own grids; lines align with where a known-coordinate pin lands; off → removed.
-- Per-map memory: toggling on World doesn't enable US and vice-versa; survives reload.
+- World map: graticule on → 30° major (labeled at both ends) + 10° minor (subtle), curved meridians, straight parallels, **and the projection outline/frame so the map reads as a curved Robinson shape, not a rectangle**; lines behind pins/rings; pan/zoom works; off → fully removed.
+- US map: graticule on → each state shows its own true lat/lon major (10°) + minor (5°) lines with insets (AK/HI) getting their own grids; lines align with where a known-coordinate pin lands; off → removed.
+- Settings pop-up: changing major/minor per map updates that map live and persists; bad values are clamped; the two maps stay independent across reload.
+- End labels read correctly (`30°N`, `120°W`, `0°`) at both ends of major lines.
 - Both themes; `./build/check.sh`, `git diff --check`, desktop + mobile (375px) on port 8018.

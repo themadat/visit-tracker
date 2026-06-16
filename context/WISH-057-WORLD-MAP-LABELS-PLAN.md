@@ -4,7 +4,7 @@ Ticket: **WISH-057** "Smarter World Map Labels". Target: **4.7.1** (patch after 
 
 ## Implementation status
 
-`4.7.1.1` is open. The first pass adds offline English short names, rewrites the World-map label renderer around shrink-to-fit candidates and greedy collision filtering, and adds leader-line callouts for `.circlexx` microstate dots plus countries too small for in-land labels. Parse/diff checks pass, and the in-app browser smoke on port 8018 renders the World/Name label layer with country labels plus leader-line callouts and no console errors.
+`4.7.1.2` is open. The first pass added offline English short names, shrink-to-fit candidates, greedy collision filtering, and leader-line callouts for `.circlexx` microstate dots. The second pass lowers the maximum Name label size, allows multi-word names to wrap, tightens collision padding, and gives medium/small/narrow countries backup leader-line candidates so places like South America do not lose so many labels. Parse/diff checks pass; in-app browser smoke on port 8018 renders 213 World/Name labels with no duplicate country codes, including Venezuela, Bolivia, Chile, Uruguay, Peru, Mali, Norway, Mexico, and Nepal.
 
 ## Goal (scoped from the four sub-features)
 

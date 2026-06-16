@@ -18,13 +18,13 @@
       {
         title: "Show a Pack Photo's Camera Location",
         ticketId: "WISH-075",
-        description: "For a Waypoint-pack photo, surface where the shot was taken — the camera/vantage-point coordinates (and heading/bearing when available), which differ from the landmark's own location — so a traveler can stand in the same spot and recreate the photo in person. The data would come from the photo's Wikimedia Commons file page (the \"camera location\" geotag), shown near the photo with a tap-to-open map/directions link, while leaving the note's existing landmark coordinates untouched.",
+        description: "For a Waypoint-pack photo, surface where the shot was taken — the camera/vantage-point coordinates (plus heading when available, and the distance/bearing offset from the note's landmark) so a traveler can stand in the same spot and recreate the photo. Data comes from the photo's Wikimedia Commons file (the camera-location geotag or EXIF GPS), shown as a small caption under the photo in BOTH the note editor and the Waypoint Packs panel, with a tap-to-open map pin at the camera spot. Online-only and lazy; hides gracefully when there's no geotag; never overwrites the note's own lat/lng.",
         priority: "P0",
         effort: "medium",
-        targetKind: "minor",
-        targetVersion: "",
+        targetKind: "exact",
+        targetVersion: "4.7.2",
         tokenCostPct: 14,
-        prompt: "Add an optional 'camera location' readout to the linked-note Waypoint photo. When a pack photo is shown, fetch its Wikimedia Commons file metadata (e.g. the imageinfo / coordinates API for the file page that backs the pageimages thumbnail) and read the camera-location geotag plus heading when present. Render it as a small caption under the photo frame (#noteWaypointPhotoPreview) with a tap-to-open maps/directions link, clearly labeled as the photo vantage point (distinct from the landmark coordinates the note already stores). Keep it online-only and lazy (only when the photo is opened), gracefully hide when Commons has no camera geotag, and never overwrite the note's own lat/lng.",
+        prompt: "Add a camera-location readout to the linked-note Waypoint photo, shown in both the note editor (#noteWaypointPhotoPreview) and the Waypoint Packs panel preview. When a photo is opened, derive its Commons File name from the resolved upload/thumb URL (or pageimages piprop=name), then query commons.wikimedia.org (origin=*) prop=coordinates|imageinfo: prefer the coordinates entry with type=camera, else EXIF extmetadata GPSLatitude/GPSLongitude, with GPSImgDirection as heading. Cache in-memory (no schema change). Show camera coords + heading-when-present + distance/bearing offset from the note's landmark coords, with a Google Maps pin link at the camera spot. Lazy/online-only, hide gracefully when absent, never write to note.lat/lng.",
         category: "Notes"
       },
       {
@@ -114,13 +114,13 @@
       {
         title: "Latitude / Longitude Map Lines",
         ticketId: "WISH-071",
-        description: "Add an optional, per-map latitude/longitude graticule. The World map uses its true Robinson projection (30 degree grid, curved meridians, emphasized Equator / Prime Meridian / Tropics / Polar circles, degree labels). The US map draws true lat/lon per state through each state's local frame, with separate grids inside the insets (Alaska, Hawaii) — lines are continuous within a state but not across the stylized tile layout. Styling stays secondary to locations, Wayfinder, and Rangefinder; toggle is remembered per map.",
+        description: "Add an optional, per-map latitude/longitude graticule with customizable major + minor line tiers set from a settings pop-up (defaults: World 30 deg major / 10 deg minor, US 10 deg major / 5 deg minor). Major lines are stronger and carry degree labels at both ends; minor lines are subtle. The World map uses its true Robinson projection (curved meridians) and draws the projection outline/frame so the map reads as curved rather than a rectangle; the US map draws true lat/lon per state through each state's local frame, with separate grids inside the insets (Alaska, Hawaii) — continuous within a state, not across the stylized tile layout. Styling stays secondary to locations, Wayfinder, and Rangefinder; settings are remembered per map.",
         priority: "P0",
         effort: "medium",
         targetKind: "exact",
         targetVersion: "4.7.2",
-        tokenCostPct: 16,
-        prompt: "Add a toggleable lat/lng graticule as a non-interactive SVG <g> layer per map, below markers/rings/labels. World: sample worldCoordinatePoint (Robinson) for straight parallels + polyline meridians at 30 degrees, emphasize Equator/Prime Meridian/Tropics/Polar circles, label degrees at edges. US: per .state-tile and per inset frame (LOCATION_GEO_BOUNDS + LOCATION_PROJECTION_FRAME_OVERRIDES) draw straight lat/lng segments within each box at a finer interval. Add settings.graticuleByLayer {us,world} (default off) with defaults/normalize, a per-map toggle button, and theme-aware styling. Preserve map pan/zoom and existing overlays.",
+        tokenCostPct: 18,
+        prompt: "Add a customizable lat/lng graticule as a non-interactive SVG <g> layer per map, below markers/rings/labels. Two tiers: minor-interval lines (subtle) plus major-interval lines (stronger, with degree labels like 30°N/120°W at both ends). World: sample worldCoordinatePoint (Robinson) for straight parallels + polyline meridians. US: per .state-tile and per inset frame (LOCATION_GEO_BOUNDS + LOCATION_PROJECTION_FRAME_OVERRIDES) draw straight lat/lng segments within each box. Add settings.graticuleByLayer { us:{enabled,major:10,minor:5}, world:{enabled,major:30,minor:10} } (default off) with defaults/normalize (clamp, major>=minor), a per-map button that opens a settings pop-up (on/off + major/minor intervals), and theme-aware styling. Preserve map pan/zoom and existing overlays.",
         category: "Maps"
       },
       {
