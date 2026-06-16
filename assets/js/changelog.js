@@ -4,6 +4,46 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.1",
+        date: "2026-06-16",
+        title: "Atlas Ink",
+        summary: "World Name labels now read more like a real atlas, with short names, fit-aware sizing, tiny-place callouts, and manual tuning.",
+        highlights: [
+          "World Name labels use cleaner English short names.",
+          "Country labels fit their shapes, wrap, and stay smaller.",
+          "Tiny countries and territories get leader-line callouts.",
+          "Tune mode can edit, move, and export World label overrides.",
+        ],
+        updateSections: [
+          {
+            heading: "World Label Rendering",
+            items: [
+              "Name mode now uses offline English short names for World country labels, with Abbr mode and US labels unchanged.",
+              "Shape-backed countries render over their landmass with fit-aware sizing, multiline wrapping, and a supported 8 / 12 / 16 font-size scale.",
+              "Tiny countries and island territories use subtle leader-line callouts tied to their map dots, with edge clamping so labels stay inside the World viewBox.",
+              "Dense regions now include baked atlas spacing for the Caribbean, Europe, the Middle East, Africa, the Pacific, and UK subregion labels.",
+              "Curated names preserve real diacritics for labels such as Curaçao, Côte d'Ivoire, St. Barthélemy, and Türkiye.",
+            ]
+          },
+          {
+            heading: "Manual Tuning",
+            items: [
+              "World/Name Tune mode lets labels move by drag or arrow keys while leader lines keep following their source dots.",
+              "Selected labels expose editable name controls plus direct 8 / 12 / 16 size buttons.",
+              "The Name override field supports explicit line breaks, so manual overrides can force or remove wrapping.",
+              "Export writes a reusable `world-label-overrides.js` file that merges the loaded override file with the current tuning session for repeated passes.",
+              "The tuner can be dismissed from the map controls and restored later from Developer Tools.",
+            ]
+          },
+          {
+            heading: "Roadmap",
+            items: [
+              "Adds roadmap ideas for native-language World labels, plan-ready badges on roadmap cards, and cleaner headed release-note sections.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.0",
         date: "2026-06-15",
         title: "Priority",
