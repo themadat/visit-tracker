@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.1">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.2">
 </head>
 
 <body>
@@ -1092,6 +1092,8 @@
               for appearance, dates, note tags, imports, and exports.</li>
             <li>Returning users may see a What's New banner and red dots for feature releases. Open What's New or
               dismiss the banner to clear them.</li>
+            <li>What's New includes Release Notes and the Roadmap. The Roadmap accents ticket pills for ideas that
+              already have a written plan, and Release Notes keep detailed updates under clean headed sections.</li>
             <li>Hold Shift + Control + Option to temporarily show shortcut badges. Developer Tools lists hidden commands
               such as H H for restoring dismissed hints and the update banner while testing.</li>
           </ol>
@@ -1690,15 +1692,15 @@
 
   <script src="assets/js/icons.js"></script>
   <script src="assets/js/maps.js"></script>
-  <script src="assets/js/world-names.js?v=4.7.1"></script>
-  <script src="assets/js/world-label-overrides.js?v=4.7.1"></script>
+  <script src="assets/js/world-names.js?v=4.7.2"></script>
+  <script src="assets/js/world-label-overrides.js?v=4.7.2"></script>
   <script src="assets/js/changelog.js"></script>
   <script src="assets/js/roadmap.js"></script>
   <script>
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.2.3";
+    const APP_VERSION = "4.7.2";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
