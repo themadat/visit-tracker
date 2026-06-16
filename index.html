@@ -1698,7 +1698,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.2.2";
+    const APP_VERSION = "4.7.2.3";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -5699,14 +5699,21 @@
         el.className = "raptor-egg";
         el.setAttribute("role", "status");
         el.setAttribute("aria-live", "polite");
-        el.innerHTML = `<span class="raptor-egg-art" aria-hidden="true">${__RAPTOR}</span><span class="raptor-egg-caption">You found a Raptor!</span>`;
+        el.innerHTML = `<span class="raptor-egg-art" aria-hidden="true">${__RAPTOR}</span><span class="raptor-egg-caption">You found<br>a Raptor!</span>`;
         document.body.appendChild(el);
       }
-      const hi = document.querySelector('#stateMap [data-abbr="HI"]');
-      const rect = hi?.getBoundingClientRect();
-      if (rect) {
-        const left = Math.min(Math.max(rect.left + rect.width / 2, 90), window.innerWidth - 90);
-        el.style.left = `${Math.round(left)}px`;
+      // Anchor above the westernmost island (Niihau) on the US map, leaning left.
+      const svg = document.getElementById("stateMap");
+      const hi = svg?.querySelector('[data-abbr="HI"]');
+      const ctm = svg?.getScreenCTM?.();
+      if (hi && ctm && svg.createSVGPoint) {
+        const a = svg.createSVGPoint(); a.x = 236; a.y = 510;
+        const c = a.matrixTransform(ctm);
+        el.style.left = `${Math.round(Math.min(Math.max(c.x, 70), window.innerWidth - 70))}px`;
+        el.style.top = `${Math.round(Math.max(c.y, 96))}px`;
+      } else if (hi) {
+        const rect = hi.getBoundingClientRect();
+        el.style.left = `${Math.round(rect.left + rect.width * 0.1)}px`;
         el.style.top = `${Math.round(Math.max(rect.top, 96))}px`;
       }
       el.classList.remove("is-visible");
