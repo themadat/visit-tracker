@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.1.5">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.1.6">
 </head>
 
 <body>
@@ -179,6 +179,12 @@
                     <button id="labelsNoneBtn" type="button" aria-pressed="true" data-shortcut="3">None</button>
                     <button id="labelsAbbrBtn" type="button" aria-pressed="false" data-shortcut="2">Abbr</button>
                     <button id="labelsNameBtn" type="button" aria-pressed="false" data-shortcut="1">Name</button>
+                  </div>
+                  <div id="worldLabelTuneBar" class="world-label-tune-bar hidden" aria-label="World label tuning">
+                    <button id="worldLabelTuneBtn" type="button" aria-pressed="false">Tune</button>
+                    <button id="worldLabelExportBtn" type="button">Export</button>
+                    <button id="worldLabelClearBtn" type="button">Clear</button>
+                    <span id="worldLabelTuneStatus" aria-live="polite">0 overrides</span>
                   </div>
                 </div>
               </div>
@@ -1667,13 +1673,14 @@
   <script src="assets/js/icons.js"></script>
   <script src="assets/js/maps.js"></script>
   <script src="assets/js/world-names.js"></script>
+  <script src="assets/js/world-label-overrides.js"></script>
   <script src="assets/js/changelog.js"></script>
   <script src="assets/js/roadmap.js"></script>
   <script>
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.1.5";
+    const APP_VERSION = "4.7.1.6";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -6254,6 +6261,7 @@
       renderSuggestedSetMarkers();
       renderLocationMarkers();
       renderMapWaypointPackLabelsControl();
+      syncWorldLabelTuningUi();
     }
 
     function validNoteCoordinates(note) {
@@ -7861,22 +7869,25 @@
     };
     const WORLD_LABEL_COLLISION_PAD = 2.4;
     const WORLD_LABEL_ANCHOR_OVERRIDES = {
-      AL: { dx: -10, dy: 6 },
+      AL: { dx: -10, dy: -8 },
       AM: { dx: 18, dy: -12 },
-      CG: { dx: 30, dy: 18 },
-      CL: { dx: -70, dy: -25 },
-      GA: { dx: -12, dy: -14 },
+      CG: { dx: 6, dy: 18 },
+      CL: { dx: -52, dy: -25 },
+      GA: { dx: -12, dy: 8 },
       HR: { dx: -14, dy: 8 },
       HU: { dx: 10, dy: -8 },
       IE: { dx: -22, dy: 0 },
       IL: { dx: 14, dy: -8 },
       JO: { dx: -6, dy: 12 },
       MK: { dx: -12, dy: 12 },
+      NA: { dx: -20, dy: 0 },
       NO: { dx: -48, dy: 8 },
       PT: { dx: -10, dy: -8 },
       RO: { dx: 18, dy: 12 },
-      SI: { dx: -10, dy: -10 },
+      MZ: { dx: 22, dy: 0 },
+      SI: { dx: -10, dy: 4 },
       SY: { dx: 6, dy: -10 },
+      TH: { dx: 0, dy: -18 },
       TW: { dx: 18, dy: 14 },
       XR: { dx: 24, dy: 12 },
       XQ: { dx: -20, dy: -10 }
@@ -7894,10 +7905,10 @@
       BS: { dx: -62, dy: -48, fontSize: 5.0 },
       CW: { dx: -75, dy: 4, fontSize: 4.8 },
       DM: { dx: 116, dy: 82, fontSize: 4.8 },
-      FO: { dx: -50, dy: -24, fontSize: 6.4 },
+      FO: { dx: -20, dy: -24, fontSize: 6.4 },
       GD: { dx: 54, dy: 124, fontSize: 4.8 },
-      GG: { dx: -44, dy: -24, fontSize: 6.2 },
-      GI: { dx: 26, dy: 42, fontSize: 6.2 },
+      GG: { dx: -44, dy: 2, fontSize: 6.2 },
+      GI: { dx: 26, dy: 26, fontSize: 6.2 },
       GU: { dx: 36, dy: 48, fontSize: 5.6 },
       HK: { dx: 72, dy: -34, fontSize: 6.2 },
       JM: { dx: -70, dy: 16, fontSize: 5.0 },
@@ -7913,6 +7924,7 @@
       MO: { dx: -54, dy: 42, fontSize: 6.2 },
       MP: { dx: 74, dy: -50, fontSize: 5.6 },
       MS: { dx: 110, dy: 76, fontSize: 4.8 },
+      MT: { dx: 32, dy: 36, fontSize: 5.8 },
       NU: { dx: 36, dy: 24, fontSize: 6.2 },
       PR: { dx: 35, dy: -28, fontSize: 5.0 },
       PS: { dx: -60, dy: 24, fontSize: 6.2 },
@@ -7928,18 +7940,103 @@
       WS: { dx: -80, dy: 5, fontSize: 5.6 }
     };
     const WORLD_SYNTHETIC_LABELS = [
-      { code: "GB-NIR", text: "Northern Ireland", x: 1261, y: 242, fontSize: 4.9 },
+      { code: "GB-NIR", text: "Northern Ireland", x: 1261, y: 236, fontSize: 4.9 },
       { code: "GB-WLS", text: "Wales", x: 1279, y: 269, fontSize: 4.9 },
       { code: "GB-SCT", text: "Scotland", x: 1286, y: 211, fontSize: 5.3 },
       { code: "GB-ENG", text: "England", x: 1302, y: 258, fontSize: 5.3 }
     ];
+    const WORLD_LABEL_TUNING_STORAGE_KEY = "trailLog.worldLabelTuning.v1";
+    let worldLabelTuningActive = false;
+    let worldLabelSelectedCode = "";
+    let worldLabelDrag = null;
+    let worldLabelRenderedCandidates = new Map();
+
+    function roundWorldLabelNumber(value) {
+      return Math.round(Number(value || 0) * 10) / 10;
+    }
+
+    function cleanWorldLabelOverrideEntry(entry, bucket) {
+      if (!entry || typeof entry !== "object") return null;
+      const output = {};
+      const keys = bucket === "synthetic" ? ["x", "y", "fontSize"] : bucket === "dots" ? ["dx", "dy", "fontSize"] : ["dx", "dy"];
+      keys.forEach(key => {
+        const value = Number(entry[key]);
+        if (Number.isFinite(value)) output[key] = roundWorldLabelNumber(value);
+      });
+      if (bucket !== "synthetic" && (!Number.isFinite(output.dx) || !Number.isFinite(output.dy))) return null;
+      if (bucket === "synthetic" && (!Number.isFinite(output.x) || !Number.isFinite(output.y))) return null;
+      return output;
+    }
+
+    function cleanWorldLabelOverrideBundle(input) {
+      const output = { anchors: {}, dots: {}, synthetic: {} };
+      ["anchors", "dots", "synthetic"].forEach(bucket => {
+        const source = input?.[bucket] && typeof input[bucket] === "object" ? input[bucket] : {};
+        Object.entries(source).forEach(([code, entry]) => {
+          const clean = cleanWorldLabelOverrideEntry(entry, bucket);
+          if (clean) output[bucket][String(code).toUpperCase()] = clean;
+        });
+      });
+      return output;
+    }
+
+    function loadWorldLabelTuningEdits() {
+      try {
+        return cleanWorldLabelOverrideBundle(JSON.parse(localStorage.getItem(WORLD_LABEL_TUNING_STORAGE_KEY) || "{}"));
+      } catch {
+        return cleanWorldLabelOverrideBundle({});
+      }
+    }
+
+    let worldLabelTuningEdits = loadWorldLabelTuningEdits();
+
+    function saveWorldLabelTuningEdits() {
+      try {
+        localStorage.setItem(WORLD_LABEL_TUNING_STORAGE_KEY, JSON.stringify(worldLabelTuningEdits));
+      } catch { }
+    }
+
+    function worldLabelFileOverrides() {
+      try {
+        return cleanWorldLabelOverrideBundle(typeof WORLD_LABEL_MANUAL_OVERRIDES === "object" ? WORLD_LABEL_MANUAL_OVERRIDES : {});
+      } catch {
+        return cleanWorldLabelOverrideBundle({});
+      }
+    }
+
+    function worldLabelOverrideCount(bundle = worldLabelTuningEdits) {
+      return ["anchors", "dots", "synthetic"].reduce((sum, bucket) => sum + Object.keys(bundle?.[bucket] || {}).length, 0);
+    }
+
+    function worldLabelMergedOverride(bucket, code, baked = null) {
+      const key = String(code || "").toUpperCase();
+      const fileEntry = worldLabelFileOverrides()[bucket]?.[key] || null;
+      const sessionEntry = worldLabelTuningEdits[bucket]?.[key] || null;
+      return cleanWorldLabelOverrideEntry({ ...(baked || {}), ...(fileEntry || {}), ...(sessionEntry || {}) }, bucket);
+    }
+
+    function mergeWorldLabelOverrideBundles(...bundles) {
+      const merged = cleanWorldLabelOverrideBundle({});
+      bundles.forEach(bundle => {
+        const clean = cleanWorldLabelOverrideBundle(bundle);
+        ["anchors", "dots", "synthetic"].forEach(bucket => Object.assign(merged[bucket], clean[bucket]));
+      });
+      return merged;
+    }
+
+    function worldLabelDisplayText(text) {
+      return String(text || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+    }
 
     function worldMapLabelText(code, mode) {
       if (mode === "abbr") return String(code || "").toUpperCase();
       const fallback = worldRegionNames[code] || code;
-      return typeof worldRegionShortName === "function"
+      const text = typeof worldRegionShortName === "function"
         ? worldRegionShortName(code, fallback)
         : fallback;
+      return worldLabelDisplayText(text);
     }
 
     function estimateWorldLabelWidth(text, fontSize, mode) {
@@ -8076,7 +8173,7 @@
     }
 
     function leaderOffsetForWorldPoint(point, variant = 0) {
-      const override = WORLD_DOT_LABEL_OVERRIDES[point.code];
+      const override = worldLabelMergedOverride("dots", point.code, WORLD_DOT_LABEL_OVERRIDES[point.code]);
       if (override) return { x: override.dx, y: override.dy };
       const center = worldMapCenterPoint();
       const dx = point.x >= center.x ? 1 : -1;
@@ -8100,7 +8197,7 @@
       const text = worldMapLabelText(anchor.code, mode);
       if (!text) return null;
       const profile = WORLD_LABEL_STYLE[mode] || WORLD_LABEL_STYLE.name;
-      const dotOverride = WORLD_DOT_LABEL_OVERRIDES[anchor.code] || null;
+      const dotOverride = worldLabelMergedOverride("dots", anchor.code, WORLD_DOT_LABEL_OVERRIDES[anchor.code]);
       const fontSize = dotOverride?.fontSize || profile.leader;
       const offset = leaderOffsetForWorldPoint(anchor, variant);
       const layout = worldLabelLayout(text, fontSize, mode);
@@ -8116,6 +8213,9 @@
         lineHeight: layout.lineHeight,
         x,
         y,
+        baseX: anchor.x,
+        baseY: anchor.y,
+        overrideBucket: "dots",
         fontSize,
         box,
         priority: Math.max(0, priority - variant * .01),
@@ -8147,7 +8247,7 @@
         const layout = worldLabelLayout(text, fontSize, mode);
         const tightLabelBoost = mode === "name" && (/\s/.test(text) || fitSize < maxSize * .92) ? 65000 : 0;
         const narrowShapeBoost = Math.min(center.box.width || 0, center.box.height || 0) / Math.max(center.box.width || 1, center.box.height || 1) < .32 ? area * .45 : 0;
-        const anchorOverride = WORLD_LABEL_ANCHOR_OVERRIDES[code] || null;
+        const anchorOverride = worldLabelMergedOverride("anchors", code, WORLD_LABEL_ANCHOR_OVERRIDES[code]);
         const x = center.x + (anchorOverride?.dx || 0);
         const y = center.y + (anchorOverride?.dy || 0);
         countryCandidates.push({
@@ -8158,6 +8258,9 @@
           lineHeight: layout.lineHeight,
           x,
           y,
+          baseX: center.x,
+          baseY: center.y,
+          overrideBucket: "anchors",
           fontSize,
           box: worldLabelBox(x, y, layout),
           priority: area + tightLabelBoost + narrowShapeBoost,
@@ -8166,7 +8269,10 @@
       });
       if (mode === "name") {
         WORLD_SYNTHETIC_LABELS.forEach(item => {
-          const fontSize = item.fontSize;
+          const override = worldLabelMergedOverride("synthetic", item.code, null);
+          const fontSize = override?.fontSize || item.fontSize;
+          const x = override?.x || item.x;
+          const y = override?.y || item.y;
           const layout = worldLabelLayout(item.text, fontSize, mode);
           countryCandidates.push({
             code: item.code,
@@ -8174,10 +8280,13 @@
             text: item.text,
             lines: layout.lines,
             lineHeight: layout.lineHeight,
-            x: item.x,
-            y: item.y,
+            x,
+            y,
+            baseX: item.x,
+            baseY: item.y,
+            overrideBucket: "synthetic",
             fontSize,
-            box: worldLabelBox(item.x, item.y, layout),
+            box: worldLabelBox(x, y, layout),
             priority: 40000,
             collisionPad: 0
           });
@@ -8202,6 +8311,7 @@
       text.classList.add(candidate.kind === "leader" ? "world-label-callout" : "world-label-country");
       text.dataset.abbr = candidate.code;
       text.dataset.label = candidate.text;
+      if (candidate.overrideBucket) text.dataset.tuneBucket = candidate.overrideBucket;
       text.setAttribute("aria-label", candidate.text);
       text.setAttribute("x", candidate.x);
       text.setAttribute("text-anchor", "middle");
@@ -8221,6 +8331,224 @@
         });
       }
       root.append(text);
+      worldLabelRenderedCandidates.set(candidate.code, candidate);
+      if (candidate.code === worldLabelSelectedCode) text.classList.add("is-selected");
+    }
+
+    function worldLabelTuningAvailable() {
+      return activeLayerId === "world" && (state.settings.mapLabels || "none") === "name";
+    }
+
+    function syncWorldLabelTuningUi() {
+      const available = worldLabelTuningAvailable();
+      const bar = $("#worldLabelTuneBar");
+      const labels = $("#worldMapLabels");
+      if (bar) bar.classList.toggle("hidden", activeLayerId !== "world");
+      if (!available) {
+        worldLabelTuningActive = false;
+        worldLabelSelectedCode = "";
+      }
+      const fileCount = worldLabelOverrideCount(mergeWorldLabelOverrideBundles(worldLabelFileOverrides(), worldLabelTuningEdits));
+      const sessionCount = worldLabelOverrideCount(worldLabelTuningEdits);
+      const tuneBtn = $("#worldLabelTuneBtn");
+      if (tuneBtn) {
+        tuneBtn.setAttribute("aria-pressed", worldLabelTuningActive && available);
+        tuneBtn.disabled = !available;
+      }
+      const exportBtn = $("#worldLabelExportBtn");
+      if (exportBtn) exportBtn.disabled = fileCount === 0;
+      const clearBtn = $("#worldLabelClearBtn");
+      if (clearBtn) clearBtn.disabled = sessionCount === 0;
+      const status = $("#worldLabelTuneStatus");
+      if (status) status.textContent = `${sessionCount} session / ${fileCount} file overrides`;
+      labels?.classList.toggle("is-tuning", worldLabelTuningActive && available);
+    }
+
+    function worldLabelTextNode(code) {
+      return $$("#worldMapLabels text").find(node => node.dataset.abbr === code) || null;
+    }
+
+    function worldLabelLeaderNode(code) {
+      return $$("#worldMapLabels line.world-label-leader").find(node => node.dataset.abbr === code) || null;
+    }
+
+    function worldSvgPointFromEvent(event) {
+      const svg = $("#worldMap");
+      const matrix = svg?.getScreenCTM?.();
+      if (!svg || !matrix) return null;
+      const point = svg.createSVGPoint();
+      point.x = event.clientX;
+      point.y = event.clientY;
+      const mapped = point.matrixTransform(matrix.inverse());
+      return { x: mapped.x, y: mapped.y };
+    }
+
+    function setWorldLabelSelection(code) {
+      worldLabelSelectedCode = String(code || "").toUpperCase();
+      $$("#worldMapLabels text").forEach(text => text.classList.toggle("is-selected", text.dataset.abbr === worldLabelSelectedCode));
+      syncWorldLabelTuningUi();
+    }
+
+    function updateWorldLabelElementPosition(candidate, x, y) {
+      const text = worldLabelTextNode(candidate.code);
+      if (!text) return;
+      text.setAttribute("x", x);
+      const lines = candidate.lines?.length ? candidate.lines : [candidate.text];
+      if (lines.length === 1) {
+        text.setAttribute("y", y + candidate.fontSize * 0.34);
+      } else {
+        const startY = y - ((lines.length - 1) * candidate.lineHeight) / 2 + candidate.fontSize * 0.34;
+        Array.from(text.querySelectorAll("tspan")).forEach((tspan, index) => {
+          tspan.setAttribute("x", x);
+          tspan.setAttribute("y", (startY + index * candidate.lineHeight).toFixed(2));
+        });
+      }
+      const line = worldLabelLeaderNode(candidate.code);
+      if (line) {
+        const side = Math.sign(x - (candidate.baseX ?? candidate.line?.x1 ?? x) || 1);
+        line.setAttribute("x2", x - side * ((candidate.box?.width || 1) / 2 + 2));
+        line.setAttribute("y2", y);
+      }
+    }
+
+    function setWorldLabelTuningEdit(candidate, x, y) {
+      const bucket = candidate.overrideBucket;
+      if (!bucket) return;
+      const code = candidate.code;
+      if (!worldLabelTuningEdits[bucket]) worldLabelTuningEdits[bucket] = {};
+      if (bucket === "synthetic") {
+        worldLabelTuningEdits[bucket][code] = {
+          x: roundWorldLabelNumber(x),
+          y: roundWorldLabelNumber(y),
+          fontSize: roundWorldLabelNumber(candidate.fontSize)
+        };
+      } else {
+        const entry = {
+          dx: roundWorldLabelNumber(x - candidate.baseX),
+          dy: roundWorldLabelNumber(y - candidate.baseY)
+        };
+        if (bucket === "dots") entry.fontSize = roundWorldLabelNumber(candidate.fontSize);
+        worldLabelTuningEdits[bucket][code] = entry;
+      }
+      saveWorldLabelTuningEdits();
+      syncWorldLabelTuningUi();
+    }
+
+    function moveWorldLabelCandidate(candidate, x, y, { live = false } = {}) {
+      setWorldLabelTuningEdit(candidate, x, y);
+      if (live) updateWorldLabelElementPosition(candidate, x, y);
+      else {
+        renderWorldMapLabels();
+        setWorldLabelSelection(candidate.code);
+      }
+    }
+
+    function handleWorldLabelTunePointerDown(event) {
+      if (!worldLabelTuningActive || !worldLabelTuningAvailable()) return;
+      const text = event.target?.closest?.("#worldMapLabels text");
+      if (!text) return;
+      const candidate = worldLabelRenderedCandidates.get(text.dataset.abbr);
+      const point = worldSvgPointFromEvent(event);
+      if (!candidate || !point) return;
+      event.preventDefault();
+      text.classList.add("is-dragging");
+      setWorldLabelSelection(candidate.code);
+      worldLabelDrag = {
+        code: candidate.code,
+        candidate,
+        pointerId: event.pointerId,
+        startPoint: point,
+        startX: candidate.x,
+        startY: candidate.y
+      };
+      text.setPointerCapture?.(event.pointerId);
+    }
+
+    function handleWorldLabelTunePointerMove(event) {
+      if (!worldLabelDrag) return;
+      const point = worldSvgPointFromEvent(event);
+      if (!point) return;
+      const x = worldLabelDrag.startX + point.x - worldLabelDrag.startPoint.x;
+      const y = worldLabelDrag.startY + point.y - worldLabelDrag.startPoint.y;
+      moveWorldLabelCandidate(worldLabelDrag.candidate, x, y, { live: true });
+    }
+
+    function handleWorldLabelTunePointerUp() {
+      if (!worldLabelDrag) return;
+      const code = worldLabelDrag.code;
+      worldLabelDrag = null;
+      renderWorldMapLabels();
+      setWorldLabelSelection(code);
+    }
+
+    function nudgeSelectedWorldLabel(dx, dy) {
+      const candidate = worldLabelRenderedCandidates.get(worldLabelSelectedCode);
+      if (!candidate) return;
+      moveWorldLabelCandidate(candidate, candidate.x + dx, candidate.y + dy);
+    }
+
+    function handleWorldLabelTuneKeydown(event) {
+      if (!worldLabelTuningActive || !worldLabelSelectedCode || isTypingTarget(event.target)) return;
+      const step = event.shiftKey ? 10 : 2;
+      const moves = {
+        ArrowUp: [0, -step],
+        ArrowDown: [0, step],
+        ArrowLeft: [-step, 0],
+        ArrowRight: [step, 0]
+      };
+      const move = moves[event.key];
+      if (!move) return;
+      event.preventDefault();
+      nudgeSelectedWorldLabel(move[0], move[1]);
+    }
+
+    function toggleWorldLabelTuning() {
+      if (!worldLabelTuningAvailable()) {
+        showMessage("Tune World Labels", "Switch to the World Map and choose Name labels before tuning.");
+        return;
+      }
+      worldLabelTuningActive = !worldLabelTuningActive;
+      if (!worldLabelTuningActive) worldLabelSelectedCode = "";
+      renderWorldMapLabels();
+      syncWorldLabelTuningUi();
+    }
+
+    function clearWorldLabelTuningSession() {
+      worldLabelTuningEdits = cleanWorldLabelOverrideBundle({});
+      try { localStorage.removeItem(WORLD_LABEL_TUNING_STORAGE_KEY); } catch { }
+      worldLabelSelectedCode = "";
+      renderWorldMapLabels();
+      syncWorldLabelTuningUi();
+      showMessage("Label Tuning Cleared", "Session-only World label moves were cleared. File overrides are unchanged.");
+    }
+
+    function formatWorldLabelNumber(value) {
+      return Number.isInteger(value) ? String(value) : Number(value).toFixed(1).replace(/\.0$/, "");
+    }
+
+    function formatWorldLabelOverrideBucket(bucket) {
+      const entries = Object.entries(bucket || {}).sort(([a], [b]) => a.localeCompare(b));
+      if (!entries.length) return "{}";
+      const lines = entries.map(([code, entry]) => {
+        const pairs = Object.entries(entry).map(([key, value]) => `${key}: ${formatWorldLabelNumber(value)}`).join(", ");
+        return `    ${JSON.stringify(code)}: { ${pairs} }`;
+      });
+      return `{\n${lines.join(",\n")}\n  }`;
+    }
+
+    function worldLabelOverrideFileText() {
+      const bundle = mergeWorldLabelOverrideBundles(worldLabelFileOverrides(), worldLabelTuningEdits);
+      return `// Trail Log — exported World label overrides.\n// Generated by ${APP_NAME} ${APP_VERSION} on ${new Date().toISOString().slice(0, 10)}.\n// Replace assets/js/world-label-overrides.js with this file.\n\nconst WORLD_LABEL_MANUAL_OVERRIDES = {\n  anchors: ${formatWorldLabelOverrideBucket(bundle.anchors)},\n  dots: ${formatWorldLabelOverrideBucket(bundle.dots)},\n  synthetic: ${formatWorldLabelOverrideBucket(bundle.synthetic)}\n};\n`;
+    }
+
+    function exportWorldLabelOverrides() {
+      const count = worldLabelOverrideCount(mergeWorldLabelOverrideBundles(worldLabelFileOverrides(), worldLabelTuningEdits));
+      if (!count) {
+        showMessage("No Label Overrides", "Move at least one World label before exporting.");
+        return;
+      }
+      downloadFile("world-label-overrides.js", "text/javascript", worldLabelOverrideFileText());
+      showMessage("Label Overrides Exported", `${count} World label override${count === 1 ? "" : "s"} exported as world-label-overrides.js.`);
     }
 
     // World country labels: ISO code (abbr) or English short name (name). Labels
@@ -8230,8 +8558,10 @@
       const labels = $("#worldMapLabels");
       if (!labels) return;
       labels.innerHTML = "";
+      worldLabelRenderedCandidates = new Map();
       const mode = state.settings.mapLabels || "none";
       syncMapLabelButtons(mode);
+      syncWorldLabelTuningUi();
       if (mode === "none") return;
       const circleAnchors = worldCircleAnchors();
       const circleCodes = new Set(circleAnchors.map(anchor => anchor.code));
@@ -8250,7 +8580,7 @@
           if (placedCodes.has(candidate.code)) return;
           const padded = paddedWorldLabelBox(candidate.box, candidate.collisionPad ?? WORLD_LABEL_COLLISION_PAD);
           const overlaps = placed.some(box => worldLabelBoxesOverlap(padded, box));
-          const dotOverride = candidate.kind === "leader" ? WORLD_DOT_LABEL_OVERRIDES[candidate.code] : null;
+          const dotOverride = candidate.kind === "leader" ? worldLabelMergedOverride("dots", candidate.code, WORLD_DOT_LABEL_OVERRIDES[candidate.code]) : null;
           const canOverprint = candidate.kind === "country"
             ? candidate.fontSize <= 13
             : candidate.kind === "leader" && Boolean(dotOverride);
@@ -8259,6 +8589,7 @@
           placedCodes.add(candidate.code);
           renderWorldLabelCandidate(labels, candidate);
         });
+      syncWorldLabelTuningUi();
     }
 
     function renderMapLabels() {
@@ -16715,6 +17046,14 @@
       $("#labelsNoneBtn").addEventListener("click", () => setActiveMapLabelMode("none"));
       $("#labelsAbbrBtn").addEventListener("click", () => setActiveMapLabelMode("abbr"));
       $("#labelsNameBtn").addEventListener("click", () => setActiveMapLabelMode("name"));
+      $("#worldLabelTuneBtn").addEventListener("click", toggleWorldLabelTuning);
+      $("#worldLabelExportBtn").addEventListener("click", exportWorldLabelOverrides);
+      $("#worldLabelClearBtn").addEventListener("click", clearWorldLabelTuningSession);
+      $("#worldMapLabels").addEventListener("pointerdown", handleWorldLabelTunePointerDown);
+      document.addEventListener("pointermove", handleWorldLabelTunePointerMove);
+      document.addEventListener("pointerup", handleWorldLabelTunePointerUp);
+      document.addEventListener("pointercancel", handleWorldLabelTunePointerUp);
+      document.addEventListener("keydown", handleWorldLabelTuneKeydown);
       $("#mapLocationPinsBtn").addEventListener("click", () => updateSetting("mapLocationPinsVisible", state.settings.mapLocationPinsVisible === false));
       $("#mapMatchNotesBtn").addEventListener("click", () => updateSetting("mapFollowsNotesFilters", state.settings.mapFollowsNotesFilters !== true));
       $("#mapToggleBtn").addEventListener("click", toggleMapPanel);
