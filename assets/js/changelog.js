@@ -4,6 +4,28 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.1.8",
+        date: "2026-06-16",
+        title: "Atlas Ink",
+        summary: "World label overrides preserve names and layer cleanly across tuning passes.",
+        highlights: [
+          "World label names preserve real diacritics.",
+          "Exports clarify they merge loaded overrides plus session edits.",
+          "Repeated tuning passes keep updating one override file.",
+        ],
+        updateSections: [
+          {
+            heading: "World Labels",
+            items: [
+              "Restores diacritics in curated World label names such as Curaçao and Côte d'Ivoire.",
+              "Custom edited label names now preserve diacritics instead of stripping them during cleanup.",
+              "Exported override files explicitly include the currently loaded `world-label-overrides.js` entries plus the active tuning session.",
+              "Export messaging now describes the repeated-pass workflow: replace the same override file, refresh, and keep tuning.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.1.7",
         date: "2026-06-16",
         title: "Atlas Ink",
