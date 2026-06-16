@@ -220,6 +220,30 @@
         category: "Maps"
       },
       {
+        title: "Mark Roadmap Items That Have a Plan",
+        ticketId: "WISH-077",
+        description: "In the Roadmap (Settings → What's New → Roadmap), show a clear badge on any wish that already has a written plan behind it, so it is obvious at a glance which ideas are spec'd versus raw. Driven by an optional field on each roadmap seed (set when a plan doc is authored), rendered as a 'Plan ready' pill in the card's chips, included in search, with an optional filter to show only planned items. Roadmap display affordance only; no change to user data.",
+        priority: "P0",
+        effort: "small",
+        targetKind: "patch",
+        targetVersion: "",
+        tokenCostPct: 8,
+        prompt: "In renderWishlist (index.html) denote wishes that have a plan. Add an optional seed field (e.g. planDoc: \"WISH-063-THEMING-OVERHAUL-PLAN.md\") to WISHLIST_SEEDS and its documented shape; render a distinct 'Plan ready' pill in the card .chips row when present (reuse .tag with a modifier class), add the field to the search blob, and optionally add a 'Has plan' filter/sort. Have the plan workflow set planDoc when a plan is written and backfill existing plans (063, 077, 078). WISHLIST_SEEDS are dev defaults (never persisted), so no defaultState/normalizeState change; Roadmap-only.",
+        category: "UI"
+      },
+      {
+        title: "Headed Sections in the Full Update List",
+        ticketId: "WISH-078",
+        description: "Restructure the Release Notes 'Full Update List' so it reads as headed sections instead of a doubly-indented nested list. Each update section should render as a section header with its bullet points one indent level beneath it (a single level-1 list), rather than the current layout where the section heading is itself a bullet and its items are indented again under it. Flat (section-less) entries keep a simple single-level bullet list. Visual/markup only.",
+        priority: "P0",
+        effort: "small",
+        targetKind: "patch",
+        targetVersion: "",
+        tokenCostPct: 6,
+        prompt: "In renderReleaseSection (index.html) and its CSS (.release-section / .release-subsection in app.css), change the Full Update List so section objects render as a block header + a single level-1 <ul> of items, not as <li class=release-subsection> wrapping a nested <ul> inside an outer <ul> (which double-indents and bullets the heading). Keep bare-string lists and the Highlights section as a simple single-level bullet list, and keep the 'X sections · Y updates' count + collapsible <details> behavior. Update CSS so the heading has no list bullet and items sit at one indent level. Markup/CSS only; no data/schema change.",
+        category: "UI"
+      },
+      {
         title: "Search All Locations in Quick Add",
         ticketId: "WISH-058",
         description: "Let the note Quick Add location search reach every location across all map layers, not just the open map. Today the location list is scoped to the active layer (US states/territories or world countries), so adding a country while viewing the US map (or vice versa) is not possible without switching maps first. Scope: search the full union of states, territories, and countries, show which layer each result belongs to, and route the saved note into the correct store so it appears on the right map.",
