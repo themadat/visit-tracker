@@ -2039,6 +2039,25 @@
       stroke-linejoin: round;
     }
 
+    .map-labels .world-label-country {
+      fill: color-mix(in srgb, var(--text) 68%, var(--muted));
+      stroke-width: 4px;
+    }
+
+    .map-labels .world-label-callout {
+      fill: var(--text);
+      font-weight: 900;
+      stroke-width: 3.2px;
+    }
+
+    .map-labels .world-label-leader {
+      fill: none;
+      stroke: color-mix(in srgb, var(--muted) 74%, transparent);
+      stroke-width: 1.1px;
+      stroke-linecap: round;
+      pointer-events: none;
+    }
+
     .map-location-markers {
       pointer-events: auto;
     }
