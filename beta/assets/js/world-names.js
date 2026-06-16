@@ -10,6 +10,7 @@ const WORLD_REGION_SHORT_NAMES = Object.freeze({
   CD: "DR Congo",
   CG: "Congo",
   CI: "Cote d'Ivoire",
+  CN: "China",
   CV: "Cape Verde",
   CZ: "Czechia",
   FK: "Falkland Islands",
