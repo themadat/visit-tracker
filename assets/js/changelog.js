@@ -4,6 +4,27 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.1.2",
+        date: "2026-06-15",
+        title: "Atlas Ink",
+        summary: "World map labels get denser, calmer, and more shape-aware.",
+        highlights: [
+          "More medium and small countries survive the World Name label pass.",
+          "Large country labels are scaled down to sit better inside their shapes.",
+          "Multi-word country names can wrap across lines to reduce label width.",
+        ],
+        updateSections: [
+          {
+            heading: "World Labels",
+            items: [
+              "World Name labels use a smaller maximum size so large labels leave room for neighbors.",
+              "Multi-word names can render on multiple lines to fit country footprints with less horizontal spill.",
+              "Medium and small countries can fall back to subtle leader-line callouts when their in-country label collides.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.1.1",
         date: "2026-06-15",
         title: "Atlas Ink",
