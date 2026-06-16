@@ -4,6 +4,28 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.1.4",
+        date: "2026-06-15",
+        title: "Atlas Ink",
+        summary: "World labels favor completeness while staying clipped inside the map.",
+        highlights: [
+          "Shape-backed country labels no longer disappear during collision cleanup.",
+          "Tiny dot labels clamp inside the World map edges.",
+          "Synthetic EU and formal regional names are cleaned up.",
+        ],
+        updateSections: [
+          {
+            heading: "World Labels",
+            items: [
+              "World Name labels now render all shape-backed country labels at atlas scale instead of hiding crowded labels.",
+              "Dot-backed labels include circle, sub, and unmarked dot anchors, covering small islands and territories like Macao and Caribbean locations.",
+              "Leader-line labels clamp to the World map viewBox so edge labels like Niue, Samoa, and Tokelau do not cut off.",
+              "Dot-code parsing ignores helper classes like EU, and short-name overrides cover Crimea, Southern Kuril Islands, Svalbard, Macao, and Curacao.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.1.3",
         date: "2026-06-15",
         title: "Atlas Ink",
