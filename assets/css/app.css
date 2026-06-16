@@ -2087,6 +2087,43 @@
       white-space: nowrap;
     }
 
+    .world-label-edit-panel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .25rem;
+      flex: 1 1 100%;
+      flex-wrap: wrap;
+    }
+
+    .world-label-edit-panel label {
+      display: inline-flex;
+      align-items: center;
+      gap: .2rem;
+      color: var(--muted);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .world-label-edit-panel input {
+      min-height: 1.65rem;
+      border-radius: .55rem;
+      padding: .18rem .4rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font: inherit;
+      font-size: .68rem;
+    }
+
+    #worldLabelNameInput {
+      width: min(11rem, 45vw);
+    }
+
+    #worldLabelSizeInput {
+      width: 4.4rem;
+    }
+
     .map-labels.is-tuning {
       pointer-events: auto;
     }
