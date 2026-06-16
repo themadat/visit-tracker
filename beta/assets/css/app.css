@@ -4810,11 +4810,12 @@
     .raptor-egg-caption {
       font-weight: 800;
       font-size: .64rem;
+      line-height: 1.12;
       color: var(--accent-2);
       background: var(--surface);
       border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--line));
-      border-radius: 999px;
-      padding: .02rem .36rem;
+      border-radius: 9px;
+      padding: .12rem .4rem;
       box-shadow: 0 1px 5px rgba(16, 24, 40, .18);
     }
 
