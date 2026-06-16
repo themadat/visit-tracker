@@ -8,6 +8,7 @@ The app is still intentionally simple to run: open `index.html` and go — plain
 
 | Version | Date | Title | Summary
 |---|---:|---|---|
+| 4.7.2 | 2026-06-16 | Trail Marks | Roadmap cards mark planned ideas, release notes use cleaner headed sections, and the map hides a tiny surprise. |
 | 4.7.1 | 2026-06-16 | Atlas Ink | World Name labels use short names, fit country shapes, add tiny-place callouts, and support manual atlas tuning/export. |
 | 4.7.0 | 2026-06-15 | Priority | Every note can carry a priority, with unified filtering, ordering, grouping, square badges, and exports. |
 | 4.6.1 | 2026-06-15 | A Small World | Map switching responds sooner, shows loading progress directly in the switch button, and restores the Shift+Control+Option+~ shortcut. |

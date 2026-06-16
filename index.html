@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.1">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.2">
 </head>
 
 <body>
@@ -1092,6 +1092,8 @@
               for appearance, dates, note tags, imports, and exports.</li>
             <li>Returning users may see a What's New banner and red dots for feature releases. Open What's New or
               dismiss the banner to clear them.</li>
+            <li>What's New includes Release Notes and the Roadmap. The Roadmap accents ticket pills for ideas that
+              already have a written plan, and Release Notes keep detailed updates under clean headed sections.</li>
             <li>Hold Shift + Control + Option to temporarily show shortcut badges. Developer Tools lists hidden commands
               such as H H for restoring dismissed hints and the update banner while testing.</li>
           </ol>
@@ -1690,15 +1692,15 @@
 
   <script src="assets/js/icons.js"></script>
   <script src="assets/js/maps.js"></script>
-  <script src="assets/js/world-names.js?v=4.7.1"></script>
-  <script src="assets/js/world-label-overrides.js?v=4.7.1"></script>
+  <script src="assets/js/world-names.js?v=4.7.2"></script>
+  <script src="assets/js/world-label-overrides.js?v=4.7.2"></script>
   <script src="assets/js/changelog.js"></script>
   <script src="assets/js/roadmap.js"></script>
   <script>
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.1";
+    const APP_VERSION = "4.7.2";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -5646,6 +5648,7 @@
 
     function handleStateTap(abbr, event) {
       if (event?.type === "click") event.currentTarget?.blur?.();
+      if (abbr === "HI" && activeLayerId === "us" && raptorTapHit(event)) { showRaptorEasterEgg(); return; }
       const wasActiveInNotes = notesPanelOpen && notesPanelState === abbr;
       const alreadyMarked = getStateLevelIds(abbr).length > 0;
       selectStateInNotes(abbr);
@@ -5669,6 +5672,57 @@
       else if (index === ids.length - 1) setStateLevelIds(abbr, []);
       else setStateLevelIds(abbr, [ids[index + 1] || ids[0]]);
       save();
+    }
+
+    // Easter egg (WISH-068): tapping the westernmost Hawaiian island (Niihau) on
+    // the US map pops a raptor above the inset. The region is in #stateMap user
+    // space (viewBox 0 0 934 593); Niihau sits west of the Kauai channel (x<252).
+    const RAPTOR_HIT_REGION = { xMin: 226, xMax: 252, yMin: 504, yMax: 528 };
+    let raptorEggTimer = null;
+
+    function raptorTapHit(event) {
+      if (!event || event.type !== "click") return false;
+      const svg = document.getElementById("stateMap");
+      const ctm = svg?.getScreenCTM?.();
+      if (!ctm || !svg.createSVGPoint) return false;
+      const pt = svg.createSVGPoint();
+      pt.x = event.clientX;
+      pt.y = event.clientY;
+      const p = pt.matrixTransform(ctm.inverse());
+      const r = RAPTOR_HIT_REGION;
+      return p.x >= r.xMin && p.x <= r.xMax && p.y >= r.yMin && p.y <= r.yMax;
+    }
+
+    function showRaptorEasterEgg() {
+      let el = document.getElementById("raptorEgg");
+      if (!el) {
+        el = document.createElement("div");
+        el.id = "raptorEgg";
+        el.className = "raptor-egg";
+        el.setAttribute("role", "status");
+        el.setAttribute("aria-live", "polite");
+        el.innerHTML = `<span class="raptor-egg-art" aria-hidden="true">${__RAPTOR}</span><span class="raptor-egg-caption">You found<br>a Raptor!</span>`;
+        document.body.appendChild(el);
+      }
+      // Anchor above the westernmost island (Niihau) on the US map, leaning left.
+      const svg = document.getElementById("stateMap");
+      const hi = svg?.querySelector('[data-abbr="HI"]');
+      const ctm = svg?.getScreenCTM?.();
+      if (hi && ctm && svg.createSVGPoint) {
+        const a = svg.createSVGPoint(); a.x = 236; a.y = 510;
+        const c = a.matrixTransform(ctm);
+        el.style.left = `${Math.round(Math.min(Math.max(c.x, 70), window.innerWidth - 70))}px`;
+        el.style.top = `${Math.round(Math.max(c.y, 96))}px`;
+      } else if (hi) {
+        const rect = hi.getBoundingClientRect();
+        el.style.left = `${Math.round(rect.left + rect.width * 0.1)}px`;
+        el.style.top = `${Math.round(Math.max(rect.top, 96))}px`;
+      }
+      el.classList.remove("is-visible");
+      void el.offsetWidth;
+      el.classList.add("is-visible");
+      clearTimeout(raptorEggTimer);
+      raptorEggTimer = setTimeout(() => el.classList.remove("is-visible"), 2400);
     }
 
     function syncButtonLabels() {
@@ -13134,19 +13188,28 @@
     function renderReleaseSection(title, items, collapsible) {
       const list = Array.isArray(items) ? items.filter(Boolean) : [];
       if (!list.length) return "";
-      const renderItem = note => {
-        if (typeof note === "string") return `<li>${escapeHtml(note)}</li>`;
-        const heading = String(note.heading || note.title || "").trim();
-        const subitems = Array.isArray(note.items) ? note.items.filter(Boolean) : [];
-        if (!heading && !subitems.length) return "";
-        return `
-          <li class="release-subsection">
-            ${heading ? `<b>${escapeHtml(heading)}</b>` : ""}
-            ${subitems.length ? `<ul>${subitems.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>` : ""}
-          </li>
-        `;
-      };
-      const body = `<ul>${list.map(renderItem).join("")}</ul>`;
+      // Flat string lists (Highlights, or a section-less updates array) stay a
+      // simple single-level bullet list. When the list has grouped sections,
+      // render each as a block heading + a single level-1 <ul> — not an <li>
+      // wrapping a nested <ul>, which double-indents and bullets the heading.
+      const hasSections = list.some(note => typeof note !== "string");
+      let body;
+      if (!hasSections) {
+        body = `<ul>${list.map(note => `<li>${escapeHtml(note)}</li>`).join("")}</ul>`;
+      } else {
+        body = list.map(note => {
+          if (typeof note === "string") return `<ul><li>${escapeHtml(note)}</li></ul>`;
+          const heading = String(note.heading || note.title || "").trim();
+          const subitems = Array.isArray(note.items) ? note.items.filter(Boolean) : [];
+          if (!heading && !subitems.length) return "";
+          return `
+            <div class="release-subsection">
+              ${heading ? `<b>${escapeHtml(heading)}</b>` : ""}
+              ${subitems.length ? `<ul>${subitems.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>` : ""}
+            </div>
+          `;
+        }).join("");
+      }
       if (collapsible) {
         // Count sections (grouped entries) and total updates (their sub-bullets;
         // a bare string counts as one update). Show "X sections · Y updates",
@@ -13222,8 +13285,8 @@
       $("#wishEffortFilter").innerHTML = `<option value="">All effort</option>` + ["small", "medium", "large", "x-large"].map(value =>
         `<option value="${value}" ${effort === value ? "selected" : ""}>${value} (${effortCounts[value] || 0})</option>`
       ).join("");
-      let items = scopedSeeds.map(wish => ({ ...wish, _index: WISHLIST_SEEDS.indexOf(wish) })).filter(wish => {
-        const blob = `${wish.ticketId} ${wish.title} ${wish.description} ${wish.category} ${wish.priority} ${wish.effort} ${wish.targetKind} ${wish.targetVersion} ${wish.prompt}`.toLowerCase();
+      let items = scopedSeeds.filter(wish => {
+        const blob = `${wish.ticketId} ${wish.title} ${wish.description} ${wish.category} ${wish.priority} ${wish.effort} ${wish.targetKind} ${wish.targetVersion} ${wish.prompt} ${wish.planDoc ? "plan ready " + wish.planDoc : ""}`.toLowerCase();
         return !search || blob.includes(search);
       });
       $("#wishResultCount").textContent = `${items.length} item${items.length === 1 ? "" : "s"}`;
@@ -13232,27 +13295,28 @@
       const targetRank = { exact: 0, major: 1, minor: 2, patch: 3 };
       const effortRank = { small: 0, medium: 1, large: 2, "x-large": 3 };
       const sort = $("#wishSort").value;
+      const ticketNum = w => parseInt(String(w.ticketId || "").replace(/\D/g, ""), 10) || 0;
       items.sort((a, b) => {
-        if (sort === "createdAsc") return a._index - b._index;
+        if (sort === "createdAsc") return ticketNum(a) - ticketNum(b);
         if (sort === "priority") return rank[a.priority] - rank[b.priority] || a.title.localeCompare(b.title);
         if (sort === "target") return (targetRank[a.targetKind] ?? 9) - (targetRank[b.targetKind] ?? 9) || (a.targetVersion || "").localeCompare(b.targetVersion || "") || a.title.localeCompare(b.title);
         if (sort === "effort") return (effortRank[a.effort] ?? 9) - (effortRank[b.effort] ?? 9) || a.title.localeCompare(b.title);
         if (sort === "title") return a.title.localeCompare(b.title);
-        return b._index - a._index;
+        return ticketNum(b) - ticketNum(a);
       });
       $("#wishlistList").innerHTML = items.length ? items.map(wish => `
         <article class="wishlist-card" data-priority="${escapeHtml(wish.priority || "")}">
           <div class="roadmap-card-title">
-            <span class="tag">${escapeHtml(wish.ticketId)}</span><b>${escapeHtml(wish.title)}</b>
+            <span class="tag${wish.planDoc ? " plan-ready" : ""}"${wish.planDoc ? ` title="Has a written plan: ${escapeHtml(wish.planDoc)}"` : ""}>${escapeHtml(wish.ticketId)}</span><b>${escapeHtml(wish.title)}</b>
+          </div>
+          <div class="chips roadmap-meta">
+            <span class="tag priority-pill">Priority: ${escapeHtml(wish.priority)}</span>
+            <span class="tag">Effort: ${escapeHtml(wish.effort)}</span>
+            <span class="tag">Cost: ${escapeHtml(String(wish.tokenCostPct || 0))}%</span>
+            <span class="tag">Target: ${escapeHtml(wishlistTargetLabel(wish))}</span>
+            <span class="tag">Category: ${escapeHtml(wish.category || "General")}</span>
           </div>
           <p>${escapeHtml(wish.description || "No description")}</p>
-          <div class="chips">
-            <span class="tag">Category: ${escapeHtml(wish.category || "General")}</span>
-            <span class="tag priority-pill">Priority: ${escapeHtml(wish.priority)}</span>
-            <span class="tag">Target: ${escapeHtml(wishlistTargetLabel(wish))}</span>
-            <span class="tag">Effort: ${escapeHtml(wish.effort)}</span>
-          </div>
-          <div class="roadmap-field"><b>Cost</b><span>${escapeHtml(String(wish.tokenCostPct || 0))}% implementation tokens</span></div>
           <div class="roadmap-field"><b>Prompt</b><div class="roadmap-prompt">${escapeHtml(wish.prompt || "")}</div></div>
         </article>
       `).join("") : `<div class="empty">No roadmap ideas match the current filters.</div>`;
