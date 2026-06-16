@@ -1,6 +1,6 @@
-# WISH-071 — Latitude / Longitude Map Lines (target 4.7.2)
+# WISH-071 — Latitude / Longitude Map Lines (target patch)
 
-Ticket: **WISH-071** "Latitude / Longitude Map Lines". Target: **4.7.2** (patch after 4.7.1). An optional lat/lng graticule overlay on **both** maps, styled to stay secondary to locations, Wayfinder, and Rangefinder overlays.
+Ticket: **WISH-071** "Latitude / Longitude Map Lines". Target: **patch**. An optional lat/lng graticule overlay on **both** maps, styled to stay secondary to locations, Wayfinder, and Rangefinder overlays.
 
 ## Goal
 
@@ -40,7 +40,7 @@ Add a toggleable lat/lng graticule with **two line tiers (major + minor)** and *
 
 ## Implementation phases (for `start`)
 
-1. Open `4.7.2.1`, CHANGELOG entry (patch → no banner/cta), bump `APP_VERSION`.
+1. Open the next patch build, CHANGELOG entry (patch → no banner/cta), bump `APP_VERSION`.
 2. Settings: `graticuleByLayer = { us:{enabled,major:10,minor:5}, world:{enabled,major:30,minor:10} }` defaults + clamp/normalize (validate intervals, major ≥ minor).
 3. Inject a graticule `<g>` layer per map (below markers/rings), like the ring overlay setup (≈5500); add `renderGraticule()` called from the map render path.
 4. Major/minor line generator (shared): produce minor-interval lines, tag majors (multiples of `major`); major = stronger stroke + end labels, minor = subtle, unlabeled.

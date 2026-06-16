@@ -1,6 +1,6 @@
-# WISH-075 — Show a Pack Photo's Camera Location (target 4.7.2)
+# WISH-075 — Show a Pack Photo's Camera Location (target patch)
 
-Ticket: **WISH-075** "Show a Pack Photo's Camera Location". Target: **4.7.2** (alongside WISH-071). Online-only, lazy, read-only — surfaces where a Waypoint-pack photo was **taken from** (the camera/vantage point), distinct from the landmark's own coordinates, so a traveler can stand in the same spot and recreate the shot. **Never touches the note's stored lat/lng.**
+Ticket: **WISH-075** "Show a Pack Photo's Camera Location". Target: **patch**. Online-only, lazy, read-only — surfaces where a Waypoint-pack photo was **taken from** (the camera/vantage point), distinct from the landmark's own coordinates, so a traveler can stand in the same spot and recreate the shot. **Never touches the note's stored lat/lng.**
 
 ## Goal
 
@@ -46,7 +46,7 @@ When a pack photo is shown, fetch and display the photo's **camera location** (a
 
 ## Implementation phases (for `start`)
 
-1. Open `4.7.2.1` (or join the WISH-071 build line if both land together), CHANGELOG entry (patch), bump `APP_VERSION`.
+1. Open the next patch build (or join the WISH-071 build line if both land together), CHANGELOG entry (patch), bump `APP_VERSION`.
 2. File-name derivation (URL parse + pageimages `piprop=…|name`); `commonsCameraLocationEndpoint`.
 3. `fetchWaypointCameraLocation` + `waypointCameraLocationCache`; hook into the photo-open flow (after the image resolves), refresh consumers when it returns.
 4. Compass + offset helpers (distance/bearing vs landmark).
