@@ -1,6 +1,19 @@
 ## Future Prompt
 
-WISH: P1 World Map labels respect native tongue
+## Maps
+Blank World Map with Circles: https://commons.wikimedia.org/wiki/File:BlankMap-World-with-Circles.svg
+Blank World Map: https://commons.wikimedia.org/wiki/File:BlankMap-World.svg
+
+Robinson 2025 Physical World Map (United Nations) :: 
+  https://commons.wikimedia.org/wiki/File:Physical_World_Map_(United_Nations).svg
+  https://upload.wikimedia.org/wikipedia/commons/7/74/Physical_World_Map_%28United_Nations%29.svg
+
+Robinson 2021 CIA WorldFactBook-Political World :: 
+  https://commons.wikimedia.org/wiki/File:CIA_WorldFactBook-Political_world.pdf
+  https://upload.wikimedia.org/wikipedia/commons/6/6a/CIA_WorldFactBook-Political_world.pdf
+
+Robinson Political Map 2005 :: 
+  https://upload.wikimedia.org/wikipedia/commons/9/93/%22Political_World%22_CIA_World_Factbook_map_2005.svg
 
 ## Colors
 
