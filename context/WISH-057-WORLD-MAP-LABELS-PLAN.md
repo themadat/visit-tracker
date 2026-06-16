@@ -4,7 +4,7 @@ Ticket: **WISH-057** "Smarter World Map Labels". Target: **4.7.1** (patch after 
 
 ## Implementation status
 
-`4.7.1.3` is open. The first pass added offline English short names, shrink-to-fit candidates, greedy collision filtering, and leader-line callouts for `.circlexx` microstate dots. The next passes lowered the maximum Name label size, allowed multi-word names to wrap, and tightened collision padding. The latest adjustment keeps leader lines dot-only: shape-backed countries render over their country, with a smaller font cap and tighter fit math, and China is explicitly labeled "China". Parse/diff checks pass; in-app browser smoke on port 8018 renders 211 World/Name labels, 48 multiline labels, 0 duplicate country codes, and 0 non-dot leader lines.
+`4.7.1.4` is open. The first pass added offline English short names, shrink-to-fit candidates, greedy collision filtering, and leader-line callouts for `.circlexx` microstate dots. Follow-up passes lowered the maximum Name label size, allowed multi-word names to wrap, and kept leader lines dot-only. The latest adjustment shifts toward atlas-density completeness: all shape-backed country labels render over their region at tiny scale, dot anchors include `.circlexx`, `.subxx`, and `.unxx`, callouts clamp inside the World viewBox, helper classes like `eu` are ignored, and nonstandard regions like Crimea, Southern Kuril Islands, and Svalbard have explicit names. Parse/diff checks pass; in-app browser smoke on port 8018 renders 256 World/Name labels, 64 multiline labels, 0 duplicate country codes, 0 non-dot leader lines, no EU label, and no missing labels from the reported sample set.
 
 ## Goal (scoped from the four sub-features)
 

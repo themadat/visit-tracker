@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.1.3">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.1.4">
 </head>
 
 <body>
@@ -1673,7 +1673,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.1.3";
+    const APP_VERSION = "4.7.1.4";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7860,6 +7860,12 @@
       abbr: { min: 10.5, max: 32, leader: 11.5, char: .62, line: 1, maxLines: 1 }
     };
     const WORLD_LABEL_COLLISION_PAD = 2.4;
+    const WORLD_LABEL_ANCHOR_OVERRIDES = {
+      CL: { dx: -34, dy: -58 },
+      NO: { dx: -24, dy: 34 },
+      XR: { dx: 24, dy: 12 },
+      XQ: { dx: -20, dy: -10 }
+    };
 
     function worldMapLabelText(code, mode) {
       if (mode === "abbr") return String(code || "").toUpperCase();
@@ -7947,6 +7953,18 @@
       };
     }
 
+    function clampWorldLabelPoint(x, y, layout) {
+      const viewBox = $("#worldMap")?.viewBox?.baseVal;
+      if (!viewBox) return { x, y };
+      const pad = 3;
+      const halfWidth = layout.width / 2;
+      const halfHeight = layout.height / 2;
+      return {
+        x: Math.min(viewBox.x + viewBox.width - halfWidth - pad, Math.max(viewBox.x + halfWidth + pad, x)),
+        y: Math.min(viewBox.y + viewBox.height - halfHeight - pad, Math.max(viewBox.y + halfHeight + pad, y))
+      };
+    }
+
     function paddedWorldLabelBox(box, pad = WORLD_LABEL_COLLISION_PAD) {
       return {
         x: box.x - pad,
@@ -7979,8 +7997,10 @@
     }
 
     function worldCircleAnchors() {
-      return $$("#worldMap .circlexx").map(dot => {
-        const code = [...dot.classList].find(name => /^[a-z]{2}$/i.test(name) && name !== "circlexx");
+      return $$("#worldMap .circlexx, #worldMap .subxx, #worldMap .unxx").map(dot => {
+        const idCode = String(dot.id || "").replace(/_$/, "").toUpperCase();
+        const classCode = [...dot.classList].reverse().find(name => /^[a-z]{2}$/i.test(name) && !["circlexx", "subxx", "unxx", "eu"].includes(name.toLowerCase()));
+        const code = /^[A-Z]{2}$/.test(idCode) ? idCode : classCode?.toUpperCase();
         const x = Number(dot.getAttribute("cx"));
         const y = Number(dot.getAttribute("cy"));
         if (!code || !Number.isFinite(x) || !Number.isFinite(y)) return null;
@@ -8013,9 +8033,10 @@
       const profile = WORLD_LABEL_STYLE[mode] || WORLD_LABEL_STYLE.name;
       const fontSize = profile.leader;
       const offset = leaderOffsetForWorldPoint(anchor, variant);
-      const x = anchor.x + offset.x;
-      const y = anchor.y + offset.y;
       const layout = worldLabelLayout(text, fontSize, mode);
+      const point = clampWorldLabelPoint(anchor.x + offset.x, anchor.y + offset.y, layout);
+      const x = point.x;
+      const y = point.y;
       const box = worldLabelBox(x, y, layout);
       return {
         code: anchor.code,
@@ -8056,16 +8077,19 @@
         const layout = worldLabelLayout(text, fontSize, mode);
         const tightLabelBoost = mode === "name" && (/\s/.test(text) || fitSize < maxSize * .92) ? 65000 : 0;
         const narrowShapeBoost = Math.min(center.box.width || 0, center.box.height || 0) / Math.max(center.box.width || 1, center.box.height || 1) < .32 ? area * .45 : 0;
+        const anchorOverride = WORLD_LABEL_ANCHOR_OVERRIDES[code] || null;
+        const x = center.x + (anchorOverride?.dx || 0);
+        const y = center.y + (anchorOverride?.dy || 0);
         countryCandidates.push({
           code,
           kind: "country",
           text,
           lines: layout.lines,
           lineHeight: layout.lineHeight,
-          x: center.x,
-          y: center.y,
+          x,
+          y,
           fontSize,
-          box: worldLabelBox(center.x, center.y, layout),
+          box: worldLabelBox(x, y, layout),
           priority: area + tightLabelBoost + narrowShapeBoost,
           collisionPad: area > 35000 ? 2.4 : .8
         });
@@ -8124,8 +8148,10 @@
       const circleCodes = new Set(circleAnchors.map(anchor => anchor.code));
       const { countryCandidates, leaderCandidates } = worldCountryLabelCandidates(mode, circleCodes);
       circleAnchors.forEach(anchor => {
-        const leader = worldLeaderLabelCandidate(anchor, mode, .5);
-        if (leader) leaderCandidates.push(leader);
+        for (let variant = 0; variant < 16; variant++) {
+          const leader = worldLeaderLabelCandidate(anchor, mode, .5, variant);
+          if (leader) leaderCandidates.push(leader);
+        }
       });
       const placed = [];
       const placedCodes = new Set();
@@ -8135,7 +8161,9 @@
           if (placedCodes.has(candidate.code)) return;
           const padded = paddedWorldLabelBox(candidate.box, candidate.collisionPad ?? WORLD_LABEL_COLLISION_PAD);
           const overlaps = placed.some(box => worldLabelBoxesOverlap(padded, box));
-          const canOverprint = candidate.kind === "country" && candidate.fontSize <= 11.6 && (candidate.lines?.length || 1) > 1;
+          const canOverprint = candidate.kind === "country"
+            ? candidate.fontSize <= 13
+            : candidate.kind === "leader";
           if (overlaps && !canOverprint) return;
           if (!canOverprint) placed.push(padded);
           placedCodes.add(candidate.code);
