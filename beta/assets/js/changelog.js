@@ -4,6 +4,28 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.1.1",
+        date: "2026-06-15",
+        title: "Atlas Ink",
+        summary: "World map labels get smarter sizing, short names, and leader-line callouts.",
+        highlights: [
+          "World Name labels use cleaner English short names.",
+          "Country labels shrink and thin out instead of piling up.",
+          "Tiny-country labels can call back to their map dots.",
+        ],
+        updateSections: [
+          {
+            heading: "World Labels",
+            items: [
+              "Name mode now uses offline English short names for country labels, with ISO abbreviations unchanged.",
+              "World labels size against each country's map footprint and skip labels that would collide.",
+              "Tiny countries and labels too small for their landmass can render as offset labels with leader lines.",
+              "US map labels and Waypoint Pack labels keep their existing behavior.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.0",
         date: "2026-06-15",
         title: "Priority",

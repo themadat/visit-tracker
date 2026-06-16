@@ -114,13 +114,13 @@
       {
         title: "Latitude / Longitude Map Lines",
         ticketId: "WISH-071",
-        description: "Add an optional latitude/longitude line overlay to US and World maps, with readable interval labels and styling that remains secondary to locations, Wayfinder, and Rangefinder overlays.",
+        description: "Add an optional, per-map latitude/longitude graticule. The World map uses its true Robinson projection (30 degree grid, curved meridians, emphasized Equator / Prime Meridian / Tropics / Polar circles, degree labels). The US map draws true lat/lon per state through each state's local frame, with separate grids inside the insets (Alaska, Hawaii) — lines are continuous within a state but not across the stylized tile layout. Styling stays secondary to locations, Wayfinder, and Rangefinder; toggle is remembered per map.",
         priority: "P0",
         effort: "medium",
-        targetKind: "minor",
-        targetVersion: "",
+        targetKind: "exact",
+        targetVersion: "4.7.2",
         tokenCostPct: 16,
-        prompt: "Add a toggleable latitude/longitude graticule overlay for US and World maps. Include sensible line intervals and labels, theme-aware styling, and preserve map interaction and existing Wayfinder/Rangefinder overlays.",
+        prompt: "Add a toggleable lat/lng graticule as a non-interactive SVG <g> layer per map, below markers/rings/labels. World: sample worldCoordinatePoint (Robinson) for straight parallels + polyline meridians at 30 degrees, emphasize Equator/Prime Meridian/Tropics/Polar circles, label degrees at edges. US: per .state-tile and per inset frame (LOCATION_GEO_BOUNDS + LOCATION_PROJECTION_FRAME_OVERRIDES) draw straight lat/lng segments within each box at a finer interval. Add settings.graticuleByLayer {us,world} (default off) with defaults/normalize, a per-map toggle button, and theme-aware styling. Preserve map pan/zoom and existing overlays.",
         category: "Maps"
       },
       {
@@ -198,13 +198,13 @@
       {
         title: "Smarter World Map Labels",
         ticketId: "WISH-057",
-        description: "Improve world-map label readability. At the whole-world (fit) zoom all ~248 country labels render, so dense regions (Europe, Caribbean, microstates) overlap into an unreadable cluster. Scope: collision/declutter handling (hide or thin overlapping labels), zoom-aware density (show more labels as the user zooms in), leader lines or circle labels for tiny/microstate countries, and optionally an 'engaged only' mode that labels only countries with a level or notes.",
+        description: "Make the world map read like a real atlas. At the whole-world (fit) zoom all ~248 country labels overlap into an unreadable cluster. Scope: size each country's label to fit its landmass (smaller where needed) with collision handling so overlapping labels hide instead of stacking; label tiny/microstate countries with a small offset name and a leader line to the dot; and add an English short-name display mode (clean names like 'South Korea'). No zoom-aware density and no engaged-only mode. US-map label behavior stays unchanged.",
         priority: "P0",
         effort: "medium",
-        targetKind: "minor",
-        targetVersion: "",
+        targetKind: "exact",
+        targetVersion: "4.7.1",
         tokenCostPct: 22,
-        prompt: "Declutter world-map labels. Add label collision handling so overlapping country labels hide/thin instead of stacking, make label density zoom-aware (more labels as you zoom in), handle tiny/microstate countries (leader lines or offset), and consider an option to label only engaged countries (those with a level or notes). Keep US-map label behavior unchanged.",
+        prompt: "Rewrite world-map labels (renderWorldMapLabels) only; keep US-map labels unchanged. Size each .world-tile label to fit its bbox (clamped min/max), run a greedy largest-tile-first collision pass that hides overflow, and demote labels too small to fit to leader-line labels. Add microstate labels from the hidden .circlexx dots (ISO-2 in the class, fixed cx/cy) with a small offset name + thin leader line, fed through the same collision pass. Add a curated ISO-2 to English short-name map and use it for the Name mode. No zoom-aware density, no engaged-only mode.",
         category: "Maps"
       },
       {
