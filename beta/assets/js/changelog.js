@@ -4,6 +4,29 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.1.6",
+        date: "2026-06-16",
+        title: "Atlas Ink",
+        summary: "World labels can be tuned in place and exported as reusable overrides.",
+        highlights: [
+          "Tune mode lets World names move by drag or arrow keys.",
+          "Export writes only manual label overrides.",
+          "Leader lines follow moved callout labels.",
+        ],
+        updateSections: [
+          {
+            heading: "World Labels",
+            items: [
+              "Adds a World/Name Tune mode for dragging labels and nudging the selected label with arrow keys.",
+              "Exports merged manual overrides as a classic `world-label-overrides.js` file the app can load over `file://`.",
+              "Moved callout labels keep their leader line anchored to the original dot while the line endpoint follows the name.",
+              "Adds another baked spacing pass for Thailand, Namibia, Mozambique, Congo, Gabon, Albania, Gibraltar, Malta, Slovenia, Northern Ireland, Guernsey, Faroe Islands, and Chile.",
+              "World label text strips diacritics at render time so exported and baked names stay plain ASCII.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.1.5",
         date: "2026-06-16",
         title: "Atlas Ink",
