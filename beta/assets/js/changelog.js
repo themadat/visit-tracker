@@ -4,47 +4,39 @@
 
     const CHANGELOG = [
       {
-        version: "4.7.2.2",
+        version: "4.7.2",
         date: "2026-06-16",
         title: "Trail Marks",
-        summary: "The Roadmap reads cleaner and Oldest/Newest sorting works.",
+        summary: "Roadmap cards now mark planned ideas, release notes read cleaner, and a tiny hidden raptor waits on the map.",
         highlights: [
-          "Planned ideas show an accented ticket pill.",
-          "Each roadmap card lists Priority, Effort, Cost, Target, Category on one line.",
-          "Fixed Roadmap Oldest/Newest sorting.",
+          "Roadmap cards accent tickets that already have a plan.",
+          "Release notes' Full Update List uses clean headed sections.",
+          "Roadmap Oldest/Newest sorting follows ticket numbers.",
+          "A tiny raptor surprise now hides on the map.",
         ],
         updateSections: [
           {
             heading: "Roadmap",
             items: [
-              "The WISH ticket itself becomes an accented pill when an idea already has a written plan (no separate badge).",
-              "More planned ideas are now flagged, and each card shows Priority, Effort, Cost, Target, and Category on a single line beneath the title.",
+              "The WISH ticket itself becomes an accented pill when an idea already has a written plan.",
+              "Planned ideas are searchable, so searching for plan surfaces items that already have a spec.",
+              "Each roadmap card shows Priority, Effort, Cost, Target, and Category on one compact meta line beneath the title.",
               "Oldest and Newest sorting now order by ticket number instead of internal list position.",
-            ]
-          }
-        ]
-      },
-      {
-        version: "4.7.2.1",
-        date: "2026-06-16",
-        title: "Trail Marks",
-        summary: "The Roadmap flags which ideas already have a plan, and release notes read cleaner.",
-        highlights: [
-          "Roadmap badges ideas that already have a written plan.",
-          "Release notes' Full Update List reads as clean headed sections.",
-        ],
-        updateSections: [
-          {
-            heading: "Roadmap",
-            items: [
-              "Roadmap cards show a 'Plan ready' badge when an idea already has a detailed plan behind it.",
-              "Planned ideas are searchable, so you can find what has already been spec'd.",
             ]
           },
           {
             heading: "Release Notes",
             items: [
               "The Full Update List now reads as headed sections with a single level of bullets, instead of a deeply indented nested list.",
+              "Highlights remain a simple bullet list, while sectioned release details keep their section/update count.",
+            ]
+          },
+          {
+            heading: "Hidden Trails",
+            items: [
+              "Adds a small, repeatable raptor easter egg on the map.",
+              "The raptor popup uses theme-aware art, a compact caption, and adjusted placement near its discovery spot.",
+              "The easter egg is local-only, auto-dismisses, and does not store any found-state flag.",
             ]
           }
         ]
