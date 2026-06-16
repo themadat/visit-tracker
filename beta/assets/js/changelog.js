@@ -4,255 +4,41 @@
 
     const CHANGELOG = [
       {
-        version: "4.7.1.12",
+        version: "4.7.1",
         date: "2026-06-16",
         title: "Atlas Ink",
-        summary: "World label tuning gets fixed size buttons and forced line breaks.",
-        highlights: [
-          "World label sizes are now 8, 12, or 16.",
-          "The tuner uses size buttons instead of number entry.",
-          "Manual name overrides can force exact line breaks.",
-        ],
-        updateSections: [
-          {
-            heading: "World Labels",
-            items: [
-              "World Name labels now normalize to the three supported sizes: 8, 12, and 16.",
-              "The label tuner replaces the numeric size input with direct 8 / 12 / 16 buttons.",
-              "The Name override field is now multiline: line breaks are exported as explicit `lines` overrides.",
-              "A one-line override can force names like Trinidad & Tobago onto one line, while a two-line override can split names like Guinea-Bissau.",
-            ]
-          }
-        ]
-      },
-      {
-        version: "4.7.1.11",
-        date: "2026-06-16",
-        title: "Atlas Ink",
-        summary: "Roadmap previews two release-notes and roadmap refinements.",
-        highlights: [
-          "Roadmap: badge wishes that already have a plan.",
-          "Roadmap: cleaner headed sections in the Full Update List.",
-        ],
-        updateSections: [
-          {
-            heading: "Roadmap",
-            items: [
-              "Plans a badge that marks which roadmap ideas already have a written plan behind them.",
-              "Plans to restructure the release-notes Full Update List into headed sections with single-level bullets.",
-            ]
-          }
-        ]
-      },
-      {
-        version: "4.7.1.10",
-        date: "2026-06-16",
-        title: "Atlas Ink",
-        summary: "World map names use even-numbered font sizes from 8 to 16.",
-        highlights: [
-          "World Name labels snap to even font sizes.",
-          "Manual font overrides clamp to 8 through 16.",
-          "The tuner size field follows the same range.",
-        ],
-        updateSections: [
-          {
-            heading: "World Labels",
-            items: [
-              "World map Name labels now render only at even-numbered font sizes from 8 through 16.",
-              "Loaded manual override font sizes are normalized at render/export time, so older decimal sizes still work.",
-              "The label tuner Size field now accepts the same 8-to-16 even-number range.",
-            ]
-          }
-        ]
-      },
-      {
-        version: "4.7.1.9",
-        date: "2026-06-16",
-        title: "Atlas Ink",
-        summary: "Roadmap previews native-language World map labels.",
-        highlights: [
-          "Roadmap adds native-language World map labels.",
-        ],
-        updateSections: [
-          {
-            heading: "Roadmap",
-            items: [
-              "Plans a native-language display mode for World map labels — show each country in its own language (endonym), building on the Atlas Ink labels.",
-            ]
-          }
-        ]
-      },
-      {
-        version: "4.7.1.8",
-        date: "2026-06-16",
-        title: "Atlas Ink",
-        summary: "World label overrides preserve names and layer cleanly across tuning passes.",
-        highlights: [
-          "World label names preserve real diacritics.",
-          "Exports clarify they merge loaded overrides plus session edits.",
-          "Repeated tuning passes keep updating one override file.",
-        ],
-        updateSections: [
-          {
-            heading: "World Labels",
-            items: [
-              "Restores diacritics in curated World label names such as Curaçao and Côte d'Ivoire.",
-              "Custom edited label names now preserve diacritics instead of stripping them during cleanup.",
-              "Exported override files explicitly include the currently loaded `world-label-overrides.js` entries plus the active tuning session.",
-              "Export messaging now describes the repeated-pass workflow: replace the same override file, refresh, and keep tuning.",
-            ]
-          }
-        ]
-      },
-      {
-        version: "4.7.1.7",
-        date: "2026-06-16",
-        title: "Atlas Ink",
-        summary: "World label tuning can be hidden and can edit label text and size.",
-        highlights: [
-          "The label tuner can be dismissed from the map controls.",
-          "Developer Tools can bring the tuner back.",
-          "Selected labels expose editable name and size fields.",
-        ],
-        updateSections: [
-          {
-            heading: "World Labels",
-            items: [
-              "Adds a Dismiss control so the World label tuner disappears completely from the main map controls.",
-              "Adds a Developer Tools restore button for bringing the hidden tuner back when needed.",
-              "Selecting a tuned World label now shows editable name and size fields with the current font size.",
-              "Manual override exports can include text-only, size-only, or mixed text/size/position edits.",
-            ]
-          }
-        ]
-      },
-      {
-        version: "4.7.1.6",
-        date: "2026-06-16",
-        title: "Atlas Ink",
-        summary: "World labels can be tuned in place and exported as reusable overrides.",
-        highlights: [
-          "Tune mode lets World names move by drag or arrow keys.",
-          "Export writes only manual label overrides.",
-          "Leader lines follow moved callout labels.",
-        ],
-        updateSections: [
-          {
-            heading: "World Labels",
-            items: [
-              "Adds a World/Name Tune mode for dragging labels and nudging the selected label with arrow keys.",
-              "Exports merged manual overrides as a classic `world-label-overrides.js` file the app can load over `file://`.",
-              "Moved callout labels keep their leader line anchored to the original dot while the line endpoint follows the name.",
-              "Adds another baked spacing pass for Thailand, Namibia, Mozambique, Congo, Gabon, Albania, Gibraltar, Malta, Slovenia, Northern Ireland, Guernsey, Faroe Islands, and Chile.",
-              "World label text strips diacritics at render time so exported and baked names stay plain ASCII.",
-            ]
-          }
-        ]
-      },
-      {
-        version: "4.7.1.5",
-        date: "2026-06-16",
-        title: "Atlas Ink",
-        summary: "Dense World labels get hand-tuned spacing in Europe, the Caribbean, and the Pacific.",
-        highlights: [
-          "Crowded dot labels spread out in island clusters.",
-          "Chile, Norway, Congo, Israel, and nearby labels get better anchors.",
-          "UK subregion labels appear at tiny atlas scale.",
-        ],
-        updateSections: [
-          {
-            heading: "World Labels",
-            items: [
-              "Caribbean dot labels use cluster-specific offsets and smaller text so islands no longer pile into one label knot.",
-              "Europe, Middle East, Africa, and Pacific callouts get targeted offsets for the reported overlaps.",
-              "Chile and Norway label anchors are nudged closer to their landmasses.",
-              "Northern Ireland, Wales, Scotland, and England render as tiny supplemental labels inside the United Kingdom.",
-            ]
-          }
-        ]
-      },
-      {
-        version: "4.7.1.4",
-        date: "2026-06-15",
-        title: "Atlas Ink",
-        summary: "World labels favor completeness while staying clipped inside the map.",
-        highlights: [
-          "Shape-backed country labels no longer disappear during collision cleanup.",
-          "Tiny dot labels clamp inside the World map edges.",
-          "Synthetic EU and formal regional names are cleaned up.",
-        ],
-        updateSections: [
-          {
-            heading: "World Labels",
-            items: [
-              "World Name labels now render all shape-backed country labels at atlas scale instead of hiding crowded labels.",
-              "Dot-backed labels include circle, sub, and unmarked dot anchors, covering small islands and territories like Macao and Caribbean locations.",
-              "Leader-line labels clamp to the World map viewBox so edge labels like Niue, Samoa, and Tokelau do not cut off.",
-              "Dot-code parsing ignores helper classes like EU, and short-name overrides cover Crimea, Southern Kuril Islands, Svalbard, Macao, and Curacao.",
-            ]
-          }
-        ]
-      },
-      {
-        version: "4.7.1.3",
-        date: "2026-06-15",
-        title: "Atlas Ink",
-        summary: "World labels stay smaller and reserve leader lines for dot-backed places.",
-        highlights: [
-          "Country-name labels use a lower maximum size.",
-          "Leader lines are limited to countries represented by map dots.",
-          "China now labels as China instead of China Mainland.",
-        ],
-        updateSections: [
-          {
-            heading: "World Labels",
-            items: [
-              "Shape-backed countries render their labels over the country instead of using fallback leader lines.",
-              "World Name labels use a smaller cap and tighter fit so long names like South Africa, Burkina Faso, and United Kingdom feel less oversized.",
-              "The China short-name override keeps the map label concise.",
-            ]
-          }
-        ]
-      },
-      {
-        version: "4.7.1.2",
-        date: "2026-06-15",
-        title: "Atlas Ink",
-        summary: "World map labels get denser, calmer, and more shape-aware.",
-        highlights: [
-          "More medium and small countries survive the World Name label pass.",
-          "Large country labels are scaled down to sit better inside their shapes.",
-          "Multi-word country names can wrap across lines to reduce label width.",
-        ],
-        updateSections: [
-          {
-            heading: "World Labels",
-            items: [
-              "World Name labels use a smaller maximum size so large labels leave room for neighbors.",
-              "Multi-word names can render on multiple lines to fit country footprints with less horizontal spill.",
-              "Medium and small countries can fall back to subtle leader-line callouts when their in-country label collides.",
-            ]
-          }
-        ]
-      },
-      {
-        version: "4.7.1.1",
-        date: "2026-06-15",
-        title: "Atlas Ink",
-        summary: "World map labels get smarter sizing, short names, and leader-line callouts.",
+        summary: "World Name labels now read more like a real atlas, with short names, fit-aware sizing, tiny-place callouts, and manual tuning.",
         highlights: [
           "World Name labels use cleaner English short names.",
-          "Country labels shrink and thin out instead of piling up.",
-          "Tiny-country labels can call back to their map dots.",
+          "Country labels fit their shapes, wrap, and stay smaller.",
+          "Tiny countries and territories get leader-line callouts.",
+          "Tune mode can edit, move, and export World label overrides.",
         ],
         updateSections: [
           {
-            heading: "World Labels",
+            heading: "World Label Rendering",
             items: [
-              "Name mode now uses offline English short names for country labels, with ISO abbreviations unchanged.",
-              "World labels size against each country's map footprint and skip labels that would collide.",
-              "Tiny countries and labels too small for their landmass can render as offset labels with leader lines.",
-              "US map labels and Waypoint Pack labels keep their existing behavior.",
+              "Name mode now uses offline English short names for World country labels, with Abbr mode and US labels unchanged.",
+              "Shape-backed countries render over their landmass with fit-aware sizing, multiline wrapping, and a supported 8 / 12 / 16 font-size scale.",
+              "Tiny countries and island territories use subtle leader-line callouts tied to their map dots, with edge clamping so labels stay inside the World viewBox.",
+              "Dense regions now include baked atlas spacing for the Caribbean, Europe, the Middle East, Africa, the Pacific, and UK subregion labels.",
+              "Curated names preserve real diacritics for labels such as Curaçao, Côte d'Ivoire, St. Barthélemy, and Türkiye.",
+            ]
+          },
+          {
+            heading: "Manual Tuning",
+            items: [
+              "World/Name Tune mode lets labels move by drag or arrow keys while leader lines keep following their source dots.",
+              "Selected labels expose editable name controls plus direct 8 / 12 / 16 size buttons.",
+              "The Name override field supports explicit line breaks, so manual overrides can force or remove wrapping.",
+              "Export writes a reusable `world-label-overrides.js` file that merges the loaded override file with the current tuning session for repeated passes.",
+              "The tuner can be dismissed from the map controls and restored later from Developer Tools.",
+            ]
+          },
+          {
+            heading: "Roadmap",
+            items: [
+              "Adds roadmap ideas for native-language World labels, plan-ready badges on roadmap cards, and cleaner headed release-note sections.",
             ]
           }
         ]

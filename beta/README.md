@@ -1,6 +1,6 @@
 # Trail Log
 
-Trail Log is a local-first travel map for marking where you've been, where you want to go next, and the little memories worth keeping along the way. It started as a US state visit tracker and now layers in DC, territories, a switchable World map, custom legend levels, four location-note views from Detailed to Text Only, per-note priorities with filtering/sorting/grouping, icon tags, mapped memories, Wayfinder packs for National Parks and Monuments, Rangefinder planning rings, named Basecamp pads with rich-text planning and linked location notes, and copy-friendly exports, all with a slightly outdoorsy, geeky vibe.
+Trail Log is a local-first travel map for marking where you've been, where you want to go next, and the little memories worth keeping along the way. It started as a US state visit tracker and now layers in DC, territories, a switchable atlas-labeled World map, custom legend levels, four location-note views from Detailed to Text Only, per-note priorities with filtering/sorting/grouping, icon tags, mapped memories, Wayfinder packs for National Parks and Monuments, Rangefinder planning rings, named Basecamp pads with rich-text planning and linked location notes, and copy-friendly exports, all with a slightly outdoorsy, geeky vibe.
 
 The app is still intentionally simple to run: open `index.html` and go — plain HTML/CSS/JavaScript with a few companion data files, no build step, browser localStorage, JSON import/export, and no backend. Optional coordinate lookup only goes online when you tap Locate; saved data and manual coordinates keep working offline.
 
@@ -8,6 +8,7 @@ The app is still intentionally simple to run: open `index.html` and go — plain
 
 | Version | Date | Title | Summary
 |---|---:|---|---|
+| 4.7.1 | 2026-06-16 | Atlas Ink | World Name labels use short names, fit country shapes, add tiny-place callouts, and support manual atlas tuning/export. |
 | 4.7.0 | 2026-06-15 | Priority | Every note can carry a priority, with unified filtering, ordering, grouping, square badges, and exports. |
 | 4.6.1 | 2026-06-15 | A Small World | Map switching responds sooner, shows loading progress directly in the switch button, and restores the Shift+Control+Option+~ shortcut. |
 | 4.6.0 | 2026-06-15 | The Whole Story | Detailed Notes shows every field in full, and each location can switch among Detailed, Expanded, Condensed, and Text Only views. |
