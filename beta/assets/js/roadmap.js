@@ -6,6 +6,7 @@
       {
         title: "Pinch-to-Zoom the Map on Touch",
         ticketId: "WISH-074",
+        planDoc: "WISH-074-PINCH-ZOOM-PLAN.md",
         description: "Let touch users zoom the map with two-finger pinch (centered on the pinch midpoint, continuous while moving and snapping to a known zoom % on release), double-tap to zoom in one step, and two-finger tap to zoom out one step — in addition to the existing zoom pill, drag-pan, and desktop wheel/trackpad zoom. Touch-only; no behavior change on desktop, and it should feel natural on phones/tablets.",
         priority: "P0",
         effort: "medium",
@@ -18,6 +19,7 @@
       {
         title: "Show a Pack Photo's Camera Location",
         ticketId: "WISH-075",
+        planDoc: "WISH-075-PHOTO-CAMERA-LOCATION-PLAN.md",
         description: "For a Waypoint-pack photo, surface where the shot was taken — the camera/vantage-point coordinates (plus heading when available, and the distance/bearing offset from the note's landmark) so a traveler can stand in the same spot and recreate the photo. Data comes from the photo's Wikimedia Commons file (the camera-location geotag or EXIF GPS), shown as a small caption under the photo in BOTH the note editor and the Waypoint Packs panel, with a tap-to-open map pin at the camera spot. Online-only and lazy; when there's no geotag it shows an explicit subtle 'unavailable' state (not a blank gap) so it never looks like a bug; never overwrites the note's own lat/lng.",
         priority: "P0",
         effort: "medium",
@@ -91,6 +93,7 @@
       {
         title: "Rangefinder Edge Cases, Globe Wrap, and Time Zones",
         ticketId: "WISH-061",
+        planDoc: "WISH-061-RANGEFINDER-EDGECASES-PLAN.md",
         description: "Round out Rangefinder with three related upgrades. (1) Cross-inset edge cases: clearer treatment when Start and End cross between the contiguous map and inset regions (for example Washington to Alaska), including clipped-ring visuals, inset-scale limits, and honest long-distance comparisons across projections. (2) Antimeridian wrap on the World map: rings around a Start near the date line (Honolulu, Tokyo, Sydney) keep drawing on the opposite side instead of clipping, with continuous geometry across the seam, arc-following labels, preserved clip-to-land and inset behavior, and shorter-great-circle Start-to-End paths. (3) Offline time zones: show local time and IANA zone for Start and End, let a user pick a departure time, and compute the destination-local arrival from the current travel-time estimate, with daylight-saving handling, US and World support, and manual correction when a zone cannot be resolved offline.",
         priority: "P0",
         effort: "large",
@@ -115,6 +118,7 @@
       {
         title: "Latitude / Longitude Map Lines",
         ticketId: "WISH-071",
+        planDoc: "WISH-071-LATLNG-GRATICULE-PLAN.md",
         description: "Add an optional, per-map latitude/longitude graticule with customizable major + minor line tiers set from a settings pop-up (defaults: World 30 deg major / 10 deg minor, US 10 deg major / 5 deg minor). Major lines are stronger and carry degree labels at both ends; minor lines are subtle. The World map uses its true Robinson projection (curved meridians) and draws the projection outline/frame so the map reads as curved rather than a rectangle; the US map draws true lat/lon per state through each state's local frame, with separate grids inside the insets (Alaska, Hawaii) — continuous within a state, not across the stylized tile layout. Styling stays secondary to locations, Wayfinder, and Rangefinder; settings are remembered per map.",
         priority: "P0",
         effort: "medium",

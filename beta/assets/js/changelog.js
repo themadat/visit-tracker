@@ -4,6 +4,27 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.2.2",
+        date: "2026-06-16",
+        title: "Trail Marks",
+        summary: "The Roadmap reads cleaner and Oldest/Newest sorting works.",
+        highlights: [
+          "Planned ideas show an accented ticket pill.",
+          "Each roadmap card lists Priority, Effort, Cost, Target, Category on one line.",
+          "Fixed Roadmap Oldest/Newest sorting.",
+        ],
+        updateSections: [
+          {
+            heading: "Roadmap",
+            items: [
+              "The WISH ticket itself becomes an accented pill when an idea already has a written plan (no separate badge).",
+              "More planned ideas are now flagged, and each card shows Priority, Effort, Cost, Target, and Category on a single line beneath the title.",
+              "Oldest and Newest sorting now order by ticket number instead of internal list position.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.2.1",
         date: "2026-06-16",
         title: "Trail Marks",
