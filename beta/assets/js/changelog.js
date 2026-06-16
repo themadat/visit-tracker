@@ -4,6 +4,28 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.1.5",
+        date: "2026-06-16",
+        title: "Atlas Ink",
+        summary: "Dense World labels get hand-tuned spacing in Europe, the Caribbean, and the Pacific.",
+        highlights: [
+          "Crowded dot labels spread out in island clusters.",
+          "Chile, Norway, Congo, Israel, and nearby labels get better anchors.",
+          "UK subregion labels appear at tiny atlas scale.",
+        ],
+        updateSections: [
+          {
+            heading: "World Labels",
+            items: [
+              "Caribbean dot labels use cluster-specific offsets and smaller text so islands no longer pile into one label knot.",
+              "Europe, Middle East, Africa, and Pacific callouts get targeted offsets for the reported overlaps.",
+              "Chile and Norway label anchors are nudged closer to their landmasses.",
+              "Northern Ireland, Wales, Scotland, and England render as tiny supplemental labels inside the United Kingdom.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.1.4",
         date: "2026-06-15",
         title: "Atlas Ink",
