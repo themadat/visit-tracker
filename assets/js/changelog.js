@@ -4,6 +4,25 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.1.11",
+        date: "2026-06-16",
+        title: "Atlas Ink",
+        summary: "Roadmap previews two release-notes and roadmap refinements.",
+        highlights: [
+          "Roadmap: badge wishes that already have a plan.",
+          "Roadmap: cleaner headed sections in the Full Update List.",
+        ],
+        updateSections: [
+          {
+            heading: "Roadmap",
+            items: [
+              "Plans a badge that marks which roadmap ideas already have a written plan behind them.",
+              "Plans to restructure the release-notes Full Update List into headed sections with single-level bullets.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.1.10",
         date: "2026-06-16",
         title: "Atlas Ink",
