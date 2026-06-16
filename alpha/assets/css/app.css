@@ -2039,6 +2039,122 @@
       stroke-linejoin: round;
     }
 
+    .map-labels .world-label-country {
+      fill: color-mix(in srgb, var(--text) 68%, var(--muted));
+      stroke-width: 4px;
+    }
+
+    .map-labels .world-label-callout {
+      fill: var(--text);
+      font-weight: 900;
+      stroke-width: 3.2px;
+    }
+
+    .map-labels .world-label-leader {
+      fill: none;
+      stroke: color-mix(in srgb, var(--muted) 74%, transparent);
+      stroke-width: 1.1px;
+      stroke-linecap: round;
+      pointer-events: none;
+    }
+
+    .world-label-tune-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .25rem;
+      flex-wrap: wrap;
+      padding-top: .25rem;
+      font-size: .68rem;
+    }
+
+    .world-label-tune-bar button {
+      min-height: 1.65rem;
+      padding: .2rem .45rem;
+      border-radius: .55rem;
+      font-size: .68rem;
+    }
+
+    .world-label-tune-bar button[aria-pressed="true"] {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+      color: var(--text);
+    }
+
+    #worldLabelTuneStatus {
+      color: var(--muted);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .world-label-edit-panel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .25rem;
+      flex: 1 1 100%;
+      flex-wrap: wrap;
+    }
+
+    .world-label-edit-panel label {
+      display: inline-flex;
+      align-items: center;
+      gap: .2rem;
+      color: var(--muted);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .world-label-edit-panel textarea {
+      min-height: 1.65rem;
+      border-radius: .55rem;
+      padding: .18rem .4rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font: inherit;
+      font-size: .68rem;
+      line-height: 1.15;
+      resize: vertical;
+    }
+
+    #worldLabelNameInput {
+      width: min(11rem, 45vw);
+    }
+
+    .world-label-size-buttons {
+      display: inline-flex;
+      align-items: center;
+      gap: .18rem;
+      color: var(--muted);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .world-label-size-buttons button[aria-pressed="true"] {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+      color: var(--text);
+    }
+
+    .map-labels.is-tuning {
+      pointer-events: auto;
+    }
+
+    .map-labels.is-tuning text {
+      pointer-events: auto;
+      cursor: grab;
+    }
+
+    .map-labels.is-tuning text.is-selected {
+      fill: var(--accent);
+      stroke-width: 4.4px;
+    }
+
+    .map-labels.is-tuning text.is-dragging {
+      cursor: grabbing;
+    }
+
     .map-location-markers {
       pointer-events: auto;
     }
