@@ -23,8 +23,8 @@
         description: "For a Waypoint-pack photo, surface where the shot was taken — the camera/vantage-point coordinates (plus heading when available, and the distance/bearing offset from the note's landmark) so a traveler can stand in the same spot and recreate the photo. Data comes from the photo's Wikimedia Commons file (the camera-location geotag or EXIF GPS), shown as a small caption under the photo in BOTH the note editor and the Waypoint Packs panel, with a tap-to-open map pin at the camera spot. Online-only and lazy; when there's no geotag it shows an explicit subtle 'unavailable' state (not a blank gap) so it never looks like a bug; never overwrites the note's own lat/lng.",
         priority: "P0",
         effort: "medium",
-        targetKind: "exact",
-        targetVersion: "4.7.2",
+        targetKind: "patch",
+        targetVersion: "",
         tokenCostPct: 14,
         prompt: "Add a camera-location readout to the linked-note Waypoint photo, shown in both the note editor (#noteWaypointPhotoPreview) and the Waypoint Packs panel preview. When a photo is opened, derive its Commons File name from the resolved upload/thumb URL (or pageimages piprop=name), then query commons.wikimedia.org (origin=*) prop=coordinates|imageinfo: prefer the coordinates entry with type=camera, else EXIF extmetadata GPSLatitude/GPSLongitude, with GPSImgDirection as heading. Cache in-memory (no schema change). Show camera coords + heading-when-present + distance/bearing offset from the note's landmark coords, with a Google Maps pin link at the camera spot. Lazy/online-only, hide gracefully when absent, never write to note.lat/lng.",
         category: "Notes"
@@ -122,8 +122,8 @@
         description: "Add an optional, per-map latitude/longitude graticule with customizable major + minor line tiers set from a settings pop-up (defaults: World 30 deg major / 10 deg minor, US 10 deg major / 5 deg minor). Major lines are stronger and carry degree labels at both ends; minor lines are subtle. The World map uses its true Robinson projection (curved meridians) and draws the projection outline/frame so the map reads as curved rather than a rectangle; the US map draws true lat/lon per state through each state's local frame, with separate grids inside the insets (Alaska, Hawaii) — continuous within a state, not across the stylized tile layout. Styling stays secondary to locations, Wayfinder, and Rangefinder; settings are remembered per map.",
         priority: "P0",
         effort: "medium",
-        targetKind: "exact",
-        targetVersion: "4.7.2",
+        targetKind: "patch",
+        targetVersion: "",
         tokenCostPct: 18,
         prompt: "Add a customizable lat/lng graticule as a non-interactive SVG <g> layer per map, below markers/rings/labels. Two tiers: minor-interval lines (subtle) plus major-interval lines (stronger, with degree labels like 30°N/120°W at both ends). World: sample worldCoordinatePoint (Robinson) for straight parallels + polyline meridians. US: per .state-tile and per inset frame (LOCATION_GEO_BOUNDS + LOCATION_PROJECTION_FRAME_OVERRIDES) draw straight lat/lng segments within each box. Add settings.graticuleByLayer { us:{enabled,major:10,minor:5}, world:{enabled,major:30,minor:10} } (default off) with defaults/normalize (clamp, major>=minor), a per-map button that opens a settings pop-up (on/off + major/minor intervals), and theme-aware styling. Preserve map pan/zoom and existing overlays.",
         category: "Maps"
@@ -165,19 +165,6 @@
         category: "Notes"
       },
       {
-        title: "Raptor Easter Egg",
-        ticketId: "WISH-068",
-        planDoc: "WISH-068-RAPTOR-EASTER-EGG-PLAN.md",
-        description: "Add a small, discoverable raptor easter egg that rewards curious clicking or an obscure app interaction without disrupting map, notes, export, or accessibility workflows.",
-        priority: "P0",
-        effort: "small",
-        targetKind: "exact",
-        targetVersion: "4.7.2",
-        tokenCostPct: 8,
-        prompt: "Add a subtle raptor easter egg that is discoverable through a playful but non-disruptive interaction. Keep it local-only, accessible, and harmless to normal map, notes, export, and keyboard workflows. (Exact hidden trigger and payoff are intentionally kept out of this shipped seed to avoid spoilers — see context/WISH-068-RAPTOR-EASTER-EGG-PLAN.md.)",
-        category: "Fun"
-      },
-      {
         title: "Historical & Defunct Countries",
         ticketId: "WISH-054",
         description: "Extend the world map to recognize historical/defunct countries (for example USSR, Yugoslavia, Czechoslovakia, East Germany) so trips to places that no longer exist can be recorded. Scope includes stable internal ids that survive ISO code reuse, a way to surface or group former countries without cluttering the modern list, and notes/exports that keep working. Builds on the shipped world-map layer system.",
@@ -212,32 +199,6 @@
         tokenCostPct: 20,
         prompt: "Add a native-language (endonym) display mode to renderWorldMapLabels alongside the existing English short-name mode (WISH-057). Add a curated ISO-2 -> native name table (countries + dependencies, optional native-script capital) seeded from https://en.wikipedia.org/wiki/List_of_countries_and_dependencies_and_their_capitals_in_native_languages. Add a label-language setting/toggle (persist in settings; default English) that swaps the name source, reusing the existing fit-sizing, collision, leader-line, multiline, and manual-override pipeline. Add a CSS font-family fallback stack so non-Latin scripts render (CJK, Cyrillic, Arabic with RTL, Greek, Devanagari, etc.); for multi-language countries pick a primary native name or show both. Keep US-map labels unchanged, stay fully offline (no network), add defaults in defaultState() + repair in normalizeState(), and preserve usStateVisitMap.v1.",
         category: "Maps"
-      },
-      {
-        title: "Mark Roadmap Items That Have a Plan",
-        ticketId: "WISH-077",
-        planDoc: "WISH-077-ROADMAP-PLAN-BADGE-PLAN.md",
-        description: "In the Roadmap (Settings → What's New → Roadmap), show a clear badge on any wish that already has a written plan behind it, so it is obvious at a glance which ideas are spec'd versus raw. Driven by an optional field on each roadmap seed (set when a plan doc is authored), rendered as a 'Plan ready' pill in the card's chips, included in search, with an optional filter to show only planned items. Roadmap display affordance only; no change to user data.",
-        priority: "P0",
-        effort: "small",
-        targetKind: "exact",
-        targetVersion: "4.7.2",
-        tokenCostPct: 8,
-        prompt: "In renderWishlist (index.html) denote wishes that have a plan. Add an optional seed field (e.g. planDoc: \"WISH-063-THEMING-OVERHAUL-PLAN.md\") to WISHLIST_SEEDS and its documented shape; render a distinct 'Plan ready' pill in the card .chips row when present (reuse .tag with a modifier class), add the field to the search blob, and optionally add a 'Has plan' filter/sort. Have the plan workflow set planDoc when a plan is written and backfill existing plans (063, 077, 078). WISHLIST_SEEDS are dev defaults (never persisted), so no defaultState/normalizeState change; Roadmap-only.",
-        category: "UI"
-      },
-      {
-        title: "Headed Sections in the Full Update List",
-        ticketId: "WISH-078",
-        planDoc: "WISH-078-RELEASE-NOTES-LIST-PLAN.md",
-        description: "Restructure the Release Notes 'Full Update List' so it reads as headed sections instead of a doubly-indented nested list. Each update section should render as a section header with its bullet points one indent level beneath it (a single level-1 list), rather than the current layout where the section heading is itself a bullet and its items are indented again under it. Flat (section-less) entries keep a simple single-level bullet list. Visual/markup only.",
-        priority: "P0",
-        effort: "small",
-        targetKind: "exact",
-        targetVersion: "4.7.2",
-        tokenCostPct: 6,
-        prompt: "In renderReleaseSection (index.html) and its CSS (.release-section / .release-subsection in app.css), change the Full Update List so section objects render as a block header + a single level-1 <ul> of items, not as <li class=release-subsection> wrapping a nested <ul> inside an outer <ul> (which double-indents and bullets the heading). Keep bare-string lists and the Highlights section as a simple single-level bullet list, and keep the 'X sections · Y updates' count + collapsible <details> behavior. Update CSS so the heading has no list bullet and items sit at one indent level. Markup/CSS only; no data/schema change.",
-        category: "UI"
       },
       {
         title: "Search All Locations in Quick Add",
