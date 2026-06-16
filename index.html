@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.1.10">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.1.12">
 </head>
 
 <body>
@@ -187,8 +187,13 @@
                     <button id="worldLabelDismissBtn" type="button" aria-label="Dismiss World label tuner">Dismiss</button>
                     <span id="worldLabelTuneStatus" aria-live="polite">0 overrides</span>
                     <div id="worldLabelEditPanel" class="world-label-edit-panel hidden" aria-label="Selected World label">
-                      <label>Name <input id="worldLabelNameInput" type="text" autocomplete="off"></label>
-                      <label>Size <input id="worldLabelSizeInput" type="number" min="8" max="16" step="2"></label>
+                      <label>Name <textarea id="worldLabelNameInput" rows="2" spellcheck="false"></textarea></label>
+                      <div class="world-label-size-buttons" aria-label="World label size">
+                        <span>Size</span>
+                        <button type="button" data-world-label-size="8" aria-pressed="false">8</button>
+                        <button type="button" data-world-label-size="12" aria-pressed="false">12</button>
+                        <button type="button" data-world-label-size="16" aria-pressed="false">16</button>
+                      </div>
                       <button id="worldLabelApplyBtn" type="button">Apply</button>
                     </div>
                   </div>
@@ -1682,15 +1687,15 @@
 
   <script src="assets/js/icons.js"></script>
   <script src="assets/js/maps.js"></script>
-  <script src="assets/js/world-names.js?v=4.7.1.10"></script>
-  <script src="assets/js/world-label-overrides.js?v=4.7.1.10"></script>
+  <script src="assets/js/world-names.js?v=4.7.1.12"></script>
+  <script src="assets/js/world-label-overrides.js?v=4.7.1.12"></script>
   <script src="assets/js/changelog.js"></script>
   <script src="assets/js/roadmap.js"></script>
   <script>
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.1.11";
+    const APP_VERSION = "4.7.1.12";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7972,8 +7977,21 @@
 
     function roundWorldNameFontSize(value) {
       const number = Number(value);
-      const rounded = Math.round((Number.isFinite(number) ? number : 8) / 2) * 2;
-      return Math.max(8, Math.min(16, rounded));
+      if (!Number.isFinite(number)) return 8;
+      if (number < 10) return 8;
+      if (number < 14) return 12;
+      return 16;
+    }
+
+    function cleanWorldLabelLines(input) {
+      const raw = Array.isArray(input)
+        ? input
+        : typeof input === "string" ? input.split(/\r?\n/) : [];
+      const lines = raw
+        .map(line => worldLabelDisplayText(line))
+        .filter(Boolean)
+        .slice(0, WORLD_LABEL_STYLE.name.maxLines || 3);
+      return lines.length ? lines : null;
     }
 
     function cleanWorldLabelOverrideEntry(entry, bucket) {
@@ -7988,10 +8006,15 @@
         const text = worldLabelDisplayText(entry.text).replace(/\s+/g, " ").trim();
         if (text) output.text = text;
       }
+      const lines = cleanWorldLabelLines(entry.lines);
+      if (lines) {
+        output.lines = lines;
+        if (!output.text) output.text = lines.join(" ");
+      }
       const hasPosition = bucket === "synthetic"
         ? Number.isFinite(output.x) && Number.isFinite(output.y)
         : Number.isFinite(output.dx) && Number.isFinite(output.dy);
-      if (!hasPosition && !Number.isFinite(output.fontSize) && !output.text) return null;
+      if (!hasPosition && !Number.isFinite(output.fontSize) && !output.text && !output.lines) return null;
       return output;
     }
 
@@ -8045,6 +8068,11 @@
     function worldLabelOverrideText(bucket, code, fallback) {
       const override = worldLabelMergedOverride(bucket, code, null);
       return override?.text || fallback;
+    }
+
+    function worldLabelOverrideLines(bucket, code) {
+      const override = worldLabelMergedOverride(bucket, code, null);
+      return override?.lines || null;
     }
 
     function mergeWorldLabelOverrideBundles(...bundles) {
@@ -8106,21 +8134,27 @@
       return results;
     }
 
-    function worldLabelLayout(text, fontSize, mode) {
+    function worldLabelLayoutFromLines(lines, fontSize, mode) {
       const profile = WORLD_LABEL_STYLE[mode] || WORLD_LABEL_STYLE.name;
+      const cleanLines = (lines?.length ? lines : [String("")]).map(line => String(line || ""));
+      const widths = cleanLines.map(line => estimateWorldLabelWidth(line, fontSize, mode));
+      const width = Math.max(fontSize, ...widths);
+      const lineHeight = fontSize * (profile.line || 1.04);
+      return {
+        lines: cleanLines,
+        width,
+        height: fontSize + Math.max(0, cleanLines.length - 1) * lineHeight,
+        lineHeight
+      };
+    }
+
+    function worldLabelLayout(text, fontSize, mode, forcedLines = null) {
+      const profile = WORLD_LABEL_STYLE[mode] || WORLD_LABEL_STYLE.name;
+      if (forcedLines?.length) return worldLabelLayoutFromLines(forcedLines, fontSize, mode);
       const words = String(text || "").trim().split(/\s+/).filter(Boolean);
       const partitions = mode === "name" ? linePartitions(words, profile.maxLines || 1) : [[words]];
       const layouts = partitions.map(parts => {
-        const lines = parts.map(line => line.join(" "));
-        const widths = lines.map(line => estimateWorldLabelWidth(line, fontSize, mode));
-        const width = Math.max(fontSize, ...widths);
-        const lineHeight = fontSize * (profile.line || 1.04);
-        return {
-          lines,
-          width,
-          height: fontSize + Math.max(0, lines.length - 1) * lineHeight,
-          lineHeight
-        };
+        return worldLabelLayoutFromLines(parts.map(line => line.join(" ")), fontSize, mode);
       });
       return layouts.sort((a, b) => {
         const aScore = a.width + Math.max(0, a.lines.length - 1) * fontSize * .15;
@@ -8228,11 +8262,12 @@
     function worldLeaderLabelCandidate(anchor, mode, priority = 0, variant = 0) {
       const dotOverride = worldLabelMergedOverride("dots", anchor.code, WORLD_DOT_LABEL_OVERRIDES[anchor.code]);
       const text = worldLabelOverrideText("dots", anchor.code, worldMapLabelText(anchor.code, mode));
+      const forcedLines = worldLabelOverrideLines("dots", anchor.code);
       if (!text) return null;
       const profile = WORLD_LABEL_STYLE[mode] || WORLD_LABEL_STYLE.name;
       const fontSize = mode === "name" ? roundWorldNameFontSize(dotOverride?.fontSize || profile.leader) : (dotOverride?.fontSize || profile.leader);
       const offset = leaderOffsetForWorldPoint(anchor, variant);
-      const layout = worldLabelLayout(text, fontSize, mode);
+      const layout = worldLabelLayout(text, fontSize, mode, forcedLines);
       const point = clampWorldLabelPoint(anchor.x + offset.x, anchor.y + offset.y, layout);
       const x = point.x;
       const y = point.y;
@@ -8270,6 +8305,7 @@
         if (!center?.box) return;
         const anchorOverride = worldLabelMergedOverride("anchors", code, WORLD_LABEL_ANCHOR_OVERRIDES[code]);
         const text = worldLabelOverrideText("anchors", code, worldMapLabelText(code, mode));
+        const forcedLines = worldLabelOverrideLines("anchors", code);
         const profile = WORLD_LABEL_STYLE[mode] || WORLD_LABEL_STYLE.name;
         const fitSize = fittedWorldLabelSize(text, center.box, mode);
         const maxSize = worldLabelMaxSize(text, mode);
@@ -8277,7 +8313,7 @@
         if (circleCodes.has(code)) return;
         const area = center.box.width * center.box.height;
         const fontSize = mode === "name" ? roundWorldNameFontSize(anchorOverride?.fontSize || Math.max(minSize, fitSize)) : (anchorOverride?.fontSize || Math.max(minSize, fitSize));
-        const layout = worldLabelLayout(text, fontSize, mode);
+        const layout = worldLabelLayout(text, fontSize, mode, forcedLines);
         const tightLabelBoost = mode === "name" && (/\s/.test(text) || fitSize < maxSize * .92) ? 65000 : 0;
         const narrowShapeBoost = Math.min(center.box.width || 0, center.box.height || 0) / Math.max(center.box.width || 1, center.box.height || 1) < .32 ? area * .45 : 0;
         const x = center.x + (anchorOverride?.dx || 0);
@@ -8303,10 +8339,11 @@
         WORLD_SYNTHETIC_LABELS.forEach(item => {
           const override = worldLabelMergedOverride("synthetic", item.code, null);
           const text = worldLabelOverrideText("synthetic", item.code, item.text);
+          const forcedLines = worldLabelOverrideLines("synthetic", item.code);
           const fontSize = mode === "name" ? roundWorldNameFontSize(override?.fontSize || item.fontSize) : (override?.fontSize || item.fontSize);
           const x = override?.x || item.x;
           const y = override?.y || item.y;
-          const layout = worldLabelLayout(text, fontSize, mode);
+          const layout = worldLabelLayout(text, fontSize, mode, forcedLines);
           countryCandidates.push({
             code: item.code,
             kind: "country",
@@ -8413,14 +8450,15 @@
       const visible = Boolean(worldLabelTuningActive && worldLabelTuningAvailable() && candidate);
       if (panel) panel.classList.toggle("hidden", !visible);
       const nameInput = $("#worldLabelNameInput");
-      const sizeInput = $("#worldLabelSizeInput");
       if (!visible) {
         if (nameInput && document.activeElement !== nameInput) nameInput.value = "";
-        if (sizeInput && document.activeElement !== sizeInput) sizeInput.value = "";
+        $$("[data-world-label-size]").forEach(button => button.setAttribute("aria-pressed", "false"));
         return;
       }
-      if (nameInput && document.activeElement !== nameInput) nameInput.value = candidate.text || "";
-      if (sizeInput && document.activeElement !== sizeInput) sizeInput.value = formatWorldLabelNumber(candidate.fontSize);
+      if (nameInput && document.activeElement !== nameInput) nameInput.value = (candidate.lines?.length ? candidate.lines : [candidate.text || ""]).join("\n");
+      $$("[data-world-label-size]").forEach(button => {
+        button.setAttribute("aria-pressed", Number(button.dataset.worldLabelSize) === candidate.fontSize ? "true" : "false");
+      });
     }
 
     function worldLabelTextNode(code) {
@@ -8481,7 +8519,7 @@
           ...previous,
           x: roundWorldLabelNumber(x),
           y: roundWorldLabelNumber(y),
-          fontSize: roundWorldLabelNumber(candidate.fontSize)
+          fontSize: roundWorldNameFontSize(candidate.fontSize)
         };
       } else {
         const entry = {
@@ -8489,22 +8527,28 @@
           dx: roundWorldLabelNumber(x - candidate.baseX),
           dy: roundWorldLabelNumber(y - candidate.baseY)
         };
-        if (bucket === "dots") entry.fontSize = roundWorldLabelNumber(candidate.fontSize);
+        if (bucket === "dots") entry.fontSize = roundWorldNameFontSize(candidate.fontSize);
         worldLabelTuningEdits[bucket][code] = entry;
       }
       saveWorldLabelTuningEdits();
       syncWorldLabelTuningUi();
     }
 
-    function applyWorldLabelTextAndSize() {
+    function selectedWorldLabelButtonSize(fallback) {
+      const selected = $$("[data-world-label-size]").find(button => button.getAttribute("aria-pressed") === "true");
+      return roundWorldNameFontSize(selected?.dataset.worldLabelSize || fallback);
+    }
+
+    function applyWorldLabelTextAndSize(sizeOverride = null) {
       const candidate = worldLabelRenderedCandidates.get(worldLabelSelectedCode);
       if (!candidate?.overrideBucket) return;
       const bucket = candidate.overrideBucket;
       const code = candidate.code;
-      const name = worldLabelDisplayText($("#worldLabelNameInput")?.value || candidate.text);
-      const size = roundWorldNameFontSize($("#worldLabelSizeInput")?.value);
-      if (!name || !Number.isFinite(size)) {
-        showMessage("Label Edit", "Enter a label name and an even size from 8 to 16.");
+      const lines = cleanWorldLabelLines($("#worldLabelNameInput")?.value || candidate.text);
+      const name = lines?.join(" ") || "";
+      const size = roundWorldNameFontSize(sizeOverride || selectedWorldLabelButtonSize(candidate.fontSize));
+      if (!name || !lines?.length || !Number.isFinite(size)) {
+        showMessage("Label Edit", "Enter a label name and choose size 8, 12, or 16.");
         return;
       }
       if (!worldLabelTuningEdits[bucket]) worldLabelTuningEdits[bucket] = {};
@@ -8512,6 +8556,7 @@
       worldLabelTuningEdits[bucket][code] = {
         ...previous,
         text: name,
+        lines,
         fontSize: size
       };
       saveWorldLabelTuningEdits();
@@ -8635,7 +8680,9 @@
       if (!entries.length) return "{}";
       const lines = entries.map(([code, entry]) => {
         const pairs = Object.entries(entry).map(([key, value]) => (
-          typeof value === "string"
+          Array.isArray(value)
+            ? `${key}: ${JSON.stringify(value)}`
+            : typeof value === "string"
             ? `${key}: ${JSON.stringify(value)}`
             : `${key}: ${formatWorldLabelNumber(value)}`
         )).join(", ");
@@ -17163,18 +17210,18 @@
       $("#worldLabelExportBtn").addEventListener("click", exportWorldLabelOverrides);
       $("#worldLabelClearBtn").addEventListener("click", clearWorldLabelTuningSession);
       $("#worldLabelDismissBtn").addEventListener("click", dismissWorldLabelTuner);
-      $("#worldLabelApplyBtn").addEventListener("click", applyWorldLabelTextAndSize);
+      $("#worldLabelApplyBtn").addEventListener("click", () => applyWorldLabelTextAndSize());
       $("#worldLabelNameInput").addEventListener("keydown", event => {
-        if (event.key === "Enter") {
+        if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
           event.preventDefault();
           applyWorldLabelTextAndSize();
         }
       });
-      $("#worldLabelSizeInput").addEventListener("keydown", event => {
-        if (event.key === "Enter") {
-          event.preventDefault();
-          applyWorldLabelTextAndSize();
-        }
+      $$("[data-world-label-size]").forEach(button => {
+        button.addEventListener("click", () => {
+          $$("[data-world-label-size]").forEach(option => option.setAttribute("aria-pressed", option === button ? "true" : "false"));
+          applyWorldLabelTextAndSize(button.dataset.worldLabelSize);
+        });
       });
       $("#restoreWorldLabelTunerBtn").addEventListener("click", restoreWorldLabelTuner);
       $("#worldMapLabels").addEventListener("pointerdown", handleWorldLabelTunePointerDown);

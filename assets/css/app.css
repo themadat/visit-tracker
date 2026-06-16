@@ -2105,7 +2105,7 @@
       white-space: nowrap;
     }
 
-    .world-label-edit-panel input {
+    .world-label-edit-panel textarea {
       min-height: 1.65rem;
       border-radius: .55rem;
       padding: .18rem .4rem;
@@ -2114,14 +2114,27 @@
       color: var(--text);
       font: inherit;
       font-size: .68rem;
+      line-height: 1.15;
+      resize: vertical;
     }
 
     #worldLabelNameInput {
       width: min(11rem, 45vw);
     }
 
-    #worldLabelSizeInput {
-      width: 4.4rem;
+    .world-label-size-buttons {
+      display: inline-flex;
+      align-items: center;
+      gap: .18rem;
+      color: var(--muted);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .world-label-size-buttons button[aria-pressed="true"] {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+      color: var(--text);
     }
 
     .map-labels.is-tuning {
