@@ -208,6 +208,18 @@
         category: "Maps"
       },
       {
+        title: "World Map Labels in Native Languages",
+        ticketId: "WISH-076",
+        description: "Add a native-language display mode for World map labels: show each country and dependency in its own native name/endonym (Deutschland, España, 日本, Россия, مصر) instead of English, optionally including native-script capital names. Builds on the Atlas Ink world-label system and its English short-name mode (WISH-057), reusing the same sizing, collision, leader-line, and manual-override machinery. Includes a toggle between English and native-language labels, font/script fallback so non-Latin scripts (CJK, Cyrillic, Arabic/RTL, Greek, Devanagari) render, and sensible handling of multi-language/multi-script countries. Fully offline; English stays the default.",
+        priority: "P1",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 20,
+        prompt: "Add a native-language (endonym) display mode to renderWorldMapLabels alongside the existing English short-name mode (WISH-057). Add a curated ISO-2 -> native name table (countries + dependencies, optional native-script capital) seeded from https://en.wikipedia.org/wiki/List_of_countries_and_dependencies_and_their_capitals_in_native_languages. Add a label-language setting/toggle (persist in settings; default English) that swaps the name source, reusing the existing fit-sizing, collision, leader-line, multiline, and manual-override pipeline. Add a CSS font-family fallback stack so non-Latin scripts render (CJK, Cyrillic, Arabic with RTL, Greek, Devanagari, etc.); for multi-language countries pick a primary native name or show both. Keep US-map labels unchanged, stay fully offline (no network), add defaults in defaultState() + repair in normalizeState(), and preserve usStateVisitMap.v1.",
+        category: "Maps"
+      },
+      {
         title: "Search All Locations in Quick Add",
         ticketId: "WISH-058",
         description: "Let the note Quick Add location search reach every location across all map layers, not just the open map. Today the location list is scoped to the active layer (US states/territories or world countries), so adding a country while viewing the US map (or vice versa) is not possible without switching maps first. Scope: search the full union of states, territories, and countries, show which layer each result belongs to, and route the saved note into the correct store so it appears on the right map.",

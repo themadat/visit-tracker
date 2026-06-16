@@ -4,6 +4,23 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.1.9",
+        date: "2026-06-16",
+        title: "Atlas Ink",
+        summary: "Roadmap previews native-language World map labels.",
+        highlights: [
+          "Roadmap adds native-language World map labels.",
+        ],
+        updateSections: [
+          {
+            heading: "Roadmap",
+            items: [
+              "Plans a native-language display mode for World map labels — show each country in its own language (endonym), building on the Atlas Ink labels.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.1.8",
         date: "2026-06-16",
         title: "Atlas Ink",
