@@ -1698,7 +1698,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.2.1";
+    const APP_VERSION = "4.7.2.2";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -13276,7 +13276,7 @@
       $("#wishEffortFilter").innerHTML = `<option value="">All effort</option>` + ["small", "medium", "large", "x-large"].map(value =>
         `<option value="${value}" ${effort === value ? "selected" : ""}>${value} (${effortCounts[value] || 0})</option>`
       ).join("");
-      let items = scopedSeeds.map(wish => ({ ...wish, _index: WISHLIST_SEEDS.indexOf(wish) })).filter(wish => {
+      let items = scopedSeeds.filter(wish => {
         const blob = `${wish.ticketId} ${wish.title} ${wish.description} ${wish.category} ${wish.priority} ${wish.effort} ${wish.targetKind} ${wish.targetVersion} ${wish.prompt} ${wish.planDoc ? "plan ready " + wish.planDoc : ""}`.toLowerCase();
         return !search || blob.includes(search);
       });
@@ -13286,28 +13286,28 @@
       const targetRank = { exact: 0, major: 1, minor: 2, patch: 3 };
       const effortRank = { small: 0, medium: 1, large: 2, "x-large": 3 };
       const sort = $("#wishSort").value;
+      const ticketNum = w => parseInt(String(w.ticketId || "").replace(/\D/g, ""), 10) || 0;
       items.sort((a, b) => {
-        if (sort === "createdAsc") return a._index - b._index;
+        if (sort === "createdAsc") return ticketNum(a) - ticketNum(b);
         if (sort === "priority") return rank[a.priority] - rank[b.priority] || a.title.localeCompare(b.title);
         if (sort === "target") return (targetRank[a.targetKind] ?? 9) - (targetRank[b.targetKind] ?? 9) || (a.targetVersion || "").localeCompare(b.targetVersion || "") || a.title.localeCompare(b.title);
         if (sort === "effort") return (effortRank[a.effort] ?? 9) - (effortRank[b.effort] ?? 9) || a.title.localeCompare(b.title);
         if (sort === "title") return a.title.localeCompare(b.title);
-        return b._index - a._index;
+        return ticketNum(b) - ticketNum(a);
       });
       $("#wishlistList").innerHTML = items.length ? items.map(wish => `
         <article class="wishlist-card" data-priority="${escapeHtml(wish.priority || "")}">
           <div class="roadmap-card-title">
-            <span class="tag">${escapeHtml(wish.ticketId)}</span><b>${escapeHtml(wish.title)}</b>
+            <span class="tag${wish.planDoc ? " plan-ready" : ""}"${wish.planDoc ? ` title="Has a written plan: ${escapeHtml(wish.planDoc)}"` : ""}>${escapeHtml(wish.ticketId)}</span><b>${escapeHtml(wish.title)}</b>
+          </div>
+          <div class="chips roadmap-meta">
+            <span class="tag priority-pill">Priority: ${escapeHtml(wish.priority)}</span>
+            <span class="tag">Effort: ${escapeHtml(wish.effort)}</span>
+            <span class="tag">Cost: ${escapeHtml(String(wish.tokenCostPct || 0))}%</span>
+            <span class="tag">Target: ${escapeHtml(wishlistTargetLabel(wish))}</span>
+            <span class="tag">Category: ${escapeHtml(wish.category || "General")}</span>
           </div>
           <p>${escapeHtml(wish.description || "No description")}</p>
-          <div class="chips">
-            ${wish.planDoc ? `<span class="tag plan-ready" title="Has a written plan: ${escapeHtml(wish.planDoc)}">Plan ready</span>` : ""}
-            <span class="tag">Category: ${escapeHtml(wish.category || "General")}</span>
-            <span class="tag priority-pill">Priority: ${escapeHtml(wish.priority)}</span>
-            <span class="tag">Target: ${escapeHtml(wishlistTargetLabel(wish))}</span>
-            <span class="tag">Effort: ${escapeHtml(wish.effort)}</span>
-          </div>
-          <div class="roadmap-field"><b>Cost</b><span>${escapeHtml(String(wish.tokenCostPct || 0))}% implementation tokens</span></div>
           <div class="roadmap-field"><b>Prompt</b><div class="roadmap-prompt">${escapeHtml(wish.prompt || "")}</div></div>
         </article>
       `).join("") : `<div class="empty">No roadmap ideas match the current filters.</div>`;
