@@ -10,8 +10,8 @@
         description: "Let touch users zoom the map with two-finger pinch (centered on the pinch midpoint, continuous while moving and snapping to a known zoom % on release), double-tap to zoom in one step, and two-finger tap to zoom out one step — in addition to the existing zoom pill, drag-pan, and desktop wheel/trackpad zoom. Touch-only; no behavior change on desktop, and it should feel natural on phones/tablets.",
         priority: "P0",
         effort: "medium",
-        targetKind: "exact",
-        targetVersion: "4.7.3",
+        targetKind: "patch",
+        targetVersion: "",
         tokenCostPct: 12,
         prompt: "Add touchscreen gestures to the scrollable map in bindMapPanZoom (gate on pointerType === 'touch'): two-finger pinch (scale from finger distance, anchored at the midpoint), double-tap to zoom in one step (anchored at the tap), and two-finger tap to zoom out one step. Route all zoom through setMapZoom(value, anchor) so #mapZoomReadout and the zoom-button states stay in sync (the syncMapZoomReadout invariant). Keep the live pinch continuous (transient CSS transform) and on release commit snapped to the nearest value in a MAP_ZOOM_STOPS ladder of round percentages (log-space nearest; doubling/halving stays on the ladder so taps share the stops). Track active pointers in a Map, suspend single-pointer pan during pinch, suppress tile taps on gesture end, set touch-action on .map-wrap so gestures reach the handlers, respect Fit vs scroll modes, and keep pan/zoom persistence. No change for mouse/trackpad.",
         category: "Map"
@@ -23,10 +23,10 @@
         description: "For a Waypoint-pack photo, surface where the shot was taken — the camera/vantage-point coordinates (plus heading when available, and the distance/bearing offset from the note's landmark) so a traveler can stand in the same spot and recreate the photo. Data comes from the photo's Wikimedia Commons file (the camera-location geotag or EXIF GPS), shown as a small caption under the photo in BOTH the note editor and the Waypoint Packs panel, with a tap-to-open map pin at the camera spot. Online-only and lazy; when there's no geotag it shows an explicit subtle 'unavailable' state (not a blank gap) so it never looks like a bug; never overwrites the note's own lat/lng.",
         priority: "P0",
         effort: "medium",
-        targetKind: "patch",
-        targetVersion: "",
+        targetKind: "exact",
+        targetVersion: "4.7.3",
         tokenCostPct: 14,
-        prompt: "Add a camera-location readout to the linked-note Waypoint photo, shown in both the note editor (#noteWaypointPhotoPreview) and the Waypoint Packs panel preview. When a photo is opened, derive its Commons File name from the resolved upload/thumb URL (or pageimages piprop=name), then query commons.wikimedia.org (origin=*) prop=coordinates|imageinfo: prefer the coordinates entry with type=camera, else EXIF extmetadata GPSLatitude/GPSLongitude, with GPSImgDirection as heading. Cache in-memory (no schema change). Show camera coords + heading-when-present + distance/bearing offset from the note's landmark coords, with a Google Maps pin link at the camera spot. Lazy/online-only, hide gracefully when absent, never write to note.lat/lng.",
+        prompt: "Add a camera-location readout to the linked-note Waypoint photo, shown in both the note editor (#noteWaypointPhotoPreview) and the Waypoint Packs panel preview. When a photo is opened, derive its Commons File name from the resolved upload/thumb URL (or pageimages piprop=name), then query commons.wikimedia.org (origin=*) prop=coordinates|imageinfo: prefer the coordinates entry with type=camera, else EXIF extmetadata GPSLatitude/GPSLongitude, with GPSImgDirection as heading. Cache in-memory (no schema change). Show camera coords + heading-when-present + distance/bearing offset from the note's landmark coords, with a Google Maps pin link at the camera spot. Lazy/online-only, show an explicit muted unavailable state when absent, never write to note.lat/lng.",
         category: "Notes"
       },
       {
