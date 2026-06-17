@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.4.4">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.4.5">
 </head>
 
 <body>
@@ -1696,15 +1696,15 @@
 
   <script src="assets/js/icons.js"></script>
   <script src="assets/js/maps.js"></script>
-  <script src="assets/js/world-names.js?v=4.7.4.4"></script>
-  <script src="assets/js/world-label-overrides.js?v=4.7.4.4"></script>
+  <script src="assets/js/world-names.js?v=4.7.4.5"></script>
+  <script src="assets/js/world-label-overrides.js?v=4.7.4.5"></script>
   <script src="assets/js/changelog.js"></script>
   <script src="assets/js/roadmap.js"></script>
   <script>
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.4.4";
+    const APP_VERSION = "4.7.4.5";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -6111,6 +6111,29 @@
       syncResizePercentage("#mainResizeHandle", mapColumn / metrics.available);
     }
 
+    function syncScrollableMapViewportFrame() {
+      const viewport = $(".map-viewport");
+      const wrap = $(".map-wrap");
+      if (!viewport || !wrap) return;
+      if (DESKTOP_LAYOUT_QUERY.matches || mapFitMode) {
+        viewport.style.removeProperty("--map-scroll-height");
+        return;
+      }
+      const svg = $("#" + activeLayer().svgId);
+      const box = svg?.viewBox?.baseVal;
+      if (!svg || !box?.width || !box?.height) {
+        viewport.style.removeProperty("--map-scroll-height");
+        return;
+      }
+      const wrapStyle = getComputedStyle(wrap);
+      const svgStyle = getComputedStyle(svg);
+      const wrapX = cssPx(wrapStyle.paddingLeft) + cssPx(wrapStyle.paddingRight);
+      const wrapY = cssPx(wrapStyle.paddingTop) + cssPx(wrapStyle.paddingBottom);
+      const baseWidth = Math.max(1, wrap.clientWidth - wrapX, cssPx(svgStyle.minWidth));
+      const baseHeight = baseWidth * (box.height / box.width) + wrapY;
+      viewport.style.setProperty("--map-scroll-height", `${Math.ceil(baseHeight)}px`);
+    }
+
     function syncResizePercentage(selector, ratio) {
       const handle = $(selector);
       if (!handle) return;
@@ -6163,6 +6186,7 @@
       layoutSyncFrame = requestAnimationFrame(() => {
         layoutSyncFrame = 0;
         syncMainLayout();
+        syncScrollableMapViewportFrame();
         syncNotesPanelLayout();
         if (centerMapAfterRender) {
           centerMapAfterRender = false;
@@ -6210,6 +6234,7 @@
       renderLegend();
       renderBuiltinLevels();
       renderNotesPanel();
+      syncScrollableMapViewportFrame();
       renderSettingsControls();
       renderReleaseNotice();
       if ($("#basecampDialog")?.open && !$("#noteDialog")?.open) renderBasecampDialog();
@@ -6230,6 +6255,7 @@
       document.documentElement.style.setProperty("--map-zoom-width", `${Math.round(mapZoom * 100)}%`);
       syncMapZoomReadout();
       renderMap();
+      syncScrollableMapViewportFrame();
       scheduleMainLayoutSync();
       // Basecamp in panel mode tracks the live Notes panel rect — recompute
       // after every render so resize/scroll/panel-toggle states stay aligned.
@@ -16915,7 +16941,10 @@
         pinchFrame = 0;
         if (pinch && pinchPending) setMapZoom(pinchPending.zoom, pinchPending.anchor);
       };
+      wrap.addEventListener("selectstart", event => event.preventDefault());
+      wrap.addEventListener("dblclick", event => event.preventDefault());
       wrap.addEventListener("pointerdown", event => {
+        if (event.pointerType !== "touch" && event.button === 0) event.preventDefault();
         if (event.pointerType === "touch") {
           pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
           if (pointers.size === 2) {
