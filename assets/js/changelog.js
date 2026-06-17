@@ -4,14 +4,14 @@
 
     const CHANGELOG = [
       {
-        version: "4.7.5.7",
+        version: "4.7.5.8",
         date: "2026-06-17",
         title: "Gridlines",
-        summary: "Grid labels, spacing controls, and US inset geography get cleaner map detail.",
+        summary: "Grid labels, spacing controls, and US geography get cleaner map detail.",
         highlights: [
           "Major and Minor are now dropdowns.",
           "World reference labels sit at both globe edges.",
-          "Alaska and Hawaii get their own inset grids.",
+          "US gridlines now continue off the map edges.",
           "Added a P0 pop-up unification roadmap item.",
         ],
         updateSections: [
@@ -29,6 +29,7 @@
               "US grid labels now attach to visible line endpoints on the top/bottom and left/right edges with corner collision guards.",
               "US inset masking now follows the SVG separator geometry instead of individual state and territory bounding boxes.",
               "Alaska and Hawaii now draw independent Mercator-style inset grids instead of inheriting the lower-48 National Atlas projection.",
+              "The lower-48 grid now renders from a wider geographic envelope so lines feel continuous beyond all four US map edges.",
             ]
           },
           {
