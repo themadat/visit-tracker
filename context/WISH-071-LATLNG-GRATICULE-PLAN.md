@@ -6,14 +6,14 @@ Ticket: **WISH-071** "Latitude / Longitude Map Lines". Target: **patch**. An opt
 
 Add a toggleable lat/lng graticule with **two line tiers (major + minor)** and **user-customizable intervals**, configured from a **settings pop-up**:
 - **World map** — true graticule via the existing **Robinson** projection (`worldCoordinatePoint`): straight parallels, curved (sampled) meridians, plus the **projection outline/frame** (curved ±180° edge meridians closed by the pole parallels) so the map's curvature reads instead of looking like a rectangle. Defaults: **30° major, 10° minor**. Tropic and polar-circle reference lines are emphasized and labeled on top.
-- **US map** — a U.S. National Atlas Equal Area lat/lng overlay over the contiguous-US map frame, using **50°N–25°N** and **125°W–65°W** as the graticule extent. Defaults: **10° major, 5° minor**. Displaced/rescaled insets (Alaska, Hawaii, territories) get cover patches so the grid sits behind their cutout areas instead of faking local grids.
+- **US map** — a U.S. National Atlas Equal Area lat/lng overlay over the contiguous-US map frame, using **50°N–25°N** and **125°W–65°W** as the graticule extent. Defaults: **10° major, 5° minor**. Displaced/rescaled insets (Alaska, Hawaii, territories) are excluded with an SVG mask so the grid sits behind their cutout areas without covering separator strokes.
 - **Major lines** read stronger and carry **degree labels at both line ends**; **minor lines** are thinner/subtler (lighter or no labels).
 - A **per-map control** (button → settings pop-up) holding on/off, reference-line toggle, label toggle, and major/minor intervals, remembered separately for US and World, kept visually subordinate to markers/rings/labels.
 
 ## Why the two maps differ (key projection facts)
 
 - **World**: `worldCoordinatePoint(coords)` is a real **Robinson** projection — `ROBINSON_X/Y_COEFFICIENTS`, `WORLD_MAP_CENTRAL_MERIDIAN`, `worldProjectionBox()`. Parallels depend only on lat (straight horizontals); meridians curve with lat (sample to a polyline). Fully invertible-enough to draw a graticule.
-- **US**: the lower-48 SVG outline follows a U.S. National Atlas Equal Area style. Draw the visible grid from a Lambert azimuthal equal-area projection centered at **45°N, 100°W**, scaled to the contiguous-US SVG frame and bounded to **50°N–25°N / 125°W–65°W**. `projectNoteLocation` still maps notes per-state; this graticule is a visual overlay, not the note-pin projection. Insets are displaced/rescaled art, so cover their cutout areas instead of drawing fake inset grids.
+- **US**: the lower-48 SVG outline follows a U.S. National Atlas Equal Area style. Draw the visible grid from a Lambert azimuthal equal-area projection centered at **45°N, 100°W**, affine-fitted against lower-48 state geometry, and bounded to **50°N–25°N / 125°W–65°W**. `projectNoteLocation` still maps notes per-state; this graticule is a visual overlay, not the note-pin projection. Insets are displaced/rescaled art, so mask their cutout areas instead of drawing fake inset grids.
 - Overlay precedent: ring overlays are SVG `<g>` layers injected per map (`#mapRingOverlay`, `#worldMapRingOverlay`, created ≈5500). The graticule should be a sibling `<g>` placed **below** markers/rings/labels in paint order.
 
 ## Behavior / UX
@@ -31,7 +31,7 @@ Add a toggleable lat/lng graticule with **two line tiers (major + minor)** and *
 ### US graticule (National Atlas Equal Area overlay)
 - For the contiguous map, draw sampled constant-lat and constant-lng polylines through the National Atlas Equal Area projection, scaled to the lower-48 SVG frame. This produces curved grid lines like the user's reference image, not a guessed straight-line fit.
 - Major latitude labels sit at the right edge; major longitude labels sit along the top edge. Labels can be toggled off.
-- Insets (AK, HI, territories) are displaced/rescaled relative to the contiguous projection, so cover their cutout areas and do not draw local fake grids.
+- Insets (AK, HI, territories) are displaced/rescaled relative to the contiguous projection, so mask their cutout areas and do not draw local fake grids.
 
 ### Settings pop-up, toggle, styling, persistence
 - **A per-map control button** in the map header (alongside pins/labels) opens a **settings pop-up** (reuse an existing header pop-up pattern — e.g. the ring-style menu or map-label picker — for consistency and outside-click close, and so it clamps on mobile). Pop-up contents **per map**: on/off, **major interval**, **minor interval** (numeric inputs or steppers, validated to sane ranges and major ≥ minor and ideally a multiple), optionally the reference-lines emphasis checkbox. The button's pressed/badged state reflects whether the graticule is on.
@@ -45,7 +45,7 @@ Add a toggleable lat/lng graticule with **two line tiers (major + minor)** and *
 3. Inject a graticule `<g>` layer per map (below markers/rings), like the ring overlay setup (≈5500); add `renderGraticule()` called from the map render path.
 4. Major/minor line generator (shared): produce minor-interval lines, tag majors (multiples of `major`); major = stronger stroke + end labels, minor = subtle, unlabeled.
 5. World graticule: parallels + sampled meridians via `worldCoordinatePoint`/`worldProjectionBox`; the projection outline/frame (edge meridians + pole parallels); end labels at frame edges; optional reference-line emphasis.
-6. US graticule: sampled National Atlas Equal Area overlay over the contiguous-US frame; cover displaced insets so no fake local grids show there.
+6. US graticule: sampled National Atlas Equal Area overlay over the contiguous-US frame; mask displaced insets so no fake local grids show there.
 7. New per-map control **button → settings pop-up** (Grid/Circles/Labels toggles + major/minor numeric intervals, validated); button-state sync; CSS for line/label styling (major/minor + theme); ensure the pop-up clamps on mobile.
 8. Surfaces: Help/FAQ, hints, keyboard reference, README, handoff. Mark WISH-071 done at `ship`.
 9. Verify (parse + desktop/mobile smoke on 8018, both maps, fit + zoomed, both themes).

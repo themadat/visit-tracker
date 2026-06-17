@@ -4,15 +4,15 @@
 
     const CHANGELOG = [
       {
-        version: "4.7.5.4",
+        version: "4.7.5.5",
         date: "2026-06-17",
         title: "Gridlines",
-        summary: "The grid controls gain icons while the US overlay switches to National Atlas projection.",
+        summary: "Grid controls step cleanly, disable together, and fit the US overlay more closely.",
         highlights: [
-          "Grid, Circles, and Labels controls now use icons.",
-          "Circles and Labels disable when Grid is off.",
-          "US grid uses National Atlas Equal Area bounds.",
-          "Minor steppers jump across skipped divisors.",
+          "Grid interval ticks now step predictably.",
+          "Grid-off disables all dependent controls.",
+          "US grid clips cleanly around inset cutouts.",
+          "Added a P0 pop-up unification roadmap item.",
         ],
         updateSections: [
           {
@@ -20,8 +20,16 @@
             items: [
               "The grid pop-up buttons now use a grid icon, a circle icon, and the tag icon used by shortcut labels.",
               "Circles and Labels are grayed out while Grid is off, and the pop-up clamps inside the map panel instead of the viewport.",
-              "Minor spacing steppers now jump from one valid divisor to the next, such as 3° straight to 5° when the major interval is 30°.",
-              "The US grid now uses the U.S. National Atlas Equal Area projection over 50°N–25°N and 125°W–65°W, with the overlay covered behind Alaska, Hawaii, and territory inset cutouts.",
+              "Major and Minor interval ticks now use deterministic app-side stepping instead of browser-native number jumps.",
+              "Major and Minor interval fields disable while Grid is off, matching the Circles and Labels controls.",
+              "Clicking the Grid button again now dismisses the open pop-up instead of reopening it after a light-dismiss.",
+              "The US grid now uses the U.S. National Atlas Equal Area projection over 50°N–25°N and 125°W–65°W, affine-fitted to the lower-48 SVG and masked cleanly around Alaska, Hawaii, and territory inset cutouts.",
+            ]
+          },
+          {
+            heading: "Roadmap",
+            items: [
+              "Added a P0 follow-up to unify the app's anchored control pop-ups: Priority, Grid, Rangefinder style/time, label pickers, Waypoint menus, and Basecamp popovers.",
             ]
           }
         ]
