@@ -4,99 +4,46 @@
 
     const CHANGELOG = [
       {
-        version: "4.7.4.5",
+        version: "4.7.4",
         date: "2026-06-17",
         title: "Crosshairs",
-        summary: "Map zoom gestures stop selecting desktop SVGs and keep the mobile viewport stable.",
-        highlights: [
-          "Desktop double-click zoom no longer highlights the map.",
-          "Mobile pinch zoom keeps the map viewport height stable.",
-        ],
-        updateSections: [
-          {
-            heading: "Map Gestures",
-            items: [
-              "Desktop double-click zoom suppresses SVG/text selection so the action only zooms the map.",
-              "Small-screen scroll mode locks the map viewport to the active map's 100% height, letting pinch zoom grow the pannable map content without stretching the page section.",
-            ]
-          }
-        ]
-      },
-      {
-        version: "4.7.4.4",
-        date: "2026-06-17",
-        title: "Crosshairs",
-        summary: "Mobile map swipes keep smooth vertical scroll while restoring horizontal pan.",
-        highlights: [
-          "Horizontal map swipes work again on phones and tablets.",
-          "Vertical swipes still use native mobile scrolling.",
-        ],
-        updateSections: [
-          {
-            heading: "Map Gestures",
-            items: [
-              "Scrollable maps now allow native horizontal touch panning in scroll mode.",
-              "Touch drag detection waits for a clearer horizontal or vertical direction before locking the gesture, so early finger jitter no longer cancels horizontal map movement.",
-            ]
-          }
-        ]
-      },
-      {
-        version: "4.7.4.3",
-        date: "2026-06-17",
-        title: "Crosshairs",
-        summary: "Map gestures stop fighting mobile vertical scroll, and double-tap zoom works from desktop.",
-        highlights: [
-          "Vertical swipes over the map use native mobile scrolling again.",
-          "Double-tap/double-click zoom works from Fit mode and desktop pointers.",
-        ],
-        updateSections: [
-          {
-            heading: "Map Gestures",
-            items: [
-              "The map no longer emulates page scrolling during vertical touch drags; native vertical scrolling handles that path so it stays smooth.",
-              "Horizontal drag-pan still uses the custom map pan path, and two-finger pinch remains available for map zoom.",
-              "Double-tap/double-click zoom detection now runs independently of drag-pan state, so it works from Fit mode and with mouse or trackpad clicks.",
-            ]
-          }
-        ]
-      },
-      {
-        version: "4.7.4.2",
-        date: "2026-06-17",
-        title: "Crosshairs",
-        summary: "Zoomed maps drag vertically on mobile, and laptop trackpads can pinch to zoom.",
-        highlights: [
-          "Drag up/down to move a zoomed-in map on phones and tablets.",
-          "Pinch a laptop trackpad to zoom the map (all Mac browsers).",
-        ],
-        updateSections: [
-          {
-            heading: "Map",
-            items: [
-              "Dragging vertically now pans a zoomed-in map on touch devices, alongside horizontal drag and pinch.",
-              "Trackpad pinch zooms the map on laptops — including Safari and starting from the fit-to-screen view.",
-            ]
-          }
-        ]
-      },
-      {
-        version: "4.7.4.1",
-        date: "2026-06-17",
-        title: "Crosshairs",
-        summary: "Touchscreens can pinch, double-tap, and two-finger-tap to zoom the map.",
+        summary: "Map zoom gets touch-first gestures, stable mobile panning, and desktop-friendly double-click zoom.",
         highlights: [
           "Pinch to zoom the map on phones and tablets.",
-          "Double-tap to zoom in; two-finger tap to zoom out.",
-          "Pinch zoom snaps to clean zoom levels on release.",
+          "Double-tap zooms in; two-finger tap zooms out.",
+          "Trackpad pinch and desktop double-click zoom work from Fit mode.",
+          "Mobile map panning stays smooth in both directions.",
         ],
         updateSections: [
           {
-            heading: "Map",
+            heading: "Map Gestures",
             items: [
-              "Two-finger pinch zooms the map, centered on your fingers, and snaps to a clean zoom level when you let go.",
-              "Double-tap zooms in one step at the tap; a two-finger tap zooms out one step.",
-              "Touch gestures leave desktop mouse, trackpad, and the zoom controls unchanged.",
+              "Two-finger pinch zooms the scrollable map from the midpoint between your fingers, then snaps to clean zoom percentages on release.",
+              "Double-tap or double-click zooms in at the tap/click point, including from Fit mode.",
+              "Two-finger tap zooms out one step when the map is already in scroll mode.",
+              "Laptop trackpad pinch uses the same anchored zoom path in browsers that send ctrl/meta wheel or Safari gesture events.",
+            ]
+          },
+          {
+            heading: "Mobile Pan and Layout",
+            items: [
+              "Vertical swipes over the map use native page scrolling instead of synthetic scroll emulation, keeping mobile scroll smooth.",
+              "Scrollable maps allow native horizontal panning, while the custom pan lock waits for clear horizontal intent before grabbing a touch drag.",
+              "Small-screen scroll mode locks the map viewport to the active map's 100% height, so pinch zoom grows pannable content without stretching the page section.",
+            ]
+          },
+          {
+            heading: "Interaction Polish",
+            items: [
+              "Desktop double-click zoom suppresses SVG/text selection so the action only zooms the map.",
+              "Gesture tap-suppression prevents pinch, tap, and pan endings from accidentally selecting or opening map locations.",
+              "Map zoom, pan center, and Fit/Scroll mode continue to persist through the existing saved-map settings.",
+            ]
+          },
+          {
+            heading: "Roadmap",
+            items: [
+              "Retired the completed touch map-zoom roadmap item from the active list and left latitude/longitude map lines queued for a future patch.",
             ]
           }
         ]
