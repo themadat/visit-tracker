@@ -1,6 +1,6 @@
 # WISH-074 — Pinch-to-Zoom the Map on Touch (target patch)
 
-Ticket: **WISH-074** "Pinch-to-Zoom the Map on Touch". Target: **patch**. Touch-only; **no behavior change on desktop**. Adds two-finger pinch, double-tap-to-zoom-in, and two-finger-tap-to-zoom-out, all anchored on the gesture point and routed through the existing zoom path.
+Ticket: **WISH-074** "Pinch-to-Zoom the Map on Touch". Target: **patch**. Adds two-finger pinch, double-tap/double-click-to-zoom-in, and two-finger-tap-to-zoom-out, all anchored on the gesture point and routed through the existing zoom path.
 
 ## Goal
 
@@ -27,19 +27,19 @@ On phones/tablets, let the scrollable map zoom by **two-finger pinch** (scale fr
 - Keep it consistent with the tap gestures: **double-tap (×2)** and **two-finger-tap (÷2)** already land on clean values; choose a ladder where doubling/halving a stop stays on the ladder (the example above does: 75↔150↔300↔600, 100↔200↔400↔800), so all four gestures share the same stops.
 - **Tuning (confirm at `start`):** the exact stop list and whether snapping is always-on vs. an optional setting. Default: **always snap on release** to the ladder above.
 
-### Double-tap to zoom in (touch)
-- Detect two taps (`pointerdown→up` with <~10px movement) within ~300 ms at ~same spot → `setMapZoom(mapZoom · 2, anchorAtTap)` (anchor = tap point − wrap rect). Suppress the underlying tile tap for the second tap.
+### Double-tap / double-click to zoom in
+- Detect two taps/clicks (`pointerdown→up` with <~10px movement) within ~300 ms at ~same spot → `setMapZoom(mapZoom · 2, anchorAtTap)` (anchor = tap point − wrap rect). Suppress the underlying tile tap for the second tap. This must work from Fit mode too, so tap detection cannot depend on scroll-mode drag state.
 
 ### Two-finger tap to zoom out (touch)
 - Two pointers down then both up quickly with negligible movement (i.e. a pinch that never scaled) → `setMapZoom(mapZoom / 2, midpointAnchor)`.
 
 ### Fit vs scroll, clamping, desktop
 - Pinch-in / double-tap-in while in **Fit mode** transitions to scroll mode at the new zoom (as the zoom-in button does — `setMapZoom` clears `mapFitMode`). Pinch-out / two-finger-tap-out at/under fit clamps to `MAP_ZOOM_MIN` (no zoom past fit). Two-finger-tap-out in Fit mode is a no-op.
-- All new handlers are **touch-gated** (`pointerType === "touch"`); mouse/pen unaffected; trackpad pinch keeps using the ctrl+wheel path. **No desktop behavior change.**
+- Pinch/two-finger tap stay touch-gated; double-tap also supports mouse/pen double-click. Trackpad pinch keeps using the ctrl+wheel/gesture paths.
 
 ## Key implementation risks (call out for `start`)
 
-- **`touch-action` / browser gesture capture (the big one):** for our handlers to receive a two-finger gesture instead of the browser doing native page pinch-zoom/scroll, `.map-wrap` likely needs `touch-action: none` (or a tuned value). Today's single-finger pan is already manual (`pointermove`→`scrollLeft`), so `touch-action:none` shouldn't break panning, but verify single-finger pan still feels right (no native momentum). Also guard iOS Safari's non-standard `gesturestart/gesturechange` (preventDefault) if they still fire.
+- **`touch-action` / browser gesture capture (the big one):** `.map-wrap` uses the tuned `touch-action: pan-y` path so native vertical scrolling stays smooth, while horizontal drag-pan and custom two-finger zoom still reach the handlers. Avoid synthetic page scrolling on pointermove. Also guard iOS Safari's non-standard `gesturestart/gesturechange` (preventDefault) if they still fire.
 - **Performance:** `setMapZoom` calls `renderMapView()` (the comment at ≈6137 notes full render per wheel notch was the main lag). Pinch fires moves rapidly → either **throttle to rAF** (one zoom apply per frame) or apply a **transient CSS `transform: scale()`** on the map content during the gesture and commit the real `setMapZoom` on `pointerup`. Recommend the transient-transform approach for smoothness, committing once at the end (with the final anchor) **and snapping to the nearest `MAP_ZOOM_STOPS` value** — the transient transform already makes "free during, snap on commit" natural.
 - **Gesture disambiguation:** cleanly separate single-finger pan vs two-finger pinch vs taps (pointer count + movement thresholds + timing); ensure the `blockClick`/tap-suppression covers all gesture ends so a pinch/tap never marks a state/country or opens a note.
 - **Pointer bookkeeping:** handle `pointercancel`, lost pointers, and a finger lifting mid-pinch (recompute or end), so state can't get stuck in pinch mode.
@@ -54,8 +54,8 @@ On phones/tablets, let the scrollable map zoom by **two-finger pinch** (scale fr
 2. CSS: set `touch-action` on `.map-wrap` so two-finger gestures reach our handlers; verify single-finger pan.
 3. Multi-pointer tracking in `bindMapPanZoom`; enter/exit pinch; suspend pan during pinch.
 4. Pinch zoom: live scale + midpoint anchor (rAF/transient-transform smoothing); on release commit through `setMapZoom` **snapped to the nearest `MAP_ZOOM_STOPS`** (log-space nearest), plus tap-suppression on end. Add the `MAP_ZOOM_STOPS` ladder const.
-5. Double-tap-to-zoom-in and two-finger-tap-to-zoom-out (touch-gated), anchored.
-6. Guard iOS gesture events; ensure desktop/mouse/trackpad paths unchanged.
+5. Double-tap/double-click-to-zoom-in and two-finger-tap-to-zoom-out, anchored.
+6. Guard iOS gesture events; ensure desktop mouse/trackpad paths stay intentional.
 7. Surfaces: Help/FAQ + map-controls hint ("pinch to zoom"), keyboard/gesture reference, README, handoff. Mark WISH-074 done at `ship`.
 8. Verify on a real touch device / browser touch emulation (both maps, Fit + scroll, both layers).
 

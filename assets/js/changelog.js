@@ -4,6 +4,26 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.4.3",
+        date: "2026-06-17",
+        title: "Crosshairs",
+        summary: "Map gestures stop fighting mobile vertical scroll, and double-tap zoom works from desktop.",
+        highlights: [
+          "Vertical swipes over the map use native mobile scrolling again.",
+          "Double-tap/double-click zoom works from Fit mode and desktop pointers.",
+        ],
+        updateSections: [
+          {
+            heading: "Map Gestures",
+            items: [
+              "The map no longer emulates page scrolling during vertical touch drags; native vertical scrolling handles that path so it stays smooth.",
+              "Horizontal drag-pan still uses the custom map pan path, and two-finger pinch remains available for map zoom.",
+              "Double-tap/double-click zoom detection now runs independently of drag-pan state, so it works from Fit mode and with mouse or trackpad clicks.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.4.2",
         date: "2026-06-17",
         title: "Crosshairs",
