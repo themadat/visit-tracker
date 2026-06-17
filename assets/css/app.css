@@ -2379,6 +2379,11 @@
       font-weight: 800;
     }
 
+    #worldMapGraticule .graticule-reference-label {
+      font-size: 17px;
+      stroke-width: 4.5px;
+    }
+
     /* Grid options pop-up (non-modal, anchored near the Grid button). */
     .graticule-popover {
       position: fixed;
@@ -2461,8 +2466,8 @@
       color: var(--muted);
     }
 
-    .graticule-number-field input {
-      width: 3.1rem;
+    .graticule-number-field select {
+      width: 3.6rem;
       height: 2.15rem;
       border: 0;
       border-radius: 7px;
@@ -2474,7 +2479,7 @@
       margin: 0;
     }
 
-    .graticule-number-field input:disabled {
+    .graticule-number-field select:disabled {
       cursor: not-allowed;
     }
 

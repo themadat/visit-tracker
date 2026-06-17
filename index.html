@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5.5">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5.6">
 </head>
 
 <body>
@@ -844,10 +844,10 @@
       <button id="graticuleReferenceBtn" class="graticule-option-btn" type="button" aria-pressed="true" disabled>Circles</button>
       <button id="graticuleLabelsBtn" class="graticule-option-btn" type="button" aria-pressed="true" disabled>Labels</button>
       <label class="graticule-number-field">Major
-        <input type="number" id="graticuleMajorInput" min="1" max="90" step="1" inputmode="numeric">
+        <select id="graticuleMajorInput"></select>
       </label>
       <label class="graticule-number-field">Minor
-        <input type="number" id="graticuleMinorInput" min="1" max="90" step="1" inputmode="numeric">
+        <select id="graticuleMinorInput"></select>
       </label>
     </div>
   </div>
@@ -1728,7 +1728,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.5.5";
+    const APP_VERSION = "4.7.5.6";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -3501,10 +3501,14 @@
         const n = Math.round(Number(value));
         return Number.isFinite(n) && n >= 1 ? Math.min(90, n) : fallback;
       };
+      const snapMajor = (value, fallback) => {
+        const n = clampInterval(value, fallback);
+        return Math.max(5, Math.min(90, Math.round(n / 5) * 5));
+      };
       return Object.fromEntries(RING_LAYER_IDS.map(id => {
         const defaults = GRATICULE_DEFAULTS[id];
         const raw = byLayer[id] && typeof byLayer[id] === "object" ? byLayer[id] : {};
-        const major = clampInterval(raw.major, defaults.major);
+        const major = snapMajor(raw.major, defaults.major);
         const minor = graticuleSnapMinor(clampInterval(raw.minor, defaults.minor), major);
         return [id, {
           enabled: raw.enabled === true,
@@ -7179,6 +7183,7 @@
     }
 
     const WORLD_REFERENCE_LINES = [
+      { lat: 0, label: "Equator" },
       { lat: 23.44, label: "Tropic of Cancer" },
       { lat: -23.44, label: "Tropic of Capricorn" },
       { lat: 66.56, label: "Arctic Circle" },
@@ -7221,7 +7226,10 @@
         WORLD_REFERENCE_LINES.forEach(ref => {
           const w = pt(ref.lat, -180), e = pt(ref.lat, 180);
           addLine(w, e, "graticule-line graticule-reference");
-          if (options.labels) addLabel((w.x + e.x) / 2, w.y - insetY * .45, ref.label, "middle", "graticule-label graticule-reference-label");
+          if (options.labels) {
+            addLabel(w.x + insetX * 1.45, w.y, ref.label, "start", "graticule-label graticule-reference-label");
+            addLabel(e.x - insetX * 1.45, e.y, ref.label, "end", "graticule-label graticule-reference-label");
+          }
         });
       }
       // Projection outline/frame: edge meridians (±180) closed by the pole parallels.
@@ -7239,6 +7247,10 @@
     const US_GRATICULE_BOUNDS = { minLat: 25, maxLat: 50, minLng: -125, maxLng: -65 };
     const US_NATIONAL_ATLAS = { lat0: 45, lng0: -100 };
     const US_GRATICULE_CALIBRATION = { scaleX: 1.035, scaleY: 1.025, rotate: -1.2, dx: -4, dy: -7 };
+    const US_GRATICULE_INSET_CUTS = [
+      { type: "polygon", points: [{ x: 0, y: 425 }, { x: 147, y: 425 }, { x: 215, y: 493 }, { x: 300, y: 493 }, { x: 354, y: 547 }, { x: 354, y: 593 }, { x: 0, y: 593 }] },
+      { type: "rect", x: 560, y: 515, width: 122, height: 78 }
+    ];
     let usNationalAtlasFrameCache = null;
     let graticuleButtonDismissPending = false;
 
@@ -7389,19 +7401,46 @@
       base.setAttribute("height", viewBox.height);
       base.setAttribute("fill", "white");
       mask.append(base);
-      US_GRATICULE_INSET_ABBRS.forEach(abbr => {
-        const tile = svg.querySelector(`.state-tile[data-abbr="${abbr}"]`);
-        let box; try { box = tile?.getBBox(); } catch { }
-        if (!tile || !box || !(box.width > 0 || box.height > 0)) return;
-        const cut = graticuleSvg("rect");
-        cut.setAttribute("x", box.x.toFixed(1));
-        cut.setAttribute("y", box.y.toFixed(1));
-        cut.setAttribute("width", box.width.toFixed(1));
-        cut.setAttribute("height", box.height.toFixed(1));
+      US_GRATICULE_INSET_CUTS.forEach(cutDef => {
+        const cut = graticuleSvg(cutDef.type === "polygon" ? "polygon" : "rect");
+        if (cutDef.type === "polygon") {
+          cut.setAttribute("points", cutDef.points.map(p => `${p.x},${p.y}`).join(" "));
+        } else {
+          cut.setAttribute("x", cutDef.x);
+          cut.setAttribute("y", cutDef.y);
+          cut.setAttribute("width", cutDef.width);
+          cut.setAttribute("height", cutDef.height);
+        }
         cut.setAttribute("fill", "black");
         mask.append(cut);
       });
       return "url(#mapGraticuleInsetMask)";
+    }
+
+    function pointInGraticulePolygon(point, polygon) {
+      let inside = false;
+      for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+        const a = polygon[i], b = polygon[j];
+        const crosses = ((a.y > point.y) !== (b.y > point.y))
+          && (point.x < (b.x - a.x) * (point.y - a.y) / ((b.y - a.y) || .0001) + a.x);
+        if (crosses) inside = !inside;
+      }
+      return inside;
+    }
+
+    function pointInUsGraticuleCut(point) {
+      return US_GRATICULE_INSET_CUTS.some(cut => {
+        if (cut.type === "polygon") return pointInGraticulePolygon(point, cut.points);
+        return point.x >= cut.x && point.x <= cut.x + cut.width && point.y >= cut.y && point.y <= cut.y + cut.height;
+      });
+    }
+
+    function visibleUsGraticulePoints(points, viewBox, pad) {
+      return points.filter(point => (
+        point.x >= viewBox.x + pad && point.x <= viewBox.x + viewBox.width - pad
+        && point.y >= viewBox.y + pad && point.y <= viewBox.y + viewBox.height - pad
+        && !pointInUsGraticuleCut(point)
+      ));
     }
 
     function renderUsGraticule(g, svg, major, minor, options = {}) {
@@ -7410,6 +7449,8 @@
       const bounds = US_GRATICULE_BOUNDS;
       const viewBox = svg.viewBox?.baseVal || { x: 0, y: 0, width: 934, height: 593 };
       const pad = 8;
+      const cornerX = 52;
+      const cornerY = 34;
       const clampX = x => Math.max(viewBox.x + pad, Math.min(viewBox.x + viewBox.width - pad, x));
       const clampY = y => Math.max(viewBox.y + pad, Math.min(viewBox.y + viewBox.height - pad, y));
       const gridGroup = graticuleSvg("g");
@@ -7417,14 +7458,20 @@
       g.append(gridGroup);
       const addPolyline = (pts, cls) => { const pl = graticuleSvg("polyline"); pl.setAttribute("points", pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ")); pl.setAttribute("class", cls); gridGroup.append(pl); };
       const addLabel = (x, y, text, anchor) => { const t = graticuleSvg("text"); t.setAttribute("x", clampX(x).toFixed(1)); t.setAttribute("y", clampY(y).toFixed(1)); t.setAttribute("class", "graticule-label"); t.setAttribute("text-anchor", anchor); t.setAttribute("dominant-baseline", "middle"); t.textContent = text; g.append(t); };
+      const nearCorner = point => (
+        (point.x <= viewBox.x + cornerX || point.x >= viewBox.x + viewBox.width - cornerX)
+        && (point.y <= viewBox.y + cornerY || point.y >= viewBox.y + viewBox.height - cornerY)
+      );
       for (let lat = Math.ceil(bounds.minLat / minor) * minor; lat <= bounds.maxLat; lat += minor) {
         const isMajor = lat % major === 0;
         const pts = [];
         for (let lng = bounds.minLng; lng <= bounds.maxLng; lng += 1) pts.push(usNationalAtlasPoint(lat, lng, frame));
         addPolyline(pts, graticuleLineClass(isMajor));
         if (isMajor && options.labels) {
-          const e = pts[pts.length - 1];
-          addLabel(e.x + 6, e.y, formatGraticuleLat(lat), "start");
+          const visible = visibleUsGraticulePoints(pts, viewBox, pad);
+          const w = visible[0], e = visible[visible.length - 1];
+          if (w && !nearCorner(w)) addLabel(w.x + 6, w.y, formatGraticuleLat(lat), "start");
+          if (e && !nearCorner(e)) addLabel(e.x - 6, e.y, formatGraticuleLat(lat), "end");
         }
       }
       for (let lng = Math.ceil(bounds.minLng / minor) * minor; lng <= bounds.maxLng; lng += minor) {
@@ -7433,8 +7480,10 @@
         for (let lat = bounds.minLat; lat <= bounds.maxLat; lat += 1) pts.push(usNationalAtlasPoint(lat, lng, frame));
         addPolyline(pts, graticuleLineClass(isMajor));
         if (isMajor && options.labels) {
-          const n = pts[pts.length - 1];
-          addLabel(n.x, n.y - 7, formatGraticuleLng(lng), "middle");
+          const visible = visibleUsGraticulePoints(pts, viewBox, pad);
+          const s = visible[0], n = visible[visible.length - 1];
+          if (s && !nearCorner(s)) addLabel(s.x, s.y - 7, formatGraticuleLng(lng), "middle");
+          if (n && !nearCorner(n)) addLabel(n.x, n.y + 7, formatGraticuleLng(lng), "middle");
         }
       }
       const framePts = [];
@@ -7472,9 +7521,23 @@
       const btn = $(selector);
       if (btn) btn.setAttribute("aria-pressed", on ? "true" : "false");
     }
+    function graticuleMajorOptions() {
+      const out = [];
+      for (let n = 5; n <= 90; n += 5) out.push(n);
+      return out;
+    }
+    function graticuleOptionLabel(value) {
+      return `${value}°`;
+    }
+    function populateGraticuleSelect(select, values, current) {
+      if (!select) return;
+      select.innerHTML = values.map(value => `<option value="${value}"${value === current ? " selected" : ""}>${graticuleOptionLabel(value)}</option>`).join("");
+    }
     function populateGraticuleDialog() {
       const s = graticuleLayerSettings();
       const gridOn = s.enabled === true;
+      const major = Math.max(5, Math.min(90, Math.round(s.major / 5) * 5));
+      const minor = graticuleSnapMinor(s.minor, major);
       setButtonLabel("#graticuleEnabledBtn", GRATICULE_GRID_ICON, "Grid", "Toggle grid lines");
       setButtonLabel("#graticuleReferenceBtn", GRATICULE_CIRCLES_ICON, "Circles", "Toggle tropic and polar circles");
       setButtonLabel("#graticuleLabelsBtn", GRATICULE_LABELS_ICON, "Labels", "Toggle grid labels");
@@ -7487,9 +7550,8 @@
       $("#graticuleMinorInput").disabled = !gridOn;
       $("#graticuleMajorInput")?.closest(".graticule-number-field")?.classList.toggle("is-disabled", !gridOn);
       $("#graticuleMinorInput")?.closest(".graticule-number-field")?.classList.toggle("is-disabled", !gridOn);
-      $("#graticuleMajorInput").value = s.major;
-      $("#graticuleMinorInput").value = s.minor;
-      $("#graticuleMinorInput").max = Math.max(1, s.major - 1);
+      populateGraticuleSelect($("#graticuleMajorInput"), graticuleMajorOptions(), major);
+      populateGraticuleSelect($("#graticuleMinorInput"), graticuleDivisors(major), minor);
     }
     function openGraticuleDialog() {
       const pop = $("#graticuleDialog");
@@ -7521,7 +7583,7 @@
       const bag = state.settings.graticuleByLayer;
       if (!bag?.[activeLayerId]) return;
       const current = bag[activeLayerId];
-      const major = Math.max(1, Math.min(90, Math.round(Number($("#graticuleMajorInput").value)) || current.major));
+      const major = Math.max(5, Math.min(90, Math.round((Number($("#graticuleMajorInput").value) || current.major) / 5) * 5));
       const minor = graticuleSnapMinor(Math.round(Number($("#graticuleMinorInput").value)) || current.minor, major);
       bag[activeLayerId] = {
         enabled: current.enabled === true,
@@ -7541,61 +7603,6 @@
       const current = graticuleLayerSettings();
       const on = key === "enabled" ? current.enabled === true : current[key] !== false;
       commitGraticuleSettings({ [key]: !on });
-    }
-
-    function stepGraticuleMajorInput(direction) {
-      const current = graticuleLayerSettings();
-      const value = Math.round(Number($("#graticuleMajorInput").value)) || current.major;
-      const major = Math.max(1, Math.min(90, value + direction));
-      $("#graticuleMajorInput").value = major;
-      $("#graticuleMinorInput").value = graticuleSnapMinor(current.minor, major);
-      $("#graticuleMinorInput").max = Math.max(1, major - 1);
-      commitGraticuleSettings();
-    }
-
-    function handleGraticuleMajorInput(event) {
-      const current = graticuleLayerSettings();
-      const value = Math.round(Number($("#graticuleMajorInput").value));
-      if (!Number.isFinite(value)) return;
-      const major = Math.max(1, Math.min(90, value));
-      $("#graticuleMajorInput").value = major;
-      $("#graticuleMinorInput").value = graticuleSnapMinor(current.minor, major);
-      $("#graticuleMinorInput").max = Math.max(1, major - 1);
-    }
-
-    function stepGraticuleMinorInput(direction) {
-      const current = graticuleLayerSettings();
-      const major = Math.max(1, Math.min(90, Math.round(Number($("#graticuleMajorInput").value)) || current.major));
-      const options = graticuleDivisors(major);
-      const inputValue = Math.round(Number($("#graticuleMinorInput").value));
-      const base = Number.isFinite(inputValue) && options.includes(inputValue) ? inputValue : current.minor;
-      let index = options.findIndex(d => d >= base);
-      if (index < 0) index = options.length - 1;
-      if (options[index] !== base && direction < 0) index -= 1;
-      index = Math.max(0, Math.min(options.length - 1, index + direction));
-      $("#graticuleMinorInput").value = options[index];
-      commitGraticuleSettings();
-    }
-
-    function handleGraticuleMinorInput() {
-      const current = graticuleLayerSettings();
-      const major = Math.max(1, Math.min(90, Math.round(Number($("#graticuleMajorInput").value)) || current.major));
-      const value = Math.round(Number($("#graticuleMinorInput").value));
-      if (!Number.isFinite(value)) return;
-      const options = graticuleDivisors(major);
-      if (options.includes(value)) {
-        commitGraticuleSettings();
-        return;
-      }
-      if (value === current.minor) return;
-      if (Math.abs(value - current.minor) !== 1) return;
-      let index = options.findIndex(d => d >= current.minor);
-      if (index < 0) index = options.length - 1;
-      const next = options[Math.max(0, Math.min(options.length - 1, index + (value > current.minor ? 1 : -1)))];
-      if (next) {
-        $("#graticuleMinorInput").value = next;
-        commitGraticuleSettings();
-      }
     }
 
     function suggestedSetMarkerPoint(item) {
@@ -18204,30 +18211,13 @@
       $("#graticuleEnabledBtn")?.addEventListener("click", () => toggleGraticuleSetting("enabled"));
       $("#graticuleReferenceBtn")?.addEventListener("click", () => toggleGraticuleSetting("references"));
       $("#graticuleLabelsBtn")?.addEventListener("click", () => toggleGraticuleSetting("labels"));
-      $("#graticuleMajorInput")?.addEventListener("change", () => commitGraticuleSettings());
-      $("#graticuleMajorInput")?.addEventListener("input", handleGraticuleMajorInput);
-      $("#graticuleMajorInput")?.addEventListener("keydown", event => {
-        if (event.key === "Enter") {
-          event.preventDefault();
-          commitGraticuleSettings();
-          return;
-        }
-        if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
-        event.preventDefault();
-        stepGraticuleMajorInput(event.key === "ArrowUp" ? 1 : -1);
+      $("#graticuleMajorInput")?.addEventListener("change", () => {
+        const current = graticuleLayerSettings();
+        const major = Math.max(5, Math.min(90, Math.round((Number($("#graticuleMajorInput").value) || current.major) / 5) * 5));
+        populateGraticuleSelect($("#graticuleMinorInput"), graticuleDivisors(major), graticuleSnapMinor(current.minor, major));
+        commitGraticuleSettings();
       });
-      $("#graticuleMinorInput")?.addEventListener("input", handleGraticuleMinorInput);
       $("#graticuleMinorInput")?.addEventListener("change", () => commitGraticuleSettings());
-      $("#graticuleMinorInput")?.addEventListener("keydown", event => {
-        if (event.key === "Enter") {
-          event.preventDefault();
-          commitGraticuleSettings();
-          return;
-        }
-        if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
-        event.preventDefault();
-        stepGraticuleMinorInput(event.key === "ArrowUp" ? 1 : -1);
-      });
       $("#graticuleDialog")?.addEventListener("toggle", event => {
         $("#mapGraticuleBtn")?.setAttribute("aria-expanded", event.newState === "open" ? "true" : "false");
       });
