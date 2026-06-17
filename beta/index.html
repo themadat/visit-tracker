@@ -1704,7 +1704,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.4.1";
+    const APP_VERSION = "4.7.4.2";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -16931,6 +16931,7 @@
           y: event.clientY,
           scrollLeft: wrap.scrollLeft,
           scrollTop: wrap.scrollTop,
+          pageTop: (document.scrollingElement || document.documentElement).scrollTop,
           moved: false
         };
       });
@@ -16961,7 +16962,18 @@
         if (!mapPanState.moved) return;
         event.preventDefault();
         wrap.scrollLeft = mapPanState.scrollLeft - dx;
-        wrap.scrollTop = mapPanState.scrollTop - dy;
+        // Vertical: scroll the map column when it overflows, else pan the page —
+        // on mobile a zoomed map grows the page instead of scrolling internally,
+        // so a vertical drag should move the page (touch-action: none blocks it otherwise).
+        if (wrap.scrollHeight - wrap.clientHeight > 1) {
+          wrap.scrollTop = mapPanState.scrollTop - dy;
+        } else {
+          // The page itself scrolls here (with CSS scroll-behavior: smooth), so
+          // force an instant scroll — otherwise the drag animates instead of
+          // tracking the finger.
+          const scroller = document.scrollingElement || document.documentElement;
+          scroller.scrollTo({ top: mapPanState.pageTop - dy, behavior: "instant" });
+        }
       });
       const endPointer = event => {
         const wasTouch = pointers.delete(event.pointerId);
@@ -16997,9 +17009,21 @@
       };
       wrap.addEventListener("pointerup", endPointer);
       wrap.addEventListener("pointercancel", endPointer);
-      ["gesturestart", "gesturechange", "gestureend"].forEach(type =>
-        wrap.addEventListener(type, event => event.preventDefault())
-      );
+      // Safari (Mac) trackpad pinch fires gesture events (not ctrl+wheel). Zoom
+      // from them, anchored at the gesture center; ignore while a touch pinch is
+      // active (handled by the pointer logic) to avoid double-zoom.
+      let gestureZoomBase = null;
+      wrap.addEventListener("gesturestart", event => {
+        event.preventDefault();
+        gestureZoomBase = pointers.size >= 2 ? null : (mapFitMode ? 1 : mapZoom);
+      });
+      wrap.addEventListener("gesturechange", event => {
+        event.preventDefault();
+        if (gestureZoomBase == null || pointers.size >= 2) return;
+        const rect = wrap.getBoundingClientRect();
+        setMapZoom(gestureZoomBase * event.scale, { x: event.clientX - rect.left, y: event.clientY - rect.top });
+      });
+      wrap.addEventListener("gestureend", event => { event.preventDefault(); gestureZoomBase = null; });
       wrap.addEventListener("scroll", () => saveMapPanSoon());
       wrap.addEventListener("click", event => {
         if (wrap.dataset.blockClick !== "true") return;
@@ -17012,11 +17036,11 @@
         disarmRingSlot();
       });
       wrap.addEventListener("wheel", event => {
-        if (mapFitMode || !(event.ctrlKey || event.metaKey)) return;
+        if (!(event.ctrlKey || event.metaKey)) return;   // trackpad pinch / ctrl+wheel — also works from fit mode
         event.preventDefault();
         const rect = wrap.getBoundingClientRect();
         // Gentle continuous multiplier per wheel notch (buttons/keys do the 2x jumps).
-        setMapZoom(mapZoom * (event.deltaY > 0 ? 1 / 1.25 : 1.25), {
+        setMapZoom((mapFitMode ? 1 : mapZoom) * (event.deltaY > 0 ? 1 / 1.25 : 1.25), {
           x: event.clientX - rect.left,
           y: event.clientY - rect.top
         });
