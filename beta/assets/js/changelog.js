@@ -4,14 +4,14 @@
 
     const CHANGELOG = [
       {
-        version: "4.7.5.9",
+        version: "4.7.5.10",
         date: "2026-06-17",
         title: "Gridlines",
         summary: "Grid labels, spacing controls, and US geography get cleaner map detail.",
         highlights: [
           "Major and Minor are now dropdowns.",
           "World reference labels sit at both globe edges.",
-          "US gridlines now continue off the map edges.",
+          "Degree labels now get light direction colors.",
           "Added a P0 pop-up unification roadmap item.",
         ],
         updateSections: [
@@ -31,6 +31,7 @@
               "Alaska and Hawaii now draw independent Mercator-style inset grids instead of inheriting the lower-48 National Atlas projection.",
               "The lower-48 grid now renders from a wider geographic envelope so lines feel continuous beyond all four US map edges.",
               "Alaska and Hawaii inset grids now scale to their separator panes instead of hugging only the island/state artwork bounds.",
+              "Latitude and longitude degree labels now lightly tint by direction: north red, south green, east orange-yellow, and west blue-purple.",
             ]
           },
           {
