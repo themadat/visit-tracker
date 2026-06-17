@@ -1827,11 +1827,12 @@
       overscroll-behavior-y: auto;
       touch-action: pan-y;
       cursor: grab;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     .map-wrap.is-panning {
       cursor: grabbing;
-      user-select: none;
     }
 
     .map-zoom-controls {
@@ -1937,6 +1938,8 @@
       width: 100%;
       min-width: 680px;
       height: auto;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     .map-states path,
@@ -11187,6 +11190,14 @@
       .map-panel {
         position: static;
         top: auto;
+      }
+
+      [data-map-mode="scroll"] .map-viewport {
+        height: var(--map-scroll-height, auto);
+      }
+
+      [data-map-mode="scroll"] .map-wrap {
+        height: 100%;
       }
 
       .side-panel-wrap {
