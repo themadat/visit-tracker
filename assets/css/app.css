@@ -2362,6 +2362,22 @@
       pointer-events: none;
     }
 
+    .graticule-label.is-north {
+      fill: color-mix(in srgb, #ef4444 68%, var(--text));
+    }
+
+    .graticule-label.is-south {
+      fill: color-mix(in srgb, #22c55e 66%, var(--text));
+    }
+
+    .graticule-label.is-east {
+      fill: color-mix(in srgb, #f59e0b 70%, var(--text));
+    }
+
+    .graticule-label.is-west {
+      fill: color-mix(in srgb, #6d5dfc 72%, var(--text));
+    }
+
     .graticule-inset-label {
       font-size: 6px;
       stroke-width: 2px;
