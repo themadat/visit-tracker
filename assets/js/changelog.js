@@ -4,24 +4,24 @@
 
     const CHANGELOG = [
       {
-        version: "4.7.5.2",
+        version: "4.7.5.3",
         date: "2026-06-17",
         title: "Gridlines",
-        summary: "The latitude/longitude grid gets a tighter pop-up and better map-aware labels.",
+        summary: "The latitude/longitude grid gets compact controls and a real curved US overlay.",
         highlights: [
-          "Toggle a lat/lng graticule from a globe pop-up.",
-          "World grid labels stay inside the map frame.",
-          "Minor spacing snaps to divisors of the major interval.",
-          "Tropics and polar circles are emphasized on World.",
+          "Grid controls fit into one compact globe pop-up row.",
+          "Toggle grid, reference circles, and labels separately.",
+          "US grid now uses a curved projected overlay.",
+          "Minor spacing still snaps to major-interval divisors.",
         ],
         updateSections: [
           {
             heading: "Maps",
             items: [
-              "The grid control now uses the globe outline when off and the filled globe when on, opening a compact non-modal pop-up instead of a modal.",
-              "On the World map, labels are clamped inside the Robinson frame and named tropic/polar reference lines draw above the standard grid.",
-              "Minor spacing is chosen from clean divisors of the major interval, so a 30° major offers 1°, 2°, 3°, 5°, 6°, 10°, or 15°.",
-              "The US map now uses one inferred contiguous lat/lng plane clipped to the stylized map, with separate inset grids where the map art is not contiguous.",
+              "The globe grid button now reads larger in the map header and toggles a compact pop-up open and closed without an extra close button.",
+              "The pop-up is one horizontal row with Grid, Circles, and Labels toggles plus Major and Minor numeric controls.",
+              "The Circles toggle controls the World tropic and polar-circle reference lines; Labels controls both degree labels and reference-line names.",
+              "The US map now draws a curved Albers-style latitude/longitude overlay over the contiguous US frame instead of the prior fitted straight-line grid.",
             ]
           }
         ]
