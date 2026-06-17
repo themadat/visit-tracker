@@ -1704,7 +1704,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.3";
+    const APP_VERSION = "4.7.4.1";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -2453,6 +2453,8 @@
     const MAP_ZOOM_MIN = 1;
     const MAP_ZOOM_MAX = 64;
     const MAP_ZOOM_STEP = .5;
+    // Touch pinch/tap gestures (WISH-074) snap to these zoom stops (round %; doubling/halving stays on the ladder).
+    const MAP_ZOOM_STOPS = [1, 1.5, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64];
     const NOTE_AUTOCOMPLETE_LIMIT = 40;
     const BASECAMP_PAD_MAX = 20;
     const BASECAMP_PAD_NAME_MAX = 60;
@@ -10330,6 +10332,16 @@
       return Math.max(MAP_ZOOM_MIN, Math.min(MAP_ZOOM_MAX, Number(value) || 1));
     }
 
+    function snapMapZoom(value) {
+      const v = clampMapZoom(value);
+      let best = MAP_ZOOM_STOPS[0], bestDelta = Infinity;
+      for (const stop of MAP_ZOOM_STOPS) {
+        const delta = Math.abs(Math.log(v) - Math.log(stop));
+        if (delta < bestDelta) { bestDelta = delta; best = stop; }
+      }
+      return best;
+    }
+
     function formatMapZoom(value = mapZoom) {
       return `${Math.round(clampMapZoom(value) * 100)}%`;
     }
@@ -16878,8 +16890,41 @@
           event.target.blur();
         }
       });
+      // Touch gestures (WISH-074): two-finger pinch zoom (snaps to a stop on
+      // release), double-tap to zoom in, two-finger tap to zoom out. Touch-only;
+      // mouse/pen drag-pan and ctrl+wheel/trackpad zoom are unchanged.
+      const pointers = new Map();        // active touch pointers: id -> {x,y}
+      let pinch = null;                  // { startDist, startZoom, scaled, lastAnchor }
+      let pinchFrame = 0, pinchPending = null;
+      let lastTapAt = 0, lastTapX = 0, lastTapY = 0;
+      const localAnchor = (clientX, clientY) => {
+        const r = wrap.getBoundingClientRect();
+        return { x: clientX - r.left, y: clientY - r.top };
+      };
+      const pinchGeometry = () => {
+        const [a, b] = [...pointers.values()];
+        return { dist: Math.hypot(a.x - b.x, a.y - b.y), mid: { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 } };
+      };
+      const blockNextClick = () => {
+        wrap.dataset.blockClick = "true";
+        setTimeout(() => delete wrap.dataset.blockClick, 0);
+      };
+      const applyPinchFrame = () => {
+        pinchFrame = 0;
+        if (pinch && pinchPending) setMapZoom(pinchPending.zoom, pinchPending.anchor);
+      };
       wrap.addEventListener("pointerdown", event => {
-        if (mapFitMode || event.button > 0) return;
+        if (event.pointerType === "touch") {
+          pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+          if (pointers.size === 2) {
+            mapPanState = null;
+            wrap.classList.remove("is-panning");
+            const g = pinchGeometry();
+            pinch = { startDist: g.dist || 1, startZoom: mapFitMode ? 1 : mapZoom, scaled: false, lastAnchor: localAnchor(g.mid.x, g.mid.y) };
+            return;
+          }
+        }
+        if (mapFitMode || event.button > 0 || pinch) return;
         mapPanState = {
           pointerId: event.pointerId,
           x: event.clientX,
@@ -16890,6 +16935,21 @@
         };
       });
       wrap.addEventListener("pointermove", event => {
+        if (event.pointerType === "touch" && pointers.has(event.pointerId)) {
+          pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+        }
+        if (pinch && pointers.size >= 2) {
+          event.preventDefault();
+          const g = pinchGeometry();
+          const scale = g.dist / pinch.startDist;
+          if (Math.abs(scale - 1) > .02) pinch.scaled = true;
+          pinch.lastAnchor = localAnchor(g.mid.x, g.mid.y);
+          if (pinch.scaled) {
+            pinchPending = { zoom: clampMapZoom(pinch.startZoom * scale), anchor: pinch.lastAnchor };
+            if (!pinchFrame) pinchFrame = requestAnimationFrame(applyPinchFrame);
+          }
+          return;
+        }
         if (!mapPanState || mapPanState.pointerId !== event.pointerId) return;
         const dx = event.clientX - mapPanState.x;
         const dy = event.clientY - mapPanState.y;
@@ -16903,20 +16963,43 @@
         wrap.scrollLeft = mapPanState.scrollLeft - dx;
         wrap.scrollTop = mapPanState.scrollTop - dy;
       });
-      const endPan = event => {
+      const endPointer = event => {
+        const wasTouch = pointers.delete(event.pointerId);
+        if (pinch && pointers.size < 2) {
+          if (pinchFrame) { cancelAnimationFrame(pinchFrame); pinchFrame = 0; }
+          const anchor = pinch.lastAnchor || { x: wrap.clientWidth / 2, y: wrap.clientHeight / 2 };
+          if (pinch.scaled && pinchPending) setMapZoom(snapMapZoom(pinchPending.zoom), anchor);
+          else if (!pinch.scaled && !mapFitMode) setMapZoom(snapMapZoom(mapZoom / 2), anchor);
+          pinch = null; pinchPending = null; mapPanState = null;
+          blockNextClick();
+          return;
+        }
+        if (wasTouch && mapPanState && mapPanState.pointerId === event.pointerId && !mapPanState.moved) {
+          const now = Date.now();
+          const near = Math.abs(event.clientX - lastTapX) < 24 && Math.abs(event.clientY - lastTapY) < 24;
+          if (now - lastTapAt < 300 && near) {
+            setMapZoom(snapMapZoom((mapFitMode ? 1 : mapZoom) * 2), localAnchor(event.clientX, event.clientY));
+            blockNextClick();
+            lastTapAt = 0; mapPanState = null;
+            return;
+          }
+          lastTapAt = now; lastTapX = event.clientX; lastTapY = event.clientY;
+        }
         if (!mapPanState || mapPanState.pointerId !== event.pointerId) return;
         const moved = mapPanState.moved;
         mapPanState = null;
         wrap.classList.remove("is-panning");
         if (moved) {
           try { wrap.releasePointerCapture(event.pointerId); } catch { }
-          wrap.dataset.blockClick = "true";
-          setTimeout(() => delete wrap.dataset.blockClick, 0);
+          blockNextClick();
           saveMapPanSoon(true);
         }
       };
-      wrap.addEventListener("pointerup", endPan);
-      wrap.addEventListener("pointercancel", endPan);
+      wrap.addEventListener("pointerup", endPointer);
+      wrap.addEventListener("pointercancel", endPointer);
+      ["gesturestart", "gesturechange", "gestureend"].forEach(type =>
+        wrap.addEventListener(type, event => event.preventDefault())
+      );
       wrap.addEventListener("scroll", () => saveMapPanSoon());
       wrap.addEventListener("click", event => {
         if (wrap.dataset.blockClick !== "true") return;

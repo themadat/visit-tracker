@@ -4,6 +4,27 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.4.1",
+        date: "2026-06-17",
+        title: "Crosshairs",
+        summary: "Touchscreens can pinch, double-tap, and two-finger-tap to zoom the map.",
+        highlights: [
+          "Pinch to zoom the map on phones and tablets.",
+          "Double-tap to zoom in; two-finger tap to zoom out.",
+          "Pinch zoom snaps to clean zoom levels on release.",
+        ],
+        updateSections: [
+          {
+            heading: "Map",
+            items: [
+              "Two-finger pinch zooms the map, centered on your fingers, and snaps to a clean zoom level when you let go.",
+              "Double-tap zooms in one step at the tap; a two-finger tap zooms out one step.",
+              "Touch gestures leave desktop mouse, trackpad, and the zoom controls unchanged.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.3",
         date: "2026-06-17",
         title: "Camera Trail",
