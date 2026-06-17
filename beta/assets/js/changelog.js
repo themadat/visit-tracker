@@ -4,8 +4,8 @@
 
     const CHANGELOG = [
       {
-        version: "4.7.3.1",
-        date: "2026-06-16",
+        version: "4.7.3",
+        date: "2026-06-17",
         title: "Camera Trail",
         summary: "Waypoint Pack photos can now show where the camera stood when Commons has that metadata.",
         highlights: [
@@ -33,6 +33,12 @@
             items: [
               "The feature is online-only and read-only: it never changes a note's stored latitude or longitude.",
               "Photos without camera coordinates, or requests that cannot complete, show a muted status instead of a blank gap or popup.",
+            ]
+          },
+          {
+            heading: "Roadmap",
+            items: [
+              "Retired the completed pack-photo camera-location roadmap item from the active list.",
             ]
           }
         ]
