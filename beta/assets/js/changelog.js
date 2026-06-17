@@ -4,6 +4,25 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.4.4",
+        date: "2026-06-17",
+        title: "Crosshairs",
+        summary: "Mobile map swipes keep smooth vertical scroll while restoring horizontal pan.",
+        highlights: [
+          "Horizontal map swipes work again on phones and tablets.",
+          "Vertical swipes still use native mobile scrolling.",
+        ],
+        updateSections: [
+          {
+            heading: "Map Gestures",
+            items: [
+              "Scrollable maps now allow native horizontal touch panning in scroll mode.",
+              "Touch drag detection waits for a clearer horizontal or vertical direction before locking the gesture, so early finger jitter no longer cancels horizontal map movement.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.4.3",
         date: "2026-06-17",
         title: "Crosshairs",
