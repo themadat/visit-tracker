@@ -2319,6 +2319,81 @@
       stroke-width: 9px;
     }
 
+    /* WISH-071 lat/lng graticule — subordinate to markers/rings/labels, theme-aware. */
+    .map-graticule {
+      pointer-events: none;
+    }
+
+    .graticule-line {
+      fill: none;
+      stroke: color-mix(in srgb, var(--text) 20%, transparent);
+      stroke-width: 0.6;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .graticule-line.is-major {
+      stroke: color-mix(in srgb, var(--text) 38%, transparent);
+      stroke-width: 1;
+    }
+
+    .graticule-frame {
+      fill: none;
+      stroke: color-mix(in srgb, var(--text) 46%, transparent);
+      stroke-width: 1.2;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .graticule-label {
+      fill: color-mix(in srgb, var(--text) 72%, var(--muted));
+      font-size: 8px;
+      font-weight: 700;
+      paint-order: stroke fill;
+      stroke: var(--ring-label-bg, var(--surface));
+      stroke-width: 2.4px;
+      stroke-linejoin: round;
+      pointer-events: none;
+    }
+
+    /* World viewBox (2754) ~3x US (934): scale graticule labels up to read on the global layer. */
+    #worldMapGraticule .graticule-label {
+      font-size: 22px;
+      stroke-width: 6px;
+    }
+
+    .graticule-field-row {
+      display: flex;
+      gap: 1.1rem;
+      flex-wrap: wrap;
+      margin-top: .7rem;
+    }
+    .graticule-field {
+      display: flex;
+      flex-direction: column;
+      gap: .3rem;
+      font-size: .86rem;
+      font-weight: 600;
+    }
+    .graticule-field-toggle {
+      flex-direction: row;
+      align-items: center;
+      gap: .5rem;
+      margin-top: .4rem;
+    }
+    .graticule-field input[type="number"] {
+      width: 4rem;
+    }
+    .graticule-field-toggle {
+      justify-content: flex-start;
+    }
+    .graticule-field-toggle input[type="checkbox"] {
+      width: auto;
+      flex: 0 0 auto;
+      margin: 0;
+    }
+    .graticule-hint {
+      margin-top: .8rem;
+    }
+
     .ring-anchor-pin {
       color: #2b1700;
       filter: drop-shadow(0 2px 5px rgba(15, 23, 42, .32));
