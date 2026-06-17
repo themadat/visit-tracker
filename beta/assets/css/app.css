@@ -2342,6 +2342,15 @@
       vector-effect: non-scaling-stroke;
     }
 
+    .graticule-inset-cover {
+      fill: var(--surface);
+      stroke: none;
+    }
+
+    .graticule-inset-tile-cover {
+      vector-effect: non-scaling-stroke;
+    }
+
     .graticule-label {
       fill: color-mix(in srgb, var(--text) 72%, var(--muted));
       font-size: 8px;
@@ -2411,14 +2420,31 @@
       cursor: pointer;
     }
 
+    .graticule-option-btn .sf-symbol {
+      width: 1.15em;
+      height: 1.15em;
+    }
+
     .graticule-option-btn[aria-pressed="true"] {
       background: var(--accent);
       border-color: var(--accent);
       color: white;
     }
 
+    .graticule-option-btn:disabled {
+      opacity: .48;
+      cursor: not-allowed;
+      background: var(--surface-2);
+      border-color: var(--line);
+      color: var(--muted);
+    }
+
     [data-theme="dark"] .graticule-option-btn[aria-pressed="true"] {
       color: #07111f;
+    }
+
+    [data-theme="dark"] .graticule-option-btn:disabled {
+      color: var(--muted);
     }
 
     .graticule-number-field {
