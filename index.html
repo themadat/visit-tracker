@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5.7">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5.8">
 </head>
 
 <body>
@@ -1728,7 +1728,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.5.7";
+    const APP_VERSION = "4.7.5.8";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7245,6 +7245,7 @@
 
     const US_GRATICULE_INSET_ABBRS = new Set(["AK", "HI", "PR", "VI", "GU", "MP", "AS"]);
     const US_GRATICULE_BOUNDS = { minLat: 25, maxLat: 50, minLng: -125, maxLng: -65 };
+    const US_GRATICULE_DRAW_BOUNDS = { minLat: 0, maxLat: 60, minLng: -145, maxLng: -45 };
     const US_NATIONAL_ATLAS = { lat0: 45, lng0: -100 };
     const US_GRATICULE_CALIBRATION = { scaleX: 1.035, scaleY: 1.025, rotate: -1.2, dx: -4, dy: -7 };
     const US_GRATICULE_INSET_CUTS = [
@@ -7529,7 +7530,7 @@
     function renderUsGraticule(g, svg, major, minor, options = {}) {
       const frame = usNationalAtlasFrame(svg);
       if (!frame) return;
-      const bounds = US_GRATICULE_BOUNDS;
+      const bounds = US_GRATICULE_DRAW_BOUNDS;
       const viewBox = svg.viewBox?.baseVal || { x: 0, y: 0, width: 934, height: 593 };
       const pad = 8;
       const cornerX = 52;
