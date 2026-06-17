@@ -4,24 +4,24 @@
 
     const CHANGELOG = [
       {
-        version: "4.7.5.3",
+        version: "4.7.5.4",
         date: "2026-06-17",
         title: "Gridlines",
-        summary: "The latitude/longitude grid gets compact controls and a real curved US overlay.",
+        summary: "The grid controls gain icons while the US overlay switches to National Atlas projection.",
         highlights: [
-          "Grid controls fit into one compact globe pop-up row.",
-          "Toggle grid, reference circles, and labels separately.",
-          "US grid now uses a curved projected overlay.",
-          "Minor spacing still snaps to major-interval divisors.",
+          "Grid, Circles, and Labels controls now use icons.",
+          "Circles and Labels disable when Grid is off.",
+          "US grid uses National Atlas Equal Area bounds.",
+          "Minor steppers jump across skipped divisors.",
         ],
         updateSections: [
           {
             heading: "Maps",
             items: [
-              "The globe grid button now reads larger in the map header and toggles a compact pop-up open and closed without an extra close button.",
-              "The pop-up is one horizontal row with Grid, Circles, and Labels toggles plus Major and Minor numeric controls.",
-              "The Circles toggle controls the World tropic and polar-circle reference lines; Labels controls both degree labels and reference-line names.",
-              "The US map now draws a curved Albers-style latitude/longitude overlay over the contiguous US frame instead of the prior fitted straight-line grid.",
+              "The grid pop-up buttons now use a grid icon, a circle icon, and the tag icon used by shortcut labels.",
+              "Circles and Labels are grayed out while Grid is off, and the pop-up clamps inside the map panel instead of the viewport.",
+              "Minor spacing steppers now jump from one valid divisor to the next, such as 3° straight to 5° when the major interval is 30°.",
+              "The US grid now uses the U.S. National Atlas Equal Area projection over 50°N–25°N and 125°W–65°W, with the overlay covered behind Alaska, Hawaii, and territory inset cutouts.",
             ]
           }
         ]
