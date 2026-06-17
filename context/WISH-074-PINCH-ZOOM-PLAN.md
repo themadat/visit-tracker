@@ -1,6 +1,6 @@
-# WISH-074 — Pinch-to-Zoom the Map on Touch (target 4.7.3)
+# WISH-074 — Pinch-to-Zoom the Map on Touch (target patch)
 
-Ticket: **WISH-074** "Pinch-to-Zoom the Map on Touch". Target: **4.7.3**. Touch-only; **no behavior change on desktop**. Adds two-finger pinch, double-tap-to-zoom-in, and two-finger-tap-to-zoom-out, all anchored on the gesture point and routed through the existing zoom path.
+Ticket: **WISH-074** "Pinch-to-Zoom the Map on Touch". Target: **patch**. Touch-only; **no behavior change on desktop**. Adds two-finger pinch, double-tap-to-zoom-in, and two-finger-tap-to-zoom-out, all anchored on the gesture point and routed through the existing zoom path.
 
 ## Goal
 
@@ -50,7 +50,7 @@ On phones/tablets, let the scrollable map zoom by **two-finger pinch** (scale fr
 
 ## Implementation phases (for `start`)
 
-1. Open `4.7.3.1`, CHANGELOG entry (patch → no banner/cta), bump `APP_VERSION`.
+1. Open the next patch build, CHANGELOG entry (patch -> no banner/cta), bump `APP_VERSION`.
 2. CSS: set `touch-action` on `.map-wrap` so two-finger gestures reach our handlers; verify single-finger pan.
 3. Multi-pointer tracking in `bindMapPanZoom`; enter/exit pinch; suspend pan during pinch.
 4. Pinch zoom: live scale + midpoint anchor (rAF/transient-transform smoothing); on release commit through `setMapZoom` **snapped to the nearest `MAP_ZOOM_STOPS`** (log-space nearest), plus tap-suppression on end. Add the `MAP_ZOOM_STOPS` ladder const.
