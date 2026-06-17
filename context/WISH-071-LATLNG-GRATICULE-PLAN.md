@@ -6,7 +6,7 @@ Ticket: **WISH-071** "Latitude / Longitude Map Lines". Target: **patch**. An opt
 
 Add a toggleable lat/lng graticule with **two line tiers (major + minor)** and **user-customizable intervals**, configured from a **settings pop-up**:
 - **World map** — true graticule via the existing **Robinson** projection (`worldCoordinatePoint`): straight parallels, curved (sampled) meridians, plus the **projection outline/frame** (curved ±180° edge meridians closed by the pole parallels) so the map's curvature reads instead of looking like a rectangle. Defaults: **30° major, 10° minor**. Tropic and polar-circle reference lines are emphasized and labeled on top.
-- **US map** — a U.S. National Atlas Equal Area lat/lng overlay over the contiguous-US map frame, calibrated to **50°N–25°N** and **125°W–65°W** lower-48 geometry but drawn from a wider **60°N–0°** and **145°W–45°W** envelope so lines continue off all four SVG edges. Defaults: **10° major, 5° minor**. Displaced/rescaled inset cutout areas are excluded from the lower-48 grid with an SVG mask following the map-separator geometry; Alaska mainland, Alaska's Aleutian strip, and Hawaii then receive independent Mercator-style inset grids.
+- **US map** — a U.S. National Atlas Equal Area lat/lng overlay over the contiguous-US map frame, calibrated to **50°N–25°N** and **125°W–65°W** lower-48 geometry but drawn from a wider **60°N–0°** and **145°W–45°W** envelope so lines continue off all four SVG edges. Defaults: **10° major, 5° minor**. Displaced/rescaled inset cutout areas are excluded from the lower-48 grid with an SVG mask following the map-separator geometry; Alaska mainland, Alaska's Aleutian strip, and Hawaii then receive independent Mercator-style inset grids scaled to the map-separator pane space.
 - **Major lines** read stronger and carry **degree labels at both line ends**; **minor lines** are thinner/subtler (lighter or no labels).
 - A **per-map control** (button → settings pop-up) holding on/off, reference-line toggle, label toggle, and major/minor intervals, remembered separately for US and World, kept visually subordinate to markers/rings/labels.
 
@@ -54,7 +54,7 @@ Add a toggleable lat/lng graticule with **two line tiers (major + minor)** and *
 
 - **US major end-label clutter**: state boxes are small; majors at 10° may still crowd — may show US labels only on majors / larger states, or only at box edges. Tune at `start`.
 - **Interval validation**: enforce sane ranges and major ≥ minor (ideally a clean multiple) in the pop-up and `normalizeState`; decide UI (free numeric vs stepper vs preset list).
-- **US inset limit** — AK/HI/territories are displaced/rescaled insets, so one contiguous US projection cannot honestly cover them; AK/HI use separate Mercator-style frames, while territories remain masked out.
+- **US inset limit** — AK/HI/territories are displaced/rescaled insets, so one contiguous US projection cannot honestly cover them; AK/HI use separate Mercator-style frames fitted to their separator-pane containers, while territories remain masked out.
 - **Label placement / clutter** where graticule meets country/state labels (WISH-057) — keep graticule subordinate (lower contrast, below labels).
 - **Robinson sampling density** for meridians — balance smoothness vs node count (cheap either way).
 - **Performance / re-render**: render once per map render (not per zoom/pan, since it's in the transformed SVG). Minor tier multiplies line count but stays small.
@@ -63,7 +63,7 @@ Add a toggleable lat/lng graticule with **two line tiers (major + minor)** and *
 ## Verify (at `start`/`prep`)
 
 - World map: graticule on → 30° major (labeled at both ends) + 10° minor (subtle), curved meridians, straight parallels, **and the projection outline/frame so the map reads as a curved Robinson shape, not a rectangle**; lines behind pins/rings; pan/zoom works; off → fully removed.
-- US map: graticule on → contiguous US shows a National Atlas Equal Area lat/lng overlay with optional labels and lines continuing off all four SVG edges; Alaska and Hawaii show independent Mercator-style inset grids; territories remain masked out; off → removed.
+- US map: graticule on → contiguous US shows a National Atlas Equal Area lat/lng overlay with optional labels and lines continuing off all four SVG edges; Alaska and Hawaii show independent Mercator-style inset grids fitted to their separator-pane containers; territories remain masked out; off → removed.
 - Settings pop-up: changing major/minor per map updates that map live and persists; bad values are clamped; the two maps stay independent across reload.
 - End labels read correctly (`30°N`, `120°W`, `0°`) at both ends of major lines.
 - Both themes; `./build/check.sh`, `git diff --check`, desktop + mobile (375px) on port 8018.
