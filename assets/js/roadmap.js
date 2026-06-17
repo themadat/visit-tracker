@@ -17,19 +17,6 @@
         category: "Map"
       },
       {
-        title: "Show a Pack Photo's Camera Location",
-        ticketId: "WISH-075",
-        planDoc: "WISH-075-PHOTO-CAMERA-LOCATION-PLAN.md",
-        description: "For a Waypoint-pack photo, surface where the shot was taken — the camera/vantage-point coordinates (plus heading when available, and the distance/bearing offset from the note's landmark) so a traveler can stand in the same spot and recreate the photo. Data comes from the photo's Wikimedia Commons file (the camera-location geotag or EXIF GPS), shown as a small caption under the photo in BOTH the note editor and the Waypoint Packs panel, with a tap-to-open map pin at the camera spot. Online-only and lazy; when there's no geotag it shows an explicit subtle 'unavailable' state (not a blank gap) so it never looks like a bug; never overwrites the note's own lat/lng.",
-        priority: "P0",
-        effort: "medium",
-        targetKind: "exact",
-        targetVersion: "4.7.3",
-        tokenCostPct: 14,
-        prompt: "Add a camera-location readout to the linked-note Waypoint photo, shown in both the note editor (#noteWaypointPhotoPreview) and the Waypoint Packs panel preview. When a photo is opened, derive its Commons File name from the resolved upload/thumb URL (or pageimages piprop=name), then query commons.wikimedia.org (origin=*) prop=coordinates|imageinfo: prefer the coordinates entry with type=camera, else EXIF extmetadata GPSLatitude/GPSLongitude, with GPSImgDirection as heading. Cache in-memory (no schema change). Show camera coords + heading-when-present + distance/bearing offset from the note's landmark coords, with a Google Maps pin link at the camera spot. Lazy/online-only, show an explicit muted unavailable state when absent, never write to note.lat/lng.",
-        category: "Notes"
-      },
-      {
         title: "Single-File Deploy Build Step",
         ticketId: "WISH-038",
         description: "4.4.1 delivered the no-build split: styles in assets/css and icon/map/release/roadmap data in assets/js. Remaining scope, only if ever wanted: a build script that concatenates and minifies everything back into one deployable index.html for a true single-file distribution.",
