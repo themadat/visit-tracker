@@ -4,6 +4,27 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.5.1",
+        date: "2026-06-17",
+        title: "Gridlines",
+        summary: "An optional latitude/longitude grid can be switched on for either map.",
+        highlights: [
+          "Toggle a lat/lng graticule on the US and World maps.",
+          "The World grid labels its major lines in degrees.",
+          "Set major/minor spacing per map, remembered separately.",
+        ],
+        updateSections: [
+          {
+            heading: "Maps",
+            items: [
+              "A new grid control adds latitude/longitude lines to each map, remembered separately for US and World.",
+              "On the World map, major lines are labeled in degrees at both ends (like 30°N, 120°W); minor lines stay subtle.",
+              "The World map draws true Robinson parallels and curved meridians with a projection outline; the US map draws true per-state lat/lon, with their own grids in the Alaska and Hawaii insets.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.4",
         date: "2026-06-17",
         title: "Crosshairs",
