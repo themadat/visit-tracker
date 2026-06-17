@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5.3">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5.4">
 </head>
 
 <body>
@@ -841,8 +841,8 @@
   <div id="graticuleDialog" popover class="graticule-popover" aria-label="Map grid options">
     <div class="graticule-control-row">
       <button id="graticuleEnabledBtn" class="graticule-option-btn" type="button" aria-pressed="false">Grid</button>
-      <button id="graticuleReferenceBtn" class="graticule-option-btn" type="button" aria-pressed="true">Circles</button>
-      <button id="graticuleLabelsBtn" class="graticule-option-btn" type="button" aria-pressed="true">Labels</button>
+      <button id="graticuleReferenceBtn" class="graticule-option-btn" type="button" aria-pressed="true" disabled>Circles</button>
+      <button id="graticuleLabelsBtn" class="graticule-option-btn" type="button" aria-pressed="true" disabled>Labels</button>
       <label class="graticule-number-field">Major
         <input type="number" id="graticuleMajorInput" min="1" max="90" step="1" inputmode="numeric">
       </label>
@@ -1728,7 +1728,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.5.3";
+    const APP_VERSION = "4.7.5.4";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7236,20 +7236,20 @@
     }
 
     const US_GRATICULE_INSET_ABBRS = new Set(["AK", "HI", "PR", "VI", "GU", "MP", "AS"]);
-    const US_GRATICULE_BOUNDS = { minLat: 24, maxLat: 50, minLng: -126, maxLng: -66 };
-    const US_ALBERS = { phi1: 29.5, phi2: 45.5, phi0: 23, lambda0: -96 };
-    let usAlbersFrameCache = null;
+    const US_GRATICULE_BOUNDS = { minLat: 25, maxLat: 50, minLng: -125, maxLng: -65 };
+    const US_NATIONAL_ATLAS = { lat0: 45, lng0: -100 };
+    let usNationalAtlasFrameCache = null;
 
-    function usAlbersRaw(lat, lng) {
+    function usNationalAtlasRaw(lat, lng) {
       const rad = Math.PI / 180;
-      const phi1 = US_ALBERS.phi1 * rad, phi2 = US_ALBERS.phi2 * rad, phi0 = US_ALBERS.phi0 * rad, lambda0 = US_ALBERS.lambda0 * rad;
+      const phi0 = US_NATIONAL_ATLAS.lat0 * rad, lambda0 = US_NATIONAL_ATLAS.lng0 * rad;
       const phi = Number(lat) * rad, lambda = Number(lng) * rad;
-      const n = (Math.sin(phi1) + Math.sin(phi2)) / 2;
-      const C = Math.cos(phi1) ** 2 + 2 * n * Math.sin(phi1);
-      const rho = Math.sqrt(Math.max(0, C - 2 * n * Math.sin(phi))) / n;
-      const rho0 = Math.sqrt(Math.max(0, C - 2 * n * Math.sin(phi0))) / n;
-      const theta = n * (lambda - lambda0);
-      return { x: rho * Math.sin(theta), y: rho0 - rho * Math.cos(theta) };
+      const cosC = Math.sin(phi0) * Math.sin(phi) + Math.cos(phi0) * Math.cos(phi) * Math.cos(lambda - lambda0);
+      const k = Math.sqrt(2 / Math.max(.000001, 1 + cosC));
+      return {
+        x: k * Math.cos(phi) * Math.sin(lambda - lambda0),
+        y: k * (Math.cos(phi0) * Math.sin(phi) - Math.sin(phi0) * Math.cos(phi) * Math.cos(lambda - lambda0))
+      };
     }
 
     function contiguousUsSvgBox(svg) {
@@ -7271,11 +7271,11 @@
       return { x: box.x, y: box.y, width: box.x2 - box.x, height: box.y2 - box.y };
     }
 
-    function usAlbersRawBounds() {
+    function usNationalAtlasRawBounds() {
       const bounds = US_GRATICULE_BOUNDS;
       const out = { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity };
       const add = (lat, lng) => {
-        const p = usAlbersRaw(lat, lng);
+        const p = usNationalAtlasRaw(lat, lng);
         out.minX = Math.min(out.minX, p.x); out.maxX = Math.max(out.maxX, p.x);
         out.minY = Math.min(out.minY, p.y); out.maxY = Math.max(out.maxY, p.y);
       };
@@ -7284,11 +7284,11 @@
       return out;
     }
 
-    function usAlbersFrame(svg) {
-      if (usAlbersFrameCache) return usAlbersFrameCache;
+    function usNationalAtlasFrame(svg) {
+      if (usNationalAtlasFrameCache) return usNationalAtlasFrameCache;
       const box = contiguousUsSvgBox(svg);
       if (!box) return null;
-      const raw = usAlbersRawBounds();
+      const raw = usNationalAtlasRawBounds();
       const padX = box.width * .035;
       const padY = box.height * .07;
       const viewBox = svg.viewBox?.baseVal || { x: 0, y: 0, width: 934, height: 593 };
@@ -7297,15 +7297,15 @@
       const y = Math.max(viewBox.y + viewPad, box.y - padY);
       const x2 = Math.min(viewBox.x + viewBox.width - viewPad, box.x + box.width + padX);
       const y2 = Math.min(viewBox.y + viewBox.height - viewPad, box.y + box.height + padY);
-      usAlbersFrameCache = {
+      usNationalAtlasFrameCache = {
         box: { x, y, width: Math.max(1, x2 - x), height: Math.max(1, y2 - y) },
         raw
       };
-      return usAlbersFrameCache;
+      return usNationalAtlasFrameCache;
     }
 
-    function usAlbersPoint(lat, lng, frame) {
-      const p = usAlbersRaw(lat, lng);
+    function usNationalAtlasPoint(lat, lng, frame) {
+      const p = usNationalAtlasRaw(lat, lng);
       const rawW = Math.max(.0001, frame.raw.maxX - frame.raw.minX);
       const rawH = Math.max(.0001, frame.raw.maxY - frame.raw.minY);
       return {
@@ -7314,8 +7314,36 @@
       };
     }
 
+    function appendUsInsetGraticuleCovers(g, svg) {
+      US_GRATICULE_INSET_ABBRS.forEach(abbr => {
+        const tile = svg.querySelector(`.state-tile[data-abbr="${abbr}"]`);
+        let box; try { box = tile?.getBBox(); } catch { }
+        if (!tile || !box || !(box.width > 0 || box.height > 0)) return;
+        const rect = graticuleSvg("rect");
+        rect.setAttribute("x", (box.x - 5).toFixed(1));
+        rect.setAttribute("y", (box.y - 5).toFixed(1));
+        rect.setAttribute("width", (box.width + 10).toFixed(1));
+        rect.setAttribute("height", (box.height + 10).toFixed(1));
+        rect.setAttribute("class", "graticule-inset-cover");
+        g.append(rect);
+        const cover = tile.cloneNode(false);
+        cover.removeAttribute("id");
+        cover.removeAttribute("tabindex");
+        cover.removeAttribute("role");
+        cover.removeAttribute("class");
+        cover.removeAttribute("data-abbr");
+        cover.removeAttribute("data-name");
+        cover.setAttribute("class", "graticule-inset-tile-cover");
+        const style = getComputedStyle(tile);
+        cover.style.fill = style.fill;
+        cover.style.stroke = style.stroke;
+        cover.style.strokeWidth = style.strokeWidth;
+        g.append(cover);
+      });
+    }
+
     function renderUsGraticule(g, svg, major, minor, options = {}) {
-      const frame = usAlbersFrame(svg);
+      const frame = usNationalAtlasFrame(svg);
       if (!frame) return;
       const bounds = US_GRATICULE_BOUNDS;
       const viewBox = svg.viewBox?.baseVal || { x: 0, y: 0, width: 934, height: 593 };
@@ -7327,7 +7355,7 @@
       for (let lat = Math.ceil(bounds.minLat / minor) * minor; lat <= bounds.maxLat; lat += minor) {
         const isMajor = lat % major === 0;
         const pts = [];
-        for (let lng = bounds.minLng; lng <= bounds.maxLng; lng += 1) pts.push(usAlbersPoint(lat, lng, frame));
+        for (let lng = bounds.minLng; lng <= bounds.maxLng; lng += 1) pts.push(usNationalAtlasPoint(lat, lng, frame));
         addPolyline(pts, graticuleLineClass(isMajor));
         if (isMajor && options.labels) {
           const e = pts[pts.length - 1];
@@ -7337,7 +7365,7 @@
       for (let lng = Math.ceil(bounds.minLng / minor) * minor; lng <= bounds.maxLng; lng += minor) {
         const isMajor = lng % major === 0;
         const pts = [];
-        for (let lat = bounds.minLat; lat <= bounds.maxLat; lat += 1) pts.push(usAlbersPoint(lat, lng, frame));
+        for (let lat = bounds.minLat; lat <= bounds.maxLat; lat += 1) pts.push(usNationalAtlasPoint(lat, lng, frame));
         addPolyline(pts, graticuleLineClass(isMajor));
         if (isMajor && options.labels) {
           const n = pts[pts.length - 1];
@@ -7345,20 +7373,24 @@
         }
       }
       const framePts = [];
-      for (let lng = bounds.minLng; lng <= bounds.maxLng; lng += 1) framePts.push(usAlbersPoint(bounds.minLat, lng, frame));
-      for (let lat = bounds.minLat; lat <= bounds.maxLat; lat += 1) framePts.push(usAlbersPoint(lat, bounds.maxLng, frame));
-      for (let lng = bounds.maxLng; lng >= bounds.minLng; lng -= 1) framePts.push(usAlbersPoint(bounds.maxLat, lng, frame));
-      for (let lat = bounds.maxLat; lat >= bounds.minLat; lat -= 1) framePts.push(usAlbersPoint(lat, bounds.minLng, frame));
+      for (let lng = bounds.minLng; lng <= bounds.maxLng; lng += 1) framePts.push(usNationalAtlasPoint(bounds.minLat, lng, frame));
+      for (let lat = bounds.minLat; lat <= bounds.maxLat; lat += 1) framePts.push(usNationalAtlasPoint(lat, bounds.maxLng, frame));
+      for (let lng = bounds.maxLng; lng >= bounds.minLng; lng -= 1) framePts.push(usNationalAtlasPoint(bounds.maxLat, lng, frame));
+      for (let lat = bounds.maxLat; lat >= bounds.minLat; lat -= 1) framePts.push(usNationalAtlasPoint(lat, bounds.minLng, frame));
       const poly = graticuleSvg("polygon");
       poly.setAttribute("points", framePts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" "));
       poly.setAttribute("class", "graticule-frame");
       g.append(poly);
+      appendUsInsetGraticuleCovers(g, svg);
     }
 
     function graticuleLayerSettings() {
       return state.settings.graticuleByLayer?.[activeLayerId]
         || { ...GRATICULE_DEFAULTS[activeLayerId] };
     }
+    const GRATICULE_GRID_ICON = typeof __APP_GRID !== "undefined" ? __APP_GRID : __GLOBE;
+    const GRATICULE_CIRCLES_ICON = typeof __CIRCLE_DASHED !== "undefined" ? __CIRCLE_DASHED : __CIRCLE_DOTTED_CIRCLE;
+    const GRATICULE_LABELS_ICON = ICON_SETTINGS_SHORTCUTSON__TAG_FILL;
     function graticuleDivisors(major) {
       const out = [];
       for (let d = 1; d < major; d++) if (major % d === 0) out.push(d);
@@ -7378,9 +7410,15 @@
     }
     function populateGraticuleDialog() {
       const s = graticuleLayerSettings();
+      const gridOn = s.enabled === true;
+      setButtonLabel("#graticuleEnabledBtn", GRATICULE_GRID_ICON, "Grid", "Toggle grid lines");
+      setButtonLabel("#graticuleReferenceBtn", GRATICULE_CIRCLES_ICON, "Circles", "Toggle tropic and polar circles");
+      setButtonLabel("#graticuleLabelsBtn", GRATICULE_LABELS_ICON, "Labels", "Toggle grid labels");
       setGraticuleButtonState("#graticuleEnabledBtn", s.enabled === true);
       setGraticuleButtonState("#graticuleReferenceBtn", s.references !== false);
       setGraticuleButtonState("#graticuleLabelsBtn", s.labels !== false);
+      $("#graticuleReferenceBtn").disabled = !gridOn;
+      $("#graticuleLabelsBtn").disabled = !gridOn;
       $("#graticuleMajorInput").value = s.major;
       $("#graticuleMinorInput").value = s.minor;
       $("#graticuleMinorInput").max = Math.max(1, s.major - 1);
@@ -7398,10 +7436,13 @@
       if (btn) {
         btn.setAttribute("aria-expanded", "true");
         const r = btn.getBoundingClientRect();
+        const panel = $(".map-panel")?.getBoundingClientRect();
+        const bounds = panel || { left: 8, right: window.innerWidth - 8, top: 8, bottom: window.innerHeight - 8, width: window.innerWidth - 16, height: window.innerHeight - 16 };
+        pop.style.maxWidth = `${Math.max(220, bounds.width - 16)}px`;
         const pr = pop.getBoundingClientRect();
-        const left = Math.max(8, Math.min(r.left, window.innerWidth - pr.width - 8));
+        const left = Math.max(bounds.left + 8, Math.min(r.left, bounds.right - pr.width - 8));
         let top = r.bottom + 6;
-        if (top + pr.height > window.innerHeight - 8) top = Math.max(8, r.top - pr.height - 6);
+        if (top + pr.height > bounds.bottom - 8) top = Math.max(bounds.top + 8, r.top - pr.height - 6);
         pop.style.left = `${Math.round(left)}px`;
         pop.style.top = `${Math.round(top)}px`;
       }
@@ -7443,6 +7484,26 @@
       index = Math.max(0, Math.min(options.length - 1, index + direction));
       $("#graticuleMinorInput").value = options[index];
       commitGraticuleSettings();
+    }
+
+    function handleGraticuleMinorInput() {
+      const current = graticuleLayerSettings();
+      const major = Math.max(1, Math.min(90, Math.round(Number($("#graticuleMajorInput").value)) || current.major));
+      const value = Math.round(Number($("#graticuleMinorInput").value));
+      if (!Number.isFinite(value)) return;
+      const options = graticuleDivisors(major);
+      if (options.includes(value)) {
+        commitGraticuleSettings();
+        return;
+      }
+      if (value === current.minor) return;
+      const next = value > current.minor
+        ? options.find(d => d >= value)
+        : [...options].reverse().find(d => d <= value);
+      if (next) {
+        $("#graticuleMinorInput").value = next;
+        commitGraticuleSettings();
+      }
     }
 
     function suggestedSetMarkerPoint(item) {
@@ -18055,6 +18116,7 @@
         $("#graticuleMinorInput").value = graticuleSnapMinor(current.minor, major);
         $("#graticuleMinorInput").max = Math.max(1, major - 1);
       });
+      $("#graticuleMinorInput")?.addEventListener("input", handleGraticuleMinorInput);
       $("#graticuleMinorInput")?.addEventListener("change", () => commitGraticuleSettings());
       $("#graticuleMinorInput")?.addEventListener("keydown", event => {
         if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
