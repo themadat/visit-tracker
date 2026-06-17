@@ -2362,6 +2362,11 @@
       pointer-events: none;
     }
 
+    .graticule-inset-label {
+      font-size: 6px;
+      stroke-width: 2px;
+    }
+
     /* World viewBox (2754) ~3x US (934): scale graticule labels up to read on the global layer. */
     #worldMapGraticule .graticule-label {
       font-size: 22px;
