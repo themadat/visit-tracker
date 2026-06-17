@@ -1823,8 +1823,9 @@
       padding: clamp(.7rem, 2vw, 1.2rem);
       overflow: auto;
       min-height: 0;
-      overscroll-behavior: contain;
-      touch-action: none;
+      overscroll-behavior-x: contain;
+      overscroll-behavior-y: auto;
+      touch-action: pan-y;
       cursor: grab;
     }
 
@@ -1907,7 +1908,7 @@
       overflow: hidden;
       padding: clamp(.35rem, 1.4vw, .85rem);
       cursor: default;
-      touch-action: none;
+      touch-action: pan-y;
     }
 
     [data-map-mode="scroll"] .map-wrap {

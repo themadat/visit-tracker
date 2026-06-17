@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.3">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.4.3">
 </head>
 
 <body>
@@ -1696,15 +1696,15 @@
 
   <script src="assets/js/icons.js"></script>
   <script src="assets/js/maps.js"></script>
-  <script src="assets/js/world-names.js?v=4.7.3"></script>
-  <script src="assets/js/world-label-overrides.js?v=4.7.3"></script>
+  <script src="assets/js/world-names.js?v=4.7.4.3"></script>
+  <script src="assets/js/world-label-overrides.js?v=4.7.4.3"></script>
   <script src="assets/js/changelog.js"></script>
   <script src="assets/js/roadmap.js"></script>
   <script>
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.4.2";
+    const APP_VERSION = "4.7.4.3";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -16891,12 +16891,12 @@
         }
       });
       // Touch gestures (WISH-074): two-finger pinch zoom (snaps to a stop on
-      // release), double-tap to zoom in, two-finger tap to zoom out. Touch-only;
-      // mouse/pen drag-pan and ctrl+wheel/trackpad zoom are unchanged.
+      // release), double-tap/click to zoom in, two-finger tap to zoom out.
       const pointers = new Map();        // active touch pointers: id -> {x,y}
       let pinch = null;                  // { startDist, startZoom, scaled, lastAnchor }
       let pinchFrame = 0, pinchPending = null;
       let lastTapAt = 0, lastTapX = 0, lastTapY = 0;
+      let tapCandidate = null;
       const localAnchor = (clientX, clientY) => {
         const r = wrap.getBoundingClientRect();
         return { x: clientX - r.left, y: clientY - r.top };
@@ -16917,6 +16917,7 @@
         if (event.pointerType === "touch") {
           pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
           if (pointers.size === 2) {
+            tapCandidate = null;
             mapPanState = null;
             wrap.classList.remove("is-panning");
             const g = pinchGeometry();
@@ -16924,6 +16925,8 @@
             return;
           }
         }
+        if (event.button > 0 || pinch) return;
+        tapCandidate = { pointerId: event.pointerId, x: event.clientX, y: event.clientY, moved: false };
         if (mapFitMode || event.button > 0 || pinch) return;
         mapPanState = {
           pointerId: event.pointerId,
@@ -16931,13 +16934,20 @@
           y: event.clientY,
           scrollLeft: wrap.scrollLeft,
           scrollTop: wrap.scrollTop,
-          pageTop: (document.scrollingElement || document.documentElement).scrollTop,
           moved: false
         };
       });
       wrap.addEventListener("pointermove", event => {
         if (event.pointerType === "touch" && pointers.has(event.pointerId)) {
           pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+        }
+        if (tapCandidate?.pointerId === event.pointerId) {
+          const tapDx = event.clientX - tapCandidate.x;
+          const tapDy = event.clientY - tapCandidate.y;
+          if (Math.abs(tapDx) > 10 || Math.abs(tapDy) > 10) {
+            tapCandidate.moved = true;
+            lastTapAt = 0;
+          }
         }
         if (pinch && pointers.size >= 2) {
           event.preventDefault();
@@ -16955,6 +16965,11 @@
         const dx = event.clientX - mapPanState.x;
         const dy = event.clientY - mapPanState.y;
         if (!mapPanState.moved && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) {
+          if (event.pointerType === "touch" && Math.abs(dy) > Math.abs(dx) * 1.15) {
+            mapPanState = null;
+            wrap.classList.remove("is-panning");
+            return;
+          }
           mapPanState.moved = true;
           wrap.classList.add("is-panning");
           wrap.setPointerCapture?.(event.pointerId);
@@ -16962,17 +16977,8 @@
         if (!mapPanState.moved) return;
         event.preventDefault();
         wrap.scrollLeft = mapPanState.scrollLeft - dx;
-        // Vertical: scroll the map column when it overflows, else pan the page —
-        // on mobile a zoomed map grows the page instead of scrolling internally,
-        // so a vertical drag should move the page (touch-action: none blocks it otherwise).
         if (wrap.scrollHeight - wrap.clientHeight > 1) {
           wrap.scrollTop = mapPanState.scrollTop - dy;
-        } else {
-          // The page itself scrolls here (with CSS scroll-behavior: smooth), so
-          // force an instant scroll — otherwise the drag animates instead of
-          // tracking the finger.
-          const scroller = document.scrollingElement || document.documentElement;
-          scroller.scrollTo({ top: mapPanState.pageTop - dy, behavior: "instant" });
         }
       });
       const endPointer = event => {
@@ -16986,17 +16992,18 @@
           blockNextClick();
           return;
         }
-        if (wasTouch && mapPanState && mapPanState.pointerId === event.pointerId && !mapPanState.moved) {
+        if (event.type === "pointerup" && tapCandidate?.pointerId === event.pointerId && !tapCandidate.moved) {
           const now = Date.now();
           const near = Math.abs(event.clientX - lastTapX) < 24 && Math.abs(event.clientY - lastTapY) < 24;
           if (now - lastTapAt < 300 && near) {
             setMapZoom(snapMapZoom((mapFitMode ? 1 : mapZoom) * 2), localAnchor(event.clientX, event.clientY));
             blockNextClick();
-            lastTapAt = 0; mapPanState = null;
+            lastTapAt = 0; mapPanState = null; tapCandidate = null;
             return;
           }
           lastTapAt = now; lastTapX = event.clientX; lastTapY = event.clientY;
         }
+        if (tapCandidate?.pointerId === event.pointerId) tapCandidate = null;
         if (!mapPanState || mapPanState.pointerId !== event.pointerId) return;
         const moved = mapPanState.moved;
         mapPanState = null;
