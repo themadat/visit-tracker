@@ -1824,7 +1824,7 @@
       overflow: auto;
       min-height: 0;
       overscroll-behavior: contain;
-      touch-action: pan-x pan-y;
+      touch-action: none;
       cursor: grab;
     }
 
@@ -1907,7 +1907,7 @@
       overflow: hidden;
       padding: clamp(.35rem, 1.4vw, .85rem);
       cursor: default;
-      touch-action: auto;
+      touch-action: none;
     }
 
     [data-map-mode="scroll"] .map-wrap {
