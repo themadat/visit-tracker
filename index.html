@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5.11">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5.12">
 </head>
 
 <body>
@@ -1728,7 +1728,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.5.11";
+    const APP_VERSION = "4.7.5.12";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7263,7 +7263,6 @@
     ];
     const US_GRATICULE_MERCATOR_INSETS = [
       { id: "ak-main", abbr: "AK", bounds: { minLat: 55, maxLat: 71.5, minLng: -165, maxLng: -130 }, box: { x: 0, y: 425, width: 251, height: 168 }, clip: "ak" },
-      { id: "ak-aleutians", abbr: "AK", bounds: { minLat: 51.2, maxLat: 55.8, minLng: -179.2, maxLng: -164 }, box: { x: 0, y: 528, width: 215, height: 65 }, clip: "ak", labels: false },
       { id: "hi", abbr: "HI", bounds: { minLat: 18.9, maxLat: 22.3, minLng: -160.3, maxLng: -154.8 }, box: { x: 215, y: 493, width: 139, height: 100 }, clip: "hi" }
     ];
     const US_GRATICULE_INSET_CLIPS = {
@@ -7505,6 +7504,14 @@
         const box = usGraticuleInsetBox(svg, inset);
         if (!box) return;
         const b = inset.bounds;
+        const clipPoints = inset.clip ? US_GRATICULE_INSET_CLIPS[inset.clip] : null;
+        const labelBounds = clipPoints
+          ? clipPoints.reduce((acc, p) => ({
+            x: Math.min(acc.x, p.x), y: Math.min(acc.y, p.y),
+            x2: Math.max(acc.x2, p.x), y2: Math.max(acc.y2, p.y)
+          }), { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity })
+          : { x: box.x, y: box.y, x2: box.x + box.width, y2: box.y + box.height };
+        const labelPlacements = [];
         const group = graticuleSvg("g");
         group.setAttribute("class", "graticule-inset-grid");
         group.dataset.inset = inset.id;
@@ -7514,6 +7521,16 @@
         if (inset.clip) lineGroup.setAttribute("clip-path", ensureUsGraticuleInsetClip(svg, inset.clip));
         group.append(lineGroup);
         const point = (lat, lng) => usMercatorInsetPoint(lat, lng, inset, box);
+        const visiblePoints = pts => clipPoints ? pts.filter(p => pointInGraticulePolygon(p, clipPoints)) : pts;
+        const labelBoxFor = (x, y, text, anchor) => {
+          const width = Math.max(13, String(text).length * 4.3);
+          const height = 8;
+          const left = anchor === "end" ? x - width : anchor === "middle" ? x - width / 2 : x;
+          return { x: left, y: y - height / 2, x2: left + width, y2: y + height / 2 };
+        };
+        const overlapsInsetLabel = box => labelPlacements.some(existing => (
+          box.x < existing.x2 + 3 && box.x2 > existing.x - 3 && box.y < existing.y2 + 2 && box.y2 > existing.y - 2
+        ));
         const addPolyline = (pts, cls) => {
           const pl = graticuleSvg("polyline");
           pl.setAttribute("points", pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" "));
@@ -7523,8 +7540,13 @@
         const addLabel = (x, y, text, anchor) => {
           if (!options.labels || inset.labels === false) return;
           const t = graticuleSvg("text");
-          t.setAttribute("x", Math.max(box.x + 4, Math.min(box.x + box.width - 4, x)).toFixed(1));
-          t.setAttribute("y", Math.max(box.y + 5, Math.min(box.y + box.height - 5, y)).toFixed(1));
+          const labelX = Math.max(labelBounds.x + 4, Math.min(labelBounds.x2 - 4, x));
+          const labelY = Math.max(labelBounds.y + 5, Math.min(labelBounds.y2 - 5, y));
+          const labelBox = labelBoxFor(labelX, labelY, text, anchor);
+          if (overlapsInsetLabel(labelBox)) return;
+          labelPlacements.push(labelBox);
+          t.setAttribute("x", labelX.toFixed(1));
+          t.setAttribute("y", labelY.toFixed(1));
           t.setAttribute("class", graticuleDegreeLabelClass(text, "graticule-label graticule-inset-label"));
           t.setAttribute("text-anchor", anchor);
           t.setAttribute("dominant-baseline", "middle");
@@ -7538,7 +7560,9 @@
           if (pts.length && pts[pts.length - 1].x < point(lat, b.maxLng).x - .01) pts.push(point(lat, b.maxLng));
           addPolyline(pts, graticuleLineClass(isMajor));
           if (isMajor) {
-            const w = point(lat, b.minLng), e = point(lat, b.maxLng);
+            const visible = visiblePoints(pts);
+            if (!visible.length) continue;
+            const w = visible[0], e = visible[visible.length - 1];
             addLabel(w.x + 4, w.y, formatGraticuleLat(lat), "start");
             addLabel(e.x - 4, e.y, formatGraticuleLat(lat), "end");
           }
@@ -7550,7 +7574,9 @@
           if (pts.length && pts[pts.length - 1].y > point(b.maxLat, lng).y + .01) pts.push(point(b.maxLat, lng));
           addPolyline(pts, graticuleLineClass(isMajor));
           if (isMajor) {
-            const s = point(b.minLat, lng), n = point(b.maxLat, lng);
+            const visible = visiblePoints(pts);
+            if (!visible.length) continue;
+            const s = visible[0], n = visible[visible.length - 1];
             addLabel(s.x, s.y - 4, formatGraticuleLng(lng), "middle");
             addLabel(n.x, n.y + 4, formatGraticuleLng(lng), "middle");
           }

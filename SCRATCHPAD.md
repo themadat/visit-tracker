@@ -1,5 +1,9 @@
 ## Future Prompt
 
+shortcuts update: | for switcing maps; ~ for label, 4 for globe. 
+
+shortcuts: Priority popup; globe pop up, rangefinder popup
+
 ## Maps
 Blank World Map with Circles: https://commons.wikimedia.org/wiki/File:BlankMap-World-with-Circles.svg
 Blank World Map: https://commons.wikimedia.org/wiki/File:BlankMap-World.svg
