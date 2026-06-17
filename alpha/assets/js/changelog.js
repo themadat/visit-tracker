@@ -4,6 +4,84 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.3",
+        date: "2026-06-17",
+        title: "Camera Trail",
+        summary: "Waypoint Pack photos can now show where the camera stood when Commons has that metadata.",
+        highlights: [
+          "Opening a Waypoint Pack photo checks Commons for camera-location metadata.",
+          "Photo captions can show the camera spot, heading, and offset from the linked note.",
+          "Photos without camera metadata now show a clear, quiet unavailable state.",
+        ],
+        updateSections: [
+          {
+            heading: "Waypoint Photos",
+            items: [
+              "Waypoint Pack photo previews now derive the Commons file name and lazily request camera-location metadata only when the photo is opened.",
+              "The readout appears under linked Waypoint photos in the note editor, Waypoint Packs panel, and Detailed note cards.",
+            ]
+          },
+          {
+            heading: "Camera Readout",
+            items: [
+              "When available, the caption links the camera coordinates to Google Maps.",
+              "EXIF image direction becomes a compass heading, and linked notes with saved coordinates show the distance and bearing from the landmark to the camera spot.",
+            ]
+          },
+          {
+            heading: "Offline and Empty States",
+            items: [
+              "The feature is online-only and read-only: it never changes a note's stored latitude or longitude.",
+              "Photos without camera coordinates, or requests that cannot complete, show a muted status instead of a blank gap or popup.",
+            ]
+          },
+          {
+            heading: "Roadmap",
+            items: [
+              "Retired the completed pack-photo camera-location roadmap item from the active list.",
+            ]
+          }
+        ]
+      },
+      {
+        version: "4.7.2",
+        date: "2026-06-16",
+        title: "Trail Marks",
+        summary: "Roadmap cards now mark planned ideas, release notes read cleaner, and a tiny hidden raptor waits on the map.",
+        highlights: [
+          "Roadmap cards accent tickets that already have a plan.",
+          "Release notes' Full Update List uses clean headed sections.",
+          "Roadmap Oldest/Newest sorting follows ticket numbers.",
+          "A tiny raptor surprise now hides on the map.",
+        ],
+        updateSections: [
+          {
+            heading: "Roadmap",
+            items: [
+              "The WISH ticket itself becomes an accented pill when an idea already has a written plan.",
+              "Planned ideas are searchable, so searching for plan surfaces items that already have a spec.",
+              "Each roadmap card shows Priority, Effort, Cost, Target, and Category on one compact meta line beneath the title.",
+              "Oldest and Newest sorting now order by ticket number instead of internal list position.",
+            ]
+          },
+          {
+            heading: "Release Notes",
+            items: [
+              "The Full Update List now reads as headed sections with a single level of bullets, instead of a deeply indented nested list.",
+              "Highlights remain a simple bullet list, while sectioned release details keep their section/update count.",
+            ]
+          },
+          {
+            heading: "Hidden Trails",
+            items: [
+              "Adds a small, repeatable raptor easter egg on the map.",
+              "The raptor popup uses theme-aware art, a compact caption, and adjusted placement near its discovery spot.",
+              "The easter egg is local-only, auto-dismisses, and does not store any found-state flag.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.1",
         date: "2026-06-16",
         title: "Atlas Ink",
