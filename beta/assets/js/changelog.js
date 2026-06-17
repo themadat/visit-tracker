@@ -4,6 +4,25 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.4.2",
+        date: "2026-06-17",
+        title: "Crosshairs",
+        summary: "Zoomed maps drag vertically on mobile, and laptop trackpads can pinch to zoom.",
+        highlights: [
+          "Drag up/down to move a zoomed-in map on phones and tablets.",
+          "Pinch a laptop trackpad to zoom the map (all Mac browsers).",
+        ],
+        updateSections: [
+          {
+            heading: "Map",
+            items: [
+              "Dragging vertically now pans a zoomed-in map on touch devices, alongside horizontal drag and pinch.",
+              "Trackpad pinch zooms the map on laptops — including Safari and starting from the fit-to-screen view.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.4.1",
         date: "2026-06-17",
         title: "Crosshairs",
