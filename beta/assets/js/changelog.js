@@ -4,7 +4,7 @@
 
     const CHANGELOG = [
       {
-        version: "4.7.5.10",
+        version: "4.7.5.11",
         date: "2026-06-17",
         title: "Gridlines",
         summary: "Grid labels, spacing controls, and US geography get cleaner map detail.",
@@ -32,6 +32,7 @@
               "The lower-48 grid now renders from a wider geographic envelope so lines feel continuous beyond all four US map edges.",
               "Alaska and Hawaii inset grids now scale to their separator panes instead of hugging only the island/state artwork bounds.",
               "Latitude and longitude degree labels now lightly tint by direction: north red, south green, east orange-yellow, and west blue-purple.",
+              "Alaska and Hawaii inset labels now render outside the clipped line layer so their text is not chopped by the pane edge.",
             ]
           },
           {

@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5.10">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5.11">
 </head>
 
 <body>
@@ -1728,7 +1728,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.5.10";
+    const APP_VERSION = "4.7.5.11";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7507,15 +7507,18 @@
         const b = inset.bounds;
         const group = graticuleSvg("g");
         group.setAttribute("class", "graticule-inset-grid");
-        if (inset.clip) group.setAttribute("clip-path", ensureUsGraticuleInsetClip(svg, inset.clip));
         group.dataset.inset = inset.id;
         g.append(group);
+        const lineGroup = graticuleSvg("g");
+        lineGroup.setAttribute("class", "graticule-inset-line-grid");
+        if (inset.clip) lineGroup.setAttribute("clip-path", ensureUsGraticuleInsetClip(svg, inset.clip));
+        group.append(lineGroup);
         const point = (lat, lng) => usMercatorInsetPoint(lat, lng, inset, box);
         const addPolyline = (pts, cls) => {
           const pl = graticuleSvg("polyline");
           pl.setAttribute("points", pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" "));
           pl.setAttribute("class", `${cls} graticule-inset-line`);
-          group.append(pl);
+          lineGroup.append(pl);
         };
         const addLabel = (x, y, text, anchor) => {
           if (!options.labels || inset.labels === false) return;
