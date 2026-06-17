@@ -10,8 +10,8 @@
         description: "Let touch users zoom the map with two-finger pinch (centered on the pinch midpoint, continuous while moving and snapping to a known zoom % on release), double-tap to zoom in one step, and two-finger tap to zoom out one step — in addition to the existing zoom pill, drag-pan, and desktop wheel/trackpad zoom. Touch-only; no behavior change on desktop, and it should feel natural on phones/tablets.",
         priority: "P0",
         effort: "medium",
-        targetKind: "patch",
-        targetVersion: "",
+        targetKind: "exact",
+        targetVersion: "4.7.4",
         tokenCostPct: 12,
         prompt: "Add touchscreen gestures to the scrollable map in bindMapPanZoom (gate on pointerType === 'touch'): two-finger pinch (scale from finger distance, anchored at the midpoint), double-tap to zoom in one step (anchored at the tap), and two-finger tap to zoom out one step. Route all zoom through setMapZoom(value, anchor) so #mapZoomReadout and the zoom-button states stay in sync (the syncMapZoomReadout invariant). Keep the live pinch continuous (transient CSS transform) and on release commit snapped to the nearest value in a MAP_ZOOM_STOPS ladder of round percentages (log-space nearest; doubling/halving stays on the ladder so taps share the stops). Track active pointers in a Map, suspend single-pointer pan during pinch, suppress tile taps on gesture end, set touch-action on .map-wrap so gestures reach the handlers, respect Fit vs scroll modes, and keep pan/zoom persistence. No change for mouse/trackpad.",
         category: "Map"
@@ -109,8 +109,8 @@
         description: "Add an optional, per-map latitude/longitude graticule with customizable major + minor line tiers set from a settings pop-up (defaults: World 30 deg major / 10 deg minor, US 10 deg major / 5 deg minor). Major lines are stronger and carry degree labels at both ends; minor lines are subtle. The World map uses its true Robinson projection (curved meridians) and draws the projection outline/frame so the map reads as curved rather than a rectangle; the US map draws true lat/lon per state through each state's local frame, with separate grids inside the insets (Alaska, Hawaii) — continuous within a state, not across the stylized tile layout. Styling stays secondary to locations, Wayfinder, and Rangefinder; settings are remembered per map.",
         priority: "P0",
         effort: "medium",
-        targetKind: "patch",
-        targetVersion: "",
+        targetKind: "exact",
+        targetVersion: "4.7.4",
         tokenCostPct: 18,
         prompt: "Add a customizable lat/lng graticule as a non-interactive SVG <g> layer per map, below markers/rings/labels. Two tiers: minor-interval lines (subtle) plus major-interval lines (stronger, with degree labels like 30°N/120°W at both ends). World: sample worldCoordinatePoint (Robinson) for straight parallels + polyline meridians. US: per .state-tile and per inset frame (LOCATION_GEO_BOUNDS + LOCATION_PROJECTION_FRAME_OVERRIDES) draw straight lat/lng segments within each box. Add settings.graticuleByLayer { us:{enabled,major:10,minor:5}, world:{enabled,major:30,minor:10} } (default off) with defaults/normalize (clamp, major>=minor), a per-map button that opens a settings pop-up (on/off + major/minor intervals), and theme-aware styling. Preserve map pan/zoom and existing overlays.",
         category: "Maps"
