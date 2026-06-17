@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.4.5">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.4">
 </head>
 
 <body>
@@ -144,7 +144,7 @@
                     aria-label="Fit map on screen" data-shortcut="9">Fit Map</button>
                 </div>
               </div>
-              <small data-hint data-hint-key="map-view-controls">Switch Map Views:<br />Zoom/Pan/Scroll | Fit</small>
+              <small data-hint data-hint-key="map-view-controls">Zoom/Pan/Pinch:<br />Scroll Map | Fit</small>
             </div>
             <div class="map-control-stack">
               <div class="map-control-row">
@@ -1108,8 +1108,9 @@
             <li>Use the Map Labels control to switch states, territories, countries, or a linked Waypoint Pack between
               no labels, abbreviations, and names. World Name labels use short English atlas names, fit smaller
               countries, and add leader lines for tiny dot-backed places.</li>
-            <li>Use Scroll Map to pan and zoom. Type an exact zoom percentage, use the zoom buttons, or reset to 100%.
-              Your zoom, pan center, and fit/scroll mode are saved.</li>
+            <li>Use Scroll Map to pan and zoom. Type an exact zoom percentage, use the zoom buttons, pinch on touch
+              screens, double-tap or double-click to zoom in, or two-finger tap to zoom out. Your zoom, pan center, and
+              fit/scroll mode are saved.</li>
             <li>Use Fit Map when you want the map framed cleanly for screenshots or sharing.</li>
             <li>Use View Locations to show or hide note pins. Notes without coordinates sit at the center of their
               state or territory shape; exact coordinates place markers more precisely.</li>
@@ -1253,6 +1254,9 @@
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ: Map</h3>
           <p><b>Will my map zoom come back?</b><br>Yes. The app saves your scrollable-map zoom level, fit/scroll mode,
             and last pan position.</p>
+          <p><b>How do touch map gestures work?</b><br>In Scroll Map mode, pinch with two fingers to zoom around your
+            fingers, double-tap to zoom in, and two-finger tap to zoom out. Vertical swipes still scroll the page, while
+            zoomed maps pan inside the map box.</p>
           <p><b>What is Match Notes?</b><br>It applies the active Notes filters, including date precision, to the map,
             dimming locations and hiding note pins that do not match.</p>
           <p><b>Why are some pins grouped?</b><br>Nearby mapped notes cluster so the map stays readable. Click a cluster
@@ -1522,6 +1526,8 @@
               <div class="shortcut-row"><kbd>+</kbd><span>Zoom in (scroll mode only) <em>[mapZoomInBtn]</em></span>
               </div>
               <div class="shortcut-row"><kbd>0</kbd><span>Reset map zoom to 100% <em>[mapZoomResetBtn]</em></span></div>
+              <div class="shortcut-row"><kbd>Pinch</kbd><span>Touch map zoom; double-tap zooms in and two-finger tap
+                  zooms out.</span></div>
               <div class="shortcut-row"><kbd>9</kbd><span>Fit/Scroll Map Mode <em>[mapFitBtn]</em></span></div>
               <div class="shortcut-row"><kbd>8</kbd><span>Show/Hide Location Pins <em>[mapLocationPinsBtn]</em></span>
               </div>
@@ -1696,15 +1702,15 @@
 
   <script src="assets/js/icons.js"></script>
   <script src="assets/js/maps.js"></script>
-  <script src="assets/js/world-names.js?v=4.7.4.5"></script>
-  <script src="assets/js/world-label-overrides.js?v=4.7.4.5"></script>
+  <script src="assets/js/world-names.js?v=4.7.4"></script>
+  <script src="assets/js/world-label-overrides.js?v=4.7.4"></script>
   <script src="assets/js/changelog.js"></script>
   <script src="assets/js/roadmap.js"></script>
   <script>
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.4.5";
+    const APP_VERSION = "4.7.4";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
