@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5.9">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5.10">
 </head>
 
 <body>
@@ -1728,7 +1728,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.5.9";
+    const APP_VERSION = "4.7.5.10";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7158,6 +7158,15 @@
       if (Math.abs(v) === 180) return "180°";
       return `${Math.abs(v)}°${v > 0 ? "E" : "W"}`;
     }
+    function graticuleDegreeLabelClass(text, base = "graticule-label") {
+      const suffix = String(text || "").slice(-1);
+      const dirClass = suffix === "N" ? " is-north"
+        : suffix === "S" ? " is-south"
+          : suffix === "E" ? " is-east"
+            : suffix === "W" ? " is-west"
+              : "";
+      return base + dirClass;
+    }
 
     function renderGraticule() {
       const layer = activeLayer();
@@ -7200,7 +7209,7 @@
       const clampLabelY = y => Math.max(box.y + insetY, Math.min(box.y + box.height - insetY, y));
       const addLine = (a, b, cls) => { const l = graticuleSvg("line"); l.setAttribute("x1", a.x.toFixed(1)); l.setAttribute("y1", a.y.toFixed(1)); l.setAttribute("x2", b.x.toFixed(1)); l.setAttribute("y2", b.y.toFixed(1)); l.setAttribute("class", cls); g.append(l); };
       const addPolyline = (pts, cls) => { const pl = graticuleSvg("polyline"); pl.setAttribute("points", pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ")); pl.setAttribute("class", cls); g.append(pl); };
-      const addLabel = (x, y, text, anchor, cls) => { const t = graticuleSvg("text"); t.setAttribute("x", clampLabelX(x).toFixed(1)); t.setAttribute("y", clampLabelY(y).toFixed(1)); t.setAttribute("class", cls || "graticule-label"); t.setAttribute("text-anchor", anchor); t.setAttribute("dominant-baseline", "middle"); t.textContent = text; g.append(t); };
+      const addLabel = (x, y, text, anchor, cls) => { const t = graticuleSvg("text"); t.setAttribute("x", clampLabelX(x).toFixed(1)); t.setAttribute("y", clampLabelY(y).toFixed(1)); t.setAttribute("class", cls || graticuleDegreeLabelClass(text)); t.setAttribute("text-anchor", anchor); t.setAttribute("dominant-baseline", "middle"); t.textContent = text; g.append(t); };
       // Parallels — straight horizontals; labels sit just inside the edges so they aren't clipped.
       const latMax = Math.floor(90 / minor) * minor;
       for (let lat = -latMax; lat <= latMax; lat += minor) {
@@ -7513,7 +7522,7 @@
           const t = graticuleSvg("text");
           t.setAttribute("x", Math.max(box.x + 4, Math.min(box.x + box.width - 4, x)).toFixed(1));
           t.setAttribute("y", Math.max(box.y + 5, Math.min(box.y + box.height - 5, y)).toFixed(1));
-          t.setAttribute("class", "graticule-label graticule-inset-label");
+          t.setAttribute("class", graticuleDegreeLabelClass(text, "graticule-label graticule-inset-label"));
           t.setAttribute("text-anchor", anchor);
           t.setAttribute("dominant-baseline", "middle");
           t.textContent = text;
@@ -7568,7 +7577,7 @@
       gridGroup.setAttribute("mask", ensureUsGraticuleInsetMask(svg));
       g.append(gridGroup);
       const addPolyline = (pts, cls) => { const pl = graticuleSvg("polyline"); pl.setAttribute("points", pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ")); pl.setAttribute("class", cls); gridGroup.append(pl); };
-      const addLabel = (x, y, text, anchor) => { const t = graticuleSvg("text"); t.setAttribute("x", clampX(x).toFixed(1)); t.setAttribute("y", clampY(y).toFixed(1)); t.setAttribute("class", "graticule-label"); t.setAttribute("text-anchor", anchor); t.setAttribute("dominant-baseline", "middle"); t.textContent = text; g.append(t); };
+      const addLabel = (x, y, text, anchor) => { const t = graticuleSvg("text"); t.setAttribute("x", clampX(x).toFixed(1)); t.setAttribute("y", clampY(y).toFixed(1)); t.setAttribute("class", graticuleDegreeLabelClass(text)); t.setAttribute("text-anchor", anchor); t.setAttribute("dominant-baseline", "middle"); t.textContent = text; g.append(t); };
       const nearCorner = point => (
         (point.x <= viewBox.x + cornerX || point.x >= viewBox.x + viewBox.width - cornerX)
         && (point.y <= viewBox.y + cornerY || point.y >= viewBox.y + viewBox.height - cornerY)
