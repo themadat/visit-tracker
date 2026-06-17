@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5.12">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5.13">
 </head>
 
 <body>
@@ -1728,7 +1728,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.5.12";
+    const APP_VERSION = "4.7.5.13";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7262,7 +7262,7 @@
       { type: "rect", x: 560, y: 515, width: 122, height: 78 }
     ];
     const US_GRATICULE_MERCATOR_INSETS = [
-      { id: "ak-main", abbr: "AK", bounds: { minLat: 55, maxLat: 71.5, minLng: -165, maxLng: -130 }, box: { x: 0, y: 425, width: 251, height: 168 }, clip: "ak" },
+      { id: "ak-main", abbr: "AK", bounds: { minLat: 54, maxLat: 71, minLng: -170, maxLng: -130 }, box: { x: 0, y: 425, width: 251, height: 168 }, clip: "ak" },
       { id: "hi", abbr: "HI", bounds: { minLat: 18.9, maxLat: 22.3, minLng: -160.3, maxLng: -154.8 }, box: { x: 215, y: 493, width: 139, height: 100 }, clip: "hi" }
     ];
     const US_GRATICULE_INSET_CLIPS = {
