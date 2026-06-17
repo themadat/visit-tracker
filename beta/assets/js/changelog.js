@@ -4,22 +4,24 @@
 
     const CHANGELOG = [
       {
-        version: "4.7.5.1",
+        version: "4.7.5.2",
         date: "2026-06-17",
         title: "Gridlines",
-        summary: "An optional latitude/longitude grid can be switched on for either map.",
+        summary: "The latitude/longitude grid gets a tighter pop-up and better map-aware labels.",
         highlights: [
-          "Toggle a lat/lng graticule on the US and World maps.",
-          "The World grid labels its major lines in degrees.",
-          "Set major/minor spacing per map, remembered separately.",
+          "Toggle a lat/lng graticule from a globe pop-up.",
+          "World grid labels stay inside the map frame.",
+          "Minor spacing snaps to divisors of the major interval.",
+          "Tropics and polar circles are emphasized on World.",
         ],
         updateSections: [
           {
             heading: "Maps",
             items: [
-              "A new grid control adds latitude/longitude lines to each map, remembered separately for US and World.",
-              "On the World map, major lines are labeled in degrees at both ends (like 30°N, 120°W); minor lines stay subtle.",
-              "The World map draws true Robinson parallels and curved meridians with a projection outline; the US map draws true per-state lat/lon, with their own grids in the Alaska and Hawaii insets.",
+              "The grid control now uses the globe outline when off and the filled globe when on, opening a compact non-modal pop-up instead of a modal.",
+              "On the World map, labels are clamped inside the Robinson frame and named tropic/polar reference lines draw above the standard grid.",
+              "Minor spacing is chosen from clean divisors of the major interval, so a 30° major offers 1°, 2°, 3°, 5°, 6°, 10°, or 15°.",
+              "The US map now uses one inferred contiguous lat/lng plane clipped to the stylized map, with separate inset grids where the map art is not contiguous.",
             ]
           }
         ]
