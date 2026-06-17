@@ -1,6 +1,6 @@
-# WISH-075 — Show a Pack Photo's Camera Location (target patch)
+# WISH-075 — Show a Pack Photo's Camera Location (target 4.7.3)
 
-Ticket: **WISH-075** "Show a Pack Photo's Camera Location". Target: **patch**. Online-only, lazy, read-only — surfaces where a Waypoint-pack photo was **taken from** (the camera/vantage point), distinct from the landmark's own coordinates, so a traveler can stand in the same spot and recreate the shot. **Never touches the note's stored lat/lng.**
+Ticket: **WISH-075** "Show a Pack Photo's Camera Location". Target: **4.7.3**. Online-only, lazy, read-only — surfaces where a Waypoint-pack photo was **taken from** (the camera/vantage point), distinct from the landmark's own coordinates, so a traveler can stand in the same spot and recreate the shot. **Never touches the note's stored lat/lng.**
 
 ## Goal
 
@@ -21,7 +21,7 @@ When a pack photo is shown, fetch and display the photo's **camera location** (a
    - `query.pages[*].coordinates[]` entry whose `type` is `camera` → the `{{Camera location}}` lat/lon (preferred).
    - else `imageinfo[0].extmetadata.GPSLatitude` / `GPSLongitude` (EXIF camera GPS).
    - **Heading**: `extmetadata.GPSImgDirection` (degrees) when present → compass point.
-   - If none → **no camera location**; hide the readout (don't fall back to the object/landmark coordinate — that's already the note's location).
+   - If none → **no camera location**; show the explicit unavailable state (don't fall back to the object/landmark coordinate — that's already the note's location).
 4. **Cache** results in a new in-memory `waypointCameraLocationCache` (keyed by file name or the photo key), mirroring `waypointPhotoUrlCache`. **No persistence / no schema change** — it's derived online, online-only.
 
 ## Behavior / UX
@@ -46,7 +46,7 @@ When a pack photo is shown, fetch and display the photo's **camera location** (a
 
 ## Implementation phases (for `start`)
 
-1. Open the next patch build (or join the WISH-071 build line if both land together), CHANGELOG entry (patch), bump `APP_VERSION`.
+1. Open `4.7.3.1`, CHANGELOG entry (patch), bump `APP_VERSION`.
 2. File-name derivation (URL parse + pageimages `piprop=…|name`); `commonsCameraLocationEndpoint`.
 3. `fetchWaypointCameraLocation` + `waypointCameraLocationCache`; hook into the photo-open flow (after the image resolves), refresh consumers when it returns.
 4. Compass + offset helpers (distance/bearing vs landmark).
