@@ -4,6 +4,46 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.3",
+        date: "2026-06-17",
+        title: "Camera Trail",
+        summary: "Waypoint Pack photos can now show where the camera stood when Commons has that metadata.",
+        highlights: [
+          "Opening a Waypoint Pack photo checks Commons for camera-location metadata.",
+          "Photo captions can show the camera spot, heading, and offset from the linked note.",
+          "Photos without camera metadata now show a clear, quiet unavailable state.",
+        ],
+        updateSections: [
+          {
+            heading: "Waypoint Photos",
+            items: [
+              "Waypoint Pack photo previews now derive the Commons file name and lazily request camera-location metadata only when the photo is opened.",
+              "The readout appears under linked Waypoint photos in the note editor, Waypoint Packs panel, and Detailed note cards.",
+            ]
+          },
+          {
+            heading: "Camera Readout",
+            items: [
+              "When available, the caption links the camera coordinates to Google Maps.",
+              "EXIF image direction becomes a compass heading, and linked notes with saved coordinates show the distance and bearing from the landmark to the camera spot.",
+            ]
+          },
+          {
+            heading: "Offline and Empty States",
+            items: [
+              "The feature is online-only and read-only: it never changes a note's stored latitude or longitude.",
+              "Photos without camera coordinates, or requests that cannot complete, show a muted status instead of a blank gap or popup.",
+            ]
+          },
+          {
+            heading: "Roadmap",
+            items: [
+              "Retired the completed pack-photo camera-location roadmap item from the active list.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.2",
         date: "2026-06-16",
         title: "Trail Marks",
