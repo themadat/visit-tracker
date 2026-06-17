@@ -4,7 +4,7 @@
 
     const CHANGELOG = [
       {
-        version: "4.7.5.8",
+        version: "4.7.5.9",
         date: "2026-06-17",
         title: "Gridlines",
         summary: "Grid labels, spacing controls, and US geography get cleaner map detail.",
@@ -30,6 +30,7 @@
               "US inset masking now follows the SVG separator geometry instead of individual state and territory bounding boxes.",
               "Alaska and Hawaii now draw independent Mercator-style inset grids instead of inheriting the lower-48 National Atlas projection.",
               "The lower-48 grid now renders from a wider geographic envelope so lines feel continuous beyond all four US map edges.",
+              "Alaska and Hawaii inset grids now scale to their separator panes instead of hugging only the island/state artwork bounds.",
             ]
           },
           {
