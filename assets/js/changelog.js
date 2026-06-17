@@ -4,14 +4,14 @@
 
     const CHANGELOG = [
       {
-        version: "4.7.5.5",
+        version: "4.7.5.6",
         date: "2026-06-17",
         title: "Gridlines",
-        summary: "Grid controls step cleanly, disable together, and fit the US overlay more closely.",
+        summary: "Grid labels and spacing controls get cleaner, edge-aware map detail.",
         highlights: [
-          "Grid interval ticks now step predictably.",
-          "Grid-off disables all dependent controls.",
-          "US grid clips cleanly around inset cutouts.",
+          "Major and Minor are now dropdowns.",
+          "World reference labels sit at both globe edges.",
+          "US grid labels follow visible line ends.",
           "Added a P0 pop-up unification roadmap item.",
         ],
         updateSections: [
@@ -22,8 +22,12 @@
               "Circles and Labels are grayed out while Grid is off, and the pop-up clamps inside the map panel instead of the viewport.",
               "Major and Minor interval ticks now use deterministic app-side stepping instead of browser-native number jumps.",
               "Major and Minor interval fields disable while Grid is off, matching the Circles and Labels controls.",
+              "Major spacing is now chosen from 5° increments up to 90°, and Minor spacing is chosen from valid divisors of the selected Major spacing.",
               "Clicking the Grid button again now dismisses the open pop-up instead of reopening it after a light-dismiss.",
               "The US grid now uses the U.S. National Atlas Equal Area projection over 50°N–25°N and 125°W–65°W, affine-fitted to the lower-48 SVG and masked cleanly around Alaska, Hawaii, and territory inset cutouts.",
+              "World reference-line labels are smaller, duplicated at the left and right globe edges, and now include the Equator.",
+              "US grid labels now attach to visible line endpoints on the top/bottom and left/right edges with corner collision guards.",
+              "US inset masking now follows the SVG separator geometry instead of individual state and territory bounding boxes.",
             ]
           },
           {
