@@ -4,6 +4,25 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.4.5",
+        date: "2026-06-17",
+        title: "Crosshairs",
+        summary: "Map zoom gestures stop selecting desktop SVGs and keep the mobile viewport stable.",
+        highlights: [
+          "Desktop double-click zoom no longer highlights the map.",
+          "Mobile pinch zoom keeps the map viewport height stable.",
+        ],
+        updateSections: [
+          {
+            heading: "Map Gestures",
+            items: [
+              "Desktop double-click zoom suppresses SVG/text selection so the action only zooms the map.",
+              "Small-screen scroll mode locks the map viewport to the active map's 100% height, letting pinch zoom grow the pannable map content without stretching the page section.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.4.4",
         date: "2026-06-17",
         title: "Crosshairs",
