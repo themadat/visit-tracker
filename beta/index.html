@@ -164,9 +164,13 @@
                   <button id="mapRingModeBtn" class="toggle-btn ring-toggle-btn" type="button" aria-pressed="false"
                     aria-label="Toggle Ring Mode" data-shortcut="5">Rangefinder</button>
                 </div>
+                <div class="map-action-group map-toggle-group">
+                  <button id="mapGraticuleBtn" class="toggle-btn" type="button" aria-pressed="false"
+                    aria-label="Map grid settings">Grid</button>
+                </div>
               </div>
               <small data-hint data-hint-key="map-notes-controls">Toggle Notes Pins<br />Visibility | Filter |
-                Wayfinder | Rangefinder</small>
+                Wayfinder | Rangefinder | Grid</small>
             </div>
             <div class="map-control-stack">
               <div class="map-control-row">
@@ -831,6 +835,28 @@
         Palettes apply top-to-bottom in legend order.<br />
         Fine-tune individual colors via Edit Legend Level.</p>
       <div id="paletteThemes" class="theme-swatches"></div>
+    </div>
+  </dialog>
+
+  <dialog id="graticuleDialog">
+    <header>
+      <h2>Map Grid</h2>
+      <button id="graticuleCloseBtn" type="button" data-close="graticuleDialog" data-shortcut="Esc">Close</button>
+    </header>
+    <div class="dialog-body">
+      <p class="muted" id="graticuleDialogScope">Latitude / longitude lines for this map.</p>
+      <label class="graticule-field graticule-field-toggle">
+        <input type="checkbox" id="graticuleEnabledInput"> <span>Show grid</span>
+      </label>
+      <div class="graticule-field-row">
+        <label class="graticule-field">Major spacing
+          <span><input type="number" id="graticuleMajorInput" min="1" max="90" step="1" inputmode="numeric">°</span>
+        </label>
+        <label class="graticule-field">Minor spacing
+          <span><input type="number" id="graticuleMinorInput" min="1" max="90" step="1" inputmode="numeric">°</span>
+        </label>
+      </div>
+      <p class="muted graticule-hint">Major lines are labeled in degrees; minor lines stay subtle. Saved separately for each map.</p>
     </div>
   </dialog>
 
@@ -1710,7 +1736,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.4";
+    const APP_VERSION = "4.7.5.1";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -2560,6 +2586,11 @@
     function defaultRingByLayer() {
       return Object.fromEntries(RING_LAYER_IDS.map(id => [id, defaultRingLayerSettings(id)]));
     }
+    // WISH-071 lat/lng graticule: per-map enable + major/minor interval (degrees).
+    const GRATICULE_DEFAULTS = { us: { major: 10, minor: 5 }, world: { major: 30, minor: 10 } };
+    function defaultGraticuleByLayer() {
+      return Object.fromEntries(RING_LAYER_IDS.map(id => [id, { enabled: false, major: GRATICULE_DEFAULTS[id].major, minor: GRATICULE_DEFAULTS[id].minor }]));
+    }
     const LEGEND_POSITION_META = {
       "right-top": { label: "Upper Right", next: "right-bottom", icon: __INSET_FILLED_TOPRIGHT_RECTANGLE },
       "right-bottom": { label: "Lower Right", next: "left-bottom", icon: __INSET_FILLED_BOTTOMRIGHT_RECTANGLE },
@@ -2724,6 +2755,7 @@
           bucketListFilterSnapshot: null,
           ringMode: false,
           ringByLayer: defaultRingByLayer(),
+          graticuleByLayer: defaultGraticuleByLayer(),
           basecampPanelMode: "modal",
           basecampNotesSplitRatio: 0.5,
           basecampSidebarRatio: 0.22
@@ -3157,6 +3189,7 @@
       // a no-op until the user changes a setting per-map). The flat keys are
       // then dropped from next.settings so they can't drift out of sync.
       next.settings.ringByLayer = normalizeRingByLayer(input.settings || {});
+      next.settings.graticuleByLayer = normalizeGraticuleByLayer(input.settings || {});
       delete next.settings.legendStatsMode;
       delete next.settings.ringAnchor1;
       delete next.settings.ringAnchor2;
@@ -3463,6 +3496,23 @@
       // value as "unset" and fall back to the mode default rather than the min.
       if (!Number.isFinite(mph) || mph <= 0) return range.default;
       return Math.round(Math.max(range.min, Math.min(range.max, mph)));
+    }
+
+    function normalizeGraticuleByLayer(inputSettings) {
+      const byLayer = inputSettings && typeof inputSettings === "object" && inputSettings.graticuleByLayer && typeof inputSettings.graticuleByLayer === "object"
+        ? inputSettings.graticuleByLayer
+        : {};
+      const clampInterval = (value, fallback) => {
+        const n = Math.round(Number(value));
+        return Number.isFinite(n) && n >= 1 ? Math.min(90, n) : fallback;
+      };
+      return Object.fromEntries(RING_LAYER_IDS.map(id => {
+        const defaults = GRATICULE_DEFAULTS[id];
+        const raw = byLayer[id] && typeof byLayer[id] === "object" ? byLayer[id] : {};
+        const minor = clampInterval(raw.minor, defaults.minor);
+        const major = Math.max(minor, clampInterval(raw.major, defaults.major));
+        return [id, { enabled: raw.enabled === true, major, minor }];
+      }));
     }
 
     function normalizeRingByLayer(inputSettings) {
@@ -5782,6 +5832,8 @@
       setButtonLabel("#notesActivateWayfinderBtn", __BACKPACK, "Wayfinder", "Toggle Wayfinder mode", bucketShortcutHint);
       setButtonLabel("#notesAddWaypointsBtn", __CIRCLE_BADGE_PLUS, "Packs", "Open Waypoint Packs", "Open Waypoint Packs");
       setButtonLabel("#mapRingModeBtn", __TARGET, "Rangefinder", "Toggle Ring Mode", "Toggle Rangefinder Mode");
+      setButtonLabel("#mapGraticuleBtn", __GRID_CIRCLE, "Grid", "Map grid settings", "Latitude / longitude grid");
+      $("#mapGraticuleBtn")?.setAttribute("aria-pressed", state.settings.graticuleByLayer?.[activeLayerId]?.enabled ? "true" : "false");
       setButtonLabel("#mapZoomOutBtn", __MINUS_CIRCLE, "Zoom Out", "Zoom map out", "Zoom map out");
       setButtonLabel("#mapZoomResetBtn", __ARROW_COUNTERCLOCKWISE_CIRCLE, "Reset", "Reset map zoom", "Reset map zoom");
       setButtonLabel("#mapZoomInBtn", __PLUS_CIRCLE, "Zoom In", "Zoom map in", "Zoom map in");
@@ -6370,6 +6422,7 @@
       // Labels + pins render for the active layer.
       if (isUS) renderMapLabels();
       else renderWorldMapLabels();
+      renderGraticule();
       renderRingOverlay();
       renderSuggestedSetMarkers();
       renderLocationMarkers();
@@ -7077,6 +7130,145 @@
       }
       overlay.append(ringAnchorPinGroup(anchor1, 1, point1));
       if (anchor2 && point2) overlay.append(ringAnchorPinGroup(anchor2, 2, point2));
+    }
+
+    // ---- WISH-071 lat/lng graticule ----
+    const GRATICULE_OVERLAY_IDS = { us: "mapGraticule", world: "worldMapGraticule" };
+    function graticuleSvg(tag) { return document.createElementNS("http://www.w3.org/2000/svg", tag); }
+    function graticuleLineClass(isMajor) { return isMajor ? "graticule-line is-major" : "graticule-line"; }
+    function worldGratPoint(lat, offset, box) {
+      const halfW = box.width / 2, halfH = box.height / 2;
+      const xc = robinsonCoefficient(ROBINSON_X_COEFFICIENTS, lat);
+      const yc = robinsonCoefficient(ROBINSON_Y_COEFFICIENTS, lat);
+      return { x: box.x + halfW + (offset / 180) * halfW * xc, y: box.y + halfH - Math.sign(lat) * halfH * yc };
+    }
+    function formatGraticuleLat(lat) {
+      const v = Math.round(lat);
+      return v === 0 ? "0°" : `${Math.abs(v)}°${v > 0 ? "N" : "S"}`;
+    }
+    function formatGraticuleLng(lng) {
+      const v = ((Math.round(lng) + 180) % 360 + 360) % 360 - 180;
+      if (v === 0) return "0°";
+      if (Math.abs(v) === 180) return "180°";
+      return `${Math.abs(v)}°${v > 0 ? "E" : "W"}`;
+    }
+
+    function renderGraticule() {
+      const layer = activeLayer();
+      const svg = $("#" + layer.svgId);
+      if (!svg) return;
+      let g = svg.querySelector("#" + GRATICULE_OVERLAY_IDS[activeLayerId]);
+      if (!g) {
+        g = graticuleSvg("g");
+        g.id = GRATICULE_OVERLAY_IDS[activeLayerId];
+        g.setAttribute("class", "map-graticule");
+        g.setAttribute("aria-hidden", "true");
+        const anchor = svg.querySelector("#" + layer.ringOverlayId) || svg.querySelector("#" + layer.markersId);
+        if (anchor) svg.insertBefore(g, anchor); else svg.append(g);
+      }
+      g.innerHTML = "";
+      const settings = state.settings.graticuleByLayer?.[activeLayerId];
+      if (!settings || !settings.enabled) return;
+      const minor = Math.max(1, settings.minor | 0);
+      const major = Math.max(minor, settings.major | 0);
+      if (activeLayerId === "world") renderWorldGraticule(g, major, minor);
+      else renderUsGraticule(g, svg, major, minor);
+    }
+
+    function renderWorldGraticule(g, major, minor) {
+      const box = worldProjectionBox();
+      if (!box) return;
+      const pt = (lat, offset) => worldGratPoint(lat, offset, box);
+      const addLine = (a, b, cls) => { const l = graticuleSvg("line"); l.setAttribute("x1", a.x.toFixed(1)); l.setAttribute("y1", a.y.toFixed(1)); l.setAttribute("x2", b.x.toFixed(1)); l.setAttribute("y2", b.y.toFixed(1)); l.setAttribute("class", cls); g.append(l); };
+      const addPolyline = (pts, cls) => { const pl = graticuleSvg("polyline"); pl.setAttribute("points", pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ")); pl.setAttribute("class", cls); g.append(pl); };
+      const addLabel = (x, y, text, anchor) => { const t = graticuleSvg("text"); t.setAttribute("x", x.toFixed(1)); t.setAttribute("y", y.toFixed(1)); t.setAttribute("class", "graticule-label"); t.setAttribute("text-anchor", anchor); t.textContent = text; g.append(t); };
+      // Parallels — straight horizontals (Robinson y is lng-independent); poles drawn by the frame.
+      const latMax = Math.floor(90 / minor) * minor;
+      for (let lat = -latMax; lat <= latMax; lat += minor) {
+        if (Math.abs(lat) >= 90) continue;
+        const isMajor = lat % major === 0;
+        const w = pt(lat, -180), e = pt(lat, 180);
+        addLine(w, e, graticuleLineClass(isMajor));
+        if (isMajor) { addLabel(w.x - 4, w.y + 3, formatGraticuleLat(lat), "end"); addLabel(e.x + 4, e.y + 3, formatGraticuleLat(lat), "start"); }
+      }
+      // Meridians — curved, sampled in latitude.
+      const lngMax = Math.floor(180 / minor) * minor;
+      for (let lng = -lngMax; lng < lngMax; lng += minor) {
+        const offset = ((lng - WORLD_MAP_CENTRAL_MERIDIAN + 540) % 360) - 180;
+        if (Math.abs(offset) >= 179.5) continue; // seam handled by the frame
+        const isMajor = lng % major === 0;
+        const pts = [];
+        for (let lat = -90; lat <= 90; lat += 5) pts.push(pt(lat, offset));
+        addPolyline(pts, graticuleLineClass(isMajor));
+        if (isMajor) { const top = pt(90, offset), bot = pt(-90, offset); addLabel(top.x, top.y - 4, formatGraticuleLng(lng), "middle"); addLabel(bot.x, bot.y + 11, formatGraticuleLng(lng), "middle"); }
+      }
+      // Projection outline/frame: edge meridians (±180) closed by the pole parallels.
+      const framePts = [];
+      for (let lat = -90; lat <= 90; lat += 5) framePts.push(pt(lat, -180));
+      framePts.push(pt(90, 180));
+      for (let lat = 90; lat >= -90; lat -= 5) framePts.push(pt(lat, 180));
+      const poly = graticuleSvg("polygon");
+      poly.setAttribute("points", framePts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" "));
+      poly.setAttribute("class", "graticule-frame");
+      g.append(poly);
+    }
+
+    function renderUsGraticule(g, svg, major, minor) {
+      const addLine = (x1, y1, x2, y2, cls) => { const l = graticuleSvg("line"); l.setAttribute("x1", x1.toFixed(1)); l.setAttribute("y1", y1.toFixed(1)); l.setAttribute("x2", x2.toFixed(1)); l.setAttribute("y2", y2.toFixed(1)); l.setAttribute("class", cls); g.append(l); };
+      Object.keys(LOCATION_GEO_BOUNDS).forEach(abbr => {
+        const overrides = LOCATION_PROJECTION_FRAME_OVERRIDES[abbr];
+        let frames;
+        if (Array.isArray(overrides)) {
+          frames = overrides.filter(f => f.box && f.bounds).map(f => ({ box: f.box, bounds: f.bounds }));
+        } else {
+          let box = LOCATION_PROJECTION_BOX_OVERRIDES[abbr];
+          if (!box) { const tile = svg.querySelector(`.state-tile[data-abbr="${abbr}"]`); try { box = tile?.getBBox(); } catch { } }
+          if (!box || !(box.width > 0)) return;
+          frames = [{ box, bounds: LOCATION_GEO_BOUNDS[abbr] }];
+        }
+        frames.forEach(({ box, bounds }) => {
+          const [minLat, maxLat, minLng, maxLng] = bounds;
+          const latSpan = Math.max(.0001, maxLat - minLat);
+          const lngSpan = Math.max(.0001, maxLng - minLng);
+          for (let lat = Math.ceil(minLat / minor) * minor; lat <= maxLat; lat += minor) {
+            const y = box.y + box.height * (maxLat - lat) / latSpan;
+            addLine(box.x, y, box.x + box.width, y, graticuleLineClass(lat % major === 0));
+          }
+          for (let lng = Math.ceil(minLng / minor) * minor; lng <= maxLng; lng += minor) {
+            const x = box.x + box.width * (projectionLongitudeForBounds(lng, bounds) - minLng) / lngSpan;
+            addLine(x, box.y, x, box.y + box.height, graticuleLineClass(lng % major === 0));
+          }
+        });
+      });
+    }
+
+    function graticuleLayerSettings() {
+      return state.settings.graticuleByLayer?.[activeLayerId]
+        || { enabled: false, major: GRATICULE_DEFAULTS[activeLayerId].major, minor: GRATICULE_DEFAULTS[activeLayerId].minor };
+    }
+    function populateGraticuleDialog() {
+      const s = graticuleLayerSettings();
+      $("#graticuleDialogScope").textContent = `Latitude / longitude lines for the ${activeLayerId === "world" ? "World" : "US"} map.`;
+      $("#graticuleEnabledInput").checked = s.enabled === true;
+      $("#graticuleMajorInput").value = s.major;
+      $("#graticuleMinorInput").value = s.minor;
+    }
+    function openGraticuleDialog() {
+      populateGraticuleDialog();
+      $("#graticuleDialog").showModal();
+    }
+    function commitGraticuleSettings() {
+      const bag = state.settings.graticuleByLayer;
+      if (!bag?.[activeLayerId]) return;
+      const current = bag[activeLayerId];
+      const minor = Math.max(1, Math.min(90, Math.round(Number($("#graticuleMinorInput").value)) || current.minor));
+      const major = Math.max(minor, Math.min(90, Math.round(Number($("#graticuleMajorInput").value)) || current.major));
+      bag[activeLayerId] = { enabled: $("#graticuleEnabledInput").checked, major, minor };
+      $("#graticuleMajorInput").value = major;
+      $("#graticuleMinorInput").value = minor;
+      $("#mapGraticuleBtn")?.setAttribute("aria-pressed", bag[activeLayerId].enabled ? "true" : "false");
+      save();
+      render();
     }
 
     function suggestedSetMarkerPoint(item) {
@@ -17678,6 +17870,10 @@
       $("#mapLayerToggleBtn").addEventListener("click", () => setActiveLayer(activeLayerId === "world" ? "us" : "world"));
       $("#mapBucketListBtn").addEventListener("click", toggleBucketListView);
       $("#mapRingModeBtn").addEventListener("click", toggleRingMode);
+      $("#mapGraticuleBtn")?.addEventListener("click", openGraticuleDialog);
+      $("#graticuleEnabledInput")?.addEventListener("change", commitGraticuleSettings);
+      $("#graticuleMajorInput")?.addEventListener("change", commitGraticuleSettings);
+      $("#graticuleMinorInput")?.addEventListener("change", commitGraticuleSettings);
       $("#ringPanel").addEventListener("click", event => {
         const clear = event.target.closest("[data-ring-clear]");
         if (clear) {
