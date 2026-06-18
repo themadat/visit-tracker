@@ -4,8 +4,8 @@
 
     const CHANGELOG = [
       {
-        version: "4.7.5.20",
-        date: "2026-06-17",
+        version: "4.7.5.21",
+        date: "2026-06-18",
         title: "Gridlines",
         summary: "Grid labels, spacing controls, and US geography get cleaner map detail.",
         highlights: [
@@ -45,6 +45,10 @@
               "Grid tuning now has South, Middle, and North control points for longitude tilt/bend and latitude bow.",
               "North/South spread and latitude-tilt controls add edge alignment without relying on unstable projection extrapolation.",
               "The mainland grid now uses direct geographic interpolation outside its landmark band, preventing the doubled southern overlap.",
+              "The US Grid Tuner now replaces abstract transform and curve sliders with nine draggable geographic control points on the map.",
+              "Mainland controls use 30°N, 40°N, and 50°N at 120°W, 100°W, and 80°W; Alaska uses 55°N, 60°N, and 65°N at 160°W, 150°W, and 140°W.",
+              "Longitude guides stay straight between their north and south points, latitude guides curve through each three-point row, and off-map handles remain reachable at the map edge.",
+              "The point tuner can minimize to a compact floating header so the full map stays available while dragging, especially on phones.",
             ]
           },
           {
