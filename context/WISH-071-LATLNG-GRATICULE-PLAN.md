@@ -40,6 +40,7 @@ Add a toggleable lat/lng graticule with **two line tiers (major + minor)** and *
 - Mainland and Alaska have independent nine-point drag overlays with a compact coordinate matrix, selected-point X/Y fields, keyboard nudging, and live map updates. Handles for clipped points clamp to the visible map edge with a leader back to their true position. The tuner minimizes to a small floating header so the map stays reachable on narrow screens.
 - Session values use `trailLog.usGridTuning.v3`, outside `usStateVisitMap.v1`, so ordinary backups remain unchanged. The v3 key intentionally retires the incompatible slider-tuner formats.
 - Reset restores the checked-in calibration. Copy Code emits the exact `US_GRATICULE_CALIBRATION` object to paste into `index.html` and commit.
+- Build 4.7.5.22 bakes the manually fitted Mainland and Alaska point layouts into `US_GRATICULE_CALIBRATION`.
 
 ### Settings pop-up, toggle, styling, persistence
 - **A per-map control button** in the map header (alongside pins/labels) opens a **settings pop-up** (reuse an existing header pop-up pattern — e.g. the ring-style menu or map-label picker — for consistency and outside-click close, and so it clamps on mobile). Pop-up contents **per map**: on/off, **major interval** dropdown (5° increments through 90°), **minor interval** dropdown (valid divisors of the selected Major interval), optionally the reference-lines emphasis checkbox. The button's pressed/badged state reflects whether the graticule is on.
