@@ -4,7 +4,7 @@
 
     const CHANGELOG = [
       {
-        version: "4.7.5.21",
+        version: "4.7.5.22",
         date: "2026-06-18",
         title: "Gridlines",
         summary: "Grid labels, spacing controls, and US geography get cleaner map detail.",
@@ -49,6 +49,7 @@
               "Mainland controls use 30°N, 40°N, and 50°N at 120°W, 100°W, and 80°W; Alaska uses 55°N, 60°N, and 65°N at 160°W, 150°W, and 140°W.",
               "Longitude guides stay straight between their north and south points, latitude guides curve through each three-point row, and off-map handles remain reachable at the map edge.",
               "The point tuner can minimize to a compact floating header so the full map stays available while dragging, especially on phones.",
+              "The manually fitted Mainland and Alaska point layouts are now the checked-in default grid calibration.",
             ]
           },
           {
