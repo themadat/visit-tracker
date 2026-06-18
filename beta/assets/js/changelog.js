@@ -4,7 +4,7 @@
 
     const CHANGELOG = [
       {
-        version: "4.7.5.15",
+        version: "4.7.5.16",
         date: "2026-06-17",
         title: "Gridlines",
         summary: "Grid labels, spacing controls, and US geography get cleaner map detail.",
@@ -37,6 +37,7 @@
               "Alaska inset grid bounds now span 54°N–72°N and 170°W–124°W for a tighter fit.",
               "Alaska's inset grid now uses an Alaska Albers projection before scaling into its map pane, matching the inset artwork's curved geography.",
               "The contiguous-US grid now uses a matching Albers projection calibrated to 24.5°N–49.5°N and 125°W–65°W.",
+              "Alaska's Albers grid is now landmark-fitted to its inset and drawn beyond all pane edges for complete clipped coverage.",
             ]
           },
           {
