@@ -19,6 +19,9 @@ Robinson 2021 CIA WorldFactBook-Political World ::
 Robinson Political Map 2005 :: 
   https://upload.wikimedia.org/wikipedia/commons/9/93/%22Political_World%22_CIA_World_Factbook_map_2005.svg
 
+Maybe this is a better us map where hawaii and alaska are mercartor:
+  https://commons.wikimedia.org/wiki/File:Usa_edcp_(%2BHI_%2BAK)_location_map.svg
+
 ## Colors
 
 Ferrari:

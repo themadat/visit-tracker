@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5.13">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5.14">
 </head>
 
 <body>
@@ -1728,7 +1728,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.5.13";
+    const APP_VERSION = "4.7.5.14";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7261,10 +7261,11 @@
       { type: "polygon", points: [{ x: 0, y: 425 }, { x: 147, y: 425 }, { x: 215, y: 493 }, { x: 300, y: 493 }, { x: 354, y: 547 }, { x: 354, y: 593 }, { x: 0, y: 593 }] },
       { type: "rect", x: 560, y: 515, width: 122, height: 78 }
     ];
-    const US_GRATICULE_MERCATOR_INSETS = [
-      { id: "ak-main", abbr: "AK", bounds: { minLat: 54, maxLat: 71, minLng: -170, maxLng: -130 }, box: { x: 0, y: 425, width: 251, height: 168 }, clip: "ak" },
-      { id: "hi", abbr: "HI", bounds: { minLat: 18.9, maxLat: 22.3, minLng: -160.3, maxLng: -154.8 }, box: { x: 215, y: 493, width: 139, height: 100 }, clip: "hi" }
+    const US_GRATICULE_INSETS = [
+      { id: "ak-main", abbr: "AK", projection: "albers", bounds: { minLat: 54, maxLat: 72, minLng: -170, maxLng: -124 }, box: { x: 0, y: 425, width: 251, height: 168 }, clip: "ak" },
+      { id: "hi", abbr: "HI", projection: "mercator", bounds: { minLat: 18.9, maxLat: 22.3, minLng: -160.3, maxLng: -154.8 }, box: { x: 215, y: 493, width: 139, height: 100 }, clip: "hi" }
     ];
+    const US_GRATICULE_ALASKA_ALBERS = { lat0: 50, lng0: -154, parallel1: 55, parallel2: 65 };
     const US_GRATICULE_INSET_CLIPS = {
       ak: [{ x: 0, y: 425 }, { x: 147, y: 425 }, { x: 215, y: 493 }, { x: 215, y: 548 }, { x: 251, y: 593 }, { x: 0, y: 593 }],
       hi: [{ x: 215, y: 493 }, { x: 300, y: 493 }, { x: 354, y: 547 }, { x: 354, y: 593 }, { x: 251, y: 593 }, { x: 215, y: 548 }]
@@ -7458,6 +7459,40 @@
       return Math.log(Math.tan(Math.PI / 4 + phi / 2));
     }
 
+    function usAlaskaAlbersRaw(lat, lng) {
+      const rad = Math.PI / 180;
+      const phi = Number(lat) * rad;
+      const lambda = Number(lng) * rad;
+      const phi0 = US_GRATICULE_ALASKA_ALBERS.lat0 * rad;
+      const lambda0 = US_GRATICULE_ALASKA_ALBERS.lng0 * rad;
+      const phi1 = US_GRATICULE_ALASKA_ALBERS.parallel1 * rad;
+      const phi2 = US_GRATICULE_ALASKA_ALBERS.parallel2 * rad;
+      const n = (Math.sin(phi1) + Math.sin(phi2)) / 2;
+      const c = Math.cos(phi1) ** 2 + 2 * n * Math.sin(phi1);
+      const rho = Math.sqrt(Math.max(0, c - 2 * n * Math.sin(phi))) / n;
+      const rho0 = Math.sqrt(Math.max(0, c - 2 * n * Math.sin(phi0))) / n;
+      const theta = n * (lambda - lambda0);
+      return { x: rho * Math.sin(theta), y: rho0 - rho * Math.cos(theta) };
+    }
+
+    function usAlaskaAlbersBounds(bounds) {
+      const out = { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity };
+      const add = (lat, lng) => {
+        const p = usAlaskaAlbersRaw(lat, lng);
+        out.minX = Math.min(out.minX, p.x); out.maxX = Math.max(out.maxX, p.x);
+        out.minY = Math.min(out.minY, p.y); out.maxY = Math.max(out.maxY, p.y);
+      };
+      for (let lat = bounds.minLat; lat <= bounds.maxLat + .0001; lat += .25) {
+        add(Math.min(lat, bounds.maxLat), bounds.minLng);
+        add(Math.min(lat, bounds.maxLat), bounds.maxLng);
+      }
+      for (let lng = bounds.minLng; lng <= bounds.maxLng + .0001; lng += .25) {
+        add(bounds.minLat, Math.min(lng, bounds.maxLng));
+        add(bounds.maxLat, Math.min(lng, bounds.maxLng));
+      }
+      return out;
+    }
+
     function usGraticuleInsetBox(svg, inset) {
       if (inset.box) return inset.box;
       const tile = svg.querySelector(`.state-tile[data-abbr="${inset.abbr}"], .${inset.abbr.toLowerCase()}`);
@@ -7476,6 +7511,18 @@
       return {
         x: box.x + ((lng - b.minLng) / lngSpan) * box.width,
         y: box.y + ((yTop - usMercatorY(lat)) / ySpan) * box.height
+      };
+    }
+
+    function usGraticuleInsetPoint(lat, lng, inset, box) {
+      if (inset.projection !== "albers") return usMercatorInsetPoint(lat, lng, inset, box);
+      const raw = inset.rawBounds || (inset.rawBounds = usAlaskaAlbersBounds(inset.bounds));
+      const p = usAlaskaAlbersRaw(lat, lng);
+      const width = Math.max(.0001, raw.maxX - raw.minX);
+      const height = Math.max(.0001, raw.maxY - raw.minY);
+      return {
+        x: box.x + ((p.x - raw.minX) / width) * box.width,
+        y: box.y + box.height - ((p.y - raw.minY) / height) * box.height
       };
     }
 
@@ -7499,8 +7546,8 @@
       return `url(#${id})`;
     }
 
-    function renderUsMercatorInsetGraticules(g, svg, major, minor, options = {}) {
-      US_GRATICULE_MERCATOR_INSETS.forEach(inset => {
+    function renderUsInsetGraticules(g, svg, major, minor, options = {}) {
+      US_GRATICULE_INSETS.forEach(inset => {
         const box = usGraticuleInsetBox(svg, inset);
         if (!box) return;
         const b = inset.bounds;
@@ -7520,7 +7567,7 @@
         lineGroup.setAttribute("class", "graticule-inset-line-grid");
         if (inset.clip) lineGroup.setAttribute("clip-path", ensureUsGraticuleInsetClip(svg, inset.clip));
         group.append(lineGroup);
-        const point = (lat, lng) => usMercatorInsetPoint(lat, lng, inset, box);
+        const point = (lat, lng) => usGraticuleInsetPoint(lat, lng, inset, box);
         const visiblePoints = pts => clipPoints ? pts.filter(p => pointInGraticulePolygon(p, clipPoints)) : pts;
         const labelBoxFor = (x, y, text, anchor) => {
           const width = Math.max(13, String(text).length * 4.3);
@@ -7644,7 +7691,7 @@
       poly.setAttribute("points", framePts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" "));
       poly.setAttribute("class", "graticule-frame");
       gridGroup.append(poly);
-      renderUsMercatorInsetGraticules(g, svg, major, minor, options);
+      renderUsInsetGraticules(g, svg, major, minor, options);
     }
 
     function graticuleLayerSettings() {
