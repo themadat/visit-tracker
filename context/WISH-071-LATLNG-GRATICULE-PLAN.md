@@ -7,7 +7,7 @@ Ticket: **WISH-071** "Latitude / Longitude Map Lines". Target: **patch**. An opt
 Add a toggleable lat/lng graticule with **two line tiers (major + minor)** and **user-customizable intervals**, configured from a **settings pop-up**:
 - **World map** — true graticule via the existing **Robinson** projection (`worldCoordinatePoint`): straight parallels, curved (sampled) meridians, plus the **projection outline/frame** (curved ±180° edge meridians closed by the pole parallels) so the map's curvature reads instead of looking like a rectangle. Defaults: **30° major, 10° minor**. Tropic and polar-circle reference lines are emphasized and labeled on top.
 - **US map** — an Albers equal-area lat/lng overlay over the contiguous-US map frame, landmark-fitted so **25°N** meets the southern tips of Texas and Florida, **49°N** follows the western/north-central Canadian border, Maine's northern tip meets **47°N**, and the mainland spans **125°W–67°W**. A wider **60°N–0° / 145°W–45°W** envelope keeps lines continuing off all four SVG edges. Defaults: **10° major, 5° minor**. Displaced/rescaled inset cutout areas are excluded with an SVG mask; Alaska receives its own Alaska Albers grid shifted about **0.5° north**, fitted so **141°W** follows the nearly vertical Canadian border before the panhandle grid flares east, and drawn from **40°N–85°N / 180°W–110°W** so every pane edge stays covered. Hawaii receives an independent Mercator-style inset grid.
-- **Manual tuning** — Developer Mode exposes separate Mainland and Alaska controls for horizontal/vertical offset, width, height, north/south spread, latitude tilt, shared South/Middle/North longitude shape, and South/Middle/North latitude bow. Tuning is saved in a dedicated local session key and exports a commit-ready `US_GRATICULE_CALIBRATION` constant.
+- **Manual tuning** — Developer Mode exposes separate Mainland and Alaska 3×3 point editors directly on the US map. Mainland anchors are 30°N/40°N/50°N × 120°W/100°W/80°W; Alaska anchors are 55°N/60°N/65°N × 160°W/150°W/140°W. Tuning is saved in a dedicated local session key and exports a commit-ready `US_GRATICULE_CALIBRATION` constant.
 - **Major lines** read stronger and carry **degree labels at both line ends**; **minor lines** are thinner/subtler (lighter or no labels).
 - A **per-map control** (button → settings pop-up) holding on/off, reference-line toggle, label toggle, and major/minor intervals, remembered separately for US and World, kept visually subordinate to markers/rings/labels.
 
@@ -31,14 +31,14 @@ Add a toggleable lat/lng graticule with **two line tiers (major + minor)** and *
 
 ### US graticule (stable fitted grid)
 - Seed the control frame from the landmark-fitted Albers geometry, then render from direct normalized latitude/longitude interpolation instead of extrapolating the quadratic projection outside its fitted band. This prevents southern lines from folding back into a duplicate overlap.
-- Longitude shape is shared by all meridians and passes through editable South/Middle/North horizontal control offsets, allowing straight tilt or a consistent bend. Latitude bow independently passes through South/Middle/North curve values.
+- Each control longitude is a straight line between its south and north handles. Its middle handle is the exact midpoint and moves the whole longitude when dragged. Each control latitude is a consistent curve through its west, center, and east handles; the full grid interpolates and extrapolates from that ruled 3×3 surface.
 - Major latitude/longitude labels sit at visible line endpoints on the top/bottom and left/right edges, with corner collision guards. Labels can be toggled off.
 - Insets (AK, HI, territories) are displaced/rescaled relative to the contiguous projection, so mask their cutout areas and do not draw local fake grids.
 
 ### Developer grid tuner
 - Available only in Developer Mode from Grid → Tune or Settings → Developer Tools.
-- Mainland and Alaska have independent X, Y, Width, Height, South/North Spread, Latitude Tilt, three longitude-shape points, and three latitude-bow points with live map updates.
-- Session values use `trailLog.usGridTuning.v2`, outside `usStateVisitMap.v1`, so ordinary backups remain unchanged. The v2 key intentionally retires incompatible v1 tuning sessions.
+- Mainland and Alaska have independent nine-point drag overlays with a compact coordinate matrix, selected-point X/Y fields, keyboard nudging, and live map updates. Handles for clipped points clamp to the visible map edge with a leader back to their true position. The tuner minimizes to a small floating header so the map stays reachable on narrow screens.
+- Session values use `trailLog.usGridTuning.v3`, outside `usStateVisitMap.v1`, so ordinary backups remain unchanged. The v3 key intentionally retires the incompatible slider-tuner formats.
 - Reset restores the checked-in calibration. Copy Code emits the exact `US_GRATICULE_CALIBRATION` object to paste into `index.html` and commit.
 
 ### Settings pop-up, toggle, styling, persistence
