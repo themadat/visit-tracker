@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5.23">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5.24">
 </head>
 
 <body>
@@ -852,7 +852,6 @@
       <label class="graticule-number-field">Minor
         <select id="graticuleMinorInput"></select>
       </label>
-      <button id="gridTuneOpenBtn" class="graticule-option-btn hidden" type="button" data-dev-only>Tune</button>
     </div>
   </div>
 
@@ -1769,7 +1768,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.5.23";
+    const APP_VERSION = "4.7.5.24";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -18773,7 +18772,6 @@
       $("#graticuleEnabledBtn")?.addEventListener("click", () => toggleGraticuleSetting("enabled"));
       $("#graticuleReferenceBtn")?.addEventListener("click", () => toggleGraticuleSetting("references"));
       $("#graticuleLabelsBtn")?.addEventListener("click", () => toggleGraticuleSetting("labels"));
-      $("#gridTuneOpenBtn")?.addEventListener("click", () => openGridTuner());
       $("#graticuleMajorInput")?.addEventListener("change", () => {
         const current = graticuleLayerSettings();
         const major = Math.max(5, Math.min(90, Math.round((Number($("#graticuleMajorInput").value) || current.major) / 5) * 5));
