@@ -1,8 +1,8 @@
 ## Future Prompt
 
 shortcuts update: | for switcing maps; ~ for label, 4 for globe. 
-
 shortcuts: Priority popup; globe pop up, rangefinder popup
+rangefinder UNDER lengend in side bar in desktop mode and beside it if there is enough room
 
 
 ## Maps
