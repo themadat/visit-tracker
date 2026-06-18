@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5.19">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5.20">
 </head>
 
 <body>
@@ -865,7 +865,8 @@
       <button type="button" data-grid-tune-tab="mainland" aria-pressed="true">Mainland</button>
       <button type="button" data-grid-tune-tab="alaska" aria-pressed="false">Alaska</button>
     </div>
-    <p class="muted">Longitude lines stay straight. Curve changes every latitude line consistently.</p>
+    <p class="muted">Set the shared longitude shape at South/Middle/North, then tune the latitude bow at those same three bands.</p>
+    <p id="gridTuneBandHelp" class="grid-tune-band-help"></p>
     <div id="gridTuneControls" class="grid-tune-controls"></div>
     <div class="grid-tune-actions">
       <button id="gridTuneResetBtn" type="button">Reset This Grid</button>
@@ -1758,7 +1759,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.5.19";
+    const APP_VERSION = "4.7.5.20";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7283,32 +7284,53 @@
     }
 
     const US_GRATICULE_DRAW_BOUNDS = { minLat: 0, maxLat: 60, minLng: -145, maxLng: -45 };
-    const US_CONTIGUOUS_ALBERS = { lat0: 37.5, lng0: -96, parallel1: 35, parallel2: 36 };
-    const US_CONTIGUOUS_ALBERS_FIT = {
-      x: [1177.0307, 7.9216, 458.5482, 55.9728, 351.2739, 480.2245],
-      y: [-13.8414, -1273.8765, 368.499, 155.1489, -243.9051, -1518.6898]
-    };
     const US_GRATICULE_CALIBRATION = {
-      mainland: { x: 0, y: 0, width: 1, height: 1, curve: 1 },
-      alaska: { x: 0, y: 0, width: 1, height: 1, curve: 1 }
+      mainland: {
+        x: 0, y: 0, width: 1, height: 1,
+        southSpread: 1, northSpread: 1, rowTilt: 0,
+        southLng: -0.4, middleLng: -29.7, northLng: -17.6,
+        southCurve: 16, middleCurve: 112.6, northCurve: 80.1
+      },
+      alaska: {
+        x: 0, y: 0, width: 1, height: 1,
+        southSpread: 1, northSpread: 1, rowTilt: 0,
+        southLng: -1.5, middleLng: -1.1, northLng: -0.8,
+        southCurve: 13.5, middleCurve: 10, northCurve: 7.5
+      }
     };
     const US_GRATICULE_TUNE_GEOMETRY = {
       mainland: {
         bounds: { minLat: 25, maxLat: 49, minLng: -125, maxLng: -67 },
-        center: { x: 467, y: 296.5 }
+        center: { x: 467, y: 296.5 },
+        corners: {
+          sw: { x: -36.28, y: 547.154 }, se: { x: 995.999, y: 567.874 },
+          nw: { x: 68.467, y: 1.451 }, ne: { x: 924.636, y: -48.943 }
+        }
       },
       alaska: {
         bounds: { minLat: 54.5, maxLat: 71.5, minLng: -167, maxLng: -129.5 },
-        center: { x: 125.5, y: 509 }
+        center: { x: 125.5, y: 509 },
+        corners: {
+          sw: { x: 40, y: 569.038 }, se: { x: 234.507, y: 578.242 },
+          nw: { x: 99.609, y: 425.508 }, ne: { x: 207.591, y: 430.617 }
+        }
       }
     };
-    const GRID_TUNE_STORAGE_KEY = "trailLog.usGridTuning.v1";
+    const GRID_TUNE_STORAGE_KEY = "trailLog.usGridTuning.v2";
     const GRID_TUNE_FIELDS = [
-      { key: "x", label: "Left / Right", min: -300, max: 300, step: .5, digits: 1 },
-      { key: "y", label: "Up / Down", min: -300, max: 300, step: .5, digits: 1 },
-      { key: "width", label: "Width", min: .25, max: 2, step: .005, digits: 3 },
-      { key: "height", label: "Height", min: .25, max: 2, step: .005, digits: 3 },
-      { key: "curve", label: "Curve Level", min: -2, max: 4, step: .01, digits: 2 }
+      { group: "Position + Size", key: "x", label: "Left / Right", min: -300, max: 300, step: .1, digits: 1 },
+      { group: "Position + Size", key: "y", label: "Up / Down", min: -300, max: 300, step: .1, digits: 1 },
+      { group: "Position + Size", key: "width", label: "Width", min: .25, max: 2, step: .005, digits: 3 },
+      { group: "Position + Size", key: "height", label: "Height", min: .25, max: 2, step: .005, digits: 3 },
+      { group: "Edge Alignment", key: "southSpread", label: "South Spread", min: .25, max: 2, step: .005, digits: 3 },
+      { group: "Edge Alignment", key: "northSpread", label: "North Spread", min: .25, max: 2, step: .005, digits: 3 },
+      { group: "Edge Alignment", key: "rowTilt", label: "Latitude Tilt", min: -300, max: 300, step: .1, digits: 1 },
+      { group: "Longitude Shape / Tilt", key: "southLng", label: "South Point", min: -300, max: 300, step: .1, digits: 1 },
+      { group: "Longitude Shape / Tilt", key: "middleLng", label: "Middle Point", min: -300, max: 300, step: .1, digits: 1 },
+      { group: "Longitude Shape / Tilt", key: "northLng", label: "North Point", min: -300, max: 300, step: .1, digits: 1 },
+      { group: "Latitude Bow", key: "southCurve", label: "South Curve", min: -300, max: 300, step: .1, digits: 1 },
+      { group: "Latitude Bow", key: "middleCurve", label: "Middle Curve", min: -300, max: 300, step: .1, digits: 1 },
+      { group: "Latitude Bow", key: "northCurve", label: "North Curve", min: -300, max: 300, step: .1, digits: 1 }
     ];
     const US_GRATICULE_INSET_CUTS = [
       { type: "polygon", points: [{ x: 0, y: 425 }, { x: 147, y: 425 }, { x: 215, y: 493 }, { x: 300, y: 493 }, { x: 354, y: 547 }, { x: 354, y: 593 }, { x: 0, y: 593 }] },
@@ -7319,13 +7341,10 @@
         id: "ak-main", abbr: "AK", projection: "albers",
         bounds: { minLat: 54.5, maxLat: 71.5, minLng: -167, maxLng: -129.5 },
         drawBounds: { minLat: 40, maxLat: 85, minLng: -180, maxLng: -110 },
-        latOffset: .5,
-        fit: { xx: 518.1313, xy: 102.7383, x0: 96.7666, yx: 69.0727, yy: -508.4544, y0: 628.6149 },
         box: { x: 0, y: 425, width: 251, height: 168 }, clip: "ak"
       },
       { id: "hi", abbr: "HI", projection: "mercator", bounds: { minLat: 18.9, maxLat: 22.3, minLng: -160.3, maxLng: -154.8 }, box: { x: 215, y: 493, width: 139, height: 100 }, clip: "hi" }
     ];
-    const US_GRATICULE_ALASKA_ALBERS = { lat0: 50, lng0: -154, parallel1: 55, parallel2: 65 };
     const US_GRATICULE_INSET_CLIPS = {
       ak: [{ x: 0, y: 425 }, { x: 147, y: 425 }, { x: 215, y: 493 }, { x: 215, y: 548 }, { x: 251, y: 593 }, { x: 0, y: 593 }],
       hi: [{ x: 215, y: 493 }, { x: 300, y: 493 }, { x: 354, y: 547 }, { x: 354, y: 593 }, { x: 251, y: 593 }, { x: 215, y: 548 }]
@@ -7366,35 +7385,6 @@
       try { localStorage.setItem(GRID_TUNE_STORAGE_KEY, JSON.stringify(gridTuneCalibration)); } catch { }
     }
 
-    function usAlbersRaw(lat, lng, projection) {
-      const rad = Math.PI / 180;
-      const phi = Number(lat) * rad;
-      const lambda = Number(lng) * rad;
-      const phi0 = projection.lat0 * rad;
-      const lambda0 = projection.lng0 * rad;
-      const phi1 = projection.parallel1 * rad;
-      const phi2 = projection.parallel2 * rad;
-      const n = (Math.sin(phi1) + Math.sin(phi2)) / 2;
-      const c = Math.cos(phi1) ** 2 + 2 * n * Math.sin(phi1);
-      const rho = Math.sqrt(Math.max(0, c - 2 * n * Math.sin(phi))) / n;
-      const rho0 = Math.sqrt(Math.max(0, c - 2 * n * Math.sin(phi0))) / n;
-      const theta = n * (lambda - lambda0);
-      return { x: rho * Math.sin(theta), y: rho0 - rho * Math.cos(theta) };
-    }
-
-    function usContiguousAlbersRaw(lat, lng) {
-      return usAlbersRaw(lat, lng, US_CONTIGUOUS_ALBERS);
-    }
-
-    function usContiguousAlbersPoint(lat, lng) {
-      const p = usContiguousAlbersRaw(lat, lng);
-      const terms = [p.x, p.y, 1, p.x * p.x, p.x * p.y, p.y * p.y];
-      return {
-        x: US_CONTIGUOUS_ALBERS_FIT.x.reduce((sum, coefficient, i) => sum + coefficient * terms[i], 0),
-        y: US_CONTIGUOUS_ALBERS_FIT.y.reduce((sum, coefficient, i) => sum + coefficient * terms[i], 0)
-      };
-    }
-
     function lerpGraticulePoint(a, b, amount) {
       return {
         x: a.x + (b.x - a.x) * amount,
@@ -7402,42 +7392,52 @@
       };
     }
 
-    function straightLongitudeGridPoint(lat, lng, target, basePoint) {
+    function threePointGraticuleValue(south, middle, north, amount) {
+      const control = 2 * middle - (south + north) / 2;
+      if (amount < 0) return south + 2 * (control - south) * amount;
+      if (amount > 1) return north + 2 * (north - control) * (amount - 1);
+      const inverse = 1 - amount;
+      return inverse * inverse * south + 2 * inverse * amount * control + amount * amount * north;
+    }
+
+    function tunedUsGridPoint(lat, lng, target) {
       const geometry = US_GRATICULE_TUNE_GEOMETRY[target];
       const calibration = gridTuneCalibration[target];
       const bounds = geometry.bounds;
-      const original = basePoint(lat, lng);
-      const south = basePoint(bounds.minLat, lng);
-      const north = basePoint(bounds.maxLat, lng);
-      const vx = north.x - south.x;
-      const vy = north.y - south.y;
-      const denominator = vx * vx + vy * vy || 1;
-      const latitudeAmount = ((original.x - south.x) * vx + (original.y - south.y) * vy) / denominator;
+      const latitudeAmount = (lat - bounds.minLat) / Math.max(.0001, bounds.maxLat - bounds.minLat);
       const longitudeAmount = (lng - bounds.minLng) / Math.max(.0001, bounds.maxLng - bounds.minLng);
-      const meridianPoint = lerpGraticulePoint(south, north, latitudeAmount);
-      const westPoint = lerpGraticulePoint(
-        basePoint(bounds.minLat, bounds.minLng),
-        basePoint(bounds.maxLat, bounds.minLng),
+      const westPoint = lerpGraticulePoint(geometry.corners.sw, geometry.corners.nw, latitudeAmount);
+      const eastPoint = lerpGraticulePoint(geometry.corners.se, geometry.corners.ne, latitudeAmount);
+      const rowCenter = lerpGraticulePoint(westPoint, eastPoint, .5);
+      const baseWidth = eastPoint.x - westPoint.x;
+      const spread = calibration.southSpread + (calibration.northSpread - calibration.southSpread) * latitudeAmount;
+      const longitudeShift = threePointGraticuleValue(
+        calibration.southLng,
+        calibration.middleLng,
+        calibration.northLng,
         latitudeAmount
       );
-      const eastPoint = lerpGraticulePoint(
-        basePoint(bounds.minLat, bounds.maxLng),
-        basePoint(bounds.maxLat, bounds.maxLng),
+      const latitudeBow = threePointGraticuleValue(
+        calibration.southCurve,
+        calibration.middleCurve,
+        calibration.northCurve,
         latitudeAmount
       );
-      const latitudeChord = lerpGraticulePoint(westPoint, eastPoint, longitudeAmount);
-      const curvedPoint = {
-        x: latitudeChord.x + (meridianPoint.x - latitudeChord.x) * calibration.curve,
-        y: latitudeChord.y + (meridianPoint.y - latitudeChord.y) * calibration.curve
+      const rowTilt = calibration.rowTilt * (longitudeAmount - .5);
+      const point = {
+        x: rowCenter.x + longitudeShift + (longitudeAmount - .5) * baseWidth * spread,
+        y: westPoint.y + (eastPoint.y - westPoint.y) * longitudeAmount
+          + rowTilt
+          + latitudeBow * 4 * longitudeAmount * (1 - longitudeAmount)
       };
       return {
-        x: geometry.center.x + (curvedPoint.x - geometry.center.x) * calibration.width + calibration.x,
-        y: geometry.center.y + (curvedPoint.y - geometry.center.y) * calibration.height + calibration.y
+        x: geometry.center.x + (point.x - geometry.center.x) * calibration.width + calibration.x,
+        y: geometry.center.y + (point.y - geometry.center.y) * calibration.height + calibration.y
       };
     }
 
     function usContiguousGridPoint(lat, lng) {
-      return straightLongitudeGridPoint(lat, lng, "mainland", usContiguousAlbersPoint);
+      return tunedUsGridPoint(lat, lng, "mainland");
     }
 
     function ensureUsGraticuleInsetMask(svg) {
@@ -7498,25 +7498,6 @@
       return Math.log(Math.tan(Math.PI / 4 + phi / 2));
     }
 
-    function usAlaskaAlbersRaw(lat, lng) {
-      return usAlbersRaw(lat, lng, US_GRATICULE_ALASKA_ALBERS);
-    }
-
-    function usAlaskaInsetBasePoint(lat, lng, inset, box) {
-      const p = usAlaskaAlbersRaw(lat + (Number(inset.latOffset) || 0), lng);
-      const fit = inset.fit;
-      if (fit) {
-        return {
-          x: fit.xx * p.x + fit.xy * p.y + fit.x0,
-          y: fit.yx * p.x + fit.yy * p.y + fit.y0
-        };
-      }
-      return {
-        x: box.x + box.width / 2,
-        y: box.y + box.height / 2
-      };
-    }
-
     function usGraticuleInsetBox(svg, inset) {
       if (inset.box) return inset.box;
       const tile = svg.querySelector(`.state-tile[data-abbr="${inset.abbr}"], .${inset.abbr.toLowerCase()}`);
@@ -7540,12 +7521,7 @@
 
     function usGraticuleInsetPoint(lat, lng, inset, box) {
       if (inset.projection !== "albers") return usMercatorInsetPoint(lat, lng, inset, box);
-      return straightLongitudeGridPoint(
-        lat,
-        lng,
-        "alaska",
-        (sampleLat, sampleLng) => usAlaskaInsetBasePoint(sampleLat, sampleLng, inset, box)
-      );
+      return tunedUsGridPoint(lat, lng, "alaska");
     }
 
     function ensureUsGraticuleInsetClip(svg, clipKey) {
@@ -7766,22 +7742,35 @@
     function renderGridTuneControls() {
       const controls = $("#gridTuneControls");
       const output = $("#gridTuneOutput");
+      const help = $("#gridTuneBandHelp");
       $$("[data-grid-tune-tab]").forEach(button => {
         button.setAttribute("aria-pressed", button.dataset.gridTuneTab === gridTuneTarget ? "true" : "false");
       });
+      if (help) {
+        const bounds = US_GRATICULE_TUNE_GEOMETRY[gridTuneTarget].bounds;
+        const middle = (bounds.minLat + bounds.maxLat) / 2;
+        const bandLabel = lat => `${Number.isInteger(lat) ? lat : lat.toFixed(1)}°N`;
+        help.textContent = `Bands: South ${bandLabel(bounds.minLat)} · Middle ${bandLabel(middle)} · North ${bandLabel(bounds.maxLat)}`;
+      }
       if (controls) {
         const values = gridTuneCalibration[gridTuneTarget];
-        controls.innerHTML = GRID_TUNE_FIELDS.map(field => `
-          <label class="grid-tune-field">
-            <span>${field.label}</span>
-            <input type="range" min="${field.min}" max="${field.max}" step="${field.step}"
-              value="${formatGridTuneValue(values[field.key], field)}" data-grid-tune-field="${field.key}"
-              aria-label="${gridTuneTarget} ${field.label}">
-            <input type="number" min="${field.min}" max="${field.max}" step="${field.step}"
-              value="${formatGridTuneValue(values[field.key], field)}" data-grid-tune-field="${field.key}"
-              aria-label="${gridTuneTarget} ${field.label} exact value">
-          </label>
-        `).join("");
+        let lastGroup = "";
+        controls.innerHTML = GRID_TUNE_FIELDS.map(field => {
+          const heading = field.group !== lastGroup
+            ? `<h4>${field.group}</h4>`
+            : "";
+          lastGroup = field.group;
+          return `${heading}
+            <label class="grid-tune-field">
+              <span>${field.label}</span>
+              <input type="range" min="${field.min}" max="${field.max}" step="${field.step}"
+                value="${formatGridTuneValue(values[field.key], field)}" data-grid-tune-field="${field.key}"
+                aria-label="${gridTuneTarget} ${field.label}">
+              <input type="number" min="${field.min}" max="${field.max}" step="${field.step}"
+                value="${formatGridTuneValue(values[field.key], field)}" data-grid-tune-field="${field.key}"
+                aria-label="${gridTuneTarget} ${field.label} exact value">
+            </label>`;
+        }).join("");
       }
       if (output) output.value = gridTuneCalibrationText();
     }
