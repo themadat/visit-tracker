@@ -4,7 +4,7 @@
 
     const CHANGELOG = [
       {
-        version: "4.7.5.13",
+        version: "4.7.5.14",
         date: "2026-06-17",
         title: "Gridlines",
         summary: "Grid labels, spacing controls, and US geography get cleaner map detail.",
@@ -34,7 +34,8 @@
               "Latitude and longitude degree labels now lightly tint by direction: north red, south green, east orange-yellow, and west blue-purple.",
               "Alaska and Hawaii inset labels now render outside the clipped line layer so their text is not chopped by the pane edge.",
               "Alaska and Hawaii inset labels now anchor to visible pane edges with collision guards, and the stray Aleutian overlay grid has been removed.",
-              "Alaska inset grid bounds now span 54°N–71°N and 170°W–130°W for a tighter fit.",
+              "Alaska inset grid bounds now span 54°N–72°N and 170°W–124°W for a tighter fit.",
+              "Alaska's inset grid now uses an Alaska Albers projection before scaling into its map pane, matching the inset artwork's curved geography.",
             ]
           },
           {
