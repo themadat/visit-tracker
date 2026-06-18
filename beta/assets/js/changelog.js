@@ -4,7 +4,7 @@
 
     const CHANGELOG = [
       {
-        version: "4.7.5.22",
+        version: "4.7.5.23",
         date: "2026-06-18",
         title: "Gridlines",
         summary: "Grid labels, spacing controls, and US geography get cleaner map detail.",
@@ -50,6 +50,7 @@
               "Longitude guides stay straight between their north and south points, latitude guides curve through each three-point row, and off-map handles remain reachable at the map edge.",
               "The point tuner can minimize to a compact floating header so the full map stays available while dragging, especially on phones.",
               "The manually fitted Mainland and Alaska point layouts are now the checked-in default grid calibration.",
+              "Mainland and Alaska coordinate pins now use the calibrated grid projection, bringing National Park previews and saved-note markers onto their true graticule positions.",
             ]
           },
           {
