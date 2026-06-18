@@ -4,7 +4,7 @@
 
     const CHANGELOG = [
       {
-        version: "4.7.5.14",
+        version: "4.7.5.15",
         date: "2026-06-17",
         title: "Gridlines",
         summary: "Grid labels, spacing controls, and US geography get cleaner map detail.",
@@ -24,11 +24,11 @@
               "Major and Minor interval fields disable while Grid is off, matching the Circles and Labels controls.",
               "Major spacing is now chosen from 5° increments up to 90°, and Minor spacing is chosen from valid divisors of the selected Major spacing.",
               "Clicking the Grid button again now dismisses the open pop-up instead of reopening it after a light-dismiss.",
-              "The US grid now uses the U.S. National Atlas Equal Area projection over 50°N–25°N and 125°W–65°W, affine-fitted to the lower-48 SVG and masked cleanly around Alaska, Hawaii, and territory inset cutouts.",
+              "The US grid uses a contiguous-US Albers equal-area projection fitted to the lower-48 geographic frame and masked cleanly around inset cutouts.",
               "World reference-line labels are smaller, duplicated at the left and right globe edges, and now include the Equator.",
               "US grid labels now attach to visible line endpoints on the top/bottom and left/right edges with corner collision guards.",
               "US inset masking now follows the SVG separator geometry instead of individual state and territory bounding boxes.",
-              "Alaska and Hawaii now draw independent Mercator-style inset grids instead of inheriting the lower-48 National Atlas projection.",
+              "Alaska and Hawaii draw independent inset grids instead of inheriting the contiguous-US projection.",
               "The lower-48 grid now renders from a wider geographic envelope so lines feel continuous beyond all four US map edges.",
               "Alaska and Hawaii inset grids now scale to their separator panes instead of hugging only the island/state artwork bounds.",
               "Latitude and longitude degree labels now lightly tint by direction: north red, south green, east orange-yellow, and west blue-purple.",
@@ -36,6 +36,7 @@
               "Alaska and Hawaii inset labels now anchor to visible pane edges with collision guards, and the stray Aleutian overlay grid has been removed.",
               "Alaska inset grid bounds now span 54°N–72°N and 170°W–124°W for a tighter fit.",
               "Alaska's inset grid now uses an Alaska Albers projection before scaling into its map pane, matching the inset artwork's curved geography.",
+              "The contiguous-US grid now uses a matching Albers projection calibrated to 24.5°N–49.5°N and 125°W–65°W.",
             ]
           },
           {
