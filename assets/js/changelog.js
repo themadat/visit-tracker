@@ -4,7 +4,7 @@
 
     const CHANGELOG = [
       {
-        version: "4.7.5.18",
+        version: "4.7.5.19",
         date: "2026-06-17",
         title: "Gridlines",
         summary: "Grid labels, spacing controls, and US geography get cleaner map detail.",
@@ -40,6 +40,8 @@
               "Alaska's Albers grid is now landmark-fitted to its inset and drawn beyond all pane edges for complete clipped coverage.",
               "The mainland grid now uses a flatter landmark fit: 25°N meets Texas and Florida, 49°N follows the northern border, and 125°W–67°W reaches both coasts.",
               "Alaska's grid shifts half a degree north, aligns 141°W to its Canadian border, and extends through every inset edge.",
+              "Developer Mode adds separate Mainland and Alaska grid tuners with live position, size, curve, reset, and commit-ready code controls.",
+              "US and Alaska longitude lines are now constrained to straight chords while latitude curves remain consistently adjustable.",
             ]
           },
           {
