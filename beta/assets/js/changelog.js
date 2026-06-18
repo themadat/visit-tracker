@@ -4,7 +4,7 @@
 
     const CHANGELOG = [
       {
-        version: "4.7.5.23",
+        version: "4.7.5.24",
         date: "2026-06-18",
         title: "Gridlines",
         summary: "Grid labels, spacing controls, and US geography get cleaner map detail.",
@@ -51,6 +51,7 @@
               "The point tuner can minimize to a compact floating header so the full map stays available while dragging, especially on phones.",
               "The manually fitted Mainland and Alaska point layouts are now the checked-in default grid calibration.",
               "Mainland and Alaska coordinate pins now use the calibrated grid projection, bringing National Park previews and saved-note markers onto their true graticule positions.",
+              "The US Grid Tuner now opens only from Developer Tools instead of appearing in the map's Grid options.",
             ]
           },
           {
