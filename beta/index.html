@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5.18">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5.19">
 </head>
 
 <body>
@@ -849,7 +849,33 @@
       <label class="graticule-number-field">Minor
         <select id="graticuleMinorInput"></select>
       </label>
+      <button id="gridTuneOpenBtn" class="graticule-option-btn hidden" type="button" data-dev-only>Tune</button>
     </div>
+  </div>
+
+  <div id="gridTunePanel" popover="manual" class="grid-tune-panel hidden" aria-label="US grid manual tuner" data-dev-only>
+    <header>
+      <div>
+        <strong>US Grid Tuner</strong>
+        <small>Session-only until you copy and commit the calibration.</small>
+      </div>
+      <button id="gridTuneCloseBtn" type="button" aria-label="Close US Grid Tuner">Close</button>
+    </header>
+    <div class="segmented grid-tune-tabs" aria-label="Grid to tune">
+      <button type="button" data-grid-tune-tab="mainland" aria-pressed="true">Mainland</button>
+      <button type="button" data-grid-tune-tab="alaska" aria-pressed="false">Alaska</button>
+    </div>
+    <p class="muted">Longitude lines stay straight. Curve changes every latitude line consistently.</p>
+    <div id="gridTuneControls" class="grid-tune-controls"></div>
+    <div class="grid-tune-actions">
+      <button id="gridTuneResetBtn" type="button">Reset This Grid</button>
+      <button id="gridTuneResetAllBtn" type="button">Reset Both</button>
+      <button id="gridTuneCopyBtn" type="button">Copy Code</button>
+    </div>
+    <label class="grid-tune-output-label">Commit-ready calibration
+      <textarea id="gridTuneOutput" rows="8" readonly spellcheck="false"></textarea>
+      <small>Paste over <code>US_GRATICULE_CALIBRATION</code> in <code>index.html</code>. After refreshing, Reset Both clears the session override.</small>
+    </label>
   </div>
 
   <dialog id="confirmDialog">
@@ -1455,6 +1481,10 @@
             <button id="restoreWorldLabelTunerBtn" type="button">Show Tuner</button>
           </div>
           <div class="setting-row">
+            <div class="setting-label">US Grid Tuner</div>
+            <button id="gridTuneDeveloperBtn" type="button">Open Tuner</button>
+          </div>
+          <div class="setting-row">
             <div class="setting-label">App Defaults</div>
             <button id="resetDefaultsBtn" class="danger" type="button" data-shortcut="F">Reset Defaults</button>
           </div>
@@ -1728,7 +1758,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.5.18";
+    const APP_VERSION = "4.7.5.19";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7258,6 +7288,28 @@
       x: [1177.0307, 7.9216, 458.5482, 55.9728, 351.2739, 480.2245],
       y: [-13.8414, -1273.8765, 368.499, 155.1489, -243.9051, -1518.6898]
     };
+    const US_GRATICULE_CALIBRATION = {
+      mainland: { x: 0, y: 0, width: 1, height: 1, curve: 1 },
+      alaska: { x: 0, y: 0, width: 1, height: 1, curve: 1 }
+    };
+    const US_GRATICULE_TUNE_GEOMETRY = {
+      mainland: {
+        bounds: { minLat: 25, maxLat: 49, minLng: -125, maxLng: -67 },
+        center: { x: 467, y: 296.5 }
+      },
+      alaska: {
+        bounds: { minLat: 54.5, maxLat: 71.5, minLng: -167, maxLng: -129.5 },
+        center: { x: 125.5, y: 509 }
+      }
+    };
+    const GRID_TUNE_STORAGE_KEY = "trailLog.usGridTuning.v1";
+    const GRID_TUNE_FIELDS = [
+      { key: "x", label: "Left / Right", min: -300, max: 300, step: .5, digits: 1 },
+      { key: "y", label: "Up / Down", min: -300, max: 300, step: .5, digits: 1 },
+      { key: "width", label: "Width", min: .25, max: 2, step: .005, digits: 3 },
+      { key: "height", label: "Height", min: .25, max: 2, step: .005, digits: 3 },
+      { key: "curve", label: "Curve Level", min: -2, max: 4, step: .01, digits: 2 }
+    ];
     const US_GRATICULE_INSET_CUTS = [
       { type: "polygon", points: [{ x: 0, y: 425 }, { x: 147, y: 425 }, { x: 215, y: 493 }, { x: 300, y: 493 }, { x: 354, y: 547 }, { x: 354, y: 593 }, { x: 0, y: 593 }] },
       { type: "rect", x: 560, y: 515, width: 122, height: 78 }
@@ -7278,7 +7330,41 @@
       ak: [{ x: 0, y: 425 }, { x: 147, y: 425 }, { x: 215, y: 493 }, { x: 215, y: 548 }, { x: 251, y: 593 }, { x: 0, y: 593 }],
       hi: [{ x: 215, y: 493 }, { x: 300, y: 493 }, { x: 354, y: 547 }, { x: 354, y: 593 }, { x: 251, y: 593 }, { x: 215, y: 548 }]
     };
+    let gridTuneTarget = "mainland";
+    let gridTuneCalibration = loadGridTuneCalibration();
     let graticuleButtonDismissPending = false;
+
+    function defaultGridTuneCalibration() {
+      return {
+        mainland: { ...US_GRATICULE_CALIBRATION.mainland },
+        alaska: { ...US_GRATICULE_CALIBRATION.alaska }
+      };
+    }
+
+    function normalizeGridTuneCalibration(input) {
+      const output = defaultGridTuneCalibration();
+      Object.keys(output).forEach(target => {
+        GRID_TUNE_FIELDS.forEach(field => {
+          const value = Number(input?.[target]?.[field.key]);
+          output[target][field.key] = Number.isFinite(value)
+            ? Math.max(field.min, Math.min(field.max, value))
+            : output[target][field.key];
+        });
+      });
+      return output;
+    }
+
+    function loadGridTuneCalibration() {
+      try {
+        return normalizeGridTuneCalibration(JSON.parse(localStorage.getItem(GRID_TUNE_STORAGE_KEY) || "null"));
+      } catch {
+        return defaultGridTuneCalibration();
+      }
+    }
+
+    function saveGridTuneCalibration() {
+      try { localStorage.setItem(GRID_TUNE_STORAGE_KEY, JSON.stringify(gridTuneCalibration)); } catch { }
+    }
 
     function usAlbersRaw(lat, lng, projection) {
       const rad = Math.PI / 180;
@@ -7307,6 +7393,51 @@
         x: US_CONTIGUOUS_ALBERS_FIT.x.reduce((sum, coefficient, i) => sum + coefficient * terms[i], 0),
         y: US_CONTIGUOUS_ALBERS_FIT.y.reduce((sum, coefficient, i) => sum + coefficient * terms[i], 0)
       };
+    }
+
+    function lerpGraticulePoint(a, b, amount) {
+      return {
+        x: a.x + (b.x - a.x) * amount,
+        y: a.y + (b.y - a.y) * amount
+      };
+    }
+
+    function straightLongitudeGridPoint(lat, lng, target, basePoint) {
+      const geometry = US_GRATICULE_TUNE_GEOMETRY[target];
+      const calibration = gridTuneCalibration[target];
+      const bounds = geometry.bounds;
+      const original = basePoint(lat, lng);
+      const south = basePoint(bounds.minLat, lng);
+      const north = basePoint(bounds.maxLat, lng);
+      const vx = north.x - south.x;
+      const vy = north.y - south.y;
+      const denominator = vx * vx + vy * vy || 1;
+      const latitudeAmount = ((original.x - south.x) * vx + (original.y - south.y) * vy) / denominator;
+      const longitudeAmount = (lng - bounds.minLng) / Math.max(.0001, bounds.maxLng - bounds.minLng);
+      const meridianPoint = lerpGraticulePoint(south, north, latitudeAmount);
+      const westPoint = lerpGraticulePoint(
+        basePoint(bounds.minLat, bounds.minLng),
+        basePoint(bounds.maxLat, bounds.minLng),
+        latitudeAmount
+      );
+      const eastPoint = lerpGraticulePoint(
+        basePoint(bounds.minLat, bounds.maxLng),
+        basePoint(bounds.maxLat, bounds.maxLng),
+        latitudeAmount
+      );
+      const latitudeChord = lerpGraticulePoint(westPoint, eastPoint, longitudeAmount);
+      const curvedPoint = {
+        x: latitudeChord.x + (meridianPoint.x - latitudeChord.x) * calibration.curve,
+        y: latitudeChord.y + (meridianPoint.y - latitudeChord.y) * calibration.curve
+      };
+      return {
+        x: geometry.center.x + (curvedPoint.x - geometry.center.x) * calibration.width + calibration.x,
+        y: geometry.center.y + (curvedPoint.y - geometry.center.y) * calibration.height + calibration.y
+      };
+    }
+
+    function usContiguousGridPoint(lat, lng) {
+      return straightLongitudeGridPoint(lat, lng, "mainland", usContiguousAlbersPoint);
     }
 
     function ensureUsGraticuleInsetMask(svg) {
@@ -7371,6 +7502,21 @@
       return usAlbersRaw(lat, lng, US_GRATICULE_ALASKA_ALBERS);
     }
 
+    function usAlaskaInsetBasePoint(lat, lng, inset, box) {
+      const p = usAlaskaAlbersRaw(lat + (Number(inset.latOffset) || 0), lng);
+      const fit = inset.fit;
+      if (fit) {
+        return {
+          x: fit.xx * p.x + fit.xy * p.y + fit.x0,
+          y: fit.yx * p.x + fit.yy * p.y + fit.y0
+        };
+      }
+      return {
+        x: box.x + box.width / 2,
+        y: box.y + box.height / 2
+      };
+    }
+
     function usGraticuleInsetBox(svg, inset) {
       if (inset.box) return inset.box;
       const tile = svg.querySelector(`.state-tile[data-abbr="${inset.abbr}"], .${inset.abbr.toLowerCase()}`);
@@ -7394,18 +7540,12 @@
 
     function usGraticuleInsetPoint(lat, lng, inset, box) {
       if (inset.projection !== "albers") return usMercatorInsetPoint(lat, lng, inset, box);
-      const p = usAlaskaAlbersRaw(lat + (Number(inset.latOffset) || 0), lng);
-      const fit = inset.fit;
-      if (fit) {
-        return {
-          x: fit.xx * p.x + fit.xy * p.y + fit.x0,
-          y: fit.yx * p.x + fit.yy * p.y + fit.y0
-        };
-      }
-      return {
-        x: box.x + box.width / 2,
-        y: box.y + box.height / 2
-      };
+      return straightLongitudeGridPoint(
+        lat,
+        lng,
+        "alaska",
+        (sampleLat, sampleLng) => usAlaskaInsetBasePoint(sampleLat, sampleLng, inset, box)
+      );
     }
 
     function ensureUsGraticuleInsetClip(svg, clipKey) {
@@ -7541,7 +7681,7 @@
       for (let lat = Math.ceil(bounds.minLat / minor) * minor; lat <= bounds.maxLat; lat += minor) {
         const isMajor = lat % major === 0;
         const pts = [];
-        for (let lng = bounds.minLng; lng <= bounds.maxLng; lng += 1) pts.push(usContiguousAlbersPoint(lat, lng));
+        for (let lng = bounds.minLng; lng <= bounds.maxLng; lng += 1) pts.push(usContiguousGridPoint(lat, lng));
         addPolyline(pts, graticuleLineClass(isMajor));
         if (isMajor && options.labels) {
           const visible = visibleUsGraticulePoints(pts, viewBox, pad);
@@ -7553,7 +7693,7 @@
       for (let lng = Math.ceil(bounds.minLng / minor) * minor; lng <= bounds.maxLng; lng += minor) {
         const isMajor = lng % major === 0;
         const pts = [];
-        for (let lat = bounds.minLat; lat <= bounds.maxLat; lat += 1) pts.push(usContiguousAlbersPoint(lat, lng));
+        for (let lat = bounds.minLat; lat <= bounds.maxLat; lat += 1) pts.push(usContiguousGridPoint(lat, lng));
         addPolyline(pts, graticuleLineClass(isMajor));
         if (isMajor && options.labels) {
           const visible = visibleUsGraticulePoints(pts, viewBox, pad);
@@ -7563,10 +7703,10 @@
         }
       }
       const framePts = [];
-      for (let lng = bounds.minLng; lng <= bounds.maxLng; lng += 1) framePts.push(usContiguousAlbersPoint(bounds.minLat, lng));
-      for (let lat = bounds.minLat; lat <= bounds.maxLat; lat += 1) framePts.push(usContiguousAlbersPoint(lat, bounds.maxLng));
-      for (let lng = bounds.maxLng; lng >= bounds.minLng; lng -= 1) framePts.push(usContiguousAlbersPoint(bounds.maxLat, lng));
-      for (let lat = bounds.maxLat; lat >= bounds.minLat; lat -= 1) framePts.push(usContiguousAlbersPoint(lat, bounds.minLng));
+      for (let lng = bounds.minLng; lng <= bounds.maxLng; lng += 1) framePts.push(usContiguousGridPoint(bounds.minLat, lng));
+      for (let lat = bounds.minLat; lat <= bounds.maxLat; lat += 1) framePts.push(usContiguousGridPoint(lat, bounds.maxLng));
+      for (let lng = bounds.maxLng; lng >= bounds.minLng; lng -= 1) framePts.push(usContiguousGridPoint(bounds.maxLat, lng));
+      for (let lat = bounds.maxLat; lat >= bounds.minLat; lat -= 1) framePts.push(usContiguousGridPoint(lat, bounds.minLng));
       const poly = graticuleSvg("polygon");
       poly.setAttribute("points", framePts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" "));
       poly.setAttribute("class", "graticule-frame");
@@ -7605,6 +7745,101 @@
     }
     function graticuleOptionLabel(value) {
       return `${value}°`;
+    }
+    function gridTuneField(key) {
+      return GRID_TUNE_FIELDS.find(field => field.key === key) || null;
+    }
+    function formatGridTuneValue(value, field) {
+      return Number(value).toFixed(field.digits);
+    }
+    function formatGridTuneCodeNumber(value, field) {
+      return formatGridTuneValue(value, field).replace(/\.?0+$/, "");
+    }
+    function gridTuneCalibrationText() {
+      const line = target => {
+        const values = gridTuneCalibration[target];
+        const pairs = GRID_TUNE_FIELDS.map(field => `${field.key}: ${formatGridTuneCodeNumber(values[field.key], field)}`);
+        return `  ${target}: { ${pairs.join(", ")} }`;
+      };
+      return `const US_GRATICULE_CALIBRATION = {\n${line("mainland")},\n${line("alaska")}\n};`;
+    }
+    function renderGridTuneControls() {
+      const controls = $("#gridTuneControls");
+      const output = $("#gridTuneOutput");
+      $$("[data-grid-tune-tab]").forEach(button => {
+        button.setAttribute("aria-pressed", button.dataset.gridTuneTab === gridTuneTarget ? "true" : "false");
+      });
+      if (controls) {
+        const values = gridTuneCalibration[gridTuneTarget];
+        controls.innerHTML = GRID_TUNE_FIELDS.map(field => `
+          <label class="grid-tune-field">
+            <span>${field.label}</span>
+            <input type="range" min="${field.min}" max="${field.max}" step="${field.step}"
+              value="${formatGridTuneValue(values[field.key], field)}" data-grid-tune-field="${field.key}"
+              aria-label="${gridTuneTarget} ${field.label}">
+            <input type="number" min="${field.min}" max="${field.max}" step="${field.step}"
+              value="${formatGridTuneValue(values[field.key], field)}" data-grid-tune-field="${field.key}"
+              aria-label="${gridTuneTarget} ${field.label} exact value">
+          </label>
+        `).join("");
+      }
+      if (output) output.value = gridTuneCalibrationText();
+    }
+    function setGridTuneTarget(target) {
+      if (!US_GRATICULE_CALIBRATION[target]) return;
+      gridTuneTarget = target;
+      renderGridTuneControls();
+    }
+    function handleGridTuneInput(event) {
+      const input = event.target.closest("[data-grid-tune-field]");
+      if (!input) return;
+      const field = gridTuneField(input.dataset.gridTuneField);
+      const value = Number(input.value);
+      if (!field || !Number.isFinite(value)) return;
+      const clamped = Math.max(field.min, Math.min(field.max, value));
+      gridTuneCalibration[gridTuneTarget][field.key] = clamped;
+      $$(`[data-grid-tune-field="${field.key}"]`, $("#gridTuneControls")).forEach(control => {
+        if (control !== input) control.value = formatGridTuneValue(clamped, field);
+      });
+      saveGridTuneCalibration();
+      if ($("#gridTuneOutput")) $("#gridTuneOutput").value = gridTuneCalibrationText();
+      renderGraticule();
+    }
+    function resetGridTune(target = gridTuneTarget) {
+      gridTuneCalibration[target] = { ...US_GRATICULE_CALIBRATION[target] };
+      saveGridTuneCalibration();
+      renderGridTuneControls();
+      renderGraticule();
+    }
+    function resetAllGridTuning() {
+      gridTuneCalibration = defaultGridTuneCalibration();
+      try { localStorage.removeItem(GRID_TUNE_STORAGE_KEY); } catch { }
+      renderGridTuneControls();
+      renderGraticule();
+    }
+    function copyGridTuneCalibration() {
+      const button = $("#gridTuneCopyBtn");
+      copyTextToClipboard(gridTuneCalibrationText()).then(() => {
+        if (!button) return;
+        button.textContent = "Copied";
+        setTimeout(() => { button.textContent = "Copy Code"; }, 1600);
+      }).catch(() => showMessage("Copy Failed", "Your browser blocked clipboard access. Select the calibration text and copy it manually."));
+    }
+    function openGridTuner(target = gridTuneTarget) {
+      if (state.settings.developerMode !== true) return;
+      if (US_GRATICULE_CALIBRATION[target]) gridTuneTarget = target;
+      if ($("#settingsDialog")?.open) $("#settingsDialog").close();
+      if ($("#graticuleDialog")?.matches(":popover-open")) $("#graticuleDialog").hidePopover();
+      const settings = state.settings.graticuleByLayer?.us;
+      if (settings) settings.enabled = true;
+      if (activeLayerId !== "us") setActiveLayer("us");
+      else {
+        save();
+        renderGraticule();
+      }
+      renderGridTuneControls();
+      const panel = $("#gridTunePanel");
+      if (panel && !panel.matches(":popover-open")) panel.showPopover();
     }
     function populateGraticuleSelect(select, values, current) {
       if (!select) return;
@@ -18255,6 +18490,7 @@
         });
       });
       $("#restoreWorldLabelTunerBtn").addEventListener("click", restoreWorldLabelTuner);
+      $("#gridTuneDeveloperBtn")?.addEventListener("click", () => openGridTuner());
       $("#worldMapLabels").addEventListener("pointerdown", handleWorldLabelTunePointerDown);
       document.addEventListener("pointermove", handleWorldLabelTunePointerMove);
       document.addEventListener("pointerup", handleWorldLabelTunePointerUp);
@@ -18288,6 +18524,7 @@
       $("#graticuleEnabledBtn")?.addEventListener("click", () => toggleGraticuleSetting("enabled"));
       $("#graticuleReferenceBtn")?.addEventListener("click", () => toggleGraticuleSetting("references"));
       $("#graticuleLabelsBtn")?.addEventListener("click", () => toggleGraticuleSetting("labels"));
+      $("#gridTuneOpenBtn")?.addEventListener("click", () => openGridTuner());
       $("#graticuleMajorInput")?.addEventListener("change", () => {
         const current = graticuleLayerSettings();
         const major = Math.max(5, Math.min(90, Math.round((Number($("#graticuleMajorInput").value) || current.major) / 5) * 5));
@@ -18298,6 +18535,14 @@
       $("#graticuleDialog")?.addEventListener("toggle", event => {
         $("#mapGraticuleBtn")?.setAttribute("aria-expanded", event.newState === "open" ? "true" : "false");
       });
+      $("#gridTuneCloseBtn")?.addEventListener("click", () => $("#gridTunePanel")?.hidePopover());
+      $("#gridTuneControls")?.addEventListener("input", handleGridTuneInput);
+      $$("[data-grid-tune-tab]").forEach(button => {
+        button.addEventListener("click", () => setGridTuneTarget(button.dataset.gridTuneTab));
+      });
+      $("#gridTuneResetBtn")?.addEventListener("click", () => resetGridTune());
+      $("#gridTuneResetAllBtn")?.addEventListener("click", resetAllGridTuning);
+      $("#gridTuneCopyBtn")?.addEventListener("click", copyGridTuneCalibration);
       $("#ringPanel").addEventListener("click", event => {
         const clear = event.target.closest("[data-ring-clear]");
         if (clear) {
@@ -18929,6 +19174,7 @@
     function setDeveloperMode(enabled) {
       state.settings.developerMode = enabled === true;
       if (!state.settings.developerMode) state.settings.shortcutMode = false;
+      if (!state.settings.developerMode && $("#gridTunePanel")?.matches(":popover-open")) $("#gridTunePanel").hidePopover();
       developerGesture = [];
       save();
       render();
