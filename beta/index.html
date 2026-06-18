@@ -188,9 +188,11 @@
                     <button id="worldLabelTuneBtn" type="button" aria-pressed="false">Tune</button>
                     <button id="worldLabelExportBtn" type="button">Export</button>
                     <button id="worldLabelClearBtn" type="button">Clear</button>
-                    <button id="worldLabelDismissBtn" type="button" aria-label="Dismiss World label tuner">Dismiss</button>
+                    <button id="worldLabelDismissBtn" type="button"
+                      aria-label="Dismiss World label tuner">Dismiss</button>
                     <span id="worldLabelTuneStatus" aria-live="polite">0 overrides</span>
-                    <div id="worldLabelEditPanel" class="world-label-edit-panel hidden" aria-label="Selected World label">
+                    <div id="worldLabelEditPanel" class="world-label-edit-panel hidden"
+                      aria-label="Selected World label">
                       <label>Name <textarea id="worldLabelNameInput" rows="2" spellcheck="false"></textarea></label>
                       <div class="world-label-size-buttons" aria-label="World label size">
                         <span>Size</span>
@@ -590,8 +592,7 @@
       <div class="dialog-head-actions">
         <div id="noteWaypointHeaderControls" class="note-waypoint-header-controls hidden"
           aria-label="Waypoint controls"></div>
-        <div id="notePriorityHeaderControl" class="note-priority-header-control"
-          aria-label="Priority"></div>
+        <div id="notePriorityHeaderControl" class="note-priority-header-control" aria-label="Priority"></div>
         <button id="notePrevBtn" class="note-nav-btn hidden" type="button" aria-label="Previous note"
           title="Previous note"></button>
         <button id="noteNextBtn" class="note-nav-btn hidden" type="button" aria-label="Next note"
@@ -841,8 +842,10 @@
   <div id="graticuleDialog" popover class="graticule-popover" aria-label="Map grid options">
     <div class="graticule-control-row">
       <button id="graticuleEnabledBtn" class="graticule-option-btn" type="button" aria-pressed="false">Grid</button>
-      <button id="graticuleReferenceBtn" class="graticule-option-btn" type="button" aria-pressed="true" disabled>Circles</button>
-      <button id="graticuleLabelsBtn" class="graticule-option-btn" type="button" aria-pressed="true" disabled>Labels</button>
+      <button id="graticuleReferenceBtn" class="graticule-option-btn" type="button" aria-pressed="true"
+        disabled>Circles</button>
+      <button id="graticuleLabelsBtn" class="graticule-option-btn" type="button" aria-pressed="true"
+        disabled>Labels</button>
       <label class="graticule-number-field">Major
         <select id="graticuleMajorInput"></select>
       </label>
@@ -853,7 +856,8 @@
     </div>
   </div>
 
-  <div id="gridTunePanel" popover="manual" class="grid-tune-panel hidden" aria-label="US grid control-point tuner" data-dev-only>
+  <div id="gridTunePanel" popover="manual" class="grid-tune-panel hidden" aria-label="US grid control-point tuner"
+    data-dev-only>
     <header>
       <div class="grid-tune-heading">
         <strong>US Grid Tuner</strong>
@@ -868,7 +872,8 @@
       <button type="button" data-grid-tune-tab="mainland" aria-pressed="true">Mainland</button>
       <button type="button" data-grid-tune-tab="alaska" aria-pressed="false">Alaska</button>
     </div>
-    <p class="muted">Longitude guides stay straight. Dragging a middle-row point moves that whole longitude line; latitude guides curve through all three columns.</p>
+    <p class="muted">Longitude guides stay straight. Dragging a middle-row point moves that whole longitude line;
+      latitude guides curve through all three columns.</p>
     <p id="gridTuneBandHelp" class="grid-tune-band-help"></p>
     <div id="gridTuneControls" class="grid-tune-controls"></div>
     <div class="grid-tune-actions">
@@ -878,7 +883,8 @@
     </div>
     <label class="grid-tune-output-label">Commit-ready calibration
       <textarea id="gridTuneOutput" rows="8" readonly spellcheck="false"></textarea>
-      <small>Paste over <code>US_GRATICULE_CALIBRATION</code> in <code>index.html</code>. The incompatible slider-tuner session format is intentionally retired.</small>
+      <small>Paste over <code>US_GRATICULE_CALIBRATION</code> in <code>index.html</code>. The incompatible slider-tuner
+        session format is intentionally retired.</small>
     </label>
   </div>
 
@@ -1340,7 +1346,8 @@
             have different priorities.</p>
           <p><b>What does Detailed view show?</b><br>Detailed is the full-card view. It shows the location's levels and
             note/date totals, then location precision, level-colored tags, compact Location and Event summaries, and the
-            complete details text without truncation. Linked Waypoints also show website, photo, and priority actions.</p>
+            complete details text without truncation. Linked Waypoints also show website, photo, and priority actions.
+          </p>
           <p><b>Where does Priority show up?</b><br>Priority appears in the note editor, Detailed cards, Condensed
             priority controls, Expanded/list icon badges, map pins, Text Only view, and Markdown/Rich Text/Plain Text
             exports.</p>
@@ -7295,20 +7302,20 @@
     const US_GRATICULE_DRAW_BOUNDS = { minLat: 0, maxLat: 60, minLng: -145, maxLng: -45 };
     const US_GRATICULE_CALIBRATION = {
       mainland: {
-        southWest: { x: 48.96, y: 461.33 },
-        southMiddle: { x: 392.27, y: 521.16 },
-        southEast: { x: 735.57, y: 498.43 },
-        northWest: { x: 126.37, y: 1.49 },
-        northMiddle: { x: 419.07, y: 40.94 },
-        northEast: { x: 711.77, y: -2.25 }
+        southWest: { x: 36.43, y: 414.15 },
+        southMiddle: { x: 405.76, y: 480.36 },
+        southEast: { x: 782.67, y: 449.89 },
+        northWest: { x: 133.84, y: -3.06 },
+        northMiddle: { x: 419.4, y: 37.82 },
+        northEast: { x: 707.4, y: 18.19 }
       },
       alaska: {
-        southWest: { x: 76.12, y: 574.54 },
-        southMiddle: { x: 127.31, y: 582.03 },
-        southEast: { x: 178.5, y: 582 },
-        northWest: { x: 102.14, y: 487.26 },
-        northMiddle: { x: 139.75, y: 492.59 },
-        northEast: { x: 177.37, y: 492.66 }
+        southWest: { x: 59.42, y: 572.15 },
+        southMiddle: { x: 115.9, y: 584.03 },
+        southEast: { x: 165.13, y: 587.68 },
+        northWest: { x: 89.63, y: 484.15 },
+        northMiddle: { x: 125.76, y: 491.58 },
+        northEast: { x: 164.53, y: 494.28 }
       }
     };
     const US_GRATICULE_TUNE_GEOMETRY = {
@@ -10034,8 +10041,8 @@
           Array.isArray(value)
             ? `${key}: ${JSON.stringify(value)}`
             : typeof value === "string"
-            ? `${key}: ${JSON.stringify(value)}`
-            : `${key}: ${formatWorldLabelNumber(value)}`
+              ? `${key}: ${JSON.stringify(value)}`
+              : `${key}: ${formatWorldLabelNumber(value)}`
         )).join(", ");
         return `    ${JSON.stringify(code)}: { ${pairs} }`;
       });
@@ -12454,10 +12461,10 @@
           ? "No states match that search."
           : notesPriorityFilter.mode !== "none" ? "No notes match the active Priority filter."
             : notesHideExcludedOnly ? "No visible marked locations. Excluded locations are hidden."
-            : !allNoteIconFiltersSelected() ? "No locations match the selected icon filters."
-              : notesDatePrecisionFilter !== "all" ? `No locations match the ${datePrecisionFilterMeta().label} date filter.`
-                : notesCoordinateFilter !== "all" ? `No locations match the ${coordinateFilterMeta().label} coordinate filter.`
-                  : noteLevelFilters.size ? "No states match the selected legend filters." : "No marked states yet.";
+              : !allNoteIconFiltersSelected() ? "No locations match the selected icon filters."
+                : notesDatePrecisionFilter !== "all" ? `No locations match the ${datePrecisionFilterMeta().label} date filter.`
+                  : notesCoordinateFilter !== "all" ? `No locations match the ${coordinateFilterMeta().label} coordinate filter.`
+                    : noteLevelFilters.size ? "No states match the selected legend filters." : "No marked states yet.";
         $("#notesPanelContent").innerHTML = `<div class="empty">${emptyText}</div>`;
       } else if (notesViewMode === "text") {
         $("#notesPanelContent").innerHTML = `<pre id="notesTextOnly" class="notes-text-only" tabindex="0">${escapeHtml(buildNotesTextOnly(marked))}</pre>`;
