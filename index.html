@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5.22">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5.23">
 </head>
 
 <body>
@@ -1769,7 +1769,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.5.22";
+    const APP_VERSION = "4.7.5.23";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -1812,12 +1812,6 @@
     };
     const LOCATION_PROJECTION_BOX_OVERRIDES = {
       AK: { x: 31, y: 462, width: 176, height: 103 }
-    };
-    const LOCATION_PROJECTION_FRAME_OVERRIDES = {
-      AK: [
-        { test: coords => Number(coords?.lng) <= -164, bounds: [51.2, 55.8, -179.2, -164.0], box: { x: 36, y: 532, width: 116, height: 33 } },
-        { bounds: [55.0, 73.5, -165.0, -130.0], box: { x: 54, y: 470, width: 171, height: 98 } }
-      ]
     };
     const MAP_LABEL_OVERRIDES = {
       // dx/dy nudge bbox center (SVG units). x/y overrides to absolute position.
@@ -4491,12 +4485,7 @@
       return override || fallbackBox;
     }
 
-    function locationProjectionFrame(abbr, coords, fallbackBox) {
-      const frames = LOCATION_PROJECTION_FRAME_OVERRIDES[abbr];
-      if (Array.isArray(frames) && coords) {
-        const match = frames.find(frame => typeof frame.test !== "function" || frame.test(coords));
-        if (match?.box && match?.bounds) return match;
-      }
+    function locationProjectionFrame(abbr, fallbackBox) {
       return {
         box: locationProjectionBox(abbr, fallbackBox),
         bounds: LOCATION_GEO_BOUNDS[abbr]
@@ -6567,15 +6556,24 @@
       };
     }
 
+    function usGridCoordinatePoint(abbr, coords) {
+      if (activeLayerId !== "us" || !coords || abbr === "HI" || TERRITORY_IDS.includes(abbr)) return null;
+      return tunedUsGridPoint(coords.lat, coords.lng, abbr === "AK" ? "alaska" : "mainland");
+    }
+
     function projectNoteLocation(abbr, note) {
       const coords = validNoteCoordinates(note);
       if (activeLayerId === "world" && coords) {
         const point = worldCoordinatePoint(coords);
         if (point) return point;
       }
+      if (coords) {
+        const point = usGridCoordinatePoint(abbr, coords);
+        if (point) return point;
+      }
       const center = stateTileCenter(abbr);
       if (!center) return null;
-      const frame = locationProjectionFrame(abbr, coords, center.box);
+      const frame = locationProjectionFrame(abbr, center.box);
       const box = frame.box;
       if (!coords) return { x: box.x + box.width / 2, y: box.y + box.height / 2 };
       const bounds = frame.bounds;
@@ -7472,6 +7470,13 @@
       return { x: mapped.x, y: mapped.y };
     }
 
+    function renderUsCoordinateOverlays() {
+      renderGraticule();
+      renderRingOverlay();
+      renderSuggestedSetMarkers();
+      renderLocationMarkers();
+    }
+
     function renderGridTuneHandles(svg) {
       let group = svg.querySelector("#mapGridTuneHandles");
       if (!gridTunePanelOpen()) {
@@ -7591,7 +7596,7 @@
         gridTuneDrag.startPoint.y + point.y - gridTuneDrag.startPointer.y
       );
       refreshGridTuneReadout();
-      renderGraticule();
+      renderUsCoordinateOverlays();
     }
 
     function handleGridTunePointerUp(event) {
@@ -7599,7 +7604,7 @@
       gridTuneDrag = null;
       saveGridTuneCalibration();
       renderGridTuneControls();
-      renderGraticule();
+      renderUsCoordinateOverlays();
     }
 
     function handleGridTuneHandleKeydown(event) {
@@ -7617,7 +7622,7 @@
       setGridTunePoint(gridTuneTarget, row, column, point.x + dx, point.y + dy);
       saveGridTuneCalibration();
       renderGridTuneControls();
-      renderGraticule();
+      renderUsCoordinateOverlays();
     }
 
     function ensureUsGraticuleInsetMask(svg) {
@@ -8022,19 +8027,19 @@
       setGridTunePoint(gridTuneTarget, gridTuneSelection.row, gridTuneSelection.column, point.x, point.y);
       saveGridTuneCalibration();
       refreshGridTuneReadout();
-      renderGraticule();
+      renderUsCoordinateOverlays();
     }
     function resetGridTune(target = gridTuneTarget) {
       gridTuneCalibration[target] = defaultGridTuneCalibration()[target];
       saveGridTuneCalibration();
       renderGridTuneControls();
-      renderGraticule();
+      renderUsCoordinateOverlays();
     }
     function resetAllGridTuning() {
       gridTuneCalibration = defaultGridTuneCalibration();
       try { localStorage.removeItem(GRID_TUNE_STORAGE_KEY); } catch { }
       renderGridTuneControls();
-      renderGraticule();
+      renderUsCoordinateOverlays();
     }
     function copyGridTuneCalibration() {
       const button = $("#gridTuneCopyBtn");
