@@ -1,6 +1,6 @@
 # Trail Log
 
-Trail Log is a local-first travel map for marking where you've been, where you want to go next, and the little memories worth keeping along the way. It started as a US state visit tracker and now layers in DC, territories, a switchable atlas-labeled World map, touch-friendly map zoom and panning, custom legend levels, four location-note views from Detailed to Text Only, per-note priorities with filtering/sorting/grouping, icon tags, mapped memories, Wayfinder packs for National Parks and Monuments, Rangefinder planning rings, named Basecamp pads with rich-text planning and linked location notes, and copy-friendly exports, all with a slightly outdoorsy, geeky vibe.
+Trail Log is a local-first travel map for marking where you've been, where you want to go next, and the little memories worth keeping along the way. It started as a US state visit tracker and now layers in DC, territories, a switchable atlas-labeled World map, optional latitude/longitude grids, touch-friendly map zoom and panning, custom legend levels, four location-note views from Detailed to Text Only, per-note priorities with filtering/sorting/grouping, icon tags, mapped memories, Wayfinder packs for National Parks and Monuments, Rangefinder planning rings, named Basecamp pads with rich-text planning and linked location notes, and copy-friendly exports, all with a slightly outdoorsy, geeky vibe.
 
 The app is still intentionally simple to run: open `index.html` and go — plain HTML/CSS/JavaScript with a few companion data files, no build step, browser localStorage, JSON import/export, and no backend. Optional online actions, like Locate and Waypoint Pack photo camera-location checks, only run when you tap them; saved data and manual coordinates keep working offline.
 
@@ -8,6 +8,7 @@ The app is still intentionally simple to run: open `index.html` and go — plain
 
 | Version | Date | Title | Summary
 |---|---:|---|---|
+| 4.7.5 | 2026-06-18 | Gridlines | US and World maps gain customizable latitude/longitude grids, calibrated inset geography, and coordinate pins aligned to the same projection. |
 | 4.7.4 | 2026-06-17 | Crosshairs | Touchscreens can pinch, double-tap, and two-finger-tap to zoom the map, with smoother mobile panning and desktop double-click zoom. |
 | 4.7.3 | 2026-06-17 | Camera Trail | Waypoint Pack photos can show where the camera stood when Commons has camera-location metadata. |
 | 4.7.2 | 2026-06-16 | Trail Marks | Roadmap cards mark planned ideas, release notes use cleaner headed sections, and the map hides a tiny surprise. |

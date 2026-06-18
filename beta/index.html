@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5.24">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5">
 </head>
 
 <body>
@@ -170,7 +170,7 @@
                 </div>
               </div>
               <small data-hint data-hint-key="map-notes-controls">Toggle Notes Pins<br />Visibility | Filter |
-                Wayfinder | Rangefinder | Grid</small>
+                Wayfinder | Rangefinder | Lat/Lng Grid</small>
             </div>
             <div class="map-control-stack">
               <div class="map-control-row">
@@ -1161,12 +1161,17 @@
             <li>Use the Map Labels control to switch states, territories, countries, or a linked Waypoint Pack between
               no labels, abbreviations, and names. World Name labels use short English atlas names, fit smaller
               countries, and add leader lines for tiny dot-backed places.</li>
+            <li>Use Grid to add an optional latitude/longitude overlay to the active map. Turn labels on or off and
+              choose Major spacing in 5° steps plus a compatible Minor spacing. World Grid uses curved Robinson
+              meridians, straight parallels, a globe frame, and optional Equator, tropic, and polar-circle emphasis.
+              The US Grid fits the lower 48 plus independent Alaska and Hawaii inset geography.</li>
             <li>Use Scroll Map to pan and zoom. Type an exact zoom percentage, use the zoom buttons, pinch on touch
               screens, double-tap or double-click to zoom in, or two-finger tap to zoom out. Your zoom, pan center, and
               fit/scroll mode are saved.</li>
             <li>Use Fit Map when you want the map framed cleanly for screenshots or sharing.</li>
             <li>Use View Locations to show or hide note pins. Notes without coordinates sit at the center of their
-              state or territory shape; exact coordinates place markers more precisely.</li>
+              state or territory shape; exact Mainland and Alaska coordinates use the same calibrated geography as the
+              latitude/longitude grid.</li>
             <li>Use Match Notes to dim map locations and pins that do not match the active Notes filters.</li>
             <li>Use Rangefinder on the US or World map to pick saved note pins as Start and End points, draw Drive or
               Plane planning rings, and compare the straight-line distance between two places.</li>
@@ -1316,6 +1321,9 @@
             to zoom or open the picker when notes are too close to separate.</p>
           <p><b>Why do some World labels have leader lines?</b><br>Tiny countries and island territories may use a small
             offset label with a line back to their map dot so the whole-world view stays readable.</p>
+          <p><b>How does the latitude/longitude Grid work?</b><br>Grid settings are remembered separately for the US
+            and World maps. Major lines are stronger and labeled, Minor lines are subtler, and World Circles emphasizes
+            the Equator, tropics, and polar circles. The overlay stays behind pins, Rangefinder rings, and labels.</p>
           <p><b>Are Rangefinder rings routing distance?</b><br>No. Rings and Start-to-End comparisons use straight-line
             distance. Drive and Plane times use your selected average speed, starting from 60 mph for Drive and 600 mph
             for Plane, so both are planning hints.</p>
@@ -1768,7 +1776,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.5.24";
+    const APP_VERSION = "4.7.5";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";

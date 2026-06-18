@@ -83,8 +83,8 @@
         description: "Round out Rangefinder with three related upgrades. (1) Cross-inset edge cases: clearer treatment when Start and End cross between the contiguous map and inset regions (for example Washington to Alaska), including clipped-ring visuals, inset-scale limits, and honest long-distance comparisons across projections. (2) Antimeridian wrap on the World map: rings around a Start near the date line (Honolulu, Tokyo, Sydney) keep drawing on the opposite side instead of clipping, with continuous geometry across the seam, arc-following labels, preserved clip-to-land and inset behavior, and shorter-great-circle Start-to-End paths. (3) Offline time zones: show local time and IANA zone for Start and End, let a user pick a departure time, and compute the destination-local arrival from the current travel-time estimate, with daylight-saving handling, US and World support, and manual correction when a zone cannot be resolved offline.",
         priority: "P0",
         effort: "large",
-        targetKind: "exact",
-        targetVersion: "4.7.5",
+        targetKind: "patch",
+        targetVersion: "",
         tokenCostPct: 48,
         prompt: "Deliver three related Rangefinder upgrades. (1) Polish cross-inset edge cases (e.g. a Washington Start with rings or an Alaska End): clearer non-route cross-region cue, inset radius caps, honest real-coordinate distance, preserved local settings. (2) Antimeridian wrap on the World map via mirror/duplicate ellipses: also draw the ring-shapes group translated by +/- the world projection box width so a date-line Start continues on the opposite side instead of clipping; reuse the land clip/inset mask, label the visible arc, keep US-map behavior, and pick the shorter longitudinal wrap for the Start-to-End cue. (3) Offline time zones via a compact region->IANA zone table (US state / world country -> primary zone, optional longitude refinement, manual override when unresolved); use Intl.DateTimeFormat({timeZone}) for offline local time + DST; show Start/End local time and zone, a chosen departure time, and destination-local arrival from the current travel-time estimate; US and World; no network lookups. Add settings + normalize; preserve usStateVisitMap.v1.",
         category: "Maps"
@@ -100,19 +100,6 @@
         tokenCostPct: 18,
         prompt: "Add a persisted location rating field with editor controls and Notes sorting. Keep it distinct from note priority and visit levels, support unrated locations, show compact rating indicators, include ratings in exports/backups, and preserve existing notes during migration.",
         category: "Notes"
-      },
-      {
-        title: "Latitude / Longitude Map Lines",
-        ticketId: "WISH-071",
-        planDoc: "WISH-071-LATLNG-GRATICULE-PLAN.md",
-        description: "Add an optional, per-map latitude/longitude graticule with customizable major + minor line tiers set from a settings pop-up (defaults: World 30 deg major / 10 deg minor, US 10 deg major / 5 deg minor). Major lines are stronger and carry degree labels at both ends; minor lines are subtle. The World map uses its true Robinson projection (curved meridians) and draws the projection outline/frame so the map reads as curved rather than a rectangle; the US map draws true lat/lon per state through each state's local frame, with separate grids inside the insets (Alaska, Hawaii) — continuous within a state, not across the stylized tile layout. Styling stays secondary to locations, Wayfinder, and Rangefinder; settings are remembered per map.",
-        priority: "P0",
-        effort: "medium",
-        targetKind: "exact",
-        targetVersion: "4.7.5",
-        tokenCostPct: 18,
-        prompt: "Add a customizable lat/lng graticule as a non-interactive SVG <g> layer per map, below markers/rings/labels. Two tiers: minor-interval lines (subtle) plus major-interval lines (stronger, with degree labels like 30°N/120°W at both ends). World: sample worldCoordinatePoint (Robinson) for straight parallels + polyline meridians. US: per .state-tile and per inset frame (LOCATION_GEO_BOUNDS + LOCATION_PROJECTION_FRAME_OVERRIDES) draw straight lat/lng segments within each box. Add settings.graticuleByLayer { us:{enabled,major:10,minor:5}, world:{enabled,major:30,minor:10} } (default off) with defaults/normalize (clamp, major>=minor), a per-map button that opens a settings pop-up (on/off + major/minor intervals), and theme-aware styling. Preserve map pan/zoom and existing overlays.",
-        category: "Maps"
       },
       {
         title: "Link Multiple Notes to a Waypoint",
