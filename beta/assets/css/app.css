@@ -2323,6 +2323,60 @@
       pointer-events: none;
     }
 
+    .grid-tune-handle-layer {
+      pointer-events: none;
+    }
+
+    .grid-tune-guide {
+      fill: none;
+      stroke: color-mix(in srgb, var(--accent) 74%, var(--text));
+      stroke-dasharray: 5 4;
+      stroke-width: 1.15;
+      vector-effect: non-scaling-stroke;
+      pointer-events: none;
+    }
+
+    .grid-tune-proxy-line {
+      stroke: color-mix(in srgb, var(--accent) 58%, transparent);
+      stroke-dasharray: 2.5 2.5;
+      stroke-width: 1;
+      vector-effect: non-scaling-stroke;
+      pointer-events: none;
+    }
+
+    .grid-tune-handle {
+      fill: var(--surface);
+      stroke: color-mix(in srgb, var(--accent) 82%, var(--text));
+      stroke-width: 2;
+      vector-effect: non-scaling-stroke;
+      pointer-events: all;
+      cursor: grab;
+      touch-action: none;
+    }
+
+    .grid-tune-handle:hover,
+    .grid-tune-handle:focus-visible,
+    .grid-tune-handle.is-selected {
+      fill: var(--accent);
+      stroke: var(--surface);
+      outline: none;
+    }
+
+    .grid-tune-handle.is-dragging {
+      cursor: grabbing;
+    }
+
+    .grid-tune-handle-label {
+      fill: var(--text);
+      font-size: 7px;
+      font-weight: 850;
+      paint-order: stroke fill;
+      stroke: var(--surface);
+      stroke-linejoin: round;
+      stroke-width: 2.8px;
+      pointer-events: none;
+    }
+
     .graticule-line {
       fill: none;
       stroke: color-mix(in srgb, var(--text) 20%, transparent);
@@ -2527,9 +2581,14 @@
       margin-bottom: .65rem;
     }
 
-    .grid-tune-panel header div {
+    .grid-tune-heading {
       display: grid;
       gap: .16rem;
+    }
+
+    .grid-tune-header-actions {
+      display: flex;
+      gap: .35rem;
     }
 
     .grid-tune-panel header strong {
@@ -2555,6 +2614,22 @@
       font-size: .72rem;
     }
 
+    .grid-tune-panel.is-collapsed {
+      width: min(15rem, calc(100vw - 2rem));
+      max-height: none;
+      overflow: hidden;
+    }
+
+    .grid-tune-panel.is-collapsed header {
+      align-items: center;
+      margin: 0;
+    }
+
+    .grid-tune-panel.is-collapsed .grid-tune-heading small,
+    .grid-tune-panel.is-collapsed> :not(header) {
+      display: none;
+    }
+
     .grid-tune-tabs {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -2567,39 +2642,56 @@
       margin: .65rem 0;
     }
 
-    .grid-tune-controls h4 {
-      margin: .38rem 0 -.08rem;
-      padding-bottom: .24rem;
-      border-bottom: 1px solid var(--line);
-      color: var(--text);
-      font-size: .74rem;
-      font-weight: 850;
-      letter-spacing: .01em;
-    }
-
-    .grid-tune-controls h4:first-child {
-      margin-top: 0;
-    }
-
-    .grid-tune-field {
+    .grid-tune-point-grid {
       display: grid;
-      grid-template-columns: 6.4rem minmax(0, 1fr) 5rem;
-      align-items: center;
-      gap: .45rem;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: .32rem;
     }
 
-    .grid-tune-field>span {
+    .grid-tune-point-grid button {
+      display: grid;
+      place-items: center;
+      gap: .08rem;
+      min-height: 2.9rem;
+      padding: .3rem;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: var(--surface-2);
+      color: var(--text);
+      font-size: .68rem;
+      font-weight: 800;
+      line-height: 1.05;
+    }
+
+    .grid-tune-point-grid button[aria-pressed="true"] {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+      box-shadow: inset 0 0 0 1px var(--accent);
+    }
+
+    .grid-tune-point-grid small {
       color: var(--muted);
-      font-size: .72rem;
+      font-size: .62rem;
+      font-weight: 750;
+    }
+
+    .grid-tune-coordinate-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .4rem;
+    }
+
+    .grid-tune-coordinate-fields label {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      gap: .35rem;
+      color: var(--muted);
+      font-size: .7rem;
       font-weight: 800;
     }
 
-    .grid-tune-field input[type="range"] {
-      width: 100%;
-      min-width: 0;
-    }
-
-    .grid-tune-field input[type="number"] {
+    .grid-tune-coordinate-fields input {
       width: 100%;
       min-width: 0;
       height: 2rem;
@@ -2651,11 +2743,12 @@
       .grid-tune-panel {
         inset: auto .5rem .5rem .5rem;
         width: auto;
-        max-height: min(72vh, 36rem);
+        max-height: min(52vh, 27rem);
       }
 
-      .grid-tune-field {
-        grid-template-columns: 5.5rem minmax(0, 1fr) 4.6rem;
+      .grid-tune-panel.is-collapsed {
+        inset: auto .5rem .5rem auto;
+        width: min(15rem, calc(100vw - 1rem));
       }
     }
 
