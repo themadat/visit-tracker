@@ -4,7 +4,7 @@
 
     const CHANGELOG = [
       {
-        version: "4.7.5.19",
+        version: "4.7.5.20",
         date: "2026-06-17",
         title: "Gridlines",
         summary: "Grid labels, spacing controls, and US geography get cleaner map detail.",
@@ -41,7 +41,10 @@
               "The mainland grid now uses a flatter landmark fit: 25°N meets Texas and Florida, 49°N follows the northern border, and 125°W–67°W reaches both coasts.",
               "Alaska's grid shifts half a degree north, aligns 141°W to its Canadian border, and extends through every inset edge.",
               "Developer Mode adds separate Mainland and Alaska grid tuners with live position, size, curve, reset, and commit-ready code controls.",
-              "US and Alaska longitude lines are now constrained to straight chords while latitude curves remain consistently adjustable.",
+              "The first manual tuner separated mainland and Alaska calibration and added live transform controls with code export.",
+              "Grid tuning now has South, Middle, and North control points for longitude tilt/bend and latitude bow.",
+              "North/South spread and latitude-tilt controls add edge alignment without relying on unstable projection extrapolation.",
+              "The mainland grid now uses direct geographic interpolation outside its landmark band, preventing the doubled southern overlap.",
             ]
           },
           {
