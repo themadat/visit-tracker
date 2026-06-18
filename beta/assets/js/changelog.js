@@ -4,60 +4,49 @@
 
     const CHANGELOG = [
       {
-        version: "4.7.5.24",
+        version: "4.7.5",
         date: "2026-06-18",
         title: "Gridlines",
-        summary: "Grid labels, spacing controls, and US geography get cleaner map detail.",
+        summary: "US and World maps gain customizable geographic grids with coordinate pins aligned to match.",
         highlights: [
-          "Major and Minor are now dropdowns.",
-          "World reference labels sit at both globe edges.",
-          "Degree labels now get light direction colors.",
-          "Added a P0 pop-up unification roadmap item.",
+          "Add customizable latitude/longitude grids to US and World maps.",
+          "Control Major and Minor spacing, labels, and World reference circles.",
+          "Fit Mainland, Alaska, and Hawaii grids to their geographic map frames.",
+          "Align coordinate pins with the calibrated Mainland and Alaska grids.",
         ],
         updateSections: [
           {
-            heading: "Maps",
+            heading: "Grid Controls",
             items: [
-              "The grid pop-up buttons now use a grid icon, a circle icon, and the tag icon used by shortcut labels.",
-              "Circles and Labels are grayed out while Grid is off, and the pop-up clamps inside the map panel instead of the viewport.",
-              "Major and Minor interval ticks now use deterministic app-side stepping instead of browser-native number jumps.",
-              "Major and Minor interval fields disable while Grid is off, matching the Circles and Labels controls.",
-              "Major spacing is now chosen from 5° increments up to 90°, and Minor spacing is chosen from valid divisors of the selected Major spacing.",
-              "Clicking the Grid button again now dismisses the open pop-up instead of reopening it after a light-dismiss.",
-              "The US grid uses a contiguous-US Albers equal-area projection fitted to the lower-48 geographic frame and masked cleanly around inset cutouts.",
-              "World reference-line labels are smaller, duplicated at the left and right globe edges, and now include the Equator.",
-              "US grid labels now attach to visible line endpoints on the top/bottom and left/right edges with corner collision guards.",
-              "US inset masking now follows the SVG separator geometry instead of individual state and territory bounding boxes.",
-              "Alaska and Hawaii draw independent inset grids instead of inheriting the contiguous-US projection.",
-              "The lower-48 grid now renders from a wider geographic envelope so lines feel continuous beyond all four US map edges.",
-              "Alaska and Hawaii inset grids now scale to their separator panes instead of hugging only the island/state artwork bounds.",
-              "Latitude and longitude degree labels now lightly tint by direction: north red, south green, east orange-yellow, and west blue-purple.",
-              "Alaska and Hawaii inset labels now render outside the clipped line layer so their text is not chopped by the pane edge.",
-              "Alaska and Hawaii inset labels now anchor to visible pane edges with collision guards, and the stray Aleutian overlay grid has been removed.",
-              "Alaska inset grid bounds now span 54°N–72°N and 170°W–124°W for a tighter fit.",
-              "Alaska's inset grid now uses an Alaska Albers projection before scaling into its map pane, matching the inset artwork's curved geography.",
-              "The contiguous-US grid now uses a matching Albers projection calibrated to 24.5°N–49.5°N and 125°W–65°W.",
-              "Alaska's Albers grid is now landmark-fitted to its inset and drawn beyond all pane edges for complete clipped coverage.",
-              "The mainland grid now uses a flatter landmark fit: 25°N meets Texas and Florida, 49°N follows the northern border, and 125°W–67°W reaches both coasts.",
-              "Alaska's grid shifts half a degree north, aligns 141°W to its Canadian border, and extends through every inset edge.",
-              "Developer Mode adds separate Mainland and Alaska grid tuners with live position, size, curve, reset, and commit-ready code controls.",
-              "The first manual tuner separated mainland and Alaska calibration and added live transform controls with code export.",
-              "Grid tuning now has South, Middle, and North control points for longitude tilt/bend and latitude bow.",
-              "North/South spread and latitude-tilt controls add edge alignment without relying on unstable projection extrapolation.",
-              "The mainland grid now uses direct geographic interpolation outside its landmark band, preventing the doubled southern overlap.",
-              "The US Grid Tuner now replaces abstract transform and curve sliders with nine draggable geographic control points on the map.",
-              "Mainland controls use 30°N, 40°N, and 50°N at 120°W, 100°W, and 80°W; Alaska uses 55°N, 60°N, and 65°N at 160°W, 150°W, and 140°W.",
-              "Longitude guides stay straight between their north and south points, latitude guides curve through each three-point row, and off-map handles remain reachable at the map edge.",
-              "The point tuner can minimize to a compact floating header so the full map stays available while dragging, especially on phones.",
-              "The manually fitted Mainland and Alaska point layouts are now the checked-in default grid calibration.",
-              "Mainland and Alaska coordinate pins now use the calibrated grid projection, bringing National Park previews and saved-note markers onto their true graticule positions.",
-              "The US Grid Tuner now opens only from Developer Tools instead of appearing in the map's Grid options.",
+              "Each map remembers whether Grid, labels, and World reference circles are visible.",
+              "Major spacing uses 5° steps through 90°; Minor offers compatible divisors of the selected Major spacing.",
+              "Grid controls disable cleanly while the overlay is off and remain clamped inside the map panel on small screens.",
+              "Major lines carry degree labels at visible endpoints; Minor lines stay thinner and unlabeled.",
+              "North, south, east, and west degree labels use subtle direction colors.",
             ]
           },
           {
-            heading: "Roadmap",
+            heading: "World Geography",
             items: [
-              "Added a P0 follow-up to unify the app's anchored control pop-ups: Priority, Grid, Rangefinder style/time, label pickers, Waypoint menus, and Basecamp popovers.",
+              "The World grid uses the map's Robinson projection: straight parallels, curved meridians, and a curved globe frame.",
+              "Optional reference lines emphasize and name the Equator, tropics, and polar circles at both globe edges.",
+            ]
+          },
+          {
+            heading: "US Geography",
+            items: [
+              "The lower-48 grid uses a manually calibrated geographic surface and continues beyond every visible map edge.",
+              "Alaska and Hawaii use independent inset grids clipped to their separator panes; territory cutouts remain clear.",
+              "Inset labels render outside clipped line groups with edge anchoring and collision guards.",
+              "Mainland and Alaska coordinate pins, Waypoint previews, clusters, and Rangefinder anchors use the same calibrated grid projection.",
+            ]
+          },
+          {
+            heading: "Developer Tools",
+            items: [
+              "Developer Tools adds a nine-point Mainland/Alaska grid tuner with drag, keyboard, exact-coordinate, reset, and code-copy controls.",
+              "Off-map control points remain reachable through edge proxy handles, and the tuner minimizes to keep the map visible on phones.",
+              "Added a P0 Roadmap follow-up to unify anchored control pop-ups across the app.",
             ]
           }
         ]
