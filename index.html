@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5.20">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5.21">
 </head>
 
 <body>
@@ -853,19 +853,22 @@
     </div>
   </div>
 
-  <div id="gridTunePanel" popover="manual" class="grid-tune-panel hidden" aria-label="US grid manual tuner" data-dev-only>
+  <div id="gridTunePanel" popover="manual" class="grid-tune-panel hidden" aria-label="US grid control-point tuner" data-dev-only>
     <header>
-      <div>
+      <div class="grid-tune-heading">
         <strong>US Grid Tuner</strong>
-        <small>Session-only until you copy and commit the calibration.</small>
+        <small>Drag the nine map points. Session-only until you copy and commit the calibration.</small>
       </div>
-      <button id="gridTuneCloseBtn" type="button" aria-label="Close US Grid Tuner">Close</button>
+      <div class="grid-tune-header-actions">
+        <button id="gridTuneCollapseBtn" type="button" aria-expanded="true">Minimize</button>
+        <button id="gridTuneCloseBtn" type="button" aria-label="Close US Grid Tuner">Close</button>
+      </div>
     </header>
     <div class="segmented grid-tune-tabs" aria-label="Grid to tune">
       <button type="button" data-grid-tune-tab="mainland" aria-pressed="true">Mainland</button>
       <button type="button" data-grid-tune-tab="alaska" aria-pressed="false">Alaska</button>
     </div>
-    <p class="muted">Set the shared longitude shape at South/Middle/North, then tune the latitude bow at those same three bands.</p>
+    <p class="muted">Longitude guides stay straight. Dragging a middle-row point moves that whole longitude line; latitude guides curve through all three columns.</p>
     <p id="gridTuneBandHelp" class="grid-tune-band-help"></p>
     <div id="gridTuneControls" class="grid-tune-controls"></div>
     <div class="grid-tune-actions">
@@ -875,7 +878,7 @@
     </div>
     <label class="grid-tune-output-label">Commit-ready calibration
       <textarea id="gridTuneOutput" rows="8" readonly spellcheck="false"></textarea>
-      <small>Paste over <code>US_GRATICULE_CALIBRATION</code> in <code>index.html</code>. After refreshing, Reset Both clears the session override.</small>
+      <small>Paste over <code>US_GRATICULE_CALIBRATION</code> in <code>index.html</code>. The incompatible slider-tuner session format is intentionally retired.</small>
     </label>
   </div>
 
@@ -1759,7 +1762,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.5.20";
+    const APP_VERSION = "4.7.5.21";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -7214,12 +7217,18 @@
       }
       g.innerHTML = "";
       const settings = state.settings.graticuleByLayer?.[activeLayerId];
-      if (!settings || !settings.enabled) return;
+      if (!settings || !settings.enabled) {
+        if (activeLayerId === "us") renderGridTuneHandles(svg);
+        return;
+      }
       const minor = Math.max(1, settings.minor | 0);
       const major = Math.max(minor, settings.major | 0);
       const options = { labels: settings.labels !== false, references: settings.references !== false };
       if (activeLayerId === "world") renderWorldGraticule(g, major, minor, options);
-      else renderUsGraticule(g, svg, major, minor, options);
+      else {
+        renderUsGraticule(g, svg, major, minor, options);
+        renderGridTuneHandles(svg);
+      }
     }
 
     const WORLD_REFERENCE_LINES = [
@@ -7286,52 +7295,37 @@
     const US_GRATICULE_DRAW_BOUNDS = { minLat: 0, maxLat: 60, minLng: -145, maxLng: -45 };
     const US_GRATICULE_CALIBRATION = {
       mainland: {
-        x: 0, y: 0, width: 1, height: 1,
-        southSpread: 1, northSpread: 1, rowTilt: 0,
-        southLng: -0.4, middleLng: -29.7, northLng: -17.6,
-        southCurve: 16, middleCurve: 112.6, northCurve: 80.1
+        southWest: { x: 48.96, y: 461.33 },
+        southMiddle: { x: 392.27, y: 521.16 },
+        southEast: { x: 735.57, y: 498.43 },
+        northWest: { x: 126.37, y: 1.49 },
+        northMiddle: { x: 419.07, y: 40.94 },
+        northEast: { x: 711.77, y: -2.25 }
       },
       alaska: {
-        x: 0, y: 0, width: 1, height: 1,
-        southSpread: 1, northSpread: 1, rowTilt: 0,
-        southLng: -1.5, middleLng: -1.1, northLng: -0.8,
-        southCurve: 13.5, middleCurve: 10, northCurve: 7.5
+        southWest: { x: 76.12, y: 574.54 },
+        southMiddle: { x: 127.31, y: 582.03 },
+        southEast: { x: 178.5, y: 582 },
+        northWest: { x: 102.14, y: 487.26 },
+        northMiddle: { x: 139.75, y: 492.59 },
+        northEast: { x: 177.37, y: 492.66 }
       }
     };
     const US_GRATICULE_TUNE_GEOMETRY = {
       mainland: {
-        bounds: { minLat: 25, maxLat: 49, minLng: -125, maxLng: -67 },
-        center: { x: 467, y: 296.5 },
-        corners: {
-          sw: { x: -36.28, y: 547.154 }, se: { x: 995.999, y: 567.874 },
-          nw: { x: 68.467, y: 1.451 }, ne: { x: 924.636, y: -48.943 }
-        }
+        latitudes: [30, 40, 50],
+        longitudes: [-120, -100, -80]
       },
       alaska: {
-        bounds: { minLat: 54.5, maxLat: 71.5, minLng: -167, maxLng: -129.5 },
-        center: { x: 125.5, y: 509 },
-        corners: {
-          sw: { x: 40, y: 569.038 }, se: { x: 234.507, y: 578.242 },
-          nw: { x: 99.609, y: 425.508 }, ne: { x: 207.591, y: 430.617 }
-        }
+        latitudes: [55, 60, 65],
+        longitudes: [-160, -150, -140]
       }
     };
-    const GRID_TUNE_STORAGE_KEY = "trailLog.usGridTuning.v2";
-    const GRID_TUNE_FIELDS = [
-      { group: "Position + Size", key: "x", label: "Left / Right", min: -300, max: 300, step: .1, digits: 1 },
-      { group: "Position + Size", key: "y", label: "Up / Down", min: -300, max: 300, step: .1, digits: 1 },
-      { group: "Position + Size", key: "width", label: "Width", min: .25, max: 2, step: .005, digits: 3 },
-      { group: "Position + Size", key: "height", label: "Height", min: .25, max: 2, step: .005, digits: 3 },
-      { group: "Edge Alignment", key: "southSpread", label: "South Spread", min: .25, max: 2, step: .005, digits: 3 },
-      { group: "Edge Alignment", key: "northSpread", label: "North Spread", min: .25, max: 2, step: .005, digits: 3 },
-      { group: "Edge Alignment", key: "rowTilt", label: "Latitude Tilt", min: -300, max: 300, step: .1, digits: 1 },
-      { group: "Longitude Shape / Tilt", key: "southLng", label: "South Point", min: -300, max: 300, step: .1, digits: 1 },
-      { group: "Longitude Shape / Tilt", key: "middleLng", label: "Middle Point", min: -300, max: 300, step: .1, digits: 1 },
-      { group: "Longitude Shape / Tilt", key: "northLng", label: "North Point", min: -300, max: 300, step: .1, digits: 1 },
-      { group: "Latitude Bow", key: "southCurve", label: "South Curve", min: -300, max: 300, step: .1, digits: 1 },
-      { group: "Latitude Bow", key: "middleCurve", label: "Middle Curve", min: -300, max: 300, step: .1, digits: 1 },
-      { group: "Latitude Bow", key: "northCurve", label: "North Curve", min: -300, max: 300, step: .1, digits: 1 }
-    ];
+    const GRID_TUNE_STORAGE_KEY = "trailLog.usGridTuning.v3";
+    const GRID_TUNE_COLUMNS = ["west", "middle", "east"];
+    const GRID_TUNE_ROWS = ["south", "middle", "north"];
+    const GRID_TUNE_ENDPOINT_ROWS = ["south", "north"];
+    const GRID_TUNE_POINT_LIMIT = 4000;
     const US_GRATICULE_INSET_CUTS = [
       { type: "polygon", points: [{ x: 0, y: 425 }, { x: 147, y: 425 }, { x: 215, y: 493 }, { x: 300, y: 493 }, { x: 354, y: 547 }, { x: 354, y: 593 }, { x: 0, y: 593 }] },
       { type: "rect", x: 560, y: 515, width: 122, height: 78 }
@@ -7351,24 +7345,47 @@
     };
     let gridTuneTarget = "mainland";
     let gridTuneCalibration = loadGridTuneCalibration();
+    let gridTuneSelection = { row: "middle", column: "middle" };
+    let gridTuneDrag = null;
     let graticuleButtonDismissPending = false;
 
+    function gridTuneEndpointKey(row, column) {
+      return row + column[0].toUpperCase() + column.slice(1);
+    }
+
+    function cloneGridTunePoint(point) {
+      return { x: Number(point?.x) || 0, y: Number(point?.y) || 0 };
+    }
+
+    function cloneGridTuneTarget(input) {
+      const output = {};
+      GRID_TUNE_ENDPOINT_ROWS.forEach(row => GRID_TUNE_COLUMNS.forEach(column => {
+        const key = gridTuneEndpointKey(row, column);
+        output[key] = cloneGridTunePoint(input?.[key]);
+      }));
+      return output;
+    }
+
     function defaultGridTuneCalibration() {
-      return {
-        mainland: { ...US_GRATICULE_CALIBRATION.mainland },
-        alaska: { ...US_GRATICULE_CALIBRATION.alaska }
-      };
+      const output = {};
+      Object.keys(US_GRATICULE_CALIBRATION).forEach(target => {
+        output[target] = cloneGridTuneTarget(US_GRATICULE_CALIBRATION[target]);
+      });
+      return output;
     }
 
     function normalizeGridTuneCalibration(input) {
       const output = defaultGridTuneCalibration();
       Object.keys(output).forEach(target => {
-        GRID_TUNE_FIELDS.forEach(field => {
-          const value = Number(input?.[target]?.[field.key]);
-          output[target][field.key] = Number.isFinite(value)
-            ? Math.max(field.min, Math.min(field.max, value))
-            : output[target][field.key];
-        });
+        GRID_TUNE_ENDPOINT_ROWS.forEach(row => GRID_TUNE_COLUMNS.forEach(column => {
+          const key = gridTuneEndpointKey(row, column);
+          ["x", "y"].forEach(axis => {
+            const value = Number(input?.[target]?.[key]?.[axis]);
+            if (Number.isFinite(value)) {
+              output[target][key][axis] = Math.max(-GRID_TUNE_POINT_LIMIT, Math.min(GRID_TUNE_POINT_LIMIT, value));
+            }
+          });
+        }));
       });
       return output;
     }
@@ -7400,44 +7417,200 @@
       return inverse * inverse * south + 2 * inverse * amount * control + amount * amount * north;
     }
 
+    function threePointGraticulePoint(west, middle, east, amount) {
+      return {
+        x: threePointGraticuleValue(west.x, middle.x, east.x, amount),
+        y: threePointGraticuleValue(west.y, middle.y, east.y, amount)
+      };
+    }
+
     function tunedUsGridPoint(lat, lng, target) {
       const geometry = US_GRATICULE_TUNE_GEOMETRY[target];
       const calibration = gridTuneCalibration[target];
-      const bounds = geometry.bounds;
-      const latitudeAmount = (lat - bounds.minLat) / Math.max(.0001, bounds.maxLat - bounds.minLat);
-      const longitudeAmount = (lng - bounds.minLng) / Math.max(.0001, bounds.maxLng - bounds.minLng);
-      const westPoint = lerpGraticulePoint(geometry.corners.sw, geometry.corners.nw, latitudeAmount);
-      const eastPoint = lerpGraticulePoint(geometry.corners.se, geometry.corners.ne, latitudeAmount);
-      const rowCenter = lerpGraticulePoint(westPoint, eastPoint, .5);
-      const baseWidth = eastPoint.x - westPoint.x;
-      const spread = calibration.southSpread + (calibration.northSpread - calibration.southSpread) * latitudeAmount;
-      const longitudeShift = threePointGraticuleValue(
-        calibration.southLng,
-        calibration.middleLng,
-        calibration.northLng,
-        latitudeAmount
+      const [southLat, , northLat] = geometry.latitudes;
+      const [westLng, , eastLng] = geometry.longitudes;
+      const latitudeAmount = (lat - southLat) / Math.max(.0001, northLat - southLat);
+      const longitudeAmount = (lng - westLng) / Math.max(.0001, eastLng - westLng);
+      const southPoint = threePointGraticulePoint(
+        calibration.southWest,
+        calibration.southMiddle,
+        calibration.southEast,
+        longitudeAmount
       );
-      const latitudeBow = threePointGraticuleValue(
-        calibration.southCurve,
-        calibration.middleCurve,
-        calibration.northCurve,
-        latitudeAmount
+      const northPoint = threePointGraticulePoint(
+        calibration.northWest,
+        calibration.northMiddle,
+        calibration.northEast,
+        longitudeAmount
       );
-      const rowTilt = calibration.rowTilt * (longitudeAmount - .5);
-      const point = {
-        x: rowCenter.x + longitudeShift + (longitudeAmount - .5) * baseWidth * spread,
-        y: westPoint.y + (eastPoint.y - westPoint.y) * longitudeAmount
-          + rowTilt
-          + latitudeBow * 4 * longitudeAmount * (1 - longitudeAmount)
-      };
-      return {
-        x: geometry.center.x + (point.x - geometry.center.x) * calibration.width + calibration.x,
-        y: geometry.center.y + (point.y - geometry.center.y) * calibration.height + calibration.y
-      };
+      return lerpGraticulePoint(southPoint, northPoint, latitudeAmount);
     }
 
     function usContiguousGridPoint(lat, lng) {
       return tunedUsGridPoint(lat, lng, "mainland");
+    }
+
+    function gridTunePanelOpen() {
+      return state.settings.developerMode === true && $("#gridTunePanel")?.matches(":popover-open") === true;
+    }
+
+    function stateMapPointFromEvent(event) {
+      const svg = $("#stateMap");
+      const matrix = svg?.getScreenCTM?.();
+      if (!svg || !matrix) return null;
+      const point = svg.createSVGPoint();
+      point.x = event.clientX;
+      point.y = event.clientY;
+      const mapped = point.matrixTransform(matrix.inverse());
+      return { x: mapped.x, y: mapped.y };
+    }
+
+    function renderGridTuneHandles(svg) {
+      let group = svg.querySelector("#mapGridTuneHandles");
+      if (!gridTunePanelOpen()) {
+        group?.remove();
+        return;
+      }
+      if (!group) {
+        group = graticuleSvg("g");
+        group.id = "mapGridTuneHandles";
+        group.setAttribute("class", "grid-tune-handle-layer");
+        svg.append(group);
+      }
+      group.innerHTML = "";
+      const geometry = US_GRATICULE_TUNE_GEOMETRY[gridTuneTarget];
+      const viewBox = svg.viewBox?.baseVal || { x: 0, y: 0, width: 934, height: 593 };
+      const pad = 12;
+      const clampPoint = point => ({
+        x: Math.max(viewBox.x + pad, Math.min(viewBox.x + viewBox.width - pad, point.x)),
+        y: Math.max(viewBox.y + pad, Math.min(viewBox.y + viewBox.height - pad, point.y))
+      });
+      const addGuide = (points, className = "") => {
+        const polyline = graticuleSvg("polyline");
+        polyline.setAttribute("points", points.map(point => `${point.x.toFixed(2)},${point.y.toFixed(2)}`).join(" "));
+        polyline.setAttribute("class", `grid-tune-guide${className ? ` ${className}` : ""}`);
+        group.append(polyline);
+      };
+      GRID_TUNE_COLUMNS.forEach(column => {
+        addGuide([
+          gridTunePoint(gridTuneTarget, "south", column),
+          gridTunePoint(gridTuneTarget, "north", column)
+        ], "is-longitude");
+      });
+      GRID_TUNE_ROWS.forEach((row, rowIndex) => {
+        const points = [];
+        const [westLng, , eastLng] = geometry.longitudes;
+        for (let index = 0; index <= 24; index++) {
+          const lng = westLng + (eastLng - westLng) * index / 24;
+          points.push(tunedUsGridPoint(geometry.latitudes[rowIndex], lng, gridTuneTarget));
+        }
+        addGuide(points, "is-latitude");
+      });
+      ["north", "middle", "south"].forEach(row => GRID_TUNE_COLUMNS.forEach(column => {
+        const actual = gridTunePoint(gridTuneTarget, row, column);
+        const display = clampPoint(actual);
+        if (Math.hypot(display.x - actual.x, display.y - actual.y) > .1) {
+          const proxy = graticuleSvg("line");
+          proxy.setAttribute("x1", actual.x.toFixed(2));
+          proxy.setAttribute("y1", actual.y.toFixed(2));
+          proxy.setAttribute("x2", display.x.toFixed(2));
+          proxy.setAttribute("y2", display.y.toFixed(2));
+          proxy.setAttribute("class", "grid-tune-proxy-line");
+          group.append(proxy);
+        }
+        const handle = graticuleSvg("circle");
+        const selected = row === gridTuneSelection.row && column === gridTuneSelection.column;
+        handle.setAttribute("cx", display.x.toFixed(2));
+        handle.setAttribute("cy", display.y.toFixed(2));
+        handle.setAttribute("r", selected ? "8" : "6.5");
+        handle.setAttribute("class", `grid-tune-handle${selected ? " is-selected" : ""}`);
+        handle.setAttribute("tabindex", "0");
+        handle.setAttribute("role", "button");
+        handle.setAttribute("aria-label", `${gridTuneGeoLabel(gridTuneTarget, row, column)} control point`);
+        handle.dataset.gridTuneRow = row;
+        handle.dataset.gridTuneColumn = column;
+        const title = graticuleSvg("title");
+        title.textContent = gridTuneGeoLabel(gridTuneTarget, row, column);
+        handle.append(title);
+        group.append(handle);
+        if (selected) {
+          const label = graticuleSvg("text");
+          const useEnd = display.x > viewBox.x + viewBox.width - 92;
+          label.setAttribute("x", (display.x + (useEnd ? -10 : 10)).toFixed(2));
+          label.setAttribute("y", (display.y <= viewBox.y + 24 ? display.y + 14 : display.y - 10).toFixed(2));
+          label.setAttribute("text-anchor", useEnd ? "end" : "start");
+          label.setAttribute("class", "grid-tune-handle-label");
+          label.textContent = gridTuneGeoLabel(gridTuneTarget, row, column);
+          group.append(label);
+        }
+      }));
+    }
+
+    function handleGridTunePointerDown(event) {
+      const handle = event.target?.closest?.(".grid-tune-handle");
+      if (!handle || !gridTunePanelOpen()) return;
+      const point = stateMapPointFromEvent(event);
+      if (!point) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const row = handle.dataset.gridTuneRow;
+      const column = handle.dataset.gridTuneColumn;
+      gridTuneSelection = { row, column };
+      renderGridTuneControls();
+      gridTuneDrag = {
+        target: gridTuneTarget,
+        row,
+        column,
+        pointerId: event.pointerId,
+        startPointer: point,
+        startPoint: gridTunePoint(gridTuneTarget, row, column),
+        startCalibration: cloneGridTuneTarget(gridTuneCalibration[gridTuneTarget])
+      };
+      handle.classList.add("is-dragging");
+      handle.setPointerCapture?.(event.pointerId);
+    }
+
+    function handleGridTunePointerMove(event) {
+      if (!gridTuneDrag || event.pointerId !== gridTuneDrag.pointerId) return;
+      const point = stateMapPointFromEvent(event);
+      if (!point) return;
+      event.preventDefault();
+      gridTuneCalibration[gridTuneDrag.target] = cloneGridTuneTarget(gridTuneDrag.startCalibration);
+      setGridTunePoint(
+        gridTuneDrag.target,
+        gridTuneDrag.row,
+        gridTuneDrag.column,
+        gridTuneDrag.startPoint.x + point.x - gridTuneDrag.startPointer.x,
+        gridTuneDrag.startPoint.y + point.y - gridTuneDrag.startPointer.y
+      );
+      refreshGridTuneReadout();
+      renderGraticule();
+    }
+
+    function handleGridTunePointerUp(event) {
+      if (!gridTuneDrag || (event?.pointerId !== undefined && event.pointerId !== gridTuneDrag.pointerId)) return;
+      gridTuneDrag = null;
+      saveGridTuneCalibration();
+      renderGridTuneControls();
+      renderGraticule();
+    }
+
+    function handleGridTuneHandleKeydown(event) {
+      const handle = event.target?.closest?.(".grid-tune-handle");
+      if (!handle || !gridTunePanelOpen() || !["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const amount = event.shiftKey ? 10 : event.altKey ? .1 : 1;
+      const dx = event.key === "ArrowLeft" ? -amount : event.key === "ArrowRight" ? amount : 0;
+      const dy = event.key === "ArrowUp" ? -amount : event.key === "ArrowDown" ? amount : 0;
+      const row = handle.dataset.gridTuneRow;
+      const column = handle.dataset.gridTuneColumn;
+      const point = gridTunePoint(gridTuneTarget, row, column);
+      gridTuneSelection = { row, column };
+      setGridTunePoint(gridTuneTarget, row, column, point.x + dx, point.y + dy);
+      saveGridTuneCalibration();
+      renderGridTuneControls();
+      renderGraticule();
     }
 
     function ensureUsGraticuleInsetMask(svg) {
@@ -7722,22 +7895,68 @@
     function graticuleOptionLabel(value) {
       return `${value}°`;
     }
-    function gridTuneField(key) {
-      return GRID_TUNE_FIELDS.find(field => field.key === key) || null;
+    function formatGridTuneValue(value) {
+      return Number(value).toFixed(2);
     }
-    function formatGridTuneValue(value, field) {
-      return Number(value).toFixed(field.digits);
+    function formatGridTuneCodeNumber(value) {
+      return formatGridTuneValue(value).replace(/\.?0+$/, "");
     }
-    function formatGridTuneCodeNumber(value, field) {
-      return formatGridTuneValue(value, field).replace(/\.?0+$/, "");
+    function gridTunePoint(target, row, column) {
+      const calibration = gridTuneCalibration[target];
+      if (!calibration) return { x: 0, y: 0 };
+      if (row === "middle") {
+        return lerpGraticulePoint(
+          calibration[gridTuneEndpointKey("south", column)],
+          calibration[gridTuneEndpointKey("north", column)],
+          .5
+        );
+      }
+      return cloneGridTunePoint(calibration[gridTuneEndpointKey(row, column)]);
+    }
+    function setGridTunePoint(target, row, column, x, y) {
+      if (!gridTuneCalibration[target] || !GRID_TUNE_ROWS.includes(row) || !GRID_TUNE_COLUMNS.includes(column)) return;
+      const next = {
+        x: Math.max(-GRID_TUNE_POINT_LIMIT, Math.min(GRID_TUNE_POINT_LIMIT, Number(x))),
+        y: Math.max(-GRID_TUNE_POINT_LIMIT, Math.min(GRID_TUNE_POINT_LIMIT, Number(y)))
+      };
+      if (!Number.isFinite(next.x) || !Number.isFinite(next.y)) return;
+      if (row === "middle") {
+        const current = gridTunePoint(target, row, column);
+        const dx = next.x - current.x;
+        const dy = next.y - current.y;
+        ["south", "north"].forEach(endpointRow => {
+          const key = gridTuneEndpointKey(endpointRow, column);
+          gridTuneCalibration[target][key].x += dx;
+          gridTuneCalibration[target][key].y += dy;
+        });
+        return;
+      }
+      gridTuneCalibration[target][gridTuneEndpointKey(row, column)] = next;
+    }
+    function gridTuneGeoLabel(target, row, column) {
+      const geometry = US_GRATICULE_TUNE_GEOMETRY[target];
+      const lat = geometry.latitudes[GRID_TUNE_ROWS.indexOf(row)];
+      const lng = geometry.longitudes[GRID_TUNE_COLUMNS.indexOf(column)];
+      return `${formatGraticuleLat(lat)} · ${formatGraticuleLng(lng)}`;
     }
     function gridTuneCalibrationText() {
-      const line = target => {
-        const values = gridTuneCalibration[target];
-        const pairs = GRID_TUNE_FIELDS.map(field => `${field.key}: ${formatGridTuneCodeNumber(values[field.key], field)}`);
-        return `  ${target}: { ${pairs.join(", ")} }`;
+      const targetText = target => {
+        const lines = GRID_TUNE_ENDPOINT_ROWS.flatMap(row => GRID_TUNE_COLUMNS.map(column => {
+          const key = gridTuneEndpointKey(row, column);
+          const point = gridTuneCalibration[target][key];
+          return `    ${key}: { x: ${formatGridTuneCodeNumber(point.x)}, y: ${formatGridTuneCodeNumber(point.y)} }`;
+        }));
+        return `  ${target}: {\n${lines.join(",\n")}\n  }`;
       };
-      return `const US_GRATICULE_CALIBRATION = {\n${line("mainland")},\n${line("alaska")}\n};`;
+      return `const US_GRATICULE_CALIBRATION = {\n${targetText("mainland")},\n${targetText("alaska")}\n};`;
+    }
+    function refreshGridTuneReadout() {
+      const point = gridTunePoint(gridTuneTarget, gridTuneSelection.row, gridTuneSelection.column);
+      const xInput = $('[data-grid-tune-coordinate="x"]', $("#gridTuneControls"));
+      const yInput = $('[data-grid-tune-coordinate="y"]', $("#gridTuneControls"));
+      if (xInput && document.activeElement !== xInput) xInput.value = formatGridTuneValue(point.x);
+      if (yInput && document.activeElement !== yInput) yInput.value = formatGridTuneValue(point.y);
+      if ($("#gridTuneOutput")) $("#gridTuneOutput").value = gridTuneCalibrationText();
     }
     function renderGridTuneControls() {
       const controls = $("#gridTuneControls");
@@ -7747,55 +7966,59 @@
         button.setAttribute("aria-pressed", button.dataset.gridTuneTab === gridTuneTarget ? "true" : "false");
       });
       if (help) {
-        const bounds = US_GRATICULE_TUNE_GEOMETRY[gridTuneTarget].bounds;
-        const middle = (bounds.minLat + bounds.maxLat) / 2;
-        const bandLabel = lat => `${Number.isInteger(lat) ? lat : lat.toFixed(1)}°N`;
-        help.textContent = `Bands: South ${bandLabel(bounds.minLat)} · Middle ${bandLabel(middle)} · North ${bandLabel(bounds.maxLat)}`;
+        const geometry = US_GRATICULE_TUNE_GEOMETRY[gridTuneTarget];
+        help.textContent = `${geometry.latitudes.map(formatGraticuleLat).join(" / ")} × ${geometry.longitudes.map(formatGraticuleLng).join(" / ")}`;
       }
       if (controls) {
-        const values = gridTuneCalibration[gridTuneTarget];
-        let lastGroup = "";
-        controls.innerHTML = GRID_TUNE_FIELDS.map(field => {
-          const heading = field.group !== lastGroup
-            ? `<h4>${field.group}</h4>`
-            : "";
-          lastGroup = field.group;
-          return `${heading}
-            <label class="grid-tune-field">
-              <span>${field.label}</span>
-              <input type="range" min="${field.min}" max="${field.max}" step="${field.step}"
-                value="${formatGridTuneValue(values[field.key], field)}" data-grid-tune-field="${field.key}"
-                aria-label="${gridTuneTarget} ${field.label}">
-              <input type="number" min="${field.min}" max="${field.max}" step="${field.step}"
-                value="${formatGridTuneValue(values[field.key], field)}" data-grid-tune-field="${field.key}"
-                aria-label="${gridTuneTarget} ${field.label} exact value">
-            </label>`;
-        }).join("");
+        const buttons = ["north", "middle", "south"].flatMap(row => GRID_TUNE_COLUMNS.map(column => {
+          const geometry = US_GRATICULE_TUNE_GEOMETRY[gridTuneTarget];
+          const lat = geometry.latitudes[GRID_TUNE_ROWS.indexOf(row)];
+          const lng = geometry.longitudes[GRID_TUNE_COLUMNS.indexOf(column)];
+          const selected = row === gridTuneSelection.row && column === gridTuneSelection.column;
+          return `<button type="button" data-grid-tune-row="${row}" data-grid-tune-column="${column}" aria-pressed="${selected}" aria-label="Select ${gridTuneGeoLabel(gridTuneTarget, row, column)} point">
+            <span>${formatGraticuleLat(lat)}</span><small>${formatGraticuleLng(lng)}</small>
+          </button>`;
+        })).join("");
+        const point = gridTunePoint(gridTuneTarget, gridTuneSelection.row, gridTuneSelection.column);
+        controls.innerHTML = `<div class="grid-tune-point-grid" role="group" aria-label="Grid control points">${buttons}</div>
+          <div class="grid-tune-coordinate-fields">
+            <label>X <input type="number" step="0.1" value="${formatGridTuneValue(point.x)}" data-grid-tune-coordinate="x" aria-label="Selected point X coordinate"></label>
+            <label>Y <input type="number" step="0.1" value="${formatGridTuneValue(point.y)}" data-grid-tune-coordinate="y" aria-label="Selected point Y coordinate"></label>
+          </div>`;
       }
       if (output) output.value = gridTuneCalibrationText();
+    }
+    function setGridTuneSelection(row, column) {
+      if (!GRID_TUNE_ROWS.includes(row) || !GRID_TUNE_COLUMNS.includes(column)) return;
+      gridTuneSelection = { row, column };
+      renderGridTuneControls();
+      renderGraticule();
     }
     function setGridTuneTarget(target) {
       if (!US_GRATICULE_CALIBRATION[target]) return;
       gridTuneTarget = target;
+      gridTuneSelection = { row: "middle", column: "middle" };
       renderGridTuneControls();
+      renderGraticule();
+    }
+    function handleGridTuneControlsClick(event) {
+      const button = event.target.closest("[data-grid-tune-row][data-grid-tune-column]");
+      if (button) setGridTuneSelection(button.dataset.gridTuneRow, button.dataset.gridTuneColumn);
     }
     function handleGridTuneInput(event) {
-      const input = event.target.closest("[data-grid-tune-field]");
+      const input = event.target.closest("[data-grid-tune-coordinate]");
       if (!input) return;
-      const field = gridTuneField(input.dataset.gridTuneField);
       const value = Number(input.value);
-      if (!field || !Number.isFinite(value)) return;
-      const clamped = Math.max(field.min, Math.min(field.max, value));
-      gridTuneCalibration[gridTuneTarget][field.key] = clamped;
-      $$(`[data-grid-tune-field="${field.key}"]`, $("#gridTuneControls")).forEach(control => {
-        if (control !== input) control.value = formatGridTuneValue(clamped, field);
-      });
+      if (!Number.isFinite(value)) return;
+      const point = gridTunePoint(gridTuneTarget, gridTuneSelection.row, gridTuneSelection.column);
+      point[input.dataset.gridTuneCoordinate] = value;
+      setGridTunePoint(gridTuneTarget, gridTuneSelection.row, gridTuneSelection.column, point.x, point.y);
       saveGridTuneCalibration();
-      if ($("#gridTuneOutput")) $("#gridTuneOutput").value = gridTuneCalibrationText();
+      refreshGridTuneReadout();
       renderGraticule();
     }
     function resetGridTune(target = gridTuneTarget) {
-      gridTuneCalibration[target] = { ...US_GRATICULE_CALIBRATION[target] };
+      gridTuneCalibration[target] = defaultGridTuneCalibration()[target];
       saveGridTuneCalibration();
       renderGridTuneControls();
       renderGraticule();
@@ -7828,7 +8051,27 @@
       }
       renderGridTuneControls();
       const panel = $("#gridTunePanel");
-      if (panel && !panel.matches(":popover-open")) panel.showPopover();
+      if (panel) {
+        panel.classList.remove("is-collapsed");
+        panel.scrollTop = 0;
+        const collapseButton = $("#gridTuneCollapseBtn");
+        if (collapseButton) {
+          collapseButton.textContent = "Minimize";
+          collapseButton.setAttribute("aria-expanded", "true");
+        }
+        if (!panel.matches(":popover-open")) panel.showPopover();
+      }
+      renderGraticule();
+    }
+
+    function toggleGridTunePanelCollapsed() {
+      const panel = $("#gridTunePanel");
+      const button = $("#gridTuneCollapseBtn");
+      if (!panel || !button) return;
+      const collapsed = panel.classList.toggle("is-collapsed");
+      button.textContent = collapsed ? "Controls" : "Minimize";
+      button.setAttribute("aria-expanded", collapsed ? "false" : "true");
+      if (!collapsed) panel.scrollTop = 0;
     }
     function populateGraticuleSelect(select, values, current) {
       if (!select) return;
@@ -18485,6 +18728,11 @@
       document.addEventListener("pointerup", handleWorldLabelTunePointerUp);
       document.addEventListener("pointercancel", handleWorldLabelTunePointerUp);
       document.addEventListener("keydown", handleWorldLabelTuneKeydown);
+      $("#stateMap")?.addEventListener("pointerdown", handleGridTunePointerDown);
+      $("#stateMap")?.addEventListener("keydown", handleGridTuneHandleKeydown);
+      document.addEventListener("pointermove", handleGridTunePointerMove);
+      document.addEventListener("pointerup", handleGridTunePointerUp);
+      document.addEventListener("pointercancel", handleGridTunePointerUp);
       $("#mapLocationPinsBtn").addEventListener("click", () => updateSetting("mapLocationPinsVisible", state.settings.mapLocationPinsVisible === false));
       $("#mapMatchNotesBtn").addEventListener("click", () => updateSetting("mapFollowsNotesFilters", state.settings.mapFollowsNotesFilters !== true));
       $("#mapToggleBtn").addEventListener("click", toggleMapPanel);
@@ -18524,7 +18772,10 @@
       $("#graticuleDialog")?.addEventListener("toggle", event => {
         $("#mapGraticuleBtn")?.setAttribute("aria-expanded", event.newState === "open" ? "true" : "false");
       });
+      $("#gridTuneCollapseBtn")?.addEventListener("click", toggleGridTunePanelCollapsed);
       $("#gridTuneCloseBtn")?.addEventListener("click", () => $("#gridTunePanel")?.hidePopover());
+      $("#gridTunePanel")?.addEventListener("toggle", () => renderGraticule());
+      $("#gridTuneControls")?.addEventListener("click", handleGridTuneControlsClick);
       $("#gridTuneControls")?.addEventListener("input", handleGridTuneInput);
       $$("[data-grid-tune-tab]").forEach(button => {
         button.addEventListener("click", () => setGridTuneTarget(button.dataset.gridTuneTab));
