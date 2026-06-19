@@ -1720,11 +1720,10 @@
       overflow: visible;
     }
 
-    /* The Backpack glyph reads small inside the map toggle bezel because its
-       artboard is narrower than the icons it sits next to. Bump just the map
-       button up so the backpack reads at parity with Match Notes / View
-       Locations. The Notes-panel twin is sized to match Quick Add / Copy. */
+    /* These map-mode glyphs read small inside the map toggle bezel. Bump them
+       so Wayfinder, Grid, and Rangefinder sit at the same visual weight. */
     #mapBucketListBtn .sf-symbol,
+    #mapGraticuleBtn .sf-symbol,
     #mapRingModeBtn .sf-symbol {
       width: 26px;
       height: 26px;
@@ -1823,14 +1822,16 @@
       padding: clamp(.7rem, 2vw, 1.2rem);
       overflow: auto;
       min-height: 0;
-      overscroll-behavior: contain;
-      touch-action: pan-x pan-y;
+      overscroll-behavior-x: contain;
+      overscroll-behavior-y: auto;
+      touch-action: pan-y;
       cursor: grab;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     .map-wrap.is-panning {
       cursor: grabbing;
-      user-select: none;
     }
 
     .map-zoom-controls {
@@ -1907,11 +1908,12 @@
       overflow: hidden;
       padding: clamp(.35rem, 1.4vw, .85rem);
       cursor: default;
-      touch-action: auto;
+      touch-action: pan-y;
     }
 
     [data-map-mode="scroll"] .map-wrap {
       display: block;
+      touch-action: pan-x pan-y;
     }
 
     [data-map-mode="scroll"] #stateMap,
@@ -1935,6 +1937,8 @@
       width: 100%;
       min-width: 680px;
       height: auto;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     .map-states path,
@@ -2312,6 +2316,440 @@
     #worldMapRingOverlay .ring-label {
       font-size: 30px;
       stroke-width: 9px;
+    }
+
+    /* WISH-071 lat/lng graticule — subordinate to markers/rings/labels, theme-aware. */
+    .map-graticule {
+      pointer-events: none;
+    }
+
+    .grid-tune-handle-layer {
+      pointer-events: none;
+    }
+
+    .grid-tune-guide {
+      fill: none;
+      stroke: color-mix(in srgb, var(--accent) 74%, var(--text));
+      stroke-dasharray: 5 4;
+      stroke-width: 1.15;
+      vector-effect: non-scaling-stroke;
+      pointer-events: none;
+    }
+
+    .grid-tune-proxy-line {
+      stroke: color-mix(in srgb, var(--accent) 58%, transparent);
+      stroke-dasharray: 2.5 2.5;
+      stroke-width: 1;
+      vector-effect: non-scaling-stroke;
+      pointer-events: none;
+    }
+
+    .grid-tune-handle {
+      fill: var(--surface);
+      stroke: color-mix(in srgb, var(--accent) 82%, var(--text));
+      stroke-width: 2;
+      vector-effect: non-scaling-stroke;
+      pointer-events: all;
+      cursor: grab;
+      touch-action: none;
+    }
+
+    .grid-tune-handle:hover,
+    .grid-tune-handle:focus-visible,
+    .grid-tune-handle.is-selected {
+      fill: var(--accent);
+      stroke: var(--surface);
+      outline: none;
+    }
+
+    .grid-tune-handle.is-dragging {
+      cursor: grabbing;
+    }
+
+    .grid-tune-handle-label {
+      fill: var(--text);
+      font-size: 7px;
+      font-weight: 850;
+      paint-order: stroke fill;
+      stroke: var(--surface);
+      stroke-linejoin: round;
+      stroke-width: 2.8px;
+      pointer-events: none;
+    }
+
+    .graticule-line {
+      fill: none;
+      stroke: color-mix(in srgb, var(--text) 20%, transparent);
+      stroke-width: 0.6;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .graticule-line.is-major {
+      stroke: color-mix(in srgb, var(--text) 38%, transparent);
+      stroke-width: 1;
+    }
+
+    .graticule-frame {
+      fill: none;
+      stroke: color-mix(in srgb, var(--text) 46%, transparent);
+      stroke-width: 1.2;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .graticule-inset-cover {
+      fill: var(--surface);
+      stroke: none;
+    }
+
+    .graticule-inset-tile-cover {
+      vector-effect: non-scaling-stroke;
+    }
+
+    .graticule-label {
+      fill: color-mix(in srgb, var(--text) 72%, var(--muted));
+      font-size: 8px;
+      font-weight: 700;
+      paint-order: stroke fill;
+      stroke: var(--ring-label-bg, var(--surface));
+      stroke-width: 2.4px;
+      stroke-linejoin: round;
+      pointer-events: none;
+    }
+
+    .graticule-label.is-north {
+      fill: color-mix(in srgb, #ef4444 68%, var(--text));
+    }
+
+    .graticule-label.is-south {
+      fill: color-mix(in srgb, #22c55e 66%, var(--text));
+    }
+
+    .graticule-label.is-east {
+      fill: color-mix(in srgb, #f59e0b 70%, var(--text));
+    }
+
+    .graticule-label.is-west {
+      fill: color-mix(in srgb, #6d5dfc 72%, var(--text));
+    }
+
+    .graticule-inset-label {
+      font-size: 6px;
+      stroke-width: 2px;
+    }
+
+    /* World viewBox (2754) ~3x US (934): scale graticule labels up to read on the global layer. */
+    #worldMapGraticule .graticule-label {
+      font-size: 22px;
+      stroke-width: 6px;
+    }
+
+    /* Emphasized reference parallels (tropics + polar circles). */
+    .graticule-line.graticule-reference {
+      stroke: color-mix(in srgb, var(--accent) 72%, transparent);
+      stroke-dasharray: 7 4;
+      vector-effect: non-scaling-stroke;
+    }
+    .graticule-label.graticule-reference-label {
+      fill: var(--accent-2);
+      font-weight: 800;
+    }
+
+    #worldMapGraticule .graticule-reference-label {
+      font-size: 17px;
+      stroke-width: 4.5px;
+    }
+
+    /* Grid options pop-up (non-modal, anchored near the Grid button). */
+    .graticule-popover {
+      position: fixed;
+      margin: 0;
+      inset: auto;
+      width: auto;
+      max-width: calc(100vw - 1rem);
+      padding: .5rem;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: 0 12px 32px rgba(16, 24, 40, .24);
+    }
+
+    .graticule-control-row {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      flex-wrap: wrap;
+    }
+
+    .graticule-option-btn,
+    .graticule-number-field {
+      height: 2.15rem;
+      min-height: 2.15rem;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: var(--surface-2);
+      color: var(--text);
+      font-size: .8rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .graticule-option-btn {
+      min-width: 4.25rem;
+      padding: 0 .65rem;
+      cursor: pointer;
+    }
+
+    .graticule-option-btn .sf-symbol {
+      width: 1.15em;
+      height: 1.15em;
+    }
+
+    .graticule-option-btn[aria-pressed="true"] {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .graticule-option-btn:disabled {
+      opacity: .48;
+      cursor: not-allowed;
+      background: var(--surface-2);
+      border-color: var(--line);
+      color: var(--muted);
+    }
+
+    [data-theme="dark"] .graticule-option-btn[aria-pressed="true"] {
+      color: #07111f;
+    }
+
+    [data-theme="dark"] .graticule-option-btn:disabled {
+      color: var(--muted);
+    }
+
+    .graticule-number-field {
+      display: inline-flex;
+      align-items: center;
+      gap: .32rem;
+      padding: 0 .45rem 0 .6rem;
+      white-space: nowrap;
+    }
+
+    .graticule-number-field.is-disabled {
+      opacity: .48;
+      background: var(--surface-2);
+      color: var(--muted);
+    }
+
+    .graticule-number-field select {
+      width: 3.6rem;
+      height: 2.15rem;
+      border: 0;
+      border-radius: 7px;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      text-align: center;
+      padding: 0;
+      margin: 0;
+    }
+
+    .graticule-number-field select:disabled {
+      cursor: not-allowed;
+    }
+
+    .grid-tune-panel {
+      position: fixed;
+      inset: 4.75rem 1rem auto auto;
+      width: min(25rem, calc(100vw - 2rem));
+      max-height: calc(100vh - 6rem);
+      margin: 0;
+      padding: .75rem;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: 0 18px 48px rgba(16, 24, 40, .3);
+    }
+
+    .grid-tune-panel header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: .7rem;
+      margin-bottom: .65rem;
+    }
+
+    .grid-tune-heading {
+      display: grid;
+      gap: .16rem;
+    }
+
+    .grid-tune-header-actions {
+      display: flex;
+      gap: .35rem;
+    }
+
+    .grid-tune-panel header strong {
+      font-size: 1rem;
+    }
+
+    .grid-tune-panel header small,
+    .grid-tune-panel>p {
+      color: var(--muted);
+      font-size: .72rem;
+      line-height: 1.3;
+    }
+
+    .grid-tune-band-help {
+      margin-top: -.25rem;
+      font-weight: 800;
+    }
+
+    .grid-tune-panel header button,
+    .grid-tune-actions button {
+      min-height: 2rem;
+      padding: .3rem .55rem;
+      font-size: .72rem;
+    }
+
+    .grid-tune-panel.is-collapsed {
+      width: min(15rem, calc(100vw - 2rem));
+      max-height: none;
+      overflow: hidden;
+    }
+
+    .grid-tune-panel.is-collapsed header {
+      align-items: center;
+      margin: 0;
+    }
+
+    .grid-tune-panel.is-collapsed .grid-tune-heading small,
+    .grid-tune-panel.is-collapsed> :not(header) {
+      display: none;
+    }
+
+    .grid-tune-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      margin-bottom: .5rem;
+    }
+
+    .grid-tune-controls {
+      display: grid;
+      gap: .48rem;
+      margin: .65rem 0;
+    }
+
+    .grid-tune-point-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: .32rem;
+    }
+
+    .grid-tune-point-grid button {
+      display: grid;
+      place-items: center;
+      gap: .08rem;
+      min-height: 2.9rem;
+      padding: .3rem;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: var(--surface-2);
+      color: var(--text);
+      font-size: .68rem;
+      font-weight: 800;
+      line-height: 1.05;
+    }
+
+    .grid-tune-point-grid button[aria-pressed="true"] {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+      box-shadow: inset 0 0 0 1px var(--accent);
+    }
+
+    .grid-tune-point-grid small {
+      color: var(--muted);
+      font-size: .62rem;
+      font-weight: 750;
+    }
+
+    .grid-tune-coordinate-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .4rem;
+    }
+
+    .grid-tune-coordinate-fields label {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      gap: .35rem;
+      color: var(--muted);
+      font-size: .7rem;
+      font-weight: 800;
+    }
+
+    .grid-tune-coordinate-fields input {
+      width: 100%;
+      min-width: 0;
+      height: 2rem;
+      padding: .25rem .38rem;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface-2);
+      color: var(--text);
+      font: 700 .72rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      text-align: right;
+    }
+
+    .grid-tune-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: .35rem;
+      margin-top: .3rem;
+    }
+
+    .grid-tune-output-label {
+      display: grid;
+      gap: .28rem;
+      margin-top: .65rem;
+      color: var(--muted);
+      font-size: .72rem;
+      font-weight: 800;
+    }
+
+    #gridTuneOutput {
+      width: 100%;
+      min-height: 8rem;
+      resize: vertical;
+      padding: .48rem;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: var(--surface-2);
+      color: var(--text);
+      font: 11px/1.35 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .grid-tune-output-label small {
+      color: var(--muted);
+      font-size: .68rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    @media (max-width: 600px) {
+      .grid-tune-panel {
+        inset: auto .5rem .5rem .5rem;
+        width: auto;
+        max-height: min(52vh, 27rem);
+      }
+
+      .grid-tune-panel.is-collapsed {
+        inset: auto .5rem .5rem auto;
+        width: min(15rem, calc(100vw - 1rem));
+      }
     }
 
     .ring-anchor-pin {
@@ -11185,6 +11623,14 @@
       .map-panel {
         position: static;
         top: auto;
+      }
+
+      [data-map-mode="scroll"] .map-viewport {
+        height: var(--map-scroll-height, auto);
+      }
+
+      [data-map-mode="scroll"] .map-wrap {
+        height: 100%;
       }
 
       .side-panel-wrap {

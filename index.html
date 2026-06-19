@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.3">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5">
 </head>
 
 <body>
@@ -144,7 +144,7 @@
                     aria-label="Fit map on screen" data-shortcut="9">Fit Map</button>
                 </div>
               </div>
-              <small data-hint data-hint-key="map-view-controls">Switch Map Views:<br />Zoom/Pan/Scroll | Fit</small>
+              <small data-hint data-hint-key="map-view-controls">Zoom/Pan/Pinch:<br />Scroll Map | Fit</small>
             </div>
             <div class="map-control-stack">
               <div class="map-control-row">
@@ -164,9 +164,13 @@
                   <button id="mapRingModeBtn" class="toggle-btn ring-toggle-btn" type="button" aria-pressed="false"
                     aria-label="Toggle Ring Mode" data-shortcut="5">Rangefinder</button>
                 </div>
+                <div class="map-action-group map-toggle-group">
+                  <button id="mapGraticuleBtn" class="toggle-btn" type="button" aria-pressed="false"
+                    aria-label="Map grid settings">Grid</button>
+                </div>
               </div>
               <small data-hint data-hint-key="map-notes-controls">Toggle Notes Pins<br />Visibility | Filter |
-                Wayfinder | Rangefinder</small>
+                Wayfinder | Rangefinder | Lat/Lng Grid</small>
             </div>
             <div class="map-control-stack">
               <div class="map-control-row">
@@ -184,9 +188,11 @@
                     <button id="worldLabelTuneBtn" type="button" aria-pressed="false">Tune</button>
                     <button id="worldLabelExportBtn" type="button">Export</button>
                     <button id="worldLabelClearBtn" type="button">Clear</button>
-                    <button id="worldLabelDismissBtn" type="button" aria-label="Dismiss World label tuner">Dismiss</button>
+                    <button id="worldLabelDismissBtn" type="button"
+                      aria-label="Dismiss World label tuner">Dismiss</button>
                     <span id="worldLabelTuneStatus" aria-live="polite">0 overrides</span>
-                    <div id="worldLabelEditPanel" class="world-label-edit-panel hidden" aria-label="Selected World label">
+                    <div id="worldLabelEditPanel" class="world-label-edit-panel hidden"
+                      aria-label="Selected World label">
                       <label>Name <textarea id="worldLabelNameInput" rows="2" spellcheck="false"></textarea></label>
                       <div class="world-label-size-buttons" aria-label="World label size">
                         <span>Size</span>
@@ -586,8 +592,7 @@
       <div class="dialog-head-actions">
         <div id="noteWaypointHeaderControls" class="note-waypoint-header-controls hidden"
           aria-label="Waypoint controls"></div>
-        <div id="notePriorityHeaderControl" class="note-priority-header-control"
-          aria-label="Priority"></div>
+        <div id="notePriorityHeaderControl" class="note-priority-header-control" aria-label="Priority"></div>
         <button id="notePrevBtn" class="note-nav-btn hidden" type="button" aria-label="Previous note"
           title="Previous note"></button>
         <button id="noteNextBtn" class="note-nav-btn hidden" type="button" aria-label="Next note"
@@ -833,6 +838,54 @@
       <div id="paletteThemes" class="theme-swatches"></div>
     </div>
   </dialog>
+
+  <div id="graticuleDialog" popover class="graticule-popover" aria-label="Map grid options">
+    <div class="graticule-control-row">
+      <button id="graticuleEnabledBtn" class="graticule-option-btn" type="button" aria-pressed="false">Grid</button>
+      <button id="graticuleReferenceBtn" class="graticule-option-btn" type="button" aria-pressed="true"
+        disabled>Circles</button>
+      <button id="graticuleLabelsBtn" class="graticule-option-btn" type="button" aria-pressed="true"
+        disabled>Labels</button>
+      <label class="graticule-number-field">Major
+        <select id="graticuleMajorInput"></select>
+      </label>
+      <label class="graticule-number-field">Minor
+        <select id="graticuleMinorInput"></select>
+      </label>
+    </div>
+  </div>
+
+  <div id="gridTunePanel" popover="manual" class="grid-tune-panel hidden" aria-label="US grid control-point tuner"
+    data-dev-only>
+    <header>
+      <div class="grid-tune-heading">
+        <strong>US Grid Tuner</strong>
+        <small>Drag the nine map points. Session-only until you copy and commit the calibration.</small>
+      </div>
+      <div class="grid-tune-header-actions">
+        <button id="gridTuneCollapseBtn" type="button" aria-expanded="true">Minimize</button>
+        <button id="gridTuneCloseBtn" type="button" aria-label="Close US Grid Tuner">Close</button>
+      </div>
+    </header>
+    <div class="segmented grid-tune-tabs" aria-label="Grid to tune">
+      <button type="button" data-grid-tune-tab="mainland" aria-pressed="true">Mainland</button>
+      <button type="button" data-grid-tune-tab="alaska" aria-pressed="false">Alaska</button>
+    </div>
+    <p class="muted">Longitude guides stay straight. Dragging a middle-row point moves that whole longitude line;
+      latitude guides curve through all three columns.</p>
+    <p id="gridTuneBandHelp" class="grid-tune-band-help"></p>
+    <div id="gridTuneControls" class="grid-tune-controls"></div>
+    <div class="grid-tune-actions">
+      <button id="gridTuneResetBtn" type="button">Reset This Grid</button>
+      <button id="gridTuneResetAllBtn" type="button">Reset Both</button>
+      <button id="gridTuneCopyBtn" type="button">Copy Code</button>
+    </div>
+    <label class="grid-tune-output-label">Commit-ready calibration
+      <textarea id="gridTuneOutput" rows="8" readonly spellcheck="false"></textarea>
+      <small>Paste over <code>US_GRATICULE_CALIBRATION</code> in <code>index.html</code>. The incompatible slider-tuner
+        session format is intentionally retired.</small>
+    </label>
+  </div>
 
   <dialog id="confirmDialog">
     <header>
@@ -1108,11 +1161,17 @@
             <li>Use the Map Labels control to switch states, territories, countries, or a linked Waypoint Pack between
               no labels, abbreviations, and names. World Name labels use short English atlas names, fit smaller
               countries, and add leader lines for tiny dot-backed places.</li>
-            <li>Use Scroll Map to pan and zoom. Type an exact zoom percentage, use the zoom buttons, or reset to 100%.
-              Your zoom, pan center, and fit/scroll mode are saved.</li>
+            <li>Use Grid to add an optional latitude/longitude overlay to the active map. Turn labels on or off and
+              choose Major spacing in 5° steps plus a compatible Minor spacing. World Grid uses curved Robinson
+              meridians, straight parallels, a globe frame, and optional Equator, tropic, and polar-circle emphasis.
+              The US Grid fits the lower 48 plus independent Alaska and Hawaii inset geography.</li>
+            <li>Use Scroll Map to pan and zoom. Type an exact zoom percentage, use the zoom buttons, pinch on touch
+              screens, double-tap or double-click to zoom in, or two-finger tap to zoom out. Your zoom, pan center, and
+              fit/scroll mode are saved.</li>
             <li>Use Fit Map when you want the map framed cleanly for screenshots or sharing.</li>
             <li>Use View Locations to show or hide note pins. Notes without coordinates sit at the center of their
-              state or territory shape; exact coordinates place markers more precisely.</li>
+              state or territory shape; exact Mainland and Alaska coordinates use the same calibrated geography as the
+              latitude/longitude grid.</li>
             <li>Use Match Notes to dim map locations and pins that do not match the active Notes filters.</li>
             <li>Use Rangefinder on the US or World map to pick saved note pins as Start and End points, draw Drive or
               Plane planning rings, and compare the straight-line distance between two places.</li>
@@ -1253,12 +1312,18 @@
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ: Map</h3>
           <p><b>Will my map zoom come back?</b><br>Yes. The app saves your scrollable-map zoom level, fit/scroll mode,
             and last pan position.</p>
+          <p><b>How do touch map gestures work?</b><br>In Scroll Map mode, pinch with two fingers to zoom around your
+            fingers, double-tap to zoom in, and two-finger tap to zoom out. Vertical swipes still scroll the page, while
+            zoomed maps pan inside the map box.</p>
           <p><b>What is Match Notes?</b><br>It applies the active Notes filters, including date precision, to the map,
             dimming locations and hiding note pins that do not match.</p>
           <p><b>Why are some pins grouped?</b><br>Nearby mapped notes cluster so the map stays readable. Click a cluster
             to zoom or open the picker when notes are too close to separate.</p>
           <p><b>Why do some World labels have leader lines?</b><br>Tiny countries and island territories may use a small
             offset label with a line back to their map dot so the whole-world view stays readable.</p>
+          <p><b>How does the latitude/longitude Grid work?</b><br>Grid settings are remembered separately for the US
+            and World maps. Major lines are stronger and labeled, Minor lines are subtler, and World Circles emphasizes
+            the Equator, tropics, and polar circles. The overlay stays behind pins, Rangefinder rings, and labels.</p>
           <p><b>Are Rangefinder rings routing distance?</b><br>No. Rings and Start-to-End comparisons use straight-line
             distance. Drive and Plane times use your selected average speed, starting from 60 mph for Drive and 600 mph
             for Plane, so both are planning hints.</p>
@@ -1288,7 +1353,8 @@
             have different priorities.</p>
           <p><b>What does Detailed view show?</b><br>Detailed is the full-card view. It shows the location's levels and
             note/date totals, then location precision, level-colored tags, compact Location and Event summaries, and the
-            complete details text without truncation. Linked Waypoints also show website, photo, and priority actions.</p>
+            complete details text without truncation. Linked Waypoints also show website, photo, and priority actions.
+          </p>
           <p><b>Where does Priority show up?</b><br>Priority appears in the note editor, Detailed cards, Condensed
             priority controls, Expanded/list icon badges, map pins, Text Only view, and Markdown/Rich Text/Plain Text
             exports.</p>
@@ -1433,6 +1499,10 @@
             <button id="restoreWorldLabelTunerBtn" type="button">Show Tuner</button>
           </div>
           <div class="setting-row">
+            <div class="setting-label">US Grid Tuner</div>
+            <button id="gridTuneDeveloperBtn" type="button">Open Tuner</button>
+          </div>
+          <div class="setting-row">
             <div class="setting-label">App Defaults</div>
             <button id="resetDefaultsBtn" class="danger" type="button" data-shortcut="F">Reset Defaults</button>
           </div>
@@ -1522,6 +1592,8 @@
               <div class="shortcut-row"><kbd>+</kbd><span>Zoom in (scroll mode only) <em>[mapZoomInBtn]</em></span>
               </div>
               <div class="shortcut-row"><kbd>0</kbd><span>Reset map zoom to 100% <em>[mapZoomResetBtn]</em></span></div>
+              <div class="shortcut-row"><kbd>Pinch</kbd><span>Touch map zoom; double-tap zooms in and two-finger tap
+                  zooms out.</span></div>
               <div class="shortcut-row"><kbd>9</kbd><span>Fit/Scroll Map Mode <em>[mapFitBtn]</em></span></div>
               <div class="shortcut-row"><kbd>8</kbd><span>Show/Hide Location Pins <em>[mapLocationPinsBtn]</em></span>
               </div>
@@ -1696,15 +1768,15 @@
 
   <script src="assets/js/icons.js"></script>
   <script src="assets/js/maps.js"></script>
-  <script src="assets/js/world-names.js?v=4.7.3"></script>
-  <script src="assets/js/world-label-overrides.js?v=4.7.3"></script>
+  <script src="assets/js/world-names.js?v=4.7.4"></script>
+  <script src="assets/js/world-label-overrides.js?v=4.7.4"></script>
   <script src="assets/js/changelog.js"></script>
   <script src="assets/js/roadmap.js"></script>
   <script>
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.3";
+    const APP_VERSION = "4.7.5";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -1747,12 +1819,6 @@
     };
     const LOCATION_PROJECTION_BOX_OVERRIDES = {
       AK: { x: 31, y: 462, width: 176, height: 103 }
-    };
-    const LOCATION_PROJECTION_FRAME_OVERRIDES = {
-      AK: [
-        { test: coords => Number(coords?.lng) <= -164, bounds: [51.2, 55.8, -179.2, -164.0], box: { x: 36, y: 532, width: 116, height: 33 } },
-        { bounds: [55.0, 73.5, -165.0, -130.0], box: { x: 54, y: 470, width: 171, height: 98 } }
-      ]
     };
     const MAP_LABEL_OVERRIDES = {
       // dx/dy nudge bbox center (SVG units). x/y overrides to absolute position.
@@ -2453,6 +2519,8 @@
     const MAP_ZOOM_MIN = 1;
     const MAP_ZOOM_MAX = 64;
     const MAP_ZOOM_STEP = .5;
+    // Touch pinch/tap gestures (WISH-074) snap to these zoom stops (round %; doubling/halving stays on the ladder).
+    const MAP_ZOOM_STOPS = [1, 1.5, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64];
     const NOTE_AUTOCOMPLETE_LIMIT = 40;
     const BASECAMP_PAD_MAX = 20;
     const BASECAMP_PAD_NAME_MAX = 60;
@@ -2551,6 +2619,14 @@
     }
     function defaultRingByLayer() {
       return Object.fromEntries(RING_LAYER_IDS.map(id => [id, defaultRingLayerSettings(id)]));
+    }
+    // WISH-071 lat/lng graticule: per-map enable + display options + intervals (degrees).
+    const GRATICULE_DEFAULTS = {
+      us: { enabled: false, references: true, labels: true, major: 10, minor: 5 },
+      world: { enabled: false, references: true, labels: true, major: 30, minor: 10 }
+    };
+    function defaultGraticuleByLayer() {
+      return Object.fromEntries(RING_LAYER_IDS.map(id => [id, { ...GRATICULE_DEFAULTS[id] }]));
     }
     const LEGEND_POSITION_META = {
       "right-top": { label: "Upper Right", next: "right-bottom", icon: __INSET_FILLED_TOPRIGHT_RECTANGLE },
@@ -2716,6 +2792,7 @@
           bucketListFilterSnapshot: null,
           ringMode: false,
           ringByLayer: defaultRingByLayer(),
+          graticuleByLayer: defaultGraticuleByLayer(),
           basecampPanelMode: "modal",
           basecampNotesSplitRatio: 0.5,
           basecampSidebarRatio: 0.22
@@ -3149,6 +3226,7 @@
       // a no-op until the user changes a setting per-map). The flat keys are
       // then dropped from next.settings so they can't drift out of sync.
       next.settings.ringByLayer = normalizeRingByLayer(input.settings || {});
+      next.settings.graticuleByLayer = normalizeGraticuleByLayer(input.settings || {});
       delete next.settings.legendStatsMode;
       delete next.settings.ringAnchor1;
       delete next.settings.ringAnchor2;
@@ -3455,6 +3533,33 @@
       // value as "unset" and fall back to the mode default rather than the min.
       if (!Number.isFinite(mph) || mph <= 0) return range.default;
       return Math.round(Math.max(range.min, Math.min(range.max, mph)));
+    }
+
+    function normalizeGraticuleByLayer(inputSettings) {
+      const byLayer = inputSettings && typeof inputSettings === "object" && inputSettings.graticuleByLayer && typeof inputSettings.graticuleByLayer === "object"
+        ? inputSettings.graticuleByLayer
+        : {};
+      const clampInterval = (value, fallback) => {
+        const n = Math.round(Number(value));
+        return Number.isFinite(n) && n >= 1 ? Math.min(90, n) : fallback;
+      };
+      const snapMajor = (value, fallback) => {
+        const n = clampInterval(value, fallback);
+        return Math.max(5, Math.min(90, Math.round(n / 5) * 5));
+      };
+      return Object.fromEntries(RING_LAYER_IDS.map(id => {
+        const defaults = GRATICULE_DEFAULTS[id];
+        const raw = byLayer[id] && typeof byLayer[id] === "object" ? byLayer[id] : {};
+        const major = snapMajor(raw.major, defaults.major);
+        const minor = graticuleSnapMinor(clampInterval(raw.minor, defaults.minor), major);
+        return [id, {
+          enabled: raw.enabled === true,
+          references: raw.references !== false,
+          labels: raw.labels !== false,
+          major,
+          minor
+        }];
+      }));
     }
 
     function normalizeRingByLayer(inputSettings) {
@@ -4387,12 +4492,7 @@
       return override || fallbackBox;
     }
 
-    function locationProjectionFrame(abbr, coords, fallbackBox) {
-      const frames = LOCATION_PROJECTION_FRAME_OVERRIDES[abbr];
-      if (Array.isArray(frames) && coords) {
-        const match = frames.find(frame => typeof frame.test !== "function" || frame.test(coords));
-        if (match?.box && match?.bounds) return match;
-      }
+    function locationProjectionFrame(abbr, fallbackBox) {
       return {
         box: locationProjectionBox(abbr, fallbackBox),
         bounds: LOCATION_GEO_BOUNDS[abbr]
@@ -5774,6 +5874,9 @@
       setButtonLabel("#notesActivateWayfinderBtn", __BACKPACK, "Wayfinder", "Toggle Wayfinder mode", bucketShortcutHint);
       setButtonLabel("#notesAddWaypointsBtn", __CIRCLE_BADGE_PLUS, "Packs", "Open Waypoint Packs", "Open Waypoint Packs");
       setButtonLabel("#mapRingModeBtn", __TARGET, "Rangefinder", "Toggle Ring Mode", "Toggle Rangefinder Mode");
+      const graticuleOn = state.settings.graticuleByLayer?.[activeLayerId]?.enabled === true;
+      setButtonLabel("#mapGraticuleBtn", graticuleOn ? __GLOBE_FILL : __GLOBE, "Grid", "Map grid settings", "Latitude / longitude grid");
+      $("#mapGraticuleBtn")?.setAttribute("aria-pressed", graticuleOn ? "true" : "false");
       setButtonLabel("#mapZoomOutBtn", __MINUS_CIRCLE, "Zoom Out", "Zoom map out", "Zoom map out");
       setButtonLabel("#mapZoomResetBtn", __ARROW_COUNTERCLOCKWISE_CIRCLE, "Reset", "Reset map zoom", "Reset map zoom");
       setButtonLabel("#mapZoomInBtn", __PLUS_CIRCLE, "Zoom In", "Zoom map in", "Zoom map in");
@@ -6109,6 +6212,29 @@
       syncResizePercentage("#mainResizeHandle", mapColumn / metrics.available);
     }
 
+    function syncScrollableMapViewportFrame() {
+      const viewport = $(".map-viewport");
+      const wrap = $(".map-wrap");
+      if (!viewport || !wrap) return;
+      if (DESKTOP_LAYOUT_QUERY.matches || mapFitMode) {
+        viewport.style.removeProperty("--map-scroll-height");
+        return;
+      }
+      const svg = $("#" + activeLayer().svgId);
+      const box = svg?.viewBox?.baseVal;
+      if (!svg || !box?.width || !box?.height) {
+        viewport.style.removeProperty("--map-scroll-height");
+        return;
+      }
+      const wrapStyle = getComputedStyle(wrap);
+      const svgStyle = getComputedStyle(svg);
+      const wrapX = cssPx(wrapStyle.paddingLeft) + cssPx(wrapStyle.paddingRight);
+      const wrapY = cssPx(wrapStyle.paddingTop) + cssPx(wrapStyle.paddingBottom);
+      const baseWidth = Math.max(1, wrap.clientWidth - wrapX, cssPx(svgStyle.minWidth));
+      const baseHeight = baseWidth * (box.height / box.width) + wrapY;
+      viewport.style.setProperty("--map-scroll-height", `${Math.ceil(baseHeight)}px`);
+    }
+
     function syncResizePercentage(selector, ratio) {
       const handle = $(selector);
       if (!handle) return;
@@ -6161,6 +6287,7 @@
       layoutSyncFrame = requestAnimationFrame(() => {
         layoutSyncFrame = 0;
         syncMainLayout();
+        syncScrollableMapViewportFrame();
         syncNotesPanelLayout();
         if (centerMapAfterRender) {
           centerMapAfterRender = false;
@@ -6208,6 +6335,7 @@
       renderLegend();
       renderBuiltinLevels();
       renderNotesPanel();
+      syncScrollableMapViewportFrame();
       renderSettingsControls();
       renderReleaseNotice();
       if ($("#basecampDialog")?.open && !$("#noteDialog")?.open) renderBasecampDialog();
@@ -6228,6 +6356,7 @@
       document.documentElement.style.setProperty("--map-zoom-width", `${Math.round(mapZoom * 100)}%`);
       syncMapZoomReadout();
       renderMap();
+      syncScrollableMapViewportFrame();
       scheduleMainLayoutSync();
       // Basecamp in panel mode tracks the live Notes panel rect — recompute
       // after every render so resize/scroll/panel-toggle states stay aligned.
@@ -6336,6 +6465,7 @@
       // Labels + pins render for the active layer.
       if (isUS) renderMapLabels();
       else renderWorldMapLabels();
+      renderGraticule();
       renderRingOverlay();
       renderSuggestedSetMarkers();
       renderLocationMarkers();
@@ -6433,15 +6563,24 @@
       };
     }
 
+    function usGridCoordinatePoint(abbr, coords) {
+      if (activeLayerId !== "us" || !coords || abbr === "HI" || TERRITORY_IDS.includes(abbr)) return null;
+      return tunedUsGridPoint(coords.lat, coords.lng, abbr === "AK" ? "alaska" : "mainland");
+    }
+
     function projectNoteLocation(abbr, note) {
       const coords = validNoteCoordinates(note);
       if (activeLayerId === "world" && coords) {
         const point = worldCoordinatePoint(coords);
         if (point) return point;
       }
+      if (coords) {
+        const point = usGridCoordinatePoint(abbr, coords);
+        if (point) return point;
+      }
       const center = stateTileCenter(abbr);
       if (!center) return null;
-      const frame = locationProjectionFrame(abbr, coords, center.box);
+      const frame = locationProjectionFrame(abbr, center.box);
       const box = frame.box;
       if (!coords) return { x: box.x + box.width / 2, y: box.y + box.height / 2 };
       const bounds = frame.bounds;
@@ -7043,6 +7182,990 @@
       }
       overlay.append(ringAnchorPinGroup(anchor1, 1, point1));
       if (anchor2 && point2) overlay.append(ringAnchorPinGroup(anchor2, 2, point2));
+    }
+
+    // ---- WISH-071 lat/lng graticule ----
+    const GRATICULE_OVERLAY_IDS = { us: "mapGraticule", world: "worldMapGraticule" };
+    function graticuleSvg(tag) { return document.createElementNS("http://www.w3.org/2000/svg", tag); }
+    function graticuleLineClass(isMajor) { return isMajor ? "graticule-line is-major" : "graticule-line"; }
+    function worldGratPoint(lat, offset, box) {
+      const halfW = box.width / 2, halfH = box.height / 2;
+      const xc = robinsonCoefficient(ROBINSON_X_COEFFICIENTS, lat);
+      const yc = robinsonCoefficient(ROBINSON_Y_COEFFICIENTS, lat);
+      return { x: box.x + halfW + (offset / 180) * halfW * xc, y: box.y + halfH - Math.sign(lat) * halfH * yc };
+    }
+    function formatGraticuleLat(lat) {
+      const v = Math.round(lat);
+      return v === 0 ? "0°" : `${Math.abs(v)}°${v > 0 ? "N" : "S"}`;
+    }
+    function formatGraticuleLng(lng) {
+      const v = ((Math.round(lng) + 180) % 360 + 360) % 360 - 180;
+      if (v === 0) return "0°";
+      if (Math.abs(v) === 180) return "180°";
+      return `${Math.abs(v)}°${v > 0 ? "E" : "W"}`;
+    }
+    function graticuleDegreeLabelClass(text, base = "graticule-label") {
+      const suffix = String(text || "").slice(-1);
+      const dirClass = suffix === "N" ? " is-north"
+        : suffix === "S" ? " is-south"
+          : suffix === "E" ? " is-east"
+            : suffix === "W" ? " is-west"
+              : "";
+      return base + dirClass;
+    }
+
+    function renderGraticule() {
+      const layer = activeLayer();
+      const svg = $("#" + layer.svgId);
+      if (!svg) return;
+      let g = svg.querySelector("#" + GRATICULE_OVERLAY_IDS[activeLayerId]);
+      if (!g) {
+        g = graticuleSvg("g");
+        g.id = GRATICULE_OVERLAY_IDS[activeLayerId];
+        g.setAttribute("class", "map-graticule");
+        g.setAttribute("aria-hidden", "true");
+        const anchor = svg.querySelector("#" + layer.ringOverlayId) || svg.querySelector("#" + layer.markersId);
+        if (anchor) svg.insertBefore(g, anchor); else svg.append(g);
+      }
+      g.innerHTML = "";
+      const settings = state.settings.graticuleByLayer?.[activeLayerId];
+      if (!settings || !settings.enabled) {
+        if (activeLayerId === "us") renderGridTuneHandles(svg);
+        return;
+      }
+      const minor = Math.max(1, settings.minor | 0);
+      const major = Math.max(minor, settings.major | 0);
+      const options = { labels: settings.labels !== false, references: settings.references !== false };
+      if (activeLayerId === "world") renderWorldGraticule(g, major, minor, options);
+      else {
+        renderUsGraticule(g, svg, major, minor, options);
+        renderGridTuneHandles(svg);
+      }
+    }
+
+    const WORLD_REFERENCE_LINES = [
+      { lat: 0, label: "Equator" },
+      { lat: 23.44, label: "Tropic of Cancer" },
+      { lat: -23.44, label: "Tropic of Capricorn" },
+      { lat: 66.56, label: "Arctic Circle" },
+      { lat: -66.56, label: "Antarctic Circle" }
+    ];
+
+    function renderWorldGraticule(g, major, minor, options = {}) {
+      const box = worldProjectionBox();
+      if (!box) return;
+      const pt = (lat, offset) => worldGratPoint(lat, offset, box);
+      const insetX = Math.max(12, box.width * 0.012);
+      const insetY = Math.max(14, box.height * 0.018);
+      const clampLabelX = x => Math.max(box.x + insetX, Math.min(box.x + box.width - insetX, x));
+      const clampLabelY = y => Math.max(box.y + insetY, Math.min(box.y + box.height - insetY, y));
+      const addLine = (a, b, cls) => { const l = graticuleSvg("line"); l.setAttribute("x1", a.x.toFixed(1)); l.setAttribute("y1", a.y.toFixed(1)); l.setAttribute("x2", b.x.toFixed(1)); l.setAttribute("y2", b.y.toFixed(1)); l.setAttribute("class", cls); g.append(l); };
+      const addPolyline = (pts, cls) => { const pl = graticuleSvg("polyline"); pl.setAttribute("points", pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ")); pl.setAttribute("class", cls); g.append(pl); };
+      const addLabel = (x, y, text, anchor, cls) => { const t = graticuleSvg("text"); t.setAttribute("x", clampLabelX(x).toFixed(1)); t.setAttribute("y", clampLabelY(y).toFixed(1)); t.setAttribute("class", cls || graticuleDegreeLabelClass(text)); t.setAttribute("text-anchor", anchor); t.setAttribute("dominant-baseline", "middle"); t.textContent = text; g.append(t); };
+      // Parallels — straight horizontals; labels sit just inside the edges so they aren't clipped.
+      const latMax = Math.floor(90 / minor) * minor;
+      for (let lat = -latMax; lat <= latMax; lat += minor) {
+        if (Math.abs(lat) >= 90) continue;
+        const isMajor = lat % major === 0;
+        const w = pt(lat, -180), e = pt(lat, 180);
+        addLine(w, e, graticuleLineClass(isMajor));
+        if (isMajor && options.labels) { addLabel(w.x + insetX, w.y - 4, formatGraticuleLat(lat), "start"); addLabel(e.x - insetX, e.y - 4, formatGraticuleLat(lat), "end"); }
+      }
+      // Meridians — curved, sampled in latitude; labels placed inside the top/bottom.
+      const lngMax = Math.floor(180 / minor) * minor;
+      for (let lng = -lngMax; lng < lngMax; lng += minor) {
+        const offset = ((lng - WORLD_MAP_CENTRAL_MERIDIAN + 540) % 360) - 180;
+        if (Math.abs(offset) >= 179.5) continue; // seam handled by the frame
+        const isMajor = lng % major === 0;
+        const pts = [];
+        for (let lat = -90; lat <= 90; lat += 5) pts.push(pt(lat, offset));
+        addPolyline(pts, graticuleLineClass(isMajor));
+        if (isMajor && options.labels) { const top = pt(78, offset), bot = pt(-78, offset); addLabel(top.x, top.y, formatGraticuleLng(lng), "middle"); addLabel(bot.x, bot.y, formatGraticuleLng(lng), "middle"); }
+      }
+      // Reference lines: tropics + polar circles, emphasized and named.
+      if (options.references) {
+        WORLD_REFERENCE_LINES.forEach(ref => {
+          const w = pt(ref.lat, -180), e = pt(ref.lat, 180);
+          addLine(w, e, "graticule-line graticule-reference");
+          if (options.labels) {
+            addLabel(w.x + insetX * 1.45, w.y, ref.label, "start", "graticule-label graticule-reference-label");
+            addLabel(e.x - insetX * 1.45, e.y, ref.label, "end", "graticule-label graticule-reference-label");
+          }
+        });
+      }
+      // Projection outline/frame: edge meridians (±180) closed by the pole parallels.
+      const framePts = [];
+      for (let lat = -90; lat <= 90; lat += 5) framePts.push(pt(lat, -180));
+      framePts.push(pt(90, 180));
+      for (let lat = 90; lat >= -90; lat -= 5) framePts.push(pt(lat, 180));
+      const poly = graticuleSvg("polygon");
+      poly.setAttribute("points", framePts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" "));
+      poly.setAttribute("class", "graticule-frame");
+      g.append(poly);
+    }
+
+    const US_GRATICULE_DRAW_BOUNDS = { minLat: 0, maxLat: 60, minLng: -145, maxLng: -45 };
+    const US_GRATICULE_CALIBRATION = {
+      mainland: {
+        southWest: { x: 36.43, y: 414.15 },
+        southMiddle: { x: 405.76, y: 480.36 },
+        southEast: { x: 782.67, y: 449.89 },
+        northWest: { x: 133.84, y: -3.06 },
+        northMiddle: { x: 419.4, y: 37.82 },
+        northEast: { x: 707.4, y: 18.19 }
+      },
+      alaska: {
+        southWest: { x: 59.42, y: 572.15 },
+        southMiddle: { x: 115.9, y: 584.03 },
+        southEast: { x: 165.13, y: 587.68 },
+        northWest: { x: 89.63, y: 484.15 },
+        northMiddle: { x: 125.76, y: 491.58 },
+        northEast: { x: 164.53, y: 494.28 }
+      }
+    };
+    const US_GRATICULE_TUNE_GEOMETRY = {
+      mainland: {
+        latitudes: [30, 40, 50],
+        longitudes: [-120, -100, -80]
+      },
+      alaska: {
+        latitudes: [55, 60, 65],
+        longitudes: [-160, -150, -140]
+      }
+    };
+    const GRID_TUNE_STORAGE_KEY = "trailLog.usGridTuning.v3";
+    const GRID_TUNE_COLUMNS = ["west", "middle", "east"];
+    const GRID_TUNE_ROWS = ["south", "middle", "north"];
+    const GRID_TUNE_ENDPOINT_ROWS = ["south", "north"];
+    const GRID_TUNE_POINT_LIMIT = 4000;
+    const US_GRATICULE_INSET_CUTS = [
+      { type: "polygon", points: [{ x: 0, y: 425 }, { x: 147, y: 425 }, { x: 215, y: 493 }, { x: 300, y: 493 }, { x: 354, y: 547 }, { x: 354, y: 593 }, { x: 0, y: 593 }] },
+      { type: "rect", x: 560, y: 515, width: 122, height: 78 }
+    ];
+    const US_GRATICULE_INSETS = [
+      {
+        id: "ak-main", abbr: "AK", projection: "albers",
+        bounds: { minLat: 54.5, maxLat: 71.5, minLng: -167, maxLng: -129.5 },
+        drawBounds: { minLat: 40, maxLat: 85, minLng: -180, maxLng: -110 },
+        box: { x: 0, y: 425, width: 251, height: 168 }, clip: "ak"
+      },
+      { id: "hi", abbr: "HI", projection: "mercator", bounds: { minLat: 18.9, maxLat: 22.3, minLng: -160.3, maxLng: -154.8 }, box: { x: 215, y: 493, width: 139, height: 100 }, clip: "hi" }
+    ];
+    const US_GRATICULE_INSET_CLIPS = {
+      ak: [{ x: 0, y: 425 }, { x: 147, y: 425 }, { x: 215, y: 493 }, { x: 215, y: 548 }, { x: 251, y: 593 }, { x: 0, y: 593 }],
+      hi: [{ x: 215, y: 493 }, { x: 300, y: 493 }, { x: 354, y: 547 }, { x: 354, y: 593 }, { x: 251, y: 593 }, { x: 215, y: 548 }]
+    };
+    let gridTuneTarget = "mainland";
+    let gridTuneCalibration = loadGridTuneCalibration();
+    let gridTuneSelection = { row: "middle", column: "middle" };
+    let gridTuneDrag = null;
+    let graticuleButtonDismissPending = false;
+
+    function gridTuneEndpointKey(row, column) {
+      return row + column[0].toUpperCase() + column.slice(1);
+    }
+
+    function cloneGridTunePoint(point) {
+      return { x: Number(point?.x) || 0, y: Number(point?.y) || 0 };
+    }
+
+    function cloneGridTuneTarget(input) {
+      const output = {};
+      GRID_TUNE_ENDPOINT_ROWS.forEach(row => GRID_TUNE_COLUMNS.forEach(column => {
+        const key = gridTuneEndpointKey(row, column);
+        output[key] = cloneGridTunePoint(input?.[key]);
+      }));
+      return output;
+    }
+
+    function defaultGridTuneCalibration() {
+      const output = {};
+      Object.keys(US_GRATICULE_CALIBRATION).forEach(target => {
+        output[target] = cloneGridTuneTarget(US_GRATICULE_CALIBRATION[target]);
+      });
+      return output;
+    }
+
+    function normalizeGridTuneCalibration(input) {
+      const output = defaultGridTuneCalibration();
+      Object.keys(output).forEach(target => {
+        GRID_TUNE_ENDPOINT_ROWS.forEach(row => GRID_TUNE_COLUMNS.forEach(column => {
+          const key = gridTuneEndpointKey(row, column);
+          ["x", "y"].forEach(axis => {
+            const value = Number(input?.[target]?.[key]?.[axis]);
+            if (Number.isFinite(value)) {
+              output[target][key][axis] = Math.max(-GRID_TUNE_POINT_LIMIT, Math.min(GRID_TUNE_POINT_LIMIT, value));
+            }
+          });
+        }));
+      });
+      return output;
+    }
+
+    function loadGridTuneCalibration() {
+      try {
+        return normalizeGridTuneCalibration(JSON.parse(localStorage.getItem(GRID_TUNE_STORAGE_KEY) || "null"));
+      } catch {
+        return defaultGridTuneCalibration();
+      }
+    }
+
+    function saveGridTuneCalibration() {
+      try { localStorage.setItem(GRID_TUNE_STORAGE_KEY, JSON.stringify(gridTuneCalibration)); } catch { }
+    }
+
+    function lerpGraticulePoint(a, b, amount) {
+      return {
+        x: a.x + (b.x - a.x) * amount,
+        y: a.y + (b.y - a.y) * amount
+      };
+    }
+
+    function threePointGraticuleValue(south, middle, north, amount) {
+      const control = 2 * middle - (south + north) / 2;
+      if (amount < 0) return south + 2 * (control - south) * amount;
+      if (amount > 1) return north + 2 * (north - control) * (amount - 1);
+      const inverse = 1 - amount;
+      return inverse * inverse * south + 2 * inverse * amount * control + amount * amount * north;
+    }
+
+    function threePointGraticulePoint(west, middle, east, amount) {
+      return {
+        x: threePointGraticuleValue(west.x, middle.x, east.x, amount),
+        y: threePointGraticuleValue(west.y, middle.y, east.y, amount)
+      };
+    }
+
+    function tunedUsGridPoint(lat, lng, target) {
+      const geometry = US_GRATICULE_TUNE_GEOMETRY[target];
+      const calibration = gridTuneCalibration[target];
+      const [southLat, , northLat] = geometry.latitudes;
+      const [westLng, , eastLng] = geometry.longitudes;
+      const latitudeAmount = (lat - southLat) / Math.max(.0001, northLat - southLat);
+      const longitudeAmount = (lng - westLng) / Math.max(.0001, eastLng - westLng);
+      const southPoint = threePointGraticulePoint(
+        calibration.southWest,
+        calibration.southMiddle,
+        calibration.southEast,
+        longitudeAmount
+      );
+      const northPoint = threePointGraticulePoint(
+        calibration.northWest,
+        calibration.northMiddle,
+        calibration.northEast,
+        longitudeAmount
+      );
+      return lerpGraticulePoint(southPoint, northPoint, latitudeAmount);
+    }
+
+    function usContiguousGridPoint(lat, lng) {
+      return tunedUsGridPoint(lat, lng, "mainland");
+    }
+
+    function gridTunePanelOpen() {
+      return state.settings.developerMode === true && $("#gridTunePanel")?.matches(":popover-open") === true;
+    }
+
+    function stateMapPointFromEvent(event) {
+      const svg = $("#stateMap");
+      const matrix = svg?.getScreenCTM?.();
+      if (!svg || !matrix) return null;
+      const point = svg.createSVGPoint();
+      point.x = event.clientX;
+      point.y = event.clientY;
+      const mapped = point.matrixTransform(matrix.inverse());
+      return { x: mapped.x, y: mapped.y };
+    }
+
+    function renderUsCoordinateOverlays() {
+      renderGraticule();
+      renderRingOverlay();
+      renderSuggestedSetMarkers();
+      renderLocationMarkers();
+    }
+
+    function renderGridTuneHandles(svg) {
+      let group = svg.querySelector("#mapGridTuneHandles");
+      if (!gridTunePanelOpen()) {
+        group?.remove();
+        return;
+      }
+      if (!group) {
+        group = graticuleSvg("g");
+        group.id = "mapGridTuneHandles";
+        group.setAttribute("class", "grid-tune-handle-layer");
+        svg.append(group);
+      }
+      group.innerHTML = "";
+      const geometry = US_GRATICULE_TUNE_GEOMETRY[gridTuneTarget];
+      const viewBox = svg.viewBox?.baseVal || { x: 0, y: 0, width: 934, height: 593 };
+      const pad = 12;
+      const clampPoint = point => ({
+        x: Math.max(viewBox.x + pad, Math.min(viewBox.x + viewBox.width - pad, point.x)),
+        y: Math.max(viewBox.y + pad, Math.min(viewBox.y + viewBox.height - pad, point.y))
+      });
+      const addGuide = (points, className = "") => {
+        const polyline = graticuleSvg("polyline");
+        polyline.setAttribute("points", points.map(point => `${point.x.toFixed(2)},${point.y.toFixed(2)}`).join(" "));
+        polyline.setAttribute("class", `grid-tune-guide${className ? ` ${className}` : ""}`);
+        group.append(polyline);
+      };
+      GRID_TUNE_COLUMNS.forEach(column => {
+        addGuide([
+          gridTunePoint(gridTuneTarget, "south", column),
+          gridTunePoint(gridTuneTarget, "north", column)
+        ], "is-longitude");
+      });
+      GRID_TUNE_ROWS.forEach((row, rowIndex) => {
+        const points = [];
+        const [westLng, , eastLng] = geometry.longitudes;
+        for (let index = 0; index <= 24; index++) {
+          const lng = westLng + (eastLng - westLng) * index / 24;
+          points.push(tunedUsGridPoint(geometry.latitudes[rowIndex], lng, gridTuneTarget));
+        }
+        addGuide(points, "is-latitude");
+      });
+      ["north", "middle", "south"].forEach(row => GRID_TUNE_COLUMNS.forEach(column => {
+        const actual = gridTunePoint(gridTuneTarget, row, column);
+        const display = clampPoint(actual);
+        if (Math.hypot(display.x - actual.x, display.y - actual.y) > .1) {
+          const proxy = graticuleSvg("line");
+          proxy.setAttribute("x1", actual.x.toFixed(2));
+          proxy.setAttribute("y1", actual.y.toFixed(2));
+          proxy.setAttribute("x2", display.x.toFixed(2));
+          proxy.setAttribute("y2", display.y.toFixed(2));
+          proxy.setAttribute("class", "grid-tune-proxy-line");
+          group.append(proxy);
+        }
+        const handle = graticuleSvg("circle");
+        const selected = row === gridTuneSelection.row && column === gridTuneSelection.column;
+        handle.setAttribute("cx", display.x.toFixed(2));
+        handle.setAttribute("cy", display.y.toFixed(2));
+        handle.setAttribute("r", selected ? "8" : "6.5");
+        handle.setAttribute("class", `grid-tune-handle${selected ? " is-selected" : ""}`);
+        handle.setAttribute("tabindex", "0");
+        handle.setAttribute("role", "button");
+        handle.setAttribute("aria-label", `${gridTuneGeoLabel(gridTuneTarget, row, column)} control point`);
+        handle.dataset.gridTuneRow = row;
+        handle.dataset.gridTuneColumn = column;
+        const title = graticuleSvg("title");
+        title.textContent = gridTuneGeoLabel(gridTuneTarget, row, column);
+        handle.append(title);
+        group.append(handle);
+        if (selected) {
+          const label = graticuleSvg("text");
+          const useEnd = display.x > viewBox.x + viewBox.width - 92;
+          label.setAttribute("x", (display.x + (useEnd ? -10 : 10)).toFixed(2));
+          label.setAttribute("y", (display.y <= viewBox.y + 24 ? display.y + 14 : display.y - 10).toFixed(2));
+          label.setAttribute("text-anchor", useEnd ? "end" : "start");
+          label.setAttribute("class", "grid-tune-handle-label");
+          label.textContent = gridTuneGeoLabel(gridTuneTarget, row, column);
+          group.append(label);
+        }
+      }));
+    }
+
+    function handleGridTunePointerDown(event) {
+      const handle = event.target?.closest?.(".grid-tune-handle");
+      if (!handle || !gridTunePanelOpen()) return;
+      const point = stateMapPointFromEvent(event);
+      if (!point) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const row = handle.dataset.gridTuneRow;
+      const column = handle.dataset.gridTuneColumn;
+      gridTuneSelection = { row, column };
+      renderGridTuneControls();
+      gridTuneDrag = {
+        target: gridTuneTarget,
+        row,
+        column,
+        pointerId: event.pointerId,
+        startPointer: point,
+        startPoint: gridTunePoint(gridTuneTarget, row, column),
+        startCalibration: cloneGridTuneTarget(gridTuneCalibration[gridTuneTarget])
+      };
+      handle.classList.add("is-dragging");
+      handle.setPointerCapture?.(event.pointerId);
+    }
+
+    function handleGridTunePointerMove(event) {
+      if (!gridTuneDrag || event.pointerId !== gridTuneDrag.pointerId) return;
+      const point = stateMapPointFromEvent(event);
+      if (!point) return;
+      event.preventDefault();
+      gridTuneCalibration[gridTuneDrag.target] = cloneGridTuneTarget(gridTuneDrag.startCalibration);
+      setGridTunePoint(
+        gridTuneDrag.target,
+        gridTuneDrag.row,
+        gridTuneDrag.column,
+        gridTuneDrag.startPoint.x + point.x - gridTuneDrag.startPointer.x,
+        gridTuneDrag.startPoint.y + point.y - gridTuneDrag.startPointer.y
+      );
+      refreshGridTuneReadout();
+      renderUsCoordinateOverlays();
+    }
+
+    function handleGridTunePointerUp(event) {
+      if (!gridTuneDrag || (event?.pointerId !== undefined && event.pointerId !== gridTuneDrag.pointerId)) return;
+      gridTuneDrag = null;
+      saveGridTuneCalibration();
+      renderGridTuneControls();
+      renderUsCoordinateOverlays();
+    }
+
+    function handleGridTuneHandleKeydown(event) {
+      const handle = event.target?.closest?.(".grid-tune-handle");
+      if (!handle || !gridTunePanelOpen() || !["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const amount = event.shiftKey ? 10 : event.altKey ? .1 : 1;
+      const dx = event.key === "ArrowLeft" ? -amount : event.key === "ArrowRight" ? amount : 0;
+      const dy = event.key === "ArrowUp" ? -amount : event.key === "ArrowDown" ? amount : 0;
+      const row = handle.dataset.gridTuneRow;
+      const column = handle.dataset.gridTuneColumn;
+      const point = gridTunePoint(gridTuneTarget, row, column);
+      gridTuneSelection = { row, column };
+      setGridTunePoint(gridTuneTarget, row, column, point.x + dx, point.y + dy);
+      saveGridTuneCalibration();
+      renderGridTuneControls();
+      renderUsCoordinateOverlays();
+    }
+
+    function ensureUsGraticuleInsetMask(svg) {
+      let defs = svg.querySelector("defs");
+      if (!defs) { defs = graticuleSvg("defs"); svg.prepend(defs); }
+      let mask = defs.querySelector("#mapGraticuleInsetMask");
+      if (!mask) {
+        mask = graticuleSvg("mask");
+        mask.id = "mapGraticuleInsetMask";
+        mask.setAttribute("maskUnits", "userSpaceOnUse");
+        defs.append(mask);
+      }
+      const viewBox = svg.viewBox?.baseVal || { x: 0, y: 0, width: 934, height: 593 };
+      mask.innerHTML = "";
+      const base = graticuleSvg("rect");
+      base.setAttribute("x", viewBox.x);
+      base.setAttribute("y", viewBox.y);
+      base.setAttribute("width", viewBox.width);
+      base.setAttribute("height", viewBox.height);
+      base.setAttribute("fill", "white");
+      mask.append(base);
+      US_GRATICULE_INSET_CUTS.forEach(cutDef => {
+        const cut = graticuleSvg(cutDef.type === "polygon" ? "polygon" : "rect");
+        if (cutDef.type === "polygon") {
+          cut.setAttribute("points", cutDef.points.map(p => `${p.x},${p.y}`).join(" "));
+        } else {
+          cut.setAttribute("x", cutDef.x);
+          cut.setAttribute("y", cutDef.y);
+          cut.setAttribute("width", cutDef.width);
+          cut.setAttribute("height", cutDef.height);
+        }
+        cut.setAttribute("fill", "black");
+        mask.append(cut);
+      });
+      return "url(#mapGraticuleInsetMask)";
+    }
+
+    function pointInGraticulePolygon(point, polygon) {
+      let inside = false;
+      for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+        const a = polygon[i], b = polygon[j];
+        const crosses = ((a.y > point.y) !== (b.y > point.y))
+          && (point.x < (b.x - a.x) * (point.y - a.y) / ((b.y - a.y) || .0001) + a.x);
+        if (crosses) inside = !inside;
+      }
+      return inside;
+    }
+
+    function pointInUsGraticuleCut(point) {
+      return US_GRATICULE_INSET_CUTS.some(cut => {
+        if (cut.type === "polygon") return pointInGraticulePolygon(point, cut.points);
+        return point.x >= cut.x && point.x <= cut.x + cut.width && point.y >= cut.y && point.y <= cut.y + cut.height;
+      });
+    }
+
+    function usMercatorY(lat) {
+      const phi = Math.max(-85, Math.min(85, Number(lat))) * Math.PI / 180;
+      return Math.log(Math.tan(Math.PI / 4 + phi / 2));
+    }
+
+    function usGraticuleInsetBox(svg, inset) {
+      if (inset.box) return inset.box;
+      const tile = svg.querySelector(`.state-tile[data-abbr="${inset.abbr}"], .${inset.abbr.toLowerCase()}`);
+      let box; try { box = tile?.getBBox(); } catch { }
+      if (!box || !(box.width > 0 || box.height > 0)) return null;
+      const padX = inset.bboxPadX || 0, padY = inset.bboxPadY || 0;
+      return { x: box.x - padX, y: box.y - padY, width: box.width + padX * 2, height: box.height + padY * 2 };
+    }
+
+    function usMercatorInsetPoint(lat, lng, inset, box) {
+      const b = inset.bounds;
+      const yTop = usMercatorY(b.maxLat);
+      const yBottom = usMercatorY(b.minLat);
+      const lngSpan = Math.max(.0001, b.maxLng - b.minLng);
+      const ySpan = Math.max(.0001, yTop - yBottom);
+      return {
+        x: box.x + ((lng - b.minLng) / lngSpan) * box.width,
+        y: box.y + ((yTop - usMercatorY(lat)) / ySpan) * box.height
+      };
+    }
+
+    function usGraticuleInsetPoint(lat, lng, inset, box) {
+      if (inset.projection !== "albers") return usMercatorInsetPoint(lat, lng, inset, box);
+      return tunedUsGridPoint(lat, lng, "alaska");
+    }
+
+    function ensureUsGraticuleInsetClip(svg, clipKey) {
+      const points = US_GRATICULE_INSET_CLIPS[clipKey];
+      if (!points) return "";
+      let defs = svg.querySelector("defs");
+      if (!defs) { defs = graticuleSvg("defs"); svg.prepend(defs); }
+      const id = `mapGraticuleInsetClip-${clipKey}`;
+      let clip = defs.querySelector(`#${id}`);
+      if (!clip) {
+        clip = graticuleSvg("clipPath");
+        clip.id = id;
+        clip.setAttribute("clipPathUnits", "userSpaceOnUse");
+        defs.append(clip);
+      }
+      clip.innerHTML = "";
+      const poly = graticuleSvg("polygon");
+      poly.setAttribute("points", points.map(p => `${p.x},${p.y}`).join(" "));
+      clip.append(poly);
+      return `url(#${id})`;
+    }
+
+    function renderUsInsetGraticules(g, svg, major, minor, options = {}) {
+      US_GRATICULE_INSETS.forEach(inset => {
+        const box = usGraticuleInsetBox(svg, inset);
+        if (!box) return;
+        const b = inset.drawBounds || inset.bounds;
+        const clipPoints = inset.clip ? US_GRATICULE_INSET_CLIPS[inset.clip] : null;
+        const labelBounds = clipPoints
+          ? clipPoints.reduce((acc, p) => ({
+            x: Math.min(acc.x, p.x), y: Math.min(acc.y, p.y),
+            x2: Math.max(acc.x2, p.x), y2: Math.max(acc.y2, p.y)
+          }), { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity })
+          : { x: box.x, y: box.y, x2: box.x + box.width, y2: box.y + box.height };
+        const labelPlacements = [];
+        const group = graticuleSvg("g");
+        group.setAttribute("class", "graticule-inset-grid");
+        group.dataset.inset = inset.id;
+        g.append(group);
+        const lineGroup = graticuleSvg("g");
+        lineGroup.setAttribute("class", "graticule-inset-line-grid");
+        if (inset.clip) lineGroup.setAttribute("clip-path", ensureUsGraticuleInsetClip(svg, inset.clip));
+        group.append(lineGroup);
+        const point = (lat, lng) => usGraticuleInsetPoint(lat, lng, inset, box);
+        const visiblePoints = pts => clipPoints ? pts.filter(p => pointInGraticulePolygon(p, clipPoints)) : pts;
+        const labelBoxFor = (x, y, text, anchor) => {
+          const width = Math.max(13, String(text).length * 4.3);
+          const height = 8;
+          const left = anchor === "end" ? x - width : anchor === "middle" ? x - width / 2 : x;
+          return { x: left, y: y - height / 2, x2: left + width, y2: y + height / 2 };
+        };
+        const overlapsInsetLabel = box => labelPlacements.some(existing => (
+          box.x < existing.x2 + 3 && box.x2 > existing.x - 3 && box.y < existing.y2 + 2 && box.y2 > existing.y - 2
+        ));
+        const addPolyline = (pts, cls) => {
+          const pl = graticuleSvg("polyline");
+          pl.setAttribute("points", pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" "));
+          pl.setAttribute("class", `${cls} graticule-inset-line`);
+          lineGroup.append(pl);
+        };
+        const addLabel = (x, y, text, anchor) => {
+          if (!options.labels || inset.labels === false) return;
+          const t = graticuleSvg("text");
+          const labelX = Math.max(labelBounds.x + 4, Math.min(labelBounds.x2 - 4, x));
+          const labelY = Math.max(labelBounds.y + 5, Math.min(labelBounds.y2 - 5, y));
+          const labelBox = labelBoxFor(labelX, labelY, text, anchor);
+          if (overlapsInsetLabel(labelBox)) return;
+          labelPlacements.push(labelBox);
+          t.setAttribute("x", labelX.toFixed(1));
+          t.setAttribute("y", labelY.toFixed(1));
+          t.setAttribute("class", graticuleDegreeLabelClass(text, "graticule-label graticule-inset-label"));
+          t.setAttribute("text-anchor", anchor);
+          t.setAttribute("dominant-baseline", "middle");
+          t.textContent = text;
+          group.append(t);
+        };
+        for (let lat = Math.ceil(b.minLat / minor) * minor; lat <= b.maxLat + .0001; lat += minor) {
+          const isMajor = lat % major === 0;
+          const pts = [];
+          for (let lng = b.minLng; lng <= b.maxLng + .0001; lng += .5) pts.push(point(lat, Math.min(lng, b.maxLng)));
+          if (pts.length && pts[pts.length - 1].x < point(lat, b.maxLng).x - .01) pts.push(point(lat, b.maxLng));
+          addPolyline(pts, graticuleLineClass(isMajor));
+          if (isMajor) {
+            const visible = visiblePoints(pts);
+            if (!visible.length) continue;
+            const w = visible[0], e = visible[visible.length - 1];
+            addLabel(w.x + 4, w.y, formatGraticuleLat(lat), "start");
+            addLabel(e.x - 4, e.y, formatGraticuleLat(lat), "end");
+          }
+        }
+        for (let lng = Math.ceil(b.minLng / minor) * minor; lng <= b.maxLng + .0001; lng += minor) {
+          const isMajor = lng % major === 0;
+          const pts = [];
+          for (let lat = b.minLat; lat <= b.maxLat + .0001; lat += .5) pts.push(point(Math.min(lat, b.maxLat), lng));
+          if (pts.length && pts[pts.length - 1].y > point(b.maxLat, lng).y + .01) pts.push(point(b.maxLat, lng));
+          addPolyline(pts, graticuleLineClass(isMajor));
+          if (isMajor) {
+            const visible = visiblePoints(pts);
+            if (!visible.length) continue;
+            const s = visible[0], n = visible[visible.length - 1];
+            addLabel(s.x, s.y - 4, formatGraticuleLng(lng), "middle");
+            addLabel(n.x, n.y + 4, formatGraticuleLng(lng), "middle");
+          }
+        }
+      });
+    }
+
+    function visibleUsGraticulePoints(points, viewBox, pad) {
+      return points.filter(point => (
+        point.x >= viewBox.x + pad && point.x <= viewBox.x + viewBox.width - pad
+        && point.y >= viewBox.y + pad && point.y <= viewBox.y + viewBox.height - pad
+        && !pointInUsGraticuleCut(point)
+      ));
+    }
+
+    function renderUsGraticule(g, svg, major, minor, options = {}) {
+      const bounds = US_GRATICULE_DRAW_BOUNDS;
+      const viewBox = svg.viewBox?.baseVal || { x: 0, y: 0, width: 934, height: 593 };
+      const pad = 8;
+      const cornerX = 52;
+      const cornerY = 34;
+      const clampX = x => Math.max(viewBox.x + pad, Math.min(viewBox.x + viewBox.width - pad, x));
+      const clampY = y => Math.max(viewBox.y + pad, Math.min(viewBox.y + viewBox.height - pad, y));
+      const gridGroup = graticuleSvg("g");
+      gridGroup.setAttribute("mask", ensureUsGraticuleInsetMask(svg));
+      g.append(gridGroup);
+      const addPolyline = (pts, cls) => { const pl = graticuleSvg("polyline"); pl.setAttribute("points", pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ")); pl.setAttribute("class", cls); gridGroup.append(pl); };
+      const addLabel = (x, y, text, anchor) => { const t = graticuleSvg("text"); t.setAttribute("x", clampX(x).toFixed(1)); t.setAttribute("y", clampY(y).toFixed(1)); t.setAttribute("class", graticuleDegreeLabelClass(text)); t.setAttribute("text-anchor", anchor); t.setAttribute("dominant-baseline", "middle"); t.textContent = text; g.append(t); };
+      const nearCorner = point => (
+        (point.x <= viewBox.x + cornerX || point.x >= viewBox.x + viewBox.width - cornerX)
+        && (point.y <= viewBox.y + cornerY || point.y >= viewBox.y + viewBox.height - cornerY)
+      );
+      for (let lat = Math.ceil(bounds.minLat / minor) * minor; lat <= bounds.maxLat; lat += minor) {
+        const isMajor = lat % major === 0;
+        const pts = [];
+        for (let lng = bounds.minLng; lng <= bounds.maxLng; lng += 1) pts.push(usContiguousGridPoint(lat, lng));
+        addPolyline(pts, graticuleLineClass(isMajor));
+        if (isMajor && options.labels) {
+          const visible = visibleUsGraticulePoints(pts, viewBox, pad);
+          const w = visible[0], e = visible[visible.length - 1];
+          if (w && !nearCorner(w)) addLabel(w.x + 6, w.y, formatGraticuleLat(lat), "start");
+          if (e && !nearCorner(e)) addLabel(e.x - 6, e.y, formatGraticuleLat(lat), "end");
+        }
+      }
+      for (let lng = Math.ceil(bounds.minLng / minor) * minor; lng <= bounds.maxLng; lng += minor) {
+        const isMajor = lng % major === 0;
+        const pts = [];
+        for (let lat = bounds.minLat; lat <= bounds.maxLat; lat += 1) pts.push(usContiguousGridPoint(lat, lng));
+        addPolyline(pts, graticuleLineClass(isMajor));
+        if (isMajor && options.labels) {
+          const visible = visibleUsGraticulePoints(pts, viewBox, pad);
+          const s = visible[0], n = visible[visible.length - 1];
+          if (s && !nearCorner(s)) addLabel(s.x, s.y - 7, formatGraticuleLng(lng), "middle");
+          if (n && !nearCorner(n)) addLabel(n.x, n.y + 7, formatGraticuleLng(lng), "middle");
+        }
+      }
+      const framePts = [];
+      for (let lng = bounds.minLng; lng <= bounds.maxLng; lng += 1) framePts.push(usContiguousGridPoint(bounds.minLat, lng));
+      for (let lat = bounds.minLat; lat <= bounds.maxLat; lat += 1) framePts.push(usContiguousGridPoint(lat, bounds.maxLng));
+      for (let lng = bounds.maxLng; lng >= bounds.minLng; lng -= 1) framePts.push(usContiguousGridPoint(bounds.maxLat, lng));
+      for (let lat = bounds.maxLat; lat >= bounds.minLat; lat -= 1) framePts.push(usContiguousGridPoint(lat, bounds.minLng));
+      const poly = graticuleSvg("polygon");
+      poly.setAttribute("points", framePts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" "));
+      poly.setAttribute("class", "graticule-frame");
+      gridGroup.append(poly);
+      renderUsInsetGraticules(g, svg, major, minor, options);
+    }
+
+    function graticuleLayerSettings() {
+      return state.settings.graticuleByLayer?.[activeLayerId]
+        || { ...GRATICULE_DEFAULTS[activeLayerId] };
+    }
+    const GRATICULE_GRID_ICON = typeof __APP_GRID !== "undefined" ? __APP_GRID : __GLOBE;
+    const GRATICULE_CIRCLES_ICON = typeof __CIRCLE_DASHED !== "undefined" ? __CIRCLE_DASHED : __CIRCLE_DOTTED_CIRCLE;
+    const GRATICULE_LABELS_ICON = ICON_SETTINGS_SHORTCUTSON__TAG_FILL;
+    function graticuleDivisors(major) {
+      const out = [];
+      for (let d = 1; d < major; d++) if (major % d === 0) out.push(d);
+      return out.length ? out : [1];
+    }
+    function graticuleSnapMinor(minor, major) {
+      let best = 1, bestDelta = Infinity;
+      for (const d of graticuleDivisors(major)) {
+        const delta = Math.abs(d - minor);
+        if (delta < bestDelta) { bestDelta = delta; best = d; }
+      }
+      return best;
+    }
+    function setGraticuleButtonState(selector, on) {
+      const btn = $(selector);
+      if (btn) btn.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+    function graticuleMajorOptions() {
+      const out = [];
+      for (let n = 5; n <= 90; n += 5) out.push(n);
+      return out;
+    }
+    function graticuleOptionLabel(value) {
+      return `${value}°`;
+    }
+    function formatGridTuneValue(value) {
+      return Number(value).toFixed(2);
+    }
+    function formatGridTuneCodeNumber(value) {
+      return formatGridTuneValue(value).replace(/\.?0+$/, "");
+    }
+    function gridTunePoint(target, row, column) {
+      const calibration = gridTuneCalibration[target];
+      if (!calibration) return { x: 0, y: 0 };
+      if (row === "middle") {
+        return lerpGraticulePoint(
+          calibration[gridTuneEndpointKey("south", column)],
+          calibration[gridTuneEndpointKey("north", column)],
+          .5
+        );
+      }
+      return cloneGridTunePoint(calibration[gridTuneEndpointKey(row, column)]);
+    }
+    function setGridTunePoint(target, row, column, x, y) {
+      if (!gridTuneCalibration[target] || !GRID_TUNE_ROWS.includes(row) || !GRID_TUNE_COLUMNS.includes(column)) return;
+      const next = {
+        x: Math.max(-GRID_TUNE_POINT_LIMIT, Math.min(GRID_TUNE_POINT_LIMIT, Number(x))),
+        y: Math.max(-GRID_TUNE_POINT_LIMIT, Math.min(GRID_TUNE_POINT_LIMIT, Number(y)))
+      };
+      if (!Number.isFinite(next.x) || !Number.isFinite(next.y)) return;
+      if (row === "middle") {
+        const current = gridTunePoint(target, row, column);
+        const dx = next.x - current.x;
+        const dy = next.y - current.y;
+        ["south", "north"].forEach(endpointRow => {
+          const key = gridTuneEndpointKey(endpointRow, column);
+          gridTuneCalibration[target][key].x += dx;
+          gridTuneCalibration[target][key].y += dy;
+        });
+        return;
+      }
+      gridTuneCalibration[target][gridTuneEndpointKey(row, column)] = next;
+    }
+    function gridTuneGeoLabel(target, row, column) {
+      const geometry = US_GRATICULE_TUNE_GEOMETRY[target];
+      const lat = geometry.latitudes[GRID_TUNE_ROWS.indexOf(row)];
+      const lng = geometry.longitudes[GRID_TUNE_COLUMNS.indexOf(column)];
+      return `${formatGraticuleLat(lat)} · ${formatGraticuleLng(lng)}`;
+    }
+    function gridTuneCalibrationText() {
+      const targetText = target => {
+        const lines = GRID_TUNE_ENDPOINT_ROWS.flatMap(row => GRID_TUNE_COLUMNS.map(column => {
+          const key = gridTuneEndpointKey(row, column);
+          const point = gridTuneCalibration[target][key];
+          return `    ${key}: { x: ${formatGridTuneCodeNumber(point.x)}, y: ${formatGridTuneCodeNumber(point.y)} }`;
+        }));
+        return `  ${target}: {\n${lines.join(",\n")}\n  }`;
+      };
+      return `const US_GRATICULE_CALIBRATION = {\n${targetText("mainland")},\n${targetText("alaska")}\n};`;
+    }
+    function refreshGridTuneReadout() {
+      const point = gridTunePoint(gridTuneTarget, gridTuneSelection.row, gridTuneSelection.column);
+      const xInput = $('[data-grid-tune-coordinate="x"]', $("#gridTuneControls"));
+      const yInput = $('[data-grid-tune-coordinate="y"]', $("#gridTuneControls"));
+      if (xInput && document.activeElement !== xInput) xInput.value = formatGridTuneValue(point.x);
+      if (yInput && document.activeElement !== yInput) yInput.value = formatGridTuneValue(point.y);
+      if ($("#gridTuneOutput")) $("#gridTuneOutput").value = gridTuneCalibrationText();
+    }
+    function renderGridTuneControls() {
+      const controls = $("#gridTuneControls");
+      const output = $("#gridTuneOutput");
+      const help = $("#gridTuneBandHelp");
+      $$("[data-grid-tune-tab]").forEach(button => {
+        button.setAttribute("aria-pressed", button.dataset.gridTuneTab === gridTuneTarget ? "true" : "false");
+      });
+      if (help) {
+        const geometry = US_GRATICULE_TUNE_GEOMETRY[gridTuneTarget];
+        help.textContent = `${geometry.latitudes.map(formatGraticuleLat).join(" / ")} × ${geometry.longitudes.map(formatGraticuleLng).join(" / ")}`;
+      }
+      if (controls) {
+        const buttons = ["north", "middle", "south"].flatMap(row => GRID_TUNE_COLUMNS.map(column => {
+          const geometry = US_GRATICULE_TUNE_GEOMETRY[gridTuneTarget];
+          const lat = geometry.latitudes[GRID_TUNE_ROWS.indexOf(row)];
+          const lng = geometry.longitudes[GRID_TUNE_COLUMNS.indexOf(column)];
+          const selected = row === gridTuneSelection.row && column === gridTuneSelection.column;
+          return `<button type="button" data-grid-tune-row="${row}" data-grid-tune-column="${column}" aria-pressed="${selected}" aria-label="Select ${gridTuneGeoLabel(gridTuneTarget, row, column)} point">
+            <span>${formatGraticuleLat(lat)}</span><small>${formatGraticuleLng(lng)}</small>
+          </button>`;
+        })).join("");
+        const point = gridTunePoint(gridTuneTarget, gridTuneSelection.row, gridTuneSelection.column);
+        controls.innerHTML = `<div class="grid-tune-point-grid" role="group" aria-label="Grid control points">${buttons}</div>
+          <div class="grid-tune-coordinate-fields">
+            <label>X <input type="number" step="0.1" value="${formatGridTuneValue(point.x)}" data-grid-tune-coordinate="x" aria-label="Selected point X coordinate"></label>
+            <label>Y <input type="number" step="0.1" value="${formatGridTuneValue(point.y)}" data-grid-tune-coordinate="y" aria-label="Selected point Y coordinate"></label>
+          </div>`;
+      }
+      if (output) output.value = gridTuneCalibrationText();
+    }
+    function setGridTuneSelection(row, column) {
+      if (!GRID_TUNE_ROWS.includes(row) || !GRID_TUNE_COLUMNS.includes(column)) return;
+      gridTuneSelection = { row, column };
+      renderGridTuneControls();
+      renderGraticule();
+    }
+    function setGridTuneTarget(target) {
+      if (!US_GRATICULE_CALIBRATION[target]) return;
+      gridTuneTarget = target;
+      gridTuneSelection = { row: "middle", column: "middle" };
+      renderGridTuneControls();
+      renderGraticule();
+    }
+    function handleGridTuneControlsClick(event) {
+      const button = event.target.closest("[data-grid-tune-row][data-grid-tune-column]");
+      if (button) setGridTuneSelection(button.dataset.gridTuneRow, button.dataset.gridTuneColumn);
+    }
+    function handleGridTuneInput(event) {
+      const input = event.target.closest("[data-grid-tune-coordinate]");
+      if (!input) return;
+      const value = Number(input.value);
+      if (!Number.isFinite(value)) return;
+      const point = gridTunePoint(gridTuneTarget, gridTuneSelection.row, gridTuneSelection.column);
+      point[input.dataset.gridTuneCoordinate] = value;
+      setGridTunePoint(gridTuneTarget, gridTuneSelection.row, gridTuneSelection.column, point.x, point.y);
+      saveGridTuneCalibration();
+      refreshGridTuneReadout();
+      renderUsCoordinateOverlays();
+    }
+    function resetGridTune(target = gridTuneTarget) {
+      gridTuneCalibration[target] = defaultGridTuneCalibration()[target];
+      saveGridTuneCalibration();
+      renderGridTuneControls();
+      renderUsCoordinateOverlays();
+    }
+    function resetAllGridTuning() {
+      gridTuneCalibration = defaultGridTuneCalibration();
+      try { localStorage.removeItem(GRID_TUNE_STORAGE_KEY); } catch { }
+      renderGridTuneControls();
+      renderUsCoordinateOverlays();
+    }
+    function copyGridTuneCalibration() {
+      const button = $("#gridTuneCopyBtn");
+      copyTextToClipboard(gridTuneCalibrationText()).then(() => {
+        if (!button) return;
+        button.textContent = "Copied";
+        setTimeout(() => { button.textContent = "Copy Code"; }, 1600);
+      }).catch(() => showMessage("Copy Failed", "Your browser blocked clipboard access. Select the calibration text and copy it manually."));
+    }
+    function openGridTuner(target = gridTuneTarget) {
+      if (state.settings.developerMode !== true) return;
+      if (US_GRATICULE_CALIBRATION[target]) gridTuneTarget = target;
+      if ($("#settingsDialog")?.open) $("#settingsDialog").close();
+      if ($("#graticuleDialog")?.matches(":popover-open")) $("#graticuleDialog").hidePopover();
+      const settings = state.settings.graticuleByLayer?.us;
+      if (settings) settings.enabled = true;
+      if (activeLayerId !== "us") setActiveLayer("us");
+      else {
+        save();
+        renderGraticule();
+      }
+      renderGridTuneControls();
+      const panel = $("#gridTunePanel");
+      if (panel) {
+        panel.classList.remove("is-collapsed");
+        panel.scrollTop = 0;
+        const collapseButton = $("#gridTuneCollapseBtn");
+        if (collapseButton) {
+          collapseButton.textContent = "Minimize";
+          collapseButton.setAttribute("aria-expanded", "true");
+        }
+        if (!panel.matches(":popover-open")) panel.showPopover();
+      }
+      renderGraticule();
+    }
+
+    function toggleGridTunePanelCollapsed() {
+      const panel = $("#gridTunePanel");
+      const button = $("#gridTuneCollapseBtn");
+      if (!panel || !button) return;
+      const collapsed = panel.classList.toggle("is-collapsed");
+      button.textContent = collapsed ? "Controls" : "Minimize";
+      button.setAttribute("aria-expanded", collapsed ? "false" : "true");
+      if (!collapsed) panel.scrollTop = 0;
+    }
+    function populateGraticuleSelect(select, values, current) {
+      if (!select) return;
+      select.innerHTML = values.map(value => `<option value="${value}"${value === current ? " selected" : ""}>${graticuleOptionLabel(value)}</option>`).join("");
+    }
+    function populateGraticuleDialog() {
+      const s = graticuleLayerSettings();
+      const gridOn = s.enabled === true;
+      const major = Math.max(5, Math.min(90, Math.round(s.major / 5) * 5));
+      const minor = graticuleSnapMinor(s.minor, major);
+      setButtonLabel("#graticuleEnabledBtn", GRATICULE_GRID_ICON, "Grid", "Toggle grid lines");
+      setButtonLabel("#graticuleReferenceBtn", GRATICULE_CIRCLES_ICON, "Circles", "Toggle tropic and polar circles");
+      setButtonLabel("#graticuleLabelsBtn", GRATICULE_LABELS_ICON, "Labels", "Toggle grid labels");
+      setGraticuleButtonState("#graticuleEnabledBtn", s.enabled === true);
+      setGraticuleButtonState("#graticuleReferenceBtn", s.references !== false);
+      setGraticuleButtonState("#graticuleLabelsBtn", s.labels !== false);
+      $("#graticuleReferenceBtn").disabled = !gridOn;
+      $("#graticuleLabelsBtn").disabled = !gridOn;
+      $("#graticuleMajorInput").disabled = !gridOn;
+      $("#graticuleMinorInput").disabled = !gridOn;
+      $("#graticuleMajorInput")?.closest(".graticule-number-field")?.classList.toggle("is-disabled", !gridOn);
+      $("#graticuleMinorInput")?.closest(".graticule-number-field")?.classList.toggle("is-disabled", !gridOn);
+      populateGraticuleSelect($("#graticuleMajorInput"), graticuleMajorOptions(), major);
+      populateGraticuleSelect($("#graticuleMinorInput"), graticuleDivisors(major), minor);
+    }
+    function openGraticuleDialog() {
+      const pop = $("#graticuleDialog");
+      if (!pop) return;
+      if (pop.matches(":popover-open") || graticuleButtonDismissPending) {
+        graticuleButtonDismissPending = false;
+        pop.hidePopover();
+        return;
+      }
+      graticuleButtonDismissPending = false;
+      populateGraticuleDialog();
+      pop.showPopover();
+      const btn = $("#mapGraticuleBtn");
+      if (btn) {
+        btn.setAttribute("aria-expanded", "true");
+        const r = btn.getBoundingClientRect();
+        const panel = $(".map-panel")?.getBoundingClientRect();
+        const bounds = panel || { left: 8, right: window.innerWidth - 8, top: 8, bottom: window.innerHeight - 8, width: window.innerWidth - 16, height: window.innerHeight - 16 };
+        pop.style.maxWidth = `${Math.max(220, bounds.width - 16)}px`;
+        const pr = pop.getBoundingClientRect();
+        const left = Math.max(bounds.left + 8, Math.min(r.left, bounds.right - pr.width - 8));
+        let top = r.bottom + 6;
+        if (top + pr.height > bounds.bottom - 8) top = Math.max(bounds.top + 8, r.top - pr.height - 6);
+        pop.style.left = `${Math.round(left)}px`;
+        pop.style.top = `${Math.round(top)}px`;
+      }
+    }
+    function commitGraticuleSettings(patch = {}) {
+      const bag = state.settings.graticuleByLayer;
+      if (!bag?.[activeLayerId]) return;
+      const current = bag[activeLayerId];
+      const major = Math.max(5, Math.min(90, Math.round((Number($("#graticuleMajorInput").value) || current.major) / 5) * 5));
+      const minor = graticuleSnapMinor(Math.round(Number($("#graticuleMinorInput").value)) || current.minor, major);
+      bag[activeLayerId] = {
+        enabled: current.enabled === true,
+        references: current.references !== false,
+        labels: current.labels !== false,
+        major,
+        minor,
+        ...patch
+      };
+      populateGraticuleDialog();
+      $("#mapGraticuleBtn")?.setAttribute("aria-pressed", bag[activeLayerId].enabled ? "true" : "false");
+      save();
+      render();
+    }
+
+    function toggleGraticuleSetting(key) {
+      const current = graticuleLayerSettings();
+      const on = key === "enabled" ? current.enabled === true : current[key] !== false;
+      commitGraticuleSettings({ [key]: !on });
     }
 
     function suggestedSetMarkerPoint(item) {
@@ -8930,8 +10053,8 @@
           Array.isArray(value)
             ? `${key}: ${JSON.stringify(value)}`
             : typeof value === "string"
-            ? `${key}: ${JSON.stringify(value)}`
-            : `${key}: ${formatWorldLabelNumber(value)}`
+              ? `${key}: ${JSON.stringify(value)}`
+              : `${key}: ${formatWorldLabelNumber(value)}`
         )).join(", ");
         return `    ${JSON.stringify(code)}: { ${pairs} }`;
       });
@@ -10330,6 +11453,16 @@
       return Math.max(MAP_ZOOM_MIN, Math.min(MAP_ZOOM_MAX, Number(value) || 1));
     }
 
+    function snapMapZoom(value) {
+      const v = clampMapZoom(value);
+      let best = MAP_ZOOM_STOPS[0], bestDelta = Infinity;
+      for (const stop of MAP_ZOOM_STOPS) {
+        const delta = Math.abs(Math.log(v) - Math.log(stop));
+        if (delta < bestDelta) { bestDelta = delta; best = stop; }
+      }
+      return best;
+    }
+
     function formatMapZoom(value = mapZoom) {
       return `${Math.round(clampMapZoom(value) * 100)}%`;
     }
@@ -11340,10 +12473,10 @@
           ? "No states match that search."
           : notesPriorityFilter.mode !== "none" ? "No notes match the active Priority filter."
             : notesHideExcludedOnly ? "No visible marked locations. Excluded locations are hidden."
-            : !allNoteIconFiltersSelected() ? "No locations match the selected icon filters."
-              : notesDatePrecisionFilter !== "all" ? `No locations match the ${datePrecisionFilterMeta().label} date filter.`
-                : notesCoordinateFilter !== "all" ? `No locations match the ${coordinateFilterMeta().label} coordinate filter.`
-                  : noteLevelFilters.size ? "No states match the selected legend filters." : "No marked states yet.";
+              : !allNoteIconFiltersSelected() ? "No locations match the selected icon filters."
+                : notesDatePrecisionFilter !== "all" ? `No locations match the ${datePrecisionFilterMeta().label} date filter.`
+                  : notesCoordinateFilter !== "all" ? `No locations match the ${coordinateFilterMeta().label} coordinate filter.`
+                    : noteLevelFilters.size ? "No states match the selected legend filters." : "No marked states yet.";
         $("#notesPanelContent").innerHTML = `<div class="empty">${emptyText}</div>`;
       } else if (notesViewMode === "text") {
         $("#notesPanelContent").innerHTML = `<pre id="notesTextOnly" class="notes-text-only" tabindex="0">${escapeHtml(buildNotesTextOnly(marked))}</pre>`;
@@ -16878,8 +18011,49 @@
           event.target.blur();
         }
       });
+      // Touch gestures (WISH-074): two-finger pinch zoom (snaps to a stop on
+      // release), double-tap/click to zoom in, two-finger tap to zoom out.
+      const TOUCH_PAN_LOCK_PX = 8;
+      const TOUCH_PAN_AXIS_RATIO = 1.2;
+      const pointers = new Map();        // active touch pointers: id -> {x,y}
+      let pinch = null;                  // { startDist, startZoom, scaled, lastAnchor }
+      let pinchFrame = 0, pinchPending = null;
+      let lastTapAt = 0, lastTapX = 0, lastTapY = 0;
+      let tapCandidate = null;
+      const localAnchor = (clientX, clientY) => {
+        const r = wrap.getBoundingClientRect();
+        return { x: clientX - r.left, y: clientY - r.top };
+      };
+      const pinchGeometry = () => {
+        const [a, b] = [...pointers.values()];
+        return { dist: Math.hypot(a.x - b.x, a.y - b.y), mid: { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 } };
+      };
+      const blockNextClick = () => {
+        wrap.dataset.blockClick = "true";
+        setTimeout(() => delete wrap.dataset.blockClick, 0);
+      };
+      const applyPinchFrame = () => {
+        pinchFrame = 0;
+        if (pinch && pinchPending) setMapZoom(pinchPending.zoom, pinchPending.anchor);
+      };
+      wrap.addEventListener("selectstart", event => event.preventDefault());
+      wrap.addEventListener("dblclick", event => event.preventDefault());
       wrap.addEventListener("pointerdown", event => {
-        if (mapFitMode || event.button > 0) return;
+        if (event.pointerType !== "touch" && event.button === 0) event.preventDefault();
+        if (event.pointerType === "touch") {
+          pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+          if (pointers.size === 2) {
+            tapCandidate = null;
+            mapPanState = null;
+            wrap.classList.remove("is-panning");
+            const g = pinchGeometry();
+            pinch = { startDist: g.dist || 1, startZoom: mapFitMode ? 1 : mapZoom, scaled: false, lastAnchor: localAnchor(g.mid.x, g.mid.y) };
+            return;
+          }
+        }
+        if (event.button > 0 || pinch) return;
+        tapCandidate = { pointerId: event.pointerId, x: event.clientX, y: event.clientY, moved: false };
+        if (mapFitMode || event.button > 0 || pinch) return;
         mapPanState = {
           pointerId: event.pointerId,
           x: event.clientX,
@@ -16890,10 +18064,44 @@
         };
       });
       wrap.addEventListener("pointermove", event => {
+        if (event.pointerType === "touch" && pointers.has(event.pointerId)) {
+          pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+        }
+        if (tapCandidate?.pointerId === event.pointerId) {
+          const tapDx = event.clientX - tapCandidate.x;
+          const tapDy = event.clientY - tapCandidate.y;
+          if (Math.abs(tapDx) > 10 || Math.abs(tapDy) > 10) {
+            tapCandidate.moved = true;
+            lastTapAt = 0;
+          }
+        }
+        if (pinch && pointers.size >= 2) {
+          event.preventDefault();
+          const g = pinchGeometry();
+          const scale = g.dist / pinch.startDist;
+          if (Math.abs(scale - 1) > .02) pinch.scaled = true;
+          pinch.lastAnchor = localAnchor(g.mid.x, g.mid.y);
+          if (pinch.scaled) {
+            pinchPending = { zoom: clampMapZoom(pinch.startZoom * scale), anchor: pinch.lastAnchor };
+            if (!pinchFrame) pinchFrame = requestAnimationFrame(applyPinchFrame);
+          }
+          return;
+        }
         if (!mapPanState || mapPanState.pointerId !== event.pointerId) return;
         const dx = event.clientX - mapPanState.x;
         const dy = event.clientY - mapPanState.y;
         if (!mapPanState.moved && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) {
+          const absDx = Math.abs(dx);
+          const absDy = Math.abs(dy);
+          if (event.pointerType === "touch") {
+            if (absDx < TOUCH_PAN_LOCK_PX && absDy < TOUCH_PAN_LOCK_PX) return;
+            if (absDy > absDx * TOUCH_PAN_AXIS_RATIO) {
+              mapPanState = null;
+              wrap.classList.remove("is-panning");
+              return;
+            }
+            if (absDx <= absDy * TOUCH_PAN_AXIS_RATIO) return;
+          }
           mapPanState.moved = true;
           wrap.classList.add("is-panning");
           wrap.setPointerCapture?.(event.pointerId);
@@ -16901,22 +18109,60 @@
         if (!mapPanState.moved) return;
         event.preventDefault();
         wrap.scrollLeft = mapPanState.scrollLeft - dx;
-        wrap.scrollTop = mapPanState.scrollTop - dy;
+        if (wrap.scrollHeight - wrap.clientHeight > 1) {
+          wrap.scrollTop = mapPanState.scrollTop - dy;
+        }
       });
-      const endPan = event => {
+      const endPointer = event => {
+        const wasTouch = pointers.delete(event.pointerId);
+        if (pinch && pointers.size < 2) {
+          if (pinchFrame) { cancelAnimationFrame(pinchFrame); pinchFrame = 0; }
+          const anchor = pinch.lastAnchor || { x: wrap.clientWidth / 2, y: wrap.clientHeight / 2 };
+          if (pinch.scaled && pinchPending) setMapZoom(snapMapZoom(pinchPending.zoom), anchor);
+          else if (!pinch.scaled && !mapFitMode) setMapZoom(snapMapZoom(mapZoom / 2), anchor);
+          pinch = null; pinchPending = null; mapPanState = null;
+          blockNextClick();
+          return;
+        }
+        if (event.type === "pointerup" && tapCandidate?.pointerId === event.pointerId && !tapCandidate.moved) {
+          const now = Date.now();
+          const near = Math.abs(event.clientX - lastTapX) < 24 && Math.abs(event.clientY - lastTapY) < 24;
+          if (now - lastTapAt < 300 && near) {
+            setMapZoom(snapMapZoom((mapFitMode ? 1 : mapZoom) * 2), localAnchor(event.clientX, event.clientY));
+            blockNextClick();
+            lastTapAt = 0; mapPanState = null; tapCandidate = null;
+            return;
+          }
+          lastTapAt = now; lastTapX = event.clientX; lastTapY = event.clientY;
+        }
+        if (tapCandidate?.pointerId === event.pointerId) tapCandidate = null;
         if (!mapPanState || mapPanState.pointerId !== event.pointerId) return;
         const moved = mapPanState.moved;
         mapPanState = null;
         wrap.classList.remove("is-panning");
         if (moved) {
           try { wrap.releasePointerCapture(event.pointerId); } catch { }
-          wrap.dataset.blockClick = "true";
-          setTimeout(() => delete wrap.dataset.blockClick, 0);
+          blockNextClick();
           saveMapPanSoon(true);
         }
       };
-      wrap.addEventListener("pointerup", endPan);
-      wrap.addEventListener("pointercancel", endPan);
+      wrap.addEventListener("pointerup", endPointer);
+      wrap.addEventListener("pointercancel", endPointer);
+      // Safari (Mac) trackpad pinch fires gesture events (not ctrl+wheel). Zoom
+      // from them, anchored at the gesture center; ignore while a touch pinch is
+      // active (handled by the pointer logic) to avoid double-zoom.
+      let gestureZoomBase = null;
+      wrap.addEventListener("gesturestart", event => {
+        event.preventDefault();
+        gestureZoomBase = pointers.size >= 2 ? null : (mapFitMode ? 1 : mapZoom);
+      });
+      wrap.addEventListener("gesturechange", event => {
+        event.preventDefault();
+        if (gestureZoomBase == null || pointers.size >= 2) return;
+        const rect = wrap.getBoundingClientRect();
+        setMapZoom(gestureZoomBase * event.scale, { x: event.clientX - rect.left, y: event.clientY - rect.top });
+      });
+      wrap.addEventListener("gestureend", event => { event.preventDefault(); gestureZoomBase = null; });
       wrap.addEventListener("scroll", () => saveMapPanSoon());
       wrap.addEventListener("click", event => {
         if (wrap.dataset.blockClick !== "true") return;
@@ -16929,11 +18175,11 @@
         disarmRingSlot();
       });
       wrap.addEventListener("wheel", event => {
-        if (mapFitMode || !(event.ctrlKey || event.metaKey)) return;
+        if (!(event.ctrlKey || event.metaKey)) return;   // trackpad pinch / ctrl+wheel — also works from fit mode
         event.preventDefault();
         const rect = wrap.getBoundingClientRect();
         // Gentle continuous multiplier per wheel notch (buttons/keys do the 2x jumps).
-        setMapZoom(mapZoom * (event.deltaY > 0 ? 1 / 1.25 : 1.25), {
+        setMapZoom((mapFitMode ? 1 : mapZoom) * (event.deltaY > 0 ? 1 / 1.25 : 1.25), {
           x: event.clientX - rect.left,
           y: event.clientY - rect.top
         });
@@ -17495,11 +18741,17 @@
         });
       });
       $("#restoreWorldLabelTunerBtn").addEventListener("click", restoreWorldLabelTuner);
+      $("#gridTuneDeveloperBtn")?.addEventListener("click", () => openGridTuner());
       $("#worldMapLabels").addEventListener("pointerdown", handleWorldLabelTunePointerDown);
       document.addEventListener("pointermove", handleWorldLabelTunePointerMove);
       document.addEventListener("pointerup", handleWorldLabelTunePointerUp);
       document.addEventListener("pointercancel", handleWorldLabelTunePointerUp);
       document.addEventListener("keydown", handleWorldLabelTuneKeydown);
+      $("#stateMap")?.addEventListener("pointerdown", handleGridTunePointerDown);
+      $("#stateMap")?.addEventListener("keydown", handleGridTuneHandleKeydown);
+      document.addEventListener("pointermove", handleGridTunePointerMove);
+      document.addEventListener("pointerup", handleGridTunePointerUp);
+      document.addEventListener("pointercancel", handleGridTunePointerUp);
       $("#mapLocationPinsBtn").addEventListener("click", () => updateSetting("mapLocationPinsVisible", state.settings.mapLocationPinsVisible === false));
       $("#mapMatchNotesBtn").addEventListener("click", () => updateSetting("mapFollowsNotesFilters", state.settings.mapFollowsNotesFilters !== true));
       $("#mapToggleBtn").addEventListener("click", toggleMapPanel);
@@ -17521,6 +18773,34 @@
       $("#mapLayerToggleBtn").addEventListener("click", () => setActiveLayer(activeLayerId === "world" ? "us" : "world"));
       $("#mapBucketListBtn").addEventListener("click", toggleBucketListView);
       $("#mapRingModeBtn").addEventListener("click", toggleRingMode);
+      $("#mapGraticuleBtn")?.addEventListener("pointerdown", () => {
+        graticuleButtonDismissPending = $("#graticuleDialog")?.matches(":popover-open") === true;
+      });
+      $("#mapGraticuleBtn")?.addEventListener("click", openGraticuleDialog);
+      $("#graticuleEnabledBtn")?.addEventListener("click", () => toggleGraticuleSetting("enabled"));
+      $("#graticuleReferenceBtn")?.addEventListener("click", () => toggleGraticuleSetting("references"));
+      $("#graticuleLabelsBtn")?.addEventListener("click", () => toggleGraticuleSetting("labels"));
+      $("#graticuleMajorInput")?.addEventListener("change", () => {
+        const current = graticuleLayerSettings();
+        const major = Math.max(5, Math.min(90, Math.round((Number($("#graticuleMajorInput").value) || current.major) / 5) * 5));
+        populateGraticuleSelect($("#graticuleMinorInput"), graticuleDivisors(major), graticuleSnapMinor(current.minor, major));
+        commitGraticuleSettings();
+      });
+      $("#graticuleMinorInput")?.addEventListener("change", () => commitGraticuleSettings());
+      $("#graticuleDialog")?.addEventListener("toggle", event => {
+        $("#mapGraticuleBtn")?.setAttribute("aria-expanded", event.newState === "open" ? "true" : "false");
+      });
+      $("#gridTuneCollapseBtn")?.addEventListener("click", toggleGridTunePanelCollapsed);
+      $("#gridTuneCloseBtn")?.addEventListener("click", () => $("#gridTunePanel")?.hidePopover());
+      $("#gridTunePanel")?.addEventListener("toggle", () => renderGraticule());
+      $("#gridTuneControls")?.addEventListener("click", handleGridTuneControlsClick);
+      $("#gridTuneControls")?.addEventListener("input", handleGridTuneInput);
+      $$("[data-grid-tune-tab]").forEach(button => {
+        button.addEventListener("click", () => setGridTuneTarget(button.dataset.gridTuneTab));
+      });
+      $("#gridTuneResetBtn")?.addEventListener("click", () => resetGridTune());
+      $("#gridTuneResetAllBtn")?.addEventListener("click", resetAllGridTuning);
+      $("#gridTuneCopyBtn")?.addEventListener("click", copyGridTuneCalibration);
       $("#ringPanel").addEventListener("click", event => {
         const clear = event.target.closest("[data-ring-clear]");
         if (clear) {
@@ -18152,6 +19432,7 @@
     function setDeveloperMode(enabled) {
       state.settings.developerMode = enabled === true;
       if (!state.settings.developerMode) state.settings.shortcutMode = false;
+      if (!state.settings.developerMode && $("#gridTunePanel")?.matches(":popover-open")) $("#gridTunePanel").hidePopover();
       developerGesture = [];
       save();
       render();
