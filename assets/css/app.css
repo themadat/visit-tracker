@@ -2257,6 +2257,7 @@
     }
 
     .ring-connector {
+      fill: none;
       stroke: var(--ring-connector);
       stroke-width: 1.4;
       stroke-linecap: round;
@@ -2314,6 +2315,14 @@
       fill: none;
       stroke: var(--ring-stroke, var(--ring-step-3-stroke));
       stroke-width: 1.75;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .ring-world-wrap-arc {
+      fill: none;
+      stroke: var(--ring-stroke, var(--ring-step-3-stroke));
+      stroke-width: 1.55;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
