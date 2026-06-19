@@ -174,12 +174,13 @@ For every completed change:
   (markup, CSS, app logic) plus plain data companion scripts in `assets/js/` —
   `icons.js` (`__*` SVG icon consts + generated `CIRCLE_ICON_SVGS` registry),
   `maps.js` (`__US_AND_WORLD_MAP_MARKUP`, injected into `.map-wrap` as the main
-  script's first statement), `changelog.js` (`CHANGELOG`), `roadmap.js`
+  script's first statement), `timezones.js` (offline country/state IANA lookup
+  data), `changelog.js` (`CHANGELOG`), `roadmap.js`
   (`WISHLIST_SEEDS`) — loaded as classic scripts before the main script, so
   top-level consts share the global lexical scope and work over `file://`.
 - Main file: `index.html`. `STORAGE_KEY = "usStateVisitMap.v1"`, version in `APP_VERSION`.
 - Docs: `README.md` (public/run/build), this handoff (all dev + LLM context), `AGENTS.md` + `CLAUDE.md` (thin auto-loaded agent summaries — keep lean).
-- Current version: `APP_VERSION = "4.7.5"` — latest cut release **4.7.5 "Gridlines"**. WISH-071 shipped optional per-map latitude/longitude grids with Major/Minor spacing, labels, a Robinson World frame and reference circles, calibrated Mainland/Alaska/Hawaii geography, and coordinate pins aligned to the same Mainland/Alaska surface. Developer Tools keeps the local-only nine-point US Grid Tuner (`trailLog.usGridTuning.v3`, outside backups and `usStateVisitMap.v1`) for future calibration work.
+- Current version: `APP_VERSION = "4.7.6.1"` — active WISH-061 development line **4.7.6 "Around the Clock"**. Scope: clearer cross-inset Rangefinder comparisons, World antimeridian ring/cue wrapping, and offline IANA time-zone clocks plus departure/arrival planning. Active plan: `context/WISH-061-RANGEFINDER-EDGECASES-PLAN.md`. Latest cut release remains **4.7.5 "Gridlines"**.
 - Gotcha worth keeping: `url()` paths in `assets/css/app.css` are **relative to the stylesheet**, not the page root (e.g. app-icon art is `url("../icons/…")`). The 4.5.1 fix corrected `.install-icon-thumb-{light,dark}` which still used the old root path after the 4.4.1 CSS split.
 
 Verification traps still apply: UI drivers that call `save()` mutate real localStorage (snapshot first); Wayfinder/Waypoint panels need a configured bucket-list level to render; `http.server` has no cache headers (force-reload assets).
@@ -202,7 +203,7 @@ Verification traps still apply: UI drivers that call `save()` mutate real localS
   - 4.4.1 **Ultralight** — no-build split: styles in `assets/css/app.css`; icon/map/changelog/roadmap data in `assets/js/` classic scripts loaded before the main script; `CIRCLE_ICON_SVGS` registry replaces source-scan icon discovery; dead code removed and unused icon art parked in `build/icon-sources/`; CHANGELOG entries flattened to top-level `banner`/`cta`. No behavior or schema changes.
   - 4.4.0 **Basecamps** — Basecamp becomes up to twenty named rich-text pads with icons, search, reorder, formatting toolbars, linked US/World notes, and per-pad exports. Legacy `{ text, updated }` migrates once into "Basecamp Pad". `usStateVisitMap.v1` schema unchanged.
 - Open follow-ups: WISH-077 (unified anchored control pop-ups, P0); WISH-076 (native-language World labels, P1); WISH-073 (Basecamp photo support, P2).
-- Plan docs live in `context/` only while their line is in flight, then are deleted on ship. Queued plans (not yet started): `context/WISH-061-RANGEFINDER-EDGECASES-PLAN.md` (Rangefinder cross-inset + antimeridian wrap + offline time zones, future patch — large, all three); `context/WISH-063-THEMING-OVERHAUL-PLAN.md` (app-wide theming overhaul — every color selectable, palette button moves to the top bar left of Settings, large grouped modal; 5.0.0 major flagship).
+- Plan docs live in `context/` only while their line is in flight, then are deleted on ship. Active plan: `context/WISH-061-RANGEFINDER-EDGECASES-PLAN.md` (Rangefinder cross-inset + antimeridian wrap + offline time zones, target 4.7.6). Queued plan: `context/WISH-063-THEMING-OVERHAUL-PLAN.md` (app-wide theming overhaul — every color selectable, palette button moves to the top bar left of Settings, large grouped modal; 5.0.0 major flagship).
 - No build step (other than the optional macOS icon pipeline — see README), backend, or dependencies.
 - User data lives in browser localStorage. Locate, Waypoint Pack Wikipedia
   photo previews, and Waypoint photo camera-location checks are intentional
@@ -345,7 +346,11 @@ Wayfinder level, and restores from snapshot on deactivation.
 Rangefinder (internal symbols use `ring*`): global `settings.ringMode` toggles
 the mode, while `settings.ringByLayer.{us,world}` stores each map's Start/End,
 ring distances, enabled rings, travel mode, units, fill/clip/time settings, and
-Drive/Plane speeds. `settings.ringPanelSplitRatio` controls the paired
+Drive/Plane speeds. Each bag also stores `timeZoneOpen`, `departureMode`,
+`departureLocal`, and `zoneOverrides.{anchor1,anchor2}`. Automatic zones come
+from `assets/js/timezones.js`; multi-zone regions choose the nearest reference
+longitude, while `Intl.DateTimeFormat` supplies offline DST-aware clocks.
+`settings.ringPanelSplitRatio` controls the paired
 Legend/Rangefinder split when both panels share the map placement. Helpers
 funnel through the active layer bag; legacy flat ring settings seed both bags
 only when upgrading older saved data.
@@ -375,7 +380,8 @@ Important invariants:
 - `priority` is a note field (`"1"`-`"5"` or `""`), not a Location Icon Tag.
 - Saved Notes filters are repaired against current level/tag ids.
 - Rangefinder settings are repaired per layer. Ring arrays allow up to 8 rings;
-  US and World settings remain independent after migration.
+  US and World settings remain independent after migration. Manual time-zone
+  overrides must validate as available IANA zones before persistence.
 - Basecamp HTML is sanitized before persistence; `plainText` is derived from
   the sanitized body. Legacy `basecamp.text` migration must never rerun once
   pads exist, and linked-note ids resolve across both note stores.
@@ -392,7 +398,7 @@ Important invariants:
 - Map: SVG state/territory map + world map; layer toggle (`#mapLayerToggleBtn`); scroll/fit modes, pan/zoom persistence, labels, clustered note pins, Match Notes filtering. Wayfinder pill rides inside the layer toggle when active.
 - Waypoint Packs: Wayfinder-only Packs button `#notesAddWaypointsBtn` (`__CIRCLE_BADGE_PLUS`) opens an inset panel over Notes with bundled National Parks/Monuments packs, available-pack cards, overlay/label controls in the Pack Locations header, 40px square Website/Photo/Edit-Link/Unlink buttons, compact Priority controls, pack-aware markers, preview priority badges, batch-add into Wayfinder, and safe remove behavior. Notes header Wayfinder button is `#notesActivateWayfinderBtn`. See the 4.3.0 CHANGELOG entry for full behavior.
 - Legend: editable levels (name, color, definition, exclude-from-stats, Wayfinder), drag reorder, swipe quick actions, movable desktop placement.
-- Rangefinder: Shortcut Mode key `5` / target button opens a paired panel with the Legend, picks saved note pins as Start/End, draws straight-line Drive/Plane planning rings on US and World maps, and keeps per-map ring distances, units, fill/clip/time style, travel mode, and average speed settings.
+- Rangefinder: Shortcut Mode key `5` / target button opens a paired panel with the Legend, picks saved note pins as Start/End, draws straight-line Drive/Plane planning rings on US and World maps, limits inset-start radii, wraps date-line rings/cues, and keeps per-map ring distances, units, fill/clip/time style, travel mode, average speed, offline zones, and departure/arrival settings.
 - Notes: search (with `/` hint chip + universal `/` shortcut), alpha/chrono base sort, Detailed/Expanded/Condensed/Text views, category grouping, icon filters, Show Excluded toggle (styled like legend's excluded pattern), coordinate/date precision filters, and a unified Priority popover for exact/higher/lower filtering, 1-to-5 or 5-to-1 primary ordering, and priority grouping.
 - Note editor: Quick Add, City/Where/What/Who/Details, local field suggestions, Smart Convert, partial/flexible dates, weekday preview, manual/lookup coordinates, multiple icon tags, an always-available priority field, and Add to active pack. Quick Add defaults to the Wayfinder level when Wayfinder Mode is on.
 - Location Icon Tags: configurable active tags plus auto-discovered More Icons from `__*_CIRCLE` constants, generated labels/search tags, explicit aliases, aliased-first sorting.
