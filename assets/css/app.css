@@ -24,14 +24,14 @@
       --ring-step-6-stroke: #9f5309;
       --ring-step-7-stroke: #92400e;
       --ring-step-8-stroke: #7c2d12;
-      --ring-step-1-fill: rgba(212, 160, 23, .2);
-      --ring-step-2-fill: rgba(209, 151, 0, .17);
-      --ring-step-3-fill: rgba(201, 133, 5, .14);
-      --ring-step-4-fill: rgba(189, 114, 8, .12);
-      --ring-step-5-fill: rgba(173, 97, 8, .1);
-      --ring-step-6-fill: rgba(159, 83, 9, .085);
-      --ring-step-7-fill: rgba(146, 64, 14, .07);
-      --ring-step-8-fill: rgba(124, 45, 18, .06);
+      --ring-step-1-fill: rgba(212, 160, 23, .32);
+      --ring-step-2-fill: rgba(209, 151, 0, .28);
+      --ring-step-3-fill: rgba(201, 133, 5, .24);
+      --ring-step-4-fill: rgba(189, 114, 8, .21);
+      --ring-step-5-fill: rgba(173, 97, 8, .18);
+      --ring-step-6-fill: rgba(159, 83, 9, .155);
+      --ring-step-7-fill: rgba(146, 64, 14, .13);
+      --ring-step-8-fill: rgba(124, 45, 18, .11);
       --ring-connector: #b45309;
       --ring-label-bg: var(--bg);
       --state-empty: #d7dce3;
@@ -66,14 +66,14 @@
       --ring-step-6-stroke: #a9550a;
       --ring-step-7-stroke: #9a460c;
       --ring-step-8-stroke: #873a0d;
-      --ring-step-1-fill: rgba(224, 170, 26, .2);
-      --ring-step-2-fill: rgba(217, 154, 0, .17);
-      --ring-step-3-fill: rgba(208, 135, 0, .14);
-      --ring-step-4-fill: rgba(200, 117, 5, .12);
-      --ring-step-5-fill: rgba(185, 99, 8, .1);
-      --ring-step-6-fill: rgba(169, 85, 10, .085);
-      --ring-step-7-fill: rgba(154, 70, 12, .075);
-      --ring-step-8-fill: rgba(135, 58, 13, .065);
+      --ring-step-1-fill: rgba(224, 170, 26, .32);
+      --ring-step-2-fill: rgba(217, 154, 0, .28);
+      --ring-step-3-fill: rgba(208, 135, 0, .24);
+      --ring-step-4-fill: rgba(200, 117, 5, .21);
+      --ring-step-5-fill: rgba(185, 99, 8, .18);
+      --ring-step-6-fill: rgba(169, 85, 10, .155);
+      --ring-step-7-fill: rgba(154, 70, 12, .135);
+      --ring-step-8-fill: rgba(135, 58, 13, .115);
       --ring-connector: #e0aa1a;
       --ring-label-bg: var(--bg);
       --state-empty: #3b4553;
@@ -2319,7 +2319,7 @@
       stroke-linejoin: round;
     }
 
-    .ring-world-wrap-arc {
+    .ring-geodesic {
       fill: none;
       stroke: var(--ring-stroke, var(--ring-step-3-stroke));
       stroke-width: 1.55;
@@ -2327,7 +2327,20 @@
       stroke-linejoin: round;
     }
 
-    .map-ring-overlay[data-ring-fill="off"] .ring-ellipse {
+    .ring-geodesic.is-filled {
+      fill: var(--ring-fill, var(--ring-step-3-fill));
+      fill-opacity: 1;
+    }
+
+    .ring-inset-coverage-rect {
+      fill: var(--ring-stroke, var(--ring-step-3-stroke));
+      fill-opacity: .26;
+      stroke: none;
+    }
+
+    .map-ring-overlay[data-ring-fill="off"] .ring-ellipse,
+    .map-ring-overlay[data-ring-fill="off"] .ring-geodesic.is-filled,
+    .map-ring-overlay[data-ring-fill="off"] .ring-inset-coverage-rect {
       fill-opacity: 0;
     }
 
@@ -2356,6 +2369,24 @@
     #worldMapRingOverlay .ring-label {
       font-size: 30px;
       stroke-width: 9px;
+    }
+
+    /* Rangefinder-colored pill behind ring labels so distance/time read clearly. */
+    .ring-pill-label .ring-pill-bg {
+      fill: var(--ring-stroke, var(--accent-ring));
+      fill-opacity: .96;
+      stroke: var(--ring-label-bg);
+      stroke-width: .75px;
+    }
+
+    #worldMapRingOverlay .ring-pill-label .ring-pill-bg {
+      stroke-width: 2.2px;
+    }
+
+    .ring-pill-label .ring-label {
+      fill: #1b1206;
+      stroke: none;
+      paint-order: normal;
     }
 
     /* WISH-071 lat/lng graticule — subordinate to markers/rings/labels, theme-aware. */
