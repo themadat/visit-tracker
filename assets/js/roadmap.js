@@ -4,19 +4,6 @@
 
     const WISHLIST_SEEDS = [
       {
-        title: "Pinch-to-Zoom the Map on Touch",
-        ticketId: "WISH-074",
-        planDoc: "WISH-074-PINCH-ZOOM-PLAN.md",
-        description: "Let touch users zoom the map with two-finger pinch (centered on the pinch midpoint, continuous while moving and snapping to a known zoom % on release), double-tap to zoom in one step, and two-finger tap to zoom out one step — in addition to the existing zoom pill, drag-pan, and desktop wheel/trackpad zoom. Touch-only; no behavior change on desktop, and it should feel natural on phones/tablets.",
-        priority: "P0",
-        effort: "medium",
-        targetKind: "patch",
-        targetVersion: "",
-        tokenCostPct: 12,
-        prompt: "Add touchscreen gestures to the scrollable map in bindMapPanZoom (gate on pointerType === 'touch'): two-finger pinch (scale from finger distance, anchored at the midpoint), double-tap to zoom in one step (anchored at the tap), and two-finger tap to zoom out one step. Route all zoom through setMapZoom(value, anchor) so #mapZoomReadout and the zoom-button states stay in sync (the syncMapZoomReadout invariant). Keep the live pinch continuous (transient CSS transform) and on release commit snapped to the nearest value in a MAP_ZOOM_STOPS ladder of round percentages (log-space nearest; doubling/halving stays on the ladder so taps share the stops). Track active pointers in a Map, suspend single-pointer pan during pinch, suppress tile taps on gesture end, set touch-action on .map-wrap so gestures reach the handlers, respect Fit vs scroll modes, and keep pan/zoom persistence. No change for mouse/trackpad.",
-        category: "Map"
-      },
-      {
         title: "Single-File Deploy Build Step",
         ticketId: "WISH-038",
         description: "4.4.1 delivered the no-build split: styles in assets/css and icon/map/release/roadmap data in assets/js. Remaining scope, only if ever wanted: a build script that concatenates and minifies everything back into one deployable index.html for a true single-file distribution.",
@@ -38,6 +25,18 @@
         targetVersion: "",
         tokenCostPct: 24,
         prompt: "Polish all modal dialog pop-ups: align headers, close/save/delete controls, icon/text rendering, shortcut badges, confirmations, and mobile spacing while preserving behavior.",
+        category: "UI"
+      },
+      {
+        title: "Unify Control Pop-Ups",
+        ticketId: "WISH-077",
+        description: "Tighten the newer anchored control pop-ups so they feel like one system: Priority, Grid, Rangefinder style and time, Legend position, Map label and Waypoint Pack label pickers, Waypoint priority/link menus, Basecamp row/icon/link popovers, and nearby picker surfaces. Standardize square buttons, sizing, labels, active/disabled states, row/grid layout, and on-screen clamping while preserving each control's behavior.",
+        priority: "P0",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 26,
+        prompt: "Unify anchored control pop-ups across the app. Focus on Priority, Grid, Rangefinder style/fill/clip and time, Legend position, Map labels/Waypoint Pack label picker, Waypoint priority/link menus, Basecamp row/icon/link popovers, and install/icon picker-adjacent surfaces. Make square icon buttons the default where appropriate, keep controls the same size as the rest of the app, normalize wording and labels, align yes/no and fill/clip grids, standardize active/disabled/focus states, clamp every pop-up on-screen, and preserve all current behavior and shortcuts.",
         category: "UI"
       },
       {
@@ -84,8 +83,8 @@
         description: "Round out Rangefinder with three related upgrades. (1) Cross-inset edge cases: clearer treatment when Start and End cross between the contiguous map and inset regions (for example Washington to Alaska), including clipped-ring visuals, inset-scale limits, and honest long-distance comparisons across projections. (2) Antimeridian wrap on the World map: rings around a Start near the date line (Honolulu, Tokyo, Sydney) keep drawing on the opposite side instead of clipping, with continuous geometry across the seam, arc-following labels, preserved clip-to-land and inset behavior, and shorter-great-circle Start-to-End paths. (3) Offline time zones: show local time and IANA zone for Start and End, let a user pick a departure time, and compute the destination-local arrival from the current travel-time estimate, with daylight-saving handling, US and World support, and manual correction when a zone cannot be resolved offline.",
         priority: "P0",
         effort: "large",
-        targetKind: "exact",
-        targetVersion: "4.7.5",
+        targetKind: "patch",
+        targetVersion: "",
         tokenCostPct: 48,
         prompt: "Deliver three related Rangefinder upgrades. (1) Polish cross-inset edge cases (e.g. a Washington Start with rings or an Alaska End): clearer non-route cross-region cue, inset radius caps, honest real-coordinate distance, preserved local settings. (2) Antimeridian wrap on the World map via mirror/duplicate ellipses: also draw the ring-shapes group translated by +/- the world projection box width so a date-line Start continues on the opposite side instead of clipping; reuse the land clip/inset mask, label the visible arc, keep US-map behavior, and pick the shorter longitudinal wrap for the Start-to-End cue. (3) Offline time zones via a compact region->IANA zone table (US state / world country -> primary zone, optional longitude refinement, manual override when unresolved); use Intl.DateTimeFormat({timeZone}) for offline local time + DST; show Start/End local time and zone, a chosen departure time, and destination-local arrival from the current travel-time estimate; US and World; no network lookups. Add settings + normalize; preserve usStateVisitMap.v1.",
         category: "Maps"
@@ -101,19 +100,6 @@
         tokenCostPct: 18,
         prompt: "Add a persisted location rating field with editor controls and Notes sorting. Keep it distinct from note priority and visit levels, support unrated locations, show compact rating indicators, include ratings in exports/backups, and preserve existing notes during migration.",
         category: "Notes"
-      },
-      {
-        title: "Latitude / Longitude Map Lines",
-        ticketId: "WISH-071",
-        planDoc: "WISH-071-LATLNG-GRATICULE-PLAN.md",
-        description: "Add an optional, per-map latitude/longitude graticule with customizable major + minor line tiers set from a settings pop-up (defaults: World 30 deg major / 10 deg minor, US 10 deg major / 5 deg minor). Major lines are stronger and carry degree labels at both ends; minor lines are subtle. The World map uses its true Robinson projection (curved meridians) and draws the projection outline/frame so the map reads as curved rather than a rectangle; the US map draws true lat/lon per state through each state's local frame, with separate grids inside the insets (Alaska, Hawaii) — continuous within a state, not across the stylized tile layout. Styling stays secondary to locations, Wayfinder, and Rangefinder; settings are remembered per map.",
-        priority: "P0",
-        effort: "medium",
-        targetKind: "patch",
-        targetVersion: "",
-        tokenCostPct: 18,
-        prompt: "Add a customizable lat/lng graticule as a non-interactive SVG <g> layer per map, below markers/rings/labels. Two tiers: minor-interval lines (subtle) plus major-interval lines (stronger, with degree labels like 30°N/120°W at both ends). World: sample worldCoordinatePoint (Robinson) for straight parallels + polyline meridians. US: per .state-tile and per inset frame (LOCATION_GEO_BOUNDS + LOCATION_PROJECTION_FRAME_OVERRIDES) draw straight lat/lng segments within each box. Add settings.graticuleByLayer { us:{enabled,major:10,minor:5}, world:{enabled,major:30,minor:10} } (default off) with defaults/normalize (clamp, major>=minor), a per-map button that opens a settings pop-up (on/off + major/minor intervals), and theme-aware styling. Preserve map pan/zoom and existing overlays.",
-        category: "Maps"
       },
       {
         title: "Link Multiple Notes to a Waypoint",
