@@ -4,6 +4,38 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.6.1",
+        date: "2026-06-18",
+        title: "Around the Clock",
+        summary: "Rangefinder handles inset crossings, the date line, and offline local-time planning.",
+        highlights: [
+          "Clarify long-distance comparisons between mainland and inset map regions.",
+          "Continue World rings and Start-to-End cues across the date line.",
+          "Show offline local times and IANA zones for Rangefinder points.",
+          "Plan a departure and see the destination-local estimated arrival.",
+        ],
+        updateSections: [
+          {
+            heading: "Rangefinder Geography",
+            items: [
+              "Cross-region comparisons use a clearer approximate great-circle cue while preserving real-coordinate distance.",
+              "Rings that start in a US inset are limited to a useful inset scale instead of expanding indefinitely behind the mask.",
+              "World rings near the antimeridian continue on the opposite edge with labels placed on visible wrapped arcs.",
+              "World Start-to-End cues choose the shorter longitudinal wrap across the map seam.",
+            ]
+          },
+          {
+            heading: "Offline Time Planning",
+            items: [
+              "Start and End points resolve to offline IANA time zones with longitude-aware choices for multi-zone regions.",
+              "Rangefinder can show current local clocks, a chosen departure, and the destination-local estimated arrival.",
+              "Manual IANA zone overrides cover ambiguous or unresolved locations and persist per map.",
+              "Browser Intl time-zone data supplies daylight-saving-aware formatting without network requests.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.5",
         date: "2026-06-18",
         title: "Gridlines",
