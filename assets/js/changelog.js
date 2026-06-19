@@ -4,6 +4,57 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.6.6",
+        date: "2026-06-19",
+        title: "Full Radius",
+        summary: "Rangefinder rings now carry cleanly across US map regions and explain every band.",
+        highlights: [
+          "Stop inset travel cues at the inset frame instead of the full map edge.",
+          "Project rings between the mainland and insets without requiring an End point.",
+          "Keep curve labels clear of map content, with Rangefinder labels always on top.",
+          "Show time-zone change in the comparison and identify hovered ring bands.",
+        ],
+        updateSections: [
+          {
+            heading: "Cross-Region Rings",
+            items: [
+              "Inset-side dotted cues end at the visible inset frame while mainland-side cues continue to the main map boundary.",
+              "Every enabled Start-centered ring projects into each reached US region, including inset-to-mainland coverage, whether or not End is set.",
+              "Within-range shading uses the full graduated ring fill through the outermost enabled distance instead of fading too early.",
+            ]
+          },
+          {
+            heading: "Labels & Readouts",
+            items: [
+              "Distance and time pills are sampled directly along ring curves and reposition around pins, Waypoint markers, map labels, other ring labels, and map edges.",
+              "Rangefinder labels render in a dedicated top layer when crowded geometry leaves no collision-free position.",
+              "The Start-to-End comparison adds a signed time-zone change such as [+3 Hours] or [-1 Hour].",
+              "Pointer hover identifies the active ring number plus its distance and estimated-time range.",
+            ]
+          }
+        ]
+      },
+      {
+        version: "4.7.6.5",
+        date: "2026-06-19",
+        title: "On the Horizon",
+        summary: "The Roadmap adds deeper Rangefinder polish and a mobile center-crosshair targeting mode.",
+        highlights: [
+          "Plan a full pass on inset cues, ring coverage, labels, shading, and hover bands.",
+          "Plan a mobile crosshair that updates distance and travel time while the map moves.",
+        ],
+        updateSections: [
+          {
+            heading: "Rangefinder Follow-Ups",
+            items: [
+              "Queued true inset-boundary cue endings and ring coverage across the mainland and every US inset.",
+              "Queued curve-following collision-aware ring labels, signed time-zone deltas, full-depth shading, and live hover-band hints.",
+              "Queued a mobile center-crosshair targeting flow with continuous distance/time feedback and confirm/cancel controls.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.6.4",
         date: "2026-06-19",
         title: "Within Range",
