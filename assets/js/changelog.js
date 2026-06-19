@@ -4,7 +4,7 @@
 
     const CHANGELOG = [
       {
-        version: "4.7.6.2",
+        version: "4.7.6.3",
         date: "2026-06-18",
         title: "Around the Clock",
         summary: "Rangefinder handles inset crossings, the date line, and offline local-time planning.",
@@ -21,8 +21,8 @@
               "Cross-region cues follow the real compass bearing instead of aiming at the inset's on-page position.",
               "Matching geodesic ring arcs appear in the End region when a Start-centered distance ring crosses it.",
               "Rings that start in a US inset are limited to a useful inset scale instead of expanding indefinitely behind the mask.",
-              "World rings near the antimeridian continue on the opposite edge with labels placed on visible wrapped arcs.",
-              "World Start-to-End cues choose the shorter longitudinal wrap across the map seam.",
+              "World rings wrap at the curved Robinson globe outline rather than the image or SVG container edge.",
+              "Wrapped labels stay inside the globe, and Start-to-End cues split naturally at the curved date-line seam.",
             ]
           },
           {

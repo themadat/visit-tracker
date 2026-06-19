@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.6.2">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.6.3">
 </head>
 
 <body>
@@ -1188,7 +1188,8 @@
               inset starts use a limited inset-scale radius, and cross-inset Start-to-End comparisons use real
               coordinates with a compass-correct approximate great-circle cue instead of a route line. When a
               Start-centered distance ring crosses the End region, its matching arc appears there too. World rings and
-              comparison cues continue across the date-line seam rather than stopping at the map edge.</li>
+              comparison cues continue across the curved Robinson globe outline—not the image or container edge—rather
+              than stopping at the date-line seam.</li>
             <li>In Wayfinder, use Packs to preview curated place lists on the map, assign priorities, attach matching
               notes, and add selected places as normal Wayfinder notes.</li>
             <li>On desktop, drag the divider between the map and cards to resize the working area.</li>
@@ -1779,14 +1780,14 @@
   <script src="assets/js/maps.js"></script>
   <script src="assets/js/world-names.js?v=4.7.4"></script>
   <script src="assets/js/world-label-overrides.js?v=4.7.4"></script>
-  <script src="assets/js/timezones.js?v=4.7.6.2"></script>
+  <script src="assets/js/timezones.js?v=4.7.6.3"></script>
   <script src="assets/js/changelog.js"></script>
   <script src="assets/js/roadmap.js"></script>
   <script>
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.6.2";
+    const APP_VERSION = "4.7.6.3";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -6858,6 +6859,69 @@
       };
     }
 
+    function worldLatitudeForProjectionY(y, box = worldProjectionBox()) {
+      if (!box || !Number.isFinite(Number(y))) return null;
+      const halfHeight = box.height / 2;
+      const normalized = Math.max(0, Math.min(1, Math.abs(Number(y) - (box.y + halfHeight)) / Math.max(.0001, halfHeight)));
+      let index = ROBINSON_Y_COEFFICIENTS.length - 2;
+      for (let i = 0; i < ROBINSON_Y_COEFFICIENTS.length - 1; i += 1) {
+        if (normalized <= ROBINSON_Y_COEFFICIENTS[i + 1]) {
+          index = i;
+          break;
+        }
+      }
+      const low = ROBINSON_Y_COEFFICIENTS[index];
+      const high = ROBINSON_Y_COEFFICIENTS[index + 1];
+      const amount = (normalized - low) / Math.max(.0001, high - low);
+      return Math.max(0, Math.min(90, (index + amount) * 5));
+    }
+
+    function worldGlobeHorizontalBounds(y, box = worldProjectionBox(), margin = 0) {
+      if (!box) return null;
+      const centerY = box.y + box.height / 2;
+      const halfHeight = box.height / 2;
+      if (Number(y) < box.y + margin || Number(y) > box.y + box.height - margin) return null;
+      const latitude = worldLatitudeForProjectionY(y, box);
+      if (!Number.isFinite(latitude)) return null;
+      const halfWidth = box.width / 2 * robinsonCoefficient(ROBINSON_X_COEFFICIENTS, latitude);
+      const centerX = box.x + box.width / 2;
+      return {
+        left: centerX - halfWidth + margin,
+        right: centerX + halfWidth - margin,
+        width: Math.max(0, halfWidth * 2 - margin * 2),
+        latitude,
+        centerY,
+        halfHeight
+      };
+    }
+
+    function ringPointInsideWorldGlobe(x, y, margin = 0) {
+      const bounds = worldGlobeHorizontalBounds(y, worldProjectionBox(), margin);
+      return Boolean(bounds && Number(x) >= bounds.left && Number(x) <= bounds.right);
+    }
+
+    function ensureWorldRingGlobeClipPath() {
+      if (activeLayerId !== "world") return "";
+      const defs = activeMapDefs();
+      const box = worldProjectionBox();
+      if (!defs || !box) return "";
+      const id = "worldRingGlobeClip";
+      let clip = $(`#${id}`, defs);
+      if (clip) return id;
+      const svgNS = "http://www.w3.org/2000/svg";
+      clip = document.createElementNS(svgNS, "clipPath");
+      clip.id = id;
+      clip.setAttribute("clipPathUnits", "userSpaceOnUse");
+      const polygon = document.createElementNS(svgNS, "polygon");
+      const points = [];
+      for (let lat = -90; lat <= 90; lat += 2) points.push(worldGratPoint(lat, -180, box));
+      for (let lat = 90; lat >= -90; lat -= 2) points.push(worldGratPoint(lat, 180, box));
+      polygon.setAttribute("points", points.map(point => `${point.x.toFixed(2)},${point.y.toFixed(2)}`).join(" "));
+      clip.append(polygon);
+      defs.append(clip);
+      return id;
+    }
+
     function usGridCoordinatePoint(abbr, coords) {
       if (activeLayerId !== "us" || !coords || abbr === "HI" || TERRITORY_IDS.includes(abbr)) return null;
       return tunedUsGridPoint(coords.lat, coords.lng, abbr === "AK" ? "alaska" : "mainland");
@@ -7360,7 +7424,9 @@
       // a ring around a high-latitude Start pushes its north point off the top
       // edge, so the label must fall back onto a visible arc point.
       const margin = activeLayerId === "world" ? 44 : 12;
-      const inView = (x, y) => !viewBox || ringPointInViewBox(x, y, viewBox, margin);
+      const inView = (x, y) => activeLayerId === "world"
+        ? ringPointInsideWorldGlobe(x, y, 28)
+        : !viewBox || ringPointInViewBox(x, y, viewBox, margin);
       const clipActive = ringClipEnabled() && clipTiles.length > 0;
       // With no clipping, float the label just above the ring's north point —
       // unless that point is off the visible map, in which case fall through to
@@ -7434,6 +7500,60 @@
         lat: lat2 * 180 / Math.PI,
         lng: ((lng2 * 180 / Math.PI + 540) % 360) - 180
       };
+    }
+
+    function ringGreatCircleCoordinate(anchorA, anchorB, amount) {
+      const toRad = value => Number(value) * Math.PI / 180;
+      const toVector = anchor => {
+        const lat = toRad(anchor?.lat);
+        const lng = toRad(anchor?.lng);
+        return [Math.cos(lat) * Math.cos(lng), Math.cos(lat) * Math.sin(lng), Math.sin(lat)];
+      };
+      const a = toVector(anchorA);
+      const b = toVector(anchorB);
+      if (![...a, ...b].every(Number.isFinite)) return null;
+      const dot = Math.max(-1, Math.min(1, a[0] * b[0] + a[1] * b[1] + a[2] * b[2]));
+      const omega = Math.acos(dot);
+      if (omega < .000001) return { lat: Number(anchorA.lat), lng: Number(anchorA.lng) };
+      const sinOmega = Math.sin(omega);
+      const scaleA = Math.sin((1 - amount) * omega) / sinOmega;
+      const scaleB = Math.sin(amount * omega) / sinOmega;
+      const x = scaleA * a[0] + scaleB * b[0];
+      const y = scaleA * a[1] + scaleB * b[1];
+      const z = scaleA * a[2] + scaleB * b[2];
+      return {
+        lat: Math.atan2(z, Math.hypot(x, y)) * 180 / Math.PI,
+        lng: Math.atan2(y, x) * 180 / Math.PI
+      };
+    }
+
+    function appendRingConnectorPath(parent, points, className = "") {
+      if (!Array.isArray(points) || points.length < 2) return;
+      const svgNS = "http://www.w3.org/2000/svg";
+      const path = document.createElementNS(svgNS, "path");
+      path.classList.add("ring-connector");
+      if (className) path.classList.add(className);
+      path.setAttribute("d", points.map((point, index) => `${index ? "L" : "M"}${point.x.toFixed(2)},${point.y.toFixed(2)}`).join(" "));
+      parent.append(path);
+    }
+
+    function appendWorldRingConnector(parent, anchorA, anchorB) {
+      const box = worldProjectionBox();
+      if (!box) return;
+      const segments = [];
+      let segment = [];
+      for (let step = 0; step <= 80; step += 1) {
+        const coordinate = ringGreatCircleCoordinate(anchorA, anchorB, step / 80);
+        const point = worldCoordinatePoint(coordinate);
+        if (!point) continue;
+        if (segment.length && Math.abs(point.x - segment[segment.length - 1].x) > box.width * .45) {
+          if (segment.length > 1) segments.push(segment);
+          segment = [];
+        }
+        segment.push(point);
+      }
+      if (segment.length > 1) segments.push(segment);
+      segments.forEach(points => appendRingConnectorPath(parent, points, segments.length > 1 ? "is-world-wrap" : ""));
     }
 
     function ringUsRegionCoordinatePoint(abbr, coords) {
@@ -7523,18 +7643,7 @@
     function appendRingConnector(parent, anchorA, pointA, anchorB, pointB) {
       const crossInset = ringAnchorsCrossMapRegions(anchorA, anchorB);
       if (activeLayerId === "world") {
-        const box = worldProjectionBox();
-        if (!box) {
-          appendRingConnectorLine(parent, pointA, pointB);
-          return;
-        }
-        const directDelta = Number(anchorB.lng) - Number(anchorA.lng);
-        const endOffset = directDelta > 180 ? -box.width : directDelta < -180 ? box.width : 0;
-        const wrappedEnd = { x: pointB.x + endOffset, y: pointB.y };
-        appendRingConnectorLine(parent, pointA, wrappedEnd, endOffset ? "is-world-wrap" : "");
-        if (endOffset) {
-          appendRingConnectorLine(parent, { x: pointA.x - endOffset, y: pointA.y }, pointB, "is-world-wrap");
-        }
+        appendWorldRingConnector(parent, anchorA, anchorB);
         return;
       }
       if (!crossInset) {
@@ -7567,20 +7676,55 @@
       };
     }
 
-    function worldRingWrapOffsets(point, maxRx) {
-      if (activeLayerId !== "world") return [0];
-      const box = worldProjectionBox();
-      if (!box) return [0];
-      const offsets = [0];
-      const margin = Math.max(8, box.width * .004);
-      if (point.x - maxRx <= box.x + margin) offsets.push(box.width);
-      if (point.x + maxRx >= box.x + box.width - margin) offsets.push(-box.width);
-      return offsets;
+    function worldWrappedRingSegments(point, rx, ry) {
+      if (activeLayerId !== "world") return [];
+      const segments = [];
+      let segment = [];
+      let side = "";
+      const flush = () => {
+        if (segment.length > 1) segments.push({ side, points: segment });
+        segment = [];
+        side = "";
+      };
+      for (let degrees = 0; degrees <= 360; degrees += 2) {
+        const radians = degrees * Math.PI / 180;
+        const source = {
+          x: point.x + Math.cos(radians) * rx,
+          y: point.y + Math.sin(radians) * ry
+        };
+        const bounds = worldGlobeHorizontalBounds(source.y);
+        const nextSide = !bounds ? "" : source.x < bounds.left ? "left" : source.x > bounds.right ? "right" : "";
+        if (!nextSide || !bounds?.width) {
+          flush();
+          continue;
+        }
+        let wrappedX = source.x;
+        while (wrappedX < bounds.left) wrappedX += bounds.width;
+        while (wrappedX > bounds.right) wrappedX -= bounds.width;
+        const wrapped = { x: wrappedX, y: source.y };
+        const previous = segment[segment.length - 1];
+        if (side && (side !== nextSide || (previous && Math.abs(previous.x - wrapped.x) > bounds.width * .3))) flush();
+        side = nextSide;
+        segment.push(wrapped);
+      }
+      flush();
+      return segments;
     }
 
-    function configureRingShapesGroup(group, anchorAbbr, clipOn, offset = 0) {
+    function configureRingShapesGroup(group, anchorAbbr, clipOn) {
       group.classList.add("ring-shapes");
-      if (offset) group.classList.add("is-world-wrap");
+      let geometry = group;
+      if (activeLayerId === "world") {
+        const globeClipId = ensureWorldRingGlobeClipPath();
+        if (globeClipId) group.setAttribute("clip-path", `url(#${globeClipId})`);
+        if (clipOn) {
+          geometry = document.createElementNS("http://www.w3.org/2000/svg", "g");
+          const clipId = ensureRingLandClipPath(anchorAbbr);
+          if (clipId) geometry.setAttribute("clip-path", `url(#${clipId})`);
+          group.append(geometry);
+        }
+        return geometry;
+      }
       if (clipOn) {
         const clipId = ensureRingLandClipPath(anchorAbbr);
         if (clipId) group.setAttribute("clip-path", `url(#${clipId})`);
@@ -7588,6 +7732,39 @@
         const maskId = ensureRingInsetMask(anchorAbbr);
         if (maskId) group.setAttribute("mask", `url(#${maskId})`);
       }
+      return geometry;
+    }
+
+    function appendWorldWrappedRingArcs(parent, ringEntries, point, anchorAbbr, clipOn, clipTiles) {
+      if (activeLayerId !== "world") return;
+      const svgNS = "http://www.w3.org/2000/svg";
+      const group = document.createElementNS(svgNS, "g");
+      group.classList.add("ring-world-wrap-arcs");
+      const geometry = configureRingShapesGroup(group, anchorAbbr, clipOn);
+      parent.append(group);
+      ringEntries.forEach(({ miles, ringIndex, rx, ry }) => {
+        const segments = worldWrappedRingSegments(point, rx, ry);
+        if (!segments.length) return;
+        segments.forEach(segment => {
+          const path = document.createElementNS(svgNS, "path");
+          path.classList.add("ring-world-wrap-arc");
+          path.setAttribute("style", ringStepStyle(ringIndex));
+          path.setAttribute("d", segment.points.map((ringPoint, index) => `${index ? "L" : "M"}${ringPoint.x.toFixed(2)},${ringPoint.y.toFixed(2)}`).join(" "));
+          geometry.append(path);
+        });
+        const visiblePoints = segments.flatMap(segment => segment.points)
+          .filter(ringPoint => !clipOn || ringPointInsideClipTiles(ringPoint.x, ringPoint.y, clipTiles));
+        if (!visiblePoints.length) return;
+        const labelPoint = visiblePoints[Math.floor(visiblePoints.length / 2)];
+        const label = document.createElementNS(svgNS, "text");
+        label.classList.add("ring-label", "is-world-wrap");
+        label.setAttribute("style", ringStepStyle(ringIndex));
+        label.setAttribute("x", labelPoint.x.toFixed(2));
+        label.setAttribute("y", labelPoint.y.toFixed(2));
+        label.textContent = ringLabelText(miles);
+        parent.append(label);
+      });
+      if (!geometry.children.length) group.remove();
     }
 
     function renderRingOverlay() {
@@ -7618,41 +7795,32 @@
         if (rx < rawRx - .01 || ry < rawRy - .01) insetLimited = true;
         return { miles, ringIndex, rx, ry };
       });
-      const maxRx = ringEntries.reduce((max, entry) => Math.max(max, entry.rx), 0);
-      const wrapOffsets = worldRingWrapOffsets(point1, maxRx);
       const svg = $("#" + activeLayer().svgId);
       const viewBox = svg?.viewBox?.baseVal || null;
-      wrapOffsets.forEach(offset => {
-        const ringShapes = document.createElementNS(svgNS, "g");
-        configureRingShapesGroup(ringShapes, anchor1.abbr, clipOn, offset);
-        overlay.append(ringShapes);
-        const ringGeometry = offset ? document.createElementNS(svgNS, "g") : ringShapes;
-        if (offset) {
-          ringGeometry.setAttribute("transform", `translate(${offset.toFixed(2)} 0)`);
-          ringShapes.append(ringGeometry);
-        }
-        ringEntries.forEach(({ miles, ringIndex, rx, ry }) => {
-          const ellipse = document.createElementNS(svgNS, "ellipse");
-          ellipse.classList.add("ring-ellipse");
-          ellipse.setAttribute("style", ringStepStyle(ringIndex));
-          ellipse.setAttribute("cx", point1.x.toFixed(2));
-          ellipse.setAttribute("cy", point1.y.toFixed(2));
-          ellipse.setAttribute("rx", rx.toFixed(2));
-          ellipse.setAttribute("ry", ry.toFixed(2));
-          ringGeometry.append(ellipse);
-          const shiftedPoint = { x: point1.x + offset, y: point1.y };
-          const labelPoint = ringLabelPoint(shiftedPoint, rx, ry, clipTiles);
-          if (viewBox && !ringPointInViewBox(labelPoint.x, labelPoint.y, viewBox, activeLayerId === "world" ? 28 : 8)) return;
-          const label = document.createElementNS(svgNS, "text");
-          label.classList.add("ring-label");
-          if (offset) label.classList.add("is-world-wrap");
-          label.setAttribute("style", ringStepStyle(ringIndex));
-          label.setAttribute("x", labelPoint.x.toFixed(2));
-          label.setAttribute("y", labelPoint.y.toFixed(2));
-          label.textContent = ringLabelText(miles);
-          overlay.append(label);
-        });
+      const ringShapes = document.createElementNS(svgNS, "g");
+      const ringGeometry = configureRingShapesGroup(ringShapes, anchor1.abbr, clipOn);
+      overlay.append(ringShapes);
+      ringEntries.forEach(({ miles, ringIndex, rx, ry }) => {
+        const ellipse = document.createElementNS(svgNS, "ellipse");
+        ellipse.classList.add("ring-ellipse");
+        ellipse.setAttribute("style", ringStepStyle(ringIndex));
+        ellipse.setAttribute("cx", point1.x.toFixed(2));
+        ellipse.setAttribute("cy", point1.y.toFixed(2));
+        ellipse.setAttribute("rx", rx.toFixed(2));
+        ellipse.setAttribute("ry", ry.toFixed(2));
+        ringGeometry.append(ellipse);
+        const labelPoint = ringLabelPoint(point1, rx, ry, clipTiles);
+        if (activeLayerId === "world" ? !ringPointInsideWorldGlobe(labelPoint.x, labelPoint.y, 18)
+          : viewBox && !ringPointInViewBox(labelPoint.x, labelPoint.y, viewBox, 8)) return;
+        const label = document.createElementNS(svgNS, "text");
+        label.classList.add("ring-label");
+        label.setAttribute("style", ringStepStyle(ringIndex));
+        label.setAttribute("x", labelPoint.x.toFixed(2));
+        label.setAttribute("y", labelPoint.y.toFixed(2));
+        label.textContent = ringLabelText(miles);
+        overlay.append(label);
       });
+      appendWorldWrappedRingArcs(overlay, ringEntries, point1, anchor1.abbr, clipOn, clipTiles);
       if (insetLimited && insetLimits?.box) {
         const limitLabel = document.createElementNS(svgNS, "text");
         limitLabel.classList.add("ring-inset-limit-label");
