@@ -4,6 +4,99 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.5",
+        date: "2026-06-18",
+        title: "Gridlines",
+        summary: "US and World maps gain customizable geographic grids with coordinate pins aligned to match.",
+        highlights: [
+          "Add customizable latitude/longitude grids to US and World maps.",
+          "Control Major and Minor spacing, labels, and World reference circles.",
+          "Fit Mainland, Alaska, and Hawaii grids to their geographic map frames.",
+          "Align coordinate pins with the calibrated Mainland and Alaska grids.",
+        ],
+        updateSections: [
+          {
+            heading: "Grid Controls",
+            items: [
+              "Each map remembers whether Grid, labels, and World reference circles are visible.",
+              "Major spacing uses 5° steps through 90°; Minor offers compatible divisors of the selected Major spacing.",
+              "Grid controls disable cleanly while the overlay is off and remain clamped inside the map panel on small screens.",
+              "Major lines carry degree labels at visible endpoints; Minor lines stay thinner and unlabeled.",
+              "North, south, east, and west degree labels use subtle direction colors.",
+            ]
+          },
+          {
+            heading: "World Geography",
+            items: [
+              "The World grid uses the map's Robinson projection: straight parallels, curved meridians, and a curved globe frame.",
+              "Optional reference lines emphasize and name the Equator, tropics, and polar circles at both globe edges.",
+            ]
+          },
+          {
+            heading: "US Geography",
+            items: [
+              "The lower-48 grid uses a manually calibrated geographic surface and continues beyond every visible map edge.",
+              "Alaska and Hawaii use independent inset grids clipped to their separator panes; territory cutouts remain clear.",
+              "Inset labels render outside clipped line groups with edge anchoring and collision guards.",
+              "Mainland and Alaska coordinate pins, Waypoint previews, clusters, and Rangefinder anchors use the same calibrated grid projection.",
+            ]
+          },
+          {
+            heading: "Developer Tools",
+            items: [
+              "Developer Tools adds a nine-point Mainland/Alaska grid tuner with drag, keyboard, exact-coordinate, reset, and code-copy controls.",
+              "Off-map control points remain reachable through edge proxy handles, and the tuner minimizes to keep the map visible on phones.",
+              "Added a P0 Roadmap follow-up to unify anchored control pop-ups across the app.",
+            ]
+          }
+        ]
+      },
+      {
+        version: "4.7.4",
+        date: "2026-06-17",
+        title: "Crosshairs",
+        summary: "Map zoom gets touch-first gestures, stable mobile panning, and desktop-friendly double-click zoom.",
+        highlights: [
+          "Pinch to zoom the map on phones and tablets.",
+          "Double-tap zooms in; two-finger tap zooms out.",
+          "Trackpad pinch and desktop double-click zoom work from Fit mode.",
+          "Mobile map panning stays smooth in both directions.",
+        ],
+        updateSections: [
+          {
+            heading: "Map Gestures",
+            items: [
+              "Two-finger pinch zooms the scrollable map from the midpoint between your fingers, then snaps to clean zoom percentages on release.",
+              "Double-tap or double-click zooms in at the tap/click point, including from Fit mode.",
+              "Two-finger tap zooms out one step when the map is already in scroll mode.",
+              "Laptop trackpad pinch uses the same anchored zoom path in browsers that send ctrl/meta wheel or Safari gesture events.",
+            ]
+          },
+          {
+            heading: "Mobile Pan and Layout",
+            items: [
+              "Vertical swipes over the map use native page scrolling instead of synthetic scroll emulation, keeping mobile scroll smooth.",
+              "Scrollable maps allow native horizontal panning, while the custom pan lock waits for clear horizontal intent before grabbing a touch drag.",
+              "Small-screen scroll mode locks the map viewport to the active map's 100% height, so pinch zoom grows pannable content without stretching the page section.",
+            ]
+          },
+          {
+            heading: "Interaction Polish",
+            items: [
+              "Desktop double-click zoom suppresses SVG/text selection so the action only zooms the map.",
+              "Gesture tap-suppression prevents pinch, tap, and pan endings from accidentally selecting or opening map locations.",
+              "Map zoom, pan center, and Fit/Scroll mode continue to persist through the existing saved-map settings.",
+            ]
+          },
+          {
+            heading: "Roadmap",
+            items: [
+              "Retired the completed touch map-zoom roadmap item from the active list and left latitude/longitude map lines queued for a future patch.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.3",
         date: "2026-06-17",
         title: "Camera Trail",
