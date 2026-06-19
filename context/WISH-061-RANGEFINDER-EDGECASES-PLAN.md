@@ -4,7 +4,7 @@ Ticket: **WISH-061** (Maps, **large**, `tokenCostPct 48`). Target: **4.7.6** —
 
 ## Implementation status
 
-Implemented in `4.7.6.1`: inset radius limits and approximate great-circle cues; mirrored World rings, visible wrapped labels, and shorter seam-crossing comparison cues; offline country/state IANA resolution with longitude-aware multi-zone choices; persisted manual overrides and departure settings; DST-aware destination-local arrival; responsive light/dark UI; Help, README, changelog, Roadmap, and handoff updates.
+Implemented through `4.7.6.2`: inset radius limits; compass-correct approximate great-circle cues; Start-centered geodesic ring arcs projected into the End region; mirrored World rings, visible wrapped labels, and shorter seam-crossing comparison cues; offline country/state IANA resolution with longitude-aware multi-zone choices; persisted manual overrides and departure settings; DST-aware destination-local arrival; responsive light/dark UI; Help, README, changelog, Roadmap, and handoff updates.
 
 ## Current Rangefinder internals (what we build on)
 
