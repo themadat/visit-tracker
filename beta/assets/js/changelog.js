@@ -4,6 +4,38 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.6.4",
+        date: "2026-06-19",
+        title: "Within Range",
+        summary: "Rangefinder rings read more clearly — true great-circle curves, inset coverage, and bolder shading.",
+        highlights: [
+          "World rings follow the true great-circle curve instead of bowing the wrong way.",
+          "Distance rings shade every in-range inset, even without an End point there.",
+          "Distance and travel time read from clearer rangefinder-colored pills.",
+          "See total travel time plus the hours gained or lost across time zones.",
+        ],
+        updateSections: [
+          {
+            heading: "Rangefinder Rings",
+            items: [
+              "World distance rings trace the real great-circle, sampled and wrapped at the date line, so the curvature matches the projection.",
+              "Distance rings now shade Alaska, Hawaii, and the territories whenever they fall within range, regardless of the End point.",
+              "Within-range shading reads more boldly so it is clear when a region sits inside a ring.",
+              "Ring distance and time appear in rangefinder-colored pills, and a crossing ring carries that pill into the inset it reaches.",
+            ]
+          },
+          {
+            heading: "Rangefinder Cues",
+            items: [
+              "The approximate great-circle hint drops its on-map text label for a cleaner look.",
+              "The cross-region dashed cue continues to the edge of the map along the true bearing.",
+              "Ring labels avoid overlapping each other on short hops like Glacier to Glacier Bay.",
+              "The time panel adds total travel time and the hours gained or lost across the covered time zones.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.6.3",
         date: "2026-06-18",
         title: "Around the Clock",
