@@ -1,6 +1,10 @@
-# WISH-061 — Rangefinder Edge Cases, Globe Wrap & Time Zones (target 4.7.5)
+# WISH-061 — Rangefinder Edge Cases, Globe Wrap & Time Zones (target 4.7.6)
 
-Ticket: **WISH-061** (Maps, **large**, `tokenCostPct 48`). Target: **4.7.5** — all three sub-features together. (It's a large feature in a patch slot; flag if it should become **4.8.0** instead.) Three related Rangefinder upgrades: (1) cross-inset edge cases, (2) antimeridian wrap on the World map, (3) offline time zones.
+Ticket: **WISH-061** (Maps, **large**, `tokenCostPct 48`). Target: **4.7.6** — all three sub-features together. Three related Rangefinder upgrades: (1) cross-inset edge cases, (2) antimeridian wrap on the World map, (3) offline time zones.
+
+## Implementation status
+
+Implemented in `4.7.6.1`: inset radius limits and approximate great-circle cues; mirrored World rings, visible wrapped labels, and shorter seam-crossing comparison cues; offline country/state IANA resolution with longitude-aware multi-zone choices; persisted manual overrides and departure settings; DST-aware destination-local arrival; responsive light/dark UI; Help, README, changelog, Roadmap, and handoff updates.
 
 ## Current Rangefinder internals (what we build on)
 
@@ -41,7 +45,7 @@ On the **World map**, when the Start anchor is near the date line so its ring el
 
 ## Implementation phases (for `start`)
 
-1. Open `4.7.5.1`, CHANGELOG entry. (Large — consider whether to land sub-features across several builds; ship together.)
+1. Open `4.7.6.1`, CHANGELOG entry. (Large — land sub-features across several builds; ship together.)
 2. **Cross-inset visuals**: refine the dashed cross-region cue + inset radius caps; tighten warning copy.
 3. **Antimeridian**: detect seam-proximity; duplicate `ring-shapes` translated by ±map width (reusing clip/mask); wrapped-arc labels; shorter-wrap Start→End cue.
 4. **Time-zone data**: `REGION_IANA_ZONE` (+ optional lng refinement).
@@ -52,7 +56,7 @@ On the **World map**, when the Start anchor is near the date line so its ring el
 ## Open questions / risks
 
 - **Multi-zone regions**: big states/countries (US, RU, AU, ID/OR/TN…) span zones; the table picks a primary and the lng refinement + manual override cover the rest — confirm that's acceptable vs. a precise polygon dataset (rejected as too large).
-- **Patch vs minor**: a large 3-part feature in 4.7.5 — flag if it should be **4.8.0** (and whether it carries a banner as a minor).
+- **Patch release**: the user selected 4.7.6 for all three sub-features; keep it banner-free as a patch.
 - **Mirror-ellipse fidelity**: ellipse rings duplicated across the seam are an approximation, not true great-circle bands; fine at world scale, note it in copy.
 - **Departure-time persistence & "now"**: decide whether departure persists or resets to now each session; recompute arrival when speed/mode/time changes.
 - **DST/zone correctness**: rely on `Intl` (offline, authoritative) for offsets; only the zone *name* resolution is ours.
