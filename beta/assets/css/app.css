@@ -2310,6 +2310,14 @@
       transition: fill-opacity .15s ease;
     }
 
+    .ring-cross-region-arc {
+      fill: none;
+      stroke: var(--ring-stroke, var(--ring-step-3-stroke));
+      stroke-width: 1.75;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
     .map-ring-overlay[data-ring-fill="off"] .ring-ellipse {
       fill-opacity: 0;
     }
@@ -2326,6 +2334,11 @@
       stroke-width: 3.2px;
       text-anchor: middle;
       dominant-baseline: central;
+    }
+
+    .ring-label.is-cross-region {
+      font-size: 8px;
+      stroke-width: 2.8px;
     }
 
     /* The world viewBox (2754 wide) is ~2.95x the US one (934), so labels sized

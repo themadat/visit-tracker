@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.6.1">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.6.2">
 </head>
 
 <body>
@@ -1186,8 +1186,9 @@
               or open a picker when they are too close.</li>
             <li>Alaska, Hawaii, and territory points use inset map scale. Mainland rings clip away from those insets,
               inset starts use a limited inset-scale radius, and cross-inset Start-to-End comparisons use real
-              coordinates with an approximate great-circle cue instead of a route line. World rings and comparison cues
-              continue across the date-line seam rather than stopping at the map edge.</li>
+              coordinates with a compass-correct approximate great-circle cue instead of a route line. When a
+              Start-centered distance ring crosses the End region, its matching arc appears there too. World rings and
+              comparison cues continue across the date-line seam rather than stopping at the map edge.</li>
             <li>In Wayfinder, use Packs to preview curated place lists on the map, assign priorities, attach matching
               notes, and add selected places as normal Wayfinder notes.</li>
             <li>On desktop, drag the divider between the map and cards to resize the working area.</li>
@@ -1778,14 +1779,14 @@
   <script src="assets/js/maps.js"></script>
   <script src="assets/js/world-names.js?v=4.7.4"></script>
   <script src="assets/js/world-label-overrides.js?v=4.7.4"></script>
-  <script src="assets/js/timezones.js?v=4.7.6.1"></script>
+  <script src="assets/js/timezones.js?v=4.7.6.2"></script>
   <script src="assets/js/changelog.js"></script>
   <script src="assets/js/roadmap.js"></script>
   <script>
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.6.1";
+    const APP_VERSION = "4.7.6.2";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -4103,7 +4104,7 @@
 
     function ringInsetWarning(anchor, compareAnchor = null) {
       if (ringAnchorsCrossMapRegions(anchor, compareAnchor)) {
-        return `Start and End are drawn in different map regions (${ringMapRegionName(anchor.abbr)} to ${ringMapRegionName(compareAnchor.abbr)}). Distance uses real coordinates; the dashed cue is an approximate great-circle direction, not a route, and rings stay in the Start region.`;
+        return `Start and End are drawn in different map regions (${ringMapRegionName(anchor.abbr)} to ${ringMapRegionName(compareAnchor.abbr)}). Distance uses real coordinates; the dashed cue follows the approximate great-circle direction, and matching ring arcs also appear in the End region when they cross it.`;
       }
       if (activeLayerId === "world") return "World Rangefinder rings are approximate straight-line flight bands on the global map.";
       if (!anchor?.abbr || !RING_INSET_IDS.has(anchor.abbr)) return "";
@@ -7248,9 +7249,9 @@
       const svgNS = "http://www.w3.org/2000/svg";
       const defs = activeMapDefs();
       if (!defs) return "";
-      const id = activeLayerId === "world" ? "worldRingLandClip" : "ringLandClip";
-      let clip = $(`#${id}`, defs);
       const regionKey = activeLayerId === "world" ? "world" : RING_INSET_IDS.has(anchorAbbr) ? anchorAbbr : "contiguous";
+      const id = activeLayerId === "world" ? "worldRingLandClip" : `ringLandClip-${regionKey}`;
+      let clip = $(`#${id}`, defs);
       if (clip && clip.dataset.tileCount === String(tiles.length) && clip.dataset.regionKey === regionKey) return id;
       clip?.remove();
       clip = document.createElementNS(svgNS, "clipPath");
@@ -7404,6 +7405,121 @@
       return { x: from.x + dx * scale, y: from.y + dy * scale };
     }
 
+    function ringInitialBearing(anchorA, anchorB) {
+      const toRad = value => Number(value) * Math.PI / 180;
+      const lat1 = toRad(anchorA?.lat);
+      const lat2 = toRad(anchorB?.lat);
+      const lngDelta = toRad(Number(anchorB?.lng) - Number(anchorA?.lng));
+      if (![lat1, lat2, lngDelta].every(Number.isFinite)) return 0;
+      const y = Math.sin(lngDelta) * Math.cos(lat2);
+      const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(lngDelta);
+      return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+    }
+
+    function ringDestinationCoordinate(lat, lng, bearing, miles) {
+      const angular = Number(miles) / 3958.7613;
+      const bearingRad = Number(bearing) * Math.PI / 180;
+      const lat1 = Number(lat) * Math.PI / 180;
+      const lng1 = Number(lng) * Math.PI / 180;
+      if (![angular, bearingRad, lat1, lng1].every(Number.isFinite)) return null;
+      const lat2 = Math.asin(
+        Math.sin(lat1) * Math.cos(angular)
+        + Math.cos(lat1) * Math.sin(angular) * Math.cos(bearingRad)
+      );
+      const lng2 = lng1 + Math.atan2(
+        Math.sin(bearingRad) * Math.sin(angular) * Math.cos(lat1),
+        Math.cos(angular) - Math.sin(lat1) * Math.sin(lat2)
+      );
+      return {
+        lat: lat2 * 180 / Math.PI,
+        lng: ((lng2 * 180 / Math.PI + 540) % 360) - 180
+      };
+    }
+
+    function ringUsRegionCoordinatePoint(abbr, coords) {
+      if (!coords || activeLayerId !== "us") return null;
+      if (abbr === "AK") {
+        const lng = projectionLongitudeForBounds(coords.lng, LOCATION_GEO_BOUNDS.AK);
+        return tunedUsGridPoint(coords.lat, lng, "alaska");
+      }
+      if (!RING_INSET_IDS.has(abbr)) return tunedUsGridPoint(coords.lat, coords.lng, "mainland");
+      return projectNoteLocation(abbr, coords);
+    }
+
+    function ringCoordinateInsideRegion(abbr, coords) {
+      if (!coords) return false;
+      const bounds = RING_INSET_IDS.has(abbr)
+        ? LOCATION_GEO_BOUNDS[abbr]
+        : [24, 50, -125, -66];
+      if (!bounds) return false;
+      const [minLat, maxLat, minLng, maxLng] = bounds;
+      const lng = projectionLongitudeForBounds(coords.lng, bounds);
+      return coords.lat >= minLat && coords.lat <= maxLat && lng >= minLng && lng <= maxLng;
+    }
+
+    function ringProjectedDirectionEndpoint(anchorFrom, pointFrom, anchorTo) {
+      const bearing = ringInitialBearing(anchorFrom, anchorTo);
+      const directionCoordinate = ringDestinationCoordinate(anchorFrom.lat, anchorFrom.lng, bearing, 320);
+      const projected = ringUsRegionCoordinatePoint(anchorFrom.abbr, directionCoordinate);
+      return projected ? pointToward(pointFrom, projected, 68) : pointFrom;
+    }
+
+    function ringGeodesicSegments(anchor, miles, regionAbbr) {
+      const segments = [];
+      let segment = [];
+      for (let bearing = 0; bearing <= 360; bearing += 3) {
+        const coords = ringDestinationCoordinate(anchor.lat, anchor.lng, bearing, miles);
+        if (!ringCoordinateInsideRegion(regionAbbr, coords)) {
+          if (segment.length > 1) segments.push(segment);
+          segment = [];
+          continue;
+        }
+        const point = ringUsRegionCoordinatePoint(regionAbbr, coords);
+        if (!point || !Number.isFinite(point.x) || !Number.isFinite(point.y)) {
+          if (segment.length > 1) segments.push(segment);
+          segment = [];
+          continue;
+        }
+        segment.push(point);
+      }
+      if (segment.length > 1) segments.push(segment);
+      return segments;
+    }
+
+    function appendCrossRegionRingArcs(parent, anchor, compareAnchor, distanceIndex) {
+      if (activeLayerId !== "us" || !ringAnchorsCrossMapRegions(anchor, compareAnchor)) return;
+      const svgNS = "http://www.w3.org/2000/svg";
+      const group = document.createElementNS(svgNS, "g");
+      group.classList.add("ring-cross-region-arcs");
+      const clipId = ensureRingLandClipPath(compareAnchor.abbr);
+      if (clipId) group.setAttribute("clip-path", `url(#${clipId})`);
+      const targetTiles = ringClipTilesForAnchor(compareAnchor.abbr);
+      parent.append(group);
+      ringEnabledDistances().slice().sort((a, b) => b - a).forEach(miles => {
+        const ringIndex = distanceIndex[ringDistanceKey(miles)] ?? 0;
+        const segments = ringGeodesicSegments(anchor, miles, compareAnchor.abbr);
+        if (!segments.length) return;
+        segments.forEach(points => {
+          const path = document.createElementNS(svgNS, "path");
+          path.classList.add("ring-cross-region-arc");
+          path.setAttribute("style", ringStepStyle(ringIndex));
+          path.setAttribute("d", points.map((point, index) => `${index ? "L" : "M"}${point.x.toFixed(2)},${point.y.toFixed(2)}`).join(" "));
+          group.append(path);
+        });
+        const visiblePoints = segments.flat().filter(point => ringPointInsideClipTiles(point.x, point.y, targetTiles));
+        if (!visiblePoints.length) return;
+        const labelPoint = visiblePoints[Math.floor(visiblePoints.length / 2)];
+        const label = document.createElementNS(svgNS, "text");
+        label.classList.add("ring-label", "is-cross-region");
+        label.setAttribute("style", ringStepStyle(ringIndex));
+        label.setAttribute("x", labelPoint.x.toFixed(2));
+        label.setAttribute("y", labelPoint.y.toFixed(2));
+        label.textContent = ringDistanceDisplayText(miles);
+        parent.append(label);
+      });
+      if (!group.children.length) group.remove();
+    }
+
     function appendRingConnector(parent, anchorA, pointA, anchorB, pointB) {
       const crossInset = ringAnchorsCrossMapRegions(anchorA, anchorB);
       if (activeLayerId === "world") {
@@ -7425,13 +7541,15 @@
         appendRingConnectorLine(parent, pointA, pointB);
         return;
       }
-      appendRingConnectorLine(parent, pointA, pointToward(pointA, pointB, 52), "is-cross-inset");
-      appendRingConnectorLine(parent, pointB, pointToward(pointB, pointA, 52), "is-cross-inset");
+      const directionA = ringProjectedDirectionEndpoint(anchorA, pointA, anchorB);
+      const directionB = ringProjectedDirectionEndpoint(anchorB, pointB, anchorA);
+      appendRingConnectorLine(parent, pointA, directionA, "is-cross-inset");
+      appendRingConnectorLine(parent, pointB, directionB, "is-cross-inset");
       const svgNS = "http://www.w3.org/2000/svg";
       const label = document.createElementNS(svgNS, "text");
       label.classList.add("ring-cross-inset-label");
-      label.setAttribute("x", ((pointA.x + pointB.x) / 2).toFixed(2));
-      label.setAttribute("y", ((pointA.y + pointB.y) / 2).toFixed(2));
+      label.setAttribute("x", directionA.x.toFixed(2));
+      label.setAttribute("y", (directionA.y - 9).toFixed(2));
       label.textContent = "≈ great-circle";
       parent.append(label);
     }
@@ -7546,6 +7664,7 @@
       const anchor2 = ringAnchorFor(2);
       const point2 = anchor2 ? anchorSvgPoint(anchor2) : null;
       if (anchor2 && point2) {
+        appendCrossRegionRingArcs(overlay, anchor1, anchor2, distanceIndex);
         appendRingConnector(overlay, anchor1, point1, anchor2, point2);
       }
       overlay.append(ringAnchorPinGroup(anchor1, 1, point1));
