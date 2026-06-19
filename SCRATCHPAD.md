@@ -1,5 +1,10 @@
 ## Future Prompt
 
+shortcuts update: | for switcing maps; ~ for label, 4 for globe. 
+shortcuts: Priority popup; globe pop up, rangefinder popup
+rangefinder UNDER lengend in side bar in desktop mode and beside it if there is enough room
+
+
 ## Maps
 Blank World Map with Circles: https://commons.wikimedia.org/wiki/File:BlankMap-World-with-Circles.svg
 Blank World Map: https://commons.wikimedia.org/wiki/File:BlankMap-World.svg
@@ -14,6 +19,33 @@ Robinson 2021 CIA WorldFactBook-Political World ::
 
 Robinson Political Map 2005 :: 
   https://upload.wikimedia.org/wikipedia/commons/9/93/%22Political_World%22_CIA_World_Factbook_map_2005.svg
+
+Maybe this is a better us map where hawaii and alaska are mercartor:
+  https://commons.wikimedia.org/wiki/File:Usa_edcp_(%2BHI_%2BAK)_location_map.svg
+
+Used these images and this tool to tweak grids and get result: 
+  US: https://www.aaroads.com/blog/wp-content/uploads/gis-classes/albers-overview-map.png
+  Alaska: https://geospatialdesktop.com/files/gmt_alaska_coast.png
+  Exact Lat/Lon: https://epsg.io/map#srs=4326&x=-140.890045&y=67.044145&z=4&layer=streets
+
+const US_GRATICULE_CALIBRATION = {
+  mainland: {
+    southWest: { x: 36.43, y: 414.15 },
+    southMiddle: { x: 405.76, y: 480.36 },
+    southEast: { x: 782.67, y: 449.89 },
+    northWest: { x: 133.84, y: -3.06 },
+    northMiddle: { x: 419.4, y: 37.82 },
+    northEast: { x: 707.4, y: 18.19 }
+  },
+  alaska: {
+    southWest: { x: 59.42, y: 572.15 },
+    southMiddle: { x: 115.9, y: 584.03 },
+    southEast: { x: 165.13, y: 587.68 },
+    northWest: { x: 89.63, y: 484.15 },
+    northMiddle: { x: 125.76, y: 491.58 },
+    northEast: { x: 164.53, y: 494.28 }
+  }
+};
 
 ## Colors
 
