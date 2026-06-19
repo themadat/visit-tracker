@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.5">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.6.1">
 </head>
 
 <body>
@@ -1174,16 +1174,20 @@
               latitude/longitude grid.</li>
             <li>Use Match Notes to dim map locations and pins that do not match the active Notes filters.</li>
             <li>Use Rangefinder on the US or World map to pick saved note pins as Start and End points, draw Drive or
-              Plane planning rings, and compare the straight-line distance between two places.</li>
+              Plane planning rings, compare the straight-line distance between two places, and plan with each point's
+              offline local time.</li>
             <li>Rangefinder rings can be filled or stroke-only, clipped to the active land area, shown in miles or
               kilometers, customized up to eight distances, and shown with or without Drive or Plane time estimates.
               The ring-style menu stays open while you combine fill and clip options; click outside it when finished.
-              The time menu lets you adjust the average speed for the current travel mode.</li>
+              The time menu lets you adjust the average speed for the current travel mode. Local Times &amp; Arrival
+              resolves IANA zones offline, supports manual overrides, and converts a chosen departure into the
+              destination-local estimated arrival with daylight-saving changes included.</li>
             <li>Mapped markers open the note when there is one note. Nearby markers cluster, zoom when they can split,
               or open a picker when they are too close.</li>
             <li>Alaska, Hawaii, and territory points use inset map scale. Mainland rings clip away from those insets,
-              inset starts clip to their own inset, and cross-inset Start-to-End comparisons use real coordinates with a
-              broken map cue instead of a route line.</li>
+              inset starts use a limited inset-scale radius, and cross-inset Start-to-End comparisons use real
+              coordinates with an approximate great-circle cue instead of a route line. World rings and comparison cues
+              continue across the date-line seam rather than stopping at the map edge.</li>
             <li>In Wayfinder, use Packs to preview curated place lists on the map, assign priorities, attach matching
               notes, and add selected places as normal Wayfinder notes.</li>
             <li>On desktop, drag the divider between the map and cards to resize the working area.</li>
@@ -1327,6 +1331,10 @@
           <p><b>Are Rangefinder rings routing distance?</b><br>No. Rings and Start-to-End comparisons use straight-line
             distance. Drive and Plane times use your selected average speed, starting from 60 mph for Drive and 600 mph
             for Plane, so both are planning hints.</p>
+          <p><b>Does Rangefinder need the internet for local times?</b><br>No. It resolves a practical IANA time zone
+            from the saved location and uses the browser's offline time-zone data for local clocks, daylight-saving
+            changes, departures, and arrivals. Multi-zone regions use the coordinate longitude as a guide, and either
+            point can be corrected with a manual IANA zone override.</p>
           <p><b>Do Waypoint Packs change state progress?</b><br>No. Pack pins, labels, priorities, and Legend pack stats
             come from linked notes. States and territories only change when you edit their levels yourself.</p>
         </section>
@@ -1770,13 +1778,14 @@
   <script src="assets/js/maps.js"></script>
   <script src="assets/js/world-names.js?v=4.7.4"></script>
   <script src="assets/js/world-label-overrides.js?v=4.7.4"></script>
+  <script src="assets/js/timezones.js?v=4.7.6.1"></script>
   <script src="assets/js/changelog.js"></script>
   <script src="assets/js/roadmap.js"></script>
   <script>
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.5";
+    const APP_VERSION = "4.7.6.1";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -2614,7 +2623,11 @@
         fill: true,
         clip: true,
         showTime: true,
-        unit: "mi"
+        unit: "mi",
+        timeZoneOpen: false,
+        departureMode: "now",
+        departureLocal: "",
+        zoneOverrides: { anchor1: "", anchor2: "" }
       };
     }
     function defaultRingByLayer() {
@@ -2705,6 +2718,7 @@
     let ringEditMode = false;
     let ringPanelNotice = "";
     let ringPanelRenderTimer = 0;
+    let ringClockTimer = 0;
     let levelAutoSaveTimer = null;
     let layoutSyncFrame = 0;
     let pendingConfirm = null;
@@ -3509,6 +3523,14 @@
       const unit = bag.unit === "km" || bag.unit === "mi"
         ? bag.unit
         : (fromLegacy.ringUnit === "km" ? "km" : fromLegacy.ringUnit === "mi" ? "mi" : defaults.unit);
+      const rawZoneOverrides = bag.zoneOverrides && typeof bag.zoneOverrides === "object" ? bag.zoneOverrides : {};
+      const zoneOverrides = {
+        anchor1: isValidIanaTimeZone(rawZoneOverrides.anchor1) ? String(rawZoneOverrides.anchor1) : "",
+        anchor2: isValidIanaTimeZone(rawZoneOverrides.anchor2) ? String(rawZoneOverrides.anchor2) : ""
+      };
+      const departureLocal = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(String(bag.departureLocal || ""))
+        ? String(bag.departureLocal)
+        : "";
       return {
         anchor1: anchor1 || null,
         anchor2: anchor2 || null,
@@ -3522,7 +3544,11 @@
         fill: pickBool("fill", "ringFill", defaults.fill),
         clip: pickBool("clip", "ringClip", defaults.clip),
         showTime: pickBool("showTime", "ringShowTime", defaults.showTime),
-        unit
+        unit,
+        timeZoneOpen: bag.timeZoneOpen === true,
+        departureMode: bag.departureMode === "custom" ? "custom" : "now",
+        departureLocal,
+        zoneOverrides
       };
     }
 
@@ -4077,12 +4103,195 @@
 
     function ringInsetWarning(anchor, compareAnchor = null) {
       if (ringAnchorsCrossMapRegions(anchor, compareAnchor)) {
-        return `Start and End are drawn in different map regions (${ringMapRegionName(anchor.abbr)} to ${ringMapRegionName(compareAnchor.abbr)}). Distance uses real coordinates; the dashed map cue is not a route and rings stay in the Start region.`;
+        return `Start and End are drawn in different map regions (${ringMapRegionName(anchor.abbr)} to ${ringMapRegionName(compareAnchor.abbr)}). Distance uses real coordinates; the dashed cue is an approximate great-circle direction, not a route, and rings stay in the Start region.`;
       }
       if (activeLayerId === "world") return "World Rangefinder rings are approximate straight-line flight bands on the global map.";
       if (!anchor?.abbr || !RING_INSET_IDS.has(anchor.abbr)) return "";
       const name = STATE_NAMES[anchor.abbr] || anchor.abbr;
-      return `${name} is drawn as an inset on this map; rings stay inside that inset and are approximate.`;
+      return `${name} is drawn as an inset on this map; ring radii are limited to a useful inset scale and remain approximate.`;
+    }
+
+    function isValidIanaTimeZone(value) {
+      const zone = String(value || "").trim();
+      if (!zone) return false;
+      try {
+        new Intl.DateTimeFormat("en-US", { timeZone: zone }).format(0);
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    function nearestIanaZone(candidates, longitude) {
+      if (!Array.isArray(candidates) || !candidates.length) return "";
+      const lng = Number(longitude);
+      if (!Number.isFinite(lng)) return String(candidates[0]?.[0] || "");
+      return String(candidates.reduce((best, candidate) => {
+        const distance = Math.abs(Number(candidate?.[1]) - lng);
+        const bestDistance = Math.abs(Number(best?.[1]) - lng);
+        return distance < bestDistance ? candidate : best;
+      }, candidates[0])?.[0] || "");
+    }
+
+    function automaticRingTimeZone(anchor) {
+      if (!anchor?.abbr) return "";
+      const code = String(anchor.abbr).toUpperCase();
+      const candidates = anchor.layer === "us"
+        ? US_STATE_IANA_ZONE_CANDIDATES[code]
+        : REGION_IANA_ZONE_CANDIDATES[code];
+      const resolved = nearestIanaZone(candidates, anchor.lng)
+        || (anchor.layer === "world" ? REGION_IANA_ZONE_PRIMARY[code] : "");
+      return isValidIanaTimeZone(resolved) ? resolved : "";
+    }
+
+    function ringTimeZoneOverride(slot) {
+      return String(ringSettings().zoneOverrides?.[`anchor${slot}`] || "");
+    }
+
+    function ringTimeZoneFor(slot, anchor = ringAnchorFor(slot)) {
+      if (!anchor?.abbr) return "";
+      const override = ringTimeZoneOverride(slot);
+      return isValidIanaTimeZone(override) ? override : automaticRingTimeZone(anchor);
+    }
+
+    function ringTimeZoneChoices() {
+      if (ringTimeZoneChoices.cache) return ringTimeZoneChoices.cache;
+      let zones = [];
+      try {
+        if (typeof Intl.supportedValuesOf === "function") zones = Intl.supportedValuesOf("timeZone");
+      } catch { }
+      if (!zones.length) {
+        zones = [
+          ...Object.values(REGION_IANA_ZONE_PRIMARY),
+          ...Object.values(REGION_IANA_ZONE_CANDIDATES).flat().map(item => item[0]),
+          ...Object.values(US_STATE_IANA_ZONE_CANDIDATES).flat().map(item => item[0])
+        ];
+      }
+      ringTimeZoneChoices.cache = [...new Set(zones.filter(isValidIanaTimeZone))].sort();
+      return ringTimeZoneChoices.cache;
+    }
+
+    function setRingTimeZoneOpen(on) {
+      ringSettings().timeZoneOpen = on === true;
+      save();
+      renderRingPanel();
+    }
+
+    function setRingTimeZoneOverride(slot, value) {
+      if (slot !== 1 && slot !== 2) return;
+      const zone = String(value || "").trim();
+      if (zone && !isValidIanaTimeZone(zone)) {
+        ringPanelNotice = `"${zone}" is not an available IANA time zone.`;
+        renderRingPanel();
+        return;
+      }
+      const bag = ringSettings();
+      if (!bag.zoneOverrides || typeof bag.zoneOverrides !== "object") bag.zoneOverrides = { anchor1: "", anchor2: "" };
+      bag.zoneOverrides[`anchor${slot}`] = zone;
+      ringPanelNotice = "";
+      save();
+      renderRingPanel();
+    }
+
+    function applyRingTimeZoneOverride(slot) {
+      const input = $(`[data-ring-zone-override="${slot}"]`, $("#ringPanel"));
+      setRingTimeZoneOverride(slot, input?.value || "");
+    }
+
+    function ringDateTimeLocalValue(date, zone) {
+      if (!(date instanceof Date) || !Number.isFinite(date.getTime()) || !isValidIanaTimeZone(zone)) return "";
+      const parts = Object.fromEntries(new Intl.DateTimeFormat("en-CA", {
+        timeZone: zone,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hourCycle: "h23"
+      }).formatToParts(date).filter(part => part.type !== "literal").map(part => [part.type, part.value]));
+      return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}`;
+    }
+
+    function ringZonedLocalDate(value, zone) {
+      const match = String(value || "").match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/);
+      if (!match || !isValidIanaTimeZone(zone)) return null;
+      const desired = Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]), Number(match[4]), Number(match[5]));
+      let guess = desired;
+      const formatter = new Intl.DateTimeFormat("en-CA", {
+        timeZone: zone,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hourCycle: "h23"
+      });
+      for (let attempt = 0; attempt < 4; attempt++) {
+        const parts = Object.fromEntries(formatter.formatToParts(new Date(guess))
+          .filter(part => part.type !== "literal")
+          .map(part => [part.type, part.value]));
+        const represented = Date.UTC(Number(parts.year), Number(parts.month) - 1, Number(parts.day), Number(parts.hour), Number(parts.minute));
+        const correction = desired - represented;
+        guess += correction;
+        if (Math.abs(correction) < 60000) break;
+      }
+      const date = new Date(guess);
+      return Number.isFinite(date.getTime()) ? date : null;
+    }
+
+    function setRingDepartureMode(mode) {
+      const bag = ringSettings();
+      bag.departureMode = mode === "custom" ? "custom" : "now";
+      if (bag.departureMode === "custom" && !bag.departureLocal) {
+        const zone = ringTimeZoneFor(1);
+        bag.departureLocal = ringDateTimeLocalValue(new Date(), zone);
+      }
+      save();
+      renderRingPanel();
+    }
+
+    function setRingDepartureLocal(value) {
+      const local = String(value || "");
+      if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(local)) return;
+      const bag = ringSettings();
+      bag.departureLocal = local;
+      bag.departureMode = "custom";
+      save();
+      renderRingPanel();
+    }
+
+    function ringDepartureDate() {
+      const bag = ringSettings();
+      if (bag.departureMode !== "custom") return new Date();
+      return ringZonedLocalDate(bag.departureLocal, ringTimeZoneFor(1));
+    }
+
+    function ringTimeZoneClock(date, zone, withDate = false) {
+      if (!(date instanceof Date) || !Number.isFinite(date.getTime()) || !isValidIanaTimeZone(zone)) return "";
+      const options = withDate
+        ? { timeZone: zone, weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short" }
+        : { timeZone: zone, hour: "numeric", minute: "2-digit", timeZoneName: "short" };
+      return new Intl.DateTimeFormat(undefined, options).format(date);
+    }
+
+    function ringTravelMinutes(miles) {
+      const minutes = Math.round((Number(miles) / ringSpeedMph()) * 60);
+      return Number.isFinite(minutes) && minutes >= 0 ? minutes : null;
+    }
+
+    function scheduleRingClockRefresh() {
+      if (ringClockTimer) clearTimeout(ringClockTimer);
+      ringClockTimer = 0;
+      if (!ringModeActive() || ringSettings().timeZoneOpen !== true) return;
+      const delay = 60050 - (Date.now() % 60000);
+      ringClockTimer = setTimeout(() => {
+        ringClockTimer = 0;
+        if (document.activeElement?.matches?.("#ringPanel input")) {
+          scheduleRingClockRefresh();
+          return;
+        }
+        renderRingPanel();
+      }, delay);
     }
 
     function repairRingAnchors() {
@@ -4178,6 +4387,10 @@
         lng: coords.lng,
         label: ringAnchorLabelFromNote(abbr, note, activeLayerId)
       };
+      if (!ringSettings().zoneOverrides || typeof ringSettings().zoneOverrides !== "object") {
+        ringSettings().zoneOverrides = { anchor1: "", anchor2: "" };
+      }
+      ringSettings().zoneOverrides[`anchor${slot}`] = "";
       ringArmedSlot = null;
       ringPanelNotice = "";
       save();
@@ -4187,6 +4400,7 @@
 
     function clearRingAnchor2() {
       ringSettings().anchor2 = null;
+      if (ringSettings().zoneOverrides) ringSettings().zoneOverrides.anchor2 = "";
       if (ringArmedSlot === 2) ringArmedSlot = null;
       save();
       render();
@@ -4552,8 +4766,8 @@
     }
 
     function ringTimeLabel(miles) {
-      const totalMinutes = Math.round((Number(miles) / ringSpeedMph()) * 60);
-      if (!Number.isFinite(totalMinutes) || totalMinutes < 0) return "";
+      const totalMinutes = ringTravelMinutes(miles);
+      if (totalMinutes === null) return "";
       const hours = Math.floor(totalMinutes / 60);
       const minutes = totalMinutes % 60;
       return minutes ? `~${hours}h ${minutes}m` : `~${hours}h`;
@@ -4583,7 +4797,12 @@
     function syncRingUi() {
       if (ringModeActive()) repairRingAnchors();
       const on = ringModeActive();
-      if (!on) { ringStyleMenuOpen = false; ringTimeMenuOpen = false; }
+      if (!on) {
+        ringStyleMenuOpen = false;
+        ringTimeMenuOpen = false;
+        if (ringClockTimer) clearTimeout(ringClockTimer);
+        ringClockTimer = 0;
+      }
       const btn = $("#mapRingModeBtn");
       const panel = $("#ringPanel");
       const group = $("#legendPanelGroup");
@@ -4605,6 +4824,78 @@
       syncLayerModePills();
     }
 
+    function renderRingTimeZoneSection(anchor1, anchor2) {
+      const bag = ringSettings();
+      const open = bag.timeZoneOpen === true;
+      const now = new Date();
+      const anchorCard = (slot, anchor) => {
+        const override = anchor ? ringTimeZoneOverride(slot) : "";
+        const automatic = automaticRingTimeZone(anchor);
+        const zone = ringTimeZoneFor(slot, anchor);
+        const pointName = slot === 1 ? "Start" : "End";
+        const source = override ? "Manual" : automatic ? "Auto" : "Unresolved";
+        const clock = zone ? ringTimeZoneClock(now, zone) : anchor ? "Set an IANA time zone" : `Pick ${pointName}`;
+        return `<div class="ring-zone-card ${zone ? "" : "is-unresolved"}">
+          <div class="ring-zone-card-head"><b>${pointName}</b><span>${escapeHtml(source)}</span></div>
+          <div class="ring-zone-clock">${escapeHtml(clock)}</div>
+          <div class="ring-zone-name">${escapeHtml(zone || "Time zone unavailable")}</div>
+          <label class="ring-zone-override">
+            <span>${override ? "Manual zone" : "Override zone"}</span>
+            <input type="text" list="ringIanaZoneOptions" value="${escapeHtml(override)}" placeholder="${escapeHtml(automatic ? `Auto · ${automatic}` : "Choose an IANA zone")}" data-ring-zone-override="${slot}" ${anchor ? "" : "disabled"}>
+          </label>
+          <div class="ring-zone-actions">
+            <button type="button" data-ring-zone-apply="${slot}" ${anchor ? "" : "disabled"}>Apply</button>
+            <button type="button" data-ring-zone-auto="${slot}" ${override ? "" : "disabled"}>Auto</button>
+          </div>
+        </div>`;
+      };
+      if (!open) {
+        const resolvedCount = [ringTimeZoneFor(1, anchor1), ringTimeZoneFor(2, anchor2)].filter(Boolean).length;
+        return `<div class="ring-timezone-section">
+          <button class="ring-timezone-toggle" type="button" data-ring-timezone-toggle aria-expanded="false">
+            <span>Local Times &amp; Arrival</span>
+            <span>${resolvedCount}/2 zones</span>
+          </button>
+        </div>`;
+      }
+      const startZone = ringTimeZoneFor(1, anchor1);
+      const endZone = ringTimeZoneFor(2, anchor2);
+      const customMode = bag.departureMode === "custom";
+      const departureValue = bag.departureLocal || ringDateTimeLocalValue(now, startZone);
+      const departure = ringDepartureDate();
+      const miles = anchor1 && anchor2 ? haversineMiles(anchor1.lat, anchor1.lng, anchor2.lat, anchor2.lng) : NaN;
+      const travelMinutes = ringTravelMinutes(miles);
+      const arrival = departure && travelMinutes !== null ? new Date(departure.getTime() + travelMinutes * 60000) : null;
+      const departureText = departure && startZone ? ringTimeZoneClock(departure, startZone, true) : "";
+      const arrivalText = arrival && endZone ? ringTimeZoneClock(arrival, endZone, true) : "";
+      const zoneOptions = ringTimeZoneChoices().map(zone => `<option value="${escapeHtml(zone)}"></option>`).join("");
+      return `<div class="ring-timezone-section is-open">
+        <button class="ring-timezone-toggle" type="button" data-ring-timezone-toggle aria-expanded="true">
+          <span>Local Times &amp; Arrival</span>
+          <span>Hide</span>
+        </button>
+        <div class="ring-zone-grid">
+          ${anchorCard(1, anchor1)}
+          ${anchorCard(2, anchor2)}
+        </div>
+        <div class="ring-departure-control">
+          <div class="ring-departure-head">
+            <b>Departure</b>
+            <span class="ring-departure-modes" role="group" aria-label="Departure time mode">
+              <button type="button" data-ring-departure-mode="now" aria-pressed="${customMode ? "false" : "true"}">Now</button>
+              <button type="button" data-ring-departure-mode="custom" aria-pressed="${customMode ? "true" : "false"}">Choose</button>
+            </span>
+          </div>
+          ${customMode ? `<input type="datetime-local" value="${escapeHtml(departureValue)}" data-ring-departure-local ${startZone ? "" : "disabled"} aria-label="Departure date and time in the Start time zone">` : ""}
+          <div class="ring-itinerary">
+            <span><b>Leave</b>${escapeHtml(departureText || (anchor1 ? "Resolve the Start zone" : "Pick Start"))}</span>
+            <span><b>Arrive</b>${escapeHtml(arrivalText || (anchor2 ? "Resolve both zones" : "Pick End"))}</span>
+          </div>
+        </div>
+        <datalist id="ringIanaZoneOptions">${zoneOptions}</datalist>
+      </div>`;
+    }
+
     function renderRingPanel() {
       const panel = $("#ringPanel");
       if (!panel) return;
@@ -4619,6 +4910,7 @@
       const distances = ringDistances();
       const enabled = ringEnabledKeySet();
       const compare = ringCompareReadout();
+      const timeZoneSection = renderRingTimeZoneSection(anchor1, anchor2);
       const insetWarning = ringInsetWarning(anchor1, anchor2);
       const unit = ringUnit();
       const nextUnit = unit === "mi" ? "km" : "mi";
@@ -4710,7 +5002,7 @@
           : "Tap Start or End to replace a point.";
       const status = ringPanelNotice || hint;
       const disclaimerText = ringShowTime()
-        ? `Distances are straight-line ('as the crow flies') and times assume ${ringSpeedLabel()}. Click a ring unit to show or hide that ring.`
+        ? `Distances are straight-line ('as the crow flies') and times assume ${ringSpeedLabel()}. Local clocks stay offline. Click a ring unit to show or hide that ring.`
         : RING_DISTANCE_ONLY_DISCLAIMER_TEXT;
       const disclaimer = dismissed.has(RING_HINT_KEY)
         ? `<small class="ring-panel-footer">${ringShowTime() ? `Straight-line · ${ringSpeedLabel()} estimate.` : "Straight-line distance."}</small>`
@@ -4730,11 +5022,13 @@
           </span>
         </div>
         ${compare ? `<div class="ring-compare-readout">${escapeHtml(compare)}</div>` : ""}
+        ${timeZoneSection}
         <div class="ring-chip-row" aria-label="Visible Rangefinder rings">${ringChips}</div>
         ${insetWarning ? `<div class="ring-inset-warning">${escapeHtml(insetWarning)}</div>` : ""}
         ${disclaimer}
       `;
       enhanceHints();
+      scheduleRingClockRefresh();
     }
 
     function activeLayer() {
@@ -7112,6 +7406,21 @@
 
     function appendRingConnector(parent, anchorA, pointA, anchorB, pointB) {
       const crossInset = ringAnchorsCrossMapRegions(anchorA, anchorB);
+      if (activeLayerId === "world") {
+        const box = worldProjectionBox();
+        if (!box) {
+          appendRingConnectorLine(parent, pointA, pointB);
+          return;
+        }
+        const directDelta = Number(anchorB.lng) - Number(anchorA.lng);
+        const endOffset = directDelta > 180 ? -box.width : directDelta < -180 ? box.width : 0;
+        const wrappedEnd = { x: pointB.x + endOffset, y: pointB.y };
+        appendRingConnectorLine(parent, pointA, wrappedEnd, endOffset ? "is-world-wrap" : "");
+        if (endOffset) {
+          appendRingConnectorLine(parent, { x: pointA.x - endOffset, y: pointA.y }, pointB, "is-world-wrap");
+        }
+        return;
+      }
       if (!crossInset) {
         appendRingConnectorLine(parent, pointA, pointB);
         return;
@@ -7123,8 +7432,44 @@
       label.classList.add("ring-cross-inset-label");
       label.setAttribute("x", ((pointA.x + pointB.x) / 2).toFixed(2));
       label.setAttribute("y", ((pointA.y + pointB.y) / 2).toFixed(2));
-      label.textContent = "inset scale";
+      label.textContent = "≈ great-circle";
       parent.append(label);
+    }
+
+    function ringInsetRadiusLimits(anchor, point) {
+      if (activeLayerId !== "us" || !anchor?.abbr || !RING_INSET_IDS.has(anchor.abbr)) return null;
+      const center = stateTileCenter(anchor.abbr);
+      if (!center?.box) return null;
+      const box = locationProjectionBox(anchor.abbr, center.box);
+      const padding = 4;
+      return {
+        box,
+        x: Math.max(12, Math.max(point.x - box.x - padding, box.x + box.width - padding - point.x) * 1.08),
+        y: Math.max(12, Math.max(point.y - box.y - padding, box.y + box.height - padding - point.y) * 1.08)
+      };
+    }
+
+    function worldRingWrapOffsets(point, maxRx) {
+      if (activeLayerId !== "world") return [0];
+      const box = worldProjectionBox();
+      if (!box) return [0];
+      const offsets = [0];
+      const margin = Math.max(8, box.width * .004);
+      if (point.x - maxRx <= box.x + margin) offsets.push(box.width);
+      if (point.x + maxRx >= box.x + box.width - margin) offsets.push(-box.width);
+      return offsets;
+    }
+
+    function configureRingShapesGroup(group, anchorAbbr, clipOn, offset = 0) {
+      group.classList.add("ring-shapes");
+      if (offset) group.classList.add("is-world-wrap");
+      if (clipOn) {
+        const clipId = ensureRingLandClipPath(anchorAbbr);
+        if (clipId) group.setAttribute("clip-path", `url(#${clipId})`);
+      } else {
+        const maskId = ensureRingInsetMask(anchorAbbr);
+        if (maskId) group.setAttribute("mask", `url(#${maskId})`);
+      }
     }
 
     function renderRingOverlay() {
@@ -7143,38 +7488,61 @@
       const svgNS = "http://www.w3.org/2000/svg";
       const clipOn = ringClipEnabled();
       const clipTiles = clipOn ? ringClipTilesForAnchor(anchor1.abbr) : [];
-      const ringShapes = document.createElementNS(svgNS, "g");
-      ringShapes.classList.add("ring-shapes");
-      if (clipOn) {
-        const clipId = ensureRingLandClipPath(anchor1.abbr);
-        if (clipId) ringShapes.setAttribute("clip-path", `url(#${clipId})`);
-      } else {
-        const maskId = ensureRingInsetMask(anchor1.abbr);
-        if (maskId) ringShapes.setAttribute("mask", `url(#${maskId})`);
-      }
-      overlay.append(ringShapes);
       const distanceIndex = Object.fromEntries(ringDistances().map((miles, index) => [ringDistanceKey(miles), index]));
-      ringEnabledDistances().slice().sort((a, b) => b - a).forEach(miles => {
+      const insetLimits = ringInsetRadiusLimits(anchor1, point1);
+      let insetLimited = false;
+      const ringEntries = ringEnabledDistances().slice().sort((a, b) => b - a).map(miles => {
         const ringIndex = distanceIndex[ringDistanceKey(miles)] ?? 0;
-        const rx = Math.max(1, miles * scale.xPerMile);
-        const ry = Math.max(1, miles * scale.yPerMile);
-        const ellipse = document.createElementNS(svgNS, "ellipse");
-        ellipse.classList.add("ring-ellipse");
-        ellipse.setAttribute("style", ringStepStyle(ringIndex));
-        ellipse.setAttribute("cx", point1.x.toFixed(2));
-        ellipse.setAttribute("cy", point1.y.toFixed(2));
-        ellipse.setAttribute("rx", rx.toFixed(2));
-        ellipse.setAttribute("ry", ry.toFixed(2));
-        ringShapes.append(ellipse);
-        const label = document.createElementNS(svgNS, "text");
-        const labelPoint = ringLabelPoint(point1, rx, ry, clipTiles);
-        label.classList.add("ring-label");
-        label.setAttribute("style", ringStepStyle(ringIndex));
-        label.setAttribute("x", labelPoint.x.toFixed(2));
-        label.setAttribute("y", labelPoint.y.toFixed(2));
-        label.textContent = ringLabelText(miles);
-        overlay.append(label);
+        const rawRx = Math.max(1, miles * scale.xPerMile);
+        const rawRy = Math.max(1, miles * scale.yPerMile);
+        const rx = insetLimits ? Math.min(rawRx, insetLimits.x) : rawRx;
+        const ry = insetLimits ? Math.min(rawRy, insetLimits.y) : rawRy;
+        if (rx < rawRx - .01 || ry < rawRy - .01) insetLimited = true;
+        return { miles, ringIndex, rx, ry };
       });
+      const maxRx = ringEntries.reduce((max, entry) => Math.max(max, entry.rx), 0);
+      const wrapOffsets = worldRingWrapOffsets(point1, maxRx);
+      const svg = $("#" + activeLayer().svgId);
+      const viewBox = svg?.viewBox?.baseVal || null;
+      wrapOffsets.forEach(offset => {
+        const ringShapes = document.createElementNS(svgNS, "g");
+        configureRingShapesGroup(ringShapes, anchor1.abbr, clipOn, offset);
+        overlay.append(ringShapes);
+        const ringGeometry = offset ? document.createElementNS(svgNS, "g") : ringShapes;
+        if (offset) {
+          ringGeometry.setAttribute("transform", `translate(${offset.toFixed(2)} 0)`);
+          ringShapes.append(ringGeometry);
+        }
+        ringEntries.forEach(({ miles, ringIndex, rx, ry }) => {
+          const ellipse = document.createElementNS(svgNS, "ellipse");
+          ellipse.classList.add("ring-ellipse");
+          ellipse.setAttribute("style", ringStepStyle(ringIndex));
+          ellipse.setAttribute("cx", point1.x.toFixed(2));
+          ellipse.setAttribute("cy", point1.y.toFixed(2));
+          ellipse.setAttribute("rx", rx.toFixed(2));
+          ellipse.setAttribute("ry", ry.toFixed(2));
+          ringGeometry.append(ellipse);
+          const shiftedPoint = { x: point1.x + offset, y: point1.y };
+          const labelPoint = ringLabelPoint(shiftedPoint, rx, ry, clipTiles);
+          if (viewBox && !ringPointInViewBox(labelPoint.x, labelPoint.y, viewBox, activeLayerId === "world" ? 28 : 8)) return;
+          const label = document.createElementNS(svgNS, "text");
+          label.classList.add("ring-label");
+          if (offset) label.classList.add("is-world-wrap");
+          label.setAttribute("style", ringStepStyle(ringIndex));
+          label.setAttribute("x", labelPoint.x.toFixed(2));
+          label.setAttribute("y", labelPoint.y.toFixed(2));
+          label.textContent = ringLabelText(miles);
+          overlay.append(label);
+        });
+      });
+      if (insetLimited && insetLimits?.box) {
+        const limitLabel = document.createElementNS(svgNS, "text");
+        limitLabel.classList.add("ring-inset-limit-label");
+        limitLabel.setAttribute("x", (insetLimits.box.x + insetLimits.box.width / 2).toFixed(2));
+        limitLabel.setAttribute("y", (insetLimits.box.y + insetLimits.box.height - 7).toFixed(2));
+        limitLabel.textContent = "rings limited to inset";
+        overlay.append(limitLabel);
+      }
       const anchor2 = ringAnchorFor(2);
       const point2 = anchor2 ? anchorSvgPoint(anchor2) : null;
       if (anchor2 && point2) {
@@ -18833,6 +19201,26 @@
           toggleRingTimeMenu(event);
           return;
         }
+        const timeZoneToggle = event.target.closest("[data-ring-timezone-toggle]");
+        if (timeZoneToggle) {
+          setRingTimeZoneOpen(ringSettings().timeZoneOpen !== true);
+          return;
+        }
+        const departureMode = event.target.closest("[data-ring-departure-mode]");
+        if (departureMode) {
+          setRingDepartureMode(departureMode.dataset.ringDepartureMode);
+          return;
+        }
+        const zoneApply = event.target.closest("[data-ring-zone-apply]");
+        if (zoneApply) {
+          applyRingTimeZoneOverride(Number(zoneApply.dataset.ringZoneApply));
+          return;
+        }
+        const zoneAuto = event.target.closest("[data-ring-zone-auto]");
+        if (zoneAuto) {
+          setRingTimeZoneOverride(Number(zoneAuto.dataset.ringZoneAuto), "");
+          return;
+        }
         // Clicks inside the open Time popup (slider, number field, speed labels)
         // must not bubble to the document-close handler or the panel's generic
         // handlers below — only the explicit controls inside act.
@@ -18867,6 +19255,7 @@
         if (event.target.matches("[data-ring-distance-input]") && ringEditMode) setRingDistanceAt(event.target.dataset.ringDistanceInput, event.target.value);
         // Slider release or number-field commit persists the new speed and redraws.
         if (event.target.matches("[data-ring-speed-slider], [data-ring-speed-input]")) setRingSpeed(event.target.value);
+        if (event.target.matches("[data-ring-departure-local]")) setRingDepartureLocal(event.target.value);
       });
       $("#ringPanel").addEventListener("input", event => {
         // Live slider drag: mirror into the number field only (no rebuild) so the
@@ -18874,6 +19263,11 @@
         if (event.target.matches("[data-ring-speed-slider]")) previewRingSpeedDisplay(event.target.value);
       });
       $("#ringPanel").addEventListener("keydown", event => {
+        if (event.target.matches("[data-ring-zone-override]") && event.key === "Enter") {
+          event.preventDefault();
+          applyRingTimeZoneOverride(Number(event.target.dataset.ringZoneOverride));
+          return;
+        }
         const distance = event.target.closest("[data-ring-distance-toggle]");
         if (!distance || event.target.matches("button, input") || (event.key !== "Enter" && event.key !== " ")) return;
         event.preventDefault();

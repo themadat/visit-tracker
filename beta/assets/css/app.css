@@ -2270,6 +2270,11 @@
       opacity: .68;
     }
 
+    .ring-connector.is-world-wrap {
+      stroke-dasharray: 7 5;
+      opacity: .88;
+    }
+
     .ring-cross-inset-label {
       fill: color-mix(in srgb, var(--ring-connector) 78%, var(--text));
       font-size: 8px;
@@ -2280,6 +2285,19 @@
       stroke: var(--ring-label-bg);
       stroke-linejoin: round;
       stroke-width: 3px;
+      text-anchor: middle;
+      dominant-baseline: central;
+    }
+
+    .ring-inset-limit-label {
+      fill: color-mix(in srgb, var(--warning) 76%, var(--text));
+      font-size: 7px;
+      font-weight: 860;
+      paint-order: stroke fill;
+      pointer-events: none;
+      stroke: var(--ring-label-bg);
+      stroke-linejoin: round;
+      stroke-width: 2.8px;
       text-anchor: middle;
       dominant-baseline: central;
     }
@@ -3741,6 +3759,192 @@
       line-height: 1.18;
       text-align: center;
       overflow-wrap: anywhere;
+    }
+
+    .ring-timezone-section {
+      display: grid;
+      gap: .42rem;
+      border: 1px solid color-mix(in srgb, var(--accent-ring) 34%, var(--line));
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--accent-ring) 7%, var(--surface));
+      overflow: hidden;
+    }
+
+    .ring-timezone-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .5rem;
+      width: 100%;
+      min-height: 32px;
+      padding: .3rem .5rem;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--text);
+      font-size: .75rem;
+      font-weight: 860;
+    }
+
+    .ring-timezone-toggle span:last-child {
+      color: var(--muted);
+      font-size: .68rem;
+      font-weight: 760;
+    }
+
+    .ring-timezone-section.is-open {
+      padding-bottom: .48rem;
+    }
+
+    .ring-timezone-section.is-open .ring-timezone-toggle {
+      border-bottom: 1px solid color-mix(in srgb, var(--accent-ring) 24%, var(--line));
+    }
+
+    .ring-zone-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .36rem;
+      padding: 0 .48rem;
+    }
+
+    .ring-zone-card {
+      display: grid;
+      gap: .12rem;
+      min-width: 0;
+      padding: .4rem;
+      border: 1px solid var(--line);
+      border-radius: .5rem;
+      background: color-mix(in srgb, var(--surface) 92%, var(--accent-ring) 8%);
+    }
+
+    .ring-zone-card.is-unresolved {
+      border-color: color-mix(in srgb, var(--warning) 58%, var(--line));
+    }
+
+    .ring-zone-card-head,
+    .ring-departure-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .35rem;
+      min-width: 0;
+      font-size: .7rem;
+    }
+
+    .ring-zone-card-head span {
+      color: var(--muted);
+      font-size: .62rem;
+      font-weight: 760;
+      text-transform: uppercase;
+    }
+
+    .ring-zone-clock {
+      min-width: 0;
+      color: color-mix(in srgb, var(--accent-ring-secondary) 72%, var(--text));
+      font-size: .8rem;
+      font-weight: 880;
+      line-height: 1.16;
+      overflow-wrap: anywhere;
+    }
+
+    .ring-zone-name {
+      min-width: 0;
+      color: var(--muted);
+      font-size: .62rem;
+      line-height: 1.15;
+      overflow-wrap: anywhere;
+    }
+
+    .ring-zone-override {
+      display: grid;
+      gap: .14rem;
+      margin-top: .2rem;
+      color: var(--muted);
+      font-size: .6rem;
+      font-weight: 760;
+    }
+
+    .ring-zone-override input,
+    .ring-departure-control input[type="datetime-local"] {
+      width: 100%;
+      min-width: 0;
+      height: 30px;
+      padding: .18rem .32rem;
+      border: 1px solid var(--line);
+      border-radius: .4rem;
+      background: var(--surface);
+      color: var(--text);
+      font-size: .68rem;
+      font-weight: 720;
+    }
+
+    .ring-zone-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .2rem;
+      margin-top: .12rem;
+    }
+
+    .ring-zone-actions button {
+      min-height: 26px;
+      padding: .1rem .28rem;
+      font-size: .62rem;
+      font-weight: 820;
+    }
+
+    .ring-zone-actions button:first-child {
+      border-color: color-mix(in srgb, var(--accent-ring) 58%, var(--line));
+      background: color-mix(in srgb, var(--accent-ring) 14%, var(--surface));
+    }
+
+    .ring-departure-control {
+      display: grid;
+      gap: .35rem;
+      margin: 0 .48rem;
+      padding: .42rem;
+      border: 1px solid var(--line);
+      border-radius: .5rem;
+      background: color-mix(in srgb, var(--surface) 94%, var(--accent-ring) 6%);
+    }
+
+    .ring-departure-modes {
+      display: inline-flex;
+      gap: .16rem;
+    }
+
+    .ring-departure-modes button {
+      min-height: 24px;
+      padding: .1rem .34rem;
+      font-size: .64rem;
+      font-weight: 820;
+    }
+
+    .ring-departure-modes button[aria-pressed="true"] {
+      border-color: var(--accent-ring);
+      background: color-mix(in srgb, var(--accent-ring) 18%, var(--surface));
+      color: var(--text);
+    }
+
+    .ring-itinerary {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .32rem;
+    }
+
+    .ring-itinerary span {
+      display: grid;
+      gap: .08rem;
+      min-width: 0;
+      color: var(--muted);
+      font-size: .66rem;
+      line-height: 1.18;
+      overflow-wrap: anywhere;
+    }
+
+    .ring-itinerary b {
+      color: var(--text);
+      font-size: .62rem;
+      text-transform: uppercase;
     }
 
     .ring-inset-warning {
@@ -11702,6 +11906,11 @@
     }
 
     @media (max-width: 620px) {
+      .ring-zone-grid,
+      .ring-itinerary {
+        grid-template-columns: 1fr;
+      }
+
       .notes-search input::placeholder {
         font-size: .6rem;
       }
