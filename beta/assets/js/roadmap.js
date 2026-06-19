@@ -90,6 +90,31 @@
         category: "Maps"
       },
       {
+        title: "Rangefinder Ring, Inset, Label, and Time-Zone Refinements",
+        ticketId: "WISH-078",
+        planDoc: "WISH-061-RANGEFINDER-EDGECASES-PLAN.md",
+        description: "Deepen the Rangefinder polish after the first edge-case and time-zone pass. End cross-region dotted cues at the actual inset boundary rather than the image/container edge. Render applicable rings on both the main US map and every inset whether or not a Rangefinder End point is active there. Place distance/time labels on their ring curves, avoid map icons and labels where possible, and keep Rangefinder labels visually on top when a collision cannot be avoided. Add the time-zone change to the panel's distance/time comparison as a clear [+/- # hour(s)] value. Extend graduated darkening all the way through the outermost enabled ring. While Rangefinder is active, make the pointer/hover hint identify the distance/time band currently under the pointer.",
+        priority: "P1",
+        effort: "large",
+        targetKind: "exact",
+        targetVersion: "4.7.6",
+        tokenCostPct: 38,
+        prompt: "Refine Rangefinder geometry and readouts across US mainland/insets and both themes. Clip cross-region dotted cues to the true boundary of each inset, not the SVG/image container. Project every enabled Start-centered distance ring into the main US map plus Alaska, Hawaii, and territory insets whenever its geodesic reaches them, independent of whether an End point exists there. Render each distance/time label on its ring curve; collision-test against Rangefinder pins, note/Waypoint markers, map labels, other ring labels, and inset edges, but give the Rangefinder label top z-order when no clean position exists. Add a signed time-zone delta such as +3 Hours or -1 Hour beside the distance/time comparison in the Rangefinder panel. Make nested ring shading reach the final enabled ring with a clear graduated edge. When Rangefinder is active, update the map hover hint to show the ring level/band and its distance/time range under the pointer. Preserve per-map settings, straight-line semantics, units, clipping/fill controls, mobile behavior, and usStateVisitMap.v1.",
+        category: "Maps"
+      },
+      {
+        title: "Mobile Center-Crosshair Rangefinder",
+        ticketId: "WISH-079",
+        description: "Give mobile Rangefinder a map-first targeting mode: place a persistent + crosshair at the center of the visible map, let the user pan the map beneath it, and continuously update a compact distance/time indicator for the coordinates under the crosshair. Keep picking and confirming the target touch-friendly without covering the map.",
+        priority: "P1",
+        effort: "medium",
+        targetKind: "patch",
+        targetVersion: "",
+        tokenCostPct: 24,
+        prompt: "Add a mobile-only center-crosshair targeting flow for Rangefinder. When choosing a point, keep a + fixed at the center of the visible map while the user pans/zooms the map underneath it. Resolve the center coordinate continuously and show an updating compact readout for distance and estimated travel time from the active Start, including the current ring/band where useful. Provide clear confirm/cancel actions, safe-area-aware placement, and accessible feedback without obscuring map pins or controls. Preserve the existing tap-a-saved-pin workflow and desktop behavior, support US and World maps/insets/date-line wrapping, and persist only normal confirmed Rangefinder anchors/settings.",
+        category: "Maps"
+      },
+      {
         title: "Location Ratings",
         ticketId: "WISH-070",
         description: "Add a first-class rating for saved locations so a place can be scored independently from visit level, note priority, or Wayfinder status, then let Notes and relevant location lists sort by that rating.",
