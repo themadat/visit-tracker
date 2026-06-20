@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.6.6">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.6.7">
 </head>
 
 <body>
@@ -1783,14 +1783,14 @@
   <script src="assets/js/maps.js"></script>
   <script src="assets/js/world-names.js?v=4.7.4"></script>
   <script src="assets/js/world-label-overrides.js?v=4.7.4"></script>
-  <script src="assets/js/timezones.js?v=4.7.6.6"></script>
+  <script src="assets/js/timezones.js?v=4.7.6.7"></script>
   <script src="assets/js/changelog.js"></script>
   <script src="assets/js/roadmap.js"></script>
   <script>
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.6.6";
+    const APP_VERSION = "4.7.6.7";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -4882,9 +4882,19 @@
       syncLayerModePills();
     }
 
+    function renderRingTimeZoneToggle(anchor1, anchor2) {
+      const open = ringSettings().timeZoneOpen === true;
+      const resolvedCount = [ringTimeZoneFor(1, anchor1), ringTimeZoneFor(2, anchor2)].filter(Boolean).length;
+      return `<button class="ring-timezone-toggle" type="button" data-ring-timezone-toggle aria-expanded="${open ? "true" : "false"}">
+        <span>Times &amp; Arrival</span>
+        <span>${open ? "Hide" : `${resolvedCount}/2`}</span>
+      </button>`;
+    }
+
     function renderRingTimeZoneSection(anchor1, anchor2) {
       const bag = ringSettings();
       const open = bag.timeZoneOpen === true;
+      if (!open) return "";
       const now = new Date();
       const anchorCard = (slot, anchor) => {
         const override = anchor ? ringTimeZoneOverride(slot) : "";
@@ -4907,15 +4917,6 @@
           </div>
         </div>`;
       };
-      if (!open) {
-        const resolvedCount = [ringTimeZoneFor(1, anchor1), ringTimeZoneFor(2, anchor2)].filter(Boolean).length;
-        return `<div class="ring-timezone-section">
-          <button class="ring-timezone-toggle" type="button" data-ring-timezone-toggle aria-expanded="false">
-            <span>Local Times &amp; Arrival</span>
-            <span>${resolvedCount}/2 zones</span>
-          </button>
-        </div>`;
-      }
       const startZone = ringTimeZoneFor(1, anchor1);
       const endZone = ringTimeZoneFor(2, anchor2);
       const customMode = bag.departureMode === "custom";
@@ -4931,10 +4932,6 @@
         ? ringZoneChangeText(departure, startZone, arrival, endZone) : "";
       const zoneOptions = ringTimeZoneChoices().map(zone => `<option value="${escapeHtml(zone)}"></option>`).join("");
       return `<div class="ring-timezone-section is-open">
-        <button class="ring-timezone-toggle" type="button" data-ring-timezone-toggle aria-expanded="true">
-          <span>Local Times &amp; Arrival</span>
-          <span>Hide</span>
-        </button>
         <div class="ring-zone-grid">
           ${anchorCard(1, anchor1)}
           ${anchorCard(2, anchor2)}
@@ -4973,6 +4970,7 @@
       const distances = ringDistances();
       const enabled = ringEnabledKeySet();
       const compare = ringCompareReadout();
+      const timeZoneToggle = renderRingTimeZoneToggle(anchor1, anchor2);
       const timeZoneSection = renderRingTimeZoneSection(anchor1, anchor2);
       const insetWarning = ringInsetWarning(anchor1, anchor2);
       const unit = ringUnit();
@@ -5084,7 +5082,10 @@
             ${anchor2 ? `<button class="ring-anchor-clear" type="button" data-ring-clear="2" aria-label="Clear Rangefinder End" title="Clear End">${__DELETE_LEFT_FILL}</button>` : ""}
           </span>
         </div>
-        ${compare ? `<div class="ring-compare-readout">${escapeHtml(compare)}</div>` : ""}
+        <div class="ring-summary-row${compare ? "" : " is-zone-only"}">
+          ${compare ? `<div class="ring-compare-readout">${escapeHtml(compare)}</div>` : ""}
+          ${timeZoneToggle}
+        </div>
         ${timeZoneSection}
         <div class="ring-chip-row" aria-label="Visible Rangefinder rings">${ringChips}</div>
         ${insetWarning ? `<div class="ring-inset-warning">${escapeHtml(insetWarning)}</div>` : ""}

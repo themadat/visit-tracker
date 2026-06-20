@@ -3816,12 +3816,25 @@
       border-color: var(--accent-ring);
     }
 
+    .ring-summary-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: stretch;
+      gap: .34rem;
+      min-width: 0;
+    }
+
+    .ring-summary-row.is-zone-only {
+      grid-template-columns: auto;
+      justify-content: end;
+    }
+
     .ring-compare-readout {
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 32px;
       min-height: 32px;
+      min-width: 0;
       padding: .28rem .42rem;
       border: 1px solid color-mix(in srgb, var(--accent-ring) 44%, var(--line));
       border-radius: var(--radius);
@@ -3837,6 +3850,7 @@
     .ring-timezone-section {
       display: grid;
       gap: .42rem;
+      padding: .48rem 0;
       border: 1px solid color-mix(in srgb, var(--accent-ring) 34%, var(--line));
       border-radius: var(--radius);
       background: color-mix(in srgb, var(--accent-ring) 7%, var(--surface));
@@ -3844,33 +3858,34 @@
     }
 
     .ring-timezone-toggle {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: space-between;
-      gap: .5rem;
-      width: 100%;
+      align-self: stretch;
+      gap: .3rem;
+      width: auto;
+      max-width: 8.5rem;
       min-height: 32px;
-      padding: .3rem .5rem;
-      border: 0;
-      border-radius: 0;
-      background: transparent;
+      padding: .26rem .42rem;
+      border: 1px solid color-mix(in srgb, var(--accent-ring) 34%, var(--line));
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--accent-ring) 7%, var(--surface));
       color: var(--text);
-      font-size: .75rem;
+      font-size: .68rem;
       font-weight: 860;
+      line-height: 1.05;
+      white-space: nowrap;
     }
 
     .ring-timezone-toggle span:last-child {
       color: var(--muted);
-      font-size: .68rem;
+      font-size: .6rem;
       font-weight: 760;
     }
 
-    .ring-timezone-section.is-open {
-      padding-bottom: .48rem;
-    }
-
-    .ring-timezone-section.is-open .ring-timezone-toggle {
-      border-bottom: 1px solid color-mix(in srgb, var(--accent-ring) 24%, var(--line));
+    .ring-timezone-toggle[aria-expanded="true"] {
+      border-color: var(--accent-ring);
+      background: color-mix(in srgb, var(--accent-ring) 14%, var(--surface));
     }
 
     .ring-zone-grid {

@@ -4,6 +4,25 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.6.7",
+        date: "2026-06-20",
+        title: "Same Time",
+        summary: "Rangefinder keeps its time-zone control beside the distance and travel-time comparison.",
+        highlights: [
+          "Move Times & Arrival to a compact right-side control in the comparison row.",
+          "Keep expanded local clocks, departure, and arrival details below the summary.",
+        ],
+        updateSections: [
+          {
+            heading: "Rangefinder Panel",
+            items: [
+              "The compact Times & Arrival button now shares the distance/time row instead of occupying a full-width row.",
+              "Opening the button leaves the summary row intact and expands the full time-zone planning details beneath it.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.6.6",
         date: "2026-06-19",
         title: "Full Radius",
