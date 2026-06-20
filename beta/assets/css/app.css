@@ -3267,7 +3267,12 @@
     }
 
     #ringPanel {
+      position: relative;
       gap: .2rem;
+    }
+
+    #ringPanel[data-timezone-open="true"]> :not(.ring-timezone-popover) {
+      visibility: hidden;
     }
 
     .ring-panel-title-row {
@@ -3849,43 +3854,82 @@
 
     .ring-timezone-section {
       display: grid;
+      align-content: start;
       gap: .42rem;
+      min-height: 0;
       padding: .48rem 0;
-      border: 1px solid color-mix(in srgb, var(--accent-ring) 34%, var(--line));
-      border-radius: var(--radius);
-      background: color-mix(in srgb, var(--accent-ring) 7%, var(--surface));
-      overflow: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
     }
 
     .ring-timezone-toggle {
-      display: inline-flex;
-      align-items: center;
-      justify-content: space-between;
+      display: inline-grid;
+      place-items: center;
       align-self: stretch;
-      gap: .3rem;
-      width: auto;
-      max-width: 8.5rem;
+      width: 32px;
+      min-width: 32px;
+      max-width: 32px;
+      height: 100%;
       min-height: 32px;
-      padding: .26rem .42rem;
+      padding: .24rem;
       border: 1px solid color-mix(in srgb, var(--accent-ring) 34%, var(--line));
       border-radius: var(--radius);
       background: color-mix(in srgb, var(--accent-ring) 7%, var(--surface));
       color: var(--text);
-      font-size: .68rem;
-      font-weight: 860;
-      line-height: 1.05;
-      white-space: nowrap;
     }
 
-    .ring-timezone-toggle span:last-child {
-      color: var(--muted);
-      font-size: .6rem;
-      font-weight: 760;
+    .ring-timezone-toggle .sf-symbol {
+      width: 17px;
+      height: 21px;
     }
 
     .ring-timezone-toggle[aria-expanded="true"] {
       border-color: var(--accent-ring);
       background: color-mix(in srgb, var(--accent-ring) 14%, var(--surface));
+    }
+
+    .ring-timezone-popover {
+      position: absolute;
+      z-index: 30;
+      inset: .55rem;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      min-height: 0;
+      border: 1px solid color-mix(in srgb, var(--line) 72%, var(--accent-ring) 28%);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--surface) 94%, var(--accent-ring) 6%);
+      box-shadow: 0 18px 40px rgba(16, 24, 40, .16);
+      overflow: hidden;
+    }
+
+    .ring-timezone-popover-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .5rem;
+      padding: .58rem .66rem;
+      border-bottom: 1px solid var(--line);
+      background: color-mix(in srgb, var(--surface-2) 72%, var(--surface) 28%);
+    }
+
+    .ring-timezone-popover-head h3 {
+      margin: 0;
+      font-size: .92rem;
+      line-height: 1.1;
+    }
+
+    .ring-timezone-popover-head small {
+      display: block;
+      margin-top: .08rem;
+      color: var(--muted);
+      font-size: .68rem;
+      line-height: 1.15;
+    }
+
+    @media (max-width: 620px) {
+      .ring-timezone-popover {
+        inset: .35rem;
+      }
     }
 
     .ring-zone-grid {
