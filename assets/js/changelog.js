@@ -4,208 +4,51 @@
 
     const CHANGELOG = [
       {
-        version: "4.7.6.10",
+        version: "4.7.6",
         date: "2026-06-20",
-        title: "Clear Air",
-        summary: "Rangefinder hover bands stay clear of native tooltips and read more cleanly.",
+        title: "Dead Reckoning",
+        summary: "Rangefinder masters long-distance map geography, the date line, and offline trip timing across time zones.",
         highlights: [
-          "Move ring-band hover hints above and right of the pointer.",
-          "Show clean distance/time ranges without ring numbers.",
-          "Expand the 5.1.0 Maps integration Roadmap target.",
-        ],
-        updateSections: [
-          {
-            heading: "Rangefinder Hover",
-            items: [
-              "The custom hover pill now opens above-right of the pointer to avoid native browser tooltip overlap.",
-              "Band labels drop the ring number and add breathing room around distance and time range dashes.",
-            ]
-          },
-          {
-            heading: "Roadmap",
-            items: [
-              "Target Finder Maps integration now targets 5.1.0 with Apple/Google preference and Google Flights in Plane mode.",
-            ]
-          }
-        ]
-      },
-      {
-        version: "4.7.6.9",
-        date: "2026-06-20",
-        title: "Clockwork",
-        summary: "Local-time planning is denser, clearer, and driven by compact symbols.",
-        highlights: [
-          "Use symbols for Close, Apply, Auto, Now, and Choose.",
-          "Fit more trip timing into the inset planner with less scrolling.",
-          "Add Google and Apple Maps handoff to the Roadmap.",
-        ],
-        updateSections: [
-          {
-            heading: "Time Planner",
-            items: [
-              "Close is now an X, time-zone Apply uses a checkmark, and Auto uses wand and sparkles.",
-              "Now and Choose use clock-badge symbols, with accessible labels and tooltips retained.",
-              "Zone inputs and actions share compact rows; tighter cards and itinerary spacing reduce scrolling.",
-            ]
-          },
-          {
-            heading: "Roadmap",
-            items: [
-              "Add a P0 Rangefinder wish for user-initiated Google Maps and Apple Maps target handoff.",
-            ]
-          }
-        ]
-      },
-      {
-        version: "4.7.6.8",
-        date: "2026-06-20",
-        title: "Time Window",
-        summary: "Rangefinder opens local clocks and arrival planning in a compact inset panel.",
-        highlights: [
-          "Replace the Times & Arrival text control with a curved-route icon.",
-          "Open trip timing over the Rangefinder without increasing its height.",
-        ],
-        updateSections: [
-          {
-            heading: "Rangefinder Panel",
-            items: [
-              "The comparison row now uses a square curved-route icon for local times and arrival planning.",
-              "Trip clocks, time-zone overrides, departure, and arrival open in a scrollable inset panel with its own Close control.",
-            ]
-          }
-        ]
-      },
-      {
-        version: "4.7.6.7",
-        date: "2026-06-20",
-        title: "Same Time",
-        summary: "Rangefinder keeps its time-zone control beside the distance and travel-time comparison.",
-        highlights: [
-          "Move Times & Arrival to a compact right-side control in the comparison row.",
-          "Keep expanded local clocks, departure, and arrival details below the summary.",
-        ],
-        updateSections: [
-          {
-            heading: "Rangefinder Panel",
-            items: [
-              "The compact Times & Arrival button now shares the distance/time row instead of occupying a full-width row.",
-              "Opening the button leaves the summary row intact and expands the full time-zone planning details beneath it.",
-            ]
-          }
-        ]
-      },
-      {
-        version: "4.7.6.6",
-        date: "2026-06-19",
-        title: "Full Radius",
-        summary: "Rangefinder rings now carry cleanly across US map regions and explain every band.",
-        highlights: [
-          "Stop inset travel cues at the inset frame instead of the full map edge.",
-          "Project rings between the mainland and insets without requiring an End point.",
-          "Keep curve labels clear of map content, with Rangefinder labels always on top.",
-          "Show time-zone change in the comparison and identify hovered ring bands.",
+          "World rings trace true great-circles and wrap cleanly across the date line.",
+          "Rings reach and shade every US region — mainland and insets — with or without an End.",
+          "Collision-aware distance and time pills sample along each ring and stay readable.",
+          "Plan departures and arrivals with offline local clocks and signed time-zone changes.",
         ],
         updateSections: [
           {
             heading: "Cross-Region Rings",
             items: [
-              "Inset-side dotted cues end at the visible inset frame while mainland-side cues continue to the main map boundary.",
-              "Every enabled Start-centered ring projects into each reached US region, including inset-to-mainland coverage, whether or not End is set.",
-              "Within-range shading uses the full graduated ring fill through the outermost enabled distance instead of fading too early.",
+              "Cross-region cues follow the true compass bearing instead of aiming at the inset's on-page position.",
+              "Every enabled Start-centered ring projects into each reached US region — mainland-to-inset, inset-to-mainland, and inset-to-inset — whether or not an End point is set.",
+              "Within-range shading fills each reached region through the outermost enabled distance and reads more boldly.",
+              "Rings that start in a US inset stay at a useful inset scale instead of expanding behind the mask.",
+              "Inset-side dotted cues end at the inset frame while mainland-side cues continue to the main map boundary.",
+            ]
+          },
+          {
+            heading: "Globe Wrap",
+            items: [
+              "World distance rings trace the real great-circle, sampled so the curvature matches the Robinson projection.",
+              "Rings and Start-to-End cues wrap at the curved globe outline and split naturally at the date-line seam.",
+              "Wrapped ring labels stay inside the globe.",
             ]
           },
           {
             heading: "Labels & Readouts",
             items: [
-              "Distance and time pills are sampled directly along ring curves and reposition around pins, Waypoint markers, map labels, other ring labels, and map edges.",
-              "Rangefinder labels render in a dedicated top layer when crowded geometry leaves no collision-free position.",
-              "The Start-to-End comparison adds a signed time-zone change such as [+3 Hours] or [-1 Hour].",
-              "Pointer hover identifies the active ring number plus its distance and estimated-time range.",
-            ]
-          }
-        ]
-      },
-      {
-        version: "4.7.6.5",
-        date: "2026-06-19",
-        title: "On the Horizon",
-        summary: "The Roadmap adds deeper Rangefinder polish and a mobile center-crosshair targeting mode.",
-        highlights: [
-          "Plan a full pass on inset cues, ring coverage, labels, shading, and hover bands.",
-          "Plan a mobile crosshair that updates distance and travel time while the map moves.",
-        ],
-        updateSections: [
-          {
-            heading: "Rangefinder Follow-Ups",
-            items: [
-              "Queued true inset-boundary cue endings and ring coverage across the mainland and every US inset.",
-              "Queued curve-following collision-aware ring labels, signed time-zone deltas, full-depth shading, and live hover-band hints.",
-              "Queued a mobile center-crosshair targeting flow with continuous distance/time feedback and confirm/cancel controls.",
-            ]
-          }
-        ]
-      },
-      {
-        version: "4.7.6.4",
-        date: "2026-06-19",
-        title: "Within Range",
-        summary: "Rangefinder rings read more clearly — true great-circle curves, inset coverage, and bolder shading.",
-        highlights: [
-          "World rings follow the true great-circle curve instead of bowing the wrong way.",
-          "Distance rings shade every in-range inset, even without an End point there.",
-          "Distance and travel time read from clearer rangefinder-colored pills.",
-          "See total travel time plus the hours gained or lost across time zones.",
-        ],
-        updateSections: [
-          {
-            heading: "Rangefinder Rings",
-            items: [
-              "World distance rings trace the real great-circle, sampled and wrapped at the date line, so the curvature matches the projection.",
-              "Distance rings now shade Alaska, Hawaii, and the territories whenever they fall within range, regardless of the End point.",
-              "Within-range shading reads more boldly so it is clear when a region sits inside a ring.",
-              "Ring distance and time appear in rangefinder-colored pills, and a crossing ring carries that pill into the inset it reaches.",
+              "Distance and time appear in rangefinder-colored pills sampled along each ring curve.",
+              "Pills reposition around pins, Waypoint markers, map labels, other labels, and map edges, and avoid overlapping on short hops.",
+              "Crowded geometry pushes labels into a dedicated top layer so they stay legible, and the approximate great-circle hint drops its on-map text.",
+              "Pointer hover identifies the active ring band with its distance and estimated-time range, opening above-right of the pointer.",
             ]
           },
           {
-            heading: "Rangefinder Cues",
+            heading: "Time & Trip Planning",
             items: [
-              "The approximate great-circle hint drops its on-map text label for a cleaner look.",
-              "The cross-region dashed cue continues to the edge of the map along the true bearing.",
-              "Ring labels avoid overlapping each other on short hops like Glacier to Glacier Bay.",
-              "The time panel adds total travel time and the hours gained or lost across the covered time zones.",
-            ]
-          }
-        ]
-      },
-      {
-        version: "4.7.6.3",
-        date: "2026-06-18",
-        title: "Around the Clock",
-        summary: "Rangefinder handles inset crossings, the date line, and offline local-time planning.",
-        highlights: [
-          "Clarify long-distance comparisons between mainland and inset map regions.",
-          "Continue World rings and Start-to-End cues across the date line.",
-          "Show offline local times and IANA zones for Rangefinder points.",
-          "Plan a departure and see the destination-local estimated arrival.",
-        ],
-        updateSections: [
-          {
-            heading: "Rangefinder Geography",
-            items: [
-              "Cross-region cues follow the real compass bearing instead of aiming at the inset's on-page position.",
-              "Matching geodesic ring arcs appear in the End region when a Start-centered distance ring crosses it.",
-              "Rings that start in a US inset are limited to a useful inset scale instead of expanding indefinitely behind the mask.",
-              "World rings wrap at the curved Robinson globe outline rather than the image or SVG container edge.",
-              "Wrapped labels stay inside the globe, and Start-to-End cues split naturally at the curved date-line seam.",
-            ]
-          },
-          {
-            heading: "Offline Time Planning",
-            items: [
-              "Start and End points resolve to offline IANA time zones with longitude-aware choices for multi-zone regions.",
-              "Rangefinder can show current local clocks, a chosen departure, and the destination-local estimated arrival.",
-              "Manual IANA zone overrides cover ambiguous or unresolved locations and persist per map.",
-              "Browser Intl time-zone data supplies daylight-saving-aware formatting without network requests.",
+              "Start and End resolve to offline IANA time zones, with longitude-aware choices for multi-zone regions and persistent manual overrides.",
+              "The comparison shows total travel time plus a signed time-zone change such as [+3 Hours] or [-1 Hour].",
+              "Local clocks, a chosen departure, and the destination-local estimated arrival open in a compact inset planner with symbol-based controls.",
+              "Browser Intl data supplies daylight-saving-aware formatting with no network requests.",
             ]
           }
         ]
