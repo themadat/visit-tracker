@@ -4,12 +4,12 @@ Ticket: **WISH-061** (Maps, **large**, `tokenCostPct 48`). Target: **4.7.6** —
 
 ## Implementation status
 
-Implemented through `4.7.6.9`: inset radius limits; compass-correct approximate great-circle cues clipped to each inset frame; End-independent Start-centered ring projection between mainland and inset regions; curve-sampled collision-aware labels in a top rendering layer; full-depth graduated shading; live hover-band distance/time hints; World rings, labels, and sampled great-circle cues wrapping at the curved Robinson globe outline; offline country/state IANA resolution with longitude-aware multi-zone choices; persisted manual overrides and departure settings; DST-aware destination-local arrival plus signed comparison deltas; a curved-route icon opening the local-times and arrival planner in a scrollable inset overlay over Rangefinder; compact icon-led planner controls; responsive light/dark UI; Help, README, changelog, Roadmap, and handoff updates.
+Implemented through `4.7.6.10`: inset radius limits; compass-correct approximate great-circle cues clipped to each inset frame; End-independent Start-centered ring projection between mainland and inset regions; curve-sampled collision-aware labels in a top rendering layer; full-depth graduated shading; above-right hover-band distance/time range hints; World rings, labels, and sampled great-circle cues wrapping at the curved Robinson globe outline; offline country/state IANA resolution with longitude-aware multi-zone choices; persisted manual overrides and departure settings; DST-aware destination-local arrival plus signed comparison deltas; a curved-route icon opening the local-times and arrival planner in a scrollable inset overlay over Rangefinder; compact icon-led planner controls; responsive light/dark UI; Help, README, changelog, Roadmap, and handoff updates.
 
 ## Related follow-up wishes
 
 - **WISH-079** — add a mobile center-crosshair target mode with the map moving beneath a fixed `+` and a continuously updating distance/time readout.
-- **WISH-080** — add explicit Google Maps and Apple Maps handoff actions for confirmed Rangefinder targets.
+- **WISH-080** — target 5.1.0 with a preferred Apple/Google Maps setting, confirmed-target handoff actions, and Google Flights in Plane mode.
 
 ## Current Rangefinder internals (what we build on)
 

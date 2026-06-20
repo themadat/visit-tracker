@@ -4,6 +4,32 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.6.10",
+        date: "2026-06-20",
+        title: "Clear Air",
+        summary: "Rangefinder hover bands stay clear of native tooltips and read more cleanly.",
+        highlights: [
+          "Move ring-band hover hints above and right of the pointer.",
+          "Show clean distance/time ranges without ring numbers.",
+          "Expand the 5.1.0 Maps integration Roadmap target.",
+        ],
+        updateSections: [
+          {
+            heading: "Rangefinder Hover",
+            items: [
+              "The custom hover pill now opens above-right of the pointer to avoid native browser tooltip overlap.",
+              "Band labels drop the ring number and add breathing room around distance and time range dashes.",
+            ]
+          },
+          {
+            heading: "Roadmap",
+            items: [
+              "Target Finder Maps integration now targets 5.1.0 with Apple/Google preference and Google Flights in Plane mode.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.6.9",
         date: "2026-06-20",
         title: "Clockwork",
