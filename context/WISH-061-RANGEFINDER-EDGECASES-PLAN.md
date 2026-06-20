@@ -4,7 +4,7 @@ Ticket: **WISH-061** (Maps, **large**, `tokenCostPct 48`). Target: **4.7.6** —
 
 ## Implementation status
 
-Implemented through `4.7.6.7`: inset radius limits; compass-correct approximate great-circle cues clipped to each inset frame; End-independent Start-centered ring projection between mainland and inset regions; curve-sampled collision-aware labels in a top rendering layer; full-depth graduated shading; live hover-band distance/time hints; World rings, labels, and sampled great-circle cues wrapping at the curved Robinson globe outline; offline country/state IANA resolution with longitude-aware multi-zone choices; persisted manual overrides and departure settings; DST-aware destination-local arrival plus signed comparison deltas; a compact Times & Arrival control sharing the comparison row with expanded details below; responsive light/dark UI; Help, README, changelog, Roadmap, and handoff updates.
+Implemented through `4.7.6.8`: inset radius limits; compass-correct approximate great-circle cues clipped to each inset frame; End-independent Start-centered ring projection between mainland and inset regions; curve-sampled collision-aware labels in a top rendering layer; full-depth graduated shading; live hover-band distance/time hints; World rings, labels, and sampled great-circle cues wrapping at the curved Robinson globe outline; offline country/state IANA resolution with longitude-aware multi-zone choices; persisted manual overrides and departure settings; DST-aware destination-local arrival plus signed comparison deltas; a curved-route icon opening the local-times and arrival planner in a scrollable inset overlay over Rangefinder; responsive light/dark UI; Help, README, changelog, Roadmap, and handoff updates.
 
 ## Related follow-up wishes
 

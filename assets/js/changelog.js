@@ -4,6 +4,25 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.6.8",
+        date: "2026-06-20",
+        title: "Time Window",
+        summary: "Rangefinder opens local clocks and arrival planning in a compact inset panel.",
+        highlights: [
+          "Replace the Times & Arrival text control with a curved-route icon.",
+          "Open trip timing over the Rangefinder without increasing its height.",
+        ],
+        updateSections: [
+          {
+            heading: "Rangefinder Panel",
+            items: [
+              "The comparison row now uses a square curved-route icon for local times and arrival planning.",
+              "Trip clocks, time-zone overrides, departure, and arrival open in a scrollable inset panel with its own Close control.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.6.7",
         date: "2026-06-20",
         title: "Same Time",
