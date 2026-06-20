@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.6.7">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.6.8">
 </head>
 
 <body>
@@ -1783,14 +1783,14 @@
   <script src="assets/js/maps.js"></script>
   <script src="assets/js/world-names.js?v=4.7.4"></script>
   <script src="assets/js/world-label-overrides.js?v=4.7.4"></script>
-  <script src="assets/js/timezones.js?v=4.7.6.7"></script>
+  <script src="assets/js/timezones.js?v=4.7.6.8"></script>
   <script src="assets/js/changelog.js"></script>
   <script src="assets/js/roadmap.js"></script>
   <script>
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.6.7";
+    const APP_VERSION = "4.7.6.8";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -4182,6 +4182,10 @@
       ringSettings().timeZoneOpen = on === true;
       save();
       renderRingPanel();
+      requestAnimationFrame(() => {
+        const target = on ? $(".ring-timezone-close", $("#ringPanel")) : $(".ring-timezone-toggle", $("#ringPanel"));
+        target?.focus();
+      });
     }
 
     function setRingTimeZoneOverride(slot, value) {
@@ -4882,12 +4886,10 @@
       syncLayerModePills();
     }
 
-    function renderRingTimeZoneToggle(anchor1, anchor2) {
+    function renderRingTimeZoneToggle() {
       const open = ringSettings().timeZoneOpen === true;
-      const resolvedCount = [ringTimeZoneFor(1, anchor1), ringTimeZoneFor(2, anchor2)].filter(Boolean).length;
-      return `<button class="ring-timezone-toggle" type="button" data-ring-timezone-toggle aria-expanded="${open ? "true" : "false"}">
-        <span>Times &amp; Arrival</span>
-        <span>${open ? "Hide" : `${resolvedCount}/2`}</span>
+      return `<button class="ring-timezone-toggle" type="button" data-ring-timezone-toggle aria-haspopup="dialog" aria-controls="ringTimeZonePopover" aria-expanded="${open ? "true" : "false"}" aria-label="Open local times and arrival" title="Local times and arrival">
+        ${__POINT_TOPLEFT_DOWN_TO_POINT_BOTTOMRIGHT_CURVEPATH}
       </button>`;
     }
 
@@ -4931,29 +4933,38 @@
       const zoneChangeText = departure && arrival && startZone && endZone
         ? ringZoneChangeText(departure, startZone, arrival, endZone) : "";
       const zoneOptions = ringTimeZoneChoices().map(zone => `<option value="${escapeHtml(zone)}"></option>`).join("");
-      return `<div class="ring-timezone-section is-open">
-        <div class="ring-zone-grid">
-          ${anchorCard(1, anchor1)}
-          ${anchorCard(2, anchor2)}
-        </div>
-        <div class="ring-departure-control">
-          <div class="ring-departure-head">
-            <b>Departure</b>
-            <span class="ring-departure-modes" role="group" aria-label="Departure time mode">
-              <button type="button" data-ring-departure-mode="now" aria-pressed="${customMode ? "false" : "true"}">Now</button>
-              <button type="button" data-ring-departure-mode="custom" aria-pressed="${customMode ? "true" : "false"}">Choose</button>
-            </span>
+      return `<section id="ringTimeZonePopover" class="ring-timezone-popover" role="dialog" aria-label="Local Times and Arrival">
+        <header class="ring-timezone-popover-head">
+          <div>
+            <h3>Local Times &amp; Arrival</h3>
+            <small>Trip timing across time zones</small>
           </div>
-          ${customMode ? `<input type="datetime-local" value="${escapeHtml(departureValue)}" data-ring-departure-local ${startZone ? "" : "disabled"} aria-label="Departure date and time in the Start time zone">` : ""}
-          <div class="ring-itinerary">
-            <span><b>Leave</b>${escapeHtml(departureText || (anchor1 ? "Resolve the Start zone" : "Pick Start"))}</span>
-            <span><b>Travel</b>${escapeHtml(travelText || "—")}</span>
-            <span><b>Arrive</b>${escapeHtml(arrivalText || (anchor2 ? "Resolve both zones" : "Pick End"))}</span>
-            ${zoneChangeText ? `<span><b>Time zones</b>${escapeHtml(zoneChangeText)}</span>` : ""}
+          <button class="dialog-close ring-timezone-close" type="button" data-ring-timezone-toggle aria-label="Close local times and arrival">Close</button>
+        </header>
+        <div class="ring-timezone-section is-open">
+          <div class="ring-zone-grid">
+            ${anchorCard(1, anchor1)}
+            ${anchorCard(2, anchor2)}
           </div>
+          <div class="ring-departure-control">
+            <div class="ring-departure-head">
+              <b>Departure</b>
+              <span class="ring-departure-modes" role="group" aria-label="Departure time mode">
+                <button type="button" data-ring-departure-mode="now" aria-pressed="${customMode ? "false" : "true"}">Now</button>
+                <button type="button" data-ring-departure-mode="custom" aria-pressed="${customMode ? "true" : "false"}">Choose</button>
+              </span>
+            </div>
+            ${customMode ? `<input type="datetime-local" value="${escapeHtml(departureValue)}" data-ring-departure-local ${startZone ? "" : "disabled"} aria-label="Departure date and time in the Start time zone">` : ""}
+            <div class="ring-itinerary">
+              <span><b>Leave</b>${escapeHtml(departureText || (anchor1 ? "Resolve the Start zone" : "Pick Start"))}</span>
+              <span><b>Travel</b>${escapeHtml(travelText || "—")}</span>
+              <span><b>Arrive</b>${escapeHtml(arrivalText || (anchor2 ? "Resolve both zones" : "Pick End"))}</span>
+              ${zoneChangeText ? `<span><b>Time zones</b>${escapeHtml(zoneChangeText)}</span>` : ""}
+            </div>
+          </div>
+          <datalist id="ringIanaZoneOptions">${zoneOptions}</datalist>
         </div>
-        <datalist id="ringIanaZoneOptions">${zoneOptions}</datalist>
-      </div>`;
+      </section>`;
     }
 
     function renderRingPanel() {
@@ -4970,8 +4981,9 @@
       const distances = ringDistances();
       const enabled = ringEnabledKeySet();
       const compare = ringCompareReadout();
-      const timeZoneToggle = renderRingTimeZoneToggle(anchor1, anchor2);
+      const timeZoneToggle = renderRingTimeZoneToggle();
       const timeZoneSection = renderRingTimeZoneSection(anchor1, anchor2);
+      panel.dataset.timezoneOpen = ringSettings().timeZoneOpen === true ? "true" : "false";
       const insetWarning = ringInsetWarning(anchor1, anchor2);
       const unit = ringUnit();
       const nextUnit = unit === "mi" ? "km" : "mi";
@@ -20072,6 +20084,11 @@
         if (event.target.matches("[data-ring-speed-slider]")) previewRingSpeedDisplay(event.target.value);
       });
       $("#ringPanel").addEventListener("keydown", event => {
+        if (event.key === "Escape" && ringSettings().timeZoneOpen === true) {
+          event.preventDefault();
+          setRingTimeZoneOpen(false);
+          return;
+        }
         if (event.target.matches("[data-ring-zone-override]") && event.key === "Enter") {
           event.preventDefault();
           applyRingTimeZoneOverride(Number(event.target.dataset.ringZoneOverride));
