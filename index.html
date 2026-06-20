@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.6.9">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.6.10">
 </head>
 
 <body>
@@ -1189,7 +1189,7 @@
               coordinates with a compass-correct approximate great-circle cue instead of a route line. Inset-side cues
               stop at the inset frame. Every reached US region shows the matching Start-centered ring arc even when no
               End point is selected there. Ring labels follow their curves, avoid pins and labels when possible, and
-              stay on top when space is tight. Hover a ring band to see its level, distance, and estimated time. World
+              stay on top when space is tight. Hover a ring band to see its distance and estimated-time range. World
               rings and comparison cues continue across the curved Robinson globe outline—not the image or container
               edge—rather than stopping at the date-line seam.</li>
             <li>In Wayfinder, use Packs to preview curated place lists on the map, assign priorities, attach matching
@@ -1335,7 +1335,7 @@
           <p><b>Are Rangefinder rings routing distance?</b><br>No. Rings and Start-to-End comparisons use straight-line
             distance. Drive and Plane times use your selected average speed, starting from 60 mph for Drive and 600 mph
             for Plane, so both are planning hints. The comparison also shows the signed time-zone change, and hovering
-            the map identifies which distance/time ring band is under the pointer.</p>
+            the map identifies which distance/time range is under the pointer.</p>
           <p><b>Does Rangefinder need the internet for local times?</b><br>No. It resolves a practical IANA time zone
             from the saved location and uses the browser's offline time-zone data for local clocks, daylight-saving
             changes, departures, and arrivals. Multi-zone regions use the coordinate longitude as a guide, and either
@@ -1779,18 +1779,18 @@
     </footer>
   </dialog>
 
-  <script src="assets/js/icons.js?v=4.7.6.9"></script>
+  <script src="assets/js/icons.js?v=4.7.6.10"></script>
   <script src="assets/js/maps.js"></script>
   <script src="assets/js/world-names.js?v=4.7.4"></script>
   <script src="assets/js/world-label-overrides.js?v=4.7.4"></script>
-  <script src="assets/js/timezones.js?v=4.7.6.9"></script>
-  <script src="assets/js/changelog.js?v=4.7.6.9"></script>
-  <script src="assets/js/roadmap.js?v=4.7.6.9"></script>
+  <script src="assets/js/timezones.js?v=4.7.6.10"></script>
+  <script src="assets/js/changelog.js?v=4.7.6.10"></script>
+  <script src="assets/js/roadmap.js?v=4.7.6.10"></script>
   <script>
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.6.9";
+    const APP_VERSION = "4.7.6.10";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -8596,17 +8596,17 @@
       const upper = beyond ? null : rings[level];
       const distanceText = beyond
         ? `>${ringDistanceDisplayText(lower)}`
-        : `${lower ? ringDistanceDisplayText(lower) : "0"}–${ringDistanceDisplayText(upper)}`;
+        : `${lower ? ringDistanceDisplayText(lower) : "0"} – ${ringDistanceDisplayText(upper)}`;
       let timeText = "";
       if (ringShowTime()) {
         const lowerTime = lower ? ringTimeLabel(lower).replace(/^~/, "") : "0h";
         timeText = beyond
           ? `>${lowerTime}`
-          : `${lowerTime}–${ringTimeLabel(upper).replace(/^~/, "")}`;
+          : `${lowerTime} – ${ringTimeLabel(upper).replace(/^~/, "")}`;
       }
       return beyond
-        ? `Beyond Ring ${rings.length} · ${distanceText}${timeText ? ` · ${timeText}` : ""}`
-        : `Ring ${level + 1} · ${distanceText}${timeText ? ` · ${timeText}` : ""}`;
+        ? `Beyond · ${distanceText}${timeText ? ` · ${timeText}` : ""}`
+        : `${distanceText}${timeText ? ` · ${timeText}` : ""}`;
     }
 
     function ringHoverHintElement() {
@@ -8647,10 +8647,11 @@
       hint.textContent = text;
       hint.classList.remove("hidden");
       const margin = 10;
-      const offset = 14;
+      const offsetX = 16;
+      const offsetY = 18;
       const box = hint.getBoundingClientRect();
-      hint.style.left = `${Math.max(margin, Math.min(window.innerWidth - box.width - margin, event.clientX + offset))}px`;
-      hint.style.top = `${Math.max(margin, Math.min(window.innerHeight - box.height - margin, event.clientY + offset))}px`;
+      hint.style.left = `${Math.max(margin, Math.min(window.innerWidth - box.width - margin, event.clientX + offsetX))}px`;
+      hint.style.top = `${Math.max(margin, Math.min(window.innerHeight - box.height - margin, event.clientY - box.height - offsetY))}px`;
     }
 
     function scheduleRingHoverHint(event) {
