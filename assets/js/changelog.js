@@ -4,6 +4,56 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.6",
+        date: "2026-06-20",
+        title: "Dead Reckoning",
+        summary: "Rangefinder masters long-distance map geography, the date line, and offline trip timing across time zones.",
+        highlights: [
+          "World rings trace true great-circles and wrap cleanly across the date line.",
+          "Rings reach and shade every US region — mainland and insets — with or without an End.",
+          "Collision-aware distance and time pills sample along each ring and stay readable.",
+          "Plan departures and arrivals with offline local clocks and signed time-zone changes.",
+        ],
+        updateSections: [
+          {
+            heading: "Cross-Region Rings",
+            items: [
+              "Cross-region cues follow the true compass bearing instead of aiming at the inset's on-page position.",
+              "Every enabled Start-centered ring projects into each reached US region — mainland-to-inset, inset-to-mainland, and inset-to-inset — whether or not an End point is set.",
+              "Within-range shading fills each reached region through the outermost enabled distance and reads more boldly.",
+              "Rings that start in a US inset stay at a useful inset scale instead of expanding behind the mask.",
+              "Inset-side dotted cues end at the inset frame while mainland-side cues continue to the main map boundary.",
+            ]
+          },
+          {
+            heading: "Globe Wrap",
+            items: [
+              "World distance rings trace the real great-circle, sampled so the curvature matches the Robinson projection.",
+              "Rings and Start-to-End cues wrap at the curved globe outline and split naturally at the date-line seam.",
+              "Wrapped ring labels stay inside the globe.",
+            ]
+          },
+          {
+            heading: "Labels & Readouts",
+            items: [
+              "Distance and time appear in rangefinder-colored pills sampled along each ring curve.",
+              "Pills reposition around pins, Waypoint markers, map labels, other labels, and map edges, and avoid overlapping on short hops.",
+              "Crowded geometry pushes labels into a dedicated top layer so they stay legible, and the approximate great-circle hint drops its on-map text.",
+              "Pointer hover identifies the active ring band with its distance and estimated-time range, opening above-right of the pointer.",
+            ]
+          },
+          {
+            heading: "Time & Trip Planning",
+            items: [
+              "Start and End resolve to offline IANA time zones, with longitude-aware choices for multi-zone regions and persistent manual overrides.",
+              "The comparison shows total travel time plus a signed time-zone change such as [+3 Hours] or [-1 Hour].",
+              "Local clocks, a chosen departure, and the destination-local estimated arrival open in a compact inset planner with symbol-based controls.",
+              "Browser Intl data supplies daylight-saving-aware formatting with no network requests.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.5",
         date: "2026-06-18",
         title: "Gridlines",
