@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.6.8">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.7.6.9">
 </head>
 
 <body>
@@ -1779,18 +1779,18 @@
     </footer>
   </dialog>
 
-  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/icons.js?v=4.7.6.9"></script>
   <script src="assets/js/maps.js"></script>
   <script src="assets/js/world-names.js?v=4.7.4"></script>
   <script src="assets/js/world-label-overrides.js?v=4.7.4"></script>
-  <script src="assets/js/timezones.js?v=4.7.6.8"></script>
-  <script src="assets/js/changelog.js"></script>
-  <script src="assets/js/roadmap.js"></script>
+  <script src="assets/js/timezones.js?v=4.7.6.9"></script>
+  <script src="assets/js/changelog.js?v=4.7.6.9"></script>
+  <script src="assets/js/roadmap.js?v=4.7.6.9"></script>
   <script>
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.6.8";
+    const APP_VERSION = "4.7.6.9";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -4909,13 +4909,13 @@
           <div class="ring-zone-card-head"><b>${pointName}</b><span>${escapeHtml(source)}</span></div>
           <div class="ring-zone-clock">${escapeHtml(clock)}</div>
           <div class="ring-zone-name">${escapeHtml(zone || "Time zone unavailable")}</div>
-          <label class="ring-zone-override">
-            <span>${override ? "Manual zone" : "Override zone"}</span>
-            <input type="text" list="ringIanaZoneOptions" value="${escapeHtml(override)}" placeholder="${escapeHtml(automatic ? `Auto · ${automatic}` : "Choose an IANA zone")}" data-ring-zone-override="${slot}" ${anchor ? "" : "disabled"}>
-          </label>
-          <div class="ring-zone-actions">
-            <button type="button" data-ring-zone-apply="${slot}" ${anchor ? "" : "disabled"}>Apply</button>
-            <button type="button" data-ring-zone-auto="${slot}" ${override ? "" : "disabled"}>Auto</button>
+          <div class="ring-zone-control">
+            <label class="ring-zone-override">
+              <span class="sr-only">${override ? "Manual zone" : "Override zone"}</span>
+              <input type="text" list="ringIanaZoneOptions" value="${escapeHtml(override)}" placeholder="${escapeHtml(automatic ? `Auto · ${automatic}` : "Choose an IANA zone")}" data-ring-zone-override="${slot}" ${anchor ? "" : "disabled"}>
+            </label>
+            <button type="button" data-ring-zone-apply="${slot}" aria-label="Apply ${pointName} time zone" title="Apply time zone" ${anchor ? "" : "disabled"}>${__CHECKMARK}</button>
+            <button type="button" data-ring-zone-auto="${slot}" aria-label="Use automatic ${pointName} time zone" title="Use automatic time zone" ${override ? "" : "disabled"}>${__WAND_AND_SPARKLES_INVERSE}</button>
           </div>
         </div>`;
       };
@@ -4939,7 +4939,7 @@
             <h3>Local Times &amp; Arrival</h3>
             <small>Trip timing across time zones</small>
           </div>
-          <button class="dialog-close ring-timezone-close" type="button" data-ring-timezone-toggle aria-label="Close local times and arrival">Close</button>
+          <button class="dialog-close ring-timezone-close" type="button" data-ring-timezone-toggle aria-label="Close local times and arrival" title="Close">${__XMARK}</button>
         </header>
         <div class="ring-timezone-section is-open">
           <div class="ring-zone-grid">
@@ -4950,8 +4950,8 @@
             <div class="ring-departure-head">
               <b>Departure</b>
               <span class="ring-departure-modes" role="group" aria-label="Departure time mode">
-                <button type="button" data-ring-departure-mode="now" aria-pressed="${customMode ? "false" : "true"}">Now</button>
-                <button type="button" data-ring-departure-mode="custom" aria-pressed="${customMode ? "true" : "false"}">Choose</button>
+                <button type="button" data-ring-departure-mode="now" aria-pressed="${customMode ? "false" : "true"}" aria-label="Use current departure time" title="Now">${__CLOCK_BADGE_CHECKMARK}</button>
+                <button type="button" data-ring-departure-mode="custom" aria-pressed="${customMode ? "true" : "false"}" aria-label="Choose departure time" title="Choose">${__CLOCK_BADGE_QUESTIONMARK}</button>
               </span>
             </div>
             ${customMode ? `<input type="datetime-local" value="${escapeHtml(departureValue)}" data-ring-departure-local ${startZone ? "" : "disabled"} aria-label="Departure date and time in the Start time zone">` : ""}
