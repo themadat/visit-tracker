@@ -4,6 +4,33 @@
 
     const CHANGELOG = [
       {
+        version: "4.7.6.9",
+        date: "2026-06-20",
+        title: "Clockwork",
+        summary: "Local-time planning is denser, clearer, and driven by compact symbols.",
+        highlights: [
+          "Use symbols for Close, Apply, Auto, Now, and Choose.",
+          "Fit more trip timing into the inset planner with less scrolling.",
+          "Add Google and Apple Maps handoff to the Roadmap.",
+        ],
+        updateSections: [
+          {
+            heading: "Time Planner",
+            items: [
+              "Close is now an X, time-zone Apply uses a checkmark, and Auto uses wand and sparkles.",
+              "Now and Choose use clock-badge symbols, with accessible labels and tooltips retained.",
+              "Zone inputs and actions share compact rows; tighter cards and itinerary spacing reduce scrolling.",
+            ]
+          },
+          {
+            heading: "Roadmap",
+            items: [
+              "Add a P0 Rangefinder wish for user-initiated Google Maps and Apple Maps target handoff.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.6.8",
         date: "2026-06-20",
         title: "Time Window",

@@ -3855,9 +3855,9 @@
     .ring-timezone-section {
       display: grid;
       align-content: start;
-      gap: .42rem;
+      gap: .28rem;
       min-height: 0;
-      padding: .48rem 0;
+      padding: .3rem 0;
       overflow-y: auto;
       overscroll-behavior: contain;
     }
@@ -3907,23 +3907,34 @@
       align-items: center;
       justify-content: space-between;
       gap: .5rem;
-      padding: .58rem .66rem;
+      padding: .35rem .48rem;
       border-bottom: 1px solid var(--line);
       background: color-mix(in srgb, var(--surface-2) 72%, var(--surface) 28%);
     }
 
     .ring-timezone-popover-head h3 {
       margin: 0;
-      font-size: .92rem;
+      font-size: .84rem;
       line-height: 1.1;
     }
 
     .ring-timezone-popover-head small {
-      display: block;
-      margin-top: .08rem;
-      color: var(--muted);
-      font-size: .68rem;
-      line-height: 1.15;
+      display: none;
+    }
+
+    .ring-timezone-close {
+      display: inline-grid;
+      place-items: center;
+      width: 28px;
+      min-width: 28px;
+      height: 28px;
+      min-height: 28px;
+      padding: .34rem;
+    }
+
+    .ring-timezone-close .sf-symbol {
+      width: 13px;
+      height: 13px;
     }
 
     @media (max-width: 620px) {
@@ -3935,15 +3946,15 @@
     .ring-zone-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: .36rem;
-      padding: 0 .48rem;
+      gap: .24rem;
+      padding: 0 .3rem;
     }
 
     .ring-zone-card {
       display: grid;
-      gap: .12rem;
+      gap: .06rem;
       min-width: 0;
-      padding: .4rem;
+      padding: .28rem;
       border: 1px solid var(--line);
       border-radius: .5rem;
       background: color-mix(in srgb, var(--surface) 92%, var(--accent-ring) 8%);
@@ -3960,7 +3971,7 @@
       justify-content: space-between;
       gap: .35rem;
       min-width: 0;
-      font-size: .7rem;
+      font-size: .66rem;
     }
 
     .ring-zone-card-head span {
@@ -3973,67 +3984,72 @@
     .ring-zone-clock {
       min-width: 0;
       color: color-mix(in srgb, var(--accent-ring-secondary) 72%, var(--text));
-      font-size: .8rem;
+      font-size: .74rem;
       font-weight: 880;
-      line-height: 1.16;
+      line-height: 1.08;
       overflow-wrap: anywhere;
     }
 
     .ring-zone-name {
       min-width: 0;
       color: var(--muted);
-      font-size: .62rem;
-      line-height: 1.15;
+      font-size: .58rem;
+      line-height: 1.08;
       overflow-wrap: anywhere;
     }
 
     .ring-zone-override {
-      display: grid;
-      gap: .14rem;
-      margin-top: .2rem;
-      color: var(--muted);
-      font-size: .6rem;
-      font-weight: 760;
+      display: block;
+      min-width: 0;
     }
 
     .ring-zone-override input,
     .ring-departure-control input[type="datetime-local"] {
       width: 100%;
       min-width: 0;
-      height: 30px;
+      height: 26px;
       padding: .18rem .32rem;
       border: 1px solid var(--line);
       border-radius: .4rem;
       background: var(--surface);
       color: var(--text);
-      font-size: .68rem;
+      font-size: .62rem;
       font-weight: 720;
     }
 
-    .ring-zone-actions {
+    .ring-zone-control {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: .2rem;
-      margin-top: .12rem;
+      grid-template-columns: minmax(0, 1fr) 26px 26px;
+      gap: .16rem;
+      align-items: stretch;
+      margin-top: .14rem;
     }
 
-    .ring-zone-actions button {
+    .ring-zone-control button {
+      display: inline-grid;
+      place-items: center;
+      width: 26px;
+      min-width: 26px;
+      height: 26px;
       min-height: 26px;
-      padding: .1rem .28rem;
-      font-size: .62rem;
-      font-weight: 820;
+      padding: .28rem;
     }
 
-    .ring-zone-actions button:first-child {
+    .ring-zone-control button .sf-symbol {
+      width: 13px;
+      height: 13px;
+    }
+
+    .ring-zone-control button:first-of-type {
       border-color: color-mix(in srgb, var(--accent-ring) 58%, var(--line));
       background: color-mix(in srgb, var(--accent-ring) 14%, var(--surface));
     }
 
     .ring-departure-control {
       display: grid;
-      gap: .35rem;
-      margin: 0 .48rem;
-      padding: .42rem;
+      gap: .22rem;
+      margin: 0 .3rem;
+      padding: .3rem;
       border: 1px solid var(--line);
       border-radius: .5rem;
       background: color-mix(in srgb, var(--surface) 94%, var(--accent-ring) 6%);
@@ -4045,10 +4061,18 @@
     }
 
     .ring-departure-modes button {
-      min-height: 24px;
-      padding: .1rem .34rem;
-      font-size: .64rem;
-      font-weight: 820;
+      display: inline-grid;
+      place-items: center;
+      width: 28px;
+      min-width: 28px;
+      height: 26px;
+      min-height: 26px;
+      padding: .22rem;
+    }
+
+    .ring-departure-modes button .sf-symbol {
+      width: 19px;
+      height: 17px;
     }
 
     .ring-departure-modes button[aria-pressed="true"] {
@@ -4060,22 +4084,22 @@
     .ring-itinerary {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: .32rem;
+      gap: .18rem .28rem;
     }
 
     .ring-itinerary span {
       display: grid;
-      gap: .08rem;
+      gap: .03rem;
       min-width: 0;
       color: var(--muted);
-      font-size: .66rem;
-      line-height: 1.18;
+      font-size: .61rem;
+      line-height: 1.08;
       overflow-wrap: anywhere;
     }
 
     .ring-itinerary b {
       color: var(--text);
-      font-size: .62rem;
+      font-size: .57rem;
       text-transform: uppercase;
     }
 

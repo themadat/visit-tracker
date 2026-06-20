@@ -115,6 +115,18 @@
         category: "Maps"
       },
       {
+        title: "Target Finder Google and Apple Maps Integration",
+        ticketId: "WISH-080",
+        description: "Connect Rangefinder's Target Finder points to Google Maps and Apple Maps. Once Start and End have coordinates, offer explicit actions to open either maps service with both points, the active Drive/Plane intent where supported, and recognizable location labels. Keep straight-line Rangefinder calculations unchanged, make the online handoff user-initiated, and behave sensibly when only one target exists or a maps app is unavailable.",
+        priority: "P0",
+        effort: "medium",
+        targetKind: "minor",
+        targetVersion: "",
+        tokenCostPct: 22,
+        prompt: "Add user-initiated Google Maps and Apple Maps actions to Rangefinder's Target Finder. When Start and End coordinates exist, build safe external map URLs that include both coordinates and useful labels, prefer driving directions for Drive mode, and use an appropriate place/route handoff for Plane mode. Support one-point fallback, desktop browser and mobile app/deep-link behavior, accessible provider buttons, clear online-action wording, and graceful fallback when a provider/app cannot open. Do not replace the existing straight-line rings, distance/time comparison, offline time zones, or persisted anchors; preserve usStateVisitMap.v1.",
+        category: "Maps"
+      },
+      {
         title: "Location Ratings",
         ticketId: "WISH-070",
         description: "Add a first-class rating for saved locations so a place can be scored independently from visit level, note priority, or Wayfinder status, then let Notes and relevant location lists sort by that rating.",
