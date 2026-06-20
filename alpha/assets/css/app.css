@@ -24,14 +24,14 @@
       --ring-step-6-stroke: #9f5309;
       --ring-step-7-stroke: #92400e;
       --ring-step-8-stroke: #7c2d12;
-      --ring-step-1-fill: rgba(212, 160, 23, .2);
-      --ring-step-2-fill: rgba(209, 151, 0, .17);
-      --ring-step-3-fill: rgba(201, 133, 5, .14);
-      --ring-step-4-fill: rgba(189, 114, 8, .12);
-      --ring-step-5-fill: rgba(173, 97, 8, .1);
-      --ring-step-6-fill: rgba(159, 83, 9, .085);
-      --ring-step-7-fill: rgba(146, 64, 14, .07);
-      --ring-step-8-fill: rgba(124, 45, 18, .06);
+      --ring-step-1-fill: rgba(212, 160, 23, .35);
+      --ring-step-2-fill: rgba(209, 151, 0, .32);
+      --ring-step-3-fill: rgba(201, 133, 5, .29);
+      --ring-step-4-fill: rgba(189, 114, 8, .26);
+      --ring-step-5-fill: rgba(173, 97, 8, .23);
+      --ring-step-6-fill: rgba(159, 83, 9, .205);
+      --ring-step-7-fill: rgba(146, 64, 14, .18);
+      --ring-step-8-fill: rgba(124, 45, 18, .16);
       --ring-connector: #b45309;
       --ring-label-bg: var(--bg);
       --state-empty: #d7dce3;
@@ -66,14 +66,14 @@
       --ring-step-6-stroke: #a9550a;
       --ring-step-7-stroke: #9a460c;
       --ring-step-8-stroke: #873a0d;
-      --ring-step-1-fill: rgba(224, 170, 26, .2);
-      --ring-step-2-fill: rgba(217, 154, 0, .17);
-      --ring-step-3-fill: rgba(208, 135, 0, .14);
-      --ring-step-4-fill: rgba(200, 117, 5, .12);
-      --ring-step-5-fill: rgba(185, 99, 8, .1);
-      --ring-step-6-fill: rgba(169, 85, 10, .085);
-      --ring-step-7-fill: rgba(154, 70, 12, .075);
-      --ring-step-8-fill: rgba(135, 58, 13, .065);
+      --ring-step-1-fill: rgba(224, 170, 26, .35);
+      --ring-step-2-fill: rgba(217, 154, 0, .32);
+      --ring-step-3-fill: rgba(208, 135, 0, .29);
+      --ring-step-4-fill: rgba(200, 117, 5, .26);
+      --ring-step-5-fill: rgba(185, 99, 8, .23);
+      --ring-step-6-fill: rgba(169, 85, 10, .205);
+      --ring-step-7-fill: rgba(154, 70, 12, .18);
+      --ring-step-8-fill: rgba(135, 58, 13, .16);
       --ring-connector: #e0aa1a;
       --ring-label-bg: var(--bg);
       --state-empty: #3b4553;
@@ -2252,11 +2252,13 @@
       stroke: transparent;
     }
 
-    .map-ring-overlay {
+    .map-ring-overlay,
+    .map-ring-label-overlay {
       pointer-events: none;
     }
 
     .ring-connector {
+      fill: none;
       stroke: var(--ring-connector);
       stroke-width: 1.4;
       stroke-linecap: round;
@@ -2268,6 +2270,11 @@
       stroke-dasharray: 2 5;
       stroke-width: 1.8;
       opacity: .68;
+    }
+
+    .ring-connector.is-world-wrap {
+      stroke-dasharray: 7 5;
+      opacity: .88;
     }
 
     .ring-cross-inset-label {
@@ -2284,6 +2291,19 @@
       dominant-baseline: central;
     }
 
+    .ring-inset-limit-label {
+      fill: color-mix(in srgb, var(--warning) 76%, var(--text));
+      font-size: 7px;
+      font-weight: 860;
+      paint-order: stroke fill;
+      pointer-events: none;
+      stroke: var(--ring-label-bg);
+      stroke-linejoin: round;
+      stroke-width: 2.8px;
+      text-anchor: middle;
+      dominant-baseline: central;
+    }
+
     .ring-ellipse {
       fill: var(--ring-fill, var(--ring-step-3-fill));
       fill-opacity: 1;
@@ -2292,7 +2312,36 @@
       transition: fill-opacity .15s ease;
     }
 
-    .map-ring-overlay[data-ring-fill="off"] .ring-ellipse {
+    .ring-cross-region-arc {
+      fill: none;
+      stroke: var(--ring-stroke, var(--ring-step-3-stroke));
+      stroke-width: 1.75;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .ring-geodesic {
+      fill: none;
+      stroke: var(--ring-stroke, var(--ring-step-3-stroke));
+      stroke-width: 1.55;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .ring-geodesic.is-filled {
+      fill: var(--ring-fill, var(--ring-step-3-fill));
+      fill-opacity: 1;
+    }
+
+    .ring-inset-coverage-rect {
+      fill: var(--ring-fill, var(--ring-step-3-fill));
+      fill-opacity: 1;
+      stroke: none;
+    }
+
+    .map-ring-overlay[data-ring-fill="off"] .ring-ellipse,
+    .map-ring-overlay[data-ring-fill="off"] .ring-geodesic.is-filled,
+    .map-ring-overlay[data-ring-fill="off"] .ring-inset-coverage-rect {
       fill-opacity: 0;
     }
 
@@ -2310,12 +2359,54 @@
       dominant-baseline: central;
     }
 
+    .ring-label.is-cross-region {
+      font-size: 8px;
+      stroke-width: 2.8px;
+    }
+
     /* The world viewBox (2754 wide) is ~2.95x the US one (934), so labels sized
        in SVG user units render ~3x smaller on the world map. Scale the font and
        halo up to read at a comparable size on the global layer. */
-    #worldMapRingOverlay .ring-label {
+    #worldMapRingOverlay .ring-label,
+    #worldMapRingOverlayLabels .ring-label {
       font-size: 30px;
       stroke-width: 9px;
+    }
+
+    /* Rangefinder-colored pill behind ring labels so distance/time read clearly. */
+    .ring-pill-label .ring-pill-bg {
+      fill: var(--ring-stroke, var(--accent-ring));
+      fill-opacity: .96;
+      stroke: var(--ring-label-bg);
+      stroke-width: .75px;
+    }
+
+    #worldMapRingOverlay .ring-pill-label .ring-pill-bg,
+    #worldMapRingOverlayLabels .ring-pill-label .ring-pill-bg {
+      stroke-width: 2.2px;
+    }
+
+    .ring-pill-label .ring-label {
+      fill: #1b1206;
+      stroke: none;
+      paint-order: normal;
+    }
+
+    .ring-hover-hint {
+      position: fixed;
+      z-index: 1600;
+      max-width: min(20rem, calc(100vw - 1rem));
+      padding: .34rem .52rem;
+      border: 1px solid color-mix(in srgb, var(--accent-ring) 72%, var(--line));
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--surface) 90%, var(--accent-ring) 10%);
+      box-shadow: 0 7px 20px rgba(15, 23, 42, .2);
+      color: var(--text);
+      font-size: .72rem;
+      font-weight: 860;
+      line-height: 1.15;
+      pointer-events: none;
+      white-space: nowrap;
     }
 
     /* WISH-071 lat/lng graticule — subordinate to markers/rings/labels, theme-aware. */
@@ -3176,7 +3267,12 @@
     }
 
     #ringPanel {
+      position: relative;
       gap: .2rem;
+    }
+
+    #ringPanel[data-timezone-open="true"]> :not(.ring-timezone-popover) {
+      visibility: hidden;
     }
 
     .ring-panel-title-row {
@@ -3725,12 +3821,25 @@
       border-color: var(--accent-ring);
     }
 
+    .ring-summary-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: stretch;
+      gap: .34rem;
+      min-width: 0;
+    }
+
+    .ring-summary-row.is-zone-only {
+      grid-template-columns: auto;
+      justify-content: end;
+    }
+
     .ring-compare-readout {
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 32px;
       min-height: 32px;
+      min-width: 0;
       padding: .28rem .42rem;
       border: 1px solid color-mix(in srgb, var(--accent-ring) 44%, var(--line));
       border-radius: var(--radius);
@@ -3741,6 +3850,257 @@
       line-height: 1.18;
       text-align: center;
       overflow-wrap: anywhere;
+    }
+
+    .ring-timezone-section {
+      display: grid;
+      align-content: start;
+      gap: .28rem;
+      min-height: 0;
+      padding: .3rem 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+
+    .ring-timezone-toggle {
+      display: inline-grid;
+      place-items: center;
+      align-self: stretch;
+      width: 32px;
+      min-width: 32px;
+      max-width: 32px;
+      height: 100%;
+      min-height: 32px;
+      padding: .24rem;
+      border: 1px solid color-mix(in srgb, var(--accent-ring) 34%, var(--line));
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--accent-ring) 7%, var(--surface));
+      color: var(--text);
+    }
+
+    .ring-timezone-toggle .sf-symbol {
+      width: 17px;
+      height: 21px;
+    }
+
+    .ring-timezone-toggle[aria-expanded="true"] {
+      border-color: var(--accent-ring);
+      background: color-mix(in srgb, var(--accent-ring) 14%, var(--surface));
+    }
+
+    .ring-timezone-popover {
+      position: absolute;
+      z-index: 30;
+      inset: .55rem;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      min-height: 0;
+      border: 1px solid color-mix(in srgb, var(--line) 72%, var(--accent-ring) 28%);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--surface) 94%, var(--accent-ring) 6%);
+      box-shadow: 0 18px 40px rgba(16, 24, 40, .16);
+      overflow: hidden;
+    }
+
+    .ring-timezone-popover-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .5rem;
+      padding: .35rem .48rem;
+      border-bottom: 1px solid var(--line);
+      background: color-mix(in srgb, var(--surface-2) 72%, var(--surface) 28%);
+    }
+
+    .ring-timezone-popover-head h3 {
+      margin: 0;
+      font-size: .84rem;
+      line-height: 1.1;
+    }
+
+    .ring-timezone-popover-head small {
+      display: none;
+    }
+
+    .ring-timezone-close {
+      display: inline-grid;
+      place-items: center;
+      width: 28px;
+      min-width: 28px;
+      height: 28px;
+      min-height: 28px;
+      padding: .34rem;
+    }
+
+    .ring-timezone-close .sf-symbol {
+      width: 13px;
+      height: 13px;
+    }
+
+    @media (max-width: 620px) {
+      .ring-timezone-popover {
+        inset: .35rem;
+      }
+    }
+
+    .ring-zone-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .24rem;
+      padding: 0 .3rem;
+    }
+
+    .ring-zone-card {
+      display: grid;
+      gap: .06rem;
+      min-width: 0;
+      padding: .28rem;
+      border: 1px solid var(--line);
+      border-radius: .5rem;
+      background: color-mix(in srgb, var(--surface) 92%, var(--accent-ring) 8%);
+    }
+
+    .ring-zone-card.is-unresolved {
+      border-color: color-mix(in srgb, var(--warning) 58%, var(--line));
+    }
+
+    .ring-zone-card-head,
+    .ring-departure-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .35rem;
+      min-width: 0;
+      font-size: .66rem;
+    }
+
+    .ring-zone-card-head span {
+      color: var(--muted);
+      font-size: .62rem;
+      font-weight: 760;
+      text-transform: uppercase;
+    }
+
+    .ring-zone-clock {
+      min-width: 0;
+      color: color-mix(in srgb, var(--accent-ring-secondary) 72%, var(--text));
+      font-size: .74rem;
+      font-weight: 880;
+      line-height: 1.08;
+      overflow-wrap: anywhere;
+    }
+
+    .ring-zone-name {
+      min-width: 0;
+      color: var(--muted);
+      font-size: .58rem;
+      line-height: 1.08;
+      overflow-wrap: anywhere;
+    }
+
+    .ring-zone-override {
+      display: block;
+      min-width: 0;
+    }
+
+    .ring-zone-override input,
+    .ring-departure-control input[type="datetime-local"] {
+      width: 100%;
+      min-width: 0;
+      height: 26px;
+      padding: .18rem .32rem;
+      border: 1px solid var(--line);
+      border-radius: .4rem;
+      background: var(--surface);
+      color: var(--text);
+      font-size: .62rem;
+      font-weight: 720;
+    }
+
+    .ring-zone-control {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 26px 26px;
+      gap: .16rem;
+      align-items: stretch;
+      margin-top: .14rem;
+    }
+
+    .ring-zone-control button {
+      display: inline-grid;
+      place-items: center;
+      width: 26px;
+      min-width: 26px;
+      height: 26px;
+      min-height: 26px;
+      padding: .28rem;
+    }
+
+    .ring-zone-control button .sf-symbol {
+      width: 13px;
+      height: 13px;
+    }
+
+    .ring-zone-control button:first-of-type {
+      border-color: color-mix(in srgb, var(--accent-ring) 58%, var(--line));
+      background: color-mix(in srgb, var(--accent-ring) 14%, var(--surface));
+    }
+
+    .ring-departure-control {
+      display: grid;
+      gap: .22rem;
+      margin: 0 .3rem;
+      padding: .3rem;
+      border: 1px solid var(--line);
+      border-radius: .5rem;
+      background: color-mix(in srgb, var(--surface) 94%, var(--accent-ring) 6%);
+    }
+
+    .ring-departure-modes {
+      display: inline-flex;
+      gap: .16rem;
+    }
+
+    .ring-departure-modes button {
+      display: inline-grid;
+      place-items: center;
+      width: 28px;
+      min-width: 28px;
+      height: 26px;
+      min-height: 26px;
+      padding: .22rem;
+    }
+
+    .ring-departure-modes button .sf-symbol {
+      width: 19px;
+      height: 17px;
+    }
+
+    .ring-departure-modes button[aria-pressed="true"] {
+      border-color: var(--accent-ring);
+      background: color-mix(in srgb, var(--accent-ring) 18%, var(--surface));
+      color: var(--text);
+    }
+
+    .ring-itinerary {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .18rem .28rem;
+    }
+
+    .ring-itinerary span {
+      display: grid;
+      gap: .03rem;
+      min-width: 0;
+      color: var(--muted);
+      font-size: .61rem;
+      line-height: 1.08;
+      overflow-wrap: anywhere;
+    }
+
+    .ring-itinerary b {
+      color: var(--text);
+      font-size: .57rem;
+      text-transform: uppercase;
     }
 
     .ring-inset-warning {
@@ -11702,6 +12062,11 @@
     }
 
     @media (max-width: 620px) {
+      .ring-zone-grid,
+      .ring-itinerary {
+        grid-template-columns: 1fr;
+      }
+
       .notes-search input::placeholder {
         font-size: .6rem;
       }
