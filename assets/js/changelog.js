@@ -4,6 +4,37 @@
 
     const CHANGELOG = [
       {
+        version: "4.8.0.1",
+        date: "2026-06-20",
+        title: "Square Deal",
+        summary: "A consistency pass across controls, pop-ups, shortcuts, and map layout.",
+        highlights: [
+          "Controls share one consistent height system.",
+          "New shortcuts: | switches maps, ~ opens labels.",
+          "Anchored pop-ups stay on-screen and share one visual system.",
+          "Rangefinder now adapts to the side column's available width.",
+        ],
+        updateSections: [
+          {
+            heading: "Interface",
+            items: [
+              "Standardized primary controls at 36px, inset segmented choices at 32px, and bordered control frames at 40px.",
+              "Unified Priority, Grid, Rangefinder, Legend, label-target, Waypoint, and Basecamp pop-up sizing, states, borders, and viewport clamping.",
+              "Wayfinder mode now lives only on the Notes panel; the Map drops its duplicate Wayfinder button.",
+              "Copy now sits inside Text Only view at the upper-right of the text surface.",
+            ]
+          },
+          {
+            heading: "Map and shortcuts",
+            items: [
+              "On desktop, a side-column Rangefinder sits below Legend until the side owns at least 40% of the horizontal layout, then moves beside it.",
+              "The | key switches US and World maps; ~ opens or closes the map-label target picker.",
+              "Priority, Grid, label-target, Rangefinder style/time, time-zone, and Legend position pop-ups now expose context shortcuts.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.6",
         date: "2026-06-20",
         title: "Dead Reckoning",

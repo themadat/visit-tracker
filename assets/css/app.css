@@ -39,6 +39,9 @@
       --radius: 8px;
       --focus: 0 0 0 3px rgba(29, 111, 214, .28);
       --app-text-scale: 1;
+      --control-size: 36px;
+      --control-inset-size: 32px;
+      --control-frame-size: 40px;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
@@ -108,7 +111,7 @@
     button {
       border: 1px solid var(--line);
       background: var(--surface);
-      min-height: 40px;
+      min-height: var(--control-size);
       border-radius: var(--radius);
       cursor: pointer;
       padding: .58rem .78rem;
@@ -622,7 +625,8 @@
       display: flex;
       align-items: center;
       gap: .18rem;
-      padding: .18rem;
+      height: var(--control-frame-size);
+      padding: 2px;
       border: 1px solid var(--line);
       border-radius: 11px;
       background: color-mix(in srgb, var(--surface) 88%, var(--bg));
@@ -630,15 +634,15 @@
     }
 
     .toolbar-panel-toggle-group button {
-      width: 40px;
-      height: 40px;
-      min-width: 40px;
-      min-height: 40px;
+      width: var(--control-size);
+      height: var(--control-size);
+      min-width: var(--control-size);
+      min-height: var(--control-size);
       aspect-ratio: 1;
       padding: 0;
       display: inline-grid;
       place-items: center;
-      flex: 0 0 40px;
+      flex: 0 0 var(--control-size);
     }
 
     #saveNoteBtn,
@@ -656,11 +660,11 @@
       align-items: center;
       justify-content: center;
       aspect-ratio: 1;
-      height: 40px;
-      min-height: 40px;
-      width: 40px;
-      min-width: 40px;
-      flex: 0 0 40px;
+      height: var(--control-size);
+      min-height: var(--control-size);
+      width: var(--control-size);
+      min-width: var(--control-size);
+      flex: 0 0 var(--control-size);
     }
 
     #saveNoteBtn .sf-symbol,
@@ -718,10 +722,10 @@
     #noteWhereToCityBtn {
       display: inline-grid;
       place-items: center;
-      height: 40px;
-      min-height: 40px;
-      width: 40px;
-      min-width: 40px;
+      height: var(--control-size);
+      min-height: var(--control-size);
+      width: var(--control-size);
+      min-width: var(--control-size);
       padding: 0;
       line-height: 1;
     }
@@ -742,11 +746,11 @@
     #copyNotesTextBtn,
     #notesActivateWayfinderBtn,
     #notesAddWaypointsBtn {
-      flex: 0 0 40px;
-      width: 40px;
-      min-width: 40px;
-      height: 40px;
-      min-height: 40px;
+      flex: 0 0 var(--control-size);
+      width: var(--control-size);
+      min-width: var(--control-size);
+      height: var(--control-size);
+      min-height: var(--control-size);
       padding: 0;
       display: inline-grid;
       place-items: center;
@@ -1087,6 +1091,12 @@
       align-items: stretch;
     }
 
+    .legend-panel-group[data-ring-open="1"][data-ring-layout="side-stack"] {
+      grid-template-columns: 1fr;
+      gap: 0;
+      align-items: stretch;
+    }
+
     .legend-panel-group[data-ring-open="1"]>#legendPanel,
     .legend-panel-group[data-ring-open="1"]>#ringPanel {
       min-width: 0;
@@ -1151,6 +1161,17 @@
     }
 
     .legend-panel-group[data-ring-open="1"][data-ring-layout="stack"]>#legendPanel {
+      border-radius: 0 0 var(--radius) var(--radius);
+    }
+
+    .legend-panel-group[data-ring-open="1"][data-ring-layout="side-stack"]>#legendPanel {
+      order: 0;
+      border-bottom: 0;
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .legend-panel-group[data-ring-open="1"][data-ring-layout="side-stack"]>#ringPanel {
+      order: 1;
       border-radius: 0 0 var(--radius) var(--radius);
     }
 
@@ -1521,14 +1542,15 @@
 
     #labelsToggleLabel {
       width: auto;
-      min-width: 40px;
+      min-width: var(--control-size);
     }
 
     .map-label-toggle {
       flex: 0 1 auto;
       flex-wrap: nowrap;
       gap: .12rem;
-      padding: 0 .16rem 0 0;
+      height: var(--control-size);
+      padding: 2px;
       min-width: 0;
       overflow: visible;
       position: relative;
@@ -1541,8 +1563,8 @@
       gap: .08rem;
       align-self: stretch;
       width: auto;
-      min-width: 40px;
-      min-height: 30px;
+      min-width: var(--control-size);
+      min-height: var(--control-inset-size);
       padding: 0 .18rem;
       border: 0;
       border-radius: calc(var(--radius) - 1px) 0 0 calc(var(--radius) - 1px);
@@ -1586,10 +1608,11 @@
 
     .map-label-toggle button {
       border: 1px solid transparent;
-      min-height: 30px;
-      min-width: 30px;
+      height: var(--control-inset-size);
+      min-height: var(--control-inset-size);
+      min-width: var(--control-inset-size);
       aspect-ratio: 1;
-      margin-block: .16rem;
+      margin-block: 0;
       padding: .24rem .42rem;
       font-size: .8rem;
     }
@@ -1618,7 +1641,7 @@
       justify-content: center;
       width: 15px;
       min-width: 15px;
-      min-height: 30px;
+      min-height: var(--control-inset-size);
       padding: .12rem .06rem;
       margin-block: 0;
     }
@@ -1629,7 +1652,7 @@
     }
 
     .map-label-toggle .map-waypoint-labels-menu {
-      position: absolute;
+      position: fixed;
       z-index: 20;
       top: calc(100% + .3rem);
       right: 0;
@@ -1638,10 +1661,11 @@
       width: max-content;
       max-width: min(18rem, calc(100vw - 2rem));
       padding: .4rem;
-      border: 2px solid #14b8a6;
-      border-radius: 8px;
+      border: 1px solid var(--line);
+      border-radius: .62rem;
       background: var(--surface);
-      box-shadow: 0 12px 28px rgba(16, 24, 40, .3), 0 0 0 3px color-mix(in srgb, #14b8a6 18%, transparent);
+      box-shadow: 0 12px 28px rgba(15, 23, 42, .18);
+      overflow: auto;
     }
 
     .map-waypoint-pack-grid {
@@ -1653,16 +1677,16 @@
     .map-head-actions .map-waypoint-pack-select {
       display: grid;
       place-items: center;
-      width: 40px;
-      min-width: 40px;
-      height: 40px;
-      min-height: 40px;
+      width: var(--control-size);
+      min-width: var(--control-size);
+      height: var(--control-size);
+      min-height: var(--control-size);
       padding: .25rem;
     }
 
     [data-button-style="symbols"] .map-head-actions .map-waypoint-pack-select {
-      width: 40px;
-      min-width: 40px;
+      width: var(--control-size);
+      min-width: var(--control-size);
       aspect-ratio: auto;
       padding: .25rem;
     }
@@ -1722,7 +1746,6 @@
 
     /* These map-mode glyphs read small inside the map toggle bezel. Bump them
        so Wayfinder, Grid, and Rangefinder sit at the same visual weight. */
-    #mapBucketListBtn .sf-symbol,
     #mapGraticuleBtn .sf-symbol,
     #mapRingModeBtn .sf-symbol {
       width: 26px;
@@ -1750,9 +1773,9 @@
 
     [data-button-style="symbols"] .map-head-actions button {
       flex: 0 0 auto;
-      width: 40px;
-      min-width: 40px;
-      min-height: 40px;
+      width: var(--control-size);
+      min-width: var(--control-size);
+      min-height: var(--control-size);
       aspect-ratio: 1;
       padding: 0;
       font-size: .96rem;
@@ -1765,18 +1788,18 @@
     }
 
     [data-button-style="symbols"] .map-label-toggle>span {
-      width: 48px;
-      min-width: 48px;
-      min-height: 32px;
+      width: 44px;
+      min-width: 44px;
+      min-height: var(--control-inset-size);
       padding: 0;
       font-size: .78rem;
     }
 
     [data-button-style="symbols"] .map-label-toggle button {
-      margin-block: .14rem;
-      width: 32px;
-      min-width: 32px;
-      min-height: 32px;
+      margin-block: 0;
+      width: var(--control-inset-size);
+      min-width: var(--control-inset-size);
+      min-height: var(--control-inset-size);
       padding: 0;
       font-size: .82rem;
     }
@@ -1839,7 +1862,7 @@
       align-items: center;
       gap: 2px;
       flex: 0 0 auto;
-      height: 40px;
+      height: var(--control-frame-size);
       padding: 0 3px;
       border: 1px solid var(--line);
       border-radius: 11px;
@@ -1848,9 +1871,9 @@
     }
 
     .map-zoom-controls button {
-      width: 38px;
-      min-width: 38px;
-      min-height: 38px;
+      width: var(--control-size);
+      min-width: var(--control-size);
+      min-height: var(--control-size);
       padding: 0;
       display: inline-grid;
       place-items: center;
@@ -1859,18 +1882,18 @@
     #mapZoomInBtn,
     #mapZoomOutBtn,
     #mapZoomResetBtn {
-      width: 32px;
-      min-width: 32px;
-      max-width: 32px;
-      height: 32px;
-      min-height: 32px;
-      max-height: 32px;
+      width: var(--control-size);
+      min-width: var(--control-size);
+      max-width: var(--control-size);
+      height: var(--control-size);
+      min-height: var(--control-size);
+      max-height: var(--control-size);
     }
 
     .map-toggle-group button {
-      width: 40px;
-      min-width: 40px;
-      min-height: 40px;
+      width: var(--control-size);
+      min-width: var(--control-size);
+      min-height: var(--control-size);
     }
 
     .map-zoom-readout {
@@ -1878,8 +1901,8 @@
       place-items: center;
       min-width: 3rem;
       width: 3rem;
-      min-height: 34px;
-      height: 34px;
+      min-height: var(--control-size);
+      height: var(--control-size);
       padding: 0 .18rem;
       border: 0;
       border-radius: 8px;
@@ -2559,7 +2582,7 @@
       max-width: calc(100vw - 1rem);
       padding: .5rem;
       border: 1px solid var(--line);
-      border-radius: 12px;
+      border-radius: .62rem;
       background: var(--surface);
       color: var(--text);
       box-shadow: 0 12px 32px rgba(16, 24, 40, .24);
@@ -2574,8 +2597,8 @@
 
     .graticule-option-btn,
     .graticule-number-field {
-      height: 2.15rem;
-      min-height: 2.15rem;
+      height: var(--control-size);
+      min-height: var(--control-size);
       border: 1px solid var(--line);
       border-radius: 9px;
       background: var(--surface-2);
@@ -2634,7 +2657,7 @@
 
     .graticule-number-field select {
       width: 3.6rem;
-      height: 2.15rem;
+      height: var(--control-size);
       border: 0;
       border-radius: 7px;
       background: transparent;
@@ -3304,10 +3327,10 @@
     .ring-header-btn {
       display: inline-grid;
       place-items: center;
-      width: 40px;
-      min-width: 40px;
-      height: 40px;
-      min-height: 40px;
+      width: var(--control-size);
+      min-width: var(--control-size);
+      height: var(--control-size);
+      min-height: var(--control-size);
       padding: 0;
       font-size: .82rem;
       font-weight: 900;
@@ -3374,7 +3397,7 @@
     }
 
     .ring-style-menu {
-      position: absolute;
+      position: fixed;
       top: calc(100% + .32rem);
       right: 0;
       z-index: 25;
@@ -3388,6 +3411,7 @@
       box-shadow: 0 12px 28px rgba(15, 23, 42, .18);
       transform-origin: top right;
       animation: miniPop .12s ease-out;
+      overflow: auto;
     }
 
     .ring-style-menu-row {
@@ -3401,8 +3425,8 @@
       align-items: center;
       justify-content: flex-start;
       gap: .28rem;
-      height: 34px;
-      min-height: 34px;
+      height: var(--control-size);
+      min-height: var(--control-size);
       padding: .14rem .32rem;
       font-size: .72rem;
       font-weight: 860;
@@ -3432,7 +3456,7 @@
     }
 
     .ring-time-menu {
-      position: absolute;
+      position: fixed;
       top: calc(100% + .32rem);
       right: 0;
       z-index: 25;
@@ -3446,6 +3470,7 @@
       box-shadow: 0 12px 28px rgba(15, 23, 42, .18);
       transform-origin: top right;
       animation: miniPop .12s ease-out;
+      overflow: auto;
     }
 
     .ring-time-toggle {
@@ -3453,8 +3478,8 @@
       align-items: center;
       gap: .34rem;
       width: 100%;
-      height: 34px;
-      min-height: 34px;
+      height: var(--control-size);
+      min-height: var(--control-size);
       padding: .14rem .4rem;
       font-size: .74rem;
       font-weight: 860;
@@ -4148,7 +4173,8 @@
       color: var(--warning);
     }
 
-    .legend-panel-group[data-ring-layout="stack"] .ring-panel-status {
+    .legend-panel-group[data-ring-layout="stack"] .ring-panel-status,
+    .legend-panel-group[data-ring-layout="side-stack"] .ring-panel-status {
       grid-column: 1 / -1;
       justify-self: center;
       text-align: center;
@@ -4227,10 +4253,10 @@
     .legend-title-actions button {
       display: inline-grid;
       place-items: center;
-      width: 40px;
-      min-width: 40px;
-      height: 40px;
-      min-height: 40px;
+      width: var(--control-size);
+      min-width: var(--control-size);
+      height: var(--control-size);
+      min-height: var(--control-size);
       padding: 0;
     }
 
@@ -4248,12 +4274,12 @@
     }
 
     .legend-position-menu {
-      position: absolute;
+      position: fixed;
       top: calc(100% + .32rem);
       right: 0;
       z-index: 20;
       display: grid;
-      grid-template-columns: repeat(2, 34px);
+      grid-template-columns: repeat(2, var(--control-size));
       gap: .2rem;
       padding: .28rem;
       border: 1px solid var(--line);
@@ -4262,13 +4288,14 @@
       box-shadow: 0 12px 28px rgba(15, 23, 42, .18);
       transform-origin: top right;
       animation: miniPop .12s ease-out;
+      overflow: auto;
     }
 
     .legend-position-menu button {
-      width: 34px;
-      min-width: 34px;
-      height: 34px;
-      min-height: 34px;
+      width: var(--control-size);
+      min-width: var(--control-size);
+      height: var(--control-size);
+      min-height: var(--control-size);
       padding: .08rem;
     }
 
@@ -4293,6 +4320,22 @@
         opacity: 1;
         transform: scale(1) translateY(0);
       }
+    }
+
+    .legend-position-menu,
+    .ring-style-menu,
+    .ring-time-menu,
+    .map-label-toggle .map-waypoint-labels-menu,
+    .notes-priority-menu,
+    .waypoint-priority-menu,
+    .note-waypoint-link-menu,
+    .basecamp-row-menu,
+    .basecamp-icon-picker,
+    .basecamp-link-popover,
+    .basecamp-submenu {
+      right: auto;
+      bottom: auto;
+      border-radius: .62rem;
     }
 
     .legend-list,
@@ -4696,14 +4739,15 @@
     .segmented {
       background: var(--surface-2);
       border: 1px solid var(--line);
-      padding: .22rem;
+      min-height: var(--control-size);
+      padding: 1px;
       border-radius: var(--radius);
     }
 
     .segmented button {
       border: 0;
       background: transparent;
-      min-height: 34px;
+      min-height: var(--control-inset-size);
     }
 
     .segmented button[aria-pressed="true"] {
@@ -5935,7 +5979,7 @@
 
     .waypoint-icon-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(34px, 34px));
+      grid-template-columns: repeat(auto-fill, minmax(var(--control-size), var(--control-size)));
       align-items: center;
       min-width: 0;
       width: 100%;
@@ -5943,8 +5987,8 @@
     }
 
     .waypoint-icon-choice {
-      min-width: 34px;
-      width: 34px;
+      min-width: var(--control-size);
+      width: var(--control-size);
       padding: 0;
     }
 
@@ -6071,16 +6115,16 @@
     .waypoint-priority-popout {
       position: relative;
       flex: 0 0 auto;
-      min-width: 2.5rem;
-      height: 2.5rem;
+      min-width: var(--control-size);
+      height: var(--control-size);
     }
 
     .waypoint-priority-toggle {
       display: grid;
       place-content: center;
       width: 100%;
-      min-width: 2.5rem;
-      height: 2.5rem;
+      min-width: var(--control-size);
+      height: var(--control-size);
       padding: .18rem .4rem;
       border: 0;
       border-radius: 8px;
@@ -6111,10 +6155,11 @@
       gap: .24rem;
       min-width: 10.5rem;
       padding: .32rem;
-      border: 2px solid #14b8a6;
-      border-radius: 8px;
+      border: 1px solid var(--line);
+      border-radius: .62rem;
       background: var(--surface);
-      box-shadow: 0 12px 28px rgba(16, 24, 40, .3), 0 0 0 3px color-mix(in srgb, #14b8a6 18%, transparent);
+      box-shadow: 0 12px 28px rgba(15, 23, 42, .18);
+      overflow: auto;
     }
 
     .waypoint-priority-menu[hidden],
@@ -6123,7 +6168,7 @@
     }
 
     .waypoint-priority-menu {
-      grid-template-columns: repeat(6, 2rem);
+      grid-template-columns: repeat(6, var(--control-inset-size));
       min-width: 0;
     }
 
@@ -6131,9 +6176,9 @@
       display: grid;
       place-items: center;
       width: 2rem;
-      min-width: 2rem;
-      height: 2rem;
-      min-height: 2rem;
+      min-width: var(--control-inset-size);
+      height: var(--control-inset-size);
+      min-height: var(--control-inset-size);
       padding: 0;
       border-color: color-mix(in srgb, var(--priority-color, var(--line)) 48%, var(--line));
       background: color-mix(in srgb, var(--priority-color, var(--surface-2)) 18%, var(--surface));
@@ -6158,12 +6203,12 @@
       display: grid;
       place-content: center;
       place-items: center;
-      width: 2.5rem;
-      min-width: 2.5rem;
-      max-width: 2.5rem;
-      height: 2.5rem;
-      min-height: 2.5rem;
-      max-height: 2.5rem;
+      width: var(--control-size);
+      min-width: var(--control-size);
+      max-width: var(--control-size);
+      height: var(--control-size);
+      min-height: var(--control-size);
+      max-height: var(--control-size);
       padding: .2rem;
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -6176,8 +6221,8 @@
       place-items: center;
       width: auto;
       min-width: 1.65rem;
-      height: 2.5rem;
-      min-height: 2.5rem;
+      height: var(--control-size);
+      min-height: var(--control-size);
       max-height: 2.5rem;
       padding: .18rem .32rem;
       border: 1px solid var(--line);
@@ -7726,15 +7771,16 @@
     .basecamp-row-menu,
     .basecamp-icon-picker,
     .basecamp-link-popover {
-      position: absolute;
+      position: fixed;
       z-index: 30;
       display: grid;
       gap: .24rem;
       padding: .34rem;
-      border: 1px solid color-mix(in srgb, #14b8a6 55%, var(--line));
-      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      border-radius: .62rem;
       background: var(--surface);
-      box-shadow: var(--shadow);
+      box-shadow: 0 12px 28px rgba(15, 23, 42, .18);
+      overflow: auto;
     }
 
     .basecamp-row-menu[hidden],
@@ -7746,7 +7792,7 @@
     .basecamp-row-menu button {
       justify-content: flex-start;
       width: 100%;
-      min-height: 32px;
+      min-height: var(--control-size);
       white-space: nowrap;
     }
 
@@ -7830,10 +7876,10 @@
     .basecamp-search-row .basecamp-new-btn {
       flex: 0 0 auto;
       white-space: nowrap;
-      width: 40px;
-      min-width: 40px;
-      height: 40px;
-      min-height: 40px;
+      width: var(--control-size);
+      min-width: var(--control-size);
+      height: var(--control-size);
+      min-height: var(--control-size);
       padding: 0;
       display: inline-grid;
       place-items: center;
@@ -8048,7 +8094,7 @@
     .basecamp-icon-picker {
       top: calc(100% + .25rem);
       left: 0;
-      grid-template-columns: repeat(4, 44px);
+      grid-template-columns: repeat(4, var(--control-size));
       max-height: min(70vh, 420px);
       overflow-y: auto;
       overscroll-behavior: contain;
@@ -8057,9 +8103,9 @@
     .basecamp-icon-picker button {
       display: grid;
       place-items: center;
-      width: 44px;
-      height: 44px;
-      min-width: 44px;
+      width: var(--control-size);
+      height: var(--control-size);
+      min-width: var(--control-size);
       padding: 0;
       color: #0f766e;
     }
@@ -8213,25 +8259,25 @@
 
     .basecamp-toolbar-grid {
       display: grid;
-      grid-template-columns: repeat(4, 34px);
+      grid-template-columns: repeat(4, var(--control-size));
       gap: .22rem;
       min-width: 0;
     }
 
     .basecamp-toolbar-section[data-basecamp-toolbar-group="font"] .basecamp-toolbar-grid {
-      grid-template-columns: repeat(7, 34px);
+      grid-template-columns: repeat(7, var(--control-size));
     }
 
     .basecamp-toolbar-section[data-basecamp-toolbar-group="text"] .basecamp-toolbar-grid {
-      grid-template-columns: repeat(6, 34px);
+      grid-template-columns: repeat(6, var(--control-size));
     }
 
     .basecamp-toolbar button {
       position: relative;
       display: grid;
       place-items: center;
-      min-width: 34px;
-      min-height: 34px;
+      min-width: var(--control-size);
+      min-height: var(--control-size);
       padding: .28rem;
       border-color: color-mix(in srgb, #14b8a6 42%, var(--line));
       color: color-mix(in srgb, #0f766e 82%, var(--text));
@@ -8336,12 +8382,12 @@
     }
 
     .basecamp-toolbar-utility .basecamp-toolbar-grid {
-      grid-template-columns: repeat(2, 34px);
+      grid-template-columns: repeat(2, var(--control-size));
     }
 
     /* Mobile Format / Font / Text dropdown submenus on the Basecamp toolbar. */
     .basecamp-submenu {
-      position: absolute;
+      position: fixed;
       top: calc(100% + .3rem);
       left: 0;
       z-index: 30;
@@ -8349,10 +8395,11 @@
       gap: .22rem;
       padding: .36rem;
       min-width: 12rem;
-      border: 1px solid color-mix(in srgb, #14b8a6 55%, var(--line));
-      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      border-radius: .62rem;
       background: var(--surface);
-      box-shadow: var(--shadow);
+      box-shadow: 0 12px 28px rgba(15, 23, 42, .18);
+      overflow: auto;
     }
 
     .basecamp-submenu[hidden] {
@@ -8361,7 +8408,7 @@
 
     .basecamp-submenu button {
       width: 100%;
-      min-height: 34px;
+      min-height: var(--control-size);
     }
 
     .basecamp-toolbar-mobile .basecamp-toolbar-link-wrap {
@@ -8370,7 +8417,7 @@
     }
 
     .basecamp-toolbar-mobile .basecamp-submenu {
-      grid-template-columns: repeat(4, minmax(34px, 1fr));
+      grid-template-columns: repeat(4, minmax(var(--control-size), 1fr));
       min-width: min(16rem, calc(100vw - 2rem));
     }
 
@@ -8980,7 +9027,7 @@
       flex-wrap: nowrap;
       gap: .32rem;
       align-items: stretch;
-      /* Visual gap between the Notes header row (Quick Add / Copy / Wayfinder
+      /* Visual gap between the Notes header row (Quick Add / Wayfinder
          / Search) and the secondary toggles below. Matches the rhythm in the
          Map header area. */
       margin-top: .7rem;
@@ -9087,8 +9134,8 @@
       min-width: 0;
       height: var(--notes-control-size);
       flex-wrap: nowrap;
-      padding: .18rem;
-      gap: .18rem;
+      padding: 1px;
+      gap: 2px;
       box-sizing: border-box;
     }
 
@@ -9176,16 +9223,17 @@
       position: fixed;
       z-index: 80;
       display: grid;
-      grid-template-columns: repeat(5, minmax(3.2rem, 1fr));
-      gap: .5rem;
+      grid-template-columns: repeat(5, minmax(var(--control-size), 1fr));
+      gap: .4rem;
       box-sizing: border-box;
-      width: min(29rem, calc(100vw - 1rem));
-      padding: .72rem;
+      width: min(24rem, calc(100vw - 1rem));
+      padding: .55rem;
       border: 1px solid var(--line);
-      border-radius: .72rem;
+      border-radius: .62rem;
       background: var(--surface);
       box-shadow: 0 16px 36px rgba(15, 23, 42, .22);
       animation: miniPop .12s ease-out;
+      overflow: auto;
     }
 
     .notes-priority-menu[hidden] {
@@ -9209,11 +9257,11 @@
     .notes-priority-menu-item button {
       display: grid;
       place-items: center;
-      width: 3.2rem;
-      min-width: 3.2rem;
-      height: 3.2rem;
-      min-height: 3.2rem;
-      padding: .7rem;
+      width: var(--control-size);
+      min-width: var(--control-size);
+      height: var(--control-size);
+      min-height: var(--control-size);
+      padding: .42rem;
       color: var(--text);
     }
 
@@ -9253,11 +9301,11 @@
     .notes-priority-option {
       display: grid;
       place-items: center;
-      width: 2.75rem;
-      min-width: 2.75rem;
-      height: 2.75rem;
-      min-height: 2.75rem;
-      padding: .58rem;
+      width: var(--control-inset-size);
+      min-width: var(--control-inset-size);
+      height: var(--control-inset-size);
+      min-height: var(--control-inset-size);
+      padding: .38rem;
       color: var(--priority-color, var(--text));
     }
 
@@ -9564,6 +9612,20 @@
       background: var(--accent);
       border-color: var(--accent);
       color: white;
+    }
+
+    .notes-text-only-wrap {
+      position: relative;
+      width: 100%;
+      min-height: 220px;
+    }
+
+    .notes-text-only-wrap .notes-copy-btn {
+      position: absolute;
+      top: .55rem;
+      right: .55rem;
+      z-index: 2;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, .16);
     }
 
     .notes-location-editor {
@@ -11351,7 +11413,7 @@
       max-height: 100%;
       min-height: 220px;
       margin: 0;
-      padding: .75rem;
+      padding: 3.25rem .75rem .75rem;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: var(--surface);
@@ -12258,21 +12320,21 @@
 
       [data-button-style="symbols"] .map-head-actions button {
         flex: 0 0 auto;
-        width: 34px;
-        min-width: 34px;
-        min-height: 34px;
+        width: var(--control-size);
+        min-width: var(--control-size);
+        min-height: var(--control-size);
         padding: 0;
         font-size: .88rem;
       }
 
-      /* Scroll mode keeps the 34px Fit toggle beside the zoom pill, which shoved
+      /* Scroll mode keeps the Fit toggle beside the zoom pill, which shoved
          the pill left of center while the toggle/label rows below it stay
          centered. Mirror the toggle's footprint with a leading spacer so the
          zoom pill centers in line with those rows. Fit mode hides the pill and
          centers the lone toggle on its own, so the spacer is scroll-only. */
       [data-button-style="symbols"][data-map-mode="scroll"] .map-control-row:has(.map-zoom-controls)::before {
         content: "";
-        flex: 0 0 34px;
+        flex: 0 0 var(--control-size);
       }
 
       [data-button-style="symbols"] .map-label-toggle {

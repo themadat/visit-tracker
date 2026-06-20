@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.6.10">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.8.0.1">
 </head>
 
 <body>
@@ -114,7 +114,7 @@
         <div class="map-head">
           <div class="map-head-title">
             <button id="mapLayerToggleBtn" class="map-layer-toggle" type="button" aria-pressed="false"
-              aria-label="Switch between the US and World maps" data-shortcut="~">
+              aria-label="Switch between the US and World maps" data-shortcut="|">
               <span id="mapLayerIcon" class="map-layer-icon" aria-hidden="true"></span>
               <span class="map-layer-loading-spinner" aria-hidden="true"></span>
               <span class="map-layer-text-stack">
@@ -157,26 +157,22 @@
                     aria-label="Apply note filters to the map" data-shortcut="7">Match Notes</button>
                 </div>
                 <div class="map-action-group map-toggle-group">
-                  <button id="mapBucketListBtn" class="toggle-btn bucket-list-toggle-btn" type="button"
-                    aria-pressed="false" aria-label="Toggle Wayfinder mode" data-shortcut="6">Wayfinder</button>
-                </div>
-                <div class="map-action-group map-toggle-group">
                   <button id="mapRingModeBtn" class="toggle-btn ring-toggle-btn" type="button" aria-pressed="false"
                     aria-label="Toggle Ring Mode" data-shortcut="5">Rangefinder</button>
                 </div>
                 <div class="map-action-group map-toggle-group">
                   <button id="mapGraticuleBtn" class="toggle-btn" type="button" aria-pressed="false"
-                    aria-label="Map grid settings">Grid</button>
+                    aria-label="Map grid settings" data-shortcut="G">Grid</button>
                 </div>
               </div>
               <small data-hint data-hint-key="map-notes-controls">Toggle Notes Pins<br />Visibility | Filter |
-                Wayfinder | Rangefinder | Lat/Lng Grid</small>
+                Rangefinder | Lat/Lng Grid</small>
             </div>
             <div class="map-control-stack">
               <div class="map-control-row">
                 <div class="map-action-group map-label-group">
                   <div class="segmented map-label-toggle" aria-label="Map labels">
-                    <span id="labelsToggleLabel" title="Map Label Type">
+                    <span id="labelsToggleLabel" class="shortcut-target" title="Map Label Type" data-shortcut="~">
                       <span class="map-label-target-icon" data-map-label-target-icon>Labels</span>
                       <span id="mapWaypointPackLabels" class="map-waypoint-labels hidden"></span>
                     </span>
@@ -268,7 +264,6 @@
             <div id="notesPanelSearchWrap" class="notes-search">
               <button id="quickAddNoteBtn" type="button" data-shortcut="S" aria-label="Quick add note">Quick
                 Add</button>
-              <button id="copyNotesTextBtn" class="notes-copy-btn" type="button" data-shortcut="C">Copy</button>
               <button id="notesActivateWayfinderBtn" class="toggle-btn bucket-list-toggle-btn" type="button"
                 aria-pressed="false" aria-label="Toggle Wayfinder mode" data-shortcut="6">Wayfinder</button>
               <button id="notesAddWaypointsBtn" class="toggle-btn sets-toggle-btn" type="button" aria-expanded="false"
@@ -308,23 +303,23 @@
                 hidden>
                 <span class="notes-priority-menu-item">
                   <small>Filter</small>
-                  <button id="notesPriorityFilterMode" type="button"></button>
+                  <button id="notesPriorityFilterMode" type="button" data-shortcut="F"></button>
                 </span>
                 <span class="notes-priority-menu-item">
                   <small>Number</small>
-                  <button id="notesPriorityFilterValue" type="button"></button>
+                  <button id="notesPriorityFilterValue" type="button" data-shortcut="N"></button>
                 </span>
                 <span class="notes-priority-menu-item">
                   <small>Order</small>
-                  <button id="notesPrioritySort" type="button"></button>
+                  <button id="notesPrioritySort" type="button" data-shortcut="O"></button>
                 </span>
                 <span class="notes-priority-menu-item">
                   <small>Group</small>
-                  <button id="notesPriorityGroup" type="button"></button>
+                  <button id="notesPriorityGroup" type="button" data-shortcut="G"></button>
                 </span>
                 <span class="notes-priority-menu-item">
                   <small>Reset</small>
-                  <button id="notesPriorityResetBtn" type="button"></button>
+                  <button id="notesPriorityResetBtn" type="button" data-shortcut="R"></button>
                 </span>
                 <span id="notesPriorityOptions" class="notes-priority-options" hidden></span>
               </span>
@@ -841,15 +836,16 @@
 
   <div id="graticuleDialog" popover class="graticule-popover" aria-label="Map grid options">
     <div class="graticule-control-row">
-      <button id="graticuleEnabledBtn" class="graticule-option-btn" type="button" aria-pressed="false">Grid</button>
+      <button id="graticuleEnabledBtn" class="graticule-option-btn" type="button" aria-pressed="false"
+        data-shortcut="G">Grid</button>
       <button id="graticuleReferenceBtn" class="graticule-option-btn" type="button" aria-pressed="true"
-        disabled>Circles</button>
+        data-shortcut="C" disabled>Circles</button>
       <button id="graticuleLabelsBtn" class="graticule-option-btn" type="button" aria-pressed="true"
-        disabled>Labels</button>
-      <label class="graticule-number-field">Major
+        data-shortcut="L" disabled>Labels</button>
+      <label class="graticule-number-field shortcut-target" data-shortcut="M">Major
         <select id="graticuleMajorInput"></select>
       </label>
-      <label class="graticule-number-field">Minor
+      <label class="graticule-number-field shortcut-target" data-shortcut="N">Minor
         <select id="graticuleMinorInput"></select>
       </label>
     </div>
@@ -1598,8 +1594,6 @@
           <details class="shortcut-section">
             <summary>Map<span class="muted">(Panel :: Header)</span></summary>
             <div class="shortcut-list">
-              <div class="shortcut-row"><kbd>⇧⌃⌥~</kbd><span>Switch US ⇄ World Map <em>[mapLayerToggleBtn]</em></span>
-              </div>
               <div class="shortcut-row"><kbd>−</kbd><span>Zoom out (scroll mode only) <em>[mapZoomOutBtn]</em></span>
               </div>
               <div class="shortcut-row"><kbd>+</kbd><span>Zoom in (scroll mode only) <em>[mapZoomInBtn]</em></span>
@@ -1612,14 +1606,19 @@
               </div>
               <div class="shortcut-row"><kbd>7</kbd><span>Toggle Match Notes Filter <em>[mapMatchNotesBtn]</em></span>
               </div>
-              <div class="shortcut-row"><kbd>6</kbd><span>Toggle Wayfinder Mode <em>[mapBucketListBtn]</em></span></div>
+              <div class="shortcut-row"><kbd>6</kbd><span>Toggle Wayfinder Mode <em>[notesActivateWayfinderBtn]</em></span></div>
               <div class="shortcut-row"><kbd>5</kbd><span>Toggle Rangefinder Mode <em>[mapRingModeBtn]</em></span>
               </div>
-              <div class="shortcut-row"><kbd>4</kbd><span>Map Labels: Open Target Picker
+              <div class="shortcut-row"><kbd>~</kbd><span>Map Labels: Open Target Picker
                   <em>[labelsToggleLabel]</em></span></div>
               <div class="shortcut-row"><kbd>3</kbd><span>Map Labels: None <em>[labelsNoneBtn]</em></span></div>
               <div class="shortcut-row"><kbd>2</kbd><span>Map Labels: Abbr <em>[labelsAbbrBtn]</em></span></div>
               <div class="shortcut-row"><kbd>1</kbd><span>Map Labels: Name <em>[labelsNameBtn]</em></span></div>
+              <div class="shortcut-row"><kbd>|</kbd><span>Switch US &rlarr; World Map <em>[mapLayerToggleBtn]</em></span></div>
+              <div class="shortcut-row"><kbd>0–9</kbd><span>Choose the map or a Waypoint Pack while the Label Target picker is open.</span></div>
+              <div class="shortcut-row"><kbd>1–4</kbd><span>Choose Fill / Clip options while the Rangefinder Style menu is open.</span></div>
+              <div class="shortcut-row"><kbd>T</kbd><span>Toggle estimates in the Rangefinder Time menu; <kbd>N</kbd>/<kbd>C</kbd> choose departure time mode.</span></div>
+              <div class="shortcut-row"><kbd>G C L M N</kbd><span>Grid pop-up: lines, circles, labels, major spacing, minor spacing.</span></div>
             </div>
           </details>
 
@@ -1640,6 +1639,7 @@
           <details class="shortcut-section">
             <summary>Notes<span class="muted">(Panel :: Overview)</span></summary>
             <div class="shortcut-list">
+              <div class="shortcut-row"><kbd>F N O G R</kbd><span>Priority pop-up: Filter, Number, Order, Group, Reset.</span></div>
               <div class="shortcut-row"><kbd>S</kbd><span>Quick Add Location Note <em>[quickAddNoteBtn]</em></span>
               </div>
               <div class="shortcut-row"><kbd>C</kbd><span>Copy Plain Notes Text <em>[copyNotesTextBtn]</em></span></div>
@@ -1779,18 +1779,18 @@
     </footer>
   </dialog>
 
-  <script src="assets/js/icons.js?v=4.7.6.10"></script>
+  <script src="assets/js/icons.js?v=4.8.0.1"></script>
   <script src="assets/js/maps.js"></script>
   <script src="assets/js/world-names.js?v=4.7.4"></script>
   <script src="assets/js/world-label-overrides.js?v=4.7.4"></script>
-  <script src="assets/js/timezones.js?v=4.7.6.10"></script>
-  <script src="assets/js/changelog.js?v=4.7.6.10"></script>
-  <script src="assets/js/roadmap.js?v=4.7.6.10"></script>
+  <script src="assets/js/timezones.js?v=4.8.0.1"></script>
+  <script src="assets/js/changelog.js?v=4.8.0.1"></script>
+  <script src="assets/js/roadmap.js?v=4.8.0.1"></script>
   <script>
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.6";
+    const APP_VERSION = "4.8.0.1";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -2696,7 +2696,6 @@
     let installReloadNeeded = false;
     let installPlatformOverride = "auto";
     let powerOverlayActive = false;
-    let mapLayerChordHeld = false;
     let mapLayerSwitchToken = 0;
     let developerGesture = [];
     let releaseShortcutPrimed = false;
@@ -4038,10 +4037,8 @@
         save();
       }
       const on = bucketListViewActive();
-      const mapBtn = $("#mapBucketListBtn");
       const notesBtn = $("#notesActivateWayfinderBtn");
       const pill = $("#mapBucketListPill");
-      if (mapBtn) mapBtn.setAttribute("aria-pressed", on ? "true" : "false");
       if (notesBtn) notesBtn.setAttribute("aria-pressed", on ? "true" : "false");
       if (pill) pill.classList.toggle("hidden", !on);
       syncLayerModePills();
@@ -4950,8 +4947,8 @@
             <div class="ring-departure-head">
               <b>Departure</b>
               <span class="ring-departure-modes" role="group" aria-label="Departure time mode">
-                <button type="button" data-ring-departure-mode="now" aria-pressed="${customMode ? "false" : "true"}" aria-label="Use current departure time" title="Now">${__CLOCK_BADGE_CHECKMARK}</button>
-                <button type="button" data-ring-departure-mode="custom" aria-pressed="${customMode ? "true" : "false"}" aria-label="Choose departure time" title="Choose">${__CLOCK_BADGE_QUESTIONMARK}</button>
+                <button type="button" data-ring-departure-mode="now" data-shortcut="N" aria-pressed="${customMode ? "false" : "true"}" aria-label="Use current departure time" title="Now">${__CLOCK_BADGE_CHECKMARK}</button>
+                <button type="button" data-ring-departure-mode="custom" data-shortcut="C" aria-pressed="${customMode ? "true" : "false"}" aria-label="Choose departure time" title="Choose">${__CLOCK_BADGE_QUESTIONMARK}</button>
               </span>
             </div>
             ${customMode ? `<input type="datetime-local" value="${escapeHtml(departureValue)}" data-ring-departure-local ${startZone ? "" : "disabled"} aria-label="Departure date and time in the Start time zone">` : ""}
@@ -5039,12 +5036,12 @@
             <button class="ring-header-btn ring-style-btn" type="button" data-ring-style-menu aria-haspopup="true" aria-expanded="${ringStyleMenuOpen ? "true" : "false"}" aria-label="Ring style: ${ringStyleState}" title="Ring style: ${ringStyleState}">${ringStyleIcon}</button>
             <span class="ring-style-menu ${ringStyleMenuOpen ? "" : "hidden"}" role="menu" aria-label="Rangefinder ring style">
               <span class="ring-style-menu-row">
-                <button type="button" role="menuitemradio" data-ring-style-menu-option="fill" data-ring-style-menu-value="false" aria-pressed="${fillOn ? "false" : "true"}" aria-label="No fill" title="No fill">${__RING}<span>No Fill</span></button>
-                <button type="button" role="menuitemradio" data-ring-style-menu-option="fill" data-ring-style-menu-value="true" aria-pressed="${fillOn ? "true" : "false"}" aria-label="Fill" title="Fill">${__MOONPHASE_FULL_MOON}<span>Fill</span></button>
+                <button type="button" role="menuitemradio" data-ring-style-menu-option="fill" data-ring-style-menu-value="false" data-shortcut="1" aria-pressed="${fillOn ? "false" : "true"}" aria-label="No fill" title="No fill">${__RING}<span>No Fill</span></button>
+                <button type="button" role="menuitemradio" data-ring-style-menu-option="fill" data-ring-style-menu-value="true" data-shortcut="2" aria-pressed="${fillOn ? "true" : "false"}" aria-label="Fill" title="Fill">${__MOONPHASE_FULL_MOON}<span>Fill</span></button>
               </span>
               <span class="ring-style-menu-row">
-                <button type="button" role="menuitemradio" data-ring-style-menu-option="clip" data-ring-style-menu-value="false" aria-pressed="${clipOn ? "false" : "true"}" aria-label="No clip" title="No clip">${__CIRCLE}<span>No Clip</span></button>
-                <button type="button" role="menuitemradio" data-ring-style-menu-option="clip" data-ring-style-menu-value="true" aria-pressed="${clipOn ? "true" : "false"}" aria-label="Clipped" title="Clipped">${__GAUGE_OPEN}<span>Clipped</span></button>
+                <button type="button" role="menuitemradio" data-ring-style-menu-option="clip" data-ring-style-menu-value="false" data-shortcut="3" aria-pressed="${clipOn ? "false" : "true"}" aria-label="No clip" title="No clip">${__CIRCLE}<span>No Clip</span></button>
+                <button type="button" role="menuitemradio" data-ring-style-menu-option="clip" data-ring-style-menu-value="true" data-shortcut="4" aria-pressed="${clipOn ? "true" : "false"}" aria-label="Clipped" title="Clipped">${__GAUGE_OPEN}<span>Clipped</span></button>
               </span>
             </span>
           </span>
@@ -5053,7 +5050,7 @@
           <span class="ring-time-picker ${timeOn ? "is-time-on" : ""}">
             <button class="ring-header-btn ring-time-btn" type="button" data-ring-time-menu aria-haspopup="true" aria-expanded="${ringTimeMenuOpen ? "true" : "false"}" aria-label="Time and average speed settings" title="${timeOn ? `Time on · ${travelWord} ${speedDisplay} ${speedUnitLabel}` : "Time estimates off"}">${timeOn ? __STOPWATCH_FILL : __STOPWATCH}</button>
             <span class="ring-time-menu ${ringTimeMenuOpen ? "" : "hidden"}" role="menu" aria-label="Rangefinder time and speed">
-              <button type="button" role="menuitemcheckbox" class="ring-time-toggle" data-ring-setting="time" aria-checked="${timeOn ? "true" : "false"}" aria-label="${timeOn ? "Hide estimated time" : "Show estimated time"}">${timeOn ? __STOPWATCH_FILL : __STOPWATCH}<span>Show time estimates</span></button>
+              <button type="button" role="menuitemcheckbox" class="ring-time-toggle" data-ring-setting="time" data-shortcut="T" aria-checked="${timeOn ? "true" : "false"}" aria-label="${timeOn ? "Hide estimated time" : "Show estimated time"}">${timeOn ? __STOPWATCH_FILL : __STOPWATCH}<span>Show time estimates</span></button>
               <span class="ring-speed-control ${timeOn ? "" : "is-disabled"}">
                 <span class="ring-speed-label">${travelWord} avg speed</span>
                 <input type="range" id="ringSpeedSlider" min="${speedMinDisplay}" max="${speedMaxDisplay}" step="1" value="${speedDisplay}" data-ring-speed-slider aria-label="${travelWord} average speed in ${speedUnitLabel}" ${timeOn ? "" : "disabled"}>
@@ -5104,6 +5101,7 @@
         ${disclaimer}
       `;
       enhanceHints();
+      if (ringStyleMenuOpen || ringTimeMenuOpen) requestAnimationFrame(positionAnchoredControlPopups);
       scheduleRingClockRefresh();
     }
 
@@ -6240,7 +6238,6 @@
       setButtonLabel("#mapMatchNotesBtn", matchOn ? __LINE_3_HORIZONTAL_DECREASE_CIRCLE : __LINE_3_HORIZONTAL_CIRCLE, matchOn ? "Filtered" : "Match Notes", matchOn ? "Stop applying note filters to the map" : "Apply note filters to the map", matchOn ? "Stop applying note filters to the map" : "Apply note filters to the map");
       $("#mapMatchNotesBtn").setAttribute("aria-pressed", matchOn ? "true" : "false");
       const bucketShortcutHint = "Toggle Wayfinder mode";
-      setButtonLabel("#mapBucketListBtn", __BACKPACK, "Wayfinder", "Toggle Wayfinder mode", bucketShortcutHint);
       setButtonLabel("#notesActivateWayfinderBtn", __BACKPACK, "Wayfinder", "Toggle Wayfinder mode", bucketShortcutHint);
       setButtonLabel("#notesAddWaypointsBtn", __CIRCLE_BADGE_PLUS, "Packs", "Open Waypoint Packs", "Open Waypoint Packs");
       setButtonLabel("#mapRingModeBtn", __TARGET, "Rangefinder", "Toggle Ring Mode", "Toggle Rangefinder Mode");
@@ -6368,8 +6365,27 @@
       return legendPosition().startsWith("right");
     }
 
+    function sideColumnHorizontalShare() {
+      if (!DESKTOP_LAYOUT_QUERY.matches || !sideColumnOpen()) return 0;
+      const metrics = mainLayoutMetrics();
+      const side = $("#sidePanel");
+      const measured = metrics && side?.isConnected ? side.getBoundingClientRect().width / metrics.available : 0;
+      if (Number.isFinite(measured) && measured > 0) return measured;
+      const mapShare = Number(state.settings.mapSplitRatio);
+      return 1 - (Number.isFinite(mapShare) ? mapShare : .66);
+    }
+
     function ringPanelLayout() {
-      return DESKTOP_LAYOUT_QUERY.matches && !legendInSideColumn() ? "map" : "stack";
+      if (!DESKTOP_LAYOUT_QUERY.matches) return "stack";
+      if (!legendInSideColumn()) return "map";
+      return sideColumnHorizontalShare() >= .4 ? "map" : "side-stack";
+    }
+
+    function syncRingPanelLayout() {
+      const group = $("#legendPanelGroup");
+      if (!group) return;
+      group.dataset.ringLayout = ringPanelLayout();
+      syncRingPanelSplit();
     }
 
     function clampRingPanelSplitRatio(value) {
@@ -6417,11 +6433,12 @@
     function renderLegendPositionMenu() {
       const menu = $("#legendPositionMenu");
       if (!menu) return;
-      menu.innerHTML = LEGEND_POSITION_MENU_ORDER.map(position => {
+      menu.innerHTML = LEGEND_POSITION_MENU_ORDER.map((position, index) => {
         const meta = LEGEND_POSITION_META[position];
-        return `<button type="button" role="menuitemradio" aria-pressed="${position === legendPosition()}" data-legend-position-option="${position}" aria-label="${meta.label}" title="${meta.label}">${meta.icon}</button>`;
+        return `<button type="button" role="menuitemradio" aria-pressed="${position === legendPosition()}" data-legend-position-option="${position}" data-shortcut="${index + 1}" aria-label="${meta.label}" title="${meta.label}">${meta.icon}</button>`;
       }).join("");
       menu.classList.toggle("hidden", !legendPositionMenuOpen || !legendPositionControlAvailable());
+      if (!menu.classList.contains("hidden")) requestAnimationFrame(positionAnchoredControlPopups);
       $$("[data-legend-position-option]", menu).forEach(button => {
         button.addEventListener("click", event => {
           event.stopPropagation();
@@ -6532,6 +6549,7 @@
       state.settings.mapSplitRatio = Math.max(.34, Math.min(.78, mapColumn / metrics.available));
       metrics.main.style.setProperty("--map-column-width", `${Math.floor(mapColumn)}px`);
       syncResizePercentage("#mainResizeHandle", state.settings.mapSplitRatio);
+      syncRingPanelLayout();
       renderDeveloperJson();
       renderDeviceDetectionReadout();
       if (persist) save();
@@ -6547,6 +6565,7 @@
       state.settings.mapSplitRatio = Math.max(.34, Math.min(.78, current + delta));
       save();
       syncMainLayout();
+      syncRingPanelLayout();
     }
 
     function syncMainLayout() {
@@ -6571,6 +6590,7 @@
       const sideOpen = sideColumnOpen();
       if (!mapPanelOpen || !sideOpen) {
         main.style.removeProperty("--map-column-width");
+        syncRingPanelLayout();
         return;
       }
       const savedRatio = Number(state.settings.mapSplitRatio);
@@ -6580,6 +6600,7 @@
       const mapColumn = clampMapColumn(targetColumn, metrics);
       main.style.setProperty("--map-column-width", `${Math.floor(mapColumn)}px`);
       syncResizePercentage("#mainResizeHandle", mapColumn / metrics.available);
+      syncRingPanelLayout();
     }
 
     function syncScrollableMapViewportFrame() {
@@ -10019,16 +10040,53 @@
       const anchorRect = anchor.getBoundingClientRect();
       const menuRect = menu.getBoundingClientRect();
       const margin = 8;
-      const width = Math.min(menuRect.width || menu.offsetWidth || 280, window.innerWidth - margin * 2);
+      const width = Math.min(Math.max(menuRect.width, menu.scrollWidth, menu.offsetWidth) || 280, window.innerWidth - margin * 2);
       const maxLeft = Math.max(margin, window.innerWidth - width - margin);
       const preferredLeft = anchorRect.right - width;
       const left = Math.min(Math.max(margin, preferredLeft), maxLeft);
       const below = anchorRect.bottom + 4;
-      const maxTop = Math.max(margin, window.innerHeight - Math.min(menuRect.height || menu.offsetHeight || 240, window.innerHeight - margin * 2) - margin);
-      const top = Math.min(Math.max(margin, below), maxTop);
+      const height = Math.min(Math.max(menuRect.height, menu.scrollHeight, menu.offsetHeight) || 240, window.innerHeight - margin * 2);
+      const above = anchorRect.top - height - 4;
+      const maxTop = Math.max(margin, window.innerHeight - height - margin);
+      const preferredTop = below + height <= window.innerHeight - margin ? below : above >= margin ? above : below;
+      const top = Math.min(Math.max(margin, preferredTop), maxTop);
       menu.style.width = `${width}px`;
+      menu.style.maxHeight = `${Math.max(120, window.innerHeight - margin * 2)}px`;
       menu.style.left = `${left}px`;
       menu.style.top = `${top}px`;
+      menu.style.right = "auto";
+      menu.style.bottom = "auto";
+    }
+
+    function visibleControlAnchor(selector) {
+      return $$(selector).find(anchor => {
+        const rect = anchor.getBoundingClientRect();
+        return rect.width > 0 && rect.height > 0 && getComputedStyle(anchor).visibility !== "hidden";
+      }) || $(selector);
+    }
+
+    function positionAnchoredControlPopups() {
+      const pairs = [
+        ["#legendPositionMenu:not(.hidden)", "#legendPositionBtn"],
+        [".ring-style-menu:not(.hidden)", "[data-ring-style-menu]"],
+        [".ring-time-menu:not(.hidden)", "[data-ring-time-menu]"],
+        [".map-waypoint-labels-menu:not([hidden])", "[data-map-waypoint-menu]"],
+        ["#basecampLinkPopover:not([hidden])", "[data-basecamp-url-link]"],
+      ];
+      pairs.forEach(([menuSelector, anchorSelector]) => {
+        const menu = $(menuSelector);
+        const anchor = visibleControlAnchor(anchorSelector);
+        if (menu && anchor) positionFloatingMenu(menu, anchor);
+      });
+      $$("[data-basecamp-submenu-panel]:not([hidden])").forEach(menu => {
+        const name = menu.dataset.basecampSubmenuPanel;
+        positionFloatingMenu(menu, $(`[data-basecamp-submenu-toggle="${name}"]`));
+      });
+      $$(".basecamp-icon-picker:not([hidden])").forEach(menu => {
+        const wrap = menu.closest(".basecamp-toolbar-link-wrap");
+        positionFloatingMenu(menu, wrap?.querySelector("[data-basecamp-icon-picker]"));
+      });
+      positionWaypointFloatingMenus();
     }
 
     function positionWaypointFloatingMenus() {
@@ -10161,8 +10219,8 @@
       const host = $("#mapWaypointPackLabels");
       if (!host) return;
       const added = activeLayerId === "us" ? addedSuggestedSets() : [];
-      host.classList.toggle("hidden", !added.length);
-      $("#labelsToggleLabel")?.classList.toggle("has-target-picker", Boolean(added.length));
+      host.classList.remove("hidden");
+      $("#labelsToggleLabel")?.classList.add("has-target-picker");
       const labelIcon = $("[data-map-label-target-icon]");
       const selected = activeMapLabelTargetSet();
       if (labelIcon) {
@@ -10171,13 +10229,8 @@
         $("#labelsToggleLabel").title = selected ? `${selected.name} Label Type` : "Map Label Type";
       }
       syncMapLabelButtons(selected ? suggestedSetLabelMode(selected.id) : state.settings.mapLabels || "none");
-      if (!added.length) {
-        host.innerHTML = "";
-        mapWaypointPackMenuOpen = false;
-        return;
-      }
       host.innerHTML = `
-        <button class="map-waypoint-labels-toggle" type="button" data-map-waypoint-menu data-shortcut="4"
+        <button class="map-waypoint-labels-toggle" type="button" data-map-waypoint-menu data-shortcut="~"
           aria-expanded="${mapWaypointPackMenuOpen ? "true" : "false"}" aria-label="Choose Location Type"
           title="Choose Location Type">
           ${__CHEVRON_DOWN_CIRCLE}
@@ -10185,11 +10238,13 @@
         <div class="map-waypoint-labels-menu" ${mapWaypointPackMenuOpen ? "" : "hidden"}>
           <div class="map-waypoint-pack-grid" aria-label="Map label targets">
             <button class="map-waypoint-pack-select" type="button" data-map-label-target=""
+              data-shortcut="0"
               aria-pressed="${selected ? "false" : "true"}" aria-label="${escapeHtml(activeLayer().heading)}" title="${escapeHtml(activeLayer().heading)}">
               ${activeLayer().icon}
             </button>
-            ${added.map(set => `
+            ${added.map((set, index) => `
               <button class="map-waypoint-pack-select" type="button" data-map-waypoint-pack="${escapeHtml(set.id)}"
+                ${index < 9 ? `data-shortcut="${index + 1}"` : ""}
                 aria-pressed="${selected?.id === set.id ? "true" : "false"}" aria-label="${escapeHtml(set.name)}" title="${escapeHtml(set.name)}">
                 ${visitTypeIcon(suggestedSetIconId(set.id))}
               </button>
@@ -10197,6 +10252,7 @@
           </div>
         </div>
       `;
+      if (mapWaypointPackMenuOpen) requestAnimationFrame(positionAnchoredControlPopups);
     }
 
     function mapLabelTargetButtons() {
@@ -10219,9 +10275,7 @@
 
     function openMapLabelTargetPicker() {
       // Keyboard entry to the Map Labels target chooser (states/territories
-      // and any linked waypoint pack). When no packs are linked the chevron
-      // does not render — fall back to cycling label modes so digits 1–4 still
-      // do something predictable.
+      // and any linked waypoint pack).
       const toggle = $("[data-map-waypoint-menu]");
       if (!toggle) return;
       if (!mapWaypointPackMenuOpen) {
@@ -10229,6 +10283,16 @@
         renderMapWaypointPackLabelsControl();
       }
       requestAnimationFrame(() => focusActiveMapLabelTarget());
+    }
+
+    function toggleMapLabelTargetPicker() {
+      if (mapWaypointPackMenuOpen) {
+        mapWaypointPackMenuOpen = false;
+        renderMapWaypointPackLabelsControl();
+        $("[data-map-waypoint-menu]")?.focus();
+        return;
+      }
+      openMapLabelTargetPicker();
     }
 
     function setMapLabelTargetFromButton(btn) {
@@ -12281,8 +12345,8 @@
       const options = notesPriorityOptionsFor(notesPriorityOptionPanel);
       panel.hidden = !options.length;
       panel.setAttribute("aria-label", notesPriorityOptionPanel ? `Priority ${notesPriorityOptionPanel} options` : "");
-      panel.innerHTML = options.map(option =>
-        `<button class="notes-priority-option" type="button" data-priority-option-panel="${escapeHtml(notesPriorityOptionPanel)}" data-priority-option-value="${escapeHtml(option.value)}" aria-pressed="${notesPriorityOptionSelected(notesPriorityOptionPanel, option.value)}" aria-label="${escapeHtml(option.label)}" title="${escapeHtml(option.label)}"${option.color ? ` style="--priority-color:${escapeHtml(option.color)}"` : ""}>${option.icon}</button>`
+      panel.innerHTML = options.map((option, index) =>
+        `<button class="notes-priority-option" type="button" data-priority-option-panel="${escapeHtml(notesPriorityOptionPanel)}" data-priority-option-value="${escapeHtml(option.value)}" data-shortcut="${notesPriorityOptionPanel === "number" ? option.value || "0" : index + 1}" aria-pressed="${notesPriorityOptionSelected(notesPriorityOptionPanel, option.value)}" aria-label="${escapeHtml(option.label)}" title="${escapeHtml(option.label)}"${option.color ? ` style="--priority-color:${escapeHtml(option.color)}"` : ""}>${option.icon}</button>`
       ).join("");
     }
 
@@ -12828,7 +12892,7 @@
       $("#notesViewExpandedBtn").setAttribute("aria-pressed", notesViewMode === "expanded");
       $("#notesViewCompactBtn").setAttribute("aria-pressed", notesViewMode === "compact");
       $("#notesViewTextBtn").setAttribute("aria-pressed", notesViewMode === "text");
-      $("#copyNotesTextBtn").classList.toggle("is-copied", notesCopyActive);
+      $("#copyNotesTextBtn")?.classList.toggle("is-copied", notesCopyActive);
       $("#notesStateSearch").value = notesSearchQuery;
       renderNotesIconFilters();
     }
@@ -13462,6 +13526,13 @@
       }));
     }
 
+    function notesTextOnlyHtml(text, preId = "") {
+      return `<div class="notes-text-only-wrap">
+        <button id="copyNotesTextBtn" class="notes-copy-btn" type="button" data-shortcut="C" aria-label="${notesCopyActive ? "Notes copied" : "Copy notes text"}">${buttonMarkup(notesCopyActive ? __CHECKMARK : __DOCUMENT_ON_DOCUMENT, notesCopyActive ? "Copied" : "Copy")}</button>
+        <pre${preId ? ` id="${preId}"` : ""} class="notes-text-only" tabindex="0">${escapeHtml(text)}</pre>
+      </div>`;
+    }
+
     function renderSelectedNoteList(notes) {
       if (!notes.length) return `<div class="empty">No visit notes yet.</div>`;
       if (notesViewMode === "text") {
@@ -13469,9 +13540,9 @@
           const groupedText = groupedPriorityNotes(notes)
             .map(group => `${priorityGroupLabel(group.priority)}\n${group.notes.map(textOnlyNoteLine).join("\n")}`)
             .join("\n\n");
-          return `<pre class="notes-text-only" tabindex="0">${escapeHtml(groupedText)}</pre>`;
+          return notesTextOnlyHtml(groupedText);
         }
-        return `<pre class="notes-text-only" tabindex="0">${escapeHtml(notesTextForAbbr(notesPanelState, { ignoreFilters: true }))}</pre>`;
+        return notesTextOnlyHtml(notesTextForAbbr(notesPanelState, { ignoreFilters: true }));
       }
       if (notesViewMode === "detailed") {
         return renderSelectedPriorityGroups(notes, items =>
@@ -13667,7 +13738,7 @@
                     : noteLevelFilters.size ? "No states match the selected legend filters." : "No marked states yet.";
         $("#notesPanelContent").innerHTML = `<div class="empty">${emptyText}</div>`;
       } else if (notesViewMode === "text") {
-        $("#notesPanelContent").innerHTML = `<pre id="notesTextOnly" class="notes-text-only" tabindex="0">${escapeHtml(buildNotesTextOnly(marked))}</pre>`;
+        $("#notesPanelContent").innerHTML = notesTextOnlyHtml(buildNotesTextOnly(marked), "notesTextOnly");
       } else if (notesViewMode === "compact") {
         const renderRows = (abbrs, options = {}) => abbrs.map(abbr => compactStateRow(abbr, options)).join("");
         $("#notesPanelContent").innerHTML = renderGroupedStateItems(marked, renderRows);
@@ -16313,6 +16384,7 @@
       if (workspace) {
         workspace.dataset.basecampMobileView = activeBasecampPad() ? basecampMobileView : "list";
       }
+      requestAnimationFrame(positionAnchoredControlPopups);
     }
 
     function basecampInPanelMode() {
@@ -17110,6 +17182,7 @@
       if (open) {
         panel.hidden = false;
         toggle.setAttribute("aria-expanded", "true");
+        requestAnimationFrame(positionAnchoredControlPopups);
       }
     }
 
@@ -17413,6 +17486,7 @@
       input.value = start?.closest?.("a")?.getAttribute("href") || "";
       popover.hidden = false;
       requestAnimationFrame(() => {
+        positionAnchoredControlPopups();
         input.focus();
         input.select();
       });
@@ -18365,28 +18439,6 @@
       return event.key.toLowerCase();
     }
 
-    function handleMapLayerChord(event) {
-      const backquote = event.code === "Backquote"
-        || event.key === "~"
-        || event.key === "`"
-        || event.key === "Dead"
-        || event.keyCode === 192;
-      const modifierKey = ["Shift", "Control", "Alt", "Meta"].includes(event.key);
-      if (event.type === "keyup") {
-        const missedKeydown = backquote && !mapLayerChordHeld
-          && event.shiftKey && event.ctrlKey && event.altKey && !event.metaKey;
-        if (backquote || modifierKey) mapLayerChordHeld = false;
-        if (!missedKeydown) return;
-      } else {
-        if (!backquote || mapLayerChordHeld
-          || !event.shiftKey || !event.ctrlKey || !event.altKey || event.metaKey) return;
-        mapLayerChordHeld = true;
-      }
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      setActiveLayer(activeLayerId === "world" ? "us" : "world");
-    }
-
     function isTypingTarget(target) {
       return /^(input|textarea|select)$/i.test(target?.tagName || "") || target?.isContentEditable;
     }
@@ -18998,6 +19050,8 @@
         p: () => clickIf("#tipJarBtn"),
         ",": () => clickIf("#settingsBtn"),
         "<": () => clickIf("#settingsBtn"),
+        "|": () => clickIf("#mapLayerToggleBtn"),
+        "~": toggleMapLabelTargetPicker,
         "?": () => { if (!$("#settingsDialog").open) $("#settingsDialog").showModal(); switchTab("help"); }
         // "/" is handled by handleGlobalShortcut (focusNotesSearchShortcut)
         // already; not re-listed here to avoid double-firing.
@@ -19376,12 +19430,112 @@
       }, { passive: false });
     }
 
+    function shortcutButton(scope, key) {
+      return [...scope.querySelectorAll("[data-shortcut]")].find(button =>
+        String(button.dataset.shortcut || "").toLowerCase() === key
+        && !button.disabled
+        && !button.closest("[hidden], .hidden")
+      );
+    }
+
+    function handleAnchoredPopupShortcut(event, key) {
+      const activate = button => {
+        if (!button) return false;
+        event.preventDefault();
+        event.stopPropagation();
+        button.click();
+        return true;
+      };
+      const priorityMenu = $("#notesPriorityMenu");
+      if (priorityMenu && !priorityMenu.hidden) {
+        if (key === "escape") {
+          event.preventDefault();
+          setNotesPriorityMenuOpen(false);
+          $("#notesPriorityBtn")?.focus();
+          return true;
+        }
+        const optionPanel = $("#notesPriorityOptions");
+        if (optionPanel && !optionPanel.hidden && activate(shortcutButton(optionPanel, key))) return true;
+        if (activate(shortcutButton(priorityMenu, key))) return true;
+      }
+      const labelMenu = $(".map-waypoint-labels-menu:not([hidden])");
+      if (labelMenu) {
+        if (key === "escape" || key === "~") {
+          event.preventDefault();
+          toggleMapLabelTargetPicker();
+          return true;
+        }
+        if (activate(shortcutButton(labelMenu, key))) return true;
+      }
+      const styleMenu = $(".ring-style-menu:not(.hidden)");
+      if (styleMenu) {
+        if (key === "escape" || key === "s") {
+          event.preventDefault();
+          closeRingStyleMenu();
+          return true;
+        }
+        if (activate(shortcutButton(styleMenu, key))) return true;
+      }
+      const timeMenu = $(".ring-time-menu:not(.hidden)");
+      if (timeMenu) {
+        if (key === "escape") {
+          event.preventDefault();
+          closeRingTimeMenu();
+          return true;
+        }
+        if (activate(shortcutButton(timeMenu, key))) return true;
+      }
+      const grid = $("#graticuleDialog");
+      if (grid?.matches(":popover-open")) {
+        if (key === "escape") {
+          event.preventDefault();
+          grid.hidePopover();
+          $("#mapGraticuleBtn")?.focus();
+          return true;
+        }
+        if (key === "m" || key === "n") {
+          const select = key === "m" ? $("#graticuleMajorInput") : $("#graticuleMinorInput");
+          if (select && !select.disabled) {
+            event.preventDefault();
+            select.focus();
+            return true;
+          }
+        }
+        if (activate(shortcutButton(grid, key))) return true;
+      }
+      const legendMenu = $("#legendPositionMenu");
+      if (legendMenu && !legendMenu.classList.contains("hidden")) {
+        if (key === "escape" || key === "u") {
+          event.preventDefault();
+          closeLegendPositionMenu();
+          $("#legendPositionBtn")?.focus();
+          return true;
+        }
+        if (activate(shortcutButton(legendMenu, key))) return true;
+      }
+      const timeZone = $("#ringTimeZonePopover");
+      if (timeZone) {
+        if (key === "escape") {
+          event.preventDefault();
+          setRingTimeZoneOpen(false);
+          return true;
+        }
+        if (key === "n" || key === "c") {
+          const mode = key === "n" ? "now" : "custom";
+          return activate(timeZone.querySelector(`[data-ring-departure-mode="${mode}"]`));
+        }
+      }
+      return false;
+    }
+
     function handlePowerShortcut(event) {
       updatePowerOverlay(event);
+      if (event.defaultPrevented) return;
       if (handleGlobalShortcut(event)) return;
-      if (!shortcutsActive()) return;
       if (["shift", "control", "alt", "option", "meta"].includes(event.key.toLowerCase())) return;
       const key = shortcutKey(event);
+      if (key === "escape" && handleAnchoredPopupShortcut(event, key)) return;
+      if (!shortcutsActive()) return;
       if ($("#renameDialog").open) {
         const renameActions = {
           escape: () => $("#renameDialog").close(),
@@ -19568,6 +19722,7 @@
         return;
       }
       if (isTypingTarget(event.target)) return;
+      if (handleAnchoredPopupShortcut(event, key)) return;
       // Home-screen shortcut table. Keys map straight to the on-screen
       // data-shortcut hints. Notes-panel filters are scoped to
       // notesPanelOpen && !notesPanelState to mirror their button visibility.
@@ -19581,11 +19736,11 @@
         "7": () => clickIf("#mapMatchNotesBtn"),
         "6": toggleBucketListView,
         "5": () => clickIf("#mapRingModeBtn"),
-        "4": () => openMapLabelTargetPicker(),
         "3": () => setActiveMapLabelMode("none"),
         "2": () => setActiveMapLabelMode("abbr"),
         "1": () => setActiveMapLabelMode("name"),
-        "~": () => setActiveLayer(activeLayerId === "world" ? "us" : "world"),
+        "|": () => setActiveLayer(activeLayerId === "world" ? "us" : "world"),
+        "~": toggleMapLabelTargetPicker,
         "-": () => nudgeMapZoom(-MAP_ZOOM_STEP),
         "+": () => nudgeMapZoom(MAP_ZOOM_STEP),
         "=": () => nudgeMapZoom(MAP_ZOOM_STEP),
@@ -19961,7 +20116,6 @@
       bindBasecampEvents();
       $("#mapFitBtn").addEventListener("click", toggleMapFitMode);
       $("#mapLayerToggleBtn").addEventListener("click", () => setActiveLayer(activeLayerId === "world" ? "us" : "world"));
-      $("#mapBucketListBtn").addEventListener("click", toggleBucketListView);
       $("#mapRingModeBtn").addEventListener("click", toggleRingMode);
       $("#mapGraticuleBtn")?.addEventListener("pointerdown", () => {
         graticuleButtonDismissPending = $("#graticuleDialog")?.matches(":popover-open") === true;
@@ -20174,7 +20328,9 @@
       $("#notesViewExpandedBtn").addEventListener("click", () => setNotesViewMode("expanded"));
       $("#notesViewCompactBtn").addEventListener("click", () => setNotesViewMode("compact"));
       $("#notesViewTextBtn").addEventListener("click", () => setNotesViewMode("text"));
-      $("#copyNotesTextBtn").addEventListener("click", () => copyNotesText());
+      $("#notesPanelContent").addEventListener("click", event => {
+        if (event.target.closest("#copyNotesTextBtn")) copyNotesText();
+      });
       $("#notesTagSettingsMiniBtn")?.addEventListener("click", () => openVisitTagSettings("settings"));
       $("#closeDrawerBtn").addEventListener("click", closeDrawer);
       $("#clearStateLevelsBtn").addEventListener("click", clearSelectedStateLevels);
@@ -20498,9 +20654,6 @@
       });
       $("#liquorKeyBtn").addEventListener("click", () => handleDeveloperGesture("liquor"));
       $("#coffeeKeyBtn").addEventListener("click", () => handleDeveloperGesture("coffee"));
-      document.addEventListener("keydown", handleMapLayerChord, true);
-      document.addEventListener("keypress", handleMapLayerChord, true);
-      document.addEventListener("keyup", handleMapLayerChord, true);
       document.addEventListener("keydown", handleRingKeydown);
       document.addEventListener("keydown", handlePowerShortcut);
       document.addEventListener("keyup", updatePowerOverlay);
@@ -20544,6 +20697,10 @@
           event.preventDefault();
           event.stopPropagation();
           closeWaypointPacksPanel();
+          return;
+        }
+        if (handleAnchoredPopupShortcut(event, "escape")) {
+          event.stopPropagation();
         }
       }, true);
       // Enter counterpart to the Escape handler: every modal pop-up should
@@ -20579,7 +20736,8 @@
         if (!legendPositionControlAvailable()) closeLegendPositionMenu();
         if (ringStyleMenuOpen) closeRingStyleMenu();
         if (ringTimeMenuOpen) closeRingTimeMenu();
-        if (!$("#notesPriorityMenu")?.hidden) positionFloatingMenu($("#notesPriorityMenu"), $("#notesPriorityBtn"));
+        positionAnchoredControlPopups();
+        syncRingPanelLayout();
         syncButtonLabels();
         scheduleMainLayoutSync();
         if ($("#noteDialog")?.open) sizeNoteWaypointPhotoFrame();
