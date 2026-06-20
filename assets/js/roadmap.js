@@ -77,16 +77,27 @@
         category: "UI"
       },
       {
-        title: "Rangefinder Edge Cases, Globe Wrap, and Time Zones",
-        ticketId: "WISH-061",
-        planDoc: "WISH-061-RANGEFINDER-EDGECASES-PLAN.md",
-        description: "Round out Rangefinder with three related upgrades. (1) Cross-inset edge cases: clearer treatment when Start and End cross between the contiguous map and inset regions (for example Washington to Alaska), including clipped-ring visuals, inset-scale limits, and honest long-distance comparisons across projections. (2) Antimeridian wrap on the World map: rings around a Start near the date line (Honolulu, Tokyo, Sydney) keep drawing on the opposite side instead of clipping, with continuous geometry across the seam, arc-following labels, preserved clip-to-land and inset behavior, and shorter-great-circle Start-to-End paths. (3) Offline time zones: show local time and IANA zone for Start and End, let a user pick a departure time, and compute the destination-local arrival from the current travel-time estimate, with daylight-saving handling, US and World support, and manual correction when a zone cannot be resolved offline.",
-        priority: "P0",
-        effort: "large",
+        title: "Mobile Center-Crosshair Rangefinder",
+        ticketId: "WISH-079",
+        description: "Give mobile Rangefinder a map-first targeting mode: place a persistent + crosshair at the center of the visible map, let the user pan the map beneath it, and continuously update a compact distance/time indicator for the coordinates under the crosshair. Keep picking and confirming the target touch-friendly without covering the map.",
+        priority: "P1",
+        effort: "medium",
         targetKind: "patch",
         targetVersion: "",
-        tokenCostPct: 48,
-        prompt: "Deliver three related Rangefinder upgrades. (1) Polish cross-inset edge cases (e.g. a Washington Start with rings or an Alaska End): clearer non-route cross-region cue, inset radius caps, honest real-coordinate distance, preserved local settings. (2) Antimeridian wrap on the World map via mirror/duplicate ellipses: also draw the ring-shapes group translated by +/- the world projection box width so a date-line Start continues on the opposite side instead of clipping; reuse the land clip/inset mask, label the visible arc, keep US-map behavior, and pick the shorter longitudinal wrap for the Start-to-End cue. (3) Offline time zones via a compact region->IANA zone table (US state / world country -> primary zone, optional longitude refinement, manual override when unresolved); use Intl.DateTimeFormat({timeZone}) for offline local time + DST; show Start/End local time and zone, a chosen departure time, and destination-local arrival from the current travel-time estimate; US and World; no network lookups. Add settings + normalize; preserve usStateVisitMap.v1.",
+        tokenCostPct: 24,
+        prompt: "Add a mobile-only center-crosshair targeting flow for Rangefinder. When choosing a point, keep a + fixed at the center of the visible map while the user pans/zooms the map underneath it. Resolve the center coordinate continuously and show an updating compact readout for distance and estimated travel time from the active Start, including the current ring/band where useful. Provide clear confirm/cancel actions, safe-area-aware placement, and accessible feedback without obscuring map pins or controls. Preserve the existing tap-a-saved-pin workflow and desktop behavior, support US and World maps/insets/date-line wrapping, and persist only normal confirmed Rangefinder anchors/settings.",
+        category: "Maps"
+      },
+      {
+        title: "Target Finder Google and Apple Maps Integration",
+        ticketId: "WISH-080",
+        description: "Connect Rangefinder's Target Finder points to external trip tools. Add a preferred maps-provider setting that toggles between Apple Maps and Google Maps, then open the selected provider with confirmed Start/End coordinates, recognizable labels, and driving intent in Drive mode. In Plane mode, offer Google Flights for flight planning while retaining map handoff where useful. Keep straight-line Rangefinder calculations unchanged, make every online handoff user-initiated, and behave sensibly when only one target exists or a provider/app is unavailable.",
+        priority: "P0",
+        effort: "medium",
+        targetKind: "exact",
+        targetVersion: "5.1.0",
+        tokenCostPct: 26,
+        prompt: "For 5.1.0, add user-initiated external trip actions to Rangefinder's Target Finder. Add a persisted preferred maps-provider setting toggling Apple Maps or Google Maps. When Start and End coordinates exist, build safe provider URLs containing both coordinates and useful labels; use driving directions in Drive mode. In Plane mode, add a Google Flights action for flight planning and retain an appropriate map/place handoff. Support one-point fallback, desktop browser and mobile app/deep-link behavior, accessible provider controls, clear online-action wording, and graceful fallback when a provider/app cannot open. Do not replace the existing straight-line rings, distance/time comparison, offline time zones, or persisted anchors; add defaults in defaultState(), repair in normalizeState(), and preserve usStateVisitMap.v1.",
         category: "Maps"
       },
       {
