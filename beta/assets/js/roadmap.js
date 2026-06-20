@@ -117,13 +117,13 @@
       {
         title: "Target Finder Google and Apple Maps Integration",
         ticketId: "WISH-080",
-        description: "Connect Rangefinder's Target Finder points to Google Maps and Apple Maps. Once Start and End have coordinates, offer explicit actions to open either maps service with both points, the active Drive/Plane intent where supported, and recognizable location labels. Keep straight-line Rangefinder calculations unchanged, make the online handoff user-initiated, and behave sensibly when only one target exists or a maps app is unavailable.",
+        description: "Connect Rangefinder's Target Finder points to external trip tools. Add a preferred maps-provider setting that toggles between Apple Maps and Google Maps, then open the selected provider with confirmed Start/End coordinates, recognizable labels, and driving intent in Drive mode. In Plane mode, offer Google Flights for flight planning while retaining map handoff where useful. Keep straight-line Rangefinder calculations unchanged, make every online handoff user-initiated, and behave sensibly when only one target exists or a provider/app is unavailable.",
         priority: "P0",
         effort: "medium",
-        targetKind: "minor",
-        targetVersion: "",
-        tokenCostPct: 22,
-        prompt: "Add user-initiated Google Maps and Apple Maps actions to Rangefinder's Target Finder. When Start and End coordinates exist, build safe external map URLs that include both coordinates and useful labels, prefer driving directions for Drive mode, and use an appropriate place/route handoff for Plane mode. Support one-point fallback, desktop browser and mobile app/deep-link behavior, accessible provider buttons, clear online-action wording, and graceful fallback when a provider/app cannot open. Do not replace the existing straight-line rings, distance/time comparison, offline time zones, or persisted anchors; preserve usStateVisitMap.v1.",
+        targetKind: "exact",
+        targetVersion: "5.1.0",
+        tokenCostPct: 26,
+        prompt: "For 5.1.0, add user-initiated external trip actions to Rangefinder's Target Finder. Add a persisted preferred maps-provider setting toggling Apple Maps or Google Maps. When Start and End coordinates exist, build safe provider URLs containing both coordinates and useful labels; use driving directions in Drive mode. In Plane mode, add a Google Flights action for flight planning and retain an appropriate map/place handoff. Support one-point fallback, desktop browser and mobile app/deep-link behavior, accessible provider controls, clear online-action wording, and graceful fallback when a provider/app cannot open. Do not replace the existing straight-line rings, distance/time comparison, offline time zones, or persisted anchors; add defaults in defaultState(), repair in normalizeState(), and preserve usStateVisitMap.v1.",
         category: "Maps"
       },
       {
