@@ -2707,6 +2707,12 @@
     let collapsedNoteLocations = new Set();
     let notesCopyTimer = 0;
     let notesCopyActive = false;
+    // Session-only font size (px) for the Text Only notes surface; the +/- buttons
+    // adjust it and it rides re-renders via an inline style on the <pre>.
+    const NOTES_TEXT_FONT_MIN = 9;
+    const NOTES_TEXT_FONT_MAX = 22;
+    const NOTES_TEXT_FONT_DEFAULT = 12;
+    let notesTextOnlyFontPx = NOTES_TEXT_FONT_DEFAULT;
     let installReloadNeeded = false;
     let installPlatformOverride = "auto";
     let powerOverlayActive = false;
@@ -13597,10 +13603,28 @@
     }
 
     function notesTextOnlyHtml(text, preId = "") {
+      const atMin = notesTextOnlyFontPx <= NOTES_TEXT_FONT_MIN;
+      const atMax = notesTextOnlyFontPx >= NOTES_TEXT_FONT_MAX;
       return `<div class="notes-text-only-wrap">
-        <button id="copyNotesTextBtn" class="notes-copy-btn" type="button" data-shortcut="C" aria-label="${notesCopyActive ? "Notes copied" : "Copy notes text"}">${buttonMarkup(notesCopyActive ? __CHECKMARK : __DOCUMENT_ON_DOCUMENT, notesCopyActive ? "Copied" : "Copy")}</button>
-        <pre${preId ? ` id="${preId}"` : ""} class="notes-text-only" tabindex="0">${escapeHtml(text)}</pre>
+        <div class="notes-text-only-controls">
+          <button class="notes-copy-btn notes-font-btn" type="button" data-notes-font="dec" aria-label="Decrease text size" title="Decrease text size"${atMin ? " disabled" : ""}>${buttonMarkup(__MINUS_CIRCLE, "Smaller")}</button>
+          <button class="notes-copy-btn notes-font-btn" type="button" data-notes-font="inc" aria-label="Increase text size" title="Increase text size"${atMax ? " disabled" : ""}>${buttonMarkup(__PLUS_CIRCLE, "Larger")}</button>
+          <button id="copyNotesTextBtn" class="notes-copy-btn" type="button" data-shortcut="C" aria-label="${notesCopyActive ? "Notes copied" : "Copy notes text"}">${buttonMarkup(notesCopyActive ? __CHECKMARK : __DOCUMENT_ON_DOCUMENT, notesCopyActive ? "Copied" : "Copy")}</button>
+        </div>
+        <pre${preId ? ` id="${preId}"` : ""} class="notes-text-only" tabindex="0" style="font-size:${notesTextOnlyFontPx}px">${escapeHtml(text)}</pre>
       </div>`;
+    }
+
+    function adjustNotesTextOnlyFont(delta) {
+      const next = Math.max(NOTES_TEXT_FONT_MIN, Math.min(NOTES_TEXT_FONT_MAX, notesTextOnlyFontPx + delta));
+      if (next === notesTextOnlyFontPx) return;
+      notesTextOnlyFontPx = next;
+      const pre = $(".notes-text-only");
+      if (pre) pre.style.fontSize = `${notesTextOnlyFontPx}px`;
+      const dec = $('[data-notes-font="dec"]');
+      const inc = $('[data-notes-font="inc"]');
+      if (dec) dec.disabled = notesTextOnlyFontPx <= NOTES_TEXT_FONT_MIN;
+      if (inc) inc.disabled = notesTextOnlyFontPx >= NOTES_TEXT_FONT_MAX;
     }
 
     function renderSelectedNoteList(notes) {
@@ -20427,7 +20451,9 @@
       $("#notesViewCompactBtn").addEventListener("click", () => setNotesViewMode("compact"));
       $("#notesViewTextBtn").addEventListener("click", () => setNotesViewMode("text"));
       $("#notesPanelContent").addEventListener("click", event => {
-        if (event.target.closest("#copyNotesTextBtn")) copyNotesText();
+        if (event.target.closest("#copyNotesTextBtn")) { copyNotesText(); return; }
+        const fontBtn = event.target.closest("[data-notes-font]");
+        if (fontBtn) adjustNotesTextOnlyFont(fontBtn.dataset.notesFont === "inc" ? 1 : -1);
       });
       $("#notesTagSettingsMiniBtn")?.addEventListener("click", () => openVisitTagSettings("settings"));
       $("#closeDrawerBtn").addEventListener("click", closeDrawer);
