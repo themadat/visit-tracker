@@ -4,7 +4,7 @@
 
     const CHANGELOG = [
       {
-        version: "4.8.1.1",
+        version: "4.8.1",
         date: "2026-06-21",
         title: "Reading Glasses",
         summary: "Text Only now remembers your chosen text size.",
