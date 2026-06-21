@@ -79,6 +79,7 @@
       {
         title: "Target Finder Google and Apple Maps Integration",
         ticketId: "WISH-080",
+        planDoc: "WISH-080-TARGET-FINDER-MAPS-PLAN.md",
         description: "Connect Rangefinder's Target Finder points to external trip tools. Add a preferred maps-provider setting that toggles between Apple Maps and Google Maps, then open the selected provider with confirmed Start/End coordinates, recognizable labels, and driving intent in Drive mode. In Plane mode, offer Google Flights for flight planning while retaining map handoff where useful. Keep straight-line Rangefinder calculations unchanged, make every online handoff user-initiated, and behave sensibly when only one target exists or a provider/app is unavailable.",
         priority: "P0",
         effort: "medium",
