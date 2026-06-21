@@ -4,6 +4,71 @@
 
     const CHANGELOG = [
       {
+        version: "4.8.1",
+        date: "2026-06-21",
+        title: "Reading Glasses",
+        summary: "Text Only now remembers your chosen text size.",
+        highlights: [
+          "Text Only's Smaller / Larger text size is saved and restored across reloads.",
+        ],
+        updateSections: [
+          {
+            heading: "Interface",
+            items: [
+              "The Text Only font size you set with Smaller / Larger (or the { and } keys) now persists in your saved settings and is restored when you reopen the app.",
+            ]
+          }
+        ]
+      },
+      {
+        version: "4.8.0",
+        date: "2026-06-21",
+        title: "Square Deal",
+        summary: "A consistency pass that unifies the app's anchored pop-ups and controls, refines Text Only and the map, and revises the keyboard shortcuts.",
+        banner: "A consistency pass: unified pop-ups, one size system, floating Text Only tools, fresh shortcuts.",
+        cta: "Make it a|Square Deal!",
+        highlights: [
+          "Anchored pop-ups share one square-control system with consistent sizing and on-screen clamping.",
+          "Controls share a 36/32/40px height system; Notes, Legend, and Rangefinder all line up.",
+          "Text Only adds a floating, scroll-sticky Copy plus Smaller / Larger text-size buttons.",
+          "A fully revised keyboard shortcut set across the map, Legend, Notes, and Rangefinder.",
+        ],
+        updateSections: [
+          {
+            heading: "Consistency & Controls",
+            items: [
+              "Primary controls standardize at 36px, inset segmented choices at 32px, and bordered control frames at 40px.",
+              "Priority, Grid, Rangefinder style/fill/clip and time, Legend position, Map label and Waypoint Pack label pickers, Waypoint priority/link menus, and Basecamp row/icon/link popovers share one square-button look, sizing, labels, active/disabled states, and viewport clamping.",
+              "Wayfinder mode now lives only on the Notes panel; the Map drops its duplicate Wayfinder button.",
+              "The Notes header top-aligns like the Legend and Rangefinder, the search bar matches its buttons' height, and the Legend/Rangefinder resize handle matches the map-and-notes handle.",
+            ]
+          },
+          {
+            heading: "Text Only",
+            items: [
+              "Copy moves inside Text Only view and, with new Smaller and Larger buttons, floats over the top-right of the text and stays pinned as the notes scroll.",
+              "Smaller and Larger adjust the font size of the Text Only view only, and the text now starts at the very top of the surface.",
+            ]
+          },
+          {
+            heading: "Map & Rangefinder",
+            items: [
+              "Long Rangefinder Start and End locations split into Where and City lines, shrinking inside the same fixed-height slot.",
+              "Map header actions stay top-aligned when Scroll mode or Rangefinder adds secondary controls.",
+              "On desktop, a side-column Rangefinder sits below Legend until the side owns at least 40% of the layout, then moves beside it.",
+            ]
+          },
+          {
+            heading: "Shortcuts",
+            items: [
+              "Map: | switches US/World, : toggles Fit/Scroll, 9 Grid, 8 Rangefinder, 7 Pins, 6 Filter, ' cycles label targets, Left Arrow cycles label modes, and ~ opens Rename.",
+              "Legend and Notes: W/X/Y/Z, F/R, and > applies Auto Colors; Rangefinder: E/J/K/U/V plus T for Time.",
+              "Pop-ups use numbered keys (Priority and Grid 1–5, Rangefinder Circle 1–4, Time 1–2); { and } shrink and grow the Text Only font size.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.7.6",
         date: "2026-06-20",
         title: "Dead Reckoning",
