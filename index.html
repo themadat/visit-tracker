@@ -1818,7 +1818,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.9.0.1";
+    const APP_VERSION = "4.9.0.2";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -4963,11 +4963,9 @@
 
     function renderRingMapsButton() {
       const links = ringExternalLinks();
-      const iconProvider = links ? links.provider : ringMapsProvider();
-      const icon = iconProvider === "apple" ? __APPLE_LOGO : __G_SQUARE_FILL;
       const label = links ? links.label : "Pick a Start point to open maps";
       const title = links ? `${links.label} · right-click for a background tab` : label;
-      return `<button class="ring-maps-btn" type="button" data-ring-maps-open aria-label="${escapeHtml(label)}" title="${escapeHtml(title)}"${links ? "" : ' disabled aria-disabled="true"'}>${icon}</button>`;
+      return `<button class="ring-maps-btn" type="button" data-ring-maps-open aria-label="${escapeHtml(label)}" title="${escapeHtml(title)}"${links ? "" : ' disabled aria-disabled="true"'}>${__POINT_TOPLEFT_DOWN_TO_POINT_BOTTOMRIGHT_CURVEPATH}</button>`;
     }
 
     function openRingExternal(background) {
@@ -6516,6 +6514,8 @@
       setButtonLabelBoth("#hintsOffBtn", ICON_SETTINGS_HINT_OFF__LIGHTBULB, "Off", "Hints off");
       setButtonLabelBoth("#cycleModeBtn", ICON_SETTINGS_MAP_CYCLE__ARROW_TRIANGLEHEAD_2_CLOCKWISE, "Cycle", "Tap to select then cycle");
       setButtonLabelBoth("#selectModeBtn", ICON_SETTINGS_MAP_SELECT__SCOPE, "Select", "Tap to select");
+      setButtonLabelBoth("#mapsProviderAppleBtn", __APPLE_LOGO, "Apple Maps", "Use Apple Maps as the maps provider");
+      setButtonLabelBoth("#mapsProviderGoogleBtn", __G_SQUARE_FILL, "Google Maps", "Use Google Maps as the maps provider");
       setButtonLabelBoth("#visitTagSettingsBtn", __ELLIPSIS_CIRCLE, "Choose, Order, Rename, Hotkeys");
       setExportBtnLabel("#exportJsonBtn", ICON_SETTINGS_EXPORT_JSON__CURLYBRACES, "JSON", ".json");
       setExportBtnLabel("#exportMarkdownBtn", ICON_SETTINGS_EXPORT_MARKDOWN__RICHTEXT_PAGE, "Markdown", ".md");

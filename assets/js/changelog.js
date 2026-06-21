@@ -21,14 +21,14 @@
             heading: "Rangefinder",
             items: [
               "A new maps button in the Rangefinder summary row hands your Start and End points to an external trip tool: driving directions in Drive mode, a Google Flights search in Plane mode, and a single-place lookup when only Start is set.",
-              "The button shows the logo of the destination it will open (Apple Maps, Google Maps, or Google Flights). A single click opens it in a new tab and switches to it; a right-click opens it quietly in a background tab.",
+              "A single click opens it in a new tab and switches to it; a right-click opens it quietly in a background tab.",
               "The distance and time readout is now a button that opens Local Times & Arrival, so the same row covers both timing and trip handoff.",
             ]
           },
           {
             heading: "Settings",
             items: [
-              "A new Maps Provider choice under Map Interaction lets you set Apple Maps or Google Maps as your preferred provider; it defaults to Apple on Apple devices and Google elsewhere.",
+              "A new Maps Provider choice under Map Interaction, marked with the Apple Maps and Google Maps logos, lets you set your preferred provider; it defaults to Apple on Apple devices and Google elsewhere.",
             ]
           }
         ]
