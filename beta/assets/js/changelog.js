@@ -4,6 +4,23 @@
 
     const CHANGELOG = [
       {
+        version: "4.8.1.1",
+        date: "2026-06-21",
+        title: "Reading Glasses",
+        summary: "Text Only now remembers your chosen text size.",
+        highlights: [
+          "Text Only's Smaller / Larger text size is saved and restored across reloads.",
+        ],
+        updateSections: [
+          {
+            heading: "Interface",
+            items: [
+              "The Text Only font size you set with Smaller / Larger (or the { and } keys) now persists in your saved settings and is restored when you reopen the app.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.8.0",
         date: "2026-06-21",
         title: "Square Deal",
