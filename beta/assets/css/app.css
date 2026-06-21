@@ -3983,8 +3983,8 @@
     }
 
     .ring-maps-btn .sf-symbol {
-      width: auto;
-      height: 19px;
+      width: 17px;
+      height: 21px;
     }
 
     .ring-maps-btn:hover:not(:disabled) {
