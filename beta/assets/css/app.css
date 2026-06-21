@@ -1132,7 +1132,7 @@
       height: min(72px, calc(100% - 2rem));
       min-height: 42px;
       border-radius: 999px;
-      background: color-mix(in srgb, var(--line) 72%, var(--accent-ring) 18%);
+      background: color-mix(in srgb, var(--line) 72%, var(--accent) 18%);
       transform: translate(-50%, -50%);
       transition: width .16s ease, background .16s ease, box-shadow .16s ease;
     }
@@ -1141,8 +1141,8 @@
     .ring-panel-resize-handle:focus-visible::before,
     html[data-resizing-ring-panels="true"] .ring-panel-resize-handle::before {
       width: 6px;
-      background: var(--accent-ring);
-      box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-ring) 16%, transparent);
+      background: var(--accent);
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent);
     }
 
     .legend-panel-group[data-ring-open="1"][data-ring-layout="map"]>#legendPanel {
@@ -9002,7 +9002,7 @@
 
     .notes-panel-head {
       gap: .5rem;
-      align-items: center;
+      align-items: flex-start;
     }
 
     .notes-panel-head .notes-title-stack {
@@ -9030,7 +9030,7 @@
       /* Visual gap between the Notes header row (Quick Add / Wayfinder
          / Search) and the secondary toggles below. Matches the rhythm in the
          Map header area. */
-      margin-top: .7rem;
+      margin-top: .35rem;
     }
 
     .notes-search {
@@ -9045,8 +9045,10 @@
       flex: 1 1 auto;
       width: 100%;
       min-width: 0;
-      min-height: 40px;
-      padding: .42rem .58rem;
+      min-height: 36px;
+      height: 36px;
+      box-sizing: border-box;
+      padding: .3rem .58rem;
       font-size: .92rem;
     }
 

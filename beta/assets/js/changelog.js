@@ -4,6 +4,26 @@
 
     const CHANGELOG = [
       {
+        version: "4.8.0.2",
+        date: "2026-06-20",
+        title: "Square Deal",
+        summary: "Tidier Notes header, a matched search height, and consistent resize handles.",
+        highlights: [
+          "The Notes header sits at the top, like the Legend.",
+          "The notes search bar matches its button height.",
+        ],
+        updateSections: [
+          {
+            heading: "Interface",
+            items: [
+              "The Notes header now top-aligns (matching the Legend and Rangefinder), with a tighter gap to its toggles.",
+              "The notes search / filter bar is the same height as the buttons beside it.",
+              "The Legend/Rangefinder resize handle now matches the map-and-notes handle in size and color.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.8.0.1",
         date: "2026-06-20",
         title: "Square Deal",
