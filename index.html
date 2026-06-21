@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.7.6.10">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.8.0">
 </head>
 
 <body>
@@ -66,7 +66,7 @@
                 <span id="alphaPill" class="env-pill alpha-pill hidden" title="This is the alpha deploy">ALPHA</span>
               </div>
             </div>
-            <button id="renameBtn" class="ghost title-edit-btn" type="button" data-shortcut="E">Rename</button>
+            <button id="renameBtn" class="ghost title-edit-btn" type="button" data-shortcut="~">Rename</button>
           </div>
         </div>
         <div class="topbar-hints" aria-label="Title bar tips">
@@ -114,7 +114,7 @@
         <div class="map-head">
           <div class="map-head-title">
             <button id="mapLayerToggleBtn" class="map-layer-toggle" type="button" aria-pressed="false"
-              aria-label="Switch between the US and World maps" data-shortcut="~">
+              aria-label="Switch between the US and World maps" data-shortcut="|">
               <span id="mapLayerIcon" class="map-layer-icon" aria-hidden="true"></span>
               <span class="map-layer-loading-spinner" aria-hidden="true"></span>
               <span class="map-layer-text-stack">
@@ -141,7 +141,7 @@
                 </div>
                 <div class="map-action-group map-toggle-group">
                   <button id="mapFitBtn" class="toggle-btn" type="button" aria-pressed="false"
-                    aria-label="Fit map on screen" data-shortcut="9">Fit Map</button>
+                    aria-label="Fit map on screen" data-shortcut=":">Fit Map</button>
                 </div>
               </div>
               <small data-hint data-hint-key="map-view-controls">Zoom/Pan/Pinch:<br />Scroll Map | Fit</small>
@@ -149,40 +149,36 @@
             <div class="map-control-stack">
               <div class="map-control-row">
                 <div class="map-action-group map-toggle-group">
-                  <button id="mapLocationPinsBtn" class="toggle-btn" type="button" aria-pressed="true"
-                    aria-label="Show location note pins" data-shortcut="8">View Locations</button>
-                </div>
-                <div class="map-action-group map-toggle-group">
-                  <button id="mapMatchNotesBtn" class="toggle-btn" type="button" aria-pressed="true"
-                    aria-label="Apply note filters to the map" data-shortcut="7">Match Notes</button>
-                </div>
-                <div class="map-action-group map-toggle-group">
-                  <button id="mapBucketListBtn" class="toggle-btn bucket-list-toggle-btn" type="button"
-                    aria-pressed="false" aria-label="Toggle Wayfinder mode" data-shortcut="6">Wayfinder</button>
+                  <button id="mapGraticuleBtn" class="toggle-btn" type="button" aria-pressed="false"
+                    aria-label="Map grid settings" data-shortcut="9">Grid</button>
                 </div>
                 <div class="map-action-group map-toggle-group">
                   <button id="mapRingModeBtn" class="toggle-btn ring-toggle-btn" type="button" aria-pressed="false"
-                    aria-label="Toggle Ring Mode" data-shortcut="5">Rangefinder</button>
+                    aria-label="Toggle Ring Mode" data-shortcut="8">Rangefinder</button>
                 </div>
                 <div class="map-action-group map-toggle-group">
-                  <button id="mapGraticuleBtn" class="toggle-btn" type="button" aria-pressed="false"
-                    aria-label="Map grid settings">Grid</button>
+                  <button id="mapLocationPinsBtn" class="toggle-btn" type="button" aria-pressed="true"
+                    aria-label="Show location note pins" data-shortcut="7">View Locations</button>
+                </div>
+                <div class="map-action-group map-toggle-group">
+                  <button id="mapMatchNotesBtn" class="toggle-btn" type="button" aria-pressed="true"
+                    aria-label="Apply note filters to the map" data-shortcut="6">Match Notes</button>
                 </div>
               </div>
-              <small data-hint data-hint-key="map-notes-controls">Toggle Notes Pins<br />Visibility | Filter |
-                Wayfinder | Rangefinder | Lat/Lng Grid</small>
+              <small data-hint data-hint-key="map-notes-controls">Map Toggles<br />Lat/Lng Grid | Rangefinder |
+                Pins | Filter</small>
             </div>
             <div class="map-control-stack">
               <div class="map-control-row">
                 <div class="map-action-group map-label-group">
                   <div class="segmented map-label-toggle" aria-label="Map labels">
-                    <span id="labelsToggleLabel" title="Map Label Type">
+                    <span id="labelsToggleLabel" class="shortcut-target" title="Map Label Type" data-shortcut="'">
                       <span class="map-label-target-icon" data-map-label-target-icon>Labels</span>
                       <span id="mapWaypointPackLabels" class="map-waypoint-labels hidden"></span>
                     </span>
-                    <button id="labelsNoneBtn" type="button" aria-pressed="true" data-shortcut="3">None</button>
-                    <button id="labelsAbbrBtn" type="button" aria-pressed="false" data-shortcut="2">Abbr</button>
-                    <button id="labelsNameBtn" type="button" aria-pressed="false" data-shortcut="1">Name</button>
+                    <button id="labelsNoneBtn" type="button" aria-pressed="true" data-shortcut="←">None</button>
+                    <button id="labelsAbbrBtn" type="button" aria-pressed="false" data-shortcut="←">Abbr</button>
+                    <button id="labelsNameBtn" type="button" aria-pressed="false" data-shortcut="←">Name</button>
                   </div>
                   <div id="worldLabelTuneBar" class="world-label-tune-bar hidden" aria-label="World label tuning">
                     <button id="worldLabelTuneBtn" type="button" aria-pressed="false">Tune</button>
@@ -239,17 +235,17 @@
                 </small>
                 <div class="legend-title-actions">
                   <span class="legend-position-picker">
-                    <button id="legendPositionBtn" type="button" data-shortcut="U" aria-haspopup="true"
+                    <button id="legendPositionBtn" type="button" data-shortcut="W" aria-haspopup="true"
                       aria-expanded="false">Position</button>
                     <div id="legendPositionMenu" class="legend-position-menu hidden" role="menu"
                       aria-label="Legend position options"></div>
                   </span>
-                  <button id="smartColorsBtn" type="button" data-shortcut="V">Auto Colors</button>
+                  <button id="smartColorsBtn" type="button" data-shortcut=">">Auto Colors</button>
                   <button id="suggestionsToggleBtn" class="toggle-btn" type="button" aria-pressed="false"
-                    data-shortcut="W">Hide Suggestions</button>
+                    data-shortcut="X">Hide Suggestions</button>
                   <button id="legendEditBtn" class="toggle-btn" type="button" aria-pressed="false"
-                    data-shortcut="X">Edit</button>
-                  <button id="addLevelBtn" type="button" data-shortcut="Y">Add Level</button>
+                    data-shortcut="Y">Edit</button>
+                  <button id="addLevelBtn" type="button" data-shortcut="Z">Add Level</button>
                 </div>
               </div>
               <div id="legendList" class="legend-list"></div>
@@ -268,9 +264,8 @@
             <div id="notesPanelSearchWrap" class="notes-search">
               <button id="quickAddNoteBtn" type="button" data-shortcut="S" aria-label="Quick add note">Quick
                 Add</button>
-              <button id="copyNotesTextBtn" class="notes-copy-btn" type="button" data-shortcut="C">Copy</button>
               <button id="notesActivateWayfinderBtn" class="toggle-btn bucket-list-toggle-btn" type="button"
-                aria-pressed="false" aria-label="Toggle Wayfinder mode" data-shortcut="6">Wayfinder</button>
+                aria-pressed="false" aria-label="Toggle Wayfinder mode" data-shortcut="F">Wayfinder</button>
               <button id="notesAddWaypointsBtn" class="toggle-btn sets-toggle-btn" type="button" aria-expanded="false"
                 aria-controls="waypointPacksPanel" aria-label="Open Waypoint Packs">Packs</button>
               <span class="notes-search-input-wrap">
@@ -302,29 +297,29 @@
               <button id="notesSortChronoBtn" type="button" aria-pressed="true" data-shortcut="→">Chronological</button>
             </div>
             <span class="notes-priority-picker">
-              <button id="notesPriorityBtn" class="notes-priority-toggle" type="button" aria-pressed="false"
+              <button id="notesPriorityBtn" class="notes-priority-toggle" type="button" data-shortcut="R" aria-pressed="false"
                 aria-haspopup="dialog" aria-expanded="false" aria-controls="notesPriorityMenu">Priority</button>
               <span id="notesPriorityMenu" class="notes-priority-menu" role="dialog" aria-label="Priority controls"
                 hidden>
                 <span class="notes-priority-menu-item">
                   <small>Filter</small>
-                  <button id="notesPriorityFilterMode" type="button"></button>
+                  <button id="notesPriorityFilterMode" type="button" data-shortcut="1"></button>
                 </span>
                 <span class="notes-priority-menu-item">
                   <small>Number</small>
-                  <button id="notesPriorityFilterValue" type="button"></button>
+                  <button id="notesPriorityFilterValue" type="button" data-shortcut="2"></button>
                 </span>
                 <span class="notes-priority-menu-item">
                   <small>Order</small>
-                  <button id="notesPrioritySort" type="button"></button>
+                  <button id="notesPrioritySort" type="button" data-shortcut="3"></button>
                 </span>
                 <span class="notes-priority-menu-item">
                   <small>Group</small>
-                  <button id="notesPriorityGroup" type="button"></button>
+                  <button id="notesPriorityGroup" type="button" data-shortcut="4"></button>
                 </span>
                 <span class="notes-priority-menu-item">
                   <small>Reset</small>
-                  <button id="notesPriorityResetBtn" type="button"></button>
+                  <button id="notesPriorityResetBtn" type="button" data-shortcut="5"></button>
                 </span>
                 <span id="notesPriorityOptions" class="notes-priority-options" hidden></span>
               </span>
@@ -841,16 +836,28 @@
 
   <div id="graticuleDialog" popover class="graticule-popover" aria-label="Map grid options">
     <div class="graticule-control-row">
-      <button id="graticuleEnabledBtn" class="graticule-option-btn" type="button" aria-pressed="false">Grid</button>
-      <button id="graticuleReferenceBtn" class="graticule-option-btn" type="button" aria-pressed="true"
-        disabled>Circles</button>
-      <button id="graticuleLabelsBtn" class="graticule-option-btn" type="button" aria-pressed="true"
-        disabled>Labels</button>
-      <label class="graticule-number-field">Major
-        <select id="graticuleMajorInput"></select>
+      <span class="graticule-control-item">
+        <small>Grid</small>
+        <button id="graticuleEnabledBtn" class="graticule-option-btn" type="button" aria-pressed="false"
+          data-shortcut="1">Grid</button>
+      </span>
+      <span class="graticule-control-item">
+        <small>Circles</small>
+        <button id="graticuleReferenceBtn" class="graticule-option-btn" type="button" aria-pressed="true"
+          data-shortcut="2" disabled>Circles</button>
+      </span>
+      <span class="graticule-control-item">
+        <small>Labels</small>
+        <button id="graticuleLabelsBtn" class="graticule-option-btn" type="button" aria-pressed="true"
+          data-shortcut="3" disabled>Labels</button>
+      </span>
+      <label class="graticule-control-item graticule-number-field shortcut-target" data-shortcut="4">
+        <small>Major</small>
+        <select id="graticuleMajorInput" aria-label="Major grid spacing"></select>
       </label>
-      <label class="graticule-number-field">Minor
-        <select id="graticuleMinorInput"></select>
+      <label class="graticule-control-item graticule-number-field shortcut-target" data-shortcut="5">
+        <small>Minor</small>
+        <select id="graticuleMinorInput" aria-label="Minor grid spacing"></select>
       </label>
     </div>
   </div>
@@ -1233,7 +1240,8 @@
               views; the view shortcut also works inside an individual location.</li>
             <li>Use Detailed, Expanded, Condensed, or Text Only view. Detailed shows every populated note field and
               the full details text; click that text to edit it inline, then press Cmd/Ctrl+Enter or use the checkmark
-              to save. Text Only is copy-ready for Apple Notes.</li>
+              to save. Text Only is copy-ready for Apple Notes; its Smaller, Larger, and Copy buttons float over the
+              top-right of the text and stay pinned as it scrolls.</li>
             <li>Open a location to manage its levels and Visit Notes. The same four view buttons appear in the Visit
               Notes header, which stays pinned while its notes scroll. In Detailed or Expanded, select the note count
               to collapse or reveal that location's notes.</li>
@@ -1375,7 +1383,9 @@
             change inline, then press Cmd/Ctrl+Enter or use the checkmark to save. The live counter tracks the
             2,000-character limit. In the full note editor, Enter adds a new line and Cmd/Ctrl+Enter saves.</p>
           <p><b>What is Text Only view for?</b><br>It renders a clean plain-text version of the current Notes view that
-            is easy to select, copy, and paste into Apple Notes.</p>
+            is easy to select, copy, and paste into Apple Notes. The Smaller, Larger, and Copy buttons float over the
+            top-right of the text and stay pinned while it scrolls; Smaller and Larger resize the Text Only text only,
+            and you can also use the { and } keys. Your chosen text size is remembered between sessions.</p>
           <p><b>How does Smart Convert work?</b><br>Type a quick note, then Auto Convert fills recognized date, level,
             visit icon, where, what, and who fields. Weekdays next to dates are understood. Leftover text goes to
             Additional Details.</p>
@@ -1586,7 +1596,7 @@
               <div class="shortcut-row"><kbd>S</kbd><span>Save/Submit/Send: Add Note (location details);
                   Quick Add (Notes Panel); Send Payment (Tip Modal) <em>[notesPanelAddNoteBtn | quickAddNoteBtn |
                     tipOtherSendBtn]</em></span></div>
-              <div class="shortcut-row"><kbd>E</kbd><span>Rename the map <em>[renameBtn]</em></span></div>
+              <div class="shortcut-row"><kbd>~</kbd><span>Rename the map <em>[renameBtn]</em></span></div>
               <div class="shortcut-row"><kbd>M</kbd><span>Toggle the Map panel <em>[mapToggleBtn]</em></span></div>
               <div class="shortcut-row"><kbd>L</kbd><span>Toggle the Legend panel <em>[legendToggleBtn]</em></span>
               </div>
@@ -1598,8 +1608,6 @@
           <details class="shortcut-section">
             <summary>Map<span class="muted">(Panel :: Header)</span></summary>
             <div class="shortcut-list">
-              <div class="shortcut-row"><kbd>⇧⌃⌥~</kbd><span>Switch US ⇄ World Map <em>[mapLayerToggleBtn]</em></span>
-              </div>
               <div class="shortcut-row"><kbd>−</kbd><span>Zoom out (scroll mode only) <em>[mapZoomOutBtn]</em></span>
               </div>
               <div class="shortcut-row"><kbd>+</kbd><span>Zoom in (scroll mode only) <em>[mapZoomInBtn]</em></span>
@@ -1607,45 +1615,55 @@
               <div class="shortcut-row"><kbd>0</kbd><span>Reset map zoom to 100% <em>[mapZoomResetBtn]</em></span></div>
               <div class="shortcut-row"><kbd>Pinch</kbd><span>Touch map zoom; double-tap zooms in and two-finger tap
                   zooms out.</span></div>
-              <div class="shortcut-row"><kbd>9</kbd><span>Fit/Scroll Map Mode <em>[mapFitBtn]</em></span></div>
-              <div class="shortcut-row"><kbd>8</kbd><span>Show/Hide Location Pins <em>[mapLocationPinsBtn]</em></span>
+              <div class="shortcut-row"><kbd>:</kbd><span>Fit/Scroll Map Mode <em>[mapFitBtn]</em></span></div>
+              <div class="shortcut-row"><kbd>9</kbd><span>Open Map Grid settings <em>[mapGraticuleBtn]</em></span>
               </div>
-              <div class="shortcut-row"><kbd>7</kbd><span>Toggle Match Notes Filter <em>[mapMatchNotesBtn]</em></span>
+              <div class="shortcut-row"><kbd>8</kbd><span>Toggle Rangefinder Mode <em>[mapRingModeBtn]</em></span>
               </div>
-              <div class="shortcut-row"><kbd>6</kbd><span>Toggle Wayfinder Mode <em>[mapBucketListBtn]</em></span></div>
-              <div class="shortcut-row"><kbd>5</kbd><span>Toggle Rangefinder Mode <em>[mapRingModeBtn]</em></span>
+              <div class="shortcut-row"><kbd>7</kbd><span>Show/Hide Location Pins <em>[mapLocationPinsBtn]</em></span>
               </div>
-              <div class="shortcut-row"><kbd>4</kbd><span>Map Labels: Open Target Picker
+              <div class="shortcut-row"><kbd>6</kbd><span>Toggle Match Notes Filter <em>[mapMatchNotesBtn]</em></span>
+              </div>
+              <div class="shortcut-row"><kbd>'</kbd><span>Cycle the map / Waypoint Pack label target
                   <em>[labelsToggleLabel]</em></span></div>
-              <div class="shortcut-row"><kbd>3</kbd><span>Map Labels: None <em>[labelsNoneBtn]</em></span></div>
-              <div class="shortcut-row"><kbd>2</kbd><span>Map Labels: Abbr <em>[labelsAbbrBtn]</em></span></div>
-              <div class="shortcut-row"><kbd>1</kbd><span>Map Labels: Name <em>[labelsNameBtn]</em></span></div>
+              <div class="shortcut-row"><kbd>←</kbd><span>Cycle Map Labels: None → Abbr → Name</span></div>
+              <div class="shortcut-row"><kbd>|</kbd><span>Switch US &rlarr; World Map <em>[mapLayerToggleBtn]</em></span></div>
+              <div class="shortcut-row"><kbd>1–5</kbd><span>Grid pop-up: Grid, Circles, Labels, Major, Minor.</span></div>
+              <div class="shortcut-row"><kbd>E</kbd><span>Open Rangefinder Circle settings.</span></div>
+              <div class="shortcut-row"><kbd>1–4</kbd><span>Rangefinder Circle pop-up: Fill No/Yes, Clip No/Yes.</span></div>
+              <div class="shortcut-row"><kbd>T</kbd><span>Open Rangefinder Time settings.</span></div>
+              <div class="shortcut-row"><kbd>1–2</kbd><span>Rangefinder Time pop-up: Time and Speed.</span></div>
+              <div class="shortcut-row"><kbd>J K</kbd><span>Edit Rangefinder rings; Add a Rangefinder ring.</span></div>
+              <div class="shortcut-row"><kbd>U V</kbd><span>Switch Drive/Fly; switch mph/kph.</span></div>
             </div>
           </details>
 
           <details class="shortcut-section">
             <summary>Legend<span class="muted">(Panel :: Header)</span></summary>
             <div class="shortcut-list">
-              <div class="shortcut-row"><kbd>U</kbd><span>Open Legend Position Menu <em>[legendPositionBtn]</em></span>
+              <div class="shortcut-row"><kbd>W</kbd><span>Open Legend Position Menu <em>[legendPositionBtn]</em></span>
               </div>
-              <div class="shortcut-row"><kbd>V</kbd><span>Apply Auto Colors Palette <em>[smartColorsBtn]</em></span>
+              <div class="shortcut-row"><kbd>&gt;</kbd><span>Apply Auto Colors Palette <em>[smartColorsBtn]</em></span>
               </div>
-              <div class="shortcut-row"><kbd>W</kbd><span>Hide/Show Suggested Levels
+              <div class="shortcut-row"><kbd>X</kbd><span>Hide/Show Suggested Levels
                   <em>[suggestionsToggleBtn]</em></span></div>
-              <div class="shortcut-row"><kbd>X</kbd><span>Toggle Legend Edit Mode <em>[legendEditBtn]</em></span></div>
-              <div class="shortcut-row"><kbd>Y</kbd><span>Add a New Legend Level <em>[addLevelBtn]</em></span></div>
+              <div class="shortcut-row"><kbd>Y</kbd><span>Toggle Legend Edit Mode <em>[legendEditBtn]</em></span></div>
+              <div class="shortcut-row"><kbd>Z</kbd><span>Add a New Legend Level <em>[addLevelBtn]</em></span></div>
             </div>
           </details>
 
           <details class="shortcut-section">
             <summary>Notes<span class="muted">(Panel :: Overview)</span></summary>
             <div class="shortcut-list">
+              <div class="shortcut-row"><kbd>1–5</kbd><span>Priority pop-up: Filter, Number, Order, Group, Reset.</span></div>
               <div class="shortcut-row"><kbd>S</kbd><span>Quick Add Location Note <em>[quickAddNoteBtn]</em></span>
               </div>
               <div class="shortcut-row"><kbd>C</kbd><span>Copy Plain Notes Text <em>[copyNotesTextBtn]</em></span></div>
-              <div class="shortcut-row"><kbd>6</kbd><span>Toggle Wayfinder Mode
+              <div class="shortcut-row"><kbd>{ }</kbd><span>Text Only: shrink / grow the text size.</span></div>
+              <div class="shortcut-row"><kbd>F</kbd><span>Toggle Wayfinder Mode
                   <em>[notesActivateWayfinderBtn]</em></span>
               </div>
+              <div class="shortcut-row"><kbd>R</kbd><span>Open Priority controls <em>[notesPriorityBtn]</em></span></div>
               <div class="shortcut-row"><kbd>↓</kbd><span>Cycle Notes View: Detailed → Expanded → Condensed → Text
                   <em>[notesViewDetailedBtn]</em></span></div>
               <div class="shortcut-row"><kbd>→</kbd><span>Cycle Notes Sort: Alphabetical → Chronological
@@ -1779,18 +1797,18 @@
     </footer>
   </dialog>
 
-  <script src="assets/js/icons.js?v=4.7.6.10"></script>
+  <script src="assets/js/icons.js?v=4.8.0"></script>
   <script src="assets/js/maps.js"></script>
   <script src="assets/js/world-names.js?v=4.7.4"></script>
   <script src="assets/js/world-label-overrides.js?v=4.7.4"></script>
-  <script src="assets/js/timezones.js?v=4.7.6.10"></script>
-  <script src="assets/js/changelog.js?v=4.7.6.10"></script>
-  <script src="assets/js/roadmap.js?v=4.7.6.10"></script>
+  <script src="assets/js/timezones.js?v=4.8.0"></script>
+  <script src="assets/js/changelog.js?v=4.8.1"></script>
+  <script src="assets/js/roadmap.js?v=4.8.0"></script>
   <script>
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.7.6";
+    const APP_VERSION = "4.8.1";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -2693,10 +2711,15 @@
     let collapsedNoteLocations = new Set();
     let notesCopyTimer = 0;
     let notesCopyActive = false;
+    // Persisted font size (px) for the Text Only notes surface, stored in
+    // settings.notesTextOnlyFontPx; the +/- buttons adjust it and it rides
+    // re-renders via an inline style on the <pre>.
+    const NOTES_TEXT_FONT_MIN = 9;
+    const NOTES_TEXT_FONT_MAX = 22;
+    const NOTES_TEXT_FONT_DEFAULT = 12;
     let installReloadNeeded = false;
     let installPlatformOverride = "auto";
     let powerOverlayActive = false;
-    let mapLayerChordHeld = false;
     let mapLayerSwitchToken = 0;
     let developerGesture = [];
     let releaseShortcutPrimed = false;
@@ -2796,6 +2819,7 @@
           notesPrioritySort: "none",
           notesPriorityGroup: false,
           notesViewMode: "detailed",
+          notesTextOnlyFontPx: NOTES_TEXT_FONT_DEFAULT,
           notesCategoricalMode: true,
           notesHideExcludedOnly: true,
           notesDatePrecisionFilter: "all",
@@ -3195,6 +3219,10 @@
       if (legacyPrioritySort && next.settings.notesPrioritySort === "none") next.settings.notesPrioritySort = "desc";
       if (typeof next.settings.notesPriorityGroup !== "boolean") next.settings.notesPriorityGroup = false;
       if (!["detailed", "expanded", "compact", "text"].includes(next.settings.notesViewMode)) next.settings.notesViewMode = "detailed";
+      const savedTextOnlyFont = Math.round(Number(next.settings.notesTextOnlyFontPx));
+      next.settings.notesTextOnlyFontPx = Number.isFinite(savedTextOnlyFont)
+        ? Math.max(NOTES_TEXT_FONT_MIN, Math.min(NOTES_TEXT_FONT_MAX, savedTextOnlyFont))
+        : NOTES_TEXT_FONT_DEFAULT;
       if (typeof next.settings.notesCategoricalMode !== "boolean") next.settings.notesCategoricalMode = true;
       if (typeof next.settings.notesHideExcludedOnly !== "boolean") next.settings.notesHideExcludedOnly = true;
       if (!DATE_PRECISION_FILTER_MODES.includes(next.settings.notesDatePrecisionFilter)) next.settings.notesDatePrecisionFilter = "all";
@@ -4038,10 +4066,8 @@
         save();
       }
       const on = bucketListViewActive();
-      const mapBtn = $("#mapBucketListBtn");
       const notesBtn = $("#notesActivateWayfinderBtn");
       const pill = $("#mapBucketListPill");
-      if (mapBtn) mapBtn.setAttribute("aria-pressed", on ? "true" : "false");
       if (notesBtn) notesBtn.setAttribute("aria-pressed", on ? "true" : "false");
       if (pill) pill.classList.toggle("hidden", !on);
       syncLayerModePills();
@@ -4950,8 +4976,8 @@
             <div class="ring-departure-head">
               <b>Departure</b>
               <span class="ring-departure-modes" role="group" aria-label="Departure time mode">
-                <button type="button" data-ring-departure-mode="now" aria-pressed="${customMode ? "false" : "true"}" aria-label="Use current departure time" title="Now">${__CLOCK_BADGE_CHECKMARK}</button>
-                <button type="button" data-ring-departure-mode="custom" aria-pressed="${customMode ? "true" : "false"}" aria-label="Choose departure time" title="Choose">${__CLOCK_BADGE_QUESTIONMARK}</button>
+                <button type="button" data-ring-departure-mode="now" data-shortcut="N" aria-pressed="${customMode ? "false" : "true"}" aria-label="Use current departure time" title="Now">${__CLOCK_BADGE_CHECKMARK}</button>
+                <button type="button" data-ring-departure-mode="custom" data-shortcut="C" aria-pressed="${customMode ? "true" : "false"}" aria-label="Choose departure time" title="Choose">${__CLOCK_BADGE_QUESTIONMARK}</button>
               </span>
             </div>
             ${customMode ? `<input type="datetime-local" value="${escapeHtml(departureValue)}" data-ring-departure-local ${startZone ? "" : "disabled"} aria-label="Departure date and time in the Start time zone">` : ""}
@@ -5009,9 +5035,15 @@
       const pointName = slot => slot === 1 ? "Start" : "End";
       const slotHtml = (slot, anchor) => {
         const label = anchor?.label || `Pick ${pointName(slot)}`;
+        const note = anchor ? ringAnchorNote(anchor) : null;
+        const where = String(note?.where || "").trim();
+        const city = String(note?.city || "").trim();
+        const location = where && city
+          ? `<span class="ring-anchor-location"><span class="ring-anchor-where">${escapeHtml(where)}</span><span class="ring-anchor-separator">, </span><span class="ring-anchor-city">${escapeHtml(city)}</span></span>`
+          : `<span class="ring-anchor-single">${escapeHtml(label)}</span>`;
         const classes = ["ring-anchor-slot", anchor ? "is-filled" : "is-empty", armed === slot ? "is-armed" : ""].filter(Boolean).join(" ");
         const title = armed === slot ? `Cancel ${pointName(slot)} pick` : `Pick Rangefinder ${pointName(slot)}`;
-        return `<button class="${classes}" type="button" data-ring-slot="${slot}" title="${escapeHtml(title)}">${escapeHtml(label)}</button>`;
+        return `<button class="${classes}" type="button" data-ring-slot="${slot}" title="${escapeHtml(title)}" aria-label="${escapeHtml(label)}">${location}</button>`;
       };
       const ringChips = distances.map((miles, index) => {
         const label = ringDistanceDisplayText(miles, unit);
@@ -5036,36 +5068,39 @@
       const headerActions = `
         <div class="ring-title-actions" aria-label="Rangefinder settings">
           <span class="ring-style-picker ${fillOn ? "is-fill-on" : ""} ${clipOn ? "is-clip-on" : ""}">
-            <button class="ring-header-btn ring-style-btn" type="button" data-ring-style-menu aria-haspopup="true" aria-expanded="${ringStyleMenuOpen ? "true" : "false"}" aria-label="Ring style: ${ringStyleState}" title="Ring style: ${ringStyleState}">${ringStyleIcon}</button>
+            <button class="ring-header-btn ring-style-btn" type="button" data-ring-style-menu data-shortcut="E" aria-haspopup="true" aria-expanded="${ringStyleMenuOpen ? "true" : "false"}" aria-label="Ring style: ${ringStyleState}" title="Ring style: ${ringStyleState}">${ringStyleIcon}</button>
             <span class="ring-style-menu ${ringStyleMenuOpen ? "" : "hidden"}" role="menu" aria-label="Rangefinder ring style">
-              <span class="ring-style-menu-row">
-                <button type="button" role="menuitemradio" data-ring-style-menu-option="fill" data-ring-style-menu-value="false" aria-pressed="${fillOn ? "false" : "true"}" aria-label="No fill" title="No fill">${__RING}<span>No Fill</span></button>
-                <button type="button" role="menuitemradio" data-ring-style-menu-option="fill" data-ring-style-menu-value="true" aria-pressed="${fillOn ? "true" : "false"}" aria-label="Fill" title="Fill">${__MOONPHASE_FULL_MOON}<span>Fill</span></button>
-              </span>
-              <span class="ring-style-menu-row">
-                <button type="button" role="menuitemradio" data-ring-style-menu-option="clip" data-ring-style-menu-value="false" aria-pressed="${clipOn ? "false" : "true"}" aria-label="No clip" title="No clip">${__CIRCLE}<span>No Clip</span></button>
-                <button type="button" role="menuitemradio" data-ring-style-menu-option="clip" data-ring-style-menu-value="true" aria-pressed="${clipOn ? "true" : "false"}" aria-label="Clipped" title="Clipped">${__GAUGE_OPEN}<span>Clipped</span></button>
+              <span class="ring-style-matrix">
+                <span aria-hidden="true"></span><small>No</small><small>Yes</small>
+                <small>Fill</small>
+                <button type="button" role="menuitemradio" data-ring-style-menu-option="fill" data-ring-style-menu-value="false" data-shortcut="1" aria-pressed="${fillOn ? "false" : "true"}" aria-label="No fill" title="No fill">${__RING}</button>
+                <button type="button" role="menuitemradio" data-ring-style-menu-option="fill" data-ring-style-menu-value="true" data-shortcut="2" aria-pressed="${fillOn ? "true" : "false"}" aria-label="Fill" title="Fill">${__MOONPHASE_FULL_MOON}</button>
+                <small>Clip</small>
+                <button type="button" role="menuitemradio" data-ring-style-menu-option="clip" data-ring-style-menu-value="false" data-shortcut="3" aria-pressed="${clipOn ? "false" : "true"}" aria-label="No clip" title="No clip">${__CIRCLE}</button>
+                <button type="button" role="menuitemradio" data-ring-style-menu-option="clip" data-ring-style-menu-value="true" data-shortcut="4" aria-pressed="${clipOn ? "true" : "false"}" aria-label="Clipped" title="Clipped">${__GAUGE_OPEN}</button>
               </span>
             </span>
           </span>
-          <button class="ring-header-btn" type="button" data-ring-travel-mode="${nextTravelMode}" aria-pressed="${planeOn ? "true" : "false"}" aria-label="${travelLabel}; switch to ${planeOn ? "Drive rings" : "Plane rings"}" title="${travelLabel} at ${ringSpeedLabel()}">${travelIcon}</button>
-          <button class="ring-header-btn" type="button" data-ring-unit="${nextUnit}" aria-pressed="true" aria-label="Using ${unit === "mi" ? "miles and mph" : "kilometers and kph"}; switch to ${nextUnit === "mi" ? "miles and mph" : "kilometers and kph"}" title="Switch to ${nextUnit === "mi" ? "mph" : "kph"}">${speedUnitIcon}</button>
+          <button class="ring-header-btn" type="button" data-ring-travel-mode="${nextTravelMode}" data-shortcut="U" aria-pressed="${planeOn ? "true" : "false"}" aria-label="${travelLabel}; switch to ${planeOn ? "Drive rings" : "Plane rings"}" title="${travelLabel} at ${ringSpeedLabel()}">${travelIcon}</button>
+          <button class="ring-header-btn" type="button" data-ring-unit="${nextUnit}" data-shortcut="V" aria-pressed="true" aria-label="Using ${unit === "mi" ? "miles and mph" : "kilometers and kph"}; switch to ${nextUnit === "mi" ? "miles and mph" : "kilometers and kph"}" title="Switch to ${nextUnit === "mi" ? "mph" : "kph"}">${speedUnitIcon}</button>
           <span class="ring-time-picker ${timeOn ? "is-time-on" : ""}">
-            <button class="ring-header-btn ring-time-btn" type="button" data-ring-time-menu aria-haspopup="true" aria-expanded="${ringTimeMenuOpen ? "true" : "false"}" aria-label="Time and average speed settings" title="${timeOn ? `Time on · ${travelWord} ${speedDisplay} ${speedUnitLabel}` : "Time estimates off"}">${timeOn ? __STOPWATCH_FILL : __STOPWATCH}</button>
+            <button class="ring-header-btn ring-time-btn" type="button" data-ring-time-menu data-shortcut="T" aria-haspopup="true" aria-expanded="${ringTimeMenuOpen ? "true" : "false"}" aria-label="Time and average speed settings" title="${timeOn ? `Time on · ${travelWord} ${speedDisplay} ${speedUnitLabel}` : "Time estimates off"}">${timeOn ? __STOPWATCH_FILL : __STOPWATCH}</button>
             <span class="ring-time-menu ${ringTimeMenuOpen ? "" : "hidden"}" role="menu" aria-label="Rangefinder time and speed">
-              <button type="button" role="menuitemcheckbox" class="ring-time-toggle" data-ring-setting="time" aria-checked="${timeOn ? "true" : "false"}" aria-label="${timeOn ? "Hide estimated time" : "Show estimated time"}">${timeOn ? __STOPWATCH_FILL : __STOPWATCH}<span>Show time estimates</span></button>
-              <span class="ring-speed-control ${timeOn ? "" : "is-disabled"}">
-                <span class="ring-speed-label">${travelWord} avg speed</span>
-                <input type="range" id="ringSpeedSlider" min="${speedMinDisplay}" max="${speedMaxDisplay}" step="1" value="${speedDisplay}" data-ring-speed-slider aria-label="${travelWord} average speed in ${speedUnitLabel}" ${timeOn ? "" : "disabled"}>
-                <span class="ring-speed-value">
-                  <input type="number" id="ringSpeedNumber" min="${speedMinDisplay}" max="${speedMaxDisplay}" step="1" value="${speedDisplay}" data-ring-speed-input aria-label="${travelWord} average speed in ${speedUnitLabel}" ${timeOn ? "" : "disabled"}>
-                  <span class="ring-speed-unit">${speedUnitLabel}</span>
-                </span>
+              <span class="ring-time-control">
+                <small>Time</small>
+                <button type="button" role="menuitemcheckbox" class="ring-time-toggle" data-ring-setting="time" data-shortcut="1" aria-checked="${timeOn ? "true" : "false"}" aria-label="${timeOn ? "Hide estimated time" : "Show estimated time"}">${timeOn ? __STOPWATCH_FILL : __STOPWATCH}</button>
               </span>
+              <label class="ring-time-control ring-speed-control shortcut-target ${timeOn ? "" : "is-disabled"}" data-shortcut="2">
+                <small>Speed</small>
+                <span class="ring-speed-square">
+                  <input type="number" id="ringSpeedNumber" min="${speedMinDisplay}" max="${speedMaxDisplay}" step="1" value="${speedDisplay}" data-ring-speed-input data-shortcut="2" aria-label="${travelWord} average speed in ${speedUnitLabel}" ${timeOn ? "" : "disabled"}>
+                  <span class="ring-speed-unit" aria-hidden="true">${speedUnitLabel}</span>
+                </span>
+              </label>
             </span>
           </span>
-          <button class="ring-header-btn" type="button" data-ring-setting="edit" aria-pressed="${editOn ? "true" : "false"}" aria-label="${editOn ? "Hide ring edit controls" : "Edit ring distances"}" title="${editOn ? "Hide ring edit controls" : "Edit ring distances"}">${__PENCIL}</button>
-          <button class="ring-header-btn ring-add-btn" type="button" data-ring-add style="${addRingStyle}" aria-label="${canAddRing ? "Add ring" : "Maximum rings reached"}" title="${canAddRing ? "Add ring" : "8/8 rings"}" ${canAddRing ? "" : "disabled"}>${__PLUS_APP_FILL}</button>
+          <button class="ring-header-btn" type="button" data-ring-setting="edit" data-shortcut="J" aria-pressed="${editOn ? "true" : "false"}" aria-label="${editOn ? "Hide ring edit controls" : "Edit ring distances"}" title="${editOn ? "Hide ring edit controls" : "Edit ring distances"}">${__PENCIL}</button>
+          <button class="ring-header-btn ring-add-btn" type="button" data-ring-add data-shortcut="K" style="${addRingStyle}" aria-label="${canAddRing ? "Add ring" : "Maximum rings reached"}" title="${canAddRing ? "Add ring" : "8/8 rings"}" ${canAddRing ? "" : "disabled"}>${__PLUS_APP_FILL}</button>
         </div>`;
       const dismissed = new Set(state.dismissedHints || []);
       const hint = armed
@@ -5104,7 +5139,37 @@
         ${disclaimer}
       `;
       enhanceHints();
+      fitRingAnchorLabels(panel);
+      if (ringStyleMenuOpen || ringTimeMenuOpen) requestAnimationFrame(positionAnchoredControlPopups);
       scheduleRingClockRefresh();
+    }
+
+    function fitRingAnchorLabels(root = document) {
+      root.querySelectorAll?.(".ring-anchor-location").forEach(location => {
+        location.classList.remove("is-wrapped");
+        location.style.removeProperty("font-size");
+        const lines = [...location.querySelectorAll(".ring-anchor-where, .ring-anchor-city")];
+        lines.forEach(line => {
+          line.style.removeProperty("width");
+          line.style.removeProperty("transform");
+          line.style.removeProperty("transform-origin");
+        });
+        if (location.scrollWidth <= location.clientWidth + 1) return;
+        location.classList.add("is-wrapped");
+        let fontSize = 11;
+        location.style.fontSize = `${fontSize}px`;
+        while (fontSize > 5.5 && lines.some(line => line.scrollWidth > line.clientWidth + 1)) {
+          fontSize -= .5;
+          location.style.fontSize = `${fontSize}px`;
+        }
+        lines.forEach(line => {
+          if (line.scrollWidth <= line.clientWidth + 1) return;
+          const scale = Math.max(.05, Math.min(1, line.clientWidth / line.scrollWidth));
+          line.style.width = `${100 / scale}%`;
+          line.style.transform = `scaleX(${scale})`;
+          line.style.transformOrigin = "left center";
+        });
+      });
     }
 
     function activeLayer() {
@@ -6240,7 +6305,6 @@
       setButtonLabel("#mapMatchNotesBtn", matchOn ? __LINE_3_HORIZONTAL_DECREASE_CIRCLE : __LINE_3_HORIZONTAL_CIRCLE, matchOn ? "Filtered" : "Match Notes", matchOn ? "Stop applying note filters to the map" : "Apply note filters to the map", matchOn ? "Stop applying note filters to the map" : "Apply note filters to the map");
       $("#mapMatchNotesBtn").setAttribute("aria-pressed", matchOn ? "true" : "false");
       const bucketShortcutHint = "Toggle Wayfinder mode";
-      setButtonLabel("#mapBucketListBtn", __BACKPACK, "Wayfinder", "Toggle Wayfinder mode", bucketShortcutHint);
       setButtonLabel("#notesActivateWayfinderBtn", __BACKPACK, "Wayfinder", "Toggle Wayfinder mode", bucketShortcutHint);
       setButtonLabel("#notesAddWaypointsBtn", __CIRCLE_BADGE_PLUS, "Packs", "Open Waypoint Packs", "Open Waypoint Packs");
       setButtonLabel("#mapRingModeBtn", __TARGET, "Rangefinder", "Toggle Ring Mode", "Toggle Rangefinder Mode");
@@ -6353,7 +6417,7 @@
       $("#legendEditBtn").setAttribute("aria-pressed", String(legendEditMode));
       $("#mapFitBtn").setAttribute("aria-pressed", String(mapFitMode));
       syncMapZoomReadout();
-      $("#mapFitBtn").title = shortcutsActive() ? `${fitTitle} (F)` : fitTitle;
+      $("#mapFitBtn").title = shortcutsActive() ? `${fitTitle} (:)` : fitTitle;
     }
 
     function cssPx(value) {
@@ -6368,8 +6432,28 @@
       return legendPosition().startsWith("right");
     }
 
+    function sideColumnHorizontalShare() {
+      if (!DESKTOP_LAYOUT_QUERY.matches || !sideColumnOpen()) return 0;
+      const metrics = mainLayoutMetrics();
+      const side = $("#sidePanel");
+      const measured = metrics && side?.isConnected ? side.getBoundingClientRect().width / metrics.available : 0;
+      if (Number.isFinite(measured) && measured > 0) return measured;
+      const mapShare = Number(state.settings.mapSplitRatio);
+      return 1 - (Number.isFinite(mapShare) ? mapShare : .66);
+    }
+
     function ringPanelLayout() {
-      return DESKTOP_LAYOUT_QUERY.matches && !legendInSideColumn() ? "map" : "stack";
+      if (!DESKTOP_LAYOUT_QUERY.matches) return "stack";
+      if (!legendInSideColumn()) return "map";
+      return sideColumnHorizontalShare() >= .4 ? "map" : "side-stack";
+    }
+
+    function syncRingPanelLayout() {
+      const group = $("#legendPanelGroup");
+      if (!group) return;
+      group.dataset.ringLayout = ringPanelLayout();
+      syncRingPanelSplit();
+      fitRingAnchorLabels(group);
     }
 
     function clampRingPanelSplitRatio(value) {
@@ -6417,11 +6501,12 @@
     function renderLegendPositionMenu() {
       const menu = $("#legendPositionMenu");
       if (!menu) return;
-      menu.innerHTML = LEGEND_POSITION_MENU_ORDER.map(position => {
+      menu.innerHTML = LEGEND_POSITION_MENU_ORDER.map((position, index) => {
         const meta = LEGEND_POSITION_META[position];
-        return `<button type="button" role="menuitemradio" aria-pressed="${position === legendPosition()}" data-legend-position-option="${position}" aria-label="${meta.label}" title="${meta.label}">${meta.icon}</button>`;
+        return `<button type="button" role="menuitemradio" aria-pressed="${position === legendPosition()}" data-legend-position-option="${position}" data-shortcut="${index + 1}" aria-label="${meta.label}" title="${meta.label}">${meta.icon}</button>`;
       }).join("");
       menu.classList.toggle("hidden", !legendPositionMenuOpen || !legendPositionControlAvailable());
+      if (!menu.classList.contains("hidden")) requestAnimationFrame(positionAnchoredControlPopups);
       $$("[data-legend-position-option]", menu).forEach(button => {
         button.addEventListener("click", event => {
           event.stopPropagation();
@@ -6532,6 +6617,7 @@
       state.settings.mapSplitRatio = Math.max(.34, Math.min(.78, mapColumn / metrics.available));
       metrics.main.style.setProperty("--map-column-width", `${Math.floor(mapColumn)}px`);
       syncResizePercentage("#mainResizeHandle", state.settings.mapSplitRatio);
+      syncRingPanelLayout();
       renderDeveloperJson();
       renderDeviceDetectionReadout();
       if (persist) save();
@@ -6547,6 +6633,7 @@
       state.settings.mapSplitRatio = Math.max(.34, Math.min(.78, current + delta));
       save();
       syncMainLayout();
+      syncRingPanelLayout();
     }
 
     function syncMainLayout() {
@@ -6571,6 +6658,7 @@
       const sideOpen = sideColumnOpen();
       if (!mapPanelOpen || !sideOpen) {
         main.style.removeProperty("--map-column-width");
+        syncRingPanelLayout();
         return;
       }
       const savedRatio = Number(state.settings.mapSplitRatio);
@@ -6580,6 +6668,7 @@
       const mapColumn = clampMapColumn(targetColumn, metrics);
       main.style.setProperty("--map-column-width", `${Math.floor(mapColumn)}px`);
       syncResizePercentage("#mainResizeHandle", mapColumn / metrics.available);
+      syncRingPanelLayout();
     }
 
     function syncScrollableMapViewportFrame() {
@@ -9289,9 +9378,17 @@
       const gridOn = s.enabled === true;
       const major = Math.max(5, Math.min(90, Math.round(s.major / 5) * 5));
       const minor = graticuleSnapMinor(s.minor, major);
-      setButtonLabel("#graticuleEnabledBtn", GRATICULE_GRID_ICON, "Grid", "Toggle grid lines");
-      setButtonLabel("#graticuleReferenceBtn", GRATICULE_CIRCLES_ICON, "Circles", "Toggle tropic and polar circles");
-      setButtonLabel("#graticuleLabelsBtn", GRATICULE_LABELS_ICON, "Labels", "Toggle grid labels");
+      [
+        ["#graticuleEnabledBtn", GRATICULE_GRID_ICON, "Toggle grid lines"],
+        ["#graticuleReferenceBtn", GRATICULE_CIRCLES_ICON, "Toggle tropic and polar circles"],
+        ["#graticuleLabelsBtn", GRATICULE_LABELS_ICON, "Toggle grid labels"]
+      ].forEach(([selector, icon, label]) => {
+        const button = $(selector);
+        if (!button) return;
+        button.innerHTML = icon;
+        button.setAttribute("aria-label", label);
+        button.title = label;
+      });
       setGraticuleButtonState("#graticuleEnabledBtn", s.enabled === true);
       setGraticuleButtonState("#graticuleReferenceBtn", s.references !== false);
       setGraticuleButtonState("#graticuleLabelsBtn", s.labels !== false);
@@ -10019,16 +10116,53 @@
       const anchorRect = anchor.getBoundingClientRect();
       const menuRect = menu.getBoundingClientRect();
       const margin = 8;
-      const width = Math.min(menuRect.width || menu.offsetWidth || 280, window.innerWidth - margin * 2);
+      const width = Math.min(Math.max(menuRect.width, menu.scrollWidth, menu.offsetWidth) || 280, window.innerWidth - margin * 2);
       const maxLeft = Math.max(margin, window.innerWidth - width - margin);
       const preferredLeft = anchorRect.right - width;
       const left = Math.min(Math.max(margin, preferredLeft), maxLeft);
       const below = anchorRect.bottom + 4;
-      const maxTop = Math.max(margin, window.innerHeight - Math.min(menuRect.height || menu.offsetHeight || 240, window.innerHeight - margin * 2) - margin);
-      const top = Math.min(Math.max(margin, below), maxTop);
+      const height = Math.min(Math.max(menuRect.height, menu.scrollHeight, menu.offsetHeight) || 240, window.innerHeight - margin * 2);
+      const above = anchorRect.top - height - 4;
+      const maxTop = Math.max(margin, window.innerHeight - height - margin);
+      const preferredTop = below + height <= window.innerHeight - margin ? below : above >= margin ? above : below;
+      const top = Math.min(Math.max(margin, preferredTop), maxTop);
       menu.style.width = `${width}px`;
+      menu.style.maxHeight = `${Math.max(120, window.innerHeight - margin * 2)}px`;
       menu.style.left = `${left}px`;
       menu.style.top = `${top}px`;
+      menu.style.right = "auto";
+      menu.style.bottom = "auto";
+    }
+
+    function visibleControlAnchor(selector) {
+      return $$(selector).find(anchor => {
+        const rect = anchor.getBoundingClientRect();
+        return rect.width > 0 && rect.height > 0 && getComputedStyle(anchor).visibility !== "hidden";
+      }) || $(selector);
+    }
+
+    function positionAnchoredControlPopups() {
+      const pairs = [
+        ["#legendPositionMenu:not(.hidden)", "#legendPositionBtn"],
+        [".ring-style-menu:not(.hidden)", "[data-ring-style-menu]"],
+        [".ring-time-menu:not(.hidden)", "[data-ring-time-menu]"],
+        [".map-waypoint-labels-menu:not([hidden])", "[data-map-waypoint-menu]"],
+        ["#basecampLinkPopover:not([hidden])", "[data-basecamp-url-link]"],
+      ];
+      pairs.forEach(([menuSelector, anchorSelector]) => {
+        const menu = $(menuSelector);
+        const anchor = visibleControlAnchor(anchorSelector);
+        if (menu && anchor) positionFloatingMenu(menu, anchor);
+      });
+      $$("[data-basecamp-submenu-panel]:not([hidden])").forEach(menu => {
+        const name = menu.dataset.basecampSubmenuPanel;
+        positionFloatingMenu(menu, $(`[data-basecamp-submenu-toggle="${name}"]`));
+      });
+      $$(".basecamp-icon-picker:not([hidden])").forEach(menu => {
+        const wrap = menu.closest(".basecamp-toolbar-link-wrap");
+        positionFloatingMenu(menu, wrap?.querySelector("[data-basecamp-icon-picker]"));
+      });
+      positionWaypointFloatingMenus();
     }
 
     function positionWaypointFloatingMenus() {
@@ -10161,8 +10295,8 @@
       const host = $("#mapWaypointPackLabels");
       if (!host) return;
       const added = activeLayerId === "us" ? addedSuggestedSets() : [];
-      host.classList.toggle("hidden", !added.length);
-      $("#labelsToggleLabel")?.classList.toggle("has-target-picker", Boolean(added.length));
+      host.classList.remove("hidden");
+      $("#labelsToggleLabel")?.classList.add("has-target-picker");
       const labelIcon = $("[data-map-label-target-icon]");
       const selected = activeMapLabelTargetSet();
       if (labelIcon) {
@@ -10171,13 +10305,8 @@
         $("#labelsToggleLabel").title = selected ? `${selected.name} Label Type` : "Map Label Type";
       }
       syncMapLabelButtons(selected ? suggestedSetLabelMode(selected.id) : state.settings.mapLabels || "none");
-      if (!added.length) {
-        host.innerHTML = "";
-        mapWaypointPackMenuOpen = false;
-        return;
-      }
       host.innerHTML = `
-        <button class="map-waypoint-labels-toggle" type="button" data-map-waypoint-menu data-shortcut="4"
+        <button class="map-waypoint-labels-toggle" type="button" data-map-waypoint-menu
           aria-expanded="${mapWaypointPackMenuOpen ? "true" : "false"}" aria-label="Choose Location Type"
           title="Choose Location Type">
           ${__CHEVRON_DOWN_CIRCLE}
@@ -10185,11 +10314,13 @@
         <div class="map-waypoint-labels-menu" ${mapWaypointPackMenuOpen ? "" : "hidden"}>
           <div class="map-waypoint-pack-grid" aria-label="Map label targets">
             <button class="map-waypoint-pack-select" type="button" data-map-label-target=""
+              data-shortcut="0"
               aria-pressed="${selected ? "false" : "true"}" aria-label="${escapeHtml(activeLayer().heading)}" title="${escapeHtml(activeLayer().heading)}">
               ${activeLayer().icon}
             </button>
-            ${added.map(set => `
+            ${added.map((set, index) => `
               <button class="map-waypoint-pack-select" type="button" data-map-waypoint-pack="${escapeHtml(set.id)}"
+                ${index < 9 ? `data-shortcut="${index + 1}"` : ""}
                 aria-pressed="${selected?.id === set.id ? "true" : "false"}" aria-label="${escapeHtml(set.name)}" title="${escapeHtml(set.name)}">
                 ${visitTypeIcon(suggestedSetIconId(set.id))}
               </button>
@@ -10197,6 +10328,7 @@
           </div>
         </div>
       `;
+      if (mapWaypointPackMenuOpen) requestAnimationFrame(positionAnchoredControlPopups);
     }
 
     function mapLabelTargetButtons() {
@@ -10219,9 +10351,7 @@
 
     function openMapLabelTargetPicker() {
       // Keyboard entry to the Map Labels target chooser (states/territories
-      // and any linked waypoint pack). When no packs are linked the chevron
-      // does not render — fall back to cycling label modes so digits 1–4 still
-      // do something predictable.
+      // and any linked waypoint pack).
       const toggle = $("[data-map-waypoint-menu]");
       if (!toggle) return;
       if (!mapWaypointPackMenuOpen) {
@@ -10229,6 +10359,16 @@
         renderMapWaypointPackLabelsControl();
       }
       requestAnimationFrame(() => focusActiveMapLabelTarget());
+    }
+
+    function toggleMapLabelTargetPicker() {
+      if (mapWaypointPackMenuOpen) {
+        mapWaypointPackMenuOpen = false;
+        renderMapWaypointPackLabelsControl();
+        $("[data-map-waypoint-menu]")?.focus();
+        return;
+      }
+      openMapLabelTargetPicker();
     }
 
     function setMapLabelTargetFromButton(btn) {
@@ -10254,6 +10394,15 @@
       const idx = modes.indexOf(current);
       const next = modes[(idx + direction + modes.length) % modes.length];
       setActiveMapLabelMode(next);
+    }
+
+    function cycleMapLabelTarget(direction = 1) {
+      if (activeLayerId !== "us") return;
+      const targets = ["", ...addedSuggestedSets().map(set => set.id)];
+      if (targets.length < 2) return;
+      const current = activeMapLabelTargetSet()?.id || "";
+      const index = Math.max(0, targets.indexOf(current));
+      setMapLabelTarget(targets[(index + direction + targets.length) % targets.length]);
     }
 
     function navigateMapLabelTargetPicker(event) {
@@ -12281,8 +12430,8 @@
       const options = notesPriorityOptionsFor(notesPriorityOptionPanel);
       panel.hidden = !options.length;
       panel.setAttribute("aria-label", notesPriorityOptionPanel ? `Priority ${notesPriorityOptionPanel} options` : "");
-      panel.innerHTML = options.map(option =>
-        `<button class="notes-priority-option" type="button" data-priority-option-panel="${escapeHtml(notesPriorityOptionPanel)}" data-priority-option-value="${escapeHtml(option.value)}" aria-pressed="${notesPriorityOptionSelected(notesPriorityOptionPanel, option.value)}" aria-label="${escapeHtml(option.label)}" title="${escapeHtml(option.label)}"${option.color ? ` style="--priority-color:${escapeHtml(option.color)}"` : ""}>${option.icon}</button>`
+      panel.innerHTML = options.map((option, index) =>
+        `<button class="notes-priority-option" type="button" data-priority-option-panel="${escapeHtml(notesPriorityOptionPanel)}" data-priority-option-value="${escapeHtml(option.value)}" data-shortcut="${notesPriorityOptionPanel === "number" ? option.value || "0" : index + 1}" aria-pressed="${notesPriorityOptionSelected(notesPriorityOptionPanel, option.value)}" aria-label="${escapeHtml(option.label)}" title="${escapeHtml(option.label)}"${option.color ? ` style="--priority-color:${escapeHtml(option.color)}"` : ""}>${option.icon}</button>`
       ).join("");
     }
 
@@ -12828,7 +12977,7 @@
       $("#notesViewExpandedBtn").setAttribute("aria-pressed", notesViewMode === "expanded");
       $("#notesViewCompactBtn").setAttribute("aria-pressed", notesViewMode === "compact");
       $("#notesViewTextBtn").setAttribute("aria-pressed", notesViewMode === "text");
-      $("#copyNotesTextBtn").classList.toggle("is-copied", notesCopyActive);
+      $("#copyNotesTextBtn")?.classList.toggle("is-copied", notesCopyActive);
       $("#notesStateSearch").value = notesSearchQuery;
       renderNotesIconFilters();
     }
@@ -13462,6 +13611,34 @@
       }));
     }
 
+    function notesTextOnlyHtml(text, preId = "") {
+      const fontPx = state.settings.notesTextOnlyFontPx;
+      const atMin = fontPx <= NOTES_TEXT_FONT_MIN;
+      const atMax = fontPx >= NOTES_TEXT_FONT_MAX;
+      return `<div class="notes-text-only-wrap">
+        <div class="notes-text-only-controls">
+          <button class="notes-copy-btn notes-font-btn" type="button" data-notes-font="dec" data-shortcut="{" aria-label="Decrease text size" title="Decrease text size"${atMin ? " disabled" : ""}>${buttonMarkup(__TEXT_BADGE_MINUS, "Smaller")}</button>
+          <button class="notes-copy-btn notes-font-btn" type="button" data-notes-font="inc" data-shortcut="}" aria-label="Increase text size" title="Increase text size"${atMax ? " disabled" : ""}>${buttonMarkup(__TEXT_BADGE_PLUS, "Larger")}</button>
+          <button id="copyNotesTextBtn" class="notes-copy-btn" type="button" data-shortcut="C" aria-label="${notesCopyActive ? "Notes copied" : "Copy notes text"}">${buttonMarkup(notesCopyActive ? __CHECKMARK : __DOCUMENT_ON_DOCUMENT, notesCopyActive ? "Copied" : "Copy")}</button>
+        </div>
+        <pre${preId ? ` id="${preId}"` : ""} class="notes-text-only" tabindex="0" style="font-size:${fontPx}px">${escapeHtml(text)}</pre>
+      </div>`;
+    }
+
+    function adjustNotesTextOnlyFont(delta) {
+      const current = state.settings.notesTextOnlyFontPx;
+      const next = Math.max(NOTES_TEXT_FONT_MIN, Math.min(NOTES_TEXT_FONT_MAX, current + delta));
+      if (next === current) return;
+      state.settings.notesTextOnlyFontPx = next;
+      save();
+      const pre = $(".notes-text-only");
+      if (pre) pre.style.fontSize = `${next}px`;
+      const dec = $('[data-notes-font="dec"]');
+      const inc = $('[data-notes-font="inc"]');
+      if (dec) dec.disabled = next <= NOTES_TEXT_FONT_MIN;
+      if (inc) inc.disabled = next >= NOTES_TEXT_FONT_MAX;
+    }
+
     function renderSelectedNoteList(notes) {
       if (!notes.length) return `<div class="empty">No visit notes yet.</div>`;
       if (notesViewMode === "text") {
@@ -13469,9 +13646,9 @@
           const groupedText = groupedPriorityNotes(notes)
             .map(group => `${priorityGroupLabel(group.priority)}\n${group.notes.map(textOnlyNoteLine).join("\n")}`)
             .join("\n\n");
-          return `<pre class="notes-text-only" tabindex="0">${escapeHtml(groupedText)}</pre>`;
+          return notesTextOnlyHtml(groupedText);
         }
-        return `<pre class="notes-text-only" tabindex="0">${escapeHtml(notesTextForAbbr(notesPanelState, { ignoreFilters: true }))}</pre>`;
+        return notesTextOnlyHtml(notesTextForAbbr(notesPanelState, { ignoreFilters: true }));
       }
       if (notesViewMode === "detailed") {
         return renderSelectedPriorityGroups(notes, items =>
@@ -13667,7 +13844,7 @@
                     : noteLevelFilters.size ? "No states match the selected legend filters." : "No marked states yet.";
         $("#notesPanelContent").innerHTML = `<div class="empty">${emptyText}</div>`;
       } else if (notesViewMode === "text") {
-        $("#notesPanelContent").innerHTML = `<pre id="notesTextOnly" class="notes-text-only" tabindex="0">${escapeHtml(buildNotesTextOnly(marked))}</pre>`;
+        $("#notesPanelContent").innerHTML = notesTextOnlyHtml(buildNotesTextOnly(marked), "notesTextOnly");
       } else if (notesViewMode === "compact") {
         const renderRows = (abbrs, options = {}) => abbrs.map(abbr => compactStateRow(abbr, options)).join("");
         $("#notesPanelContent").innerHTML = renderGroupedStateItems(marked, renderRows);
@@ -16313,6 +16490,7 @@
       if (workspace) {
         workspace.dataset.basecampMobileView = activeBasecampPad() ? basecampMobileView : "list";
       }
+      requestAnimationFrame(positionAnchoredControlPopups);
     }
 
     function basecampInPanelMode() {
@@ -17110,6 +17288,7 @@
       if (open) {
         panel.hidden = false;
         toggle.setAttribute("aria-expanded", "true");
+        requestAnimationFrame(positionAnchoredControlPopups);
       }
     }
 
@@ -17413,6 +17592,7 @@
       input.value = start?.closest?.("a")?.getAttribute("href") || "";
       popover.hidden = false;
       requestAnimationFrame(() => {
+        positionAnchoredControlPopups();
         input.focus();
         input.select();
       });
@@ -18360,31 +18540,11 @@
       if (event.code?.startsWith("Key")) return event.code.slice(3).toLowerCase();
       if (event.code?.startsWith("Digit")) return event.code.slice(5);
       if (event.code === "Backquote") return event.shiftKey ? "~" : "`";
+      if (event.code === "Quote") return event.ctrlKey && event.altKey ? "'" : event.shiftKey ? "\"" : "'";
+      if (event.code === "Semicolon") return event.shiftKey ? ":" : ";";
       if (event.code === "Minus" || event.code === "NumpadSubtract") return "-";
       if (event.code === "Equal" || event.code === "NumpadAdd") return event.shiftKey || event.code === "NumpadAdd" ? "+" : "=";
       return event.key.toLowerCase();
-    }
-
-    function handleMapLayerChord(event) {
-      const backquote = event.code === "Backquote"
-        || event.key === "~"
-        || event.key === "`"
-        || event.key === "Dead"
-        || event.keyCode === 192;
-      const modifierKey = ["Shift", "Control", "Alt", "Meta"].includes(event.key);
-      if (event.type === "keyup") {
-        const missedKeydown = backquote && !mapLayerChordHeld
-          && event.shiftKey && event.ctrlKey && event.altKey && !event.metaKey;
-        if (backquote || modifierKey) mapLayerChordHeld = false;
-        if (!missedKeydown) return;
-      } else {
-        if (!backquote || mapLayerChordHeld
-          || !event.shiftKey || !event.ctrlKey || !event.altKey || event.metaKey) return;
-        mapLayerChordHeld = true;
-      }
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      setActiveLayer(activeLayerId === "world" ? "us" : "world");
     }
 
     function isTypingTarget(target) {
@@ -18454,6 +18614,7 @@
         }
         return true;
       }
+      if (shortcutsActive() && (key === "r" || key === "t")) return false;
       if (key === "t") {
         // Global secret: flip light/dark from anywhere.
         event.preventDefault();
@@ -18998,6 +19159,8 @@
         p: () => clickIf("#tipJarBtn"),
         ",": () => clickIf("#settingsBtn"),
         "<": () => clickIf("#settingsBtn"),
+        "|": () => clickIf("#mapLayerToggleBtn"),
+        "'": () => cycleMapLabelTarget(1),
         "?": () => { if (!$("#settingsDialog").open) $("#settingsDialog").showModal(); switchTab("help"); }
         // "/" is handled by handleGlobalShortcut (focusNotesSearchShortcut)
         // already; not re-listed here to avoid double-firing.
@@ -19376,12 +19539,130 @@
       }, { passive: false });
     }
 
+    function shortcutButton(scope, key) {
+      return [...scope.querySelectorAll("[data-shortcut]")].find(button =>
+        String(button.dataset.shortcut || "").toLowerCase() === key
+        && !button.disabled
+        && !button.closest("[hidden], .hidden")
+      );
+    }
+
+    function handleAnchoredPopupShortcut(event, key) {
+      const activate = button => {
+        if (!button) return false;
+        event.preventDefault();
+        event.stopPropagation();
+        button.click();
+        return true;
+      };
+      const priorityMenu = $("#notesPriorityMenu");
+      if (priorityMenu && !priorityMenu.hidden) {
+        if (key === "escape") {
+          event.preventDefault();
+          setNotesPriorityMenuOpen(false);
+          $("#notesPriorityBtn")?.focus();
+          return true;
+        }
+        const optionPanel = $("#notesPriorityOptions");
+        if (optionPanel && !optionPanel.hidden && activate(shortcutButton(optionPanel, key))) return true;
+        if (activate(shortcutButton(priorityMenu, key))) return true;
+      }
+      const labelMenu = $(".map-waypoint-labels-menu:not([hidden])");
+      if (labelMenu) {
+        if (key === "escape") {
+          event.preventDefault();
+          toggleMapLabelTargetPicker();
+          return true;
+        }
+        if (key === "'") {
+          event.preventDefault();
+          event.stopPropagation();
+          cycleMapLabelTarget(1);
+          return true;
+        }
+        if (activate(shortcutButton(labelMenu, key))) return true;
+      }
+      const styleMenu = $(".ring-style-menu:not(.hidden)");
+      if (styleMenu) {
+        if (key === "escape" || key === "e") {
+          event.preventDefault();
+          closeRingStyleMenu();
+          return true;
+        }
+        if (activate(shortcutButton(styleMenu, key))) return true;
+      }
+      const timeMenu = $(".ring-time-menu:not(.hidden)");
+      if (timeMenu) {
+        if (key === "escape") {
+          event.preventDefault();
+          closeRingTimeMenu();
+          return true;
+        }
+        if (key === "2") {
+          const input = $("[data-ring-speed-input]", timeMenu);
+          if (input && !input.disabled) {
+            event.preventDefault();
+            event.stopPropagation();
+            input.focus();
+            input.select();
+            return true;
+          }
+        }
+        if (activate(shortcutButton(timeMenu, key))) return true;
+      }
+      const grid = $("#graticuleDialog");
+      if (grid?.matches(":popover-open")) {
+        if (key === "escape") {
+          event.preventDefault();
+          grid.hidePopover();
+          $("#mapGraticuleBtn")?.focus();
+          return true;
+        }
+        if (key === "4" || key === "5") {
+          const select = key === "4" ? $("#graticuleMajorInput") : $("#graticuleMinorInput");
+          if (select && !select.disabled) {
+            event.preventDefault();
+            event.stopPropagation();
+            select.focus();
+            select.click();
+            return true;
+          }
+        }
+        if (activate(shortcutButton(grid, key))) return true;
+      }
+      const legendMenu = $("#legendPositionMenu");
+      if (legendMenu && !legendMenu.classList.contains("hidden")) {
+        if (key === "escape" || key === "w") {
+          event.preventDefault();
+          closeLegendPositionMenu();
+          $("#legendPositionBtn")?.focus();
+          return true;
+        }
+        if (activate(shortcutButton(legendMenu, key))) return true;
+      }
+      const timeZone = $("#ringTimeZonePopover");
+      if (timeZone) {
+        if (key === "escape") {
+          event.preventDefault();
+          setRingTimeZoneOpen(false);
+          return true;
+        }
+        if (key === "n" || key === "c") {
+          const mode = key === "n" ? "now" : "custom";
+          return activate(timeZone.querySelector(`[data-ring-departure-mode="${mode}"]`));
+        }
+      }
+      return false;
+    }
+
     function handlePowerShortcut(event) {
       updatePowerOverlay(event);
+      if (event.defaultPrevented) return;
       if (handleGlobalShortcut(event)) return;
-      if (!shortcutsActive()) return;
       if (["shift", "control", "alt", "option", "meta"].includes(event.key.toLowerCase())) return;
       const key = shortcutKey(event);
+      if (key === "escape" && handleAnchoredPopupShortcut(event, key)) return;
+      if (!shortcutsActive()) return;
       if ($("#renameDialog").open) {
         const renameActions = {
           escape: () => $("#renameDialog").close(),
@@ -19568,6 +19849,7 @@
         return;
       }
       if (isTypingTarget(event.target)) return;
+      if (handleAnchoredPopupShortcut(event, key)) return;
       // Home-screen shortcut table. Keys map straight to the on-screen
       // data-shortcut hints. Notes-panel filters are scoped to
       // notesPanelOpen && !notesPanelState to mirror their button visibility.
@@ -19576,16 +19858,13 @@
       const actions = {
         // Map controls (digits read top-to-bottom in the map header).
         "0": resetMapZoom,
-        "9": toggleMapFitMode,
-        "8": () => clickIf("#mapLocationPinsBtn"),
-        "7": () => clickIf("#mapMatchNotesBtn"),
-        "6": toggleBucketListView,
-        "5": () => clickIf("#mapRingModeBtn"),
-        "4": () => openMapLabelTargetPicker(),
-        "3": () => setActiveMapLabelMode("none"),
-        "2": () => setActiveMapLabelMode("abbr"),
-        "1": () => setActiveMapLabelMode("name"),
-        "~": () => setActiveLayer(activeLayerId === "world" ? "us" : "world"),
+        ":": toggleMapFitMode,
+        "9": () => clickIf("#mapGraticuleBtn"),
+        "8": () => clickIf("#mapRingModeBtn"),
+        "7": () => clickIf("#mapLocationPinsBtn"),
+        "6": () => clickIf("#mapMatchNotesBtn"),
+        "|": () => setActiveLayer(activeLayerId === "world" ? "us" : "world"),
+        "'": () => cycleMapLabelTarget(1),
         "-": () => nudgeMapZoom(-MAP_ZOOM_STEP),
         "+": () => nudgeMapZoom(MAP_ZOOM_STEP),
         "=": () => nudgeMapZoom(MAP_ZOOM_STEP),
@@ -19601,21 +19880,33 @@
           else clickIf("#settingsBtn");
         },
         "<": () => clickIf("#settingsBtn"),
-        e: () => clickIf("#renameBtn"),
+        "~": () => clickIf("#renameBtn"),
         m: toggleMapPanel,
         l: toggleLegendPanel,
         n: toggleNotesPanel,
         b: () => notesPanelState ? clickIf("#notesPanelBackBtn") : clickIf("#basecampBtn"),
+        f: toggleBucketListView,
 
         // Legend.
-        u: () => legendPanelOpen && legendPositionControlAvailable() && toggleLegendPositionMenu(),
-        v: () => clickIf("#smartColorsBtn"),
-        w: () => clickIf("#suggestionsToggleBtn"),
-        x: () => legendPanelOpen && toggleLegendEditMode(),
-        y: () => clickIf("#addLevelBtn"),
+        w: () => legendPanelOpen && legendPositionControlAvailable() && toggleLegendPositionMenu(),
+        ">": () => clickIf("#smartColorsBtn"),
+        x: () => clickIf("#suggestionsToggleBtn"),
+        y: () => legendPanelOpen && toggleLegendEditMode(),
+        z: () => clickIf("#addLevelBtn"),
+
+        // Rangefinder.
+        t: () => clickIf("[data-ring-time-menu]"),
+        e: () => clickIf("[data-ring-style-menu]"),
+        u: () => clickIf("[data-ring-travel-mode]"),
+        v: () => clickIf("[data-ring-unit]"),
+        j: () => clickIf('[data-ring-setting="edit"]'),
+        k: () => clickIf("[data-ring-add]"),
 
         // Notes filters / actions.
+        r: () => notesListContext && clickIf("#notesPriorityBtn"),
         c: () => notesPanelOpen && clickIf("#copyNotesTextBtn"),
+        "{": () => notesPanelOpen && clickIf('[data-notes-font="dec"]'),
+        "}": () => notesPanelOpen && clickIf('[data-notes-font="inc"]'),
         g: () => notesListContext && clickIf("#notesCategoryToggleBtn"),
         h: () => notesListContext && clickIf("#notesExcludedToggleBtn"),
         d: () => notesListContext && clickIf("#notesDatePrecisionFilterBtn"),
@@ -19624,7 +19915,7 @@
 
         // Notes view and sort modes cycle so every button in each segmented
         // control advertises the same shortcut.
-        arrowleft: () => notesPanelState && clickIf("#notesPanelBackBtn"),
+        arrowleft: () => notesPanelState ? clickIf("#notesPanelBackBtn") : mapPanelOpen && cycleMapLabelMode(1),
         arrowdown: () => notesPanelOpen && cycleNotesViewMode(),
         arrowright: () => notesPanelOpen && cycleNotesSortMode(),
         // Delete clears applied levels on the drilled-in location.
@@ -19961,7 +20252,6 @@
       bindBasecampEvents();
       $("#mapFitBtn").addEventListener("click", toggleMapFitMode);
       $("#mapLayerToggleBtn").addEventListener("click", () => setActiveLayer(activeLayerId === "world" ? "us" : "world"));
-      $("#mapBucketListBtn").addEventListener("click", toggleBucketListView);
       $("#mapRingModeBtn").addEventListener("click", toggleRingMode);
       $("#mapGraticuleBtn")?.addEventListener("pointerdown", () => {
         graticuleButtonDismissPending = $("#graticuleDialog")?.matches(":popover-open") === true;
@@ -20174,7 +20464,11 @@
       $("#notesViewExpandedBtn").addEventListener("click", () => setNotesViewMode("expanded"));
       $("#notesViewCompactBtn").addEventListener("click", () => setNotesViewMode("compact"));
       $("#notesViewTextBtn").addEventListener("click", () => setNotesViewMode("text"));
-      $("#copyNotesTextBtn").addEventListener("click", () => copyNotesText());
+      $("#notesPanelContent").addEventListener("click", event => {
+        if (event.target.closest("#copyNotesTextBtn")) { copyNotesText(); return; }
+        const fontBtn = event.target.closest("[data-notes-font]");
+        if (fontBtn) adjustNotesTextOnlyFont(fontBtn.dataset.notesFont === "inc" ? 1 : -1);
+      });
       $("#notesTagSettingsMiniBtn")?.addEventListener("click", () => openVisitTagSettings("settings"));
       $("#closeDrawerBtn").addEventListener("click", closeDrawer);
       $("#clearStateLevelsBtn").addEventListener("click", clearSelectedStateLevels);
@@ -20498,9 +20792,6 @@
       });
       $("#liquorKeyBtn").addEventListener("click", () => handleDeveloperGesture("liquor"));
       $("#coffeeKeyBtn").addEventListener("click", () => handleDeveloperGesture("coffee"));
-      document.addEventListener("keydown", handleMapLayerChord, true);
-      document.addEventListener("keypress", handleMapLayerChord, true);
-      document.addEventListener("keyup", handleMapLayerChord, true);
       document.addEventListener("keydown", handleRingKeydown);
       document.addEventListener("keydown", handlePowerShortcut);
       document.addEventListener("keyup", updatePowerOverlay);
@@ -20544,6 +20835,10 @@
           event.preventDefault();
           event.stopPropagation();
           closeWaypointPacksPanel();
+          return;
+        }
+        if (handleAnchoredPopupShortcut(event, "escape")) {
+          event.stopPropagation();
         }
       }, true);
       // Enter counterpart to the Escape handler: every modal pop-up should
@@ -20579,7 +20874,8 @@
         if (!legendPositionControlAvailable()) closeLegendPositionMenu();
         if (ringStyleMenuOpen) closeRingStyleMenu();
         if (ringTimeMenuOpen) closeRingTimeMenu();
-        if (!$("#notesPriorityMenu")?.hidden) positionFloatingMenu($("#notesPriorityMenu"), $("#notesPriorityBtn"));
+        positionAnchoredControlPopups();
+        syncRingPanelLayout();
         syncButtonLabels();
         scheduleMainLayoutSync();
         if ($("#noteDialog")?.open) sizeNoteWaypointPhotoFrame();
