@@ -8,6 +8,7 @@ The app is still intentionally simple to run: open `index.html` and go — plain
 
 | Version | Date | Title | Summary
 |---|---:|---|---|
+| 4.8.0 | 2026-06-21 | Square Deal | A consistency pass: unified anchored pop-ups and a shared control-size system, a floating scroll-sticky Text Only toolbar with text-size buttons, steadier map/Rangefinder layout, and a fully revised keyboard shortcut set. |
 | 4.7.6 | 2026-06-20 | Dead Reckoning | Rangefinder rings reach across map insets and the date line with true great-circle curves, collision-aware distance/time pills, and offline time-zone trip planning. |
 | 4.7.5 | 2026-06-18 | Gridlines | US and World maps gain customizable latitude/longitude grids, calibrated inset geography, and coordinate pins aligned to the same projection. |
 | 4.7.4 | 2026-06-17 | Crosshairs | Touchscreens can pinch, double-tap, and two-finger-tap to zoom the map, with smoother mobile panning and desktop double-click zoom. |

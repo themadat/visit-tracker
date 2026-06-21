@@ -28,18 +28,6 @@
         category: "UI"
       },
       {
-        title: "Unify Control Pop-Ups",
-        ticketId: "WISH-077",
-        description: "Tighten the newer anchored control pop-ups so they feel like one system: Priority, Grid, Rangefinder style and time, Legend position, Map label and Waypoint Pack label pickers, Waypoint priority/link menus, Basecamp row/icon/link popovers, and nearby picker surfaces. Standardize square buttons, sizing, labels, active/disabled states, row/grid layout, and on-screen clamping while preserving each control's behavior.",
-        priority: "P0",
-        effort: "medium",
-        targetKind: "exact",
-        targetVersion: "4.8.0",
-        tokenCostPct: 26,
-        prompt: "Unify anchored control pop-ups across the app. Focus on Priority, Grid, Rangefinder style/fill/clip and time, Legend position, Map labels/Waypoint Pack label picker, Waypoint priority/link menus, Basecamp row/icon/link popovers, and install/icon picker-adjacent surfaces. Make square icon buttons the default where appropriate, keep controls the same size as the rest of the app, normalize wording and labels, align yes/no and fill/clip grids, standardize active/disabled/focus states, clamp every pop-up on-screen, and preserve all current behavior and shortcuts.",
-        category: "UI"
-      },
-      {
         title: "Choose Condensed Notes Date Summary",
         ticketId: "WISH-024",
         description: "Add a user setting for how Condensed Notes chooses the date shown on parent location rows. Options should include single date, earliest, latest, and highest-level-based behavior.",
