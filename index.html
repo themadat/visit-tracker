@@ -1656,6 +1656,7 @@
               <div class="shortcut-row"><kbd>S</kbd><span>Quick Add Location Note <em>[quickAddNoteBtn]</em></span>
               </div>
               <div class="shortcut-row"><kbd>C</kbd><span>Copy Plain Notes Text <em>[copyNotesTextBtn]</em></span></div>
+              <div class="shortcut-row"><kbd>{ }</kbd><span>Text Only: shrink / grow the text size.</span></div>
               <div class="shortcut-row"><kbd>F</kbd><span>Toggle Wayfinder Mode
                   <em>[notesActivateWayfinderBtn]</em></span>
               </div>
@@ -13607,8 +13608,8 @@
       const atMax = notesTextOnlyFontPx >= NOTES_TEXT_FONT_MAX;
       return `<div class="notes-text-only-wrap">
         <div class="notes-text-only-controls">
-          <button class="notes-copy-btn notes-font-btn" type="button" data-notes-font="dec" aria-label="Decrease text size" title="Decrease text size"${atMin ? " disabled" : ""}>${buttonMarkup(__MINUS_CIRCLE, "Smaller")}</button>
-          <button class="notes-copy-btn notes-font-btn" type="button" data-notes-font="inc" aria-label="Increase text size" title="Increase text size"${atMax ? " disabled" : ""}>${buttonMarkup(__PLUS_CIRCLE, "Larger")}</button>
+          <button class="notes-copy-btn notes-font-btn" type="button" data-notes-font="dec" data-shortcut="{" aria-label="Decrease text size" title="Decrease text size"${atMin ? " disabled" : ""}>${buttonMarkup(__TEXT_BADGE_MINUS, "Smaller")}</button>
+          <button class="notes-copy-btn notes-font-btn" type="button" data-notes-font="inc" data-shortcut="}" aria-label="Increase text size" title="Increase text size"${atMax ? " disabled" : ""}>${buttonMarkup(__TEXT_BADGE_PLUS, "Larger")}</button>
           <button id="copyNotesTextBtn" class="notes-copy-btn" type="button" data-shortcut="C" aria-label="${notesCopyActive ? "Notes copied" : "Copy notes text"}">${buttonMarkup(notesCopyActive ? __CHECKMARK : __DOCUMENT_ON_DOCUMENT, notesCopyActive ? "Copied" : "Copy")}</button>
         </div>
         <pre${preId ? ` id="${preId}"` : ""} class="notes-text-only" tabindex="0" style="font-size:${notesTextOnlyFontPx}px">${escapeHtml(text)}</pre>
@@ -19893,6 +19894,8 @@
         // Notes filters / actions.
         r: () => notesListContext && clickIf("#notesPriorityBtn"),
         c: () => notesPanelOpen && clickIf("#copyNotesTextBtn"),
+        "{": () => notesPanelOpen && clickIf('[data-notes-font="dec"]'),
+        "}": () => notesPanelOpen && clickIf('[data-notes-font="inc"]'),
         g: () => notesListContext && clickIf("#notesCategoryToggleBtn"),
         h: () => notesListContext && clickIf("#notesExcludedToggleBtn"),
         d: () => notesListContext && clickIf("#notesDatePrecisionFilterBtn"),
