@@ -4,6 +4,31 @@
 
     const CHANGELOG = [
       {
+        version: "4.8.0.4",
+        date: "2026-06-21",
+        title: "Square Deal",
+        summary: "The Text Only Copy button stays put, and Rangefinder Time gets its own key.",
+        highlights: [
+          "Text Only's Copy button floats on top of the notes surface instead of hiding above it.",
+          "Press T to open Rangefinder Time; Auto Colors moves to >.",
+        ],
+        updateSections: [
+          {
+            heading: "Interface",
+            items: [
+              "The Text Only Copy button now floats over the top-right of the notes surface, so it stays visible instead of slipping out of view above the scroll area.",
+            ]
+          },
+          {
+            heading: "Shortcuts",
+            items: [
+              "T now opens the Rangefinder Time pop-up.",
+              "Apply Auto Colors Palette moves from T to >.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.8.0.3",
         date: "2026-06-20",
         title: "Square Deal",
