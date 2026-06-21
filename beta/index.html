@@ -1199,6 +1199,11 @@
               The time menu lets you adjust the average speed for the current travel mode. Local Times &amp; Arrival
               resolves IANA zones offline, supports manual overrides, and converts a chosen departure into the
               destination-local estimated arrival with daylight-saving changes included.</li>
+            <li>Use the maps button beside Local Times &amp; Arrival to hand your Start and End to an external trip tool:
+              driving directions in your preferred provider in Drive mode, a Google Flights search in Plane mode, or a
+              single-place lookup when only Start is set. A single click opens a new tab and switches to it; a
+              right-click opens it in a background tab. Choose Apple Maps or Google Maps under Settings → Map
+              Interaction. These handoffs are online actions and only run when you click.</li>
             <li>Mapped markers open the note when there is one note. Nearby markers cluster, zoom when they can split,
               or open a picker when they are too close.</li>
             <li>Alaska, Hawaii, and territory points use inset map scale. Mainland rings clip away from those insets,
@@ -1358,6 +1363,11 @@
             from the saved location and uses the browser's offline time-zone data for local clocks, daylight-saving
             changes, departures, and arrivals. Multi-zone regions use the coordinate longitude as a guide, and either
             point can be corrected with a manual IANA zone override.</p>
+          <p><b>Can Rangefinder open my route in Maps or Flights?</b><br>Yes. The maps button next to Local Times &amp;
+            Arrival hands your Start and End to an external tool: driving directions in your preferred provider (Apple
+            Maps or Google Maps), a Google Flights search in Plane mode, or a single-place lookup when only Start is set.
+            A single click opens a new tab and switches to it; a right-click opens it in a background tab. Pick the
+            provider under Settings → Map Interaction. These are the only online actions here and only run on click.</p>
           <p><b>Do Waypoint Packs change state progress?</b><br>No. Pack pins, labels, priorities, and Legend pack stats
             come from linked notes. States and territories only change when you edit their levels yourself.</p>
         </section>
@@ -1818,7 +1828,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.9.0.2";
+    const APP_VERSION = "4.9.0";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
