@@ -26,6 +26,7 @@
             items: [
               "T now opens the Rangefinder Time pop-up.",
               "Apply Auto Colors Palette moves from T to >.",
+              "{ and } shrink and grow the Text Only font size.",
             ]
           }
         ]
