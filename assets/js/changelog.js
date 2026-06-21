@@ -4,6 +4,38 @@
 
     const CHANGELOG = [
       {
+        version: "4.8.0.3",
+        date: "2026-06-20",
+        title: "Square Deal",
+        summary: "Sharper Rangefinder labels, steadier map controls, and a fully revised shortcut set.",
+        highlights: [
+          "Rangefinder endpoints wrap without growing their control row.",
+          "Map controls stay aligned as display modes change.",
+          "Grid, Circle, Time, and Priority pop-ups use compact numbered shortcuts.",
+          "Map, Legend, Notes, and Rangefinder shortcuts match their new control order.",
+        ],
+        updateSections: [
+          {
+            heading: "Interface",
+            items: [
+              "Long Rangefinder Start and End locations split into Where and City lines, shrinking inside the same fixed-height slot.",
+              "Map header actions stay top-aligned when Scroll mode or Rangefinder adds secondary interface elements.",
+              "The Text Only Copy control floats above the notes surface without reserving space or covering note text.",
+              "Grid, Rangefinder Circle, Rangefinder Time, and Priority pop-ups use tighter square-control layouts.",
+            ]
+          },
+          {
+            heading: "Shortcuts",
+            items: [
+              "Map controls are now : for Fit/Scroll, 9 for Grid, 8 for Rangefinder, 7 for Pins, and 6 for Filter.",
+              "The apostrophe key cycles label targets, Left Arrow cycles label modes, and ~ opens Rename.",
+              "Legend, Notes, and Rangefinder header actions now use the requested W/X/Y/Z/T, F/R, and E/J/K/U/V assignments.",
+              "Priority and Grid pop-ups use 1–5; Rangefinder Circle uses 1–4; Rangefinder Time uses 1–2.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.8.0.2",
         date: "2026-06-20",
         title: "Square Deal",
