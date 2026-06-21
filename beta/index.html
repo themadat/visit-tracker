@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.8.0.3">
+  <link rel="stylesheet" href="assets/css/app.css?v=4.8.0">
 </head>
 
 <body>
@@ -1240,7 +1240,8 @@
               views; the view shortcut also works inside an individual location.</li>
             <li>Use Detailed, Expanded, Condensed, or Text Only view. Detailed shows every populated note field and
               the full details text; click that text to edit it inline, then press Cmd/Ctrl+Enter or use the checkmark
-              to save. Text Only is copy-ready for Apple Notes.</li>
+              to save. Text Only is copy-ready for Apple Notes; its Smaller, Larger, and Copy buttons float over the
+              top-right of the text and stay pinned as it scrolls.</li>
             <li>Open a location to manage its levels and Visit Notes. The same four view buttons appear in the Visit
               Notes header, which stays pinned while its notes scroll. In Detailed or Expanded, select the note count
               to collapse or reveal that location's notes.</li>
@@ -1382,7 +1383,9 @@
             change inline, then press Cmd/Ctrl+Enter or use the checkmark to save. The live counter tracks the
             2,000-character limit. In the full note editor, Enter adds a new line and Cmd/Ctrl+Enter saves.</p>
           <p><b>What is Text Only view for?</b><br>It renders a clean plain-text version of the current Notes view that
-            is easy to select, copy, and paste into Apple Notes.</p>
+            is easy to select, copy, and paste into Apple Notes. The Smaller, Larger, and Copy buttons float over the
+            top-right of the text and stay pinned while it scrolls; Smaller and Larger resize the Text Only text only,
+            and you can also use the { and } keys.</p>
           <p><b>How does Smart Convert work?</b><br>Type a quick note, then Auto Convert fills recognized date, level,
             visit icon, where, what, and who fields. Weekdays next to dates are understood. Leftover text goes to
             Additional Details.</p>
@@ -1794,18 +1797,18 @@
     </footer>
   </dialog>
 
-  <script src="assets/js/icons.js?v=4.8.0.3"></script>
+  <script src="assets/js/icons.js?v=4.8.0"></script>
   <script src="assets/js/maps.js"></script>
   <script src="assets/js/world-names.js?v=4.7.4"></script>
   <script src="assets/js/world-label-overrides.js?v=4.7.4"></script>
-  <script src="assets/js/timezones.js?v=4.8.0.3"></script>
-  <script src="assets/js/changelog.js?v=4.8.0.3"></script>
-  <script src="assets/js/roadmap.js?v=4.8.0.3"></script>
+  <script src="assets/js/timezones.js?v=4.8.0"></script>
+  <script src="assets/js/changelog.js?v=4.8.0"></script>
+  <script src="assets/js/roadmap.js?v=4.8.0"></script>
   <script>
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.8.0.4";
+    const APP_VERSION = "4.8.0";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
