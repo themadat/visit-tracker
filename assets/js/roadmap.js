@@ -77,19 +77,6 @@
         category: "Maps"
       },
       {
-        title: "Target Finder Google and Apple Maps Integration",
-        ticketId: "WISH-080",
-        planDoc: "WISH-080-TARGET-FINDER-MAPS-PLAN.md",
-        description: "Connect Rangefinder's Target Finder points to external trip tools. Add a preferred maps-provider setting that toggles between Apple Maps and Google Maps, then open the selected provider with confirmed Start/End coordinates, recognizable labels, and driving intent in Drive mode. In Plane mode, offer Google Flights for flight planning while retaining map handoff where useful. Keep straight-line Rangefinder calculations unchanged, make every online handoff user-initiated, and behave sensibly when only one target exists or a provider/app is unavailable.",
-        priority: "P0",
-        effort: "medium",
-        targetKind: "exact",
-        targetVersion: "5.1.0",
-        tokenCostPct: 26,
-        prompt: "For 5.1.0, add user-initiated external trip actions to Rangefinder's Target Finder. Add a persisted preferred maps-provider setting toggling Apple Maps or Google Maps. When Start and End coordinates exist, build safe provider URLs containing both coordinates and useful labels; use driving directions in Drive mode. In Plane mode, add a Google Flights action for flight planning and retain an appropriate map/place handoff. Support one-point fallback, desktop browser and mobile app/deep-link behavior, accessible provider controls, clear online-action wording, and graceful fallback when a provider/app cannot open. Do not replace the existing straight-line rings, distance/time comparison, offline time zones, or persisted anchors; add defaults in defaultState(), repair in normalizeState(), and preserve usStateVisitMap.v1.",
-        category: "Maps"
-      },
-      {
         title: "Location Ratings",
         ticketId: "WISH-070",
         description: "Add a first-class rating for saved locations so a place can be scored independently from visit level, note priority, or Wayfinder status, then let Notes and relevant location lists sort by that rating.",
