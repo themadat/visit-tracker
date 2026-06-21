@@ -4,6 +4,36 @@
 
     const CHANGELOG = [
       {
+        version: "4.9.0",
+        date: "2026-06-21",
+        title: "Travel Agent",
+        summary: "Rangefinder can hand your Start and End points straight to Apple Maps, Google Maps, or Google Flights.",
+        banner: "Send Rangefinder's Start and End to Apple Maps, Google Maps, or Google Flights in a click.",
+        cta: "Book the|Trip!",
+        highlights: [
+          "New maps button on Rangefinder opens directions for your Start and End points.",
+          "Plane mode opens a Google Flights search between your two points.",
+          "Pick Apple Maps or Google Maps as your provider in Settings.",
+          "Right-click the maps button to open it in a background tab.",
+        ],
+        updateSections: [
+          {
+            heading: "Rangefinder",
+            items: [
+              "A new maps button in the Rangefinder summary row hands your Start and End points to an external trip tool: driving directions in Drive mode, a Google Flights search in Plane mode, and a single-place lookup when only Start is set.",
+              "A single click opens it in a new tab and switches to it; a right-click opens it quietly in a background tab.",
+              "The distance and time readout is now a button that opens Local Times & Arrival, so the same row covers both timing and trip handoff.",
+            ]
+          },
+          {
+            heading: "Settings",
+            items: [
+              "A new Maps Provider choice under Map Interaction, marked with the Apple Maps and Google Maps logos, lets you set your preferred provider; it defaults to Apple on Apple devices and Google elsewhere.",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.8.1",
         date: "2026-06-21",
         title: "Reading Glasses",
