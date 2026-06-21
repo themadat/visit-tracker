@@ -1802,13 +1802,13 @@
   <script src="assets/js/world-names.js?v=4.7.4"></script>
   <script src="assets/js/world-label-overrides.js?v=4.7.4"></script>
   <script src="assets/js/timezones.js?v=4.8.0"></script>
-  <script src="assets/js/changelog.js?v=4.8.0"></script>
+  <script src="assets/js/changelog.js?v=4.8.1.1"></script>
   <script src="assets/js/roadmap.js?v=4.8.0"></script>
   <script>
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.8.0";
+    const APP_VERSION = "4.8.1.1";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -2711,12 +2711,12 @@
     let collapsedNoteLocations = new Set();
     let notesCopyTimer = 0;
     let notesCopyActive = false;
-    // Session-only font size (px) for the Text Only notes surface; the +/- buttons
-    // adjust it and it rides re-renders via an inline style on the <pre>.
+    // Persisted font size (px) for the Text Only notes surface, stored in
+    // settings.notesTextOnlyFontPx; the +/- buttons adjust it and it rides
+    // re-renders via an inline style on the <pre>.
     const NOTES_TEXT_FONT_MIN = 9;
     const NOTES_TEXT_FONT_MAX = 22;
     const NOTES_TEXT_FONT_DEFAULT = 12;
-    let notesTextOnlyFontPx = NOTES_TEXT_FONT_DEFAULT;
     let installReloadNeeded = false;
     let installPlatformOverride = "auto";
     let powerOverlayActive = false;
@@ -2819,6 +2819,7 @@
           notesPrioritySort: "none",
           notesPriorityGroup: false,
           notesViewMode: "detailed",
+          notesTextOnlyFontPx: NOTES_TEXT_FONT_DEFAULT,
           notesCategoricalMode: true,
           notesHideExcludedOnly: true,
           notesDatePrecisionFilter: "all",
@@ -3218,6 +3219,10 @@
       if (legacyPrioritySort && next.settings.notesPrioritySort === "none") next.settings.notesPrioritySort = "desc";
       if (typeof next.settings.notesPriorityGroup !== "boolean") next.settings.notesPriorityGroup = false;
       if (!["detailed", "expanded", "compact", "text"].includes(next.settings.notesViewMode)) next.settings.notesViewMode = "detailed";
+      const savedTextOnlyFont = Math.round(Number(next.settings.notesTextOnlyFontPx));
+      next.settings.notesTextOnlyFontPx = Number.isFinite(savedTextOnlyFont)
+        ? Math.max(NOTES_TEXT_FONT_MIN, Math.min(NOTES_TEXT_FONT_MAX, savedTextOnlyFont))
+        : NOTES_TEXT_FONT_DEFAULT;
       if (typeof next.settings.notesCategoricalMode !== "boolean") next.settings.notesCategoricalMode = true;
       if (typeof next.settings.notesHideExcludedOnly !== "boolean") next.settings.notesHideExcludedOnly = true;
       if (!DATE_PRECISION_FILTER_MODES.includes(next.settings.notesDatePrecisionFilter)) next.settings.notesDatePrecisionFilter = "all";
@@ -13607,28 +13612,31 @@
     }
 
     function notesTextOnlyHtml(text, preId = "") {
-      const atMin = notesTextOnlyFontPx <= NOTES_TEXT_FONT_MIN;
-      const atMax = notesTextOnlyFontPx >= NOTES_TEXT_FONT_MAX;
+      const fontPx = state.settings.notesTextOnlyFontPx;
+      const atMin = fontPx <= NOTES_TEXT_FONT_MIN;
+      const atMax = fontPx >= NOTES_TEXT_FONT_MAX;
       return `<div class="notes-text-only-wrap">
         <div class="notes-text-only-controls">
           <button class="notes-copy-btn notes-font-btn" type="button" data-notes-font="dec" data-shortcut="{" aria-label="Decrease text size" title="Decrease text size"${atMin ? " disabled" : ""}>${buttonMarkup(__TEXT_BADGE_MINUS, "Smaller")}</button>
           <button class="notes-copy-btn notes-font-btn" type="button" data-notes-font="inc" data-shortcut="}" aria-label="Increase text size" title="Increase text size"${atMax ? " disabled" : ""}>${buttonMarkup(__TEXT_BADGE_PLUS, "Larger")}</button>
           <button id="copyNotesTextBtn" class="notes-copy-btn" type="button" data-shortcut="C" aria-label="${notesCopyActive ? "Notes copied" : "Copy notes text"}">${buttonMarkup(notesCopyActive ? __CHECKMARK : __DOCUMENT_ON_DOCUMENT, notesCopyActive ? "Copied" : "Copy")}</button>
         </div>
-        <pre${preId ? ` id="${preId}"` : ""} class="notes-text-only" tabindex="0" style="font-size:${notesTextOnlyFontPx}px">${escapeHtml(text)}</pre>
+        <pre${preId ? ` id="${preId}"` : ""} class="notes-text-only" tabindex="0" style="font-size:${fontPx}px">${escapeHtml(text)}</pre>
       </div>`;
     }
 
     function adjustNotesTextOnlyFont(delta) {
-      const next = Math.max(NOTES_TEXT_FONT_MIN, Math.min(NOTES_TEXT_FONT_MAX, notesTextOnlyFontPx + delta));
-      if (next === notesTextOnlyFontPx) return;
-      notesTextOnlyFontPx = next;
+      const current = state.settings.notesTextOnlyFontPx;
+      const next = Math.max(NOTES_TEXT_FONT_MIN, Math.min(NOTES_TEXT_FONT_MAX, current + delta));
+      if (next === current) return;
+      state.settings.notesTextOnlyFontPx = next;
+      save();
       const pre = $(".notes-text-only");
-      if (pre) pre.style.fontSize = `${notesTextOnlyFontPx}px`;
+      if (pre) pre.style.fontSize = `${next}px`;
       const dec = $('[data-notes-font="dec"]');
       const inc = $('[data-notes-font="inc"]');
-      if (dec) dec.disabled = notesTextOnlyFontPx <= NOTES_TEXT_FONT_MIN;
-      if (inc) inc.disabled = notesTextOnlyFontPx >= NOTES_TEXT_FONT_MAX;
+      if (dec) dec.disabled = next <= NOTES_TEXT_FONT_MIN;
+      if (inc) inc.disabled = next >= NOTES_TEXT_FONT_MAX;
     }
 
     function renderSelectedNoteList(notes) {
