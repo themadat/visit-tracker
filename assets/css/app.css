@@ -11495,9 +11495,7 @@
       max-height: 100%;
       min-height: 220px;
       margin: 0;
-      /* Reserve room up top so the floating Copy button sits on the surface
-         without covering the first line of text. */
-      padding: 2.6rem .75rem .75rem;
+      padding: .75rem;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: var(--surface);

@@ -1,7 +1,5 @@
 ## Future Prompt
 
-1. The copy button is hidden; needs to float on top
-2. Set Rangefinder Time shortcut to "T" and replace auto color with >
 
 ## Maps
 Blank World Map with Circles: https://commons.wikimedia.org/wiki/File:BlankMap-World-with-Circles.svg
