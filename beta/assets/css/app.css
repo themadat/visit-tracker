@@ -9687,11 +9687,26 @@
       overflow: visible;
     }
 
-    .notes-text-only-wrap .notes-copy-btn {
-      position: absolute;
+    /* Floating control cluster (Smaller / Larger / Copy) that overlays the text
+       surface and sticks to the top of the notes scroll area as it scrolls. The
+       0-height sticky bar lets its buttons hang over the text without reserving a
+       row; pointer-events are re-enabled only on the buttons themselves. */
+    .notes-text-only-controls {
+      position: sticky;
       top: .4rem;
-      right: .4rem;
       z-index: 2;
+      display: flex;
+      justify-content: flex-end;
+      gap: .3rem;
+      height: 0;
+      padding-right: .4rem;
+      pointer-events: none;
+    }
+
+    .notes-text-only-controls .notes-copy-btn {
+      pointer-events: auto;
+      flex: 0 0 auto;
+      width: auto;
       box-shadow: 0 4px 12px rgba(15, 23, 42, .16);
     }
 
