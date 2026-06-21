@@ -1079,6 +1079,16 @@
               <button id="selectModeBtn" type="button" aria-pressed="false" data-shortcut="P">Select</button>
             </div>
           </div>
+          <div class="setting-row">
+            <div class="setting-label">Maps Provider</div>
+            <div class="segmented" aria-label="Preferred maps provider">
+              <button id="mapsProviderAppleBtn" type="button" aria-pressed="false">Apple Maps</button>
+              <button id="mapsProviderGoogleBtn" type="button" aria-pressed="false">Google Maps</button>
+            </div>
+          </div>
+          <small class="setting-hint" data-hint data-hint-key="settings-maps-provider-help">
+            Rangefinder's maps button opens directions in this provider; Plane mode opens Google Flights. These are online actions.
+          </small>
         </section>
         <section class="settings-category">
           <h3>Date Formats</h3>
@@ -1808,7 +1818,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.8.1";
+    const APP_VERSION = "4.9.0.1";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -2837,6 +2847,7 @@
           bucketListFilterSnapshot: null,
           ringMode: false,
           ringByLayer: defaultRingByLayer(),
+          mapsProvider: defaultMapsProvider(),
           graticuleByLayer: defaultGraticuleByLayer(),
           basecampPanelMode: "modal",
           basecampNotesSplitRatio: 0.5,
@@ -3259,6 +3270,9 @@
         next.settings.bucketListFilterSnapshot = null;
       }
       next.settings.ringMode = next.settings.ringMode === true;
+      next.settings.mapsProvider = next.settings.mapsProvider === "apple" || next.settings.mapsProvider === "google"
+        ? next.settings.mapsProvider
+        : defaultMapsProvider();
       next.settings.basecampPanelMode = next.settings.basecampPanelMode === "panel" ? "panel" : "modal";
       const splitRatio = Number(next.settings.basecampNotesSplitRatio);
       next.settings.basecampNotesSplitRatio = Number.isFinite(splitRatio)
@@ -4209,7 +4223,7 @@
       save();
       renderRingPanel();
       requestAnimationFrame(() => {
-        const target = on ? $(".ring-timezone-close", $("#ringPanel")) : $(".ring-timezone-toggle", $("#ringPanel"));
+        const target = on ? $(".ring-timezone-close", $("#ringPanel")) : $(".ring-compare-readout", $("#ringPanel"));
         target?.focus();
       });
     }
@@ -4871,6 +4885,125 @@
         : `${distance} straight-line${zoneDelta ? `\u00a0\u00a0${zoneDelta}` : ""}`;
     }
 
+    function isApplePlatform() {
+      return /Mac|iPhone|iPad|iPod/i.test(navigator.platform || navigator.userAgent || "");
+    }
+
+    function defaultMapsProvider() {
+      return isApplePlatform() ? "apple" : "google";
+    }
+
+    function ringMapsProvider() {
+      return state.settings.mapsProvider === "apple" ? "apple" : "google";
+    }
+
+    function mapsProviderLabel(provider) {
+      return provider === "apple" ? "Apple Maps" : "Google Maps";
+    }
+
+    function ringAnchorCoordParam(anchor) {
+      return encodeURIComponent(`${anchor.lat},${anchor.lng}`);
+    }
+
+    // City when known, else the region (state/country) name, for flight searches
+    // that need a human place name rather than coordinates.
+    function ringFlightPlaceName(anchor) {
+      const note = ringAnchorNote(anchor);
+      const city = String(note?.city || "").trim();
+      if (city) return city;
+      return ringRegionName(anchor.abbr, anchor.layer) || anchor.label || anchor.abbr;
+    }
+
+    function googleDirectionsUrl(a, b) {
+      return `https://www.google.com/maps/dir/?api=1&origin=${ringAnchorCoordParam(a)}&destination=${ringAnchorCoordParam(b)}&travelmode=driving`;
+    }
+
+    function googlePlaceUrl(a) {
+      return `https://www.google.com/maps/search/?api=1&query=${ringAnchorCoordParam(a)}`;
+    }
+
+    function appleDirectionsUrl(a, b) {
+      return `https://maps.apple.com/?saddr=${ringAnchorCoordParam(a)}&daddr=${ringAnchorCoordParam(b)}&dirflg=d`;
+    }
+
+    function applePlaceUrl(a) {
+      return `https://maps.apple.com/?ll=${ringAnchorCoordParam(a)}&q=${encodeURIComponent(a.label || "Location")}`;
+    }
+
+    function googleFlightsUrl(a, b) {
+      return `https://www.google.com/travel/flights?q=${encodeURIComponent(`Flights from ${ringFlightPlaceName(a)} to ${ringFlightPlaceName(b)}`)}`;
+    }
+
+    // Single source of truth for the Rangefinder external trip handoff: returns
+    // { url, label, provider, kind } for the active provider + travel mode +
+    // anchor count, or null when there is nothing to open (no Start).
+    function ringExternalLinks() {
+      const a1 = ringAnchorFor(1);
+      if (!a1) return null;
+      const a2 = ringAnchorFor(2);
+      const provider = ringMapsProvider();
+      if (ringTravelIsPlane() && a2) {
+        return { url: googleFlightsUrl(a1, a2), label: "Open Google Flights (new tab)", provider: "google", kind: "flights" };
+      }
+      if (a2) {
+        return {
+          url: provider === "apple" ? appleDirectionsUrl(a1, a2) : googleDirectionsUrl(a1, a2),
+          label: `Open ${mapsProviderLabel(provider)} directions (new tab)`,
+          provider,
+          kind: "directions"
+        };
+      }
+      return {
+        url: provider === "apple" ? applePlaceUrl(a1) : googlePlaceUrl(a1),
+        label: `Open Start in ${mapsProviderLabel(provider)} (new tab)`,
+        provider,
+        kind: "place"
+      };
+    }
+
+    function renderRingMapsButton() {
+      const links = ringExternalLinks();
+      const iconProvider = links ? links.provider : ringMapsProvider();
+      const icon = iconProvider === "apple" ? __APPLE_LOGO : __G_SQUARE_FILL;
+      const label = links ? links.label : "Pick a Start point to open maps";
+      const title = links ? `${links.label} · right-click for a background tab` : label;
+      return `<button class="ring-maps-btn" type="button" data-ring-maps-open aria-label="${escapeHtml(label)}" title="${escapeHtml(title)}"${links ? "" : ' disabled aria-disabled="true"'}>${icon}</button>`;
+    }
+
+    function openRingExternal(background) {
+      const links = ringExternalLinks();
+      if (!links) return;
+      if (background) {
+        openUrlInBackgroundTab(links.url);
+        return;
+      }
+      const opened = window.open(links.url, "_blank", "noopener");
+      if (opened) {
+        opened.opener = null;
+        opened.focus();
+      }
+    }
+
+    // Best-effort background tab: a ctrl/cmd-modified synthetic click on a
+    // transient anchor tells the browser to open the link without switching to
+    // it. Browser/OS settings may still foreground it.
+    function openUrlInBackgroundTab(url) {
+      const link = document.createElement("a");
+      link.href = url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.style.display = "none";
+      document.body.appendChild(link);
+      link.dispatchEvent(new MouseEvent("click", {
+        bubbles: false,
+        cancelable: true,
+        button: 0,
+        ctrlKey: !isApplePlatform(),
+        metaKey: isApplePlatform()
+      }));
+      link.remove();
+    }
+
     function syncLayerModePills() {
       const bucketPill = $("#mapBucketListPill");
       const ringPill = $("#mapRingModePill");
@@ -4910,13 +5043,6 @@
         panel.setAttribute("aria-hidden", on ? "false" : "true");
       }
       syncLayerModePills();
-    }
-
-    function renderRingTimeZoneToggle() {
-      const open = ringSettings().timeZoneOpen === true;
-      return `<button class="ring-timezone-toggle" type="button" data-ring-timezone-toggle aria-haspopup="dialog" aria-controls="ringTimeZonePopover" aria-expanded="${open ? "true" : "false"}" aria-label="Open local times and arrival" title="Local times and arrival">
-        ${__POINT_TOPLEFT_DOWN_TO_POINT_BOTTOMRIGHT_CURVEPATH}
-      </button>`;
     }
 
     function renderRingTimeZoneSection(anchor1, anchor2) {
@@ -5007,7 +5133,9 @@
       const distances = ringDistances();
       const enabled = ringEnabledKeySet();
       const compare = ringCompareReadout();
-      const timeZoneToggle = renderRingTimeZoneToggle();
+      const timeZoneOpen = ringSettings().timeZoneOpen === true;
+      const compareButton = `<button class="ring-compare-readout${compare ? "" : " is-placeholder"}" type="button" data-ring-timezone-toggle aria-haspopup="dialog" aria-controls="ringTimeZonePopover" aria-expanded="${timeZoneOpen ? "true" : "false"}" aria-label="Open local times and arrival" title="Local times & arrival">${escapeHtml(compare || "Local times & arrival")}</button>`;
+      const mapsButton = renderRingMapsButton();
       const timeZoneSection = renderRingTimeZoneSection(anchor1, anchor2);
       panel.dataset.timezoneOpen = ringSettings().timeZoneOpen === true ? "true" : "false";
       const insetWarning = ringInsetWarning(anchor1, anchor2);
@@ -5129,9 +5257,9 @@
             ${anchor2 ? `<button class="ring-anchor-clear" type="button" data-ring-clear="2" aria-label="Clear Rangefinder End" title="Clear End">${__DELETE_LEFT_FILL}</button>` : ""}
           </span>
         </div>
-        <div class="ring-summary-row${compare ? "" : " is-zone-only"}">
-          ${compare ? `<div class="ring-compare-readout">${escapeHtml(compare)}</div>` : ""}
-          ${timeZoneToggle}
+        <div class="ring-summary-row">
+          ${compareButton}
+          ${mapsButton}
         </div>
         ${timeZoneSection}
         <div class="ring-chip-row" aria-label="Visible Rangefinder rings">${ringChips}</div>
@@ -15831,6 +15959,8 @@
       $("#hintsOffBtn").setAttribute("aria-pressed", !state.settings.uiHints);
       $("#cycleModeBtn").setAttribute("aria-pressed", state.settings.tapBehavior === "cycle");
       $("#selectModeBtn").setAttribute("aria-pressed", state.settings.tapBehavior === "select");
+      $("#mapsProviderAppleBtn").setAttribute("aria-pressed", ringMapsProvider() === "apple");
+      $("#mapsProviderGoogleBtn").setAttribute("aria-pressed", ringMapsProvider() === "google");
       $("#dateMdyBtn").setAttribute("aria-pressed", state.settings.dateOrder === "mdy");
       $("#dateDmyBtn").setAttribute("aria-pressed", state.settings.dateOrder === "dmy");
       $("#dateYmdBtn").setAttribute("aria-pressed", state.settings.dateOrder === "ymd");
@@ -20282,6 +20412,11 @@
       $("#gridTuneResetAllBtn")?.addEventListener("click", resetAllGridTuning);
       $("#gridTuneCopyBtn")?.addEventListener("click", copyGridTuneCalibration);
       $("#ringPanel").addEventListener("click", event => {
+        const mapsOpen = event.target.closest("[data-ring-maps-open]");
+        if (mapsOpen) {
+          if (!mapsOpen.disabled) openRingExternal(false);
+          return;
+        }
         const clear = event.target.closest("[data-ring-clear]");
         if (clear) {
           clearRingAnchor2();
@@ -20362,6 +20497,14 @@
         }
         const slot = event.target.closest("[data-ring-slot]");
         if (slot) armRingSlot(Number(slot.dataset.ringSlot));
+      });
+      // Right-click the maps button opens the handoff in a background tab; the
+      // native context menu is suppressed only for that button.
+      $("#ringPanel").addEventListener("contextmenu", event => {
+        const mapsOpen = event.target.closest("[data-ring-maps-open]");
+        if (!mapsOpen || mapsOpen.disabled) return;
+        event.preventDefault();
+        openRingExternal(true);
       });
       $("#ringPanel").addEventListener("change", event => {
         if (event.target.matches("[data-ring-distance-input]") && ringEditMode) setRingDistanceAt(event.target.dataset.ringDistanceInput, event.target.value);
@@ -20697,6 +20840,8 @@
       $("#hintsOffBtn").addEventListener("click", () => updateSetting("uiHints", false));
       $("#cycleModeBtn").addEventListener("click", () => updateSetting("tapBehavior", "cycle"));
       $("#selectModeBtn").addEventListener("click", () => updateSetting("tapBehavior", "select"));
+      $("#mapsProviderAppleBtn").addEventListener("click", () => updateSetting("mapsProvider", "apple"));
+      $("#mapsProviderGoogleBtn").addEventListener("click", () => updateSetting("mapsProvider", "google"));
       $("#shortcutModeOnBtn").addEventListener("click", () => updateSetting("shortcutMode", true));
       $("#shortcutModeOffBtn").addEventListener("click", () => updateSetting("shortcutMode", false));
       $("#dateMdyBtn").addEventListener("click", () => updateSetting("dateOrder", "mdy"));

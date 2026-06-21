@@ -3917,15 +3917,11 @@
       min-width: 0;
     }
 
-    .ring-summary-row.is-zone-only {
-      grid-template-columns: auto;
-      justify-content: end;
-    }
-
     .ring-compare-readout {
       display: flex;
       align-items: center;
       justify-content: center;
+      width: 100%;
       min-height: 32px;
       min-width: 0;
       padding: .28rem .42rem;
@@ -3938,6 +3934,25 @@
       line-height: 1.18;
       text-align: center;
       overflow-wrap: anywhere;
+      appearance: none;
+      -webkit-appearance: none;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .ring-compare-readout:hover {
+      border-color: var(--accent-ring);
+    }
+
+    .ring-compare-readout[aria-expanded="true"] {
+      border-color: var(--accent-ring);
+      background: color-mix(in srgb, var(--accent-ring) 22%, var(--surface));
+    }
+
+    .ring-compare-readout.is-placeholder {
+      font-weight: 700;
+      color: var(--muted);
+      background: color-mix(in srgb, var(--accent-ring) 7%, var(--surface));
     }
 
     .ring-timezone-section {
@@ -3950,7 +3965,7 @@
       overscroll-behavior: contain;
     }
 
-    .ring-timezone-toggle {
+    .ring-maps-btn {
       display: inline-grid;
       place-items: center;
       align-self: stretch;
@@ -3964,16 +3979,22 @@
       border-radius: var(--radius);
       background: color-mix(in srgb, var(--accent-ring) 7%, var(--surface));
       color: var(--text);
+      cursor: pointer;
     }
 
-    .ring-timezone-toggle .sf-symbol {
-      width: 17px;
-      height: 21px;
+    .ring-maps-btn .sf-symbol {
+      width: auto;
+      height: 19px;
     }
 
-    .ring-timezone-toggle[aria-expanded="true"] {
+    .ring-maps-btn:hover:not(:disabled) {
       border-color: var(--accent-ring);
       background: color-mix(in srgb, var(--accent-ring) 14%, var(--surface));
+    }
+
+    .ring-maps-btn:disabled {
+      opacity: .45;
+      cursor: default;
     }
 
     .ring-timezone-popover {
