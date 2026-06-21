@@ -1,15 +1,22 @@
 ## Future Prompt
 
+ - implement shortcuts in the popups: 
+    - Notes Priority
+    - Maps Grid
+    - Rangefinder Circle
+    - Rangefinder Time
 
-WISH-077 - 4.8.0
-  rangefinder UNDER lengend in side bar in desktop mode and beside it if there is enough room
-  shortcuts update: | for switcing maps; ~ for label, 4 for globe. 
-  shortcuts: Priority popup; globe pop up, rangefinder popup
-  button consistency
-  drop wayfinder button from maps
-  move copy button into text only view
-  36px for buttons
-
+1. Instead of clipping text in rangefinder start or end break it into two lines when overflowing; Where on top and city on bottom shrinking the text so it doesn't take up any more vertical space than given to it with one line
+3. When switching to scrollable map mode the buttons on the right all shift up a little and are no longer in alignment. Similar behavior happens when enabling rangefinder. this shouldn't happen.
+4. Change the label dropdown shortcut from "~" to "'" and just have it cycle between the options instead of bringing up the popup
+5. instead of 1,2,3 have the label toggle just cycle through its options with left arrow
+6. Re-arrange the map buttons and update their shortcuts: switch map scroll/fit (9); Grid (8), Rangefinder (7), Pins (6), Filter (5)
+7. For the copy button float it above the notes container on the right side so it doesn't bump down or cover up text
+8. Grid Pop-up: All buttons should be square with text above them (Grid, Circles, Labels, Major, Minor). The drop downs should be same square size as the buttons
+9. RangeFinder circle pop-up should stay as a 2x2 grid with button symbols but move the words out to be Fill/Clip on the left and No/Yes on the top
+10. RangeFinder Time popup should just two squares with text above. one button for Time, one input for Speed
+11. Tighten up the spacing on priority pop-up
+14. change wayfinder shortcut to "F"; give priority button "R"; legend position (W), Auto categories (X), Edit Legend (Y), Add Legend Level (Z); Auto Colors (T); edit rangefinder (J); Add Rangefinder (K), Drive/Fly (U), mph/kph (V); Circles (R)
 
 ## Maps
 Blank World Map with Circles: https://commons.wikimedia.org/wiki/File:BlankMap-World-with-Circles.svg
