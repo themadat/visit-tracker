@@ -7,16 +7,18 @@
         version: "4.8.0.4",
         date: "2026-06-21",
         title: "Square Deal",
-        summary: "The Text Only Copy button stays put, and Rangefinder Time gets its own key.",
+        summary: "Text Only gets floating, scroll-sticky text-size and Copy controls, and Rangefinder Time gets its own key.",
         highlights: [
-          "Text Only's Copy button floats on top of the notes surface instead of hiding above it.",
+          "Text Only adds Smaller / Larger buttons that resize just that view's text.",
+          "The text-size and Copy controls float over the text and stick while you scroll.",
           "Press T to open Rangefinder Time; Auto Colors moves to >.",
         ],
         updateSections: [
           {
             heading: "Interface",
             items: [
-              "The Text Only Copy button now floats over the top-right of the notes surface, so it stays visible instead of slipping out of view above the scroll area.",
+              "Text Only's top-right cluster adds Smaller and Larger buttons that adjust the font size of the Text Only view only.",
+              "The Smaller / Larger / Copy controls float over the top-right of the notes surface and stay pinned there as the text scrolls, instead of slipping out of view.",
             ]
           },
           {
