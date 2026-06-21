@@ -4,112 +4,49 @@
 
     const CHANGELOG = [
       {
-        version: "4.8.0.4",
+        version: "4.8.0",
         date: "2026-06-21",
         title: "Square Deal",
-        summary: "Text Only gets floating, scroll-sticky text-size and Copy controls, and Rangefinder Time gets its own key.",
+        summary: "A consistency pass that unifies the app's anchored pop-ups and controls, refines Text Only and the map, and revises the keyboard shortcuts.",
+        banner: "A consistency pass: unified pop-ups, one size system, floating Text Only tools, fresh shortcuts.",
+        cta: "Make it a|Square Deal!",
         highlights: [
-          "Text Only adds Smaller / Larger buttons that resize just that view's text.",
-          "The text-size and Copy controls float over the text and stick while you scroll.",
-          "Press T to open Rangefinder Time; Auto Colors moves to >.",
+          "Anchored pop-ups share one square-control system with consistent sizing and on-screen clamping.",
+          "Controls share a 36/32/40px height system; Notes, Legend, and Rangefinder all line up.",
+          "Text Only adds a floating, scroll-sticky Copy plus Smaller / Larger text-size buttons.",
+          "A fully revised keyboard shortcut set across the map, Legend, Notes, and Rangefinder.",
         ],
         updateSections: [
           {
-            heading: "Interface",
+            heading: "Consistency & Controls",
             items: [
-              "Text Only's top-right cluster adds Smaller and Larger buttons that adjust the font size of the Text Only view only.",
-              "The Smaller / Larger / Copy controls float over the top-right of the notes surface and stay pinned there as the text scrolls, instead of slipping out of view.",
+              "Primary controls standardize at 36px, inset segmented choices at 32px, and bordered control frames at 40px.",
+              "Priority, Grid, Rangefinder style/fill/clip and time, Legend position, Map label and Waypoint Pack label pickers, Waypoint priority/link menus, and Basecamp row/icon/link popovers share one square-button look, sizing, labels, active/disabled states, and viewport clamping.",
+              "Wayfinder mode now lives only on the Notes panel; the Map drops its duplicate Wayfinder button.",
+              "The Notes header top-aligns like the Legend and Rangefinder, the search bar matches its buttons' height, and the Legend/Rangefinder resize handle matches the map-and-notes handle.",
             ]
           },
           {
-            heading: "Shortcuts",
+            heading: "Text Only",
             items: [
-              "T now opens the Rangefinder Time pop-up.",
-              "Apply Auto Colors Palette moves from T to >.",
-              "{ and } shrink and grow the Text Only font size.",
+              "Copy moves inside Text Only view and, with new Smaller and Larger buttons, floats over the top-right of the text and stays pinned as the notes scroll.",
+              "Smaller and Larger adjust the font size of the Text Only view only, and the text now starts at the very top of the surface.",
             ]
-          }
-        ]
-      },
-      {
-        version: "4.8.0.3",
-        date: "2026-06-20",
-        title: "Square Deal",
-        summary: "Sharper Rangefinder labels, steadier map controls, and a fully revised shortcut set.",
-        highlights: [
-          "Rangefinder endpoints wrap without growing their control row.",
-          "Map controls stay aligned as display modes change.",
-          "Grid, Circle, Time, and Priority pop-ups use compact numbered shortcuts.",
-          "Map, Legend, Notes, and Rangefinder shortcuts match their new control order.",
-        ],
-        updateSections: [
+          },
           {
-            heading: "Interface",
+            heading: "Map & Rangefinder",
             items: [
               "Long Rangefinder Start and End locations split into Where and City lines, shrinking inside the same fixed-height slot.",
-              "Map header actions stay top-aligned when Scroll mode or Rangefinder adds secondary interface elements.",
-              "The Text Only Copy control floats above the notes surface without reserving space or covering note text.",
-              "Grid, Rangefinder Circle, Rangefinder Time, and Priority pop-ups use tighter square-control layouts.",
+              "Map header actions stay top-aligned when Scroll mode or Rangefinder adds secondary controls.",
+              "On desktop, a side-column Rangefinder sits below Legend until the side owns at least 40% of the layout, then moves beside it.",
             ]
           },
           {
             heading: "Shortcuts",
             items: [
-              "Map controls are now : for Fit/Scroll, 9 for Grid, 8 for Rangefinder, 7 for Pins, and 6 for Filter.",
-              "The apostrophe key cycles label targets, Left Arrow cycles label modes, and ~ opens Rename.",
-              "Legend, Notes, and Rangefinder header actions now use the requested W/X/Y/Z/T, F/R, and E/J/K/U/V assignments.",
-              "Priority and Grid pop-ups use 1–5; Rangefinder Circle uses 1–4; Rangefinder Time uses 1–2.",
-            ]
-          }
-        ]
-      },
-      {
-        version: "4.8.0.2",
-        date: "2026-06-20",
-        title: "Square Deal",
-        summary: "Tidier Notes header, a matched search height, and consistent resize handles.",
-        highlights: [
-          "The Notes header sits at the top, like the Legend.",
-          "The notes search bar matches its button height.",
-        ],
-        updateSections: [
-          {
-            heading: "Interface",
-            items: [
-              "The Notes header now top-aligns (matching the Legend and Rangefinder), with a tighter gap to its toggles.",
-              "The notes search / filter bar is the same height as the buttons beside it.",
-              "The Legend/Rangefinder resize handle now matches the map-and-notes handle in size and color.",
-            ]
-          }
-        ]
-      },
-      {
-        version: "4.8.0.1",
-        date: "2026-06-20",
-        title: "Square Deal",
-        summary: "A consistency pass across controls, pop-ups, shortcuts, and map layout.",
-        highlights: [
-          "Controls share one consistent height system.",
-          "New shortcuts: | switches maps, ~ opens labels.",
-          "Anchored pop-ups stay on-screen and share one visual system.",
-          "Rangefinder now adapts to the side column's available width.",
-        ],
-        updateSections: [
-          {
-            heading: "Interface",
-            items: [
-              "Standardized primary controls at 36px, inset segmented choices at 32px, and bordered control frames at 40px.",
-              "Unified Priority, Grid, Rangefinder, Legend, label-target, Waypoint, and Basecamp pop-up sizing, states, borders, and viewport clamping.",
-              "Wayfinder mode now lives only on the Notes panel; the Map drops its duplicate Wayfinder button.",
-              "Copy now sits inside Text Only view at the upper-right of the text surface.",
-            ]
-          },
-          {
-            heading: "Map and shortcuts",
-            items: [
-              "On desktop, a side-column Rangefinder sits below Legend until the side owns at least 40% of the horizontal layout, then moves beside it.",
-              "The | key switches US and World maps; ~ opens or closes the map-label target picker.",
-              "Priority, Grid, label-target, Rangefinder style/time, time-zone, and Legend position pop-ups now expose context shortcuts.",
+              "Map: | switches US/World, : toggles Fit/Scroll, 9 Grid, 8 Rangefinder, 7 Pins, 6 Filter, ' cycles label targets, Left Arrow cycles label modes, and ~ opens Rename.",
+              "Legend and Notes: W/X/Y/Z, F/R, and > applies Auto Colors; Rangefinder: E/J/K/U/V plus T for Time.",
+              "Pop-ups use numbered keys (Priority and Grid 1–5, Rangefinder Circle 1–4, Time 1–2); { and } shrink and grow the Text Only font size.",
             ]
           }
         ]
