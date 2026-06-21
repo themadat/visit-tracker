@@ -240,7 +240,7 @@
                     <div id="legendPositionMenu" class="legend-position-menu hidden" role="menu"
                       aria-label="Legend position options"></div>
                   </span>
-                  <button id="smartColorsBtn" type="button" data-shortcut="T">Auto Colors</button>
+                  <button id="smartColorsBtn" type="button" data-shortcut=">">Auto Colors</button>
                   <button id="suggestionsToggleBtn" class="toggle-btn" type="button" aria-pressed="false"
                     data-shortcut="X">Hide Suggestions</button>
                   <button id="legendEditBtn" class="toggle-btn" type="button" aria-pressed="false"
@@ -1628,6 +1628,7 @@
               <div class="shortcut-row"><kbd>1–5</kbd><span>Grid pop-up: Grid, Circles, Labels, Major, Minor.</span></div>
               <div class="shortcut-row"><kbd>E</kbd><span>Open Rangefinder Circle settings.</span></div>
               <div class="shortcut-row"><kbd>1–4</kbd><span>Rangefinder Circle pop-up: Fill No/Yes, Clip No/Yes.</span></div>
+              <div class="shortcut-row"><kbd>T</kbd><span>Open Rangefinder Time settings.</span></div>
               <div class="shortcut-row"><kbd>1–2</kbd><span>Rangefinder Time pop-up: Time and Speed.</span></div>
               <div class="shortcut-row"><kbd>J K</kbd><span>Edit Rangefinder rings; Add a Rangefinder ring.</span></div>
               <div class="shortcut-row"><kbd>U V</kbd><span>Switch Drive/Fly; switch mph/kph.</span></div>
@@ -1639,7 +1640,7 @@
             <div class="shortcut-list">
               <div class="shortcut-row"><kbd>W</kbd><span>Open Legend Position Menu <em>[legendPositionBtn]</em></span>
               </div>
-              <div class="shortcut-row"><kbd>T</kbd><span>Apply Auto Colors Palette <em>[smartColorsBtn]</em></span>
+              <div class="shortcut-row"><kbd>&gt;</kbd><span>Apply Auto Colors Palette <em>[smartColorsBtn]</em></span>
               </div>
               <div class="shortcut-row"><kbd>X</kbd><span>Hide/Show Suggested Levels
                   <em>[suggestionsToggleBtn]</em></span></div>
@@ -1803,7 +1804,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.8.0.3";
+    const APP_VERSION = "4.8.0.4";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -5068,7 +5069,7 @@
           <button class="ring-header-btn" type="button" data-ring-travel-mode="${nextTravelMode}" data-shortcut="U" aria-pressed="${planeOn ? "true" : "false"}" aria-label="${travelLabel}; switch to ${planeOn ? "Drive rings" : "Plane rings"}" title="${travelLabel} at ${ringSpeedLabel()}">${travelIcon}</button>
           <button class="ring-header-btn" type="button" data-ring-unit="${nextUnit}" data-shortcut="V" aria-pressed="true" aria-label="Using ${unit === "mi" ? "miles and mph" : "kilometers and kph"}; switch to ${nextUnit === "mi" ? "miles and mph" : "kilometers and kph"}" title="Switch to ${nextUnit === "mi" ? "mph" : "kph"}">${speedUnitIcon}</button>
           <span class="ring-time-picker ${timeOn ? "is-time-on" : ""}">
-            <button class="ring-header-btn ring-time-btn" type="button" data-ring-time-menu aria-haspopup="true" aria-expanded="${ringTimeMenuOpen ? "true" : "false"}" aria-label="Time and average speed settings" title="${timeOn ? `Time on · ${travelWord} ${speedDisplay} ${speedUnitLabel}` : "Time estimates off"}">${timeOn ? __STOPWATCH_FILL : __STOPWATCH}</button>
+            <button class="ring-header-btn ring-time-btn" type="button" data-ring-time-menu data-shortcut="T" aria-haspopup="true" aria-expanded="${ringTimeMenuOpen ? "true" : "false"}" aria-label="Time and average speed settings" title="${timeOn ? `Time on · ${travelWord} ${speedDisplay} ${speedUnitLabel}` : "Time estimates off"}">${timeOn ? __STOPWATCH_FILL : __STOPWATCH}</button>
             <span class="ring-time-menu ${ringTimeMenuOpen ? "" : "hidden"}" role="menu" aria-label="Rangefinder time and speed">
               <span class="ring-time-control">
                 <small>Time</small>
@@ -19852,12 +19853,13 @@
 
         // Legend.
         w: () => legendPanelOpen && legendPositionControlAvailable() && toggleLegendPositionMenu(),
-        t: () => clickIf("#smartColorsBtn"),
+        ">": () => clickIf("#smartColorsBtn"),
         x: () => clickIf("#suggestionsToggleBtn"),
         y: () => legendPanelOpen && toggleLegendEditMode(),
         z: () => clickIf("#addLevelBtn"),
 
         // Rangefinder.
+        t: () => clickIf("[data-ring-time-menu]"),
         e: () => clickIf("[data-ring-style-menu]"),
         u: () => clickIf("[data-ring-travel-mode]"),
         v: () => clickIf("[data-ring-unit]"),
