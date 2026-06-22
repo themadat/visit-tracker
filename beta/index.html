@@ -824,18 +824,10 @@
   <dialog id="paletteDialog" class="palette-dialog" aria-label="Theme and colors">
     <header>
       <h2>Theme &amp; Colors</h2>
-      <button id="paletteResetBtn" type="button" title="Reset accents, priorities, rings &amp; Wayfinder to defaults">Reset</button>
       <button id="paletteCloseBtn" type="button" data-close="paletteDialog" data-shortcut="Esc">Close</button>
     </header>
     <div class="dialog-body">
-      <section class="palette-current" aria-label="Current theme">
-        <h3 class="palette-section-title">Current Theme</h3>
-        <div id="paletteCurrent" class="palette-current-grid"></div>
-      </section>
-      <section class="palette-themes" aria-label="Preset themes">
-        <h3 class="palette-section-title">Themes</h3>
-        <div id="paletteThemeList" class="palette-theme-list"></div>
-      </section>
+      <div id="paletteGrid" class="palette-grid"></div>
     </div>
   </dialog>
 
@@ -15967,25 +15959,28 @@
       const level = state.levels[index];
       return level && /^#[0-9a-f]{6}$/i.test(level.color || "") ? level.color.toLowerCase() : "#000000";
     }
-    function assignLevelPalette(colors) {
-      // Counting levels fill from the palette's left edge, top-to-bottom; excluded
-      // levels fill from the right edge, bottom-to-top, so the excluded slot(s)
-      // always land on the palette's last color(s). Mutates state.levels only.
-      const assigned = new Map();
+    function levelPaletteAssignment(colors) {
+      // Map a palette onto the current legend levels without mutating: counting
+      // levels fill from the palette's left edge, top-to-bottom; excluded levels
+      // fill from the right edge, bottom-to-top, so the excluded slot(s) always
+      // land on the palette's last color(s). Returns one color per current level.
+      const out = state.levels.map(level => level.color);
       const counting = [];
       const excluded = [];
       state.levels.forEach((level, index) => {
         (level.countsTowardStats === false ? excluded : counting).push(index);
       });
       counting.forEach((levelIndex, i) => {
-        assigned.set(levelIndex, colors[Math.min(i, colors.length - 1)]);
+        out[levelIndex] = colors[Math.min(i, colors.length - 1)];
       });
       excluded.slice().reverse().forEach((levelIndex, i) => {
-        assigned.set(levelIndex, colors[Math.max(0, colors.length - 1 - i)]);
+        out[levelIndex] = colors[Math.max(0, colors.length - 1 - i)];
       });
-      state.levels = state.levels.map((level, index) =>
-        assigned.has(index) ? { ...level, color: assigned.get(index) } : level
-      );
+      return out;
+    }
+    function assignLevelPalette(colors) {
+      const out = levelPaletteAssignment(colors);
+      state.levels = state.levels.map((level, index) => ({ ...level, color: out[index] }));
     }
     function setPaletteVars(vars, commit) {
       const bag = paletteOverrideBag();
@@ -16034,73 +16029,121 @@
       render();
       renderPaletteDialog();
     }
-    function resetColorTheme() {
-      // Clear accent / priority / ring / Wayfinder overrides back to built-in
-      // defaults. Legend level colors are left alone (managed in the Legend).
-      state.settings.palette = {};
-      save();
-      render();
-      renderPaletteDialog();
+    // Column-aligned theme grid: a header row of group labels, the editable
+    // Current row, then one row per preset theme — all sharing the same column
+    // layout so Current lines up with the built-ins. Order: Main · Way · Range ·
+    // Levels · Priorities. Each theme row previews how that theme would color the
+    // user's actual legend levels (levelPaletteAssignment), and highlights when
+    // the current colors already match it.
+    function paletteCurrentValue(type, index) {
+      if (type === "accent") return paletteVarValue("--accent");
+      if (type === "wayfinder") return paletteVarValue("--wayfinder-accent");
+      if (type === "priority") return paletteVarValue(`--priority-${index + 1}-color`);
+      if (type === "ring") return index === 0 ? paletteVarValue("--accent-ring") : paletteVarValue("--ring-step-8-stroke");
+      if (type === "level") return paletteLevelColorValue(index);
+      return "#000000";
     }
-    function paletteSwatchMarkup(value, label, type, index) {
-      return `<label class="palette-swatch" title="${escapeHtml(label)}" style="--row-color:${escapeHtml(value)}"><input type="color" value="${escapeHtml(value)}" aria-label="${escapeHtml(label)}" data-edit="${type}" data-index="${index}"></label>`;
+    function currentMatchesTheme(theme, levelColors) {
+      if (paletteVarValue("--accent") !== theme.accent) return false;
+      if (paletteVarValue("--wayfinder-accent") !== theme.wayfinder) return false;
+      if (paletteVarValue("--accent-ring") !== theme.ring[0]) return false;
+      if (paletteVarValue("--ring-step-8-stroke") !== theme.ring[1]) return false;
+      for (let i = 0; i < 5; i++) if (paletteVarValue(`--priority-${i + 1}-color`) !== theme.priorities[i]) return false;
+      for (let i = 0; i < state.levels.length; i++) {
+        if (paletteLevelColorValue(i) !== String(levelColors[i] || "").toLowerCase()) return false;
+      }
+      return true;
     }
-    function paletteClusterMarkup(label, swatches) {
-      return `<div class="palette-cluster"><span class="palette-cluster-label">${escapeHtml(label)}</span><div class="palette-cluster-swatches">${swatches}</div></div>`;
+    function paletteEditCell(value, label, type, index) {
+      return `<div class="palette-edit-cell" data-edit="${type}" data-index="${index}">
+          <label class="palette-swatch" title="${escapeHtml(label)}" style="--row-color:${escapeHtml(value)}"><input type="color" value="${escapeHtml(value)}" aria-label="${escapeHtml(label)}"></label>
+          <input type="text" class="palette-hex" value="${escapeHtml(value)}" aria-label="${escapeHtml(label)} hex" spellcheck="false" maxlength="7">
+        </div>`;
     }
-    function paletteThemeStrip(theme) {
-      const cells = theme.levels.concat(theme.priorities, [theme.ring[0], theme.ring[1], theme.wayfinder, theme.accent]);
-      return cells.map(c => `<span style="background:${escapeHtml(c)}"></span>`).join("");
+    function paletteThemeCells(colors) {
+      return colors.map(c => `<span class="palette-grid-cell swatch-cell" style="background:${escapeHtml(c)}"></span>`).join("");
     }
-    function renderPaletteCurrent() {
-      const el = $("#paletteCurrent");
+    function paletteRowGroups(main, way, range, levels, priorities, levelCount) {
+      return `<div class="palette-grid-group" style="flex:1">${main}</div>`
+        + `<div class="palette-grid-group" style="flex:1">${way}</div>`
+        + `<div class="palette-grid-group" style="flex:2">${range}</div>`
+        + `<div class="palette-grid-group" style="flex:${levelCount}">${levels}</div>`
+        + `<div class="palette-grid-group" style="flex:5">${priorities}</div>`;
+    }
+    function paletteHeaderRow(levelCount) {
+      const label = name => `<span class="palette-grid-grouplabel">${name}</span>`;
+      return `<div class="palette-grid-row palette-grid-head" aria-hidden="true"><span class="palette-grid-label"></span>${paletteRowGroups(label("Main"), label("Way"), label("Range"), label("Levels"), label("Priorities"), levelCount)}</div>`;
+    }
+    function paletteCurrentRow(levelCount) {
+      const main = paletteEditCell(paletteVarValue("--accent"), "App accent", "accent", 0);
+      const way = paletteEditCell(paletteVarValue("--wayfinder-accent"), "Wayfinder accent", "wayfinder", 0);
+      const range = paletteEditCell(paletteVarValue("--accent-ring"), "Rangefinder near rings", "ring", 0)
+        + paletteEditCell(paletteVarValue("--ring-step-8-stroke"), "Rangefinder far rings", "ring", 1);
+      const levels = state.levels.map((lvl, i) => paletteEditCell(paletteLevelColorValue(i), `${lvl.name || "Level " + (i + 1)}`, "level", i)).join("");
+      const priorities = [0, 1, 2, 3, 4].map(i => paletteEditCell(paletteVarValue(`--priority-${i + 1}-color`), `Priority ${i + 1}`, "priority", i)).join("");
+      return `<div class="palette-grid-row palette-current-row"><span class="palette-grid-label">Current</span>${paletteRowGroups(main, way, range, levels, priorities, levelCount)}</div>`;
+    }
+    function paletteThemeRow(theme, shortcut, levelCount) {
+      const levelColors = levelPaletteAssignment(theme.levels);
+      const active = currentMatchesTheme(theme, levelColors);
+      const groups = paletteRowGroups(
+        paletteThemeCells([theme.accent]),
+        paletteThemeCells([theme.wayfinder]),
+        paletteThemeCells([theme.ring[0], theme.ring[1]]),
+        paletteThemeCells(levelColors),
+        paletteThemeCells(theme.priorities),
+        levelCount
+      );
+      return `<button type="button" class="palette-grid-row palette-theme-row${active ? " is-active" : ""}" data-theme="${escapeHtml(theme.id)}" data-shortcut="${shortcut}" title="Apply the ${escapeHtml(theme.name)} theme"${active ? ' aria-current="true"' : ""}><span class="palette-grid-label">${escapeHtml(theme.name)}</span>${groups}</button>`;
+    }
+    function renderPaletteDialog() {
+      const el = $("#paletteGrid");
       if (!el) return;
-      const levels = state.levels.map((lvl, i) =>
-        paletteSwatchMarkup(paletteLevelColorValue(i), `${lvl.name || "Level " + (i + 1)} color`, "level", i)
-      ).join("");
-      const priorities = [0, 1, 2, 3, 4].map(i =>
-        paletteSwatchMarkup(paletteVarValue(`--priority-${i + 1}-color`), `Priority ${i + 1}`, "priority", i)
-      ).join("");
-      const ring = paletteSwatchMarkup(paletteVarValue("--accent-ring"), "Rangefinder near rings", "ring", 0)
-        + paletteSwatchMarkup(paletteVarValue("--ring-step-8-stroke"), "Rangefinder far rings", "ring", 1);
-      const wayfinder = paletteSwatchMarkup(paletteVarValue("--wayfinder-accent"), "Wayfinder accent", "wayfinder", 0);
-      const accent = paletteSwatchMarkup(paletteVarValue("--accent"), "App accent", "accent", 0);
-      el.innerHTML =
-        paletteClusterMarkup("Levels", levels) +
-        paletteClusterMarkup("Priorities", priorities) +
-        paletteClusterMarkup("Rangefinder", ring) +
-        paletteClusterMarkup("Wayfinder", wayfinder) +
-        paletteClusterMarkup("Accent", accent);
-      el.querySelectorAll('input[type="color"]').forEach(input => {
-        const type = input.dataset.edit;
-        const index = Number(input.dataset.index || 0);
-        const swatch = input.closest(".palette-swatch");
-        const apply = commit => {
-          swatch.style.setProperty("--row-color", input.value);
-          editPaletteSwatch(type, index, input.value, commit);
+      const levelCount = state.levels.length;
+      el.innerHTML = paletteHeaderRow(levelCount)
+        + paletteCurrentRow(levelCount)
+        + COLOR_THEMES.map((theme, i) => paletteThemeRow(theme, i + 1, levelCount)).join("");
+      bindPaletteGrid();
+    }
+    function bindPaletteGrid() {
+      $$("#paletteGrid .palette-edit-cell").forEach(cell => {
+        const type = cell.dataset.edit;
+        const index = Number(cell.dataset.index || 0);
+        const colorInput = cell.querySelector('input[type="color"]');
+        const hexInput = cell.querySelector(".palette-hex");
+        const swatch = cell.querySelector(".palette-swatch");
+        const preview = hex => {
+          swatch.style.setProperty("--row-color", hex);
+          if (colorInput.value !== hex) colorInput.value = hex;
+          editPaletteSwatch(type, index, hex, false);
         };
-        input.addEventListener("input", () => apply(false));
-        input.addEventListener("change", () => apply(true));
+        colorInput.addEventListener("input", () => {
+          const hex = normalizePaletteHex(colorInput.value);
+          if (!hex) return;
+          if (document.activeElement !== hexInput) hexInput.value = hex;
+          preview(hex);
+        });
+        colorInput.addEventListener("change", () => {
+          const hex = normalizePaletteHex(colorInput.value);
+          if (hex) { editPaletteSwatch(type, index, hex, true); renderPaletteDialog(); }
+        });
+        hexInput.addEventListener("input", () => {
+          const hex = normalizePaletteHex(hexInput.value);
+          if (hex) preview(hex);
+        });
+        hexInput.addEventListener("change", () => {
+          const hex = normalizePaletteHex(hexInput.value);
+          if (!hex) { hexInput.value = paletteCurrentValue(type, index); return; }
+          editPaletteSwatch(type, index, hex, true);
+          renderPaletteDialog();
+        });
       });
-    }
-    function renderPaletteThemes() {
-      const el = $("#paletteThemeList");
-      if (!el) return;
-      el.innerHTML = COLOR_THEMES.map((theme, i) => `
-        <button type="button" class="palette-theme-row" data-theme="${escapeHtml(theme.id)}" data-shortcut="${i + 1}" title="Apply the ${escapeHtml(theme.name)} theme">
-          <span class="palette-theme-name">${escapeHtml(theme.name)}</span>
-          <span class="palette-theme-strip">${paletteThemeStrip(theme)}</span>
-        </button>`).join("");
-      el.querySelectorAll("[data-theme]").forEach(btn => {
+      $$("#paletteGrid [data-theme]").forEach(btn => {
         btn.addEventListener("click", () => {
           const theme = COLOR_THEMES.find(t => t.id === btn.dataset.theme);
           if (theme) applyColorTheme(theme);
         });
       });
-    }
-    function renderPaletteDialog() {
-      renderPaletteCurrent();
-      renderPaletteThemes();
     }
 
     function saveLevelFromForm({ auto = false } = {}) {
@@ -20082,7 +20125,7 @@
           $("#paletteDialog").close();
           return;
         }
-        const paletteButton = $(`#paletteThemeList [data-shortcut="${key}"]`);
+        const paletteButton = $(`#paletteGrid [data-theme][data-shortcut="${key}"]`);
         if (!paletteButton) return;
         event.preventDefault();
         paletteButton.click();
@@ -21052,7 +21095,6 @@
         renderPaletteDialog();
         $("#paletteDialog").showModal();
       });
-      $("#paletteResetBtn").addEventListener("click", () => resetColorTheme());
       $("#suggestionsToggleBtn").addEventListener("click", () => {
         updateSetting("hideSuggestedCategories", !state.settings.hideSuggestedCategories);
       });
