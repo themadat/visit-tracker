@@ -2,32 +2,43 @@
 
 ## Status — `start` complete (build `5.0.0.1`), `prep`/`ship` pending
 
-Implementation phases 1–6 are **done and browser-verified** (live preview,
-per-mode persistence, reset color/group/all, presets, contrast badges, JSON
-export→import round-trip, malformed-data sanitize, pixel-identical Phase-1
-variable-ization). Decisions taken: **per-mode** overrides; legend "Auto Colors"
-**removed** and folded into the modal (the `>` shortcut + universal key now open
-Theme & Colors); presets **augmented** (6 legend palettes kept + 3 full-app
-themes Forest/Ember/Ocean).
+Implementation **done and browser-verified** (apply theme, edit swatch with
+derivation, ring-ramp re-derive, reset, flat persistence reload, legacy
+`{light,dark}`→flat migration, no-scroll at desktop height). The modal was
+**redesigned per user feedback** from the first grouped/per-mode version into a
+compact single-palette theme picker.
 
-Key symbols (all `index.html` unless noted): `THEME_VAR_GROUPS`,
-`THEMEABLE_VARS`, `DEFAULT_PALETTE`, `defaultPalette`/`normalizePalette`/
-`normalizePaletteHex`, `applyPaletteOverrides` (called in `render()` after
-`dataset.theme`), `renderPaletteDialog` + `paletteVar*`/`applyPaletteVarEdit`/
-`applyPaletteLevelEdit`/`resetPalette*`/`copyPaletteToOtherMode`,
-`FULL_THEME_PRESETS`/`buildThemeOverrides`/`applyFullThemePreset`,
-`assignLevelPalette`/`smartApplyPalette`, `paletteContrastRatio`/
-`renderPaletteContrast`. CSS for the modal lives by `#paletteDialog[open]` /
-`.palette-*` in `assets/css/app.css`. New persisted field: `settings.palette
-{ light:{}, dark:{} }` (allow-list + hex validated; `usStateVisitMap.v1`
-unchanged). Wayfinder teal (`#14b8a6`/`#0f766e`/`#0d9488`) and note priority
-colors are now CSS vars in both `:root` and `[data-theme="dark"]`.
+Final design (supersedes the original plan body below):
+- **Flat single palette** — `settings.palette` is a flat `{ "--var": "#hex" }`
+  bag applied the same in light and dark (no per-mode split). `normalizePalette`
+  folds the legacy `{light,dark}` shape (light wins) and drops unknown/invalid.
+- **No app-surface editing and no contrast badges** (removed per feedback).
+- **Derived companions** — the user edits only primaries; `deriveAccentVars`
+  (→`--accent-2`), `deriveWayfinderVars` (→`--wayfinder-accent-strong`/`-deep`),
+  and `deriveRingVars` (2 endpoints → `--accent-ring`/`-secondary`,
+  `--ring-connector`, 8 `--ring-step-N-stroke` via `paletteRamp`) fill the rest.
+- **Modal** = a **Current Theme** row of editable swatches (5 levels · 5
+  priorities · 2 Rangefinder endpoints · 1 Wayfinder · 1 Accent) + a list of
+  **7 one-click theme strips**: Classic, Neon, Pastel, Sunset, Space, Forest,
+  Ocean (`COLOR_THEMES`, each = levels[5]/priorities[5]/ring[2]/wayfinder/accent).
+  `Reset` clears the override bag (levels untouched). Legend "Auto Colors"
+  removed; `>` (universal + Shortcut-Mode) opens the modal.
+
+Key symbols (all `index.html`): `THEMEABLE_VARS` (21, no surfaces), `COLOR_THEMES`,
+`DEFAULT_THEME`, `PALETTE_DEFAULT_VARS`, `normalizePalette`/`normalizePaletteHex`,
+`applyPaletteOverrides` (in `render()`), `paletteMix`/`paletteRamp`/`derive*Vars`,
+`paletteVarValue`, `setPaletteVars`, `editPaletteSwatch`, `applyColorTheme`,
+`resetColorTheme`, `renderPaletteCurrent`/`renderPaletteThemes`/`renderPaletteDialog`,
+`assignLevelPalette`. CSS: `#paletteDialog` + `.palette-current*`/`.palette-cluster*`/
+`.palette-theme-*`/`.palette-swatch` in `assets/css/app.css`. Persisted field
+`settings.palette` (flat); `usStateVisitMap.v1` schema unchanged. Wayfinder teal
+and note priority colors are CSS vars in both `:root` and `[data-theme="dark"]`.
 
 **Remaining (Phase 7 — `prep`/`ship`):** Help Center + FAQ entry; `data-hint`
 copy for `#paletteBtn`/modal; README feature list; refresh handoff Snapshot/
 Current Surface; mark WISH-063 done in `roadmap.js` (at ship); collapse the
 `5.0.0.1` build line to `5.0.0` and finalize the CHANGELOG. The `CHANGELOG`
-"Paint Job" entry already carries the banner/cta + full update sections.
+"Paint Job" entry already carries the banner/cta + update sections.
 
 
 
