@@ -1,5 +1,36 @@
 # WISH-063 — App-Wide Theming Overhaul (target 5.0.0)
 
+## Status — `start` complete (build `5.0.0.1`), `prep`/`ship` pending
+
+Implementation phases 1–6 are **done and browser-verified** (live preview,
+per-mode persistence, reset color/group/all, presets, contrast badges, JSON
+export→import round-trip, malformed-data sanitize, pixel-identical Phase-1
+variable-ization). Decisions taken: **per-mode** overrides; legend "Auto Colors"
+**removed** and folded into the modal (the `>` shortcut + universal key now open
+Theme & Colors); presets **augmented** (6 legend palettes kept + 3 full-app
+themes Forest/Ember/Ocean).
+
+Key symbols (all `index.html` unless noted): `THEME_VAR_GROUPS`,
+`THEMEABLE_VARS`, `DEFAULT_PALETTE`, `defaultPalette`/`normalizePalette`/
+`normalizePaletteHex`, `applyPaletteOverrides` (called in `render()` after
+`dataset.theme`), `renderPaletteDialog` + `paletteVar*`/`applyPaletteVarEdit`/
+`applyPaletteLevelEdit`/`resetPalette*`/`copyPaletteToOtherMode`,
+`FULL_THEME_PRESETS`/`buildThemeOverrides`/`applyFullThemePreset`,
+`assignLevelPalette`/`smartApplyPalette`, `paletteContrastRatio`/
+`renderPaletteContrast`. CSS for the modal lives by `#paletteDialog[open]` /
+`.palette-*` in `assets/css/app.css`. New persisted field: `settings.palette
+{ light:{}, dark:{} }` (allow-list + hex validated; `usStateVisitMap.v1`
+unchanged). Wayfinder teal (`#14b8a6`/`#0f766e`/`#0d9488`) and note priority
+colors are now CSS vars in both `:root` and `[data-theme="dark"]`.
+
+**Remaining (Phase 7 — `prep`/`ship`):** Help Center + FAQ entry; `data-hint`
+copy for `#paletteBtn`/modal; README feature list; refresh handoff Snapshot/
+Current Surface; mark WISH-063 done in `roadmap.js` (at ship); collapse the
+`5.0.0.1` build line to `5.0.0` and finalize the CHANGELOG. The `CHANGELOG`
+"Paint Job" entry already carries the banner/cta + full update sections.
+
+
+
 Ticket: **WISH-063** "App-Wide Theming Overhaul". Target: **5.0.0** (next major — this is the flagship). Turn theming from "apply a preset to legend levels" into a first-class system where **every color the user perceives is selectable**, driven from a **large palette modal opened from the top bar** (immediately left of Settings), not a small legend pop-up.
 
 ## Goal
