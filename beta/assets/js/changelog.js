@@ -4,6 +4,39 @@
 
     const CHANGELOG = [
       {
+        version: "5.0.0.1",
+        date: "2026-06-22",
+        title: "Paint Job",
+        summary: "An app-wide color studio: every color you see becomes yours to change, from one big Theme & Colors panel in the top bar.",
+        banner: "Recolor the whole app — levels, priorities, rings, accents, surfaces — from one Theme & Colors panel.",
+        cta: "Make it|Yours!",
+        highlights: [
+          "New Theme & Colors button in the top bar opens a full color studio.",
+          "Recolor legend levels, priorities, Rangefinder rings, Wayfinder, and app surfaces.",
+          "Light and dark each keep their own colors; reset any color back anytime.",
+          "Your colors are saved with your data and ride along in backups.",
+        ],
+        updateSections: [
+          {
+            heading: "Theme & Colors",
+            items: [
+              "A new Theme & Colors button in the top bar (left of Settings) opens a large panel grouped by App Surfaces, Accents, Legend Levels, Priorities, Rangefinder, and Wayfinder.",
+              "Every color is a swatch plus hex field with instant live preview; light and dark each keep their own colors, with tabs to switch and a one-click copy to the other mode.",
+              "Reset any single color, a whole group, or everything back to the built-in defaults.",
+              "Full-theme presets (Forest, Ember, Ocean) recolor accents, rings, Wayfinder, and legend levels at once; the six legend palettes (Classic, Neon, Pastel, Sunset, Earth, Ocean) still set just the map level colors.",
+              "Live WCAG contrast badges flag hard-to-read text or accent choices without blocking them.",
+              "Your colors save with your data and travel in JSON backups.",
+            ]
+          },
+          {
+            heading: "Under the hood",
+            items: [
+              "Note priority colors and the Wayfinder accent now ride on themeable CSS variables, and the legend's old Auto Colors button folds into the new panel (the > shortcut now opens Theme & Colors).",
+            ]
+          }
+        ]
+      },
+      {
         version: "4.9.0",
         date: "2026-06-21",
         title: "Travel Agent",
