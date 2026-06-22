@@ -17,22 +17,28 @@ Final design (supersedes the original plan body below):
   (→`--accent-2`), `deriveWayfinderVars` (→`--wayfinder-accent-strong`/`-deep`),
   and `deriveRingVars` (2 endpoints → `--accent-ring`/`-secondary`,
   `--ring-connector`, 8 `--ring-step-N-stroke` via `paletteRamp`) fill the rest.
-- **Modal** = a **Current Theme** row of editable swatches (5 levels · 5
-  priorities · 2 Rangefinder endpoints · 1 Wayfinder · 1 Accent) + a list of
-  **7 one-click theme strips**: Classic, Neon, Pastel, Sunset, Space, Forest,
+- **Modal** = a **column-aligned grid** (`#paletteGrid`): a header row of group
+  labels, an editable **Current** row, then one row per preset theme — all sharing
+  the same **Main · Way · Range · Levels · Priorities** columns so Current lines up
+  with the built-ins. Each Current cell is a swatch (native color input) **plus an
+  editable hex field**. Theme rows preview how that theme would color the user's
+  actual legend levels (`levelPaletteAssignment`) and get `.is-active` when the
+  current colors match. **7 themes**: Classic, Neon, Pastel, Sunset, Space, Forest,
   Ocean (`COLOR_THEMES`, each = levels[5]/priorities[5]/ring[2]/wayfinder/accent).
-  `Reset` clears the override bag (levels untouched). Legend "Auto Colors"
+  No Reset button (apply Classic / clear data to revert). Legend "Auto Colors"
   removed; `>` (universal + Shortcut-Mode) opens the modal.
 
 Key symbols (all `index.html`): `THEMEABLE_VARS` (21, no surfaces), `COLOR_THEMES`,
 `DEFAULT_THEME`, `PALETTE_DEFAULT_VARS`, `normalizePalette`/`normalizePaletteHex`,
 `applyPaletteOverrides` (in `render()`), `paletteMix`/`paletteRamp`/`derive*Vars`,
-`paletteVarValue`, `setPaletteVars`, `editPaletteSwatch`, `applyColorTheme`,
-`resetColorTheme`, `renderPaletteCurrent`/`renderPaletteThemes`/`renderPaletteDialog`,
-`assignLevelPalette`. CSS: `#paletteDialog` + `.palette-current*`/`.palette-cluster*`/
-`.palette-theme-*`/`.palette-swatch` in `assets/css/app.css`. Persisted field
-`settings.palette` (flat); `usStateVisitMap.v1` schema unchanged. Wayfinder teal
-and note priority colors are CSS vars in both `:root` and `[data-theme="dark"]`.
+`paletteVarValue`/`paletteCurrentValue`, `setPaletteVars`, `editPaletteSwatch`,
+`applyColorTheme`, `levelPaletteAssignment`/`assignLevelPalette`,
+`currentMatchesTheme`, `paletteHeaderRow`/`paletteCurrentRow`/`paletteThemeRow`/
+`renderPaletteDialog`/`bindPaletteGrid`. CSS: `#paletteDialog` + `.palette-grid*`/
+`.palette-edit-cell`/`.palette-swatch`/`.palette-hex`/`.swatch-cell` in
+`assets/css/app.css`. Persisted field `settings.palette` (flat);
+`usStateVisitMap.v1` schema unchanged. Wayfinder teal and note priority colors are
+CSS vars in both `:root` and `[data-theme="dark"]`.
 
 **Remaining (Phase 7 — `prep`/`ship`):** Help Center + FAQ entry; `data-hint`
 copy for `#paletteBtn`/modal; README feature list; refresh handoff Snapshot/

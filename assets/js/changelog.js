@@ -22,8 +22,8 @@
             items: [
               "A new Theme & Colors button in the top bar (left of Settings) opens a compact panel: a Current Theme row of editable swatches plus a list of one-click preset themes.",
               "Edit your colors directly — 5 legend levels, 5 priorities, the Rangefinder's near and far rings, the Wayfinder accent, and the app accent — with instant live preview.",
-              "Companion shades (the ring ramp, accent and Wayfinder variants) are derived automatically, so there's a single setting for each color.",
-              "Apply a whole palette in one click with seven themes: Classic, Neon, Pastel, Sunset, Space, Forest, and Ocean. Reset returns accents, priorities, rings, and Wayfinder to defaults.",
+              "Each color block shows its hex, so you can set it with the picker or by typing the hex code; companion shades (the ring ramp, accent and Wayfinder variants) are derived automatically.",
+              "Apply a whole palette in one click with seven themes: Classic, Neon, Pastel, Sunset, Space, Forest, and Ocean. The Current row lines up with the themes column-for-column and highlights the one your colors match.",
               "Your colors save with your data and travel in JSON backups.",
             ]
           },
