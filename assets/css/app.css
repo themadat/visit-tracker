@@ -9100,128 +9100,35 @@
       gap: .6rem;
     }
 
-    /* WISH-063 — Theme & Colors modal: a large grouped color studio opened from
-       the top-bar palette button. Each row pairs a swatch (native color input
-       overlay) with a hex field; edits apply live via inline CSS-var overrides
-       (legend level colors edit state.levels[].color and refresh the map). */
-    #paletteDialog[open] {
-      display: grid;
-      grid-template-rows: auto minmax(0, 1fr);
-      width: min(940px, calc(100dvw - 1rem));
-      max-width: calc(100dvw - 1rem);
-      height: min(880px, calc(100vh - 1.6rem));
-      overflow: hidden;
-    }
-
-    .palette-mode-tabs {
-      display: inline-flex;
-      gap: .2rem;
-      margin-left: auto;
-      padding: .2rem;
-      border-radius: var(--radius);
-      background: var(--surface-2);
-      border: 1px solid var(--line);
-    }
-
-    .palette-mode-tabs button {
-      border: 0;
-      background: transparent;
-      color: var(--muted);
-      padding: .26rem .8rem;
-      border-radius: calc(var(--radius) - 2px);
-      font: inherit;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .palette-mode-tabs button[aria-selected="true"] {
-      background: var(--surface);
-      color: var(--text);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, .16);
+    /* WISH-063 — Theme & Colors: a compact theme picker opened from the top-bar
+       palette button. The Current Theme row holds editable swatches (a native
+       color input under a colored tile); preset themes are one-click horizontal
+       color strips. Sized to fit without scrolling. */
+    #paletteDialog {
+      width: min(640px, calc(100dvw - 1rem));
     }
 
     #paletteDialog .dialog-body {
       display: flex;
       flex-direction: column;
-      gap: .85rem;
-    }
-
-    .palette-toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: .6rem;
-      flex-wrap: wrap;
-    }
-
-    .palette-toolbar #paletteModeNote {
-      margin: 0;
-      flex: 1 1 220px;
-    }
-
-    .palette-toolbar-actions {
-      display: flex;
-      gap: .4rem;
-      flex-wrap: wrap;
-    }
-
-    .palette-groups {
-      display: grid;
       gap: 1rem;
     }
 
-    .palette-group {
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--surface);
-      overflow: hidden;
-    }
-
-    .palette-group-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: .5rem;
-      padding: .5rem .7rem;
-      background: var(--surface-2);
-      border-bottom: 1px solid var(--line);
-    }
-
-    .palette-group-head h3 {
-      margin: 0;
-      font-size: .95rem;
-    }
-
-    .palette-group-note {
-      font-size: .8rem;
-    }
-
-    .palette-group-reset {
-      font-size: .8rem;
-      padding: .22rem .55rem;
-    }
-
-    .palette-group-rows {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(min(100%, 232px), 1fr));
-      gap: .55rem;
-      padding: .7rem;
-    }
-
-    .palette-row {
-      display: grid;
-      grid-template-columns: auto minmax(0, 1fr) auto;
-      align-items: center;
-      gap: .55rem;
-      min-width: 0;
+    .palette-section-title {
+      margin: 0 0 .5rem;
+      font-size: .76rem;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--muted);
     }
 
     .palette-swatch {
       position: relative;
-      width: 34px;
-      height: 34px;
+      width: 30px;
+      height: 30px;
       flex: none;
-      border-radius: 8px;
+      border-radius: 7px;
       border: 1px solid rgba(0, 0, 0, .22);
       background: var(--row-color, var(--surface-2));
       overflow: hidden;
@@ -9244,156 +9151,73 @@
       cursor: pointer;
     }
 
-    .palette-row-label {
-      display: grid;
-      gap: .2rem;
-      min-width: 0;
-    }
-
-    .palette-row-name {
-      font-size: .85rem;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .palette-hex {
-      width: 100%;
-      max-width: 10ch;
-      padding: .2rem .4rem;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: .82rem;
-      text-transform: lowercase;
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      background: var(--surface-2);
-      color: var(--text);
-    }
-
-    .palette-reset {
-      flex: none;
-      width: 28px;
-      height: 28px;
-      display: inline-grid;
-      place-items: center;
-      padding: 0;
-      border: 1px solid var(--line);
-      border-radius: 7px;
-      background: var(--surface);
-      color: var(--muted);
-      cursor: pointer;
-    }
-
-    .palette-reset[hidden] {
-      display: none;
-    }
-
-    .palette-reset .sf-symbol {
-      width: 15px;
-      height: 15px;
-    }
-
-    .palette-contrast {
+    /* Current Theme: labelled clusters of editable swatches, wrapping as needed. */
+    .palette-current-grid {
       display: flex;
       flex-wrap: wrap;
+      gap: .6rem .95rem;
+    }
+
+    .palette-cluster {
+      display: flex;
+      flex-direction: column;
+      gap: .3rem;
+    }
+
+    .palette-cluster-label {
+      font-size: .72rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .palette-cluster-swatches {
+      display: inline-flex;
+      gap: .3rem;
+    }
+
+    /* Preset themes: one clickable horizontal color strip per theme. */
+    .palette-theme-list {
+      display: grid;
       gap: .4rem;
     }
 
-    .palette-contrast-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: .3rem;
-      padding: .18rem .55rem;
-      border-radius: 999px;
-      font-size: .76rem;
-      border: 1px solid var(--line);
-      background: var(--surface-2);
-      color: var(--muted);
-    }
-
-    .palette-contrast-badge b {
-      color: var(--text);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .palette-contrast-badge.is-pass {
-      border-color: color-mix(in srgb, var(--success) 45%, var(--line));
-    }
-
-    .palette-contrast-badge.is-warn {
-      border-color: color-mix(in srgb, var(--warning) 60%, var(--line));
-      background: color-mix(in srgb, var(--warning) 15%, var(--surface));
-      color: var(--text);
-    }
-
-    .palette-presets {
-      display: grid;
-      gap: .5rem;
-    }
-
-    .palette-preset-block {
-      display: grid;
-      gap: .35rem;
-    }
-
-    .palette-preset-heading {
-      font-size: .76rem;
-      font-weight: 700;
-      letter-spacing: .05em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .palette-preset-row {
+    .palette-theme-row {
       display: flex;
-      flex-wrap: wrap;
-      gap: .45rem;
-    }
-
-    .palette-preset {
-      display: inline-flex;
       align-items: center;
-      gap: .45rem;
-      padding: .3rem .6rem;
+      gap: .7rem;
+      padding: .35rem .5rem;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: var(--surface-2);
+      background: var(--surface);
       color: var(--text);
       font: inherit;
-      font-size: .85rem;
       cursor: pointer;
+      text-align: left;
     }
 
-    .palette-preset:hover {
+    .palette-theme-row:hover {
       border-color: var(--accent);
+      background: var(--surface-2);
     }
 
-    .palette-preset-swatches {
-      display: inline-flex;
-    }
-
-    .palette-preset-swatches span {
-      display: block;
-      width: 14px;
-      height: 14px;
-      border: 1px solid rgba(0, 0, 0, .18);
-    }
-
-    [data-theme="dark"] .palette-preset-swatches span {
-      border-color: rgba(255, 255, 255, .18);
-    }
-
-    .palette-preset-swatches span:first-child {
-      border-radius: 4px 0 0 4px;
-    }
-
-    .palette-preset-swatches span:last-child {
-      border-radius: 0 4px 4px 0;
-    }
-
-    .palette-preset-name {
+    .palette-theme-name {
+      flex: 0 0 4.5rem;
       font-weight: 600;
+      font-size: .9rem;
+    }
+
+    .palette-theme-strip {
+      display: flex;
+      flex: 1;
+      height: 22px;
+      border-radius: 5px;
+      overflow: hidden;
+      border: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+    }
+
+    .palette-theme-strip span {
+      flex: 1;
+      min-width: 0;
     }
 
     .notes-panel-head {
