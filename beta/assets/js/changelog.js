@@ -7,24 +7,23 @@
         version: "5.0.0.1",
         date: "2026-06-22",
         title: "Paint Job",
-        summary: "An app-wide color studio: every color you see becomes yours to change, from one big Theme & Colors panel in the top bar.",
-        banner: "Recolor the whole app — levels, priorities, rings, accents, surfaces — from one Theme & Colors panel.",
+        summary: "A new Theme & Colors panel in the top bar lets you recolor your levels, priorities, Rangefinder, Wayfinder, and accent, or apply a whole theme in one click.",
+        banner: "Recolor your levels, priorities, Rangefinder, Wayfinder, and accent — or pick a theme — from the new Theme & Colors panel.",
         cta: "Make it|Yours!",
         highlights: [
-          "New Theme & Colors button in the top bar opens a full color studio.",
-          "Recolor legend levels, priorities, Rangefinder rings, Wayfinder, and app surfaces.",
-          "Light and dark each keep their own colors; reset any color back anytime.",
+          "New Theme & Colors button in the top bar (left of Settings).",
+          "Recolor 5 levels, 5 priorities, Rangefinder, Wayfinder, and the app accent.",
+          "Seven one-click themes: Classic, Neon, Pastel, Sunset, Space, Forest, Ocean.",
           "Your colors are saved with your data and ride along in backups.",
         ],
         updateSections: [
           {
             heading: "Theme & Colors",
             items: [
-              "A new Theme & Colors button in the top bar (left of Settings) opens a large panel grouped by App Surfaces, Accents, Legend Levels, Priorities, Rangefinder, and Wayfinder.",
-              "Every color is a swatch plus hex field with instant live preview; light and dark each keep their own colors, with tabs to switch and a one-click copy to the other mode.",
-              "Reset any single color, a whole group, or everything back to the built-in defaults.",
-              "Full-theme presets (Forest, Ember, Ocean) recolor accents, rings, Wayfinder, and legend levels at once; the six legend palettes (Classic, Neon, Pastel, Sunset, Earth, Ocean) still set just the map level colors.",
-              "Live WCAG contrast badges flag hard-to-read text or accent choices without blocking them.",
+              "A new Theme & Colors button in the top bar (left of Settings) opens a compact panel: a Current Theme row of editable swatches plus a list of one-click preset themes.",
+              "Edit your colors directly — 5 legend levels, 5 priorities, the Rangefinder's near and far rings, the Wayfinder accent, and the app accent — with instant live preview.",
+              "Companion shades (the ring ramp, accent and Wayfinder variants) are derived automatically, so there's a single setting for each color.",
+              "Apply a whole palette in one click with seven themes: Classic, Neon, Pastel, Sunset, Space, Forest, and Ocean. Reset returns accents, priorities, rings, and Wayfinder to defaults.",
               "Your colors save with your data and travel in JSON backups.",
             ]
           },
