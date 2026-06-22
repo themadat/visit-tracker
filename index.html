@@ -105,6 +105,7 @@
         </div>
         <button id="tipJarBtn" type="button" data-shortcut="P" aria-label="Send a tip">Tip</button>
         <button id="addToHomeBtn" type="button" data-shortcut="A" aria-label="Add to Home Screen">Install</button>
+        <button id="paletteBtn" type="button" data-shortcut=">" aria-label="Theme & Colors">Colors</button>
         <button id="settingsBtn" type="button" data-shortcut="<">Settings</button>
       </nav>
     </header>
@@ -231,7 +232,7 @@
                   <span class="legend-help-position">Drag Legend to Preferred Spot or use Position Button.<br /></span>
                   Top Level Wins & Deleting Demotes in Multi-Levels.<br />
                   Drag to Reorder | Swipe Left for Quick Actions.<br />
-                  Featured Palettes | Auto-Suggest | Add/Edit Levels.
+                  Auto-Suggest | Add/Edit Levels. Recolor in Theme &amp; Colors.
                 </small>
                 <div class="legend-title-actions">
                   <span class="legend-position-picker">
@@ -240,7 +241,6 @@
                     <div id="legendPositionMenu" class="legend-position-menu hidden" role="menu"
                       aria-label="Legend position options"></div>
                   </span>
-                  <button id="smartColorsBtn" type="button" data-shortcut=">">Auto Colors</button>
                   <button id="suggestionsToggleBtn" class="toggle-btn" type="button" aria-pressed="false"
                     data-shortcut="X">Hide Suggestions</button>
                   <button id="legendEditBtn" class="toggle-btn" type="button" aria-pressed="false"
@@ -821,16 +821,26 @@
     </div>
   </dialog>
 
-  <dialog id="paletteDialog">
+  <dialog id="paletteDialog" class="palette-dialog" aria-label="Theme and colors">
     <header>
-      <h2>Smart Color Swatches</h2>
+      <h2>Theme &amp; Colors</h2>
+      <div class="palette-mode-tabs" role="tablist" aria-label="Edit colors for">
+        <button id="paletteModeLight" type="button" role="tab" data-palette-mode="light" aria-selected="true">Light</button>
+        <button id="paletteModeDark" type="button" role="tab" data-palette-mode="dark" aria-selected="false">Dark</button>
+      </div>
       <button id="paletteCloseBtn" type="button" data-close="paletteDialog" data-shortcut="Esc">Close</button>
     </header>
     <div class="dialog-body">
-      <p class="muted" data-hint data-hint-key="palette-help">
-        Palettes apply top-to-bottom in legend order.<br />
-        Fine-tune individual colors via Edit Legend Level.</p>
-      <div id="paletteThemes" class="theme-swatches"></div>
+      <div class="palette-toolbar">
+        <p class="muted" id="paletteModeNote"></p>
+        <div class="palette-toolbar-actions">
+          <button id="paletteCopyModeBtn" type="button"></button>
+          <button id="paletteResetAllBtn" type="button">Reset All</button>
+        </div>
+      </div>
+      <div id="paletteContrast" class="palette-contrast" aria-live="polite"></div>
+      <div id="palettePresets" class="palette-presets"></div>
+      <div id="paletteGroups" class="palette-groups"></div>
     </div>
   </dialog>
 
@@ -1236,8 +1246,9 @@
               countries, or the linked Waypoint Pack currently selected in Map Labels.</li>
             <li>When Map Labels targets a linked Waypoint Pack, the Legend keeps your same levels and colors but shows
               pack-note counts and percentages instead of state or territory totals.</li>
-            <li>Use Auto Colors to apply a palette to the current level order. Suggested categories can be shown or
-              hidden, or you can make your own levels.</li>
+            <li>Open Theme &amp; Colors (top bar, left of Settings) to recolor levels, priorities, rings, accents, and
+              surfaces, or apply a preset palette. Suggested categories can be shown or hidden, or you can make your
+              own levels.</li>
             <li>On desktop, use the Legend Position button or drag the Legend title to place it around the map.</li>
             <li>Default levels are Visited and Not Interested. Not Interested is excluded from completion stats.</li>
           </ol>
@@ -1592,6 +1603,7 @@
               <div class="shortcut-row is-direct"><kbd>/</kbd><span>Focus the Notes filter, or Basecamp pad search
                   while Basecamp is open <em>[notesStateSearch | basecampSearch]</em></span></div>
               <div class="shortcut-row is-direct"><kbd>,</kbd><span>Open Settings <em>[settingsBtn]</em></span></div>
+              <div class="shortcut-row is-direct"><kbd>&gt;</kbd><span>Open Theme &amp; Colors <em>[paletteBtn]</em></span></div>
               <div class="shortcut-row is-direct"><kbd>?</kbd><span>Open Settings → Help Center</span></div>
               <div class="shortcut-row is-direct"><kbd>R</kbd><span>Open Settings → What's New | Release Notes; Press
                   again to jump to Roadmap.</span></div>
@@ -1662,8 +1674,6 @@
             <summary>Legend<span class="muted">(Panel :: Header)</span></summary>
             <div class="shortcut-list">
               <div class="shortcut-row"><kbd>W</kbd><span>Open Legend Position Menu <em>[legendPositionBtn]</em></span>
-              </div>
-              <div class="shortcut-row"><kbd>&gt;</kbd><span>Apply Auto Colors Palette <em>[smartColorsBtn]</em></span>
               </div>
               <div class="shortcut-row"><kbd>X</kbd><span>Hide/Show Suggested Levels
                   <em>[suggestionsToggleBtn]</em></span></div>
@@ -1828,7 +1838,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "4.9.0";
+    const APP_VERSION = "5.0.0.1";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -1948,6 +1958,125 @@
       Earth: ["#36563e", "#5a8b5d", "#81b14f", "#907350", "#97876b"],
       Ocean: ["#064273", "#1da2d8", "#7fcdff", "#def3f6", "#6d8aa3"],
     };
+
+    // WISH-063 — App-wide theming. Every perceived color (outside per-level map
+    // colors, which stay in levels[].color) is a CSS custom property the user can
+    // override per light/dark mode via settings.palette. THEME_VAR_GROUPS drives
+    // the Theme & Colors modal; THEMEABLE_VARS is the persistence allow-list;
+    // DEFAULT_PALETTE mirrors the canonical :root / [data-theme="dark"] values in
+    // assets/css/app.css so Reset restores them exactly. Keep these in lockstep
+    // with those two CSS blocks if the defaults ever change.
+    const THEME_VAR_GROUPS = [
+      {
+        id: "app", label: "App Surfaces",
+        vars: [
+          { name: "--bg", label: "Background" },
+          { name: "--surface", label: "Surface" },
+          { name: "--surface-2", label: "Raised Surface" },
+          { name: "--surface-3", label: "Sunken Surface" },
+          { name: "--text", label: "Text" },
+          { name: "--muted", label: "Muted Text" },
+          { name: "--line", label: "Lines & Borders" },
+          { name: "--state-empty", label: "Unmarked Region" }
+        ]
+      },
+      {
+        id: "accents", label: "Accents",
+        vars: [
+          { name: "--accent", label: "Accent" },
+          { name: "--accent-2", label: "Accent Strong" }
+        ]
+      },
+      {
+        id: "priorities", label: "Priorities",
+        vars: [
+          { name: "--priority-1-color", label: "Priority 1" },
+          { name: "--priority-2-color", label: "Priority 2" },
+          { name: "--priority-3-color", label: "Priority 3" },
+          { name: "--priority-4-color", label: "Priority 4" },
+          { name: "--priority-5-color", label: "Priority 5" }
+        ]
+      },
+      {
+        id: "rangefinder", label: "Rangefinder",
+        vars: [
+          { name: "--accent-ring", label: "Ring Accent" },
+          { name: "--accent-ring-secondary", label: "Ring Accent 2" },
+          { name: "--ring-connector", label: "Connector" },
+          { name: "--ring-step-1-stroke", label: "Ring Step 1", ramp: true },
+          { name: "--ring-step-2-stroke", label: "Ring Step 2", ramp: true },
+          { name: "--ring-step-3-stroke", label: "Ring Step 3", ramp: true },
+          { name: "--ring-step-4-stroke", label: "Ring Step 4", ramp: true },
+          { name: "--ring-step-5-stroke", label: "Ring Step 5", ramp: true },
+          { name: "--ring-step-6-stroke", label: "Ring Step 6", ramp: true },
+          { name: "--ring-step-7-stroke", label: "Ring Step 7", ramp: true },
+          { name: "--ring-step-8-stroke", label: "Ring Step 8", ramp: true }
+        ]
+      },
+      {
+        id: "wayfinder", label: "Wayfinder",
+        vars: [
+          { name: "--wayfinder-accent", label: "Wayfinder Accent" },
+          { name: "--wayfinder-accent-strong", label: "Wayfinder Strong" },
+          { name: "--wayfinder-accent-deep", label: "Wayfinder Deep" }
+        ]
+      }
+    ];
+    const THEMEABLE_VARS = THEME_VAR_GROUPS.reduce((all, group) => all.concat(group.vars.map(v => v.name)), []);
+    const THEMEABLE_VAR_SET = new Set(THEMEABLE_VARS);
+    const DEFAULT_PALETTE = {
+      light: {
+        "--bg": "#f6f7f9", "--surface": "#ffffff", "--surface-2": "#eef1f5", "--surface-3": "#bbbbbb",
+        "--text": "#17202a", "--muted": "#657080", "--line": "#d9dee7", "--state-empty": "#d7dce3",
+        "--accent": "#1d6fd6", "--accent-2": "#0f4f9f",
+        "--priority-1-color": "#16a34a", "--priority-2-color": "#84cc16", "--priority-3-color": "#eab308",
+        "--priority-4-color": "#f59e0b", "--priority-5-color": "#f97316",
+        "--accent-ring": "#d4a017", "--accent-ring-secondary": "#b45309", "--ring-connector": "#b45309",
+        "--ring-step-1-stroke": "#d4a017", "--ring-step-2-stroke": "#d19700", "--ring-step-3-stroke": "#c98505",
+        "--ring-step-4-stroke": "#bd7208", "--ring-step-5-stroke": "#ad6108", "--ring-step-6-stroke": "#9f5309",
+        "--ring-step-7-stroke": "#92400e", "--ring-step-8-stroke": "#7c2d12",
+        "--wayfinder-accent": "#14b8a6", "--wayfinder-accent-strong": "#0f766e", "--wayfinder-accent-deep": "#0d9488"
+      },
+      dark: {
+        "--bg": "#101318", "--surface": "#181d24", "--surface-2": "#242b35", "--surface-3": "#2f4f7b",
+        "--text": "#edf1f7", "--muted": "#a5afbd", "--line": "#343d4a", "--state-empty": "#3b4553",
+        "--accent": "#6aa8ff", "--accent-2": "#9cc5ff",
+        "--priority-1-color": "#16a34a", "--priority-2-color": "#84cc16", "--priority-3-color": "#eab308",
+        "--priority-4-color": "#f59e0b", "--priority-5-color": "#f97316",
+        "--accent-ring": "#e0aa1a", "--accent-ring-secondary": "#f59e0b", "--ring-connector": "#e0aa1a",
+        "--ring-step-1-stroke": "#e0aa1a", "--ring-step-2-stroke": "#d99a00", "--ring-step-3-stroke": "#d08700",
+        "--ring-step-4-stroke": "#c87505", "--ring-step-5-stroke": "#b96308", "--ring-step-6-stroke": "#a9550a",
+        "--ring-step-7-stroke": "#9a460c", "--ring-step-8-stroke": "#873a0d",
+        "--wayfinder-accent": "#14b8a6", "--wayfinder-accent-strong": "#0f766e", "--wayfinder-accent-deep": "#0d9488"
+      }
+    };
+    function defaultPalette() {
+      return { light: {}, dark: {} };
+    }
+    function normalizePaletteHex(value) {
+      if (typeof value !== "string") return "";
+      let hex = value.trim().toLowerCase();
+      if (/^#[0-9a-f]{3}$/.test(hex)) hex = "#" + hex.slice(1).split("").map(ch => ch + ch).join("");
+      return /^#[0-9a-f]{6}$/.test(hex) ? hex : "";
+    }
+    function normalizePaletteBag(raw) {
+      const bag = {};
+      if (raw && typeof raw === "object") {
+        THEMEABLE_VARS.forEach(name => {
+          const hex = normalizePaletteHex(raw[name]);
+          if (hex) bag[name] = hex;
+        });
+      }
+      return bag;
+    }
+    function normalizePalette(raw) {
+      const src = raw && typeof raw === "object" ? raw : {};
+      return { light: normalizePaletteBag(src.light), dark: normalizePaletteBag(src.dark) };
+    }
+    function paletteDefault(mode, name) {
+      const bag = DEFAULT_PALETTE[mode === "dark" ? "dark" : "light"];
+      return bag && bag[name] ? bag[name] : "";
+    }
 
     // SVG icon constants (__*) live in assets/js/icons.js (loaded before this script),
     // along with the generated CIRCLE_ICON_SVGS registry for More Icons discovery.
@@ -2263,13 +2392,13 @@
       "national-parks": SUGGESTED_SET_DEFAULT_ICON,
       "national-monuments": "mountain_2"
     };
-    const WAYFINDER_TEAL = "#14b8a6";
+    const WAYFINDER_TEAL = "var(--wayfinder-accent)";
     const NOTE_PRIORITY_COLORS = {
-      "1": "#16a34a",
-      "2": "#84cc16",
-      "3": "#eab308",
-      "4": "#f59e0b",
-      "5": "#f97316"
+      "1": "var(--priority-1-color)",
+      "2": "var(--priority-2-color)",
+      "3": "var(--priority-3-color)",
+      "4": "var(--priority-4-color)",
+      "5": "var(--priority-5-color)"
     };
     const WIKIPEDIA_PHOTO_OVERRIDES = {
       Acadia_National_Park: "https://upload.wikimedia.org/wikipedia/commons/7/76/Bass_Harbor_Lighthouse_b.jpg"
@@ -2810,6 +2939,7 @@
         mapName: DEFAULT_MAP_NAME,
         settings: {
           theme: "light",
+          palette: defaultPalette(),
           tapBehavior: "cycle",
           buttonStyle: "symbols",
           uiHints: true,
@@ -3200,6 +3330,7 @@
       pruneObsoleteBackupKeys(next);
       next.settings = { ...base.settings, ...(input.settings || {}) };
       if (!["light", "dark"].includes(next.settings.theme)) next.settings.theme = "light";
+      next.settings.palette = normalizePalette(next.settings.palette);
       if (!["cycle", "select"].includes(next.settings.tapBehavior)) next.settings.tapBehavior = "cycle";
       if (!["symbols", "text", "both"].includes(next.settings.buttonStyle)) next.settings.buttonStyle = "symbols";
       if (!["mdy", "dmy", "ymd"].includes(next.settings.dateOrder)) next.settings.dateOrder = "mdy";
@@ -6411,6 +6542,7 @@
       $("#addToHomeBtn")?.style.setProperty("--install-icon-scale", installIconScale);
       setButtonLabel("#addToHomeBtn", installPlatformIcon(installPlatform), "Add as App", "Add as App", "Add as App");
       setButtonLabel("#installDialogCloseBtn", __XMARK, "Close");
+      setButtonLabel("#paletteBtn", __SWATCHPALETTE_FILL, "Colors", "Theme & Colors", "Theme & Colors");
       setButtonLabel("#settingsBtn", __GEARSHAPE_FILL, "Settings");
       setButtonLabel("#mapToggleBtn", __MAP_FILL, "Map", "Toggle Map Panel", "Toggle Map Panel");
       setButtonLabel("#legendToggleBtn", __CHECKLIST_UNCHECKED, "Legend", "Toggle Legend Panel", "Toggle Legend Panel");
@@ -6450,7 +6582,6 @@
       setButtonLabel("#mapZoomOutBtn", __MINUS_CIRCLE, "Zoom Out", "Zoom map out", "Zoom map out");
       setButtonLabel("#mapZoomResetBtn", __ARROW_COUNTERCLOCKWISE_CIRCLE, "Reset", "Reset map zoom", "Reset map zoom");
       setButtonLabel("#mapZoomInBtn", __PLUS_CIRCLE, "Zoom In", "Zoom map in", "Zoom map in");
-      setButtonLabel("#smartColorsBtn", __SWATCHPALETTE_FILL, "Auto Colors");
       const suggestionsHidden = state.settings.hideSuggestedCategories;
       const suggestionsVisible = !suggestionsHidden;
       setButtonLabel("#suggestionsToggleBtn", suggestionsVisible ? __BOLT_FILL : __BOLT_SLASH_FILL, suggestionsVisible ? "Hide Suggestions" : "Show Suggestions", suggestionsVisible ? "Hide suggested categories" : "Show suggested categories");
@@ -6902,8 +7033,24 @@
       }, 0);
     }
 
+    // Apply the active mode's saved color overrides as inline custom properties
+    // on <html>, and clear any that are no longer overridden so a removed/reset
+    // color falls back to the built-in :root / dark default. Runs every render
+    // (incl. on theme toggle) so light/dark each show their own palette.
+    function applyPaletteOverrides() {
+      const root = document.documentElement;
+      const mode = state.settings.theme === "dark" ? "dark" : "light";
+      const overrides = (state.settings.palette && state.settings.palette[mode]) || {};
+      THEMEABLE_VARS.forEach(name => {
+        const hex = normalizePaletteHex(overrides[name]);
+        if (hex) root.style.setProperty(name, hex);
+        else root.style.removeProperty(name);
+      });
+    }
+
     function render() {
       document.documentElement.dataset.theme = state.settings.theme;
+      applyPaletteOverrides();
       document.documentElement.dataset.hints = state.settings.uiHints ? "on" : "off";
       document.documentElement.dataset.shortcuts = shortcutsActive() ? "on" : "off";
       document.documentElement.dataset.developer = state.settings.developerMode ? "on" : "off";
@@ -15820,30 +15967,277 @@
       $("#levelColorText").innerHTML = `Click to set<br><span class="color-picker-hex">${color.toUpperCase()}</span>`;
     }
 
-    function renderPaletteDialog() {
-      $("#paletteThemes").innerHTML = Object.entries(THEMES).map(([name, colors], index) => `
-        <div class="theme-row">
-          <b>${escapeHtml(name)}</b>
-          <div class="swatch-grid">
-            ${colors.map(color => `<span class="swatch-btn" style="--swatch-color:${color}" aria-hidden="true"></span>`).join("")}
+    // ── Theme & Colors modal (WISH-063) ──────────────────────────────────────
+    // The modal edits two color models: (A) CSS custom-property overrides stored
+    // per light/dark mode in settings.palette (App/Accents/Priorities/Rangefinder/
+    // Wayfinder groups) and (B) per-level map colors in state.levels[].color
+    // (Legend Levels group, shared across both modes). The edited mode follows the
+    // active theme, so every change previews live.
+    function paletteEditMode() {
+      return state.settings.theme === "dark" ? "dark" : "light";
+    }
+    function paletteOverrideBag(mode) {
+      if (!state.settings.palette || typeof state.settings.palette !== "object") state.settings.palette = defaultPalette();
+      if (!state.settings.palette[mode] || typeof state.settings.palette[mode] !== "object") state.settings.palette[mode] = {};
+      return state.settings.palette[mode];
+    }
+    function paletteVarValue(mode, name) {
+      const bag = state.settings.palette && state.settings.palette[mode];
+      return (bag && bag[name]) || paletteDefault(mode, name);
+    }
+    function paletteVarOverridden(mode, name) {
+      const bag = state.settings.palette && state.settings.palette[mode];
+      return !!(bag && bag[name]);
+    }
+    function paletteLevelColorValue(index) {
+      const level = state.levels[index];
+      return level && /^#[0-9a-f]{6}$/i.test(level.color || "") ? level.color.toLowerCase() : "#000000";
+    }
+    function paletteCapitalize(str) {
+      return str ? str.charAt(0).toUpperCase() + str.slice(1) : str;
+    }
+    function paletteRowMarkup(value, label, attrs, overridden) {
+      return `
+        <div class="palette-row" ${attrs}>
+          <label class="palette-swatch" style="--row-color:${escapeHtml(value)}" title="Choose ${escapeHtml(label)}">
+            <input type="color" value="${escapeHtml(value)}" aria-label="${escapeHtml(label)} color">
+          </label>
+          <div class="palette-row-label">
+            <span class="palette-row-name">${escapeHtml(label)}</span>
+            <input type="text" class="palette-hex" value="${escapeHtml(value)}" aria-label="${escapeHtml(label)} hex value" spellcheck="false" maxlength="7">
           </div>
-          <button type="button" data-apply-theme="${escapeHtml(name)}" data-shortcut="${index + 1}">${buttonMarkup(__CHECKMARK, "Apply")}</button>
+          <button type="button" class="palette-reset" data-palette-reset aria-label="Reset ${escapeHtml(label)}" title="Reset ${escapeHtml(label)}"${overridden ? "" : " hidden"}>${__ARROW_COUNTERCLOCKWISE_CIRCLE}</button>
+        </div>`;
+    }
+    function paletteVarGroupMarkup(group, mode) {
+      const rows = group.vars.map(v =>
+        paletteRowMarkup(paletteVarValue(mode, v.name), v.label, `data-palette-var="${escapeHtml(v.name)}"`, paletteVarOverridden(mode, v.name))
+      ).join("");
+      return `
+        <section class="palette-group" data-palette-group="${group.id}">
+          <div class="palette-group-head">
+            <h3>${escapeHtml(group.label)}</h3>
+            <button type="button" class="palette-group-reset" data-palette-group-reset="${group.id}">Reset Group</button>
+          </div>
+          <div class="palette-group-rows">${rows}</div>
+        </section>`;
+    }
+    function paletteLevelsGroupMarkup() {
+      const rows = state.levels.map((level, index) =>
+        paletteRowMarkup(paletteLevelColorValue(index), level.name || `Level ${index + 1}`, `data-palette-level="${index}"`, false)
+      ).join("");
+      return `
+        <section class="palette-group" data-palette-group="levels">
+          <div class="palette-group-head">
+            <h3>Legend Levels</h3>
+            <span class="muted palette-group-note">Map colors · shared by light &amp; dark</span>
+          </div>
+          <div class="palette-group-rows">${rows}</div>
+        </section>`;
+    }
+    function renderPaletteDialog() {
+      const mode = paletteEditMode();
+      const other = mode === "dark" ? "light" : "dark";
+      $$("#paletteDialog [data-palette-mode]").forEach(btn => {
+        btn.setAttribute("aria-selected", btn.dataset.paletteMode === mode ? "true" : "false");
+      });
+      const note = $("#paletteModeNote");
+      if (note) note.textContent = `Editing ${mode} mode. Each mode keeps its own colors — switch tabs to edit ${other}.`;
+      const copyBtn = $("#paletteCopyModeBtn");
+      if (copyBtn) copyBtn.textContent = `Copy ${paletteCapitalize(mode)} → ${paletteCapitalize(other)}`;
+      const groups = [];
+      THEME_VAR_GROUPS.forEach(group => {
+        groups.push(paletteVarGroupMarkup(group, mode));
+        if (group.id === "accents") groups.push(paletteLevelsGroupMarkup());
+      });
+      $("#paletteGroups").innerHTML = groups.join("");
+      renderPalettePresets(mode);
+      renderPaletteContrast(mode);
+      bindPaletteRows(mode);
+    }
+    let paletteMapRefreshHandle = 0;
+    function schedulePaletteMapRefresh() {
+      if (paletteMapRefreshHandle) return;
+      paletteMapRefreshHandle = requestAnimationFrame(() => {
+        paletteMapRefreshHandle = 0;
+        renderMap();
+        renderLegend();
+      });
+    }
+    function syncPaletteRow(row, hex, overridden) {
+      if (!row) return;
+      const swatch = row.querySelector(".palette-swatch");
+      if (swatch) swatch.style.setProperty("--row-color", hex);
+      const colorInput = row.querySelector('input[type="color"]');
+      if (colorInput && colorInput.value.toLowerCase() !== hex) colorInput.value = hex;
+      const hexInput = row.querySelector(".palette-hex");
+      if (hexInput && document.activeElement !== hexInput) hexInput.value = hex;
+      const reset = row.querySelector("[data-palette-reset]");
+      if (reset) reset.hidden = !overridden;
+    }
+    function applyPaletteVarEdit(mode, name, hex, row, commit) {
+      hex = normalizePaletteHex(hex);
+      if (!hex) return;
+      paletteOverrideBag(mode)[name] = hex;
+      if (mode === paletteEditMode()) document.documentElement.style.setProperty(name, hex);
+      syncPaletteRow(row, hex, true);
+      renderPaletteContrast(mode);
+      if (commit) save();
+    }
+    function resetPaletteVarEdit(mode, name, row) {
+      const bag = state.settings.palette && state.settings.palette[mode];
+      if (bag) delete bag[name];
+      if (mode === paletteEditMode()) document.documentElement.style.removeProperty(name);
+      syncPaletteRow(row, paletteDefault(mode, name), false);
+      renderPaletteContrast(mode);
+      save();
+    }
+    function applyPaletteLevelEdit(index, hex, row, commit) {
+      hex = normalizePaletteHex(hex);
+      if (!hex || !state.levels[index]) return;
+      state.levels[index] = { ...state.levels[index], color: hex };
+      syncPaletteRow(row, hex, false);
+      schedulePaletteMapRefresh();
+      if (commit) save();
+    }
+    function resetPaletteGroupEdit(mode, groupId) {
+      const group = THEME_VAR_GROUPS.find(g => g.id === groupId);
+      if (!group) return;
+      const bag = state.settings.palette && state.settings.palette[mode];
+      if (bag) group.vars.forEach(v => delete bag[v.name]);
+      if (mode === paletteEditMode()) applyPaletteOverrides();
+      save();
+    }
+    function resetPaletteAllEdit(mode) {
+      paletteOverrideBag(mode);
+      state.settings.palette[mode] = {};
+      if (mode === paletteEditMode()) applyPaletteOverrides();
+      save();
+    }
+    function copyPaletteToOtherMode() {
+      const from = paletteEditMode();
+      const to = from === "dark" ? "light" : "dark";
+      const src = (state.settings.palette && state.settings.palette[from]) || {};
+      state.settings.palette[to] = { ...src };
+      save();
+    }
+    // WCAG relative luminance + contrast ratio for the modal's non-blocking
+    // readability badges (text-on-surface, accent-on-surface, etc.).
+    function paletteRelativeLuminance(hex) {
+      const { r, g, b } = paletteHexToRgb(hex);
+      const channel = value => {
+        const c = value / 255;
+        return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+      };
+      return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
+    }
+    function paletteContrastRatio(a, b) {
+      const la = paletteRelativeLuminance(a);
+      const lb = paletteRelativeLuminance(b);
+      const hi = Math.max(la, lb);
+      const lo = Math.min(la, lb);
+      return (hi + 0.05) / (lo + 0.05);
+    }
+    function renderPaletteContrast(mode) {
+      const el = $("#paletteContrast");
+      if (!el) return;
+      const v = name => paletteVarValue(mode, name);
+      const checks = [
+        { label: "Text on background", ratio: paletteContrastRatio(v("--text"), v("--bg")), min: 4.5 },
+        { label: "Text on surface", ratio: paletteContrastRatio(v("--text"), v("--surface")), min: 4.5 },
+        { label: "Muted on surface", ratio: paletteContrastRatio(v("--muted"), v("--surface")), min: 4.5 },
+        { label: "Accent on surface", ratio: paletteContrastRatio(v("--accent"), v("--surface")), min: 3 }
+      ];
+      el.innerHTML = checks.map(c => {
+        const pass = c.ratio >= c.min;
+        return `<span class="palette-contrast-badge ${pass ? "is-pass" : "is-warn"}" title="${escapeHtml(c.label)}: ${c.ratio.toFixed(2)}:1 (WCAG needs ${c.min}:1)">${escapeHtml(c.label)} <b>${c.ratio.toFixed(1)}:1</b>${pass ? "" : " ⚠"}</span>`;
+      }).join("");
+    }
+    function palettePresetSwatches(colors) {
+      return `<span class="palette-preset-swatches">${colors.map(c => `<span style="background:${escapeHtml(c)}"></span>`).join("")}</span>`;
+    }
+    function renderPalettePresets() {
+      const el = $("#palettePresets");
+      if (!el) return;
+      const fullButtons = FULL_THEME_PRESETS.map((preset, index) => `
+        <button type="button" class="palette-preset" data-full-preset="${escapeHtml(preset.id)}" data-shortcut="${index + 1}" title="Apply the ${escapeHtml(preset.name)} theme">
+          ${palettePresetSwatches(preset.levels || [])}
+          <span class="palette-preset-name">${escapeHtml(preset.name)}</span>
+        </button>`).join("");
+      const levelButtons = Object.entries(THEMES).map(([name, colors]) => `
+        <button type="button" class="palette-preset is-level" data-level-palette="${escapeHtml(name)}" title="Apply the ${escapeHtml(name)} legend palette">
+          ${palettePresetSwatches(colors)}
+          <span class="palette-preset-name">${escapeHtml(name)}</span>
+        </button>`).join("");
+      el.innerHTML = `
+        <div class="palette-preset-block">
+          <span class="palette-preset-heading">Full themes</span>
+          <div class="palette-preset-row">${fullButtons}</div>
         </div>
-      `).join("");
-      $$("[data-apply-theme]").forEach(button => {
-        button.addEventListener("click", () => {
-          smartApplyPalette(THEMES[button.dataset.applyTheme]);
-          $("#paletteDialog").close();
+        <div class="palette-preset-block">
+          <span class="palette-preset-heading">Legend palettes</span>
+          <div class="palette-preset-row">${levelButtons}</div>
+        </div>`;
+      el.querySelectorAll("[data-full-preset]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const preset = FULL_THEME_PRESETS.find(p => p.id === btn.dataset.fullPreset);
+          if (preset) applyFullThemePreset(preset);
+        });
+      });
+      el.querySelectorAll("[data-level-palette]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          smartApplyPalette(THEMES[btn.dataset.levelPalette]);
+          renderPaletteDialog();
+        });
+      });
+    }
+    function bindPaletteRows(mode) {
+      $$("#paletteGroups .palette-row[data-palette-var]").forEach(row => {
+        const name = row.dataset.paletteVar;
+        const colorInput = row.querySelector('input[type="color"]');
+        const hexInput = row.querySelector(".palette-hex");
+        colorInput.addEventListener("input", () => applyPaletteVarEdit(mode, name, colorInput.value, row, false));
+        colorInput.addEventListener("change", () => applyPaletteVarEdit(mode, name, colorInput.value, row, true));
+        hexInput.addEventListener("change", () => {
+          const hex = normalizePaletteHex(hexInput.value);
+          if (!hex) { hexInput.value = paletteVarValue(mode, name); return; }
+          colorInput.value = hex;
+          applyPaletteVarEdit(mode, name, hex, row, true);
+        });
+      });
+      $$("#paletteGroups .palette-row[data-palette-level]").forEach(row => {
+        const index = Number(row.dataset.paletteLevel);
+        const colorInput = row.querySelector('input[type="color"]');
+        const hexInput = row.querySelector(".palette-hex");
+        colorInput.addEventListener("input", () => applyPaletteLevelEdit(index, colorInput.value, row, false));
+        colorInput.addEventListener("change", () => applyPaletteLevelEdit(index, colorInput.value, row, true));
+        hexInput.addEventListener("change", () => {
+          const hex = normalizePaletteHex(hexInput.value);
+          if (!hex) { hexInput.value = paletteLevelColorValue(index); return; }
+          colorInput.value = hex;
+          applyPaletteLevelEdit(index, hex, row, true);
+        });
+      });
+      $$("#paletteGroups [data-palette-reset]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const row = btn.closest(".palette-row");
+          resetPaletteVarEdit(mode, row.dataset.paletteVar, row);
+        });
+      });
+      $$("#paletteGroups [data-palette-group-reset]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          resetPaletteGroupEdit(mode, btn.dataset.paletteGroupReset);
+          renderPaletteDialog();
         });
       });
     }
 
-    function smartApplyPalette(colors) {
+    function assignLevelPalette(colors) {
       // Counting levels fill from the palette's left edge, top-to-bottom.
       // Excluded levels fill from the palette's right edge, bottom-to-top — so the
       // excluded slot(s) always land on the palette's last color(s). With a 4-level
       // legend (3 counting + 1 excluded) that means colors 1-3 and 5 are used, 4 is
-      // skipped.
+      // skipped. Mutates state.levels but does not save/render.
       const assigned = new Map();
       const counting = [];
       const excluded = [];
@@ -15859,8 +16253,86 @@
       state.levels = state.levels.map((level, index) =>
         assigned.has(index) ? { ...level, color: assigned.get(index) } : level
       );
+    }
+    function smartApplyPalette(colors) {
+      assignLevelPalette(colors);
       save();
       render();
+    }
+
+    // ── Color math (shared by presets + contrast badges) ─────────────────────
+    function paletteHexToRgb(hex) {
+      const clean = normalizePaletteHex(hex) || "#000000";
+      return {
+        r: parseInt(clean.slice(1, 3), 16),
+        g: parseInt(clean.slice(3, 5), 16),
+        b: parseInt(clean.slice(5, 7), 16)
+      };
+    }
+    function paletteRgbToHex(r, g, b) {
+      const to = v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, "0");
+      return `#${to(r)}${to(g)}${to(b)}`;
+    }
+    function paletteRamp(from, to, steps) {
+      const a = paletteHexToRgb(from);
+      const b = paletteHexToRgb(to);
+      const out = [];
+      for (let i = 0; i < steps; i++) {
+        const t = steps === 1 ? 0 : i / (steps - 1);
+        out.push(paletteRgbToHex(a.r + (b.r - a.r) * t, a.g + (b.g - a.g) * t, a.b + (b.b - a.b) * t));
+      }
+      return out;
+    }
+
+    // Full-app theme presets (WISH-063). Each retints accents, the Rangefinder
+    // ring ramp, the Wayfinder accent, and legend level colors per light/dark
+    // mode; surfaces and priority colors stay at their proven defaults so text
+    // contrast is preserved. `levels` feeds assignLevelPalette like the legend
+    // palettes below it.
+    const FULL_THEME_PRESETS = [
+      {
+        id: "forest", name: "Forest", levels: THEMES.Earth,
+        light: { accent: "#2f7d4f", accent2: "#1d5b39", ring: "#6a9f4f", ringEnd: "#2f5d2a", connector: "#3f7d3a", wayfinder: "#0f9b8e", wayfinderStrong: "#0c6f66", wayfinderDeep: "#0a5c54" },
+        dark: { accent: "#7bd39a", accent2: "#a8e6bf", ring: "#9ad36a", ringEnd: "#4f7d3a", connector: "#7bbf5a", wayfinder: "#36d3c2", wayfinderStrong: "#1f9e92", wayfinderDeep: "#178a7e" }
+      },
+      {
+        id: "ember", name: "Ember", levels: THEMES.Sunset,
+        light: { accent: "#d4542e", accent2: "#a83410", ring: "#f0892f", ringEnd: "#9a2d12", connector: "#c14a1e", wayfinder: "#c2410c", wayfinderStrong: "#9a3412", wayfinderDeep: "#7c2d12" },
+        dark: { accent: "#ff8a5c", accent2: "#ffb08a", ring: "#fbae4a", ringEnd: "#b9492a", connector: "#f0884a", wayfinder: "#fb923c", wayfinderStrong: "#ea7320", wayfinderDeep: "#c2410c" }
+      },
+      {
+        id: "ocean", name: "Ocean", levels: THEMES.Ocean,
+        light: { accent: "#0e7490", accent2: "#155e75", ring: "#0891b2", ringEnd: "#0e4f6b", connector: "#0e7490", wayfinder: "#14b8a6", wayfinderStrong: "#0f766e", wayfinderDeep: "#0d9488" },
+        dark: { accent: "#38bdf8", accent2: "#7dd3fc", ring: "#22d3ee", ringEnd: "#0e7490", connector: "#38bdf8", wayfinder: "#2dd4bf", wayfinderStrong: "#14b8a6", wayfinderDeep: "#0f766e" }
+      }
+    ];
+    function buildThemeOverrides(seed) {
+      const bag = {
+        "--accent": seed.accent,
+        "--accent-2": seed.accent2,
+        "--accent-ring": seed.ring,
+        "--accent-ring-secondary": seed.ringEnd,
+        "--ring-connector": seed.connector || seed.ringEnd
+      };
+      paletteRamp(seed.ring, seed.ringEnd, 8).forEach((hex, i) => { bag[`--ring-step-${i + 1}-stroke`] = hex; });
+      if (seed.wayfinder) {
+        bag["--wayfinder-accent"] = seed.wayfinder;
+        bag["--wayfinder-accent-strong"] = seed.wayfinderStrong || seed.wayfinder;
+        bag["--wayfinder-accent-deep"] = seed.wayfinderDeep || seed.wayfinder;
+      }
+      if (seed.surfaces) Object.assign(bag, seed.surfaces);
+      if (Array.isArray(seed.priorities)) seed.priorities.forEach((hex, i) => { bag[`--priority-${i + 1}-color`] = hex; });
+      return bag;
+    }
+    function applyFullThemePreset(preset) {
+      state.settings.palette = normalizePalette({
+        light: buildThemeOverrides(preset.light),
+        dark: buildThemeOverrides(preset.dark)
+      });
+      if (Array.isArray(preset.levels)) assignLevelPalette(preset.levels);
+      save();
+      render();
+      renderPaletteDialog();
     }
 
     function saveLevelFromForm({ auto = false } = {}) {
@@ -19299,6 +19771,7 @@
         p: () => clickIf("#tipJarBtn"),
         ",": () => clickIf("#settingsBtn"),
         "<": () => clickIf("#settingsBtn"),
+        ">": () => clickIf("#paletteBtn"),
         "|": () => clickIf("#mapLayerToggleBtn"),
         "'": () => cycleMapLabelTarget(1),
         "?": () => { if (!$("#settingsDialog").open) $("#settingsDialog").showModal(); switchTab("help"); }
@@ -19841,7 +20314,7 @@
           $("#paletteDialog").close();
           return;
         }
-        const paletteButton = $(`#paletteThemes [data-shortcut="${key}"]`);
+        const paletteButton = $(`#palettePresets [data-shortcut="${key}"]`);
         if (!paletteButton) return;
         event.preventDefault();
         paletteButton.click();
@@ -20020,6 +20493,7 @@
           else clickIf("#settingsBtn");
         },
         "<": () => clickIf("#settingsBtn"),
+        ">": () => clickIf("#paletteBtn"),
         "~": () => clickIf("#renameBtn"),
         m: toggleMapPanel,
         l: toggleLegendPanel,
@@ -20029,7 +20503,6 @@
 
         // Legend.
         w: () => legendPanelOpen && legendPositionControlAvailable() && toggleLegendPositionMenu(),
-        ">": () => clickIf("#smartColorsBtn"),
         x: () => clickIf("#suggestionsToggleBtn"),
         y: () => legendPanelOpen && toggleLegendEditMode(),
         z: () => clickIf("#addLevelBtn"),
@@ -20807,9 +21280,21 @@
       $("#legendPositionBtn").addEventListener("click", toggleLegendPositionMenu);
       $("#legendEditBtn").addEventListener("click", toggleLegendEditMode);
       bindLegendPositionDrag();
-      $("#smartColorsBtn").addEventListener("click", () => {
+      $("#paletteBtn").addEventListener("click", () => {
         renderPaletteDialog();
         $("#paletteDialog").showModal();
+      });
+      $$("#paletteDialog [data-palette-mode]").forEach(tab => {
+        tab.addEventListener("click", () => {
+          const mode = tab.dataset.paletteMode;
+          if (mode !== state.settings.theme) updateSetting("theme", mode);
+          renderPaletteDialog();
+        });
+      });
+      $("#paletteCopyModeBtn").addEventListener("click", () => copyPaletteToOtherMode());
+      $("#paletteResetAllBtn").addEventListener("click", () => {
+        resetPaletteAllEdit(paletteEditMode());
+        renderPaletteDialog();
       });
       $("#suggestionsToggleBtn").addEventListener("click", () => {
         updateSetting("hideSuggestedCategories", !state.settings.hideSuggestedCategories);
