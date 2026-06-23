@@ -47,18 +47,31 @@ const US_GRATICULE_CALIBRATION = {
 
 Classic
 #FFFFFF :: White
+#EAEAEA
 #D6D6D6 :: Light Gray
+#989898
 #5A5A5A :: Dark Gray
+#2D2D2D
 #000000 :: Black
+#3C2A24
 #795548 :: Brown
+#AF473E
 #E53935 :: Red
+#F0621A
 #FB8C00 :: Orange
+#FCB21A
 #FDD835 :: Yellow
+#A0BC3E
 #43A047 :: Green
+#21A684
 #00ACC1 :: Cyan
+#0F9AD3
 #1E88E5 :: Blue
+#2B68C8
 #3949AB :: Indigo
+#6336AA
 #8E24AA :: Violet
+#B31F85
 #D81B60 :: Pink
 
 Neon

@@ -1968,6 +1968,7 @@
     // Wayfinder accent + one app Accent. The first entry is the canonical default
     // and also the fallback shown for any color the user has not edited.
     const COLOR_THEMES = [
+      { id: "developer", name: "Developer", levels: ["#2bd96a", "#4d9fff", "#2f6bff", "#a855f7", "#9c6b43"], priorities: ["#28e06e", "#b4f230", "#ffe01a", "#ff8c1a", "#ff3b3b"], ring: ["#e5e7eb", "#475569"], wayfinder: "#ff36d7", accent: "#22d3ee" },
       { id: "classic", name: "Classic", levels: ["#16a34a", "#facc15", "#f97316", "#7c3aed", "#89909b"], priorities: ["#16a34a", "#84cc16", "#eab308", "#f59e0b", "#f97316"], ring: ["#d4a017", "#7c2d12"], wayfinder: "#14b8a6", accent: "#1d6fd6" },
       { id: "neon", name: "Neon", levels: ["#0bff00", "#fff100", "#ffac00", "#f000ff", "#8a93a6"], priorities: ["#00e676", "#a6ff00", "#fff100", "#ff8a00", "#ff1e56"], ring: ["#faff00", "#ff006e"], wayfinder: "#1dffc2", accent: "#00d4ff" },
       { id: "pastel", name: "Pastel", levels: ["#86efac", "#fde68a", "#fdba74", "#c4b5fd", "#aab2c0"], priorities: ["#86efac", "#bef264", "#fde68a", "#fdba74", "#fca5a5"], ring: ["#fcd34d", "#fb7185"], wayfinder: "#5eead4", accent: "#7aa2f7" },
@@ -1981,7 +1982,7 @@
       { id: "harbor", name: "Harbor", levels: ["#1f6f8b", "#5fa8c4", "#d8c08a", "#b5663a", "#8895a0"], priorities: ["#1f9e6b", "#7fb83e", "#e0b020", "#e07b2e", "#d23b3b"], ring: ["#cba24a", "#26313a"], wayfinder: "#159a8c", accent: "#2e6e9e" },
       { id: "orchard", name: "Orchard", levels: ["#a8323a", "#e08a2e", "#e6c34a", "#6f7d3a", "#9a8b86"], priorities: ["#3f8f5a", "#9caa3e", "#e3b23c", "#d77a35", "#b5402e"], ring: ["#e7a83e", "#6a1f2b"], wayfinder: "#138a72", accent: "#7a4eab" }
     ];
-    const DEFAULT_THEME = COLOR_THEMES[0];
+    const DEFAULT_THEME = COLOR_THEMES.find(theme => theme.id === "classic") || COLOR_THEMES[0];
     function defaultPalette() {
       return {};
     }
@@ -16003,6 +16004,9 @@
         paletteMapRefreshHandle = 0;
         renderMap();
         renderLegend();
+        // Notes bake legend level colors in as resolved hex (--level-color), so a
+        // live level-color edit must re-render the notes list too, not just the map.
+        renderNotesPanel();
       });
     }
     function editPaletteSwatch(type, index, hex, commit) {
