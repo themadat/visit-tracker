@@ -95,19 +95,33 @@ Pastel
 
 Sunset
 #FFF8F0 :: White
+#ECE3DA :: Warm Linen
 #D8CFC4 :: Light Gray
+#A2988E :: Weathered Stone
 #6D6258 :: Dark Gray
+#4D433B :: Charcoal Taupe
 #2C241E :: Black
+#5D3F2C :: Walnut Bark
 #8D5A3B :: Brown
+#B44F3F :: Terracotta Clay
 #D84343 :: Crimson Sunset
+#E96222 :: Burnt Orange
 #F57C00 :: Amber Glow
+#FAA003 :: Marigold Gold
 #FFC107 :: Golden Hour
+#C5C529 :: Sunlit Olive
 #8BC34A :: Desert Sage
+#59C592 :: Sea Glass
 #26C6DA :: Tropical Sea
+#4189CD :: Coastal Blue
 #5C6BC0 :: Twilight Blue
+#633FAD :: Royal Violet
 #6A1B9A :: Evening Indigo
+#96216A :: Mulberry
 #C2185B :: Magenta Sky
+#D72C6A :: Raspberry Rose
 #EC407A :: Rose Horizon
+
 
 Water
 #F7FCFF :: White

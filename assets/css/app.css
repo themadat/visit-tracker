@@ -9106,7 +9106,7 @@
        sharing the same Main · Way · Range · Levels · Priorities columns so Current
        lines up with the built-ins. Sized to fit without scrolling. */
     #paletteDialog {
-      width: min(860px, calc(100dvw - 1rem));
+      width: min(1040px, calc(100dvw - 1rem));
     }
 
     .palette-grid {
@@ -9131,7 +9131,7 @@
     }
 
     .palette-grid-label {
-      flex: 0 0 4.4rem;
+      flex: 0 0 6rem;
       display: flex;
       align-items: center;
       font-weight: 600;
@@ -9139,6 +9139,7 @@
       color: var(--text);
       white-space: nowrap;
       overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .palette-grid-head .palette-grid-label {
@@ -9149,6 +9150,15 @@
       display: flex;
       gap: .25rem;
       min-width: 0;
+    }
+
+    .palette-grid-group + .palette-grid-group {
+      border-left: 1px solid var(--line);
+      padding-left: .5rem;
+    }
+
+    .palette-grid-head .palette-grid-group {
+      justify-content: center;
     }
 
     .palette-grid-grouplabel {

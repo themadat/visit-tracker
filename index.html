@@ -1825,7 +1825,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "5.0.0.2";
+    const APP_VERSION = "5.0.0.3";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -16077,7 +16077,7 @@
     }
     function paletteHeaderRow(levelCount) {
       const label = name => `<span class="palette-grid-grouplabel">${name}</span>`;
-      return `<div class="palette-grid-row palette-grid-head" aria-hidden="true"><span class="palette-grid-label"></span>${paletteRowGroups(label("Main"), label("Way"), label("Range"), label("Levels"), label("Priorities"), levelCount)}</div>`;
+      return `<div class="palette-grid-row palette-grid-head" aria-hidden="true"><span class="palette-grid-label"></span>${paletteRowGroups(label("Main"), label("Wayfinder"), label("Rangefinder"), label("Levels"), label("Priorities"), levelCount)}</div>`;
     }
     function paletteCurrentRow(levelCount) {
       const main = paletteEditCell(paletteVarValue("--accent"), "App accent", "accent", 0);
