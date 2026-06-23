@@ -13,6 +13,10 @@ Final design (supersedes the original plan body below):
   bag applied the same in light and dark (no per-mode split). `normalizePalette`
   folds the legacy `{light,dark}` shape (light wins) and drops unknown/invalid.
 - **No app-surface editing and no contrast badges** (removed per feedback).
+- **Rangefinder ring fills** (`--ring-step-N-fill`) derive from the stroke vars via
+  `color-mix(in srgb, var(--ring-step-N-stroke) <alpha>%, transparent)` in `:root`
+  only (dark inherits, resolving the per-mode/overridden stroke), so a theme's ring
+  ramp recolors both the ring lines and their fills. Not in `THEMEABLE_VARS`.
 - **Derived companions** — the user edits only primaries; `deriveAccentVars`
   (→`--accent-2`), `deriveWayfinderVars` (→`--wayfinder-accent-strong`/`-deep`),
   and `deriveRingVars` (2 endpoints → `--accent-ring`/`-secondary`,
