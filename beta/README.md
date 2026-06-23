@@ -1,6 +1,6 @@
 # Trail Log
 
-Trail Log is a local-first travel map for marking where you've been, where you want to go next, and the little memories worth keeping along the way. It started as a US state visit tracker and now layers in DC, territories, a switchable atlas-labeled World map, optional latitude/longitude grids, touch-friendly map zoom and panning, custom legend levels, four location-note views from Detailed to Text Only, per-note priorities with filtering/sorting/grouping, icon tags, mapped memories, Wayfinder packs for National Parks and Monuments, Rangefinder planning rings with offline local-time and arrival planning plus one-click hand-off to Apple Maps, Google Maps, or Google Flights, named Basecamp pads with rich-text planning and linked location notes, and copy-friendly exports, all with a slightly outdoorsy, geeky vibe.
+Trail Log is a local-first travel map for marking where you've been, where you want to go next, and the little memories worth keeping along the way. It started as a US state visit tracker and now layers in DC, territories, a switchable atlas-labeled World map, optional latitude/longitude grids, touch-friendly map zoom and panning, custom legend levels, a top-bar Theme & Colors panel for recoloring levels, priorities, Rangefinder, Wayfinder, and accent with thirteen one-click themes, four location-note views from Detailed to Text Only, per-note priorities with filtering/sorting/grouping, icon tags, mapped memories, Wayfinder packs for National Parks and Monuments, Rangefinder planning rings with offline local-time and arrival planning plus one-click hand-off to Apple Maps, Google Maps, or Google Flights, named Basecamp pads with rich-text planning and linked location notes, and copy-friendly exports, all with a slightly outdoorsy, geeky vibe.
 
 The app is still intentionally simple to run: open `index.html` and go — plain HTML/CSS/JavaScript with a few companion data files, no build step, browser localStorage, JSON import/export, and no backend. Optional online actions, like Locate and Waypoint Pack photo camera-location checks, only run when you tap them; saved data and manual coordinates keep working offline.
 
@@ -8,6 +8,7 @@ The app is still intentionally simple to run: open `index.html` and go — plain
 
 | Version | Date | Title | Summary
 |---|---:|---|---|
+| 5.0.0 | 2026-06-23 | Paint Job | A new top-bar Theme & Colors panel recolors your levels, priorities, Rangefinder, Wayfinder, and accent, with thirteen one-click themes saved alongside your data. |
 | 4.9.0 | 2026-06-21 | Travel Agent | Rangefinder can hand your Start and End points to Apple Maps, Google Maps, or Google Flights, with a per-provider setting and new-tab or background-tab opening. |
 | 4.8.1 | 2026-06-21 | Reading Glasses | Text Only remembers your chosen text size across reloads. |
 | 4.8.0 | 2026-06-21 | Square Deal | A consistency pass: unified anchored pop-ups and a shared control-size system, a floating scroll-sticky Text Only toolbar with text-size buttons, steadier map/Rangefinder layout, and a fully revised keyboard shortcut set. |

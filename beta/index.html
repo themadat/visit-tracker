@@ -1157,6 +1157,9 @@
             <li>Use Rename to change the map title. Blank names fall back to Your Trail Log.</li>
             <li>Use Tip for the optional drink prompt, Add as App for device-matched install directions, and Settings
               for appearance, dates, note tags, imports, and exports.</li>
+            <li>Use Theme &amp; Colors (the swatch button left of Settings, or press &gt;) to recolor your legend levels,
+              note priorities, Rangefinder rings, Wayfinder, and the app accent, or apply one of thirteen one-click
+              themes. Your colors save with your data and ride along in JSON backups.</li>
             <li>Returning users may see a What's New banner and red dots for feature releases. Open What's New or
               dismiss the banner to clear them.</li>
             <li>What's New includes Release Notes and the Roadmap. The Roadmap accents ticket pills for ideas that
@@ -1380,6 +1383,12 @@
             completion stats.</p>
           <p><b>What does the icon beside the overall Legend stats mean?</b><br>It identifies the current stats group:
             US locations, World countries, or the linked Waypoint Pack selected in Map Labels.</p>
+          <p><b>How do I change colors or pick a theme?</b><br>Open Theme &amp; Colors from the top bar (the swatch
+            button left of Settings, or press &gt;). The Current row lets you recolor each legend level, the five note
+            priorities, the Rangefinder's near and far rings, the Wayfinder accent, and the app accent — click a swatch
+            or type a hex code. The other shades (the ring ramp and accent/Wayfinder variants) follow automatically.
+            Pick one of thirteen themes below to recolor everything at once; the matching theme is highlighted when your
+            colors line up with it. Colors save with your data and travel in JSON backups.</p>
         </section>
         <section class="help-section">
           <h3 class="section-heading"><span class="doc-section-icon" data-section-icon="help-faq"></span>FAQ: Notes</h3>
@@ -1825,7 +1834,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "5.0.0.3";
+    const APP_VERSION = "5.0.0";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
