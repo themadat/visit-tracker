@@ -52,19 +52,6 @@
         category: "Maps"
       },
       {
-        title: "App-Wide Theming Overhaul",
-        ticketId: "WISH-063",
-        planDoc: "WISH-063-THEMING-OVERHAUL-PLAN.md",
-        description: "Make color theming a first-class, app-wide system where every color is selectable: Legend level colors, note Priority colors, Rangefinder ring and accent colors, Wayfinder accents, and the app's global accent and surface colors. Move the palette control out of the Legend and into the top bar immediately left of Settings, opening a much larger palette modal that shows the entire color range at once (grouped by surface) instead of editing one swatch at a time. Includes theme presets, accessible contrast checks, light/dark readability, persisted selections, and keeping every current color as the default.",
-        priority: "P0",
-        effort: "x-large",
-        targetKind: "exact",
-        targetVersion: "5.0.0",
-        tokenCostPct: 50,
-        prompt: "Make theming app-wide and first-class. Relocate the palette control from the Legend (currently the legend palette button / smartApplyPalette) into the top bar immediately left of the Settings button, and rebuild it as a large modal that exposes every themeable color at once, grouped by surface: Legend level colors, note Priority colors, Rangefinder ring/accent colors, Wayfinder accents, and global app accent/surface colors. Show the full range together rather than one swatch at a time, offer theme presets, run accessible-contrast checks, and keep light/dark readability. Preserve all current colors as defaults. Persist chosen colors/theme in settings (add defaults in defaultState(), repair in normalizeState()), preserve the usStateVisitMap.v1 schema, and keep everything offline/local-only and theme-aware via CSS variables.",
-        category: "UI"
-      },
-      {
         title: "Mobile Center-Crosshair Rangefinder",
         ticketId: "WISH-079",
         description: "Give mobile Rangefinder a map-first targeting mode: place a persistent + crosshair at the center of the visible map, let the user pan the map beneath it, and continuously update a compact distance/time indicator for the coordinates under the crosshair. Keep picking and confirming the target touch-friendly without covering the map.",
