@@ -13,7 +13,7 @@
         highlights: [
           "New Theme & Colors button in the top bar (left of Settings).",
           "Recolor 5 levels, 5 priorities, Rangefinder, Wayfinder, and the app accent.",
-          "A dozen one-click themes, from Classic and Ocean to Cartographer, Aurora, and Harbor.",
+          "Thirteen one-click themes, including a poppy dark-terminal Developer theme.",
           "Your colors are saved with your data and ride along in backups.",
         ],
         updateSections: [
@@ -23,7 +23,8 @@
               "A new Theme & Colors button in the top bar (left of Settings) opens a compact panel: a Current Theme row of editable swatches plus a list of one-click preset themes.",
               "Edit your colors directly — 5 legend levels, 5 priorities, the Rangefinder's near and far rings, the Wayfinder accent, and the app accent — with instant live preview.",
               "Each color block shows its hex, so you can set it with the picker or by typing the hex code; companion shades (the ring ramp, accent and Wayfinder variants) are derived automatically.",
-              "Apply a whole palette in one click with twelve themes: Classic, Neon, Pastel, Sunset, Space, Forest, Ocean, Cartographer, Aurora, Terracotta, Harbor, and Orchard. The Current row lines up with the themes column-for-column and highlights the one your colors match.",
+              "Apply a whole palette in one click with thirteen themes: Developer, Classic, Neon, Pastel, Sunset, Space, Forest, Ocean, Cartographer, Aurora, Terracotta, Harbor, and Orchard. The Current row lines up with the themes column-for-column and highlights the one your colors match.",
+              "Changing a legend level color now refreshes your notes right away, with no page reload needed.",
               "Your colors save with your data and travel in JSON backups.",
             ]
           },

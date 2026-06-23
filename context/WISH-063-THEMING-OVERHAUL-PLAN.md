@@ -23,9 +23,13 @@ Final design (supersedes the original plan body below):
   with the built-ins. Each Current cell is a swatch (native color input) **plus an
   editable hex field**. Theme rows preview how that theme would color the user's
   actual legend levels (`levelPaletteAssignment`) and get `.is-active` when the
-  current colors match. **12 themes**: Classic, Neon, Pastel, Sunset, Space, Forest,
-  Ocean, Cartographer, Aurora, Terracotta, Harbor, Orchard (`COLOR_THEMES`, each =
-  levels[5]/priorities[5]/ring[2]/wayfinder/accent).
+  current colors match. **13 themes**: Developer (dark-terminal, first), Classic,
+  Neon, Pastel, Sunset, Space, Forest, Ocean, Cartographer, Aurora, Terracotta,
+  Harbor, Orchard (`COLOR_THEMES`, each = levels[5]/priorities[5]/ring[2]/wayfinder/
+  accent). `DEFAULT_THEME` is pinned to the Classic entry by id (canonical defaults),
+  so it stays correct regardless of list order. A live level-color edit now also
+  re-renders the notes list (`schedulePaletteMapRefresh` → `renderNotesPanel`) since
+  notes bake level colors in as resolved hex.
   No Reset button (apply Classic / clear data to revert). Legend "Auto Colors"
   removed; `>` (universal + Shortcut-Mode) opens the modal.
 
