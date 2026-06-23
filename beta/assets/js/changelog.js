@@ -4,7 +4,7 @@
 
     const CHANGELOG = [
       {
-        version: "5.0.0.1",
+        version: "5.0.0.2",
         date: "2026-06-22",
         title: "Paint Job",
         summary: "A new Theme & Colors panel in the top bar lets you recolor your levels, priorities, Rangefinder, Wayfinder, and accent, or apply a whole theme in one click.",
@@ -13,7 +13,7 @@
         highlights: [
           "New Theme & Colors button in the top bar (left of Settings).",
           "Recolor 5 levels, 5 priorities, Rangefinder, Wayfinder, and the app accent.",
-          "Seven one-click themes: Classic, Neon, Pastel, Sunset, Space, Forest, Ocean.",
+          "A dozen one-click themes, from Classic and Ocean to Cartographer, Aurora, and Harbor.",
           "Your colors are saved with your data and ride along in backups.",
         ],
         updateSections: [
@@ -23,7 +23,7 @@
               "A new Theme & Colors button in the top bar (left of Settings) opens a compact panel: a Current Theme row of editable swatches plus a list of one-click preset themes.",
               "Edit your colors directly — 5 legend levels, 5 priorities, the Rangefinder's near and far rings, the Wayfinder accent, and the app accent — with instant live preview.",
               "Each color block shows its hex, so you can set it with the picker or by typing the hex code; companion shades (the ring ramp, accent and Wayfinder variants) are derived automatically.",
-              "Apply a whole palette in one click with seven themes: Classic, Neon, Pastel, Sunset, Space, Forest, and Ocean. The Current row lines up with the themes column-for-column and highlights the one your colors match.",
+              "Apply a whole palette in one click with twelve themes: Classic, Neon, Pastel, Sunset, Space, Forest, Ocean, Cartographer, Aurora, Terracotta, Harbor, and Orchard. The Current row lines up with the themes column-for-column and highlights the one your colors match.",
               "Your colors save with your data and travel in JSON backups.",
             ]
           },
