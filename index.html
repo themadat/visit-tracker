@@ -1825,7 +1825,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "5.0.0.1";
+    const APP_VERSION = "5.0.0.2";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -1974,7 +1974,12 @@
       { id: "sunset", name: "Sunset", levels: ["#eeaf61", "#fb9062", "#ee5d6c", "#ce4993", "#6a0d83"], priorities: ["#f6c177", "#fb9062", "#ee5d6c", "#d6456f", "#a1297a"], ring: ["#fcae3c", "#9a1750"], wayfinder: "#f0a35e", accent: "#e0556e" },
       { id: "space", name: "Space", levels: ["#1e1b4b", "#4338ca", "#7c3aed", "#c026d3", "#475569"], priorities: ["#4ade80", "#a3e635", "#facc15", "#fb923c", "#f43f5e"], ring: ["#a78bfa", "#6d1f63"], wayfinder: "#22d3ee", accent: "#818cf8" },
       { id: "forest", name: "Forest", levels: ["#36563e", "#5a8b5d", "#81b14f", "#907350", "#97876b"], priorities: ["#2f855a", "#65a30d", "#ca8a04", "#b45309", "#9a3412"], ring: ["#6a9f4f", "#2f5d2a"], wayfinder: "#0f9b8e", accent: "#2f7d4f" },
-      { id: "ocean", name: "Ocean", levels: ["#064273", "#1da2d8", "#7fcdff", "#def3f6", "#6d8aa3"], priorities: ["#0e9f6e", "#0ea5e9", "#eab308", "#f97316", "#e11d48"], ring: ["#0891b2", "#0e4f6b"], wayfinder: "#0ea5a4", accent: "#0e7490" }
+      { id: "ocean", name: "Ocean", levels: ["#064273", "#1da2d8", "#7fcdff", "#def3f6", "#6d8aa3"], priorities: ["#0e9f6e", "#0ea5e9", "#eab308", "#f97316", "#e11d48"], ring: ["#0891b2", "#0e4f6b"], wayfinder: "#0ea5a4", accent: "#0e7490" },
+      { id: "cartographer", name: "Cartographer", levels: ["#3a7d44", "#8aa66a", "#d4b06a", "#a9744f", "#9a9384"], priorities: ["#4a7c3f", "#9caf45", "#d6a821", "#c47a36", "#a83a2c"], ring: ["#caa24a", "#5b3a1e"], wayfinder: "#b8653a", accent: "#1f6f8b" },
+      { id: "aurora", name: "Aurora", levels: ["#3ddc97", "#4cc9f0", "#7c83ff", "#c05bd1", "#6b7280"], priorities: ["#34d399", "#a3e635", "#fcd34d", "#fb923c", "#fb7185"], ring: ["#a5b4fc", "#3b2f7a"], wayfinder: "#22d3ee", accent: "#5b8cff" },
+      { id: "terracotta", name: "Terracotta", levels: ["#b5503a", "#dba94e", "#e3c887", "#6f8f6a", "#9b8b7a"], priorities: ["#3f8f5a", "#9caa3e", "#e3b23c", "#d77a35", "#b5402e"], ring: ["#e8b04b", "#7a2e1e"], wayfinder: "#d98a3d", accent: "#2f8f9e" },
+      { id: "harbor", name: "Harbor", levels: ["#1f6f8b", "#5fa8c4", "#d8c08a", "#b5663a", "#8895a0"], priorities: ["#1f9e6b", "#7fb83e", "#e0b020", "#e07b2e", "#d23b3b"], ring: ["#cba24a", "#26313a"], wayfinder: "#159a8c", accent: "#2e6e9e" },
+      { id: "orchard", name: "Orchard", levels: ["#a8323a", "#e08a2e", "#e6c34a", "#6f7d3a", "#9a8b86"], priorities: ["#3f8f5a", "#9caa3e", "#e3b23c", "#d77a35", "#b5402e"], ring: ["#e7a83e", "#6a1f2b"], wayfinder: "#138a72", accent: "#7a4eab" }
     ];
     const DEFAULT_THEME = COLOR_THEMES[0];
     function defaultPalette() {
