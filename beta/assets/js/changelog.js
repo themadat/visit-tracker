@@ -4,8 +4,8 @@
 
     const CHANGELOG = [
       {
-        version: "5.0.0.2",
-        date: "2026-06-22",
+        version: "5.0.0.3",
+        date: "2026-06-23",
         title: "Paint Job",
         summary: "A new Theme & Colors panel in the top bar lets you recolor your levels, priorities, Rangefinder, Wayfinder, and accent, or apply a whole theme in one click.",
         banner: "Recolor your levels, priorities, Rangefinder, Wayfinder, and accent — or pick a theme — from the new Theme & Colors panel.",
