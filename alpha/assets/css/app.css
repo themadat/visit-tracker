@@ -24,16 +24,24 @@
       --ring-step-6-stroke: #9f5309;
       --ring-step-7-stroke: #92400e;
       --ring-step-8-stroke: #7c2d12;
-      --ring-step-1-fill: rgba(212, 160, 23, .35);
-      --ring-step-2-fill: rgba(209, 151, 0, .32);
-      --ring-step-3-fill: rgba(201, 133, 5, .29);
-      --ring-step-4-fill: rgba(189, 114, 8, .26);
-      --ring-step-5-fill: rgba(173, 97, 8, .23);
-      --ring-step-6-fill: rgba(159, 83, 9, .205);
-      --ring-step-7-fill: rgba(146, 64, 14, .18);
-      --ring-step-8-fill: rgba(124, 45, 18, .16);
+      --ring-step-1-fill: color-mix(in srgb, var(--ring-step-1-stroke) 35%, transparent);
+      --ring-step-2-fill: color-mix(in srgb, var(--ring-step-2-stroke) 32%, transparent);
+      --ring-step-3-fill: color-mix(in srgb, var(--ring-step-3-stroke) 29%, transparent);
+      --ring-step-4-fill: color-mix(in srgb, var(--ring-step-4-stroke) 26%, transparent);
+      --ring-step-5-fill: color-mix(in srgb, var(--ring-step-5-stroke) 23%, transparent);
+      --ring-step-6-fill: color-mix(in srgb, var(--ring-step-6-stroke) 20.5%, transparent);
+      --ring-step-7-fill: color-mix(in srgb, var(--ring-step-7-stroke) 18%, transparent);
+      --ring-step-8-fill: color-mix(in srgb, var(--ring-step-8-stroke) 16%, transparent);
       --ring-connector: #b45309;
       --ring-label-bg: var(--bg);
+      --priority-1-color: #16a34a;
+      --priority-2-color: #84cc16;
+      --priority-3-color: #eab308;
+      --priority-4-color: #f59e0b;
+      --priority-5-color: #f97316;
+      --wayfinder-accent: #14b8a6;
+      --wayfinder-accent-strong: #0f766e;
+      --wayfinder-accent-deep: #0d9488;
       --state-empty: #d7dce3;
       --shadow: 0 18px 50px rgba(16, 24, 40, .14);
       --radius: 8px;
@@ -69,16 +77,16 @@
       --ring-step-6-stroke: #a9550a;
       --ring-step-7-stroke: #9a460c;
       --ring-step-8-stroke: #873a0d;
-      --ring-step-1-fill: rgba(224, 170, 26, .35);
-      --ring-step-2-fill: rgba(217, 154, 0, .32);
-      --ring-step-3-fill: rgba(208, 135, 0, .29);
-      --ring-step-4-fill: rgba(200, 117, 5, .26);
-      --ring-step-5-fill: rgba(185, 99, 8, .23);
-      --ring-step-6-fill: rgba(169, 85, 10, .205);
-      --ring-step-7-fill: rgba(154, 70, 12, .18);
-      --ring-step-8-fill: rgba(135, 58, 13, .16);
       --ring-connector: #e0aa1a;
       --ring-label-bg: var(--bg);
+      --priority-1-color: #16a34a;
+      --priority-2-color: #84cc16;
+      --priority-3-color: #eab308;
+      --priority-4-color: #f59e0b;
+      --priority-5-color: #f97316;
+      --wayfinder-accent: #14b8a6;
+      --wayfinder-accent-strong: #0f766e;
+      --wayfinder-accent-deep: #0d9488;
       --state-empty: #3b4553;
       --shadow: 0 22px 60px rgba(0, 0, 0, .38);
       --focus: 0 0 0 3px rgba(106, 168, 255, .32);
@@ -769,14 +777,14 @@
     }
 
     #notesAddWaypointsBtn {
-      border-color: color-mix(in srgb, #14b8a6 72%, var(--line) 28%);
-      box-shadow: 0 0 0 1px color-mix(in srgb, #14b8a6 28%, transparent);
+      border-color: color-mix(in srgb, var(--wayfinder-accent) 72%, var(--line) 28%);
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--wayfinder-accent) 28%, transparent);
     }
 
     #notesAddWaypointsBtn:hover,
     #notesAddWaypointsBtn:focus-visible {
-      border-color: #14b8a6;
-      box-shadow: 0 0 0 2px color-mix(in srgb, #14b8a6 34%, transparent);
+      border-color: var(--wayfinder-accent);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--wayfinder-accent) 34%, transparent);
     }
 
     [data-button-style="text"] .toolbar-panel-toggle-group button,
@@ -1279,7 +1287,7 @@
     }
 
     .bucket-list-pill {
-      background: #14b8a6;
+      background: var(--wayfinder-accent);
       color: #000;
     }
 
@@ -1297,8 +1305,8 @@
        they read at a glance, regardless of the global accent color. */
     button[aria-pressed="true"].bucket-list-toggle-btn,
     [data-theme="dark"] button[aria-pressed="true"].bucket-list-toggle-btn {
-      background: #14b8a6;
-      border-color: #14b8a6;
+      background: var(--wayfinder-accent);
+      border-color: var(--wayfinder-accent);
       color: #000;
     }
 
@@ -1308,8 +1316,8 @@
     }
 
     button[aria-pressed="true"].bucket-list-toggle-btn:hover {
-      border-color: #0d9488;
-      background: #0d9488;
+      border-color: var(--wayfinder-accent-deep);
+      background: var(--wayfinder-accent-deep);
       color: #000;
     }
 
@@ -1339,8 +1347,8 @@
     html[data-bucket-mode="on"] .legend-item.is-bucket-list,
     html[data-bucket-mode="on"] .legend-item.is-bucket-list.is-filtered {
       background: rgba(20, 184, 166, .16);
-      border-color: #14b8a6;
-      box-shadow: inset 4px 0 0 #14b8a6;
+      border-color: var(--wayfinder-accent);
+      box-shadow: inset 4px 0 0 var(--wayfinder-accent);
     }
 
     [data-theme="dark"] html[data-bucket-mode="on"] .legend-item.is-bucket-list,
@@ -1349,18 +1357,18 @@
     }
 
     html[data-bucket-mode="on"] .compact-note-row.is-bucket-target {
-      box-shadow: inset 4px 0 0 #14b8a6;
+      box-shadow: inset 4px 0 0 var(--wayfinder-accent);
     }
 
     html[data-bucket-mode="on"] .map-location-marker.is-bucket-target .marker-ring {
-      stroke: #14b8a6;
+      stroke: var(--wayfinder-accent);
       stroke-width: 2.2;
       filter: drop-shadow(0 0 3px rgba(20, 184, 166, .65));
     }
 
     html[data-bucket-mode="on"] .state-tile.is-bucket-target,
     html[data-bucket-mode="on"] .world-tile.is-bucket-target {
-      stroke: #14b8a6;
+      stroke: var(--wayfinder-accent);
       stroke-width: 1.4;
     }
 
@@ -2229,7 +2237,7 @@
 
     .suggested-set-marker .set-marker-monument {
       fill: #fff;
-      stroke: #0f766e;
+      stroke: var(--wayfinder-accent-strong);
       stroke-width: 3;
     }
 
@@ -3021,7 +3029,7 @@
     }
 
     .pack-symbol.is-national-monument {
-      filter: drop-shadow(0 0 1.2px #0f766e) drop-shadow(0 1px 1px rgba(15, 118, 110, .4));
+      filter: drop-shadow(0 0 1.2px var(--wayfinder-accent-strong)) drop-shadow(0 1px 1px rgba(15, 118, 110, .4));
     }
 
     /* Pack artwork (NPS arrowhead, monument) uses currentColor exactly like
@@ -5981,8 +5989,8 @@
     }
 
     .waypoint-pack-card[aria-pressed="true"] {
-      border-color: #14b8a6;
-      background: color-mix(in srgb, #14b8a6 13%, var(--surface) 87%);
+      border-color: var(--wayfinder-accent);
+      background: color-mix(in srgb, var(--wayfinder-accent) 13%, var(--surface) 87%);
     }
 
     .waypoint-pack-card .sf-symbol,
@@ -6081,8 +6089,8 @@
     .waypoint-label-toggle button[aria-pressed="true"],
     .waypoint-priority-row button[aria-pressed="true"],
     .waypoint-sort-row button[aria-pressed="true"] {
-      border-color: #14b8a6;
-      background: #14b8a6;
+      border-color: var(--wayfinder-accent);
+      background: var(--wayfinder-accent);
       color: #001715;
     }
 
@@ -6157,9 +6165,9 @@
     }
 
     .waypoint-preview-selection[aria-pressed="true"] {
-      border-color: #14b8a6;
-      background: color-mix(in srgb, #14b8a6 12%, var(--surface));
-      box-shadow: inset 0 0 0 1px color-mix(in srgb, #14b8a6 28%, transparent);
+      border-color: var(--wayfinder-accent);
+      background: color-mix(in srgb, var(--wayfinder-accent) 12%, var(--surface));
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wayfinder-accent) 28%, transparent);
     }
 
     .waypoint-preview-selection[aria-pressed="false"] {
@@ -6318,10 +6326,10 @@
     }
 
     .waypoint-preview-actions .waypoint-priority-row>button[aria-pressed="true"] {
-      border-color: #14b8a6;
+      border-color: var(--wayfinder-accent);
       background: var(--surface-2);
       color: var(--text);
-      box-shadow: inset 0 0 0 2px #14b8a6;
+      box-shadow: inset 0 0 0 2px var(--wayfinder-accent);
     }
 
     .waypoint-row-action {
@@ -6330,8 +6338,8 @@
     }
 
     .waypoint-row-action.is-linked {
-      border-color: #14b8a6;
-      box-shadow: inset 0 0 0 2px #14b8a6;
+      border-color: var(--wayfinder-accent);
+      box-shadow: inset 0 0 0 2px var(--wayfinder-accent);
     }
 
     .waypoint-row-action .sf-symbol {
@@ -6352,10 +6360,10 @@
       gap: .24rem;
       min-width: 0;
       padding: .24rem;
-      border: 2px solid #14b8a6;
+      border: 2px solid var(--wayfinder-accent);
       border-radius: 8px;
-      background: color-mix(in srgb, #14b8a6 9%, var(--surface));
-      box-shadow: inset 0 0 0 1px color-mix(in srgb, #14b8a6 20%, transparent);
+      background: color-mix(in srgb, var(--wayfinder-accent) 9%, var(--surface));
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wayfinder-accent) 20%, transparent);
     }
 
     .note-waypoint-header-controls.hidden {
@@ -6453,10 +6461,10 @@
       min-width: 0;
       max-height: min(18rem, 50vh);
       padding: .32rem;
-      border: 2px solid #14b8a6;
+      border: 2px solid var(--wayfinder-accent);
       border-radius: 8px;
       background: var(--surface);
-      box-shadow: 0 12px 28px rgba(16, 24, 40, .3), 0 0 0 3px color-mix(in srgb, #14b8a6 18%, transparent);
+      box-shadow: 0 12px 28px rgba(16, 24, 40, .3), 0 0 0 3px color-mix(in srgb, var(--wayfinder-accent) 18%, transparent);
       overflow-y: auto;
     }
 
@@ -7677,8 +7685,8 @@
 
     .wayfinder-level-option:hover,
     .wayfinder-level-option:focus-visible {
-      border-color: #14b8a6;
-      box-shadow: 0 0 0 2px color-mix(in srgb, #14b8a6 22%, transparent);
+      border-color: var(--wayfinder-accent);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--wayfinder-accent) 22%, transparent);
     }
 
     .wayfinder-level-option-color {
@@ -7702,10 +7710,10 @@
 
     .wayfinder-level-recommended {
       padding: .22rem .42rem;
-      border: 1px solid color-mix(in srgb, #14b8a6 62%, var(--line) 38%);
+      border: 1px solid color-mix(in srgb, var(--wayfinder-accent) 62%, var(--line) 38%);
       border-radius: 999px;
-      color: color-mix(in srgb, #0f766e 82%, var(--text) 18%);
-      background: color-mix(in srgb, #14b8a6 14%, var(--surface) 86%);
+      color: color-mix(in srgb, var(--wayfinder-accent-strong) 82%, var(--text) 18%);
+      background: color-mix(in srgb, var(--wayfinder-accent) 14%, var(--surface) 86%);
       font-size: .7rem;
       font-weight: 800;
       white-space: nowrap;
@@ -7987,8 +7995,8 @@
 
     .basecamp-new-btn {
       width: 100%;
-      border-color: color-mix(in srgb, #14b8a6 58%, var(--line));
-      color: color-mix(in srgb, #0f766e 84%, var(--text));
+      border-color: color-mix(in srgb, var(--wayfinder-accent) 58%, var(--line));
+      color: color-mix(in srgb, var(--wayfinder-accent-strong) 84%, var(--text));
     }
 
     .basecamp-new-wrap {
@@ -8023,9 +8031,9 @@
     }
 
     .basecamp-pad-row.is-active {
-      border-color: #14b8a6;
-      background: color-mix(in srgb, #14b8a6 12%, var(--surface));
-      box-shadow: inset 3px 0 0 #14b8a6;
+      border-color: var(--wayfinder-accent);
+      background: color-mix(in srgb, var(--wayfinder-accent) 12%, var(--surface));
+      box-shadow: inset 3px 0 0 var(--wayfinder-accent);
     }
 
     .basecamp-pad-row.is-no-match {
@@ -8077,8 +8085,8 @@
       min-width: 1.4rem;
       padding: .12rem .3rem;
       border-radius: 999px;
-      background: color-mix(in srgb, #14b8a6 18%, var(--surface));
-      color: #0f766e;
+      background: color-mix(in srgb, var(--wayfinder-accent) 18%, var(--surface));
+      color: var(--wayfinder-accent-strong);
       font-size: .68rem;
       font-weight: 850;
       text-align: center;
@@ -8157,7 +8165,7 @@
     .basecamp-pad-icon {
       border: 0;
       background: transparent;
-      color: #0f766e;
+      color: var(--wayfinder-accent-strong);
     }
 
     .basecamp-rename-row {
@@ -8191,7 +8199,7 @@
       height: var(--control-size);
       min-width: var(--control-size);
       padding: 0;
-      color: #0f766e;
+      color: var(--wayfinder-accent-strong);
     }
 
     /* Tile glyphs fill their button — the square-fill SVGs already have an
@@ -8203,8 +8211,8 @@
     }
 
     .basecamp-icon-picker button[aria-pressed="true"] {
-      border-color: #14b8a6;
-      background: color-mix(in srgb, #14b8a6 16%, var(--surface));
+      border-color: var(--wayfinder-accent);
+      background: color-mix(in srgb, var(--wayfinder-accent) 16%, var(--surface));
     }
 
     .basecamp-editor-pane {
@@ -8262,8 +8270,8 @@
 
     .basecamp-pad-icon-btn:hover,
     .basecamp-pad-icon-btn:focus-visible {
-      border-color: color-mix(in srgb, #14b8a6 38%, var(--line));
-      background: color-mix(in srgb, #14b8a6 10%, var(--surface));
+      border-color: color-mix(in srgb, var(--wayfinder-accent) 38%, var(--line));
+      background: color-mix(in srgb, var(--wayfinder-accent) 10%, var(--surface));
       outline: none;
     }
 
@@ -8286,8 +8294,8 @@
 
     .basecamp-editor-title:hover,
     .basecamp-editor-title:focus-visible {
-      border-color: color-mix(in srgb, #14b8a6 38%, var(--line));
-      background: color-mix(in srgb, #14b8a6 10%, var(--surface));
+      border-color: color-mix(in srgb, var(--wayfinder-accent) 38%, var(--line));
+      background: color-mix(in srgb, var(--wayfinder-accent) 10%, var(--surface));
       outline: none;
     }
 
@@ -8297,7 +8305,7 @@
       gap: .4rem;
       padding: .55rem .78rem;
       border-block: 1px solid var(--line);
-      background: color-mix(in srgb, #14b8a6 7%, var(--surface-2));
+      background: color-mix(in srgb, var(--wayfinder-accent) 7%, var(--surface-2));
     }
 
     .basecamp-toolbar-desktop {
@@ -8321,9 +8329,9 @@
       gap: .3rem;
       min-width: 0;
       padding: .38rem;
-      border: 1px solid color-mix(in srgb, #14b8a6 34%, var(--line));
+      border: 1px solid color-mix(in srgb, var(--wayfinder-accent) 34%, var(--line));
       border-radius: var(--radius);
-      background: color-mix(in srgb, var(--surface) 78%, #14b8a6 7%);
+      background: color-mix(in srgb, var(--surface) 78%, var(--wayfinder-accent) 7%);
     }
 
     .basecamp-toolbar-section-head {
@@ -8331,7 +8339,7 @@
       align-items: center;
       gap: .28rem;
       min-width: 0;
-      color: color-mix(in srgb, #0f766e 82%, var(--text));
+      color: color-mix(in srgb, var(--wayfinder-accent-strong) 82%, var(--text));
       font-size: .72rem;
       font-weight: 850;
     }
@@ -8363,13 +8371,13 @@
       min-width: var(--control-size);
       min-height: var(--control-size);
       padding: .28rem;
-      border-color: color-mix(in srgb, #14b8a6 42%, var(--line));
-      color: color-mix(in srgb, #0f766e 82%, var(--text));
+      border-color: color-mix(in srgb, var(--wayfinder-accent) 42%, var(--line));
+      color: color-mix(in srgb, var(--wayfinder-accent-strong) 82%, var(--text));
     }
 
     .basecamp-toolbar button:hover,
     .basecamp-toolbar button:focus-visible {
-      background: color-mix(in srgb, #14b8a6 12%, var(--surface));
+      background: color-mix(in srgb, var(--wayfinder-accent) 12%, var(--surface));
     }
 
     .basecamp-toolbar button:disabled {
@@ -8379,10 +8387,10 @@
 
     .basecamp-toolbar button.is-active,
     .basecamp-toolbar button[aria-pressed="true"] {
-      border-color: color-mix(in srgb, #0f766e 78%, var(--line));
-      background: color-mix(in srgb, #14b8a6 22%, var(--surface));
+      border-color: color-mix(in srgb, var(--wayfinder-accent-strong) 78%, var(--line));
+      background: color-mix(in srgb, var(--wayfinder-accent) 22%, var(--surface));
       color: color-mix(in srgb, #064e3b 86%, var(--text));
-      box-shadow: inset 0 0 0 1px color-mix(in srgb, #14b8a6 42%, transparent);
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wayfinder-accent) 42%, transparent);
     }
 
     .basecamp-format-icon {
@@ -8425,7 +8433,7 @@
       right: -.34rem;
       padding: 1px .32rem;
       border-radius: 4px;
-      background: #14b8a6;
+      background: var(--wayfinder-accent);
       color: #fff;
       font-size: .68rem;
       font-weight: 800;
@@ -8460,9 +8468,9 @@
       align-content: start;
       min-width: 0;
       padding: .38rem;
-      border: 1px solid color-mix(in srgb, #14b8a6 28%, var(--line));
+      border: 1px solid color-mix(in srgb, var(--wayfinder-accent) 28%, var(--line));
       border-radius: var(--radius);
-      background: color-mix(in srgb, var(--surface) 74%, #14b8a6 5%);
+      background: color-mix(in srgb, var(--surface) 74%, var(--wayfinder-accent) 5%);
     }
 
     .basecamp-toolbar-utility .basecamp-toolbar-grid {
@@ -8658,9 +8666,9 @@
       left: .02rem;
       width: .9rem;
       height: .9rem;
-      border: 1.5px solid color-mix(in srgb, #14b8a6 72%, var(--text));
+      border: 1.5px solid color-mix(in srgb, var(--wayfinder-accent) 72%, var(--text));
       border-radius: 3px;
-      background: color-mix(in srgb, #14b8a6 8%, var(--surface));
+      background: color-mix(in srgb, var(--wayfinder-accent) 8%, var(--surface));
     }
 
     .basecamp-pad-body ul.basecamp-list-check>li.basecamp-check-checked::after {
@@ -8670,14 +8678,14 @@
       left: .24rem;
       width: .44rem;
       height: .22rem;
-      border-left: 2px solid #14b8a6;
-      border-bottom: 2px solid #14b8a6;
+      border-left: 2px solid var(--wayfinder-accent);
+      border-bottom: 2px solid var(--wayfinder-accent);
       transform: rotate(-45deg);
     }
 
     .basecamp-pad-body ul.basecamp-list-check>li:hover::before {
-      border-color: #0f766e;
-      box-shadow: 0 0 0 3px color-mix(in srgb, #14b8a6 16%, transparent);
+      border-color: var(--wayfinder-accent-strong);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--wayfinder-accent) 16%, transparent);
     }
 
     .basecamp-pad-body {
@@ -8687,11 +8695,11 @@
       outline: 0;
       font: inherit;
       line-height: 1.55;
-      caret-color: #0f766e;
+      caret-color: var(--wayfinder-accent-strong);
     }
 
     .basecamp-pad-body:focus {
-      box-shadow: inset 0 0 0 2px color-mix(in srgb, #14b8a6 34%, transparent);
+      box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--wayfinder-accent) 34%, transparent);
     }
 
     .basecamp-pad-body:empty::before {
@@ -8723,12 +8731,12 @@
 
     .basecamp-pad-body blockquote {
       padding-left: .75rem;
-      border-left: 3px solid #14b8a6;
+      border-left: 3px solid var(--wayfinder-accent);
       color: var(--muted);
     }
 
     .basecamp-pad-body a {
-      color: #0f766e;
+      color: var(--wayfinder-accent-strong);
       text-decoration: underline;
     }
 
@@ -8821,7 +8829,7 @@
       display: grid;
       gap: .35rem;
       padding: .42rem;
-      border: 1px solid color-mix(in srgb, #14b8a6 55%, var(--line));
+      border: 1px solid color-mix(in srgb, var(--wayfinder-accent) 55%, var(--line));
       border-radius: var(--radius);
       background: var(--surface);
     }
@@ -8904,7 +8912,7 @@
     .basecamp-empty .sf-symbol {
       width: 3rem;
       height: 3rem;
-      color: #0f766e;
+      color: var(--wayfinder-accent-strong);
     }
 
     @media (max-width: 720px) {
@@ -9082,6 +9090,164 @@
     .theme-swatches {
       display: grid;
       gap: .6rem;
+    }
+
+    /* WISH-063 — Theme & Colors: a column-aligned theme grid opened from the
+       top-bar palette button. A header row of group labels, the editable Current
+       row (swatch + hex per cell), then one clickable row per preset theme — all
+       sharing the same Main · Way · Range · Levels · Priorities columns so Current
+       lines up with the built-ins. Sized to fit without scrolling. */
+    #paletteDialog {
+      width: min(1140px, calc(100dvw - 1rem));
+    }
+
+    .palette-grid {
+      display: flex;
+      flex-direction: column;
+      gap: .3rem;
+    }
+
+    .palette-grid-row {
+      display: flex;
+      align-items: stretch;
+      gap: .45rem;
+      padding: .3rem .5rem;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+    }
+
+    .palette-grid-head {
+      align-items: end;
+      padding-top: 0;
+      padding-bottom: .1rem;
+    }
+
+    .palette-grid-label {
+      flex: 0 0 6rem;
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+      font-size: .85rem;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .palette-grid-head .palette-grid-label {
+      font-size: .7rem;
+    }
+
+    .palette-grid-group {
+      display: flex;
+      gap: .25rem;
+      min-width: 0;
+    }
+
+    .palette-grid-group + .palette-grid-group {
+      border-left: 1px solid var(--line);
+      padding-left: .5rem;
+    }
+
+    .palette-grid-head .palette-grid-group {
+      justify-content: center;
+    }
+
+    .palette-grid-grouplabel {
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .palette-grid-cell {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .swatch-cell {
+      height: 22px;
+      border-radius: 4px;
+      border: 1px solid color-mix(in srgb, var(--line) 55%, transparent);
+    }
+
+    /* Editable Current row: swatch tile (native color input overlay) + hex text. */
+    .palette-edit-cell {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .palette-swatch {
+      position: relative;
+      width: 100%;
+      height: 26px;
+      border-radius: 5px;
+      border: 1px solid rgba(0, 0, 0, .22);
+      background: var(--row-color, var(--surface-2));
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    [data-theme="dark"] .palette-swatch {
+      border-color: rgba(255, 255, 255, .22);
+    }
+
+    .palette-swatch input[type="color"] {
+      position: absolute;
+      inset: -2px;
+      width: calc(100% + 4px);
+      height: calc(100% + 4px);
+      margin: 0;
+      padding: 0;
+      border: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .palette-hex {
+      width: 100%;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 9.5px;
+      text-align: center;
+      text-transform: lowercase;
+    }
+
+    .palette-hex:focus {
+      color: var(--text);
+      outline: 1px solid var(--accent);
+      border-radius: 3px;
+      background: var(--surface);
+    }
+
+    /* Preset theme rows: the whole row is a button that applies the theme. */
+    .palette-theme-row {
+      align-items: center;
+      border-color: var(--line);
+      background: var(--surface);
+      color: var(--text);
+      font: inherit;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .palette-theme-row:hover {
+      border-color: var(--accent);
+      background: var(--surface-2);
+    }
+
+    .palette-theme-row.is-active {
+      border-color: var(--accent);
+      box-shadow: inset 0 0 0 1px var(--accent);
+      background: color-mix(in srgb, var(--accent) 9%, var(--surface));
     }
 
     .notes-panel-head {
@@ -9587,13 +9753,13 @@
     }
 
     .notes-icon-filter.is-waypoint-pack-icon {
-      border-color: #14b8a6;
+      border-color: var(--wayfinder-accent);
     }
 
     .notes-icon-filter.is-waypoint-pack-icon[aria-pressed="true"] {
-      background: color-mix(in srgb, #14b8a6 18%, var(--surface));
+      background: color-mix(in srgb, var(--wayfinder-accent) 18%, var(--surface));
       color: var(--text);
-      box-shadow: inset 0 0 0 2px color-mix(in srgb, #14b8a6 74%, transparent);
+      box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--wayfinder-accent) 74%, transparent);
     }
 
     .notes-icon-filter.is-waypoint-pack-icon[aria-pressed="false"] {
@@ -9871,9 +10037,9 @@
     .note-place-grid input.is-waypoint-override,
     #noteGeocodeBtn.is-waypoint-override,
     #noteWhereToCityBtn.is-waypoint-override {
-      border-color: #14b8a6;
-      background: color-mix(in srgb, #14b8a6 12%, var(--surface));
-      box-shadow: inset 0 0 0 1px color-mix(in srgb, #14b8a6 28%, transparent);
+      border-color: var(--wayfinder-accent);
+      background: color-mix(in srgb, var(--wayfinder-accent) 12%, var(--surface));
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wayfinder-accent) 28%, transparent);
     }
 
     .note-geocode-status {
@@ -10197,10 +10363,10 @@
     }
 
     .visit-type-chip.is-waypoint-pack-chip:has(input:checked) {
-      border-color: #14b8a6;
-      background: color-mix(in srgb, #14b8a6 15%, var(--surface));
-      color: #0f766e;
-      box-shadow: inset 0 0 0 1px color-mix(in srgb, #14b8a6 34%, transparent);
+      border-color: var(--wayfinder-accent);
+      background: color-mix(in srgb, var(--wayfinder-accent) 15%, var(--surface));
+      color: var(--wayfinder-accent-strong);
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wayfinder-accent) 34%, transparent);
     }
 
     .visit-type-chip .sf-symbol {
@@ -10336,15 +10502,15 @@
     .tag-editor-row.is-waypoint-pack,
     .tag-editor-row.is-enabled.is-waypoint-pack,
     .tag-more-option.is-waypoint-pack {
-      border-color: #14b8a6;
-      background: color-mix(in srgb, #14b8a6 12%, var(--surface));
-      box-shadow: inset 0 0 0 1px color-mix(in srgb, #14b8a6 28%, transparent);
+      border-color: var(--wayfinder-accent);
+      background: color-mix(in srgb, var(--wayfinder-accent) 12%, var(--surface));
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wayfinder-accent) 28%, transparent);
     }
 
     .tag-more-option.is-waypoint-pack:hover,
     .tag-more-option.is-waypoint-pack:focus-visible {
-      border-color: #14b8a6;
-      background: color-mix(in srgb, #14b8a6 18%, var(--surface));
+      border-color: var(--wayfinder-accent);
+      background: color-mix(in srgb, var(--wayfinder-accent) 18%, var(--surface));
     }
 
     .tag-editor-row:focus-visible {
@@ -10920,9 +11086,9 @@
       gap: .12rem;
       margin-right: .12rem;
       padding: .12rem;
-      border: 2px solid #14b8a6;
+      border: 2px solid var(--wayfinder-accent);
       border-radius: 9px;
-      background: color-mix(in srgb, #14b8a6 8%, var(--surface));
+      background: color-mix(in srgb, var(--wayfinder-accent) 8%, var(--surface));
     }
 
     .detailed-waypoint-actions .waypoint-row-action {
