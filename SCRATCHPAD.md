@@ -45,6 +45,129 @@ const US_GRATICULE_CALIBRATION = {
 
 ## Colors
 
+Classic
+#FFFFFF :: White
+#EAEAEA
+#D6D6D6 :: Light Gray
+#989898
+#5A5A5A :: Dark Gray
+#2D2D2D
+#000000 :: Black
+#3C2A24
+#795548 :: Brown
+#AF473E
+#E53935 :: Red
+#F0621A
+#FB8C00 :: Orange
+#FCB21A
+#FDD835 :: Yellow
+#A0BC3E
+#43A047 :: Green
+#21A684
+#00ACC1 :: Cyan
+#0F9AD3
+#1E88E5 :: Blue
+#2B68C8
+#3949AB :: Indigo
+#6336AA
+#8E24AA :: Violet
+#B31F85
+#D81B60 :: Pink
+
+Neon
+#FFFFFF :: White
+#E0E0E0 :: Light Gray
+#424242 :: Dark Gray
+#000000 :: Black
+#8D6E63 :: Brown
+#FF1744 :: Electric Red
+#FF6D00 :: Neon Orange
+#FFEA00 :: Neon Yellow
+#00E676 :: Laser Green
+#00E5FF :: Neon Cyan
+#2979FF :: Electric Blue
+#536DFE :: Neon Indigo
+#D500F9 :: Neon Violet
+#FF4081 :: Hot Pink
+
+Pastel
+#FFFDF8 :: White
+#E6E2DD :: Light Gray
+#8A847D :: Dark Gray
+#3D3935 :: Black
+#C8A27A :: Brown
+#F4A6A6 :: Rose
+#F6C49B :: Peach
+#F8E7A1 :: Butter
+#A8D8B9 :: Mint
+#AEE5E8 :: Robin Egg
+#AFCBFF :: Sky
+#B8B5FF :: Periwinkle
+#D3B5E5 :: Lavender
+#F7B6D2 :: Blush
+
+Sunset
+#FFF8F0 :: White
+#ECE3DA :: Warm Linen
+#D8CFC4 :: Light Gray
+#A2988E :: Weathered Stone
+#6D6258 :: Dark Gray
+#4D433B :: Charcoal Taupe
+#2C241E :: Black
+#5D3F2C :: Walnut Bark
+#8D5A3B :: Brown
+#B44F3F :: Terracotta Clay
+#D84343 :: Crimson Sunset
+#E96222 :: Burnt Orange
+#F57C00 :: Amber Glow
+#FAA003 :: Marigold Gold
+#FFC107 :: Golden Hour
+#C5C529 :: Sunlit Olive
+#8BC34A :: Desert Sage
+#59C592 :: Sea Glass
+#26C6DA :: Tropical Sea
+#4189CD :: Coastal Blue
+#5C6BC0 :: Twilight Blue
+#633FAD :: Royal Violet
+#6A1B9A :: Evening Indigo
+#96216A :: Mulberry
+#C2185B :: Magenta Sky
+#D72C6A :: Raspberry Rose
+#EC407A :: Rose Horizon
+
+
+Water
+#F7FCFF :: White
+#D7E4EC :: Light Gray
+#52616B :: Dark Gray
+#16212A :: Black
+#8A6A4A :: Brown
+#E57373 :: Coral Reef
+#FFB74D :: Tropical Fish
+#FFF176 :: Sunlit Wave
+#4DB6AC :: Sea Grass
+#26C6DA :: Lagoon
+#2196F3 :: Ocean Blue
+#3F51B5 :: Deep Ocean
+#5E35B1 :: Deep Current
+#AB47BC :: Sea Anemone
+
+Earth
+#FAF8F2 :: White
+#D5D0C3 :: Light Gray
+#5F6655 :: Dark Gray
+#22261F :: Black
+#6D4C41 :: Brown
+#A0522D :: Clay Red
+#C96F3D :: Terracotta
+#D4B25F :: Wheat
+#2E7D32 :: Forest Green
+#4CAF50 :: Moss
+#4F81BD :: River Stone
+#5C6B73 :: Mountain Shadow
+#7E57C2 :: Heather
+#AD5D9F :: Wildflower
+
 Ferrari:
 Red (Rosso Corsa) corresponds to hex code #FF2800 (or sometimes #E80020 for the Formula 1 team)
 Yellow (Giallo Modena): #FFF200
