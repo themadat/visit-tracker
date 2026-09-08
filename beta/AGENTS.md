@@ -34,6 +34,8 @@ truth — read it before implementing anything.
 - App-behavior changes bump the 4th `APP_VERSION` segment (in `index.html`)
   and add a `CHANGELOG` build note (in `assets/js/changelog.js`). Docs-only
   edits need no release churn.
+- Keep `.github/workflows/deploy.yml`'s versioned workflow `name` in sync
+  with `APP_VERSION`; commit subjects use `Version - Text` to label runs.
 - New persisted fields: defaults in `defaultState()`, repair in
   `normalizeState()`; never break the `usStateVisitMap.v1` schema.
 - Preview: `python3 -m http.server 8018` → `http://127.0.0.1:8018/index.html`;
