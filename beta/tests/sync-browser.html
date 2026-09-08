@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Trail Log sync integration tests</title>
+<style>body{margin:0;padding:12px;background:#e8ecf1;font:14px system-ui;color:#17202a}header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}button{padding:8px 12px}iframe{display:block;background:white;border:1px solid #a0aabb;width:1440px;height:900px;max-width:100%}#results{white-space:pre-wrap}.pass{color:#176337}.fail{color:#b42318}</style></head>
+<body><header><strong>Isolated sync tests · memory storage · simulated GitHub</strong><button id="desktop">Desktop</button><button id="mobile">Phone (390 px)</button><button id="run">Run integration tests</button></header><pre id="results">Loading app…</pre><iframe id="app" title="Isolated Trail Log preview"></iframe>
+<script>
+(async () => {
+  const frame = document.querySelector('#app');
+  const source = await (await fetch('../index.html', { cache: 'no-store' })).text();
+  const base = new URL('../', location.href).href;
+  const setup = `
+    const testMemory = () => { const values = new Map(); return { getItem: k => values.get(k) || null, setItem: (k,v) => values.set(k,String(v)), removeItem: k => values.delete(k), clear: () => values.clear() }; };
+    Object.defineProperty(window, 'localStorage', { value: testMemory() });
+    Object.defineProperty(window, 'sessionStorage', { value: testMemory() });
+    window.__syncTest = { remote: null, writes: [], errors: [], status: 200 };
+    window.addEventListener('error', event => __syncTest.errors.push(event.message));
+    window.addEventListener('unhandledrejection', event => __syncTest.errors.push(String(event.reason)));
+    window.fetch = async (url, options = {}) => {
+      if (!String(url).startsWith('https://api.github.com/repos/themadat/app-data')) throw new Error('Network disabled in test preview');
+      const reply = (status, body) => ({ status, ok: status >= 200 && status < 300, json: async () => body });
+      if (__syncTest.status !== 200) return reply(__syncTest.status, { message: 'Simulated API error' });
+      if (options.method === 'PUT') { __syncTest.writes.push(JSON.parse(options.body)); return reply(200, { content: { sha: 'test-saved-sha' } }); }
+      if (!String(url).includes('/contents/')) return reply(200, {});
+      if (!__syncTest.remote) return reply(404, {});
+      const bytes = new TextEncoder().encode(JSON.stringify(__syncTest.remote));
+      let binary = ''; for (const byte of bytes) binary += String.fromCharCode(byte);
+      return reply(200, { type: 'file', encoding: 'base64', sha: 'test-remote-sha', content: btoa(binary) });
+    };
+  `;
+  const freshSource = source.replace(/(src|href)="(assets\/[^"]+)"/g, (_, attr, url) => attr + '="' + url + (url.includes('?') ? '&' : '?') + 'sync-test=' + Date.now() + '"');
+  frame.srcdoc = freshSource.replace('<head>', '<head><base href="' + base + '">').replace('<script src="assets/js/icons.js', '<script>' + setup + '<' + '/script><script src="assets/js/icons.js')
+    .replace(/<\/body>\s*<\/html>\s*$/, '<script src="tests/sync-browser.js?fresh=3"><' + '/script></body></html>');
+  document.querySelector('#desktop').onclick = () => { frame.style.width = '1440px'; frame.style.height = '900px'; };
+  document.querySelector('#mobile').onclick = () => { frame.style.width = '390px'; frame.style.height = '844px'; };
+  document.querySelector('#run').onclick = () => frame.contentWindow.runSyncIntegrationTests();
+  window.addEventListener('message', event => {
+    if (event.source !== frame.contentWindow || !event.data?.syncTest) return;
+    document.querySelector('#results').textContent = event.data.message;
+    document.querySelector('#results').className = event.data.failed ? 'fail' : 'pass';
+  });
+})();
+</script></body></html>

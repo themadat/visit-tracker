@@ -2,7 +2,17 @@
 
 Trail Log is a local-first travel map for marking where you've been, where you want to go next, and the little memories worth keeping along the way. It started as a US state visit tracker and now layers in DC, territories, a switchable atlas-labeled World map, optional latitude/longitude grids, touch-friendly map zoom and panning, custom legend levels, a top-bar Theme & Colors panel for recoloring levels, priorities, Rangefinder, Wayfinder, and accent with thirteen one-click themes, four location-note views from Detailed to Text Only, per-note priorities with filtering/sorting/grouping, icon tags, mapped memories, Wayfinder packs for National Parks and Monuments, Rangefinder planning rings with offline local-time and arrival planning plus one-click hand-off to Apple Maps, Google Maps, or Google Flights, named Basecamp pads with rich-text planning and linked location notes, and copy-friendly exports, all with a slightly outdoorsy, geeky vibe.
 
-The app is still intentionally simple to run: open `index.html` and go — plain HTML/CSS/JavaScript with a few companion data files, no build step, browser localStorage, JSON import/export, and no backend. Optional online actions, like Locate and Waypoint Pack photo camera-location checks, only run when you tap them; saved data and manual coordinates keep working offline.
+The app is still intentionally simple to run: open `index.html` and go — plain HTML/CSS/JavaScript with a few companion data files, no build step, browser localStorage, JSON import/export, and no backend. Locate and Waypoint Pack photo camera-location checks run when tapped. Optional GitHub Sync checks for changes once connected; transfers use Sync Now. Saved data and manual coordinates keep working offline.
+
+## Data syncing
+
+The combined local-save/GitHub status control sits at the left of the top-bar actions. Open **Settings → Data Sync** to connect each device to `themadat/app-data`, branch `main`, file `data/visit-tracker.json`. Use a fine-grained token scoped only to `app-data` with **Contents: Read and write**. The first upload can create the file. Tokens stay masked and can be remembered on the device or kept only for the tab; they never enter backups or synced content.
+
+**Test** verifies the connection; **Save** stores it. Background checks compare copies every five minutes and when returning to the app. **Sync Now** transfers map names, legend definitions, Waypoint Pack icon mappings, US/World visits and notes, and Basecamp pads/links. Appearance, legend colors, tag configuration, filters, and layout remain local. Full JSON backups still transfer settings.
+
+Initial differences and conflicts ask you to upload, download, or merge compatible content. Merge preserves items in either copy, including one-sided deletions; differing edits to the same item require a copy choice. Downloads and merges require a successful local recovery save. **Restore from Cloud** asks for confirmation, and **Local recovery** can restore or export the previous local copy. The JSON disclosure previews exactly what is synced. **Forget** removes this device’s token and sync history. Sync supports content files up to 5 MB; full JSON backups remain available for larger logs.
+
+Sync implementation: `assets/js/sync*.js`, with no runtime dependencies or build step. Run `node --test tests/sync.test.mjs` with Node 18+; open `tests/sync-browser.html` through the local preview server for integration checks with isolated in-memory storage and a simulated GitHub API. API writes use the current file SHA as documented by [GitHub’s Contents API](https://docs.github.com/en/rest/repos/contents#create-or-update-file-contents).
 
 ## Releases
 
