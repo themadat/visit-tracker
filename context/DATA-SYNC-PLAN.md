@@ -2,7 +2,7 @@
 
 ## Resume
 
-Implementation complete at **5.0.0.1 Cloud Trail**, pending user checkpoint/release workflow. Only visit-tracker was edited; pre-existing `.vscode/settings.json` work is preserved. Latest cut release is still 5.0.0.
+Implementation complete at **5.0.0.2 Cloud Trail**, pending user checkpoint/release workflow. Only visit-tracker was edited; pre-existing `.vscode/settings.json` work is preserved. Latest cut release is still 5.0.0.
 
 - Done: template sync engine/status icons; leftmost top-bar local/cloud status; Settings → Data Sync setup, Test/Save/Forget, explicit Sync Now, cloud restore, initial/conflict choices, conservative merge, recovery restore/export and JSON preview.
 - Compatibility: content-only Trail Log envelope, pinned target, device/tab tokens outside app state, existing `usStateVisitMap.v1`/full backups unchanged. Sparse quick-select notes canonicalize; pack-icon mapping follows managed note metadata. Local appearance/legend colors/general tag settings remain local. Pending Basecamp edits flush before user sync actions.
@@ -10,6 +10,7 @@ Implementation complete at **5.0.0.1 Cloud Trail**, pending user checkpoint/rele
 - Verified: `./build/check.sh`, `git diff --check`, **24 Node tests**, **23 real-app browser integration assertions** with memory storage/simulated GitHub. Browser checks include actual normalization, custom Waypoint icons, rich-text sanitization, partial dates, coordinates, linked pads, restored rendering, masked token setup, cancellation and conflict choices. All nine toolbar actions fit 390 px; 1256×900 desktop remains exactly viewport-height.
 - Files: `index.html`, `assets/css/app.css`, `assets/js/sync*.js`, `assets/js/changelog.js`, README/handoff, `tests/sync.test.mjs`, and isolated `tests/sync-browser.{html,js}`.
 - No real GitHub token was read/configured and no real cloud data was changed. To connect, use Settings → Data Sync on each device. Preview server stopped at handoff.
+- Deployment follow-up (5.0.0.2): shared Pages queue fixes cross-channel publishing races; versioned workflow name and commit-based run titles follow app-template. Roll the workflow fix into all channels before overlapping deployments.
 - Next: user checkpoint; `prep`/`ship` if requested. No implementation blockers.
 
 ## Scope

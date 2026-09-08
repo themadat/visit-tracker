@@ -4,7 +4,7 @@
 
     const CHANGELOG = [
       {
-        version: "5.0.0.1",
+        version: "5.0.0.2",
         date: "2026-09-08",
         title: "Cloud Trail",
         summary: "Optional GitHub data syncing brings your Trail Log to another device, with status in the top bar and recovery before replacing local content.",
@@ -17,6 +17,9 @@
           "Choose conflicting copies or merge compatible content, with local recovery before replacement.",
         ],
         updateSections: [
+          { heading: "5.0.0.2 · Deployment", items: [
+            "Production, beta, and alpha updates share a deployment queue to prevent publishing conflicts. Deployment names identify the app version and channel.",
+          ] },
           { heading: "Data Sync", items: [
             "Connect a fine-grained GitHub token to the dedicated Trail Log data file. Keep the masked token on this device or only for the browser tab; Test, Save, and Forget manage the connection.",
             "The top-bar control shows local storage and cloud status with distinct symbols for progress, queued changes, offline, authentication, access, and errors. Only the active sync arrows rotate, respecting reduced motion.",
