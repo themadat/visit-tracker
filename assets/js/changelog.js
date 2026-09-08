@@ -4,6 +4,30 @@
 
     const CHANGELOG = [
       {
+        version: "5.0.0.1",
+        date: "2026-09-08",
+        title: "Cloud Trail",
+        summary: "Optional GitHub data syncing brings your Trail Log to another device, with status in the top bar and recovery before replacing local content.",
+        banner: "Sync your visits, notes, and Basecamp pads across devices from the top bar.",
+        cta: "Follow the|Cloud Trail!",
+        highlights: [
+          "Local-save and GitHub status now sit at the left of the top-bar actions.",
+          "Data Sync settings include token setup, Sync Now, cloud restore, and a JSON preview.",
+          "Sync US and World visits, notes, legend definitions, and Basecamp pads.",
+          "Choose conflicting copies or merge compatible content, with local recovery before replacement.",
+        ],
+        updateSections: [
+          { heading: "Data Sync", items: [
+            "Connect a fine-grained GitHub token to the dedicated Trail Log data file. Keep the masked token on this device or only for the browser tab; Test, Save, and Forget manage the connection.",
+            "The top-bar control shows local storage and cloud status with distinct symbols for progress, queued changes, offline, authentication, access, and errors. Only the active sync arrows rotate, respecting reduced motion.",
+            "Background checks compare saved content. Sync Now transfers changes; initial differences and conflicts ask which copy to use. Compatible merges keep matching and separate items from either copy.",
+            "Restore from Cloud confirms before replacing content and requires a successful local recovery save. Data Sync also offers Restore recovery and Export recovery JSON.",
+            "A collapsible JSON preview shows exactly what sync includes. Device appearance, legend colors, tag configuration, filters, layout, credentials, and sync bookkeeping stay out of the payload and credentials never enter JSON backups.",
+            "Existing local data and full JSON backups remain compatible. GitHub file revision checks protect against concurrent uploads, and changes made during a copy choice require a fresh comparison.",
+          ] }
+        ]
+      },
+      {
         version: "5.0.0",
         date: "2026-06-23",
         title: "Paint Job",
