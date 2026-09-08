@@ -37,6 +37,12 @@ trap 'rm -rf "$TMP"' EXIT
 python3 - "$REPO_ROOT/index.html" "$TMP/main.js" <<'EOF'
 import re, sys
 html = open(sys.argv[1], encoding="utf-8").read()
+from pathlib import Path
+version = re.search(r'const APP_VERSION = "([^"]+)";', html).group(1)
+workflow = (Path(sys.argv[1]).parent / '.github/workflows/deploy.yml').read_text()
+if not re.search(r'^name: Deploy Trail Log v' + re.escape(version) + r'$', workflow, re.M):
+    sys.exit('workflow name must match APP_VERSION: Deploy Trail Log v' + version)
+print('VERSION OK deployment workflow ' + version)
 blocks = re.findall(r"<script>\n([\s\S]*?)\n  </script>", html)
 if not blocks:
     sys.exit("no inline <script> blocks found in index.html")

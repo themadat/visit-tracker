@@ -125,10 +125,41 @@ manifest.webmanifest   PWA manifest (light icon set).
 manifest-dark.webmanifest  PWA manifest (dark icon set).
 build/                 Optional macOS icon build pipeline (generate-icons.sh + generate-favicon.py) plus dormant icon source material in icon-sources/. Excluded from deploys.
 context/               LLM handoff, dev context, and in-flight plan docs. Excluded from deploys.
-.github/workflows/     GitHub Actions; deploys main to /visit-tracker/ and 3-0-0-Trail-Log to /visit-tracker/beta/. Excluded from deploys.
+.github/workflows/     GitHub Actions; deploys main to /visit-tracker/ beta to /visit-tracker/beta/, and alpha to /visit-tracker/alpha/. Excluded from deploys.
 ```
 
 ## Development
+
+### Checkpoint and deploy
+
+On your feature branch, run `_vt-checkpoint "Version - Text"` using the full
+`APP_VERSION` (for example, `_vt-checkpoint "5.0.0.2 - Fix deployment queue"`).
+The local shell helper stages and commits all changes, pushes the feature
+branch, then pushes its HEAD to `beta` with `--force-with-lease`. A plain push
+to a feature branch does not deploy. If changes are already committed, use
+`_vt-deploy beta`: checkpoint stops when there is nothing to commit. Use
+`_vt-deploy alpha` for alpha; merge the feature branch into `main` for production.
+
+Wait for the deployment and subsequent Pages publication in GitHub Actions,
+then hard-refresh the channel URL. If the channel already points at the same
+commit, another push will not trigger a run; use **Run workflow** on that
+channel in Actions. After a workflow fix, push the new commit instead of
+re-running the failed run, which still uses its original workflow.
+
+The workflow follows app-template's naming convention: its fixed name is
+`Deploy Trail Log v<APP_VERSION>` for versioned notifications, and its run title
+includes the channel and `Version - Text` commit message. Manual runs fall back
+to the versioned workflow name. Update the workflow name whenever `APP_VERSION`
+changes, including during `ship`; `./build/check.sh` verifies they match.
+
+All three channels share the `pages` concurrency group and queue pending runs,
+because each publishes into the same `gh-pages` branch. Keep that configuration
+on every channel: older channel workflows with branch-specific locks can still
+collide until they receive the fix. During rollout, let existing deployments
+finish before starting another channel. The channel folders are preserved by
+`keep_files: true`. This repository retains its `gh-pages` publishing flow:
+Pages uses **Deploy from a branch → gh-pages → / (root)**. App-template's
+single-channel artifact deployment is a different publishing setup.
 
 All development context — architecture internals, persistence/migration rules, roadmap format, code map, verification steps, known issues, and the release-note conventions — lives in **`context/LLM_HANDOFF.md`**. Start there for any code work.
 

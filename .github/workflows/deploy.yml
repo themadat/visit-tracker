@@ -1,4 +1,6 @@
-name: Deploy to GitHub Pages
+name: Deploy Trail Log v5.0.0.2
+
+run-name: Deploy ${{ github.ref_name }} · ${{ github.event.head_commit.message || github.workflow }}
 
 # Production:  main   -> https://themadat.github.io/visit-tracker/
 # Beta:        beta   -> https://themadat.github.io/visit-tracker/beta/
@@ -16,8 +18,11 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: pages-${{ github.ref_name }}
+  # All channels write to the same branch: lock the destination, not the source.
+  # Keep this group identical across main, beta, and alpha, including older builds.
+  group: pages
   cancel-in-progress: false
+  queue: max
 
 jobs:
   deploy:
@@ -62,6 +67,6 @@ jobs:
           destination_dir: ${{ steps.dest.outputs.dir }}
           keep_files: true
           exclude_assets: '.github,build,context,.claude,assets/svgs,assets/world-map.svg,assets/world-map_raw.svg,assets/optimize-world-svg.py'
-          commit_message: "Deploy ${{ steps.dest.outputs.label }} from ${{ github.sha }}"
+          commit_message: "${{ github.workflow }} · ${{ steps.dest.outputs.label }} from ${{ github.sha }}"
           user_name: "github-actions[bot]"
           user_email: "github-actions[bot]@users.noreply.github.com"
