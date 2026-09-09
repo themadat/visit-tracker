@@ -1169,11 +1169,13 @@
             <button id="restoreCloudButton" type="button" disabled><span data-sync-action-icon aria-hidden="true"></span><span>Restore from Cloud</span></button>
           </div>
           <p id="syncLastChecked" class="sync-note"></p>
+          <p class="sync-note">Cloud filename updated: if an older version already saved data/visit-tracker.json,
+            rename that file to trail-log.json in GitHub before syncing this version. If no file exists, the first upload creates it.</p>
           <dl class="sync-target-line" aria-label="GitHub Sync target">
             <div><dt>Owner</dt><dd>themadat</dd></div>
             <div><dt>Repository</dt><dd><a href="https://github.com/themadat/app-data" target="_blank" rel="noopener noreferrer">app-data</a></dd></div>
             <div><dt>Branch</dt><dd>main</dd></div>
-            <div><dt>Path</dt><dd><a href="https://github.com/themadat/app-data/blob/main/data/visit-tracker.json" target="_blank" rel="noopener noreferrer">data/visit-tracker.json</a></dd></div>
+            <div><dt>Path</dt><dd><a href="https://github.com/themadat/app-data/blob/main/data/trail-log.json" target="_blank" rel="noopener noreferrer">data/trail-log.json</a></dd></div>
           </dl>
           <p class="sync-note">Use a <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">fine-grained access token</a> scoped to <b>app-data</b> with <b>Contents: Read and write</b>. The first upload can create the data file.</p>
           <label class="sync-token-field" for="syncToken">Fine-grained access token <small id="storedTokenLabel">Required</small></label>
@@ -1505,7 +1507,7 @@
             Open Settings → Data Sync to connect; JSON backups remain available.</p>
           <p><b>How do I sync between devices?</b><br>Open the status control at the left of the top bar, or
             Settings → Data Sync. Use a fine-grained GitHub token scoped to the app-data repository with Contents:
-            Read and write on each device. The dedicated file is data/visit-tracker.json. Test checks the connection;
+            Read and write on each device. The dedicated file is data/trail-log.json. Test checks the connection;
             Sync Now compares and transfers content. Background checks only report changes.</p>
           <p><b>Why does testing sync say Load failed?</b><br>The browser could not obtain a readable response from
             api.github.com; this does not confirm that your token is wrong. Check your connection, try a regular
@@ -1908,7 +1910,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "5.1.1.1";
+    const APP_VERSION = "5.1.1.2";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";

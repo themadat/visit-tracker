@@ -4,15 +4,18 @@
 
     const CHANGELOG = [
       {
-        version: "5.1.1.1",
+        version: "5.1.1.2",
         date: "2026-09-08",
         title: "Clear Signal",
-        summary: "Data Sync gains a braces icon and clearer guidance when the browser cannot reach GitHub.",
+        summary: "Data Sync uses a new cloud filename to avoid a tracker-blocking false positive, plus a braces icon and clearer connection guidance.",
         highlights: [
+          "Cloud data now uses trail-log.json to avoid a tracker-blocking filename collision.",
           "Data Sync uses the new braces icon in Settings.",
           "Connection errors distinguish unreachable GitHub from rejected credentials.",
         ],
         updateSections: [{ heading: "Connection clarity", items: [
+          "5.1.1.2: The sync filename is now data/trail-log.json. A tracking filter for /visit-tracker.js also matched the old JSON filename and could block both reads and first uploads.",
+          "If you already have cloud data at the old filename, rename it to trail-log.json in GitHub before syncing this version. Existing local data and stored tokens are preserved.",
           "Browser network errors such as Load failed now explain that credentials could not be verified and offer connection troubleshooting steps.",
           "Network failures no longer label an online device as offline. Failed tests leave credentials and local content unchanged.",
         ] }]
