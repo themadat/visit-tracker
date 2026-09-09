@@ -86,7 +86,7 @@ function createTrailLogSync(App) {
       owner: u.cleanLine(source.owner, 39),
       repo: u.cleanLine(source.repo, 100).replace(/\.git$/i, ""),
       branch: u.cleanLine(source.branch || "main", 250) || "main",
-      path: u.cleanLine(source.path || "data/visit-tracker.json", 500).replace(/^\/+/, "")
+      path: u.cleanLine(source.path || "data/trail-log.json", 500).replace(/^\/+/, "")
     };
     if (!/^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$/.test(next.owner)) throw new Error("Enter a valid GitHub owner or organization.");
     if (!/^[A-Za-z0-9._-]+$/.test(next.repo)) throw new Error("Enter a valid repository name.");
