@@ -4,6 +4,20 @@
 
     const CHANGELOG = [
       {
+        version: "5.1.1.1",
+        date: "2026-09-08",
+        title: "Clear Signal",
+        summary: "Data Sync gains a braces icon and clearer guidance when the browser cannot reach GitHub.",
+        highlights: [
+          "Data Sync uses the new braces icon in Settings.",
+          "Connection errors distinguish unreachable GitHub from rejected credentials.",
+        ],
+        updateSections: [{ heading: "Connection clarity", items: [
+          "Browser network errors such as Load failed now explain that credentials could not be verified and offer connection troubleshooting steps.",
+          "Network failures no longer label an online device as offline. Failed tests leave credentials and local content unchanged.",
+        ] }]
+      },
+      {
         version: "5.1.0",
         date: "2026-09-08",
         title: "Cloud Trail",

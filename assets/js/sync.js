@@ -190,9 +190,14 @@ function createTrailLogSync(App) {
   }
 
   function recordError(error, fallback) {
-    runtime.error = error.message || fallback;
+    const unreachable = networkError(error);
+    runtime.error = unreachable
+      ? (navigator.onLine === false
+        ? "This device is offline. Reconnect, then test the GitHub connection again."
+        : "The browser could not reach api.github.com. No readable GitHub response was received, so this does not confirm a bad token. Try opening Trail Log in a regular browser tab, check blockers or VPN/network filtering for api.github.com, or try another network, then test again.")
+      : error.message || fallback;
     runtime.errorState = error.syncState || CloudSyncState.failed;
-    runtime.offline = networkError(error);
+    runtime.offline = navigator.onLine === false;
   }
 
   async function verifyTarget(cloud, token, context) {
@@ -417,7 +422,7 @@ function createTrailLogSync(App) {
     } catch (error) {
       if (!currentRequest(context) || error && error.name === "AbortError") return null;
       recordError(error, "Connection test failed.");
-      throw error;
+      throw Object.assign(new Error(runtime.error), { syncState: runtime.errorState });
     } finally {
       if (currentRequest(context)) { runtime.checking = false; runtime.operation = ""; emit(); }
     }
