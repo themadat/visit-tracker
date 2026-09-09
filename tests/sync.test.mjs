@@ -130,6 +130,29 @@ test('failed token test does not persist newly entered credentials', async () =>
   await assert.rejects(h.sync.testConnection({ token: 'bad-token' })); assert.equal(h.token, '');
 });
 
+test('browser transport failures explain connectivity without blaming credentials or saving them', async () => {
+  for (const message of ['Load failed', 'Failed to fetch', 'NetworkError when attempting to fetch resource.']) {
+    const h = harness({ token: '' });
+    h.respond = () => { throw new TypeError(message); };
+    await assert.rejects(h.sync.testConnection({ token: 'unsaved-test-token' }), /could not reach api.github.com.*does not confirm a bad token/);
+    assert.equal(h.token, '');
+    assert.equal(h.sync.getInfo().state, 'failed');
+    assert.equal(h.requests.length, 1);
+    assert.equal(h.replacements.length, 0);
+  }
+});
+
+test('credential test reports actual offline state and preserves GitHub authentication errors', async () => {
+  const offline = harness({ token: '', online: false });
+  offline.respond = () => { throw new TypeError('Load failed'); };
+  await assert.rejects(offline.sync.testConnection({ token: 'unsaved-test-token' }), /device is offline/);
+  assert.equal(offline.sync.getInfo().state, 'offline');
+  const denied = harness({ token: '' });
+  denied.respond = () => response(401);
+  await assert.rejects(denied.sync.testConnection({ token: 'bad-token' }), /GitHub rejected the token/);
+  assert.equal(denied.sync.getInfo().state, 'authenticationRequired');
+});
+
 test('successful connection test saves masked-input backing token without transferring content', async () => {
   const h = harness({ token: '' }); const result = await h.sync.testConnection({ token: 'valid-test-token', rememberToken: false });
   assert.equal(result.ok, true); assert.equal(h.token, 'valid-test-token'); assert.equal(h.sync.getInfo().state, 'connected');
