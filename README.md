@@ -2,12 +2,23 @@
 
 Trail Log is a local-first travel map for marking where you've been, where you want to go next, and the little memories worth keeping along the way. It started as a US state visit tracker and now layers in DC, territories, a switchable atlas-labeled World map, optional latitude/longitude grids, touch-friendly map zoom and panning, custom legend levels, a top-bar Theme & Colors panel for recoloring levels, priorities, Rangefinder, Wayfinder, and accent with thirteen one-click themes, four location-note views from Detailed to Text Only, per-note priorities with filtering/sorting/grouping, icon tags, mapped memories, Wayfinder packs for National Parks and Monuments, Rangefinder planning rings with offline local-time and arrival planning plus one-click hand-off to Apple Maps, Google Maps, or Google Flights, named Basecamp pads with rich-text planning and linked location notes, and copy-friendly exports, all with a slightly outdoorsy, geeky vibe.
 
-The app is still intentionally simple to run: open `index.html` and go — plain HTML/CSS/JavaScript with a few companion data files, no build step, browser localStorage, JSON import/export, and no backend. Optional online actions, like Locate and Waypoint Pack photo camera-location checks, only run when you tap them; saved data and manual coordinates keep working offline.
+The app is still intentionally simple to run: open `index.html` and go — plain HTML/CSS/JavaScript with a few companion data files, no build step, browser localStorage, JSON import/export, and no backend. Locate and Waypoint Pack photo camera-location checks run when tapped. Optional GitHub Sync checks for changes once connected; transfers use Sync Now. Saved data and manual coordinates keep working offline.
+
+## Data syncing
+
+The combined local-save/GitHub status control sits at the left of the top-bar actions. Open **Settings → Data Sync** to connect each device to `themadat/app-data`, branch `main`, file `data/visit-tracker.json`. Use a fine-grained token scoped only to `app-data` with **Contents: Read and write**. The first upload can create the file. Tokens stay masked and can be remembered on the device or kept only for the tab; they never enter backups or synced content.
+
+**Test** verifies the connection; **Save** stores it. Background checks compare copies every five minutes and when returning to the app. **Sync Now** transfers map names, legend definitions, Waypoint Pack icon mappings, US/World visits and notes, and Basecamp pads/links. Appearance, legend colors, tag configuration, filters, and layout remain local. Full JSON backups still transfer settings.
+
+Initial differences and conflicts ask you to upload, download, or merge compatible content. Merge preserves items in either copy, including one-sided deletions; differing edits to the same item require a copy choice. Downloads and merges require a successful local recovery save. **Restore from Cloud** asks for confirmation, and **Local recovery** can restore or export the previous local copy. The JSON disclosure previews exactly what is synced. **Forget** removes this device’s token and sync history. Sync supports content files up to 5 MB; full JSON backups remain available for larger logs.
+
+Sync implementation: `assets/js/sync*.js`, with no runtime dependencies or build step. Run `node --test tests/sync.test.mjs` with Node 18+; open `tests/sync-browser.html` through the local preview server for integration checks with isolated in-memory storage and a simulated GitHub API. API writes use the current file SHA as documented by [GitHub’s Contents API](https://docs.github.com/en/rest/repos/contents#create-or-update-file-contents).
 
 ## Releases
 
 | Version | Date | Title | Summary
 |---|---:|---|---|
+| 5.1.0 | 2026-09-08 | Cloud Trail | Optional GitHub sync transfers visits, notes, legends, and Basecamp pads between devices, with explicit conflict choices and local recovery. |
 | 5.0.0 | 2026-06-23 | Paint Job | A new top-bar Theme & Colors panel recolors your levels, priorities, Rangefinder, Wayfinder, and accent, with thirteen one-click themes saved alongside your data. |
 | 4.9.0 | 2026-06-21 | Travel Agent | Rangefinder can hand your Start and End points to Apple Maps, Google Maps, or Google Flights, with a per-provider setting and new-tab or background-tab opening. |
 | 4.8.1 | 2026-06-21 | Reading Glasses | Text Only remembers your chosen text size across reloads. |
@@ -115,10 +126,41 @@ manifest.webmanifest   PWA manifest (light icon set).
 manifest-dark.webmanifest  PWA manifest (dark icon set).
 build/                 Optional macOS icon build pipeline (generate-icons.sh + generate-favicon.py) plus dormant icon source material in icon-sources/. Excluded from deploys.
 context/               LLM handoff, dev context, and in-flight plan docs. Excluded from deploys.
-.github/workflows/     GitHub Actions; deploys main to /visit-tracker/ and 3-0-0-Trail-Log to /visit-tracker/beta/. Excluded from deploys.
+.github/workflows/     GitHub Actions; deploys main to /visit-tracker/ beta to /visit-tracker/beta/, and alpha to /visit-tracker/alpha/. Excluded from deploys.
 ```
 
 ## Development
+
+### Checkpoint and deploy
+
+On your feature branch, run `_vt-checkpoint "Version - Text"` using the full
+`APP_VERSION` (for example, `_vt-checkpoint "5.1.0 - Fix deployment queue"`).
+The local shell helper stages and commits all changes, pushes the feature
+branch, then pushes its HEAD to `beta` with `--force-with-lease`. A plain push
+to a feature branch does not deploy. If changes are already committed, use
+`_vt-deploy beta`: checkpoint stops when there is nothing to commit. Use
+`_vt-deploy alpha` for alpha; merge the feature branch into `main` for production.
+
+Wait for the deployment and subsequent Pages publication in GitHub Actions,
+then hard-refresh the channel URL. If the channel already points at the same
+commit, another push will not trigger a run; use **Run workflow** on that
+channel in Actions. After a workflow fix, push the new commit instead of
+re-running the failed run, which still uses its original workflow.
+
+The workflow follows app-template's naming convention: its fixed name is
+`Deploy Trail Log v<APP_VERSION>` for versioned notifications, and its run title
+includes the channel and `Version - Text` commit message. Manual runs fall back
+to the versioned workflow name. Update the workflow name whenever `APP_VERSION`
+changes, including during `ship`; `./build/check.sh` verifies they match.
+
+All three channels share the `pages` concurrency group and queue pending runs,
+because each publishes into the same `gh-pages` branch. Keep that configuration
+on every channel: older channel workflows with branch-specific locks can still
+collide until they receive the fix. During rollout, let existing deployments
+finish before starting another channel. The channel folders are preserved by
+`keep_files: true`. This repository retains its `gh-pages` publishing flow:
+Pages uses **Deploy from a branch → gh-pages → / (root)**. App-template's
+single-channel artifact deployment is a different publishing setup.
 
 All development context — architecture internals, persistence/migration rules, roadmap format, code map, verification steps, known issues, and the release-note conventions — lives in **`context/LLM_HANDOFF.md`**. Start there for any code work.
 
