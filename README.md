@@ -6,7 +6,7 @@ The app is still intentionally simple to run: open `index.html` and go — plain
 
 ## Data syncing
 
-From 5.1.1.2, the cloud file is `data/trail-log.json`. The previous filename,
+From 5.1.1, the cloud file is `data/trail-log.json`. The previous filename,
 `data/visit-tracker.json`, matches EasyPrivacy's `/visit-tracker.js` blocking
 rule (the `.js` prefix also matches `.json`). If you already have cloud content
 at the old path, rename that file to `trail-log.json` in GitHub before syncing
@@ -25,6 +25,7 @@ Sync implementation: `assets/js/sync*.js`, with no runtime dependencies or build
 
 | Version | Date | Title | Summary
 |---|---:|---|---|
+| 5.1.1 | 2026-09-09 | Clear Signal | A new cloud filename avoids a tracking-filter collision; Data Sync gains a braces icon and clearer errors, and Theme & Colors matches the toolbar button size. |
 | 5.1.0 | 2026-09-08 | Cloud Trail | Optional GitHub sync transfers visits, notes, legends, and Basecamp pads between devices, with explicit conflict choices and local recovery. |
 | 5.0.0 | 2026-06-23 | Paint Job | A new top-bar Theme & Colors panel recolors your levels, priorities, Rangefinder, Wayfinder, and accent, with thirteen one-click themes saved alongside your data. |
 | 4.9.0 | 2026-06-21 | Travel Agent | Rangefinder can hand your Start and End points to Apple Maps, Google Maps, or Google Flights, with a per-provider setting and new-tab or background-tab opening. |
