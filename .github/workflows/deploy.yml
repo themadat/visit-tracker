@@ -1,4 +1,4 @@
-name: Deploy Trail Log v5.0.0.2
+name: Deploy Trail Log v5.1.0
 
 run-name: Deploy ${{ github.ref_name }} · ${{ github.event.head_commit.message || github.workflow }}
 
