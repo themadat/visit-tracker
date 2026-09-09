@@ -1507,6 +1507,10 @@
             Settings → Data Sync. Use a fine-grained GitHub token scoped to the app-data repository with Contents:
             Read and write on each device. The dedicated file is data/visit-tracker.json. Test checks the connection;
             Sync Now compares and transfers content. Background checks only report changes.</p>
+          <p><b>Why does testing sync say Load failed?</b><br>The browser could not obtain a readable response from
+            api.github.com; this does not confirm that your token is wrong. Check your connection, try a regular
+            browser tab or another network, and check whether a blocker or VPN is filtering api.github.com.
+            A rejected token produces a separate GitHub authentication error.</p>
           <p><b>What travels with GitHub Sync?</b><br>Your map name, legend definitions, Waypoint Pack icons, US and World visits,
             location notes, and Basecamp pads and links. Appearance, legend colors, tag configuration, filters,
             layout, and credentials stay on each device. Use a full JSON backup to transfer settings too.</p>
@@ -1904,7 +1908,7 @@
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "5.1.0";
+    const APP_VERSION = "5.1.1.1";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
