@@ -6,7 +6,14 @@ The app is still intentionally simple to run: open `index.html` and go — plain
 
 ## Data syncing
 
-The combined local-save/GitHub status control sits at the left of the top-bar actions. Open **Settings → Data Sync** to connect each device to `themadat/app-data`, branch `main`, file `data/visit-tracker.json`. Use a fine-grained token scoped only to `app-data` with **Contents: Read and write**. The first upload can create the file. Tokens stay masked and can be remembered on the device or kept only for the tab; they never enter backups or synced content.
+From 5.1.1.2, the cloud file is `data/trail-log.json`. The previous filename,
+`data/visit-tracker.json`, matches EasyPrivacy's `/visit-tracker.js` blocking
+rule (the `.js` prefix also matches `.json`). If you already have cloud content
+at the old path, rename that file to `trail-log.json` in GitHub before syncing
+this version, and update each device. If there is no file yet, Sync Now →
+Upload creates it. Trail Log does not delete or overwrite the old path.
+
+The combined local-save/GitHub status control sits at the left of the top-bar actions. Open **Settings → Data Sync** to connect each device to `themadat/app-data`, branch `main`, file `data/trail-log.json`. Use a fine-grained token scoped only to `app-data` with **Contents: Read and write**. The first upload can create the file. Tokens stay masked and can be remembered on the device or kept only for the tab; they never enter backups or synced content.
 
 **Test** verifies the connection; **Save** stores it. Background checks compare copies every five minutes and when returning to the app. **Sync Now** transfers map names, legend definitions, Waypoint Pack icon mappings, US/World visits and notes, and Basecamp pads/links. Appearance, legend colors, tag configuration, filters, and layout remain local. Full JSON backups still transfer settings.
 
