@@ -2,7 +2,7 @@
 function createTrailLogSyncStorage(hooks) {
   "use strict";
   const keys = Object.freeze({ metadata: "trailLog.sync.v1", secret: "trailLog.githubToken.v1", session: "trailLog.githubToken.session.v1", recovery: "trailLog.syncRecovery.v1" });
-  const target = Object.freeze({ owner: "themadat", repo: "app-data", branch: "main", path: "data/visit-tracker.json" });
+  const target = Object.freeze({ owner: "themadat", repo: "app-data", branch: "main", path: "data/trail-log.json" });
   const clone = value => JSON.parse(JSON.stringify(value));
   const defaults = () => ({ ...target, enabled: false, rememberToken: true, baselineTarget: "", baselineSha: "", baselineHash: "", lastSyncedAt: "", lastCheckedAt: "" });
   function read(key, store = localStorage) { try { return store.getItem(key) || ""; } catch { return ""; } }
@@ -15,6 +15,10 @@ function createTrailLogSyncStorage(hooks) {
       next.rememberToken = saved.rememberToken !== false;
       for (const key of ["baselineTarget", "baselineSha", "baselineHash", "lastSyncedAt", "lastCheckedAt"]) {
         if (typeof saved[key] === "string") next[key] = saved[key].slice(0, 600);
+      }
+      // A different file must establish its own baseline through a fresh comparison.
+      if ((saved.path && saved.path !== target.path) || (next.baselineTarget && next.baselineTarget !== [target.owner, target.repo, target.branch, target.path].join("/"))) {
+        for (const key of ["baselineTarget", "baselineSha", "baselineHash", "lastSyncedAt", "lastCheckedAt"]) next[key] = "";
       }
     }
     return next;
