@@ -4,20 +4,23 @@
 
     const CHANGELOG = [
       {
-        version: "5.1.1.2",
-        date: "2026-09-08",
+        version: "5.1.1",
+        date: "2026-09-09",
         title: "Clear Signal",
-        summary: "Data Sync uses a new cloud filename to avoid a tracker-blocking false positive, plus a braces icon and clearer connection guidance.",
+        summary: "Data Sync uses a new cloud filename to avoid a tracker-blocking false positive, with clearer connection guidance and consistent toolbar buttons.",
         highlights: [
           "Cloud data now uses trail-log.json to avoid a tracker-blocking filename collision.",
           "Data Sync uses the new braces icon in Settings.",
           "Connection errors distinguish unreachable GitHub from rejected credentials.",
+          "Theme & Colors matches the square size of the neighboring toolbar buttons.",
         ],
         updateSections: [{ heading: "Connection clarity", items: [
-          "5.1.1.2: The sync filename is now data/trail-log.json. A tracking filter for /visit-tracker.js also matched the old JSON filename and could block both reads and first uploads.",
+          "The sync filename is now data/trail-log.json. A tracking filter for /visit-tracker.js also matched the old JSON filename and could block both reads and first uploads.",
           "If you already have cloud data at the old filename, rename it to trail-log.json in GitHub before syncing this version. Existing local data and stored tokens are preserved.",
           "Browser network errors such as Load failed now explain that credentials could not be verified and offer connection troubleshooting steps.",
           "Network failures no longer label an online device as offline. Failed tests leave credentials and local content unchanged.",
+        ] }, { heading: "Toolbar", items: [
+          "Theme & Colors uses the same fixed square button size as Settings and Install, including on narrow screens.",
         ] }]
       },
       {
