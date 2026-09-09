@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=4.8.0">
+  <link rel="stylesheet" href="assets/css/app.css?v=5.0.0.1">
 </head>
 
 <body>
@@ -71,7 +71,7 @@
         </div>
         <div class="topbar-hints" aria-label="Title bar tips">
           <small id="topbarPanelHint" data-hint data-hint-key="topbar-panel-controls">
-            Toggle Cards Shown: Map, Legend, Notes<br />Tip the Dev! | Add as App | Settings
+            Sync Status | Toggle Cards: Map, Legend, Notes<br />Tip the Dev! | Add as App | Settings
           </small>
           <small id="mapResizeHint" class="topbar-resize-hint" data-hint data-hint-key="map-resize">
             Looks wonky? Resize the map and cards.
@@ -94,6 +94,10 @@
           </svg></button>
       </div>
       <nav class="toolbar" aria-label="App actions">
+        <button id="dataSyncBtn" class="data-sync-status" type="button" data-cloud-sync aria-label="Open Data Sync settings">
+          <span class="sync-status-icon" data-sync-icon aria-hidden="true"></span>
+          <span class="sync-status-copy"><strong data-local-label>Saved locally</strong><small data-cloud-label>GitHub · Sync Disabled</small></span>
+        </button>
         <div class="toolbar-panel-toggle-group" aria-label="Visible panels">
           <button id="mapToggleBtn" class="toggle-btn" type="button" aria-pressed="true" data-shortcut="M">Map</button>
           <button id="legendToggleBtn" class="toggle-btn" type="button" aria-pressed="true"
@@ -1010,10 +1014,17 @@
     </div>
   </dialog>
 
+  <dialog id="syncChoiceDialog" aria-labelledby="syncChoiceTitle" aria-describedby="syncChoiceMessage">
+    <header><h2 id="syncChoiceTitle">Choose a sync copy</h2></header>
+    <div class="dialog-body"><p id="syncChoiceMessage"></p><div id="syncChoices"></div></div>
+    <footer><button id="syncChoiceCancelBtn" type="button">Cancel sync</button></footer>
+  </dialog>
+
   <dialog id="settingsDialog">
     <header>
       <div class="tabs" role="tablist" aria-label="Settings sections">
         <button type="button" role="tab" data-tab="settings" aria-selected="true" data-shortcut="S">Settings</button>
+        <button type="button" role="tab" data-tab="dataSync">Data Sync</button>
         <button type="button" role="tab" data-tab="help" data-shortcut="H">Help Center</button>
         <button type="button" role="tab" data-tab="whatsnew" data-shortcut="G">What's New</button>
         <button class="hidden" type="button" role="tab" data-tab="developer" data-shortcut="V" data-dev-only>Developer
@@ -1144,6 +1155,47 @@
             <button id="resetAppBtn" class="danger" type="button" data-shortcut="X">Reset App Data</button>
           </div>
         </section>
+      </section>
+
+      <section id="tab-dataSync" class="doc settings-page" role="tabpanel" aria-label="Data Sync">
+        <section class="settings-category">
+          <h3>Data &amp; connection</h3>
+          <p id="syncLocalStatus" class="sync-note">Your changes save automatically on this device.</p>
+          <div class="sync-heading-row"><h4>GitHub Sync</h4><span id="syncSettingsState" class="sync-state-pill" data-cloud-sync role="status"><span data-sync-icon aria-hidden="true"></span><span data-sync-label>Sync Disabled</span></span></div>
+          <p id="syncStatusMessage" class="sync-note" aria-live="polite"></p>
+          <p class="sync-note">Syncs your map name, legend definitions, Waypoint Pack icons, US and World visits, notes, and Basecamp pads. Appearance, colors, tag settings, filters, and layout stay on this device.</p>
+          <div class="sync-actions">
+            <button id="syncNowButton" type="button" disabled><span data-sync-action-icon aria-hidden="true"></span><span>Sync Now</span></button>
+            <button id="restoreCloudButton" type="button" disabled><span data-sync-action-icon aria-hidden="true"></span><span>Restore from Cloud</span></button>
+          </div>
+          <p id="syncLastChecked" class="sync-note"></p>
+          <dl class="sync-target-line" aria-label="GitHub Sync target">
+            <div><dt>Owner</dt><dd>themadat</dd></div>
+            <div><dt>Repository</dt><dd><a href="https://github.com/themadat/app-data" target="_blank" rel="noopener noreferrer">app-data</a></dd></div>
+            <div><dt>Branch</dt><dd>main</dd></div>
+            <div><dt>Path</dt><dd><a href="https://github.com/themadat/app-data/blob/main/data/visit-tracker.json" target="_blank" rel="noopener noreferrer">data/visit-tracker.json</a></dd></div>
+          </dl>
+          <p class="sync-note">Use a <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">fine-grained access token</a> scoped to <b>app-data</b> with <b>Contents: Read and write</b>. The first upload can create the data file.</p>
+          <label class="sync-token-field" for="syncToken">Fine-grained access token <small id="storedTokenLabel">Required</small></label>
+          <input id="syncToken" type="password" autocomplete="new-password" autocapitalize="none" spellcheck="false" placeholder="Enter token">
+          <label class="sync-remember"><input id="syncRememberToken" type="checkbox" checked><span>Remember token on this device <small>Otherwise it lasts only for this browser tab.</small></span></label>
+          <div class="sync-actions">
+            <button id="forgetSyncButton" class="danger" type="button">Forget</button>
+            <button id="testSyncButton" type="button">Test</button>
+            <button id="saveSyncButton" class="primary" type="button">Save</button>
+          </div>
+          <p class="sync-note">Once connected, background checks compare copies. Use Sync Now to transfer changes. Conflicts let you choose a copy or merge matching and separate items; merging keeps items present in either copy.</p>
+        </section>
+        <section class="settings-category">
+          <h3>Local recovery</h3>
+          <p id="syncRecoveryMessage" class="sync-note"></p>
+          <div class="sync-actions"><button id="restoreSyncRecoveryBtn" type="button" disabled>Restore recovery</button><button id="exportSyncRecoveryBtn" type="button" disabled>Export recovery JSON</button></div>
+        </section>
+        <details id="syncPayloadDetails" class="settings-category sync-payload">
+          <summary>Sync payload (JSON)</summary>
+          <p class="sync-note">Current saved content used for GitHub Sync. The cloud copy may differ until you sync. Device settings and credentials are excluded.</p>
+          <pre class="sync-json" tabindex="0" role="region" aria-label="JSON included in GitHub Sync"><code id="syncPayloadJson"></code></pre>
+        </details>
       </section>
 
       <section id="tab-help" class="doc" role="tabpanel">
@@ -1448,8 +1500,21 @@
             first pad titled "Basecamp Pad" with the default Basecamp pad icon. The migration runs once, keeps the
             original paragraphs, line breaks, and last-updated timestamp, and never overwrites pads you have already
             created.</p>
-          <p><b>Are Basecamp pads encrypted or synced to a cloud?</b><br>No. They stay in this browser with the rest of
-            Trail Log's local data. Use JSON backups to move or protect them.</p>
+          <p><b>Are Basecamp pads encrypted or synced to a cloud?</b><br>They are saved in this browser and are not
+            encrypted by Trail Log. Optional GitHub Sync can transfer pads and linked notes to your other devices.
+            Open Settings → Data Sync to connect; JSON backups remain available.</p>
+          <p><b>How do I sync between devices?</b><br>Open the status control at the left of the top bar, or
+            Settings → Data Sync. Use a fine-grained GitHub token scoped to the app-data repository with Contents:
+            Read and write on each device. The dedicated file is data/visit-tracker.json. Test checks the connection;
+            Sync Now compares and transfers content. Background checks only report changes.</p>
+          <p><b>What travels with GitHub Sync?</b><br>Your map name, legend definitions, Waypoint Pack icons, US and World visits,
+            location notes, and Basecamp pads and links. Appearance, legend colors, tag configuration, filters,
+            layout, and credentials stay on each device. Use a full JSON backup to transfer settings too.</p>
+          <p><b>What happens if both devices change?</b><br>Sync Now asks which copy to keep, or offers a merge
+            when matching and separate items can be combined safely. Merge keeps items present in either copy,
+            including an item deleted on just one device. Different edits to the same item need a copy choice.
+            Restore from Cloud requires confirmation and a successful recovery save. Restore or export that
+            earlier local copy from Data Sync → Local recovery.</p>
           <p><b>How do I add it like an app?</b><br>Use Add as App in the top toolbar. Trail Log detects iPhone/iPad,
             Android, Mac, or PC, expands the matching directions, and keeps one other device guide open at a time.</p>
           <p><b>How do hints work?</b><br>Hints can be dismissed one at a time, or turned off globally in Settings.
@@ -1828,13 +1893,18 @@
   <script src="assets/js/world-names.js?v=4.7.4"></script>
   <script src="assets/js/world-label-overrides.js?v=4.7.4"></script>
   <script src="assets/js/timezones.js?v=4.8.0"></script>
-  <script src="assets/js/changelog.js?v=4.8.1"></script>
+  <script src="assets/js/changelog.js?v=5.0.0.1"></script>
   <script src="assets/js/roadmap.js?v=4.8.0"></script>
+  <script src="assets/js/sync-icons.js?v=5.0.0.1"></script>
+  <script src="assets/js/sync-data.js?v=5.0.0.1"></script>
+  <script src="assets/js/sync-storage.js?v=5.0.0.1"></script>
+  <script src="assets/js/sync.js?v=5.0.0.1"></script>
+  <script src="assets/js/sync-ui.js?v=5.0.0.1"></script>
   <script>
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "5.0.0";
+    const APP_VERSION = "5.1.0";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -2870,6 +2940,7 @@
       us: { id: "us", svgId: "stateMap", tileSelector: ".state-tile", codeAttr: "abbr", markersId: "mapLocationMarkers", ringOverlayId: "mapRingOverlay", heading: "US Map", icon: __US_MAP, regionStore: () => state.states },
       world: { id: "world", svgId: "worldMap", tileSelector: ".world-tile", codeAttr: "region", markersId: "worldMapMarkers", ringOverlayId: "worldMapRingOverlay", heading: "World Map", icon: __WORLD_MAP, regionStore: () => state.world.regions }
     };
+    let dataSyncUi = null;
     let state = loadState();
     syncRuntimeUiFromSettings();
 
@@ -3879,7 +3950,14 @@
       pruneObsoleteBackupKeys(state);
       syncRuntimeUiSettingsToState({ captureMapPan });
       state.appVersion = APP_VERSION;
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (error) {
+        dataSyncUi?.failed();
+        showOverlayWarning("Changes not saved", "Browser storage could not save your changes. Export a JSON backup before reloading.");
+        throw error;
+      }
+      dataSyncUi?.saved();
       renderDeveloperJson();
       renderDeviceDetectionReadout();
     }
@@ -6607,6 +6685,7 @@
       setButtonLabelBoth("#resetReleaseNoticeBtn", ICON_SETTINGS_SECTION__SPARKLE_TEXT_CLIPBOARD_FILL, "Show Again", "Show What's New banner again");
       setButtonLabelBoth("#resetDefaultsBtn", ICON_SETTINGS_DELETE__TRASH_FILL, "Reset Defaults");
       setButtonLabelBoth("[data-tab='settings']", ICON_SETTINGS_SECTION__GEARSHAPE_FILL, "Settings");
+      setButtonLabelBoth("[data-tab='dataSync']", TRAIL_LOG_SYNC_ICONS.json, "Data Sync");
       setButtonLabelBoth("[data-tab='help']", ICON_SETTINGS_SECTION__QUESTIONMARK_CIRCLE_FILL, "Help Center");
       setButtonLabelBoth("[data-tab='whatsnew']", ICON_SETTINGS_SECTION__SPARKLE_TEXT_CLIPBOARD_FILL, "What's New");
       setButtonLabelBoth("[data-tab='developer']", ICON_SETTINGS_SECTION__WRENCH_AND_SCREWDRIVER_FILL, "Developer Tools");
@@ -19032,6 +19111,7 @@
     }
 
     function handleGlobalShortcut(event) {
+      if ($("#syncChoiceDialog").open) return;
       if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || isTypingTarget(event.target)) return false;
       const key = shortcutKey(event);
       if (handleHiddenHintResetShortcut(event, key)) return true;
@@ -19553,6 +19633,7 @@
     // requiring Shortcut Mode and without a modifier. Skipped while typing in
     // an input/textarea/contenteditable so they never eat real text input.
     function handleUniversalShortcut(event) {
+      if ($("#syncChoiceDialog").open) return;
       if (event.defaultPrevented) return;
       if (event.altKey || event.ctrlKey || event.metaKey) return;
       if (isTypingTarget(event.target)) return;
@@ -20098,6 +20179,7 @@
     }
 
     function handlePowerShortcut(event) {
+      if ($("#syncChoiceDialog").open) return;
       updatePowerOverlay(event);
       if (event.defaultPrevented) return;
       if (handleGlobalShortcut(event)) return;
@@ -21441,6 +21523,7 @@
         renderWishlist();
         if (shouldShowReleaseNotice()) markReleaseSeen();
       }
+      if (tabName === "dataSync") dataSyncUi?.render();
       if (tabName === "developer") {
         renderDeveloperJson();
         renderDeviceDetectionReadout();
@@ -21488,6 +21571,23 @@
     }
 
     init();
+    dataSyncUi = initTrailLogSync({
+      version: APP_VERSION, stateKey: STORAGE_KEY, getState: () => state,
+      defaultState, normalizeState, requestConfirm, downloadFile,
+      flushPending: () => { if (basecampPendingPadId) flushBasecampPad(); },
+      toast: showOverlayWarning, message: showMessage,
+      openSettings: () => {
+        closeOpenDialogs("settingsDialog");
+        switchTab("dataSync");
+        if (!$("#settingsDialog").open) $("#settingsDialog").showModal();
+      },
+      replaceState: next => {
+        state = next;
+        syncRuntimeUiFromSettings();
+        closeDrawer();
+        render();
+      }
+    });
   </script>
 </body>
 
