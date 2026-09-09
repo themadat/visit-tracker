@@ -18,6 +18,7 @@ Sync implementation: `assets/js/sync*.js`, with no runtime dependencies or build
 
 | Version | Date | Title | Summary
 |---|---:|---|---|
+| 5.1.0 | 2026-09-08 | Cloud Trail | Optional GitHub sync transfers visits, notes, legends, and Basecamp pads between devices, with explicit conflict choices and local recovery. |
 | 5.0.0 | 2026-06-23 | Paint Job | A new top-bar Theme & Colors panel recolors your levels, priorities, Rangefinder, Wayfinder, and accent, with thirteen one-click themes saved alongside your data. |
 | 4.9.0 | 2026-06-21 | Travel Agent | Rangefinder can hand your Start and End points to Apple Maps, Google Maps, or Google Flights, with a per-provider setting and new-tab or background-tab opening. |
 | 4.8.1 | 2026-06-21 | Reading Glasses | Text Only remembers your chosen text size across reloads. |
@@ -133,7 +134,7 @@ context/               LLM handoff, dev context, and in-flight plan docs. Exclud
 ### Checkpoint and deploy
 
 On your feature branch, run `_vt-checkpoint "Version - Text"` using the full
-`APP_VERSION` (for example, `_vt-checkpoint "5.0.0.2 - Fix deployment queue"`).
+`APP_VERSION` (for example, `_vt-checkpoint "5.1.0 - Fix deployment queue"`).
 The local shell helper stages and commits all changes, pushes the feature
 branch, then pushes its HEAD to `beta` with `--force-with-lease`. A plain push
 to a feature branch does not deploy. If changes are already committed, use
