@@ -15,7 +15,7 @@ Upload creates it. Trail Log does not delete or overwrite the old path.
 
 The combined local-save/GitHub status control sits at the left of the top-bar actions. Open **Settings → Data Sync** to connect each device to `themadat/app-data`, branch `main`, file `data/trail-log.json`. Use a fine-grained token scoped only to `app-data` with **Contents: Read and write**. The first upload can create the file. Tokens stay masked and can be remembered on the device or kept only for the tab; they never enter backups or synced content.
 
-**Test** verifies the connection; **Save** stores it. Background checks compare copies every five minutes and when returning to the app. **Sync Now** transfers map names, legend definitions, Waypoint Pack icon mappings, US/World visits and notes, and Basecamp pads/links. Appearance, legend colors, tag configuration, filters, and layout remain local. Full JSON backups still transfer settings.
+**Test** verifies the connection; **Save** stores it. Automatic sync transfers one-sided changes after saving, every five minutes, and when returning or reconnecting. It waits until editors are closed; first sync and conflicts require a choice. **Force Update** in Data Sync explicitly uploads this device or downloads GitHub, even when copies match. **Sync Now** transfers map names, legend definitions, Waypoint Pack icon mappings, US/World visits and notes, and Basecamp pads/links. Appearance, legend colors, tag configuration, filters, and layout remain local. Full JSON backups still transfer settings.
 
 Initial differences and conflicts ask you to upload, download, or merge compatible content. Merge preserves items in either copy, including one-sided deletions; differing edits to the same item require a copy choice. Downloads and merges require a successful local recovery save. **Restore from Cloud** asks for confirmation, and **Local recovery** can restore or export the previous local copy. The JSON disclosure previews exactly what is synced. **Forget** removes this device’s token and sync history. Sync supports content files up to 5 MB; full JSON backups remain available for larger logs.
 
@@ -173,7 +173,3 @@ single-channel artifact deployment is a different publishing setup.
 All development context — architecture internals, persistence/migration rules, roadmap format, code map, verification steps, known issues, and the release-note conventions — lives in **`context/LLM_HANDOFF.md`**. Start there for any code work.
 
 It also defines the working shorthands: **`wish`** (capture a Roadmap idea), **`plan`** (explore and document a feature), **`start`** (implement from an existing plan), **`prep`** (make a version release-ready), and **`ship`** (condense and cut the release).
-
-### App updates
-
-Hosted copies check for new app versions automatically at startup, when returning or reconnecting, and every five minutes. Updates install after a minute of inactivity with editors closed and data sync finished. **Settings → App Updates → Force Update** refreshes app files immediately, including cached scripts and styles, while keeping saved data and the current deployment channel. Offline failures leave the app open. Local file copies must be updated by replacing their files.

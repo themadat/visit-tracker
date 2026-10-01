@@ -540,6 +540,45 @@ function createTrailLogSync(App) {
     }
   }
 
+  // Background reconciliation never opens choices or overwrites conflicting copies.
+  async function autoSync(force) {
+    if (!configured() || getInfo().busy || App.canAutoSync?.() === false) return;
+    await check(force);
+    if (runtime.error || runtime.offline || !configured() || getInfo().busy || App.canAutoSync?.() === false) return;
+    const change = reconciliation();
+    if (change === "local") return performUpload();
+    if (change === "remote") return performDownload();
+  }
+
+  async function forceUpdate(trigger) {
+    if (!getInfo().canSync) return;
+    await check(true);
+    if (runtime.error || runtime.offline || !configured() || getInfo().busy) return;
+    const sequence = runtime.requestSequence;
+    const decisionHash = localHash();
+    runtime.deciding = true;
+    emit();
+    let choice;
+    try {
+      choice = await App.components.choose({
+        title: "Force GitHub Update",
+        message: "Choose which copy to keep. Upload replaces GitHub with this device. Download replaces this device with GitHub after saving local recovery. Device settings stay here.",
+        choices: [
+          { value: "upload", symbol: STATE_PRESENTATIONS.uploading.symbol, label: "Upload this device", description: runtime.remoteMissing ? "Create the GitHub data file." : "Overwrite GitHub with this device’s saved content.", kind: "secondary" },
+          ...(runtime.remoteState ? [{ value: "download", symbol: STATE_PRESENTATIONS.downloading.symbol, label: "Download GitHub", description: "Replace this device’s saved content; save its previous copy for recovery.", kind: "secondary" }] : [])
+        ],
+        cancelLabel: "Cancel update", trigger: trigger
+      });
+    } finally { runtime.deciding = false; emit(); }
+    if (sequence !== runtime.requestSequence || navigator.onLine === false || !configured()) return;
+    if (decisionHash !== localHash()) {
+      App.components.toast("Local content changed while you were choosing. Force Update again to compare the latest copies.", { title: "Sync Needs Attention" });
+      return;
+    }
+    if (choice === "upload") return performUpload();
+    if (choice === "download") return performDownload();
+  }
+
   async function restoreFromCloud(trigger) {
     if (!getInfo().canRestore) return;
     await check(true);
@@ -578,12 +617,12 @@ function createTrailLogSync(App) {
       runtime.offline = false;
       runtime.error = "";
       emit();
-      check(true);
+      autoSync(true);
     });
     window.addEventListener("offline", function () { runtime.offline = true; emit(); });
-    document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible") check(false); });
-    window.setInterval(function () { check(false); }, config.controls.syncCheckIntervalMs);
-    window.setTimeout(function () { check(false); }, 700);
+    document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible") autoSync(true); });
+    window.setInterval(function () { autoSync(true); }, config.controls.syncCheckIntervalMs);
+    window.setTimeout(function () { autoSync(true); }, 700);
     emit();
   }
 
@@ -598,6 +637,8 @@ function createTrailLogSync(App) {
     testConnection: testConnection,
     check: check,
     syncNow: syncNow,
+    autoSync: autoSync,
+    forceUpdate: forceUpdate,
     restoreFromCloud: restoreFromCloud,
     forget: forget
   };
