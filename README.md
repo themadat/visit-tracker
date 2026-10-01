@@ -173,3 +173,7 @@ single-channel artifact deployment is a different publishing setup.
 All development context — architecture internals, persistence/migration rules, roadmap format, code map, verification steps, known issues, and the release-note conventions — lives in **`context/LLM_HANDOFF.md`**. Start there for any code work.
 
 It also defines the working shorthands: **`wish`** (capture a Roadmap idea), **`plan`** (explore and document a feature), **`start`** (implement from an existing plan), **`prep`** (make a version release-ready), and **`ship`** (condense and cut the release).
+
+### App updates
+
+Hosted copies check for new app versions automatically at startup, when returning or reconnecting, and every five minutes. Updates install after a minute of inactivity with editors closed and data sync finished. **Settings → App Updates → Force Update** refreshes app files immediately, including cached scripts and styles, while keeping saved data and the current deployment channel. Offline failures leave the app open. Local file copies must be updated by replacing their files.

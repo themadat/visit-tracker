@@ -4,6 +4,19 @@
 
     const CHANGELOG = [
       {
+        version: "5.1.1.1",
+        date: "2026-09-30",
+        title: "Fresh Tracks",
+        summary: "Trail Log checks for app updates automatically, with a Force Update button in Settings.",
+        highlights: ["Automatic app updates wait until you are idle and editors are closed.", "Force Update refreshes app files while preserving saved visits and settings."],
+        updateSections: [{ heading: "App updates", items: [
+          "Hosted copies check on startup, when returning, when reconnecting, and every five minutes, staying on the current deployment channel.",
+          "Automatic reloads wait for a minute without activity, closed dialogs, and completed data sync. Unavailable local storage blocks reloads.",
+          "Force Update in Settings refreshes cached scripts and styles even when the version is unchanged. Failed downloads leave the current app open.",
+          "Local file copies remain usable and explain that their files must be replaced manually to update."
+        ] }]
+      },
+      {
         version: "5.1.1",
         date: "2026-09-09",
         title: "Clear Signal",
