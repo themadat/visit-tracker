@@ -3,7 +3,7 @@ window.runSyncIntegrationTests = async function () {
   const output = [];
   const check = (ok, label) => { if (!ok) throw new Error(label); output.push('PASS ' + label); };
   const delay = () => new Promise(resolve => setTimeout(resolve, 25));
-  const until = async fn => { for (let i = 0; i < 200; i++) { if (fn()) return; await delay(); } throw new Error('Timed out waiting for sync UI'); };
+  const until = async fn => { for (let i = 0; i < 400; i++) { if (fn()) return; await delay(); } if (fn()) return; throw new Error('Timed out waiting for sync UI'); };
   const $test = id => document.getElementById(id);
   const model = createTrailLogSyncData({ normalizeState, defaultState, defaultCloud: () => ({}) });
   try {
@@ -72,10 +72,42 @@ window.runSyncIntegrationTests = async function () {
     $test('syncChoiceCancelBtn').click(); await delay();
     check(state.notes.CA[0].details === 'Edited on this device', 'Cancelling conflict leaves the local edit intact');
     check(!JSON.stringify(model.syncPayload(state)).includes('synthetic-test-token'), 'Credentials stay out of payload and JSON preview');
+    const writesBeforeConflict = __syncTest.writes.length;
+    $test('settingsDialog').close();
+    window.dispatchEvent(new Event('online'));
+    await until(() => $test('dataSyncBtn').dataset.syncState === 'warning');
+    check(__syncTest.writes.length === writesBeforeConflict && state.notes.CA[0].details === 'Edited on this device', 'Automatic sync preserves both sides of a conflict without opening a chooser');
+    check(!$test('syncChoiceDialog').open, 'Background conflict waits for manual review');
+    $test('settingsBtn').click(); switchTab('dataSync');
+    $test('forceGithubUpdateButton').click(); await until(() => $test('syncChoiceDialog').open);
+    check($test('syncChoices').children.length === 2, 'Force Update offers explicit upload and download');
+    $test('syncChoiceCancelBtn').click(); await delay();
+    check(__syncTest.writes.length === writesBeforeConflict, 'Cancelling Force Update does not upload');
+    $test('forceGithubUpdateButton').click(); await until(() => $test('syncChoiceDialog').open);
+    $test('syncChoices').children[0].click();
+    await until(() => __syncTest.writes.length === writesBeforeConflict + 1 && !$test('syncNowButton').disabled);
+    check(__syncTest.remote.data.notes.CA[0].details === 'Edited on this device', 'Forced upload sends the chosen local copy');
+    state.mapName = 'Automatic upload'; save();
+    await new Promise(resolve => setTimeout(resolve, 2200));
+    check(__syncTest.writes.length === writesBeforeConflict + 1, 'Open settings defer automatic transfers');
+    $test('settingsDialog').close();
+    await until(() => __syncTest.writes.length === writesBeforeConflict + 2 && !$test('syncNowButton').disabled);
+    check(__syncTest.remote.data.mapName === 'Automatic upload', 'Saved local changes upload automatically after editors close');
+    __syncTest.remote.data.mapName = 'Automatic download';
+    window.dispatchEvent(new Event('online'));
+    await until(() => $test('mapTitle').textContent === 'Automatic download');
+    check(JSON.parse(localStorage.getItem('trailLog.syncRecovery.v1')).state.mapName === 'Automatic upload', 'Automatic download saves local recovery first');
+    const writesBeforeError = __syncTest.writes.length;
+    __syncTest.status = 403;
+    state.mapName = 'Keep on error'; save();
+    window.dispatchEvent(new Event('online'));
+    await until(() => ['permissionDenied', 'failed'].includes($test('dataSyncBtn').dataset.syncState));
+    check(state.mapName === 'Keep on error' && __syncTest.writes.length === writesBeforeError, 'Failed automatic comparison preserves local data and does not upload');
+    __syncTest.status = 200;
     check(!__syncTest.errors.length, 'No runtime errors throughout sync controls');
     parent.postMessage({ syncTest: true, message: output.join('\n') + '\nAll integration tests passed.' }, '*');
   } catch (error) {
-    parent.postMessage({ syncTest: true, failed: true, message: output.join('\n') + '\nFAIL ' + error.message + '\n' + error.stack }, '*');
+    parent.postMessage({ syncTest: true, failed: true, message: output.join('\n') + '\nFAIL ' + error.message + '\nState: ' + state.mapName + '; remote: ' + __syncTest.remote?.data?.mapName + '; sync: ' + $test('syncStatusMessage').textContent + '\n' + error.stack }, '*');
   }
 };
 parent.postMessage({ syncTest: true, message: 'App ready. Run integration tests; all writes use in-memory storage and a simulated GitHub API.' }, '*');
