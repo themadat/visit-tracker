@@ -33,7 +33,7 @@
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
   <meta name="description" content="Trail Log — track the U.S. states and places you've visited.">
-  <link rel="stylesheet" href="assets/css/app.css?v=5.0.0.1">
+  <link rel="stylesheet" href="assets/css/app.css?v=5.1.1.1">
 </head>
 
 <body>
@@ -1036,6 +1036,14 @@
 
       <section id="tab-settings" class="doc active settings-page" role="tabpanel">
         <section class="settings-category">
+          <h3>App Updates</h3>
+          <div class="setting-row">
+            <div class="setting-label">Latest App Version</div>
+            <button id="forceUpdateBtn" type="button">Force Update</button>
+          </div>
+          <small id="appUpdateStatus" class="setting-hint" role="status">Checks automatically every five minutes and when you return. Updates install while idle, with editors closed. Force Update refreshes app files and keeps your saved data.</small>
+        </section>
+        <section class="settings-category">
           <h3>Appearance</h3>
           <div class="setting-row">
             <div class="setting-label">Text Size</div>
@@ -1894,23 +1902,24 @@
     </footer>
   </dialog>
 
-  <script src="assets/js/icons.js?v=4.8.0"></script>
-  <script src="assets/js/maps.js"></script>
-  <script src="assets/js/world-names.js?v=4.7.4"></script>
-  <script src="assets/js/world-label-overrides.js?v=4.7.4"></script>
-  <script src="assets/js/timezones.js?v=4.8.0"></script>
-  <script src="assets/js/changelog.js?v=5.0.0.1"></script>
-  <script src="assets/js/roadmap.js?v=4.8.0"></script>
-  <script src="assets/js/sync-icons.js?v=5.0.0.1"></script>
-  <script src="assets/js/sync-data.js?v=5.0.0.1"></script>
-  <script src="assets/js/sync-storage.js?v=5.0.0.1"></script>
-  <script src="assets/js/sync.js?v=5.0.0.1"></script>
-  <script src="assets/js/sync-ui.js?v=5.0.0.1"></script>
+  <script src="assets/js/icons.js?v=5.1.1.1"></script>
+  <script src="assets/js/maps.js?v=5.1.1.1"></script>
+  <script src="assets/js/world-names.js?v=5.1.1.1"></script>
+  <script src="assets/js/world-label-overrides.js?v=5.1.1.1"></script>
+  <script src="assets/js/timezones.js?v=5.1.1.1"></script>
+  <script src="assets/js/changelog.js?v=5.1.1.1"></script>
+  <script src="assets/js/roadmap.js?v=5.1.1.1"></script>
+  <script src="assets/js/sync-icons.js?v=5.1.1.1"></script>
+  <script src="assets/js/sync-data.js?v=5.1.1.1"></script>
+  <script src="assets/js/sync-storage.js?v=5.1.1.1"></script>
+  <script src="assets/js/sync.js?v=5.1.1.1"></script>
+  <script src="assets/js/sync-ui.js?v=5.1.1.1"></script>
+  <script src="assets/js/app-update.js?v=5.1.1.1"></script>
   <script>
     // Inject the US/World map SVGs (markup moved to assets/js/maps.js to keep this file lean).
     document.querySelector(".map-wrap").innerHTML = __US_AND_WORLD_MAP_MARKUP;
     const APP_NAME = "Trail Log";
-    const APP_VERSION = "5.1.1";
+    const APP_VERSION = "5.1.1.1";
     const VENMO_HANDLE = "themadat";
     const DEFAULT_MAP_NAME = `Your ${APP_NAME}`;
     const STORAGE_KEY = "usStateVisitMap.v1";
@@ -21593,6 +21602,11 @@
         closeDrawer();
         render();
       }
+    });
+    initTrailLogUpdates({
+      version: APP_VERSION,
+      isBusy: () => dataSyncUi?.isBusy() || false,
+      beforeReload: () => { if (basecampPendingPadId) flushBasecampPad(); }
     });
   </script>
 </body>
