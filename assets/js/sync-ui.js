@@ -41,7 +41,14 @@ function initTrailLogSync(hooks) {
       list.querySelector("button")?.focus();
     });
   }
-  const sync = createTrailLogSync({ config, utils, stateModel: model, storage, components: {
+  let autoTimer;
+  const canAutoSync = () => localAvailable && document.visibilityState === "visible" &&
+    !document.querySelector("dialog[open]") && !document.activeElement?.matches("input, textarea, select, [contenteditable='true']");
+  function scheduleAutoSync() {
+    clearTimeout(autoTimer);
+    autoTimer = setTimeout(() => { if (canAutoSync()) sync.autoSync(true); }, 2000);
+  }
+  const sync = createTrailLogSync({ config, utils, stateModel: model, storage, canAutoSync, components: {
     confirm, choose, toast: (message, options = {}) => hooks.toast(options.title || "Data Sync", message), message: hooks.message
   } });
   function renderVisual(element, info) {
@@ -69,6 +76,7 @@ function initTrailLogSync(hooks) {
     $("#syncSettingsState [data-sync-label]").textContent = info.title;
     $("#syncStatusMessage").textContent = info.message;
     $("#syncLocalStatus").textContent = localAvailable ? "Browser storage is working. Your changes save automatically on this device." : "Browser storage is unavailable. Export a JSON backup before reloading.";
+    $("#forceGithubUpdateButton").disabled = !info.canSync;
     $("#syncLastChecked").textContent = info.checkedAt ? "Last checked: " + new Date(info.checkedAt).toLocaleString() : "Not checked yet.";
     for (const [id, action, enabled] of [["syncNowButton", "syncNow", info.canSync], ["restoreCloudButton", "restore", info.canRestore]]) {
       const control = $("#" + id);
@@ -101,11 +109,12 @@ function initTrailLogSync(hooks) {
   function openSettings() { hooks.openSettings(); render(); $("#syncToken").focus(); }
   $("#dataSyncBtn").addEventListener("click", event => action(() => sync.syncNow(event.currentTarget)));
   $("#syncNowButton").addEventListener("click", event => action(() => sync.syncNow(event.currentTarget)));
+  $("#forceGithubUpdateButton").addEventListener("click", event => action(() => sync.forceUpdate(event.currentTarget)));
   $("#restoreCloudButton").addEventListener("click", event => action(() => sync.restoreFromCloud(event.currentTarget)));
   $("#syncChoiceCancelBtn").addEventListener("click", () => $("#syncChoiceDialog").close());
   $("#saveSyncButton").addEventListener("click", () => action(async () => {
     sync.saveConfiguration(form()); cleanFields(); render();
-    hooks.toast("Sync configured", "The connection was saved. Sync Now compares and transfers your saved content.");
+    hooks.toast("Sync configured", "The connection was saved. Sync Now sets up the first copy; later changes sync automatically.");
     await sync.check(true);
   }));
   $("#testSyncButton").addEventListener("click", () => action(async () => {
@@ -132,6 +141,9 @@ function initTrailLogSync(hooks) {
   window.addEventListener("app:syncchange", render);
   window.addEventListener("app:opensyncsettings", openSettings);
   window.addEventListener("storage", event => { if (Object.values(storage.keys).includes(event.key)) render(); });
+  // Revisit deferred changes after editors close or focus leaves a text field.
+  document.querySelectorAll("dialog").forEach(dialog => dialog.addEventListener("close", scheduleAutoSync));
+  document.addEventListener("focusout", scheduleAutoSync);
   sync.init();
-  return { render, openSettings, isBusy: () => !localAvailable || sync.getInfo().busy, saved: () => { localAvailable = true; render(); }, failed: () => { localAvailable = false; render(); } };
+  return { render, openSettings, saved: () => { localAvailable = true; render(); scheduleAutoSync(); }, failed: () => { localAvailable = false; render(); } };
 }

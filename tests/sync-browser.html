@@ -19,7 +19,7 @@
       if (!String(url).startsWith('https://api.github.com/repos/themadat/app-data')) throw new Error('Network disabled in test preview');
       const reply = (status, body) => ({ status, ok: status >= 200 && status < 300, json: async () => body });
       if (__syncTest.status !== 200) return reply(__syncTest.status, { message: 'Simulated API error' });
-      if (options.method === 'PUT') { __syncTest.writes.push(JSON.parse(options.body)); return reply(200, { content: { sha: 'test-saved-sha' } }); }
+      if (options.method === 'PUT') { const write = JSON.parse(options.body); __syncTest.writes.push(write); __syncTest.remote = JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(write.content), c => c.charCodeAt(0)))); return reply(200, { content: { sha: 'test-saved-sha' } }); }
       if (!String(url).includes('/contents/')) return reply(200, {});
       if (!__syncTest.remote) return reply(404, {});
       const bytes = new TextEncoder().encode(JSON.stringify(__syncTest.remote));
@@ -29,7 +29,7 @@
   `;
   const freshSource = source.replace(/(src|href)="(assets\/[^"]+)"/g, (_, attr, url) => attr + '="' + url + (url.includes('?') ? '&' : '?') + 'sync-test=' + Date.now() + '"');
   frame.srcdoc = freshSource.replace('<head>', '<head><base href="' + base + '">').replace('<script src="assets/js/icons.js', '<script>' + setup + '<' + '/script><script src="assets/js/icons.js')
-    .replace(/<\/body>\s*<\/html>\s*$/, '<script src="tests/sync-browser.js?fresh=3"><' + '/script></body></html>');
+    .replace(/<\/body>\s*<\/html>\s*$/, '<script src="tests/sync-browser.js?fresh=5"><' + '/script></body></html>');
   document.querySelector('#desktop').onclick = () => { frame.style.width = '1440px'; frame.style.height = '900px'; };
   document.querySelector('#mobile').onclick = () => { frame.style.width = '390px'; frame.style.height = '844px'; };
   document.querySelector('#run').onclick = () => frame.contentWindow.runSyncIntegrationTests();
