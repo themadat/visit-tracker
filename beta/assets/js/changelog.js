@@ -4,7 +4,40 @@
 
     const CHANGELOG = [
       {
-        version: "5.0.0.2",
+        version: "5.1.1.1",
+        date: "2026-09-30",
+        title: "Fresh Tracks",
+        summary: "Trail Log checks for app updates automatically, with a Force Update button in Settings.",
+        highlights: ["Automatic app updates wait until you are idle and editors are closed.", "Force Update refreshes app files while preserving saved visits and settings."],
+        updateSections: [{ heading: "App updates", items: [
+          "Hosted copies check on startup, when returning, when reconnecting, and every five minutes, staying on the current deployment channel.",
+          "Automatic reloads wait for a minute without activity, closed dialogs, and completed data sync. Unavailable local storage blocks reloads.",
+          "Force Update in Settings refreshes cached scripts and styles even when the version is unchanged. Failed downloads leave the current app open.",
+          "Local file copies remain usable and explain that their files must be replaced manually to update."
+        ] }]
+      },
+      {
+        version: "5.1.1",
+        date: "2026-09-09",
+        title: "Clear Signal",
+        summary: "Data Sync uses a new cloud filename to avoid a tracker-blocking false positive, with clearer connection guidance and consistent toolbar buttons.",
+        highlights: [
+          "Cloud data now uses trail-log.json to avoid a tracker-blocking filename collision.",
+          "Data Sync uses the new braces icon in Settings.",
+          "Connection errors distinguish unreachable GitHub from rejected credentials.",
+          "Theme & Colors matches the square size of the neighboring toolbar buttons.",
+        ],
+        updateSections: [{ heading: "Connection clarity", items: [
+          "The sync filename is now data/trail-log.json. A tracking filter for /visit-tracker.js also matched the old JSON filename and could block both reads and first uploads.",
+          "If you already have cloud data at the old filename, rename it to trail-log.json in GitHub before syncing this version. Existing local data and stored tokens are preserved.",
+          "Browser network errors such as Load failed now explain that credentials could not be verified and offer connection troubleshooting steps.",
+          "Network failures no longer label an online device as offline. Failed tests leave credentials and local content unchanged.",
+        ] }, { heading: "Toolbar", items: [
+          "Theme & Colors uses the same fixed square button size as Settings and Install, including on narrow screens.",
+        ] }]
+      },
+      {
+        version: "5.1.0",
         date: "2026-09-08",
         title: "Cloud Trail",
         summary: "Optional GitHub data syncing brings your Trail Log to another device, with status in the top bar and recovery before replacing local content.",
@@ -17,7 +50,7 @@
           "Choose conflicting copies or merge compatible content, with local recovery before replacement.",
         ],
         updateSections: [
-          { heading: "5.0.0.2 · Deployment", items: [
+          { heading: "Deployment", items: [
             "Production, beta, and alpha updates share a deployment queue to prevent publishing conflicts. Deployment names identify the app version and channel.",
           ] },
           { heading: "Data Sync", items: [

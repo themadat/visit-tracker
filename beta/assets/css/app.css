@@ -727,6 +727,7 @@
     #waypointPacksCloseBtn,
     #tipJarBtn,
     #addToHomeBtn,
+    #paletteBtn,
     #settingsBtn {
       position: relative;
       display: flex;

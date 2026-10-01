@@ -133,5 +133,5 @@ function initTrailLogSync(hooks) {
   window.addEventListener("app:opensyncsettings", openSettings);
   window.addEventListener("storage", event => { if (Object.values(storage.keys).includes(event.key)) render(); });
   sync.init();
-  return { render, openSettings, saved: () => { localAvailable = true; render(); }, failed: () => { localAvailable = false; render(); } };
+  return { render, openSettings, isBusy: () => !localAvailable || sync.getInfo().busy, saved: () => { localAvailable = true; render(); }, failed: () => { localAvailable = false; render(); } };
 }

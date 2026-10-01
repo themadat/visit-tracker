@@ -42,7 +42,7 @@ function harness({ token = 'test-token', online = true } = {}) {
   h.remote = clone(current);
   h.file = () => response(200, { type: 'file', encoding: 'base64', sha: 'remote-sha', content: Buffer.from(JSON.stringify(model.syncPayload(h.remote))).toString('base64') });
   h.respond = (url, options) => options.method === 'PUT' ? response(200, { content: { sha: 'saved-sha' } }) : h.file();
-  h.setBaseline = () => storage.mutate(state => Object.assign(state.modules.cloudSync, { baselineTarget: 'themadat/app-data/main/data/visit-tracker.json', baselineSha: 'base-sha', baselineHash: model.syncHash(current) }));
+  h.setBaseline = () => storage.mutate(state => Object.assign(state.modules.cloudSync, { baselineTarget: 'themadat/app-data/main/data/trail-log.json', baselineSha: 'base-sha', baselineHash: model.syncHash(current) }));
   return h;
 }
 
@@ -95,7 +95,7 @@ test('disabled, missing token and offline states open setup without network writ
 
 test('connection config is pinned and token lives outside app state and exports', () => {
   const h = harness(); h.sync.saveConfiguration({ owner: 'evil', repo: 'other', path: 'bad.json', token: 'replacement', rememberToken: false });
-  assert.equal(h.storage.readCloud().path, 'data/visit-tracker.json'); assert.equal(h.storage.readCloud().owner, 'themadat');
+  assert.equal(h.storage.readCloud().path, 'data/trail-log.json'); assert.equal(h.storage.readCloud().owner, 'themadat');
   assert.equal(h.localStorage.getItem(h.storage.keys.secret), null); assert.equal(h.sessionStorage.getItem(h.storage.keys.session), 'replacement');
   assert.doesNotMatch(JSON.stringify(h.state), /replacement|githubToken/);
 });
@@ -119,6 +119,42 @@ test('missing file checks repository/branch and creates only after choosing Uplo
   const body = JSON.parse(h.requests.at(-1).options.body); assert.equal(body.sha, undefined); assert.equal(body.branch, 'main');
 });
 
+test('sync filename avoids the EasyPrivacy /visit-tracker.js rule for reads and first uploads', async () => {
+  // This unanchored literal rule also matches the .json extension.
+  const blocked = url => url.includes('/visit-tracker.js');
+  assert.equal(blocked('https://api.github.com/repos/themadat/app-data/contents/data/visit-tracker.json?ref=main'), true);
+  const h = harness();
+  h.respond = (url, options) => {
+    if (blocked(url)) throw new TypeError('Load failed');
+    return options.method === 'PUT' ? response(201, { content: { sha: 'created' } }) : url.includes('/contents/') ? response(404) : response(200);
+  };
+  const result = await h.sync.testConnection({ token: 'test-token' });
+  assert.equal(result.ok, true);
+  assert.equal(result.remoteExists, false);
+  assert.equal(h.requests.some(r => r.options.method === 'PUT'), false);
+  h.choice = 'upload';
+  await h.sync.syncNow();
+  const upload = h.requests.find(r => r.options.method === 'PUT');
+  assert.ok(upload.url.endsWith('/contents/data/trail-log.json'));
+  assert.equal(JSON.parse(upload.options.body).sha, undefined);
+  assert.equal(h.sync.getInfo().state, 'upToDate');
+  assert.equal(h.requests.some(r => blocked(r.url)), false);
+});
+
+test('changing the cloud filename clears the old baseline while preserving credentials and local content', () => {
+  const h = harness();
+  const before = clone(h.state);
+  h.localStorage.setItem(h.storage.keys.metadata, JSON.stringify({ enabled: true, rememberToken: true,
+    path: 'data/visit-tracker.json', baselineTarget: 'themadat/app-data/main/data/visit-tracker.json',
+    baselineSha: 'old-file-sha', baselineHash: h.model.syncHash(h.state), lastSyncedAt: '2026-09-01', lastCheckedAt: '2026-09-01' }));
+  const cloud = h.storage.readCloud();
+  assert.equal(cloud.path, 'data/trail-log.json');
+  for (const key of ['baselineTarget', 'baselineSha', 'baselineHash', 'lastSyncedAt', 'lastCheckedAt']) assert.equal(cloud[key], '');
+  assert.equal(cloud.enabled, true);
+  assert.equal(h.token, 'test-token');
+  assert.deepEqual(h.state, before);
+});
+
 test('401, 403, rate limit and server errors have distinct states', async () => {
   for (const [status, message, expected] of [[401, '', 'authenticationRequired'], [403, '', 'permissionDenied'], [403, 'API rate limit exceeded', 'warning'], [429, '', 'warning'], [500, '', 'failed']]) {
     const h = harness(); h.respond = () => response(status, { message }); await h.sync.check(true); assert.equal(h.sync.getInfo().state, expected);
@@ -128,6 +164,29 @@ test('401, 403, rate limit and server errors have distinct states', async () => 
 test('failed token test does not persist newly entered credentials', async () => {
   const h = harness({ token: '' }); h.respond = () => response(401);
   await assert.rejects(h.sync.testConnection({ token: 'bad-token' })); assert.equal(h.token, '');
+});
+
+test('browser transport failures explain connectivity without blaming credentials or saving them', async () => {
+  for (const message of ['Load failed', 'Failed to fetch', 'NetworkError when attempting to fetch resource.']) {
+    const h = harness({ token: '' });
+    h.respond = () => { throw new TypeError(message); };
+    await assert.rejects(h.sync.testConnection({ token: 'unsaved-test-token' }), /could not reach api.github.com.*does not confirm a bad token/);
+    assert.equal(h.token, '');
+    assert.equal(h.sync.getInfo().state, 'failed');
+    assert.equal(h.requests.length, 1);
+    assert.equal(h.replacements.length, 0);
+  }
+});
+
+test('credential test reports actual offline state and preserves GitHub authentication errors', async () => {
+  const offline = harness({ token: '', online: false });
+  offline.respond = () => { throw new TypeError('Load failed'); };
+  await assert.rejects(offline.sync.testConnection({ token: 'unsaved-test-token' }), /device is offline/);
+  assert.equal(offline.sync.getInfo().state, 'offline');
+  const denied = harness({ token: '' });
+  denied.respond = () => response(401);
+  await assert.rejects(denied.sync.testConnection({ token: 'bad-token' }), /GitHub rejected the token/);
+  assert.equal(denied.sync.getInfo().state, 'authenticationRequired');
 });
 
 test('successful connection test saves masked-input backing token without transferring content', async () => {
